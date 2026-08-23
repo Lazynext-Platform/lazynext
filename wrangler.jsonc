@@ -1,7 +1,7 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "lazynext",
-  "account_id": "92b017b13672c5120ab016025f8f4a84",
+  "account_id": "85953070bae00da372951a8833bd3459",
   "main": ".open-next/worker.js",
   "compatibility_date": "2025-09-01",
   "compatibility_flags": ["nodejs_compat"],
@@ -9,7 +9,7 @@
     { "bucket_name": "lazynext-studio-media", "binding": "MEDIA_BUCKET" }
   ],
   "d1_databases": [
-    { "binding": "DB", "database_name": "atlas-saas-db", "database_id": "e7629b36-a082-4f66-bb98-83db9a039626" }
+    { "binding": "DB", "database_name": "lazynext-db", "database_id": "2b14197d-49b0-4d11-85e4-821ba3648ae3" }
   ],
   "assets": {
     "directory": ".open-next/assets",
