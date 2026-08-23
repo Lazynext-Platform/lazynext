@@ -18,5 +18,8 @@
   "observability": {
     "enabled": true
   },
-  "workers_dev": true
+  "workers_dev": true,
+  "routes": [
+    { "pattern": "lazynext.com", "custom_domain": true }
+  ]
 }
