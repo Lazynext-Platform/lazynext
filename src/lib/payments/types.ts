@@ -9,12 +9,12 @@ export interface CheckoutArgs {
 
 /**
  * Two payment shapes the starter ships with:
- *  - mode 'checkout': hosted payment page (Stripe). Dev keeps the revenue.
- *  - mode 'redeem':   user enters a code (Atlas credits). No Stripe needed.
+ *  - mode 'checkout': hosted payment page (Dodo Payments). Dev keeps the revenue.
+ *  - mode 'redeem':   user enters a code (Atlas credits). No checkout needed.
  * A provider implements the method matching its mode.
  */
 export interface PaymentProvider {
-  id: 'stripe' | 'atlas';
+  id: 'dodo' | 'atlas';
   mode: 'checkout' | 'redeem';
   createCheckout?(args: CheckoutArgs): Promise<{ url: string }>;
   redeem?(userId: string, code: string): Promise<{ amount: number }>;

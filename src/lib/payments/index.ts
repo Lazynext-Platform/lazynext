@@ -1,15 +1,15 @@
 import type { PaymentProvider } from './types';
-import { stripeProvider } from './stripe';
+import { dodoProvider } from './dodo';
 import { atlasProvider } from './atlas';
 
 export type { PaymentProvider, CheckoutArgs } from './types';
 
 function selected(): string {
-  return (process.env.PAYMENT_PROVIDER || 'stripe').toLowerCase();
+  return (process.env.PAYMENT_PROVIDER || 'dodo').toLowerCase();
 }
 
 export function paymentProvider(): PaymentProvider {
-  return selected() === 'atlas' ? atlasProvider : stripeProvider;
+  return selected() === 'atlas' ? atlasProvider : dodoProvider;
 }
 
 export function paymentMode(): 'checkout' | 'redeem' {

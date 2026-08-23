@@ -55,8 +55,27 @@ npx wrangler secret put GOOGLE_CLIENT_ID
 npx wrangler secret put GOOGLE_CLIENT_SECRET
 ```
 
-Add Stripe or Atlas redeem-provider secrets if that payment path is enabled,
+Add Dodo Payments or Atlas redeem-provider secrets if that payment path is enabled,
 then build and deploy:
+
+```bash
+# Dodo Payments secrets (if PAYMENT_PROVIDER=dodo)
+npx wrangler secret put DODO_PAYMENTS_API_KEY
+npx wrangler secret put DODO_PAYMENTS_WEBHOOK_KEY
+npx wrangler secret put DODO_PAYMENTS_ENVIRONMENT    # test_mode or live_mode
+
+# Create products and get product IDs
+npm run setup:dodo
+
+# Set product IDs as secrets
+npx wrangler secret put DODO_PRODUCT_STARTER
+npx wrangler secret put DODO_PRODUCT_PRO
+npx wrangler secret put DODO_PRODUCT_ELITE
+
+# Configure webhook URL in Dodo dashboard:
+#   https://<your-domain>/api/webhook/dodo
+#   Subscribe to: payment.succeeded
+```
 
 ```bash
 npm run cf:build

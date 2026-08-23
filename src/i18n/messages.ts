@@ -18,7 +18,7 @@ export const messages: Record<Locale, any> = {
       titleHl: 'AI media SaaS',
       titlePost: 'in an afternoon',
       subtitle:
-        'Open-source, Stripe-ready, one-click deploy. You bring the brand, Atlas Cloud powers the AI, you keep the revenue.',
+        'Open-source, Dodo Payments-ready, one-click deploy. You bring the brand, Atlas Cloud powers the AI, you keep the revenue.',
       tryStudio: 'Try the studio',
       seePricing: 'See pricing',
       statCost: 'Atlas cost / generation',
@@ -27,7 +27,7 @@ export const messages: Record<Locale, any> = {
       appsTitle: 'apps, ready to brand & sell',
       appsSubtitle: 'Each one: upload a photo, get a result. Charge per generation.',
       tryIt: 'Try it',
-      ctaTitle: 'Your brand. Your Stripe. Your profit.',
+      ctaTitle: 'Your brand. Your payments. Your profit.',
       ctaSubtitle:
         'Fork it, add your keys, deploy to Vercel. Atlas Cloud handles the AI — you keep 100% of what you charge.',
       ctaBtn: 'Start creating',
@@ -151,7 +151,7 @@ export const messages: Record<Locale, any> = {
       titlePre: '一个下午,搭出你自己的',
       titleHl: 'AI 媒体 SaaS',
       titlePost: '',
-      subtitle: '开源、内置 Stripe、一键部署。你做品牌,Atlas Cloud 提供 AI 能力,收入全归你。',
+      subtitle: '开源、内置 Dodo Payments、一键部署。你做品牌,Atlas Cloud 提供 AI 能力,收入全归你。',
       tryStudio: '试用工作台',
       seePricing: '查看价格',
       statCost: 'Atlas 每次成本',
@@ -160,7 +160,7 @@ export const messages: Record<Locale, any> = {
       appsTitle: '个应用,直接换品牌开卖',
       appsSubtitle: '每个都是:上传一张图,拿到结果。按次收费。',
       tryIt: '去试试',
-      ctaTitle: '你的品牌,你的 Stripe,你的利润。',
+      ctaTitle: '你的品牌,你的支付,你的利润。',
       ctaSubtitle: 'Fork 一份、填上你的 key、部署到 Vercel。AI 交给 Atlas Cloud,你收的钱 100% 归你。',
       ctaBtn: '开始创作',
     },
@@ -284,7 +284,7 @@ export const messages: Record<Locale, any> = {
       titleHl: 'AI メディア SaaS',
       titlePost: '',
       subtitle:
-        'オープンソース・Stripe 対応・ワンクリックデプロイ。ブランドはあなた、AI は Atlas Cloud、収益は全部あなたのもの。',
+        'オープンソース・Dodo Payments 対応・ワンクリックデプロイ。ブランドはあなた、AI は Atlas Cloud、収益は全部あなたのもの。',
       tryStudio: 'スタジオを試す',
       seePricing: '料金を見る',
       statCost: 'Atlas の生成コスト',
@@ -293,7 +293,7 @@ export const messages: Record<Locale, any> = {
       appsTitle: '個のアプリ、ブランド化してすぐ販売',
       appsSubtitle: 'どれも写真をアップして結果を取得。1 回ごとに課金。',
       tryIt: '試す',
-      ctaTitle: 'あなたのブランド、あなたの Stripe、あなたの利益。',
+      ctaTitle: 'あなたのブランド、あなたの決済、あなたの利益。',
       ctaSubtitle:
         'Fork してキーを入れ、Vercel にデプロイ。AI は Atlas Cloud が担当、売上は 100% あなたに。',
       ctaBtn: '作成をはじめる',
@@ -418,7 +418,7 @@ export const messages: Record<Locale, any> = {
       titleHl: 'SaaS de IA',
       titlePost: 'en una tarde',
       subtitle:
-        'Open-source, listo para Stripe, despliegue en un clic. Tú pones la marca, Atlas Cloud pone la IA, tú te quedas los ingresos.',
+        'Open-source, listo para Dodo Payments, despliegue en un clic. Tú pones la marca, Atlas Cloud pone la IA, tú te quedas los ingresos.',
       tryStudio: 'Probar el estudio',
       seePricing: 'Ver precios',
       statCost: 'coste Atlas / generación',
@@ -427,7 +427,7 @@ export const messages: Record<Locale, any> = {
       appsTitle: 'apps, listas para marcar y vender',
       appsSubtitle: 'Cada una: sube una foto, obtén un resultado. Cobra por generación.',
       tryIt: 'Probar',
-      ctaTitle: 'Tu marca. Tu Stripe. Tu beneficio.',
+      ctaTitle: 'Tu marca. Tus pagos. Tu beneficio.',
       ctaSubtitle:
         'Haz un fork, añade tus claves, despliega en Vercel. Atlas Cloud pone la IA — te quedas el 100% de lo que cobras.',
       ctaBtn: 'Empezar a crear',

@@ -6,6 +6,10 @@ NEXTAUTH_URL=           # https://<worker subdomain or custom domain>
 GOOGLE_CLIENT_ID=
 GOOGLE_CLIENT_SECRET=
 ATLASCLOUD_API_KEY=
-STRIPE_SECRET_KEY=      # leave empty + PAYMENT_PROVIDER=atlas if not using Stripe
-STRIPE_WEBHOOK_SECRET=
-PAYMENT_PROVIDER=atlas
+DODO_PAYMENTS_API_KEY=  # get from Dodo Payments dashboard → Developer → API
+DODO_PAYMENTS_WEBHOOK_KEY=  # get from Dodo Payments dashboard → Developer → Webhooks
+DODO_PAYMENTS_ENVIRONMENT=test_mode
+DODO_PRODUCT_STARTER=   # from: npm run setup:dodo
+DODO_PRODUCT_PRO=
+DODO_PRODUCT_ELITE=
+PAYMENT_PROVIDER=dodo

@@ -21,7 +21,7 @@ It is a real, runnable e-commerce creative studio with opinionated workflows for
 - Short drama ads for social commerce
 - Two-person ad skits from a simple product idea
 - Multi-model image, video, LLM, TTS, and lip-sync pipelines
-- Credit metering, Google login, Stripe top-ups, and Cloudflare deployment
+- Credit metering, Google login, Dodo Payments top-ups, and Cloudflare deployment
 
 ## AI ad workflows
 
@@ -51,7 +51,7 @@ All workflows auto-detect the input language. Write the product brief in English
 - Multi-model orchestration through the Atlas Cloud API
 - Dynamic video credit pricing based on duration, model, and resolution
 - Google login with NextAuth
-- Stripe checkout or Atlas redeem-code top-ups
+- Dodo Payments checkout or Atlas redeem-code top-ups
 - Build-selected Prisma adapters: Cloudflare D1 or Neon Postgres
 - Build-selected media storage: Cloudflare R2 or Public Vercel Blob
 - Native Vercel build plus OpenNext target for Cloudflare Workers
@@ -110,8 +110,12 @@ Where to get each value:
 | `NEXTAUTH_SECRET` | [NextAuth secret](https://next-auth.js.org/configuration/options#nextauth_secret) | Generate locally with `openssl rand -base64 32`. |
 | `GOOGLE_CLIENT_ID` | [Google Cloud OAuth clients](https://console.cloud.google.com/auth/clients) | Create a Web application OAuth client for Google sign-in. |
 | `GOOGLE_CLIENT_SECRET` | [Google Cloud OAuth clients](https://console.cloud.google.com/auth/clients) | Copy the client secret from the same Web application OAuth client. |
-| `STRIPE_SECRET_KEY` | [Stripe API keys](https://dashboard.stripe.com/apikeys) | Optional. Required only when `PAYMENT_PROVIDER=stripe`. Use test keys for local development. |
-| `STRIPE_WEBHOOK_SECRET` | [Stripe Webhooks](https://dashboard.stripe.com/webhooks) | Optional. Required for Stripe webhook verification in production. |
+| `DODO_PAYMENTS_API_KEY` | [Dodo Payments Dashboard](https://app.dodopayments.com/) | Required when `PAYMENT_PROVIDER=dodo`. Get from Developer → API. |
+| `DODO_PAYMENTS_WEBHOOK_KEY` | [Dodo Payments Dashboard](https://app.dodopayments.com/) | Required for Dodo webhook verification. Get from Developer → Webhooks. |
+| `DODO_PAYMENTS_ENVIRONMENT` | — | `test_mode` or `live_mode`. Defaults to `test_mode`. |
+| `DODO_PRODUCT_STARTER` | — | Product ID from `npm run setup:dodo`. |
+| `DODO_PRODUCT_PRO` | — | Product ID from `npm run setup:dodo`. |
+| `DODO_PRODUCT_ELITE` | — | Product ID from `npm run setup:dodo`. |
 
 Open [http://localhost:3000](http://localhost:3000).
 
@@ -194,12 +198,12 @@ atlas-marketing-studio/
 |       |-- video-pricing.ts          # Duration and resolution based credit pricing
 |       |-- lazynext-studio/         # UGC ad formats, schemas, and prompts
 |       |-- drama/                    # Drama scripts, prompts, and shot planning
-|       `-- payments/                 # Stripe checkout and redeem-code credits
+|       `-- payments/                 # Dodo Payments checkout and redeem-code credits
 |-- prisma/
 |   `-- schema.prisma                 # Users, accounts, credits, creations, codes
 |-- public/
 |   `-- samples/                      # Demo videos and reference assets
 |-- open-next.config.ts               # OpenNext build target for Cloudflare Workers
 |-- wrangler.jsonc                    # Cloudflare deployment config
-`-- package.json                      # Next.js, Prisma, Stripe, Atlas Cloud scripts
+`-- package.json                      # Next.js, Prisma, Dodo Payments, Atlas Cloud scripts
 ```
