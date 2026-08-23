@@ -7,7 +7,7 @@ import {
   submitAdRefCharacter,
 } from '@/lib/ad-reference';
 import { uploadInputMediaToAtlas } from '@/lib/ad-reference-media';
-import { chargeAndSubmit, chargeErrorResponse } from '@/lib/marketing-studio/gen-task';
+import { chargeAndSubmit, chargeErrorResponse } from '@/lib/lazynext-studio/gen-task';
 import { videoCredits } from '@/lib/video-pricing';
 import {
   NonPublicMediaUrlError,

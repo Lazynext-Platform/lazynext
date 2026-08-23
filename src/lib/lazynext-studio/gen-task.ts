@@ -5,7 +5,7 @@ import { isByok } from '@/lib/request-context';
 import {
   selectInternalTask,
   taskOutputUrls,
-} from '@/lib/marketing-studio/task-outputs';
+} from '@/lib/lazynext-studio/task-outputs';
 
 // Distinguish two charge failure types: insufficient balance (→402) vs system/DB error (→500, must not masquerade as "insufficient credits").
 export class InsufficientCreditsError extends Error {
@@ -104,7 +104,7 @@ export async function linkMarketingCreationTask(opts: {
       where: {
         id: creationId,
         userId: opts.uid,
-        templateId: 'marketing-studio',
+        templateId: 'lazynext-studio',
         status: 'processing',
       },
       data: {

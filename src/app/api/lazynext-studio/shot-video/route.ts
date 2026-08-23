@@ -12,12 +12,12 @@ import {
   SHOT_VIDEO_MODEL,
   SHOT_REF_VIDEO_MODEL,
   REPLICA_VIDEO_MODEL,
-} from '@/lib/marketing-studio/workflow';
+} from '@/lib/lazynext-studio/workflow';
 import {
   chargeAndSubmit,
   chargeErrorResponse,
   linkMarketingCreationTask,
-} from '@/lib/marketing-studio/gen-task';
+} from '@/lib/lazynext-studio/gen-task';
 import { videoCredits } from '@/lib/video-pricing';
 
 export const maxDuration = 60;
@@ -36,10 +36,10 @@ async function __byokPOST(req: Request) {
   const creationId = typeof body.creationId === 'string' ? body.creationId.trim() : '';
   if (!prompt) return NextResponse.json({ error: 'prompt_required' }, { status: 400 });
 
-  // Convert site-relative paths (/api/marketing-studio/media/...) to public absolute URLs, otherwise Atlas cannot fetch them.
+  // Convert site-relative paths (/api/lazynext-studio/media/...) to public absolute URLs, otherwise Atlas cannot fetch them.
   const toAbs = (u: unknown): string => {
     const s = typeof u === 'string' ? u.trim() : '';
-    if (s.startsWith('/api/marketing-studio/media/')) return new URL(s, req.url).toString();
+    if (s.startsWith('/api/lazynext-studio/media/')) return new URL(s, req.url).toString();
     return /^https?:\/\//.test(s) ? s : '';
   };
 

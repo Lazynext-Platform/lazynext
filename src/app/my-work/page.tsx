@@ -32,7 +32,7 @@ type PlayTarget = { url: string; kind: MediaKind } | null;
 
 // Only show studio-level works (per-shot/intermediate tasks already excluded server-side by /api/creations).
 const SOURCE: Record<string, { zh: string; en: string }> = {
-  'marketing-studio': { zh: '产品广告', en: 'Ad' },
+  'lazynext-studio': { zh: '产品广告', en: 'Ad' },
   'drama-studio': { zh: 'AI 剧情', en: 'Drama' },
   'ad-reference': { zh: '爆款复刻', en: 'Remake' },
 };

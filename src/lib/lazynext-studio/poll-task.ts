@@ -5,8 +5,8 @@ import {
   markTaskCompleted,
   refundFailedTask,
   releaseTaskCompletionClaim,
-} from '@/lib/marketing-studio/gen-task';
-import { persistToR2 } from '@/lib/marketing-studio/r2';
+} from '@/lib/lazynext-studio/gen-task';
+import { persistToR2 } from '@/lib/lazynext-studio/r2';
 
 export type MarketingTaskPollResult = {
   status: 'pending' | 'processing' | 'completed' | 'failed';

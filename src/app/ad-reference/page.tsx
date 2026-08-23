@@ -10,7 +10,7 @@ import { uploadDirectMediaIfSupported } from '@/lib/client-media-upload';
 import { videoCredits } from '@/lib/video-pricing';
 
 // Viral ad remake (Ad Reference): paste a viral ad → swap in your product/presenter/voice, same hook same energy.
-// No-login direct flow (same as marketing-studio): upload → edit (gemini-omni video-edit) → optional voice+lipsync → R2 final video.
+// No-login direct flow (same as lazynext-studio): upload → edit (gemini-omni video-edit) → optional voice+lipsync → R2 final video.
 // bg #131416 · panel #1c1e21 · accent #00b2fc · Space Grotesk
 
 const GROTESK = 'var(--font-grotesk), "Space Grotesk", system-ui, sans-serif';
@@ -52,7 +52,7 @@ function adErrText(msg: string, locale: string) {
   return msg;
 }
 
-// Proxied polling of Atlas tasks (no database): reuses marketing-studio's /poll (auto-saves to R2 on completion).
+// Proxied polling of Atlas tasks (no database): reuses lazynext-studio's /poll (auto-saves to R2 on completion).
 function pollGen(getUrl: string, timeoutMs = 480_000): Promise<string> {
   return new Promise((resolve, reject) => {
     const t0 = Date.now();
@@ -61,7 +61,7 @@ function pollGen(getUrl: string, timeoutMs = 480_000): Promise<string> {
     const t = setInterval(async () => {
       if (Date.now() - t0 > timeoutMs) { clearInterval(t); reject(new Error(lastError || 'Generation timed out, please try again')); return; }
       try {
-        const c = await postJson('/api/marketing-studio/poll', { getUrl });
+        const c = await postJson('/api/lazynext-studio/poll', { getUrl });
         // transient=true: Atlas status query gateway transient timeout (504), task likely still running; count doesn't reset, only gives up after too many consecutive (avoids silent spinning to timeout).
         if (c.transient) {
           transientErrors += 1;
@@ -111,10 +111,10 @@ function readVideoDuration(file: File): Promise<number> {
 type Slot = { url: string; preview: string } | null;
 type Step = 'idle' | 'edit' | 'character' | 'voice' | 'lipsync' | 'done';
 
-// Reference ad example videos (users can one-click try without uploading); assets on R2 marketing-studio-media
+// Reference ad example videos (users can one-click try without uploading); assets on R2 lazynext-studio-media
 const EXAMPLE_REF_VIDEOS = [
-  '/api/marketing-studio/media/adref-example-1.mp4',
-  '/api/marketing-studio/media/adref-example-2.mp4',
+  '/api/lazynext-studio/media/adref-example-1.mp4',
+  '/api/lazynext-studio/media/adref-example-2.mp4',
 ];
 const AD_REF_SESSION_KEY = 'adref-session-v1';
 

@@ -1,6 +1,6 @@
 import { withAtlas } from '@/lib/request-context';
 import { NextResponse } from 'next/server';
-import { pollMarketingTask } from '@/lib/marketing-studio/poll-task';
+import { pollMarketingTask } from '@/lib/lazynext-studio/poll-task';
 
 export const maxDuration = 60;
 

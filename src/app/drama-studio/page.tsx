@@ -11,7 +11,7 @@ import { videoCredits } from '@/lib/video-pricing';
 import { useI18n } from '@/i18n/provider';
 import { useMounted } from '@/lib/use-mounted';
 
-// Visual specs unified with marketing-studio: dark #131416 + purple #00b2fc + Space Grotesk
+// Visual specs unified with lazynext-studio: dark #131416 + purple #00b2fc + Space Grotesk
 const ACCENT = '#00b2fc';
 const INK = '#131416';
 const PANEL = '#1c1e21';
@@ -71,7 +71,7 @@ async function postJson(url: string, body: unknown) {
   if (!r.ok) throw new Error(j.detail ? `${j.error || 'error'}: ${j.detail}` : (j.error || 'failed'));
   return j;
 }
-// File to dataURL (same as marketing-studio): upload endpoint receives { dataUrl } JSON, not multipart.
+// File to dataURL (same as lazynext-studio): upload endpoint receives { dataUrl } JSON, not multipart.
 function imageToDataUrl(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
     const r = new FileReader();
@@ -89,7 +89,7 @@ function pollGen(getUrl: string): Promise<string> {
       n += 1;
       if (n > 300) { clearInterval(t); reject(new Error('timeout')); return; }
       try {
-        const c = await postJson('/api/marketing-studio/poll', { getUrl });
+        const c = await postJson('/api/lazynext-studio/poll', { getUrl });
         // transient=true: Atlas status query gateway transient timeout (504), task likely still running; count doesn't reset, only gives up after too many consecutive (avoids silent spinning to timeout).
         if (c.transient) {
           transientErrors += 1;
@@ -222,7 +222,7 @@ export default function DramaStudioPage() {
     return () => window.removeEventListener('lazynext:credits', h);
   }, [status, refreshCredits]);
 
-  // ── Generation progress persistence (same as marketing-studio): refresh/page-switch won't lose state, resume from checkpoint ──
+  // ── Generation progress persistence (same as lazynext-studio): refresh/page-switch won't lose state, resume from checkpoint ──
   useEffect(() => {
     if (!mounted) return;
     try {
@@ -353,7 +353,7 @@ export default function DramaStudioPage() {
     setProductAssets((prev) => { if (prev.length >= MAX_PRODUCT_IMAGES) return prev; added = true; return [...prev, marker]; });
     if (!added) { setErr(locale === 'zh' ? `产品图最多 ${MAX_PRODUCT_IMAGES} 张` : `Up to ${MAX_PRODUCT_IMAGES} product images`); return; }
     try {
-      const j = await postJson('/api/marketing-studio/upload', { dataUrl });
+      const j = await postJson('/api/lazynext-studio/upload', { dataUrl });
       setProductAssets((prev) => prev.map((p) => (p === marker ? { preview: dataUrl, url: j.url } : p)));
     } catch (e) {
       setProductAssets((prev) => prev.filter((p) => p !== marker));
@@ -513,7 +513,7 @@ export default function DramaStudioPage() {
       let vGetUrl = shotsRef.current[i]?.vidGetUrl;
       patchShot(i, { vid: 'run' });
       if (!vGetUrl) {
-        const vd = await postJson('/api/marketing-studio/shot-video', { referenceImages: refs, prompt: vidPrompt, ratio: videoRatio, resolution: videoResolution, duration: seg.durationSec || 8 });
+        const vd = await postJson('/api/lazynext-studio/shot-video', { referenceImages: refs, prompt: vidPrompt, ratio: videoRatio, resolution: videoResolution, duration: seg.durationSec || 8 });
         vGetUrl = vd.getUrl; patchShot(i, { vidGetUrl: vGetUrl });
       }
       let vidUrl: string;
@@ -584,7 +584,7 @@ export default function DramaStudioPage() {
           filename: 'reel.mp4',
         });
         if (directUrl) {
-          await postJson('/api/marketing-studio/save-reel', {
+          await postJson('/api/lazynext-studio/save-reel', {
             url: directUrl,
             title,
             type: 'drama-studio',
@@ -600,7 +600,7 @@ export default function DramaStudioPage() {
           fd.append('thumbnail', firstImg);
           fd.append('shots', JSON.stringify(vidUrls));
           if (cid) fd.append('creationId', cid);
-          await fetch('/api/marketing-studio/save-reel', { method: 'POST', body: fd });
+          await fetch('/api/lazynext-studio/save-reel', { method: 'POST', body: fd });
         }
       } catch { /* ignore history save failure */ }
       // Don't clear creationId: folder has saved the final video, keep id so character edits/regeneration can still patch after final; next genScript will reset.
@@ -631,7 +631,7 @@ export default function DramaStudioPage() {
             <img src="/lazynext-mark.png" alt="Lazynext" className="h-7 w-7 rounded-lg" />
             <b className="text-sm tracking-tight">Lazynext</b>
           </a>
-          <a href="/marketing-studio" className="text-xs text-white/60 hover:text-white transition">{locale === 'zh' ? '广告工作室' : 'Ad Studio'}</a>
+          <a href="/lazynext-studio" className="text-xs text-white/60 hover:text-white transition">{locale === 'zh' ? '广告工作室' : 'Ad Studio'}</a>
           <a href="/" className="text-xs text-white/60 hover:text-white transition">{locale === 'zh' ? '← 全部应用' : '← All apps'}</a>
         </div>
       </div>

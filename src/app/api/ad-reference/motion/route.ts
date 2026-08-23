@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { submitAdRefMotion, AD_REF_MOTION_MODEL } from '@/lib/ad-reference';
-import { chargeAndSubmit, chargeErrorResponse } from '@/lib/marketing-studio/gen-task';
+import { chargeAndSubmit, chargeErrorResponse } from '@/lib/lazynext-studio/gen-task';
 import { videoCredits } from '@/lib/video-pricing';
 import { NonPublicMediaUrlError, toAtlasMediaUrl } from '@/lib/public-media-url';
 import { uploadInputMediaToAtlas } from '@/lib/ad-reference-media';

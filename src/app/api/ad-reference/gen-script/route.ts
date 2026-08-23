@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { atlasChat } from '@/lib/atlas';
-import { mediaToDataUri } from '@/lib/marketing-studio/r2';
+import { mediaToDataUri } from '@/lib/lazynext-studio/r2';
 
 export const maxDuration = 60;
 

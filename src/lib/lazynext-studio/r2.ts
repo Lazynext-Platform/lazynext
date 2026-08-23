@@ -1,7 +1,7 @@
 import { putMedia, readMedia } from '@/lib/media-storage';
 
 // Atlas generation results land on a temporary OSS with force-download/hotlink-protection/8-day expiry/no CORS, unplayable in browser.
-// Here we transfer them to our own R2 (marketing-studio-media), returning a same-origin, inline-playable, non-expiring url.
+// Here we transfer them to our own R2 (lazynext-studio-media), returning a same-origin, inline-playable, non-expiring url.
 // On transfer failure, falls back to the original url (at least doesn't break the entire generation).
 function ascii(bytes: Uint8Array, start: number, end: number): string {
   return String.fromCharCode(...bytes.slice(start, end));

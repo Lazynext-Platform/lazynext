@@ -3,8 +3,8 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { atlasChat } from '@/lib/atlas';
-import { mediaToDataUri } from '@/lib/marketing-studio/r2';
-import { getFormat } from '@/lib/marketing-studio/formats';
+import { mediaToDataUri } from '@/lib/lazynext-studio/r2';
+import { getFormat } from '@/lib/lazynext-studio/formats';
 
 export const maxDuration = 60;
 

@@ -2,18 +2,18 @@ import { withAtlas } from '@/lib/request-context';
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-import { marketingPlanSchema } from '@/lib/marketing-studio/schema';
-import { buildShotImagePrompt, buildShotImageEditPrompt, normalizeRatio, submitShotImage, MK_IMAGE_COST, SHOT_IMAGE_MODEL, SHOT_IMAGE_EDIT_MODEL } from '@/lib/marketing-studio/workflow';
-import { chargeAndSubmit, chargeErrorResponse } from '@/lib/marketing-studio/gen-task';
+import { marketingPlanSchema } from '@/lib/lazynext-studio/schema';
+import { buildShotImagePrompt, buildShotImageEditPrompt, normalizeRatio, submitShotImage, MK_IMAGE_COST, SHOT_IMAGE_MODEL, SHOT_IMAGE_EDIT_MODEL } from '@/lib/lazynext-studio/workflow';
+import { chargeAndSubmit, chargeErrorResponse } from '@/lib/lazynext-studio/gen-task';
 
 export const maxDuration = 60;
 
-// Product/avatar images may be site-relative paths (/api/marketing-studio/media/...), but Atlas edit requires public absolute URLs.
+// Product/avatar images may be site-relative paths (/api/lazynext-studio/media/...), but Atlas edit requires public absolute URLs.
 // Previously /^https?:\/\// directly filtered out relative paths → refImages empty → image generation fell back to pure text-to-image, never using uploaded product images
 // (users observed "reference images never actually passed in" for this reason). Here we convert site-relative paths to absolute URLs based on the request origin.
 function toAbsMedia(v: unknown, base: string): string {
   const s = typeof v === 'string' ? v.trim() : '';
-  if (s.startsWith('/api/marketing-studio/media/')) return new URL(s, base).toString();
+  if (s.startsWith('/api/lazynext-studio/media/')) return new URL(s, base).toString();
   return /^https?:\/\//.test(s) ? s : '';
 }
 

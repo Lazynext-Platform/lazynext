@@ -179,7 +179,7 @@ Lazynext is a Lazynext-branded distribution built on the open-source [Atlas Mark
 atlas-marketing-studio/
 |-- src/
 |   |-- app/                         # Next.js 14 App Router pages and API routes
-|   |   |-- marketing-studio/         # AI UGC ad generator UI
+|   |   |-- lazynext-studio/         # AI UGC ad generator UI
 |   |   |-- ad-reference/             # Reference ad remake workflow
 |   |   |-- drama-studio/             # AI short drama ad generator
 |   |   |-- ad-skit/                  # Two-person ad skit generator
@@ -192,7 +192,7 @@ atlas-marketing-studio/
 |   `-- lib/
 |       |-- atlas.ts                  # Atlas Cloud API client
 |       |-- video-pricing.ts          # Duration and resolution based credit pricing
-|       |-- marketing-studio/         # UGC ad formats, schemas, and prompts
+|       |-- lazynext-studio/         # UGC ad formats, schemas, and prompts
 |       |-- drama/                    # Drama scripts, prompts, and shot planning
 |       `-- payments/                 # Stripe checkout and redeem-code credits
 |-- prisma/

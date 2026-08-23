@@ -1,6 +1,6 @@
 import { getCloudflareContext } from '@opennextjs/cloudflare';
 
-const MEDIA_PATH_PREFIX = '/api/marketing-studio/media/';
+const MEDIA_PATH_PREFIX = '/api/lazynext-studio/media/';
 
 export type MediaStorageCapabilities = {
   provider: 'r2' | 'vercel-blob';

@@ -1,4 +1,4 @@
-const MEDIA_PATH_PREFIX = '/api/marketing-studio/media/';
+const MEDIA_PATH_PREFIX = '/api/lazynext-studio/media/';
 
 const PUBLIC_ORIGIN_ENV_KEYS = [
   'PUBLIC_MEDIA_BASE_URL',

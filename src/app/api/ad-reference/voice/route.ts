@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { submitAdRefVoice, isValidVoice, cleanRefText, AD_REF_VOICES, AD_REF_TTS_MODEL, AD_REF_VOICE_COST } from '@/lib/ad-reference';
-import { chargeAndSubmit, chargeErrorResponse } from '@/lib/marketing-studio/gen-task';
+import { chargeAndSubmit, chargeErrorResponse } from '@/lib/lazynext-studio/gen-task';
 
 export const maxDuration = 60;
 

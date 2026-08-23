@@ -1,7 +1,7 @@
 /**
  * Marketing Studio — ad format recipes (format = data, not code branches).
  * Replicates Higgsfield Product Ad Generator's complete playbook. Adding a format = add one row, zero code changes.
- * Format enum scraped from higgsfield.ai/marketing-studio/product.
+ * Format enum scraped from higgsfield.ai/lazynext-studio/product.
  */
 export type AdCategory = 'ugc' | 'commercial' | 'tiktok';
 

@@ -5,7 +5,7 @@ import {
   PollTerminalError,
   pollUntilComplete,
   type PollResponse,
-} from '../src/lib/marketing-studio/polling.ts';
+} from '../src/lib/lazynext-studio/polling.ts';
 
 test('keeps transient gateway errors recoverable and never overlaps requests', async () => {
   let active = 0;

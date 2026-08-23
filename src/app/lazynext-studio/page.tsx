@@ -6,22 +6,22 @@ import { useSession, signIn } from 'next-auth/react';
 import { AlertCircle, CheckCircle2, Download, Loader2, Play, Plus, Sparkles, Video, X } from 'lucide-react';
 import { LazyVideo } from '@/components/LazyVideo';
 import { useMounted } from '@/lib/use-mounted';
-import { AD_FORMATS, AD_CATEGORIES, type AdCategory } from '@/lib/marketing-studio/formats';
-import { AD_HOOKS, getHook } from '@/lib/marketing-studio/hooks';
-import { AD_SETTINGS, getSetting } from '@/lib/marketing-studio/settings';
-import { AVATAR_PRESETS, getAvatar } from '@/lib/marketing-studio/avatars';
-import { EXAMPLE_VIDEOS, EXAMPLE_RECIPES } from '@/lib/marketing-studio/examples';
-import type { MarketingPlan } from '@/lib/marketing-studio/schema';
+import { AD_FORMATS, AD_CATEGORIES, type AdCategory } from '@/lib/lazynext-studio/formats';
+import { AD_HOOKS, getHook } from '@/lib/lazynext-studio/hooks';
+import { AD_SETTINGS, getSetting } from '@/lib/lazynext-studio/settings';
+import { AVATAR_PRESETS, getAvatar } from '@/lib/lazynext-studio/avatars';
+import { EXAMPLE_VIDEOS, EXAMPLE_RECIPES } from '@/lib/lazynext-studio/examples';
+import type { MarketingPlan } from '@/lib/lazynext-studio/schema';
 import {
   PollInterruptedError,
   PollTerminalError,
   pollUntilComplete,
-} from '@/lib/marketing-studio/polling';
-import { planTaskResume } from '@/lib/marketing-studio/resume';
+} from '@/lib/lazynext-studio/polling';
+import { planTaskResume } from '@/lib/lazynext-studio/resume';
 import { videoCredits } from '@/lib/video-pricing';
 import { useI18n } from '@/i18n/provider';
 
-// ── Higgsfield marketing-studio/product visual specs (measured) ──
+// ── Higgsfield lazynext-studio/product visual specs (measured) ──
 // bg #131416 · solid panel #1c1e21 · accent lime #00b2fc · near-black text #131416
 // hero: Space Grotesk 700 uppercase / -1.6px / lh1.2 / all-white rgba(255,255,255,.9)
 const LIME = '#00b2fc';
@@ -57,7 +57,7 @@ function pollGen(getUrl: string, signal: AbortSignal, onTransient: () => void): 
   return pollUntilComplete({
     getUrl,
     signal,
-    request: (taskUrl, requestSignal) => postJson('/api/marketing-studio/poll', { getUrl: taskUrl }, requestSignal),
+    request: (taskUrl, requestSignal) => postJson('/api/lazynext-studio/poll', { getUrl: taskUrl }, requestSignal),
     onTransient,
   });
 }
@@ -298,7 +298,7 @@ export default function MarketingStudioPage() {
     if (kind === 'avatar') {
       setAvatarAsset({ preview: dataUrl, uploading: true });
       try {
-        const j = await postJson('/api/marketing-studio/upload', { dataUrl });
+        const j = await postJson('/api/lazynext-studio/upload', { dataUrl });
         setAvatarAsset({ preview: dataUrl, url: j.url, uploading: false });
       } catch (e) { setAvatarAsset({}); setErr(e instanceof Error ? e.message : 'upload_failed'); }
       return;
@@ -307,7 +307,7 @@ export default function MarketingStudioPage() {
     const slot: Asset = { preview: dataUrl, uploading: true };
     setProductAssets((prev) => [...prev, slot]);
     try {
-      const j = await postJson('/api/marketing-studio/upload', { dataUrl });
+      const j = await postJson('/api/lazynext-studio/upload', { dataUrl });
       setProductAssets((prev) => prev.map((a) => (a === slot ? { preview: dataUrl, url: j.url, uploading: false } : a)));
     } catch (e) {
       setProductAssets((prev) => prev.filter((a) => a !== slot));
@@ -350,7 +350,7 @@ export default function MarketingStudioPage() {
     if (!brief) { setErr(locale === 'zh' ? '请先输入简短描述再扩写' : 'Enter a short brief first'); return; }
     setExpanding(true); setErr(null);
     try {
-      const r = await postJson('/api/marketing-studio/expand-prompt', { brief, formatId, productUrls: productAssets.map((a) => a.url).filter(Boolean), avatarUrl: avatarAsset.url || '' });
+      const r = await postJson('/api/lazynext-studio/expand-prompt', { brief, formatId, productUrls: productAssets.map((a) => a.url).filter(Boolean), avatarUrl: avatarAsset.url || '' });
       if (r.prompt) { setProduct(r.prompt); setReplica(null); } // expand result = manual detailed script (not replica), image generation also uses it
     } catch (e) {
       setErr(String((e as Error).message || e));
@@ -410,7 +410,7 @@ export default function MarketingStudioPage() {
       // Only create placeholder for new tasks or regeneration after genuine failure; resume queries with existing getUrl don't create new ones or charge.
       if (!cid && !hasPendingTask) {
         try {
-          const st = await postJson('/api/creations/start', { type: 'marketing-studio', title: directPlan.title || product.slice(0, 60) || '产品广告' }, controller.signal);
+          const st = await postJson('/api/creations/start', { type: 'lazynext-studio', title: directPlan.title || product.slice(0, 60) || '产品广告' }, controller.signal);
           cid = st.id;
           setCreationId(cid);
         } catch { /* placeholder failure doesn't block generation */ }
@@ -423,7 +423,7 @@ export default function MarketingStudioPage() {
         local.img = 'run';
         setShots([{ ...local }]);
         if (!local.imgGetUrl) {
-          const im = await postJson('/api/marketing-studio/shot-image', {
+          const im = await postJson('/api/lazynext-studio/shot-image', {
             plan: directPlan,
             shotIndex: 0,
             productUrls: productAssets.map((a) => a.url).filter(Boolean),
@@ -445,7 +445,7 @@ export default function MarketingStudioPage() {
         local.vid = 'run';
         setShots([{ ...local }]);
         if (!local.vidGetUrl) {
-          const vd = await postJson('/api/marketing-studio/shot-video', {
+          const vd = await postJson('/api/lazynext-studio/shot-video', {
             imageUrl: imgUrl,
             prompt: product.trim() + sceneAdd + hookAdd + ' No subtitles, no captions, no on-screen text or watermark.', // video prompt = text box content + scene + hook; explicitly disable subtitles (seedance often auto-burns them)
             ratio: directPlan.ratio,
@@ -466,10 +466,10 @@ export default function MarketingStudioPage() {
 
       // Save history: final video URL → write Creation (logged-in users; failure doesn't affect page display)
       try {
-        await postJson('/api/marketing-studio/save-reel', {
+        await postJson('/api/lazynext-studio/save-reel', {
           url: vidUrl,
           title: directPlan.title || product.slice(0, 60) || 'Ad',
-          type: 'marketing-studio',
+          type: 'lazynext-studio',
           thumbnail: imgUrl,
           creationId: cid,
         }, controller.signal);

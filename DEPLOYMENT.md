@@ -21,7 +21,7 @@ create your own resources:
 ```bash
 npx wrangler login
 npx wrangler d1 create atlas-marketing-studio
-npx wrangler r2 bucket create atlas-marketing-studio-media
+npx wrangler r2 bucket create atlas-lazynext-studio-media
 ```
 
 Copy the returned D1 `database_id` and both resource names into
@@ -76,7 +76,7 @@ The storage capability endpoint should report:
 3. Create a **Public** Vercel Blob store and connect it to the project.
 4. Configure application/auth/payment variables from `.env.example`.
 5. Set `CLOUDFLARE_MEDIA_BASE_URL` when existing database rows still contain
-   `/api/marketing-studio/media/<key>` R2 paths.
+   `/api/lazynext-studio/media/<key>` R2 paths.
 
 Required runtime variables:
 
@@ -142,7 +142,7 @@ do not connect to a database or Blob store.
 
 After deployment, verify:
 
-- `/`, `/marketing-studio`, `/ad-reference`, and `/drama-studio` return `200`.
+- `/`, `/lazynext-studio`, `/ad-reference`, and `/drama-studio` return `200`.
 - `/api/media-storage/capabilities` reports the expected provider.
 - unauthenticated upload/save requests return `401`.
 - Cloudflare R2 media supports `Range` requests (`206`).
@@ -157,3 +157,28 @@ After deployment, verify:
 For a production migration, use a maintenance window and separately validate
 row counts, relationships, credit-ledger balances, object counts, and media URL
 rewrites.
+
+## Route rename: marketing-studio -> lazynext-studio
+
+The `/marketing-studio` route was renamed to `/lazynext-studio` (and
+`/api/marketing-studio/*` to `/api/lazynext-studio/*`). The `templateId` value
+stored in the `Creation` table changed from `'marketing-studio'` to
+`'lazynext-studio'`.
+
+For existing deployments with saved creations, run a one-time SQL update so old
+records appear in the My Work page:
+
+```sql
+-- Neon (PostgreSQL)
+UPDATE "Creation" SET "templateId" = 'lazynext-studio' WHERE "templateId" = 'marketing-studio';
+```
+
+```bash
+# Cloudflare D1
+npx wrangler d1 execute lazynext-studio --remote --command \
+  "UPDATE Creation SET templateId = 'lazynext-studio' WHERE templateId = 'marketing-studio';" -y
+```
+
+Old R2 object keys under the `marketing-studio-media` prefix are not affected;
+only the bucket binding name in `wrangler.jsonc` changed. If you keep the
+existing bucket, update `wrangler.jsonc` to point at your existing bucket name.

@@ -15,7 +15,7 @@ type App = { id: string; href: string; icon: typeof Clapperboard; kind: string }
 
 // After streamlining, home page only keeps 4 premium apps (other app pages have been deleted).
 const APPS: App[] = [
-  { id: 'marketing-studio', href: '/marketing-studio', icon: Clapperboard, kind: 'pipeline' },
+  { id: 'lazynext-studio', href: '/lazynext-studio', icon: Clapperboard, kind: 'pipeline' },
   { id: 'ad-reference', href: '/ad-reference', icon: Clapperboard, kind: 'pipeline' },
   { id: 'drama-studio', href: '/drama-studio', icon: Clapperboard, kind: 'pipeline' },
   { id: 'ad-skit', href: '/ad-skit', icon: Clapperboard, kind: 'pipeline' },

@@ -5,7 +5,7 @@ import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { pollOnce } from '@/lib/atlas';
 import { grantCredits } from '@/lib/credits';
-import { pollMarketingTask } from '@/lib/marketing-studio/poll-task';
+import { pollMarketingTask } from '@/lib/lazynext-studio/poll-task';
 
 // When frontend generation is interrupted/fails, marks own still-processing placeholder creation as failed (creations page shows "failed" instead of spinning forever).
 async function __byokPOST(req: Request, { params }: { params: { id: string } }) {
@@ -32,7 +32,7 @@ async function __byokGET(_req: Request, { params }: { params: { id: string } }) 
   // Marketing Studio's final video task is directly attached to the creation placeholder by the server. The creations page can also independently query, transfer and
   // write back the final video, no longer depending on the generation page staying open to execute the last save-reel.
   if (
-    c.templateId === 'marketing-studio'
+    c.templateId === 'lazynext-studio'
     && c.getUrl
     && (c.status === 'processing' || c.status === 'persisting')
   ) {
@@ -81,7 +81,7 @@ async function __byokGET(_req: Request, { params }: { params: { id: string } }) 
     const isDramaFolder = !!c.assets && typeof c.assets === 'object' && (c.assets as { kind?: string }).kind === 'drama';
     // Marketing Studio's first frame and video are serial tasks, give enough 90 minutes consistent with frontend total polling;
     // old 15 minutes would mistakenly mark creation failed while Atlas is still generating normally.
-    const placeholderTimeoutMs = c.templateId === 'marketing-studio' ? 90 * 60_000 : 15 * 60_000;
+    const placeholderTimeoutMs = c.templateId === 'lazynext-studio' ? 90 * 60_000 : 15 * 60_000;
     if (!isDramaFolder && Date.now() - new Date(c.createdAt).getTime() > placeholderTimeoutMs) {
       await prisma.creation.updateMany({ where: { id: c.id, status: 'processing' }, data: { status: 'failed', error: 'timeout' } });
       return NextResponse.json({ id: c.id, status: 'failed', error: 'timeout' });

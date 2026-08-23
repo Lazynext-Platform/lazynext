@@ -11,9 +11,9 @@ import { CreditBadge } from '@/components/CreditBadge';
 import { HistoryButton } from '@/components/HistoryButton';
 import { ByokKey } from '@/components/ByokKey';
 
-// marketing-studio uses a full-bleed immersive (dark, no light starter shell) layout.
+// lazynext-studio uses a full-bleed immersive (dark, no light starter shell) layout.
 // Other pages keep the SaaS starter Navbar + sidebar + Footer shell.
-const IMMERSIVE = ['/', '/pricing', '/my-work', '/marketing-studio', '/ad-reference', '/drama-studio', '/ad-skit'];
+const IMMERSIVE = ['/', '/pricing', '/my-work', '/lazynext-studio', '/ad-reference', '/drama-studio', '/ad-skit'];
 
 export function Shell({ children }: { children: React.ReactNode }) {
   const p = usePathname() || '';

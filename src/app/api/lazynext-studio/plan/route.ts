@@ -2,10 +2,10 @@ import { withAtlas } from '@/lib/request-context';
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-import { draftMarketingPlan, buildFallbackMarketingPlan, type PlanInput } from '@/lib/marketing-studio/prompt';
-import { cleanText, normalizeRatio, normalizeShotCount, MK_PLAN_COST } from '@/lib/marketing-studio/workflow';
-import { getFormat } from '@/lib/marketing-studio/formats';
-import { chargeSync, refundSync, chargeErrorResponse } from '@/lib/marketing-studio/gen-task';
+import { draftMarketingPlan, buildFallbackMarketingPlan, type PlanInput } from '@/lib/lazynext-studio/prompt';
+import { cleanText, normalizeRatio, normalizeShotCount, MK_PLAN_COST } from '@/lib/lazynext-studio/workflow';
+import { getFormat } from '@/lib/lazynext-studio/formats';
+import { chargeSync, refundSync, chargeErrorResponse } from '@/lib/lazynext-studio/gen-task';
 
 export const maxDuration = 60;
 

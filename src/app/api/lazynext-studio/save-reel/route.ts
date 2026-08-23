@@ -21,7 +21,7 @@ export async function POST(req: Request) {
       const reelUrl = isManagedMediaUrl(body.url) ? String(body.url) : '';
       if (!reelUrl) return NextResponse.json({ error: 'invalid_url' }, { status: 400 });
       const title = String(body.title || 'Untitled').slice(0, 500);
-      const type = String(body.type || 'marketing-studio');
+      const type = String(body.type || 'lazynext-studio');
       const thumbnail = String(body.thumbnail || '') || null;
       const creationId = String(body.creationId || '');
       const shots = Array.isArray(body.shots)
@@ -61,7 +61,7 @@ export async function POST(req: Request) {
     const reelUrl = await putMedia(key, buf, 'video/mp4');
 
     const title = String(form.get('title') || 'Untitled').slice(0, 500);
-    const type = String(form.get('type') || 'marketing-studio');
+    const type = String(form.get('type') || 'lazynext-studio');
     const thumbnail = String(form.get('thumbnail') || '') || null;
     const creationId = String(form.get('creationId') || '');
     let shots: string[] = [];

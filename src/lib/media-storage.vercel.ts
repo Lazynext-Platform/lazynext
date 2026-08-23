@@ -1,7 +1,7 @@
 import { put } from '@vercel/blob';
 import { handleUpload, type HandleUploadBody } from '@vercel/blob/client';
 
-const MEDIA_PATH_PREFIX = '/api/marketing-studio/media/';
+const MEDIA_PATH_PREFIX = '/api/lazynext-studio/media/';
 const BLOB_HOST_SUFFIX = '.public.blob.vercel-storage.com';
 
 export type MediaStorageCapabilities = {

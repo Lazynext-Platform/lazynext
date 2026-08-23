@@ -14,7 +14,7 @@ type NavApp = { href: string; id: string; icon: typeof Clapperboard };
 
 // After trimming, the sidebar keeps only 4 premium apps.
 const PRIMARY_APPS: NavApp[] = [
-  { href: '/marketing-studio', id: 'marketing-studio', icon: Clapperboard },
+  { href: '/lazynext-studio', id: 'lazynext-studio', icon: Clapperboard },
   { href: '/ad-reference', id: 'ad-reference', icon: Clapperboard },
   { href: '/drama-studio', id: 'drama-studio', icon: Clapperboard },
   { href: '/ad-skit', id: 'ad-skit', icon: Clapperboard },

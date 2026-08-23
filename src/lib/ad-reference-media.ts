@@ -2,11 +2,11 @@ import { uploadBlobToAtlas, uploadRemoteMediaToAtlas } from '@/lib/atlas';
 import { readMedia } from '@/lib/media-storage';
 import { sameOriginMediaPath } from '@/lib/public-media-url';
 
-// Same-origin R2 media (/api/marketing-studio/media/<key>) cannot be fetched by Atlas via the public URL —
+// Same-origin R2 media (/api/lazynext-studio/media/<key>) cannot be fetched by Atlas via the public URL —
 // the Worker fetching its own R2 route returns 404 in the CF environment, and Atlas then fails with 1042 / "invalid parameter".
 // Unified approach here: same-origin media is read directly via bucket.get(key) then uploadBlobToAtlas; external URLs go through uploadRemoteMediaToAtlas.
 // Shared by ad-reference's character / edit endpoints, avoiding duplicate implementations.
-const MEDIA_PATH_PREFIX = '/api/marketing-studio/media/';
+const MEDIA_PATH_PREFIX = '/api/lazynext-studio/media/';
 
 export const ADREF_VIDEO_UPLOAD_LIMIT = 200_000_000;
 export const ADREF_IMAGE_UPLOAD_LIMIT = 10_000_000;
