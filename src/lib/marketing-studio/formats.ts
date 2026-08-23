@@ -1,27 +1,27 @@
 /**
- * Marketing Studio — 广告 format 配方(format = 数据,不是代码分支)。
- * 复刻 Higgsfield Product Ad Generator 的完整玩法库。新增玩法 = 加一行,零改代码。
- * 玩法枚举实地抓自 higgsfield.ai/marketing-studio/product。
+ * Marketing Studio — ad format recipes (format = data, not code branches).
+ * Replicates Higgsfield Product Ad Generator's complete playbook. Adding a format = add one row, zero code changes.
+ * Format enum scraped from higgsfield.ai/marketing-studio/product.
  */
 export type AdCategory = 'ugc' | 'commercial' | 'tiktok';
 
 export interface AdFormat {
   id: string;
-  label: string; // 英文全名
-  zh?: string; // 中文全名
+  label: string; // English full name
+  zh?: string; // Chinese full name
   en: string;
-  desc: string; // 一句话卖点(英文)
-  descZh?: string; // 一句话卖点(中文)
+  desc: string; // one-line selling point (English)
+  descZh?: string; // one-line selling point (Chinese)
   category: AdCategory;
-  needsPerson: boolean; // 是否需要出镜人物
+  needsPerson: boolean; // whether an on-screen person is needed
   defaultShots: number;
   emoji: string;
-  /** 注入分镜 LLM 的该 format 叙事/镜头配方 */
+  /** this format's narrative/camera recipe injected into the storyboard LLM */
   hint: string;
 }
 
 export const AD_FORMATS: AdFormat[] = [
-  // ── UGC 家族(真人自拍/口播/测评) ──
+  // ── UGC family (real selfie/voiceover/review) ──
   {
     id: 'ugc',
     label: 'UGC Testimonial',
@@ -152,7 +152,7 @@ export const AD_FORMATS: AdFormat[] = [
     emoji: '💑',
     hint: '一对情侣/室友在家自然互动分享产品:一个先用一个凑过来,有生活化的拌嘴和"你也试试",温馨真实,产品融进两人日常。',
   },
-  // ── Commercial 家族(广告大片/动效/纯产品) ──
+  // ── Commercial family (ad film/motion effects/pure product) ──
   {
     id: 'tvspot',
     label: 'TV Spot',

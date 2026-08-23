@@ -9,7 +9,7 @@ import { videoCredits } from '@/lib/video-pricing';
 
 export const maxDuration = 60;
 
-// seedance ref-to-video 固定 720p / 15s:按秒×分辨率动态计费(不再固定 AD_SKIT_COSTS.video)。
+// seedance ref-to-video fixed 720p / 15s: dynamic billing by seconds × resolution (no longer fixed AD_SKIT_COSTS.video).
 const AD_SKIT_VIDEO_COST = videoCredits(VIDEO_MODEL, '720p', 15);
 
 async function __byokPOST(req: Request) {
@@ -39,7 +39,7 @@ async function __byokPOST(req: Request) {
     await grantCredits(session.user.id, AD_SKIT_VIDEO_COST, 'refund', AD_SKIT_TEMPLATE_ID + ':video');
     return NextResponse.json({ error: 'submit_failed', detail: String(e) }, { status: 502 });
   }
-  // templateId 用正式 'ad-skit'(不带 ':')→ 成片进「我的作品」;prompt 存友好标题(前端传 plan.idea)。
+  // templateId uses formal 'ad-skit' (without ':') → final video enters "My Creations"; prompt stores friendly title (frontend passes plan.idea).
   const title = typeof body.title === 'string' && body.title.trim() ? body.title.trim().slice(0, 200) : videoPrompt.slice(0, 120);
   const creation = await prisma.creation.create({
     data: { userId: session.user.id, templateId: AD_SKIT_TEMPLATE_ID, model: VIDEO_MODEL, prompt: title, status: 'processing', taskId: res.id, getUrl: res.getUrl, cost: AD_SKIT_VIDEO_COST },

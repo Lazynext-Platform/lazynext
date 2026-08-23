@@ -4,11 +4,11 @@ import { pollMarketingTask } from '@/lib/marketing-studio/poll-task';
 
 export const maxDuration = 60;
 
-// 无库代理轮询:前端传 Atlas 任务 getUrl,后端用 key 查状态。marketing/drama/ad-reference 共用。
-// 完成后把输出从 Atlas 临时 OSS 转存到 R2,返回可内联播放/不过期的同源 url。
-// 锁死 Atlas 域名防 SSRF(否则后端会带着 key 去请求任意 url)。
-// 轮询本身无成本、需持有 taskId,故不加 session/不扣费;但会按 taskId 更新落库任务状态,
-// Atlas 异步失败(审核block/超时等)时按 taskId 幂等退款(processing→failed 原子转移,只退一次)。
+// No-library proxy polling: frontend passes Atlas task getUrl, backend uses key to check status. Shared by marketing/drama/ad-reference.
+// On completion, transfers output from Atlas temporary OSS to R2, returns a same-origin url that can be played inline / never expires.
+// Locks Atlas domain to prevent SSRF (otherwise backend would carry key to request arbitrary urls).
+// Polling itself is free and requires taskId, so no session/no charge; but updates persisted task status by taskId,
+// Atlas async failure (review block/timeout etc.) triggers idempotent refund by taskId (processing→failed atomic transition, only refunds once).
 async function __byokPOST(req: Request) {
   const body = await req.json().catch(() => ({}));
   const getUrl = typeof body.getUrl === 'string' ? body.getUrl : '';

@@ -11,8 +11,8 @@ import { videoCredits } from '@/lib/video-pricing';
 import { useI18n } from '@/i18n/provider';
 import { useMounted } from '@/lib/use-mounted';
 
-// 和 marketing-studio 统一的视觉规格:深色 #131416 + 紫色 #7036F0 + Space Grotesk
-const ACCENT = '#7036F0';
+// Visual specs unified with marketing-studio: dark #131416 + purple #00b2fc + Space Grotesk
+const ACCENT = '#00b2fc';
 const INK = '#131416';
 const PANEL = '#1c1e21';
 
@@ -25,33 +25,33 @@ type Script = {
   setting?: string;
   sceneImagePrompt?: string;
   productImagePrompt?: string;
-  // durationSec/cast 由 AI 规划:每段时长按节奏自定、cast 标出场角色(定妆图参考)、product 标该段是否出现产品。
+  // durationSec/cast are AI-planned: each segment's duration is self-determined by pacing, cast marks appearing characters (portrait reference), product marks whether product appears in that segment.
   segments?: { i: number; durationSec?: number; cast?: string[]; product?: boolean; scene: string; action: string; dialogue?: string; hook?: string }[];
   climax?: string;
 };
-// imgGetUrl/vidGetUrl = Atlas 任务查询地址:提交后立刻持久化,刷新/中断后凭它恢复轮询,不重复提交扣费。
+// imgGetUrl/vidGetUrl = Atlas task query URLs: persisted immediately after submission, so polling can resume after refresh/interruption without re-submitting or double-charging.
 type ShotState = { img: 'idle' | 'run' | 'done' | 'fail'; vid: 'idle' | 'run' | 'done' | 'fail'; imgUrl?: string; vidUrl?: string; imgGetUrl?: string; vidGetUrl?: string; err?: string };
-// 角色定妆图 / 场景图资产:先于分镜生成,作为逐镜合成的参考图锁一致性。getUrl 同样持久化以便续跑。
+// Character portrait / scene image assets: generated before shot-by-shot, used as reference images to lock consistency during per-shot synthesis. getUrl also persisted for resume.
 type AssetState = { status: 'idle' | 'run' | 'done' | 'fail'; url?: string; getUrl?: string; err?: string };
-// 用户上传的产品图(可选):作为带货镜头的参考图,锁住真实产品外观。preview 为本地 blob 预览,url 为上传后可引用地址。
-type UploadAsset = { preview?: string; url?: string; uploading?: boolean }; // 用户上传的产品原图(直接作参考,不再定妆生成)
-// seedance-2.0/reference-to-video 单次最多 9 张参考图;每镜 refs = 产品图 + 出场角色定妆图 + 场景图。
-// 产品图上限 4:一镜即便 4 角色 + 场景(5 张)也塞得下 4 张产品(共 9)不超限;运行时按剩余配额再动态截断。
+// User-uploaded product image (optional): used as reference image for product shots, locking the real product appearance. preview is local blob preview, url is the uploaded referenceable address.
+type UploadAsset = { preview?: string; url?: string; uploading?: boolean }; // user-uploaded original product image (used directly as reference, no portrait generation)
+// seedance-2.0/reference-to-video supports up to 9 reference images per shot; per-shot refs = product image + appearing character portraits + scene image.
+// Product image limit 4: even with 4 characters + scene (5 images) in one shot, 4 product images fit (total 9) without exceeding; dynamically truncated by remaining quota at runtime.
 const MAX_SHOT_REFS = 9;
 const MAX_PRODUCT_IMAGES = 4;
-// 生成进度持久化 key:剧本/分镜/定妆资产状态存 localStorage,刷新或切页回来自动恢复现场、断点续跑。
-// v2:剧本结构升级(角色 key/appearance、每段 durationSec/cast、定妆资产),与 v1 不兼容,换 key 避免旧数据恢复出错。
+// Generation progress persistence key: script/storyboard/portrait asset state stored in localStorage, auto-restores on refresh or page return, resumes from checkpoint.
+// v2: script structure upgraded (character key/appearance, per-segment durationSec/cast, portrait assets), incompatible with v1, key changed to avoid restore errors from old data.
 const DRAMA_SESSION_KEY = 'drama-session-v2';
 
 const VIDEO_RATIOS = ['9:16', '16:9', '1:1'];
 const VIDEO_RESOLUTIONS = ['480p', '720p', '1080p'];
-// 每段时长的可选值(AI 会先给出建议值,用户可在剧本卡片里逐段微调);与后端 normalizeVideoDuration 支持范围一致。
+// Per-segment duration options (AI gives a suggested value first, user can fine-tune per segment in the script card); matches backend normalizeVideoDuration supported range.
 const VIDEO_DURATIONS = [4, 5, 6, 7, 8, 9, 10, 12, 15];
 const CHEVRON = "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-opacity='0.55' stroke-width='3'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E\")";
 const selStyle: React.CSSProperties = { backgroundImage: CHEVRON, backgroundPosition: 'right 8px center', backgroundSize: '10px', backgroundRepeat: 'no-repeat' };
-// script/image(定妆图+场景图)走固定 COST;逐镜视频走动态 videoCredits(见 segVideoCost/videoEst)。
+// script/image (portraits + scene) use fixed COST; per-shot video uses dynamic videoCredits (see segVideoCost/videoEst).
 const DRAMA_COSTS = { script: 5, image: 8, video: 12 };
-// 逐镜出片模型:seedance-2.0/reference-to-video(产品图+角色定妆图+场景图 → 直接出片),与后端一致。
+// Per-shot video model: seedance-2.0/reference-to-video (product image + character portraits + scene image → direct output), consistent with backend.
 const DRAMA_VIDEO_MODEL = 'bytedance/seedance-2.0/reference-to-video';
 function dramaErrText(code: string, locale: string) {
   if (code.startsWith('insufficient_credits:')) {
@@ -71,7 +71,7 @@ async function postJson(url: string, body: unknown) {
   if (!r.ok) throw new Error(j.detail ? `${j.error || 'error'}: ${j.detail}` : (j.error || 'failed'));
   return j;
 }
-// 文件转 dataURL(和 marketing-studio 一致):上传端点收 { dataUrl } 的 JSON,不是 multipart。
+// File to dataURL (same as marketing-studio): upload endpoint receives { dataUrl } JSON, not multipart.
 function imageToDataUrl(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
     const r = new FileReader();
@@ -90,7 +90,7 @@ function pollGen(getUrl: string): Promise<string> {
       if (n > 300) { clearInterval(t); reject(new Error('timeout')); return; }
       try {
         const c = await postJson('/api/marketing-studio/poll', { getUrl });
-        // transient=true:Atlas 状态查询网关瞬时超时(504),任务多半还在跑;计数不清零,连续太多次才放弃(避免静默转圈到超时)。
+        // transient=true: Atlas status query gateway transient timeout (504), task likely still running; count doesn't reset, only gives up after too many consecutive (avoids silent spinning to timeout).
         if (c.transient) {
           transientErrors += 1;
           if (transientErrors >= 8) { clearInterval(t); reject(new Error('poll_gateway_unstable')); }
@@ -121,35 +121,35 @@ export default function DramaStudioPage() {
   const byokActive = useByokActive();
   const [topic, setTopic] = useState('');
   const [style, setStyle] = useState('epic');
-  // 语言下拉已移除:剧本语种自动跟随主题输入的语言(见 lib/drama/prompt.ts 规则⑩)
+  // Language dropdown removed: script language auto-follows the topic input language (see lib/drama/prompt.ts rule ⑩)
   const [videoRatio, setVideoRatio] = useState('9:16');
   const [videoResolution, setVideoResolution] = useState('720p');
-  // 分镜段数:'auto' = 交给 AI 按剧情决定;数字 = 精确指定几段(传给后端 targetSegments)。
+  // Number of storyboard segments: 'auto' = let AI decide based on plot; number = exactly specify how many segments (passed to backend targetSegments).
   const [segChoice, setSegChoice] = useState('auto');
   const [script, setScript] = useState<Script | null>(null);
   const [shots, setShots] = useState<ShotState[]>([]);
-  // 角色定妆图(按角色 key)+ 场景图:分镜生成前先出好,作为逐镜合成的参考图锁一致性。
+  // Character portraits (by character key) + scene image: generated before shot-by-shot, used as reference images to lock consistency during per-shot synthesis.
   const [charAssets, setCharAssets] = useState<Record<string, AssetState>>({});
   const [sceneAsset, setSceneAsset] = useState<AssetState>({ status: 'idle' });
-  // 用户上传的产品图(可选,跨剧本保留):带货镜头合成时作参考锁产品一致性。
-  const [productAssets, setProductAssets] = useState<UploadAsset[]>([]); // 多张产品原图(直接作 seedance 参考)
-  const [zoomImg, setZoomImg] = useState<string | null>(null); // 角色/场景/产品图点击放大预览
+  // User-uploaded product images (optional, retained across scripts): used as reference during product shot synthesis to lock product consistency.
+  const [productAssets, setProductAssets] = useState<UploadAsset[]>([]); // multiple original product images (used directly as seedance reference)
+  const [zoomImg, setZoomImg] = useState<string | null>(null); // character/scene/product image click-to-zoom preview
   const [busy, setBusy] = useState<string | null>(null);
   const [err, setErr] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [compose, setCompose] = useState<{ status: 'idle' | 'run' | 'done' | 'fail'; frac: number; note: string; url: string }>({ status: 'idle', frac: 0, note: '', url: '' });
   const [credits, setCredits] = useState<number | null>(null);
-  const [creationId, setCreationId] = useState(''); // 剧本生成时创建的"作品文件夹"id;定妆/首帧/视频/成片完成时 patch 进它的 assets
-  const [editingChar, setEditingChar] = useState<string | null>(null); // 正在编辑外观提示词的角色 key(展开编辑框)
-  const creationIdRef = useRef(creationId); // 供 runAssets/genOneShot 闭包稳定读到最新 id(避免 stale)
+  const [creationId, setCreationId] = useState(''); // "work folder" id created on script generation; portrait/first-frame/video/final patch into its assets
+  const [editingChar, setEditingChar] = useState<string | null>(null); // character key being edited for appearance prompt (expands edit box)
+  const creationIdRef = useRef(creationId); // for runAssets/genOneShot closures to stably read the latest id (avoid stale)
   creationIdRef.current = creationId;
   const storyboardRef = useRef<HTMLDivElement>(null);
   const productInput = useRef<HTMLInputElement>(null);
 
-  // 成本 = 定妆资产(每角色 1 张 + 场景 1 张,固定 COST) + 每镜视频(动态,按分辨率×每段时长)。剧本出来前用占位数(3 角色/4 段)粗估。
+  // Cost = portrait assets (1 per character + 1 scene, fixed COST) + per-shot video (dynamic, by resolution × per-segment duration). Before script is ready, use placeholder counts (3 characters/4 segments) for rough estimate.
   const charCount = script?.characters?.length || 3;
   const segCount = script?.segments?.length || 4;
-  // 逐镜视频动态计费:按当前分辨率 + 该段时长(seg.durationSec,缺省 8s)。
+  // Per-shot video dynamic billing: by current resolution + that segment's duration (seg.durationSec, default 8s).
   const segVideoCost = (seg?: { durationSec?: number }) => videoCredits(DRAMA_VIDEO_MODEL, videoResolution, seg?.durationSec || 8);
   const assetCost = (charCount + 1) * DRAMA_COSTS.image;
   const videoSum = script?.segments?.length
@@ -160,20 +160,20 @@ export default function DramaStudioPage() {
   const hasCreditsForScript = byokActive || status !== 'authenticated' || credits === null || credits >= DRAMA_COSTS.script;
   const hasCreditsForVideo = byokActive || status !== 'authenticated' || credits === null || credits >= videoEst;
 
-  // ── 分步生成:派生状态 + 单镜工具 ──
-  // 定妆图+场景图都就绪才允许逐镜;所有镜的视频都完成才允许拼接。
-  // 带货剧本(有 product:true 段)时,产品参考图也必须就绪——否则各镜产品靠文字现编,镜间不一致。
+  // ── Step-by-step generation: derived state + per-shot tools ──
+  // Per-shot only allowed after portraits + scene are ready; stitching only after all shots' videos are done.
+  // For product scripts (with product:true segments), product reference images must also be ready — otherwise product appearance is improvised per shot with text, inconsistent across shots.
   const needsProductRef = (script?.segments || []).some((s) => s.product);
   const assetsReady = (script?.characters || []).every((c) => charAssets[c.key]?.status === 'done' && !!charAssets[c.key]?.url) && sceneAsset.status === 'done' && !!sceneAsset.url && (!needsProductRef || productAssets.some((p) => !!p.url));
   const allVidsDone = !!script?.segments?.length && shots.length === script.segments.length && shots.every((s) => s.vid === 'done' && !!s.vidUrl);
   const anyShotRunning = shots.some((s) => s.img === 'run' || s.vid === 'run');
-  // shotsRef:供 genOneShot 读断点续跑的 getUrl(避免闭包读到过期值);patchShot:按索引函数式更新(并发点多个镜也不互相覆盖)。
+  // shotsRef: for genOneShot to read resume getUrl (avoid closure reading stale values); patchShot: functional update by index (concurrent clicks on multiple shots don't overwrite each other).
   const shotsRef = useRef<ShotState[]>(shots);
   shotsRef.current = shots;
   const patchShot = useCallback((i: number, patch: Partial<ShotState>) => {
     setShots((prev) => prev.map((s, idx) => (idx === i ? { ...s, ...patch } : s)));
   }, []);
-  // drama 作品文件夹:从当前剧本 + 资产聚合结构化 assets,在关键节点覆盖写进 Creation(my-work 详情据此分区展示)。
+  // Drama work folder: aggregates structured assets from current script + assets, overwrites into Creation at key milestones (my-work detail page displays by these sections).
   const buildDramaAssets = (chars: Record<string, AssetState>, scene: AssetState, shotList: ShotState[], productUrls?: string[]) => ({
     kind: 'drama' as const,
     title: script?.title || topic.slice(0, 60) || '短剧',
@@ -188,7 +188,7 @@ export default function DramaStudioPage() {
     if (!cid) return;
     try {
       await fetch(`/api/creations/${cid}/assets`, { method: 'PATCH', headers: { 'Content-Type': 'application/json', ...byokHeaders() }, body: JSON.stringify({ assets: buildDramaAssets(chars, scene, shotList, productUrls) }) });
-    } catch { /* 文件夹更新失败不阻断生成 */ }
+    } catch { /* folder update failure doesn't block generation */ }
   };
 
   const refreshCredits = useCallback(async () => {
@@ -218,27 +218,27 @@ export default function DramaStudioPage() {
     const h = () => {
       if (status === 'authenticated') void refreshCredits();
     };
-    window.addEventListener('atlas:credits', h);
-    return () => window.removeEventListener('atlas:credits', h);
+    window.addEventListener('lazynext:credits', h);
+    return () => window.removeEventListener('lazynext:credits', h);
   }, [status, refreshCredits]);
 
-  // ── 生成进度持久化(同 marketing-studio):刷新/切页不丢现场,断点续跑 ──
+  // ── Generation progress persistence (same as marketing-studio): refresh/page-switch won't lose state, resume from checkpoint ──
   useEffect(() => {
     if (!mounted) return;
     try {
       const raw = localStorage.getItem(DRAMA_SESSION_KEY);
       if (!raw) return;
       const s = JSON.parse(raw);
-      if (Date.now() - (s.ts || 0) > 24 * 3600_000) return; // 只看时效;无剧本(只填了主题/传了图)也恢复输入,登录跳转回来不丢
+      if (Date.now() - (s.ts || 0) > 24 * 3600_000) return; // only check freshness; restore inputs even without script (only filled topic/uploaded images), so login redirect return doesn't lose them
       if (typeof s.topic === 'string' && s.topic) setTopic(s.topic);
-      // 生成参数一并恢复:否则刷新后 resolution 回默认值,续跑的镜头会用错参数(时长现在跟随每段 durationSec,不再是全局值)。
+      // Restore generation parameters too: otherwise resolution resets to default on refresh, resumed shots would use wrong params (duration now follows per-segment durationSec, no longer a global value).
       if (VIDEO_RESOLUTIONS.includes(s.videoResolution)) setVideoResolution(s.videoResolution);
       if (VIDEO_RATIOS.includes(s.videoRatio)) setVideoRatio(s.videoRatio);
-      // 定妆图/场景图资产恢复:已完成的(有 url)续跑时直接复用,不重复出图扣费。
+      // Portrait/scene asset restore: completed ones (with url) are reused on resume, no re-generation or double charge.
       if (s.charAssets && typeof s.charAssets === 'object') {
         const ca: Record<string, AssetState> = {};
         for (const [k, v] of Object.entries(s.charAssets as Record<string, AssetState>)) {
-          // 同 shots:只保留完成(done+url)的定妆图,未完成清 getUrl 重新提交,不轮询过期旧任务
+          // Same as shots: only keep completed (done+url) portraits, clear getUrl for incomplete ones to re-submit, don't poll stale old tasks
           ca[k] = (v.status === 'done' && !!v.url) ? { ...v } : { status: 'idle' };
         }
         setCharAssets(ca);
@@ -246,18 +246,18 @@ export default function DramaStudioPage() {
       if (s.sceneAsset && typeof s.sceneAsset === 'object') {
         setSceneAsset((s.sceneAsset.status === 'done' && !!s.sceneAsset.url) ? { ...s.sceneAsset } : { status: 'idle' });
       }
-      // 产品图恢复:用 url 同时当预览(上传后的 R2 url 可直接内联显示)。
+      // Product image restore: use url as preview too (uploaded R2 url can be inlined directly).
       if (Array.isArray(s.productUrls)) setProductAssets((s.productUrls as string[]).filter(Boolean).map((u) => ({ preview: u, url: u })));
       else if (typeof s.productUrl === 'string' && s.productUrl) setProductAssets([{ preview: s.productUrl, url: s.productUrl }]);
-      // 剧本/分镜仅在确有剧本时恢复(断点续跑)
+      // Script/storyboard only restored when script actually exists (checkpoint resume)
       if (s.script?.segments?.length) {
         setScript(s.script);
         const restored: ShotState[] = (Array.isArray(s.shots) && s.shots.length === s.script.segments.length
           ? s.shots
           : s.script.segments.map(() => ({ img: 'idle', vid: 'idle' }))
         ).map((x: ShotState) => {
-          // 只保留真正完成(done + url)的镜;未完成的一律复位 idle 并清掉 getUrl——
-          // 否则续跑会拿着可能已过期的旧 getUrl 一直轮询死任务、从不重新提交(实测就是"点生成没调 Atlas"的根因)。
+          // Only keep truly completed shots (done + url); incomplete ones reset to idle and clear getUrl —
+          // otherwise resume would keep polling a possibly-stale old getUrl on a dead task and never re-submit (this was the root cause of "click generate but Atlas not called" in practice).
           const imgDone = x.img === 'done' && !!x.imgUrl;
           const vidDone = x.vid === 'done' && !!x.vidUrl;
           return {
@@ -274,7 +274,7 @@ export default function DramaStudioPage() {
   }, [mounted]);
 
   useEffect(() => {
-    if (!mounted) return; // 无剧本(只填了主题/传了图)也存,登录 OAuth 跳转回来不丢
+    if (!mounted) return; // also save when no script (only filled topic/uploaded images), so login OAuth redirect return doesn't lose them
     try {
       localStorage.setItem(DRAMA_SESSION_KEY, JSON.stringify({ script, shots, charAssets, sceneAsset, productUrls: productAssets.map((p) => p.url).filter(Boolean), topic, videoRatio, videoResolution, creationId, ts: Date.now() }));
     } catch { /* storage full etc. */ }
@@ -291,7 +291,7 @@ export default function DramaStudioPage() {
         setBusy(null);
         return;
       }
-      // 段数:'auto' 完全交给 AI;否则传精确段数。每段时长始终由 AI 规划(可后期微调)。
+      // Segment count: 'auto' is fully up to AI; otherwise pass exact segment count. Per-segment duration is always AI-planned (can be fine-tuned later).
       setNotice(locale === 'zh'
         ? 'AI 正在生成高质量剧本,通常需要 30-90 秒,请保持页面打开。'
         : 'AI is writing a higher-quality script, usually 30-90 seconds. Keep this page open.');
@@ -300,10 +300,10 @@ export default function DramaStudioPage() {
       if (!s.segments?.length) throw new Error('script_empty');
       setScript(s); setShots((s.segments || []).map(() => ({ img: 'idle', vid: 'idle' })));
       setNotice(null);
-      // 每次生成新剧本都重置定妆资产,避免沿用上一部剧的角色图;自动生成的产品图也重置(用户上传的跨剧本保留)。
+      // Reset portrait assets on each new script generation, avoid carrying over previous drama's character images; auto-generated product images also reset (user-uploaded ones retained across scripts).
       setCharAssets({}); setSceneAsset({ status: 'idle' });
-      // 用户上传的产品原图跨剧本保留(不再有自动生成的定妆图需要重置)
-      // 剧本一出即在「我的作品」建这部剧的文件夹(骨架:角色+场景,url 待逐步填);后续关键节点覆盖写 assets。
+      // User-uploaded original product images retained across scripts (no auto-generated portraits to reset)
+      // On script generation, immediately create this drama's folder in "My Work" (skeleton: characters + scene, urls filled in later); subsequent key milestones overwrite assets.
       try {
         const skeleton = {
           kind: 'drama',
@@ -314,12 +314,12 @@ export default function DramaStudioPage() {
         };
         const st = await postJson('/api/creations/start', { type: 'drama-studio', title: skeleton.title, assets: skeleton });
         if (st?.id) { setCreationId(st.id); creationIdRef.current = st.id; }
-      } catch { /* 建文件夹失败不阻断剧本展示 */ }
-      // 剧本区在输入面板下方,生成后平滑滚过去,避免用户以为"没反应"
+      } catch { /* folder creation failure doesn't block script display */ }
+      // Script area is below the input panel, smooth scroll to it after generation so user doesn't think "no response"
       setTimeout(() => storyboardRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 150);
     } catch (e) { setNotice(null); setErr(e instanceof Error ? e.message : 'script_failed'); }
     setBusy(null);
-    window.dispatchEvent(new Event('atlas:credits'));
+    window.dispatchEvent(new Event('lazynext:credits'));
   }
   function editSeg(i: number, key: 'scene' | 'action' | 'dialogue', val: string) {
     setScript((prev) => {
@@ -328,7 +328,7 @@ export default function DramaStudioPage() {
       return { ...prev, segments: segs };
     });
   }
-  // AI 给出建议时长后,用户仍可逐段微调(完全交给 AI 但保留手动覆盖)。
+  // After AI gives suggested duration, user can still fine-tune per segment (fully AI-driven but manual override preserved).
   function setSegDuration(i: number, sec: number) {
     setScript((prev) => {
       if (!prev?.segments) return prev;
@@ -336,7 +336,7 @@ export default function DramaStudioPage() {
       return { ...prev, segments: segs };
     });
   }
-  // 该段是否出现产品(AI 给默认,用户可逐段覆盖);上传了产品图后,标 true 的段合成时会带产品参考图锁一致性。
+  // Whether product appears in this segment (AI gives default, user can override per segment); after uploading product images, segments marked true will include product reference images during synthesis to lock consistency.
   function setSegProduct(i: number, on: boolean) {
     setScript((prev) => {
       if (!prev?.segments) return prev;
@@ -344,7 +344,7 @@ export default function DramaStudioPage() {
       return { ...prev, segments: segs };
     });
   }
-  // 上传产品图(可选):复用 marketing 的上传端点(收 { dataUrl } JSON,返回 { url })。产品图跨剧本保留,不随重新生成剧本清空。
+  // Upload product image (optional): reuses marketing's upload endpoint (receives { dataUrl } JSON, returns { url }). Product images retained across scripts, not cleared on regeneration.
   async function uploadOneProduct(file: File) {
     const dataUrl = await imageToDataUrl(file);
     if (dataUrl.length > 8_000_000) { setErr('image_too_large'); return; }
@@ -360,12 +360,12 @@ export default function DramaStudioPage() {
       setErr(e instanceof Error ? e.message : 'upload_failed');
     }
   }
-  // 上传产品图(可选,多张):复用 marketing 上传端点;直接用原图作 seedance 参考,跨剧本保留。
+  // Upload product images (optional, multiple): reuses marketing upload endpoint; uses original images directly as seedance reference, retained across scripts.
   async function uploadProducts(files: FileList) {
     setErr(null);
     for (const f of Array.from(files)) await uploadOneProduct(f);
   }
-  // ── STAGE A:生成所有角色定妆图 + 场景图。每个 job 独立 catch(失败标 fail、不拖垮其他),返回解析好的资产 map 供逐镜直接透传。 ──
+  // ── STAGE A: generate all character portraits + scene image. Each job has independent catch (failure marks fail, doesn't drag down others), returns parsed asset map for per-shot direct passthrough. ──
   async function runAssets(): Promise<{ chars: Record<string, AssetState>; scene: AssetState; products?: string[] }> {
     const charList = script?.characters || [];
     const lc: Record<string, AssetState> = {};
@@ -388,7 +388,7 @@ export default function DramaStudioPage() {
         const url = await pollGen(lc[c.key].getUrl!);
         lc[c.key] = { status: 'done', url, getUrl: lc[c.key].getUrl }; syncChars();
       } catch (e) {
-        lc[c.key] = { status: 'fail', err: e instanceof Error ? e.message : 'failed' }; syncChars(); // 清 getUrl,重试重新提交
+        lc[c.key] = { status: 'fail', err: e instanceof Error ? e.message : 'failed' }; syncChars(); // clear getUrl, retry re-submits
       }
     })());
     jobs.push((async () => {
@@ -406,14 +406,14 @@ export default function DramaStudioPage() {
         ls = { status: 'fail', err: e instanceof Error ? e.message : 'failed' }; setSceneAsset({ ...ls });
       }
     })());
-    // 产品图:直接用用户上传的多张原图作 seedance 参考,不再自动生成"定妆图"(用户要求用原图保真)。
+    // Product images: use user-uploaded original images directly as seedance reference, no longer auto-generate "portraits" (user requested using originals for fidelity).
     const productUrls = productAssets.map((p) => p.url).filter((u): u is string => !!u);
     await Promise.all(jobs);
-    void patchDramaAssets(lc, ls, shotsRef.current, productUrls); // 定妆/场景/产品图完成 → 更新文件夹
+    void patchDramaAssets(lc, ls, shotsRef.current, productUrls); // portraits/scene/product done → update folder
     return { chars: lc, scene: ls, products: productUrls };
   }
 
-  // STAGE A 按钮:生成/补全定妆图 + 场景图(失败的可再点重试)
+  // STAGE A button: generate/complete portraits + scene image (failed ones can retry)
   async function genAssets() {
     if (status !== 'authenticated') { signIn('google'); return; }
     if (!script) return;
@@ -421,17 +421,17 @@ export default function DramaStudioPage() {
     try {
       const currentCredits = await refreshCredits();
       const charList = script.characters || [];
-      const needProduct = 0; // 产品图用用户上传的原图,不再自动生成扣费
+      const needProduct = 0; // product images use user-uploaded originals, no longer auto-generated or charged
       const need = (charList.filter((c) => !(charAssets[c.key]?.status === 'done' && charAssets[c.key]?.url)).length + (sceneAsset.status === 'done' && sceneAsset.url ? 0 : 1) + needProduct) * DRAMA_COSTS.image;
       if (!byokActive && currentCredits !== null && currentCredits < need) { setErr(`insufficient_credits:${need}:${currentCredits}`); return; }
       await runAssets();
     } finally {
       setBusy(null);
-      window.dispatchEvent(new Event('atlas:credits'));
+      window.dispatchEvent(new Event('lazynext:credits'));
     }
   }
 
-  // 单角色定妆图(重)生成:复用单角色逻辑,完成后同步文件夹。用户可改 appearance 后重出某个角色(不影响其他角色)。
+  // Single character portrait (re)generation: reuses single-character logic, syncs folder on completion. User can edit appearance then re-generate a specific character (doesn't affect others).
   async function genOneCharacter(key: string) {
     if (status !== 'authenticated') { signIn('google'); return; }
     const c = script?.characters?.find((x) => x.key === key);
@@ -444,20 +444,20 @@ export default function DramaStudioPage() {
       const url = await pollGen(im.getUrl);
       setCharAssets((prev) => {
         const next = { ...prev, [key]: { status: 'done' as const, url, getUrl: im.getUrl } };
-        void patchDramaAssets(next, sceneAsset, shotsRef.current); // 定妆图更新 → 同步文件夹
+        void patchDramaAssets(next, sceneAsset, shotsRef.current); // portrait updated → sync folder
         return next;
       });
     } catch (e) {
       setCharAssets((prev) => ({ ...prev, [key]: { status: 'fail', err: e instanceof Error ? e.message : 'failed' } }));
     } finally {
-      window.dispatchEvent(new Event('atlas:credits'));
+      window.dispatchEvent(new Event('lazynext:credits'));
     }
   }
-  // 编辑某角色的英文外观提示词(改完点"重新生成"出新定妆图)。
+  // Edit a character's English appearance prompt (click "Regenerate" after editing to produce a new portrait).
   function editCharAppearance(key: string, val: string) {
     setScript((prev) => (prev ? { ...prev, characters: (prev.characters || []).map((c) => (c.key === key ? { ...c, appearance: val } : c)) } : prev));
   }
-  // 单独(重)生成场景图:失败后可单独重试(不必整体重跑),完成后同步文件夹。
+  // Standalone (re)generate scene image: can retry individually after failure (no need to rerun everything), syncs folder on completion.
   async function genOneScene() {
     if (status !== 'authenticated') { signIn('google'); return; }
     if (!script) return;
@@ -469,15 +469,15 @@ export default function DramaStudioPage() {
       const url = await pollGen(im.getUrl);
       const done: AssetState = { status: 'done', url, getUrl: im.getUrl };
       setSceneAsset(done);
-      void patchDramaAssets(charAssets, done, shotsRef.current); // 场景图更新 → 同步文件夹
+      void patchDramaAssets(charAssets, done, shotsRef.current); // scene image updated → sync folder
     } catch (e) {
       setSceneAsset({ status: 'fail', err: e instanceof Error ? e.message : 'failed' });
     } finally {
-      window.dispatchEvent(new Event('atlas:credits'));
+      window.dispatchEvent(new Event('lazynext:credits'));
     }
   }
 
-  // ── 单镜生成:出首帧(edit,带定妆图/场景/产品参考)+ i2v。按索引函数式更新、运行态守卫防并发/双击重复提交。ctx 透传资产避免读到过期 state。 ──
+  // ── Per-shot generation: first frame (edit, with portrait/scene/product reference) + i2v. Functional update by index, running-state guard prevents concurrent/double-click re-submission. ctx passes assets to avoid reading stale state. ──
   async function genOneShot(i: number, ctx?: { chars: Record<string, AssetState>; scene: AssetState; products?: string[] }): Promise<boolean> {
     const seg = script?.segments?.[i];
     if (!seg) return false;
@@ -485,13 +485,13 @@ export default function DramaStudioPage() {
     const scene = ctx?.scene || sceneAsset;
     const cur = shotsRef.current[i] || ({ img: 'idle', vid: 'idle' } as ShotState);
     if (cur.vid === 'done' && cur.vidUrl) return true;
-    if (cur.img === 'run' || cur.vid === 'run') return false; // 运行态守卫:防并发/双击重复提交扣费
+    if (cur.img === 'run' || cur.vid === 'run') return false; // running-state guard: prevent concurrent/double-click re-submission charge
     patchShot(i, { err: undefined });
     try {
-      // 组参考图 + @imageN 绑定:产品图(带货段)+ 出场角色定妆图 + 场景图,一次性喂 reference-to-video 直接出片
-      // (不再先 edit 合成首帧再 i2v —— 少一步损耗,产品/角色/场景一致性由多参考锁定)。
-      // refs 顺序 = 产品图 + 出场角色定妆图 + 场景图,喂 reference-to-video;@imageN 按顺序绑定。
-      // seedance 上限 9:角色与场景一致性最关键,先占位;产品图用剩余配额,超出按配额截断。
+      // Compose reference images + @imageN bindings: product image (product segments) + appearing character portraits + scene image, fed to reference-to-video for direct output
+      // (no longer first edit-composite first frame then i2v — one less step of loss, product/character/scene consistency locked by multi-reference).
+      // refs order = product image + appearing character portraits + scene image, fed to reference-to-video; @imageN binds in order.
+      // seedance limit 9: character and scene consistency is most critical, occupy first; product images use remaining quota, truncated if exceeded.
       const prodRefs = ctx?.products ?? productAssets.map((p) => p.url).filter((u): u is string => !!u);
       const castUrls = (seg.cast || []).map((k) => ({ k, u: chars[k]?.url })).filter((x): x is { k: string; u: string } => !!x.u);
       const sceneUsed = scene.url ? 1 : 0;
@@ -509,7 +509,7 @@ export default function DramaStudioPage() {
       if (scene.url && refs.length < MAX_SHOT_REFS) { refs.push(scene.url); parts.push(`@image${refs.length} is the scene/environment`); }
       const vidPrompt = `${parts.join('. ')}. Cinematic film shot. ${seg.scene}. ${seg.action}. ${seg.dialogue ? `The characters speak this dialogue OUT LOUD with clear audible spoken voice and natural lip-sync: ${seg.dialogue}` : 'Natural ambient sound.'} Dramatic, WITH SOUND and spoken audio. No subtitles, no captions, no on-screen text or watermark.`;
 
-      patchShot(i, { img: 'done' }); // reference-to-video 一步出片,无独立"合成首帧"步骤
+      patchShot(i, { img: 'done' }); // reference-to-video outputs in one step, no separate "composite first frame" step
       let vGetUrl = shotsRef.current[i]?.vidGetUrl;
       patchShot(i, { vid: 'run' });
       if (!vGetUrl) {
@@ -520,20 +520,20 @@ export default function DramaStudioPage() {
       try { vidUrl = await pollGen(vGetUrl!); }
       catch (e) { patchShot(i, { vidGetUrl: undefined }); throw e; }
       patchShot(i, { vid: 'done', vidUrl });
-      // ⚠️ 不能直接用 shotsRef.current:setShots 异步,此刻 ref 还是旧值(本镜 vidUrl 不在里面),会导致文件夹"少最后一镜"。显式并入本镜再 patch。
+      // ⚠️ Cannot directly use shotsRef.current: setShots is async, at this moment ref still holds old values (this shot's vidUrl not included), would cause folder to "miss the last shot". Explicitly merge this shot then patch.
       const nextShots = shotsRef.current.map((s, idx) => (idx === i ? { ...s, img: 'done' as const, vid: 'done' as const, vidUrl } : s));
-      void patchDramaAssets(ctx?.chars || charAssets, ctx?.scene || sceneAsset, nextShots, ctx?.products ?? productAssets.map((p) => p.url).filter((u): u is string => !!u)); // 该镜完成 → 更新文件夹
+      void patchDramaAssets(ctx?.chars || charAssets, ctx?.scene || sceneAsset, nextShots, ctx?.products ?? productAssets.map((p) => p.url).filter((u): u is string => !!u)); // this shot done → update folder
       return true;
     } catch (e) {
       const msg = e instanceof Error ? e.message : 'failed';
       setShots((prev) => prev.map((s, idx) => (idx === i ? { ...s, img: s.img === 'run' ? 'fail' : s.img, vid: s.vid === 'run' ? 'fail' : s.vid, err: msg } : s)));
       return false;
     } finally {
-      window.dispatchEvent(new Event('atlas:credits'));
+      window.dispatchEvent(new Event('lazynext:credits'));
     }
   }
 
-  // 一键全部:确保资产就绪 → 依次生成每镜(失败不中断)→ 全部完成则自动拼接。逐镜可单独重试。
+  // One-click all: ensure assets ready → generate each shot sequentially (failure doesn't interrupt) → auto-stitch when all done. Each shot can retry individually.
   async function genAllShots() {
     if (status !== 'authenticated') { signIn('google'); return; }
     if (!script?.segments?.length) return;
@@ -546,23 +546,23 @@ export default function DramaStudioPage() {
       if (!assetsReady) {
         ctx = await runAssets();
         const ready = (script.characters || []).every((c) => ctx.chars[c.key]?.status === 'done' && !!ctx.chars[c.key]?.url) && ctx.scene.status === 'done' && !!ctx.scene.url
-          && (!(script.segments || []).some((s) => s.product) || (ctx.products?.length ?? 0) > 0); // 带货剧必须有产品图,否则镜间产品不一致
+          && (!(script.segments || []).some((s) => s.product) || (ctx.products?.length ?? 0) > 0); // product scripts must have product images, otherwise product inconsistent across shots
         if (!ready) { setErr(locale === 'zh' ? '定妆图/场景图/产品图未全部成功,请在上方重试后再逐镜生成' : 'Some reference images failed — retry them above first'); return; }
       }
       for (let i = 0; i < script.segments.length; i++) {
         if (shotsRef.current[i]?.vid === 'done' && shotsRef.current[i]?.vidUrl) continue;
-        await genOneShot(i, ctx); // 失败不中断,继续下一镜
+        await genOneShot(i, ctx); // failure doesn't interrupt, continue to next shot
       }
       if (script.segments.every((_, i) => shotsRef.current[i]?.vid === 'done' && shotsRef.current[i]?.vidUrl)) {
         await composeVideo();
       }
     } finally {
       setBusy(null);
-      window.dispatchEvent(new Event('atlas:credits'));
+      window.dispatchEvent(new Event('lazynext:credits'));
     }
   }
 
-  // 拼接成片 + 存档(所有镜视频都完成后)。不占用 busy,用 compose.status 单独跟踪。
+  // Stitch final + archive (after all shots' videos are done). Doesn't occupy busy, uses compose.status to track separately.
   async function composeVideo() {
     const segs = script?.segments || [];
     if (!segs.length || !segs.every((_, i) => shotsRef.current[i]?.vid === 'done' && shotsRef.current[i]?.vidUrl)) return;
@@ -570,8 +570,8 @@ export default function DramaStudioPage() {
     const firstImg = shotsRef.current[0]?.imgUrl || '';
     let cid = creationIdRef.current || creationId;
     if (!cid) {
-      // 正常情况下剧本生成时已建文件夹;这里兜底(极少走到)。
-      try { const st = await postJson('/api/creations/start', { type: 'drama-studio', title: script?.title || topic.slice(0, 60) || '短剧', assets: buildDramaAssets(charAssets, sceneAsset, shotsRef.current) }); cid = st.id; setCreationId(cid); creationIdRef.current = cid; } catch { /* 占位失败不阻断 */ }
+      // Normally folder is created during script generation; this is a fallback (rarely reached).
+      try { const st = await postJson('/api/creations/start', { type: 'drama-studio', title: script?.title || topic.slice(0, 60) || '短剧', assets: buildDramaAssets(charAssets, sceneAsset, shotsRef.current) }); cid = st.id; setCreationId(cid); creationIdRef.current = cid; } catch { /* placeholder failure doesn't block */ }
     }
     try {
       setCompose({ status: 'run', frac: 0, note: locale === 'zh' ? '开始拼接' : 'Starting to stitch', url: '' });
@@ -603,7 +603,7 @@ export default function DramaStudioPage() {
           await fetch('/api/marketing-studio/save-reel', { method: 'POST', body: fd });
         }
       } catch { /* ignore history save failure */ }
-      // 不清 creationId:文件夹已存成片,保留 id 让成片后仍能改角色/重生成时 patch;下次 genScript 会重置。
+      // Don't clear creationId: folder has saved the final video, keep id so character edits/regeneration can still patch after final; next genScript will reset.
     } catch (e) {
       setCompose((c) => (c.status === 'run' ? { ...c, status: 'fail', note: e instanceof Error ? e.message : 'compose_failed' } : c));
       if (cid) fetch(`/api/creations/${cid}`, { method: 'POST', headers: { 'Content-Type': 'application/json', ...byokHeaders() }, body: JSON.stringify({ status: 'failed', error: e instanceof Error ? e.message : 'compose_failed' }) }).catch(() => {});
@@ -617,18 +617,19 @@ export default function DramaStudioPage() {
       'radial-gradient(70% 55% at 50% -6%, rgba(112,54,240,0.10) 0%, rgba(112,54,240,0) 60%), linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px)',
     backgroundSize: 'auto, 44px 44px, 44px 44px',
   } as React.CSSProperties;
-  const selCls = 'appearance-none bg-white/[0.04] rounded-lg pl-2.5 pr-7 py-2 text-xs text-white/90 focus:outline-none focus:ring-1 focus:ring-[#7036F0]';
+  const selCls = 'appearance-none bg-white/[0.04] rounded-lg pl-2.5 pr-7 py-2 text-xs text-white/90 focus:outline-none focus:ring-1 focus:ring-[#00b2fc]';
 
-  // 顶层 hydration gate:首帧统一空骨架,避免 session/locale 造成 SSR≠client 分歧(#418)。
+  // Top-level hydration gate: first frame renders a uniform empty skeleton, avoiding session/locale SSR≠client divergence (#418).
   if (!mounted) return <main className="min-h-screen text-[#f7f7f8]" style={gridBg} />;
   return (
     <main className="min-h-screen text-[#f7f7f8]" style={gridBg}>
-      {/* 顶栏 */}
+      {/* Top bar */}
       <div className="px-6 sm:px-8 py-5">
         <div className="mx-auto flex w-full max-w-6xl items-center gap-3">
           <a href="/" className="flex items-center gap-2 hover:opacity-80 transition">
-            <div className="w-7 h-7 rounded-lg grid place-items-center text-sm" style={{ background: ACCENT }}>🎭</div>
-            <b className="text-sm tracking-tight">Drama Studio</b>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/lazynext-mark.png" alt="Lazynext" className="h-7 w-7 rounded-lg" />
+            <b className="text-sm tracking-tight">Lazynext</b>
           </a>
           <a href="/marketing-studio" className="text-xs text-white/60 hover:text-white transition">{locale === 'zh' ? '广告工作室' : 'Ad Studio'}</a>
           <a href="/" className="text-xs text-white/60 hover:text-white transition">{locale === 'zh' ? '← 全部应用' : '← All apps'}</a>
@@ -645,7 +646,7 @@ export default function DramaStudioPage() {
         </h1>
       </div>
 
-      {/* 生成器面板 */}
+      {/* Generator panel */}
       <div className="max-w-4xl mx-auto px-4">
         <div className="rounded-3xl border border-white/[0.06] p-4 sm:p-5 shadow-[0_24px_70px_-24px_rgba(0,0,0,0.85)]" style={{ background: PANEL }}>
           <textarea value={topic} onChange={(e) => setTopic(e.target.value)} rows={3}
@@ -654,7 +655,7 @@ export default function DramaStudioPage() {
           <div className="flex items-center gap-2 flex-wrap mt-3">
             {DRAMA_STYLES.map((s) => (
               <button key={s.id} onClick={() => setStyle(s.id)}
-                className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs transition border ${style === s.id ? 'border-[#7036F0] bg-[#7036F0]/15 text-white' : 'border-white/10 bg-white/[0.03] text-white/60 hover:bg-white/[0.06]'}`}>
+                className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs transition border ${style === s.id ? 'border-[#00b2fc] bg-[#00b2fc]/15 text-white' : 'border-white/10 bg-white/[0.03] text-white/60 hover:bg-white/[0.06]'}`}>
                 <span>{s.emoji}</span>{locale === 'zh' ? ({ epic: '史诗奇幻', palace: '宫斗权谋', wuxia: '武侠江湖', family: '家庭伦理', office: '职场斗争', hero: '超级英雄' }[s.id] ?? s.label) : s.label}
               </button>
             ))}
@@ -667,7 +668,7 @@ export default function DramaStudioPage() {
             <select value={videoRatio} onChange={(e) => setVideoRatio(e.target.value)} className={selCls} style={selStyle} title={locale === 'zh' ? '画面比例' : 'Aspect ratio'}>{VIDEO_RATIOS.map((r) => <option key={r} value={r}>{r}</option>)}</select>
             <select value={videoResolution} onChange={(e) => setVideoResolution(e.target.value)} className={selCls} style={selStyle} title={locale === 'zh' ? '分辨率' : 'Resolution'}>{VIDEO_RESOLUTIONS.map((r) => <option key={r} value={r}>{r}</option>)}</select>
             <span className="inline-flex items-center gap-1 px-2.5 py-2 rounded-lg text-[11px] text-white/45 bg-white/[0.03] border border-white/10" title={locale === 'zh' ? '每段时长由 AI 按节奏规划,生成后可逐段微调;段数用左侧下拉选自动或手动' : 'Per-scene duration is AI-planned (tweak per scene after); pick scene count on the left'}>⏱️ {locale === 'zh' ? '时长 AI 规划' : 'AI timing'}</span>
-            {/* 产品图上传(可选):带货短剧用你的真实产品锁一致性 */}
+            {/* Product image upload (optional): product drama uses your real product to lock consistency */}
             <input ref={productInput} type="file" multiple accept="image/png,image/jpeg,image/webp" className="hidden" onChange={(e) => { const fs = e.target.files; if (fs && fs.length) void uploadProducts(fs); e.currentTarget.value = ''; }} />
             {productAssets.map((pa, idx) => (
               <span key={idx} className="inline-flex items-center gap-1.5 pl-1 pr-2 py-1 rounded-lg text-[11px] bg-white/[0.04] border border-white/10">
@@ -679,13 +680,13 @@ export default function DramaStudioPage() {
               </span>
             ))}
             {productAssets.length < MAX_PRODUCT_IMAGES && (
-              <button onClick={() => productInput.current?.click()} className="inline-flex items-center gap-1 px-2.5 py-2 rounded-lg text-[11px] text-white/55 bg-white/[0.03] border border-white/10 hover:border-[#7036F0]/60 transition" title={locale === 'zh' ? `上传产品图(可选,最多 ${MAX_PRODUCT_IMAGES} 张):用你的真实产品原图直接作参考` : `Upload product photos (optional, up to ${MAX_PRODUCT_IMAGES}): your real product images used directly as reference`}>
+              <button onClick={() => productInput.current?.click()} className="inline-flex items-center gap-1 px-2.5 py-2 rounded-lg text-[11px] text-white/55 bg-white/[0.03] border border-white/10 hover:border-[#00b2fc]/60 transition" title={locale === 'zh' ? `上传产品图(可选,最多 ${MAX_PRODUCT_IMAGES} 张):用你的真实产品原图直接作参考` : `Upload product photos (optional, up to ${MAX_PRODUCT_IMAGES}): your real product images used directly as reference`}>
                 <ImagePlus className="w-3.5 h-3.5" />{locale === 'zh' ? `产品图 ${productAssets.length}/${MAX_PRODUCT_IMAGES}` : `Product ${productAssets.length}/${MAX_PRODUCT_IMAGES}`}
               </button>
             )}
             <button onClick={genScript} disabled={busy !== null || !hasCreditsForScript}
               className="ml-auto px-6 py-2.5 rounded-xl font-extrabold text-sm inline-flex items-center gap-2 disabled:opacity-50 transition hover:brightness-110"
-              style={{ background: `radial-gradient(90% 90% at 50% 120%, #a78bfa 0%, rgba(167,139,250,0) 60%), ${ACCENT}`, color: '#fff' }}>
+              style={{ background: `radial-gradient(90% 90% at 50% 120%, #22d3ee 0%, rgba(167,139,250,0) 60%), ${ACCENT}`, color: '#fff' }}>
               {busy === 'script' ? <Loader2 className="w-4 h-4 animate-spin" /> : <Wand2 className="w-4 h-4" />} {byokActive ? (locale === 'zh' ? '生成剧本' : 'Write script') : <>{!hasCreditsForScript ? (locale === 'zh' ? '积分不足' : 'Not enough credits') : (locale === 'zh' ? '生成剧本' : 'Write script')} · ✦{DRAMA_COSTS.script}</>}
             </button>
           </div>
@@ -710,7 +711,7 @@ export default function DramaStudioPage() {
       {err && <div className="max-w-4xl mx-auto px-4 mt-6"><div className="flex items-center gap-2 text-sm text-red-400 bg-red-500/10 border border-red-500/25 rounded-lg px-3 py-2"><AlertCircle className="w-4 h-4" />{locale === 'zh' ? '错误' : 'Error'}: {dramaErrText(err, locale)}</div></div>}
       {notice && <div className="max-w-4xl mx-auto px-4 mt-6"><div className="flex items-center gap-2 text-sm text-amber-300 bg-amber-500/10 border border-amber-500/25 rounded-lg px-3 py-2"><AlertCircle className="w-4 h-4" />{notice}</div></div>}
 
-      {/* 剧本展示 */}
+      {/* Script display */}
       {script && (
         <div ref={storyboardRef} className="max-w-3xl mx-auto px-4 py-10 scroll-mt-6">
           <div className="rounded-3xl border border-white/[0.06] p-5" style={{ background: PANEL }}>
@@ -742,7 +743,7 @@ export default function DramaStudioPage() {
                         </div>
                         {editingChar === c.key && (
                           <div className="mt-2">
-                            <textarea value={c.appearance || ''} onChange={(e) => editCharAppearance(c.key, e.target.value)} rows={3} placeholder={locale === 'zh' ? '角色外观(英文最佳:年龄/发型/服装/神态/布光…),改完点下方重新生成' : 'Appearance in English (age/hair/outfit/expression/lighting)…'} className="w-full bg-white/5 border border-white/10 rounded px-2 py-1 text-[11px] text-white/80 resize-y focus:outline-none focus:border-[#7036F0]" />
+                            <textarea value={c.appearance || ''} onChange={(e) => editCharAppearance(c.key, e.target.value)} rows={3} placeholder={locale === 'zh' ? '角色外观(英文最佳:年龄/发型/服装/神态/布光…),改完点下方重新生成' : 'Appearance in English (age/hair/outfit/expression/lighting)…'} className="w-full bg-white/5 border border-white/10 rounded px-2 py-1 text-[11px] text-white/80 resize-y focus:outline-none focus:border-[#00b2fc]" />
                             <button onClick={() => { setEditingChar(null); void genOneCharacter(c.key); }} disabled={a?.status === 'run'} className="mt-1 inline-flex items-center gap-1 text-[11px] font-semibold px-2.5 py-1 rounded-lg disabled:opacity-40 transition" style={{ background: ACCENT, color: '#fff' }}><RefreshCw className="w-3 h-3" />{locale === 'zh' ? `改词并重新生成 · ✦${DRAMA_COSTS.image}` : `Regenerate · ✦${DRAMA_COSTS.image}`}</button>
                           </div>
                         )}
@@ -773,24 +774,24 @@ export default function DramaStudioPage() {
                   <div key={i} className="rounded-xl border border-white/10 bg-black/20 p-3">
                     <div className="flex items-center gap-2 mb-2 flex-wrap">
                       <span className="text-[11px] rounded-full px-2 py-0.5 bg-white/5 border border-white/10" style={{ color: ACCENT }}>{locale === 'zh' ? `场景 ${seg.i}` : `Scene ${seg.i}`}</span>
-                      {/* 每段时长:AI 给建议值,用户可微调 */}
-                      <select value={seg.durationSec || 8} onChange={(e) => setSegDuration(i, Number(e.target.value))} className="appearance-none bg-white/[0.06] rounded px-1.5 py-0.5 text-[10px] text-white/80 focus:outline-none focus:ring-1 focus:ring-[#7036F0]" title={locale === 'zh' ? '本段时长(秒),AI 规划可微调' : 'Scene duration (s), AI-planned & adjustable'}>{VIDEO_DURATIONS.map((d) => <option key={d} value={d}>{d}s</option>)}</select>
-                      {/* 出场角色(对应定妆图参考) */}
+                      {/* Per-segment duration: AI gives suggested value, user can fine-tune */}
+                      <select value={seg.durationSec || 8} onChange={(e) => setSegDuration(i, Number(e.target.value))} className="appearance-none bg-white/[0.06] rounded px-1.5 py-0.5 text-[10px] text-white/80 focus:outline-none focus:ring-1 focus:ring-[#00b2fc]" title={locale === 'zh' ? '本段时长(秒),AI 规划可微调' : 'Scene duration (s), AI-planned & adjustable'}>{VIDEO_DURATIONS.map((d) => <option key={d} value={d}>{d}s</option>)}</select>
+                      {/* Appearing characters (corresponding portrait references) */}
                       {(seg.cast || []).map((k) => {
                         const c = script.characters?.find((x) => x.key === k);
-                        return c ? <span key={k} className="text-[10px] rounded-full px-1.5 py-0.5 bg-[#7036F0]/15 border border-[#7036F0]/30 text-white/70">{c.name}</span> : null;
+                        return c ? <span key={k} className="text-[10px] rounded-full px-1.5 py-0.5 bg-[#00b2fc]/15 border border-[#00b2fc]/30 text-white/70">{c.name}</span> : null;
                       })}
-                      {/* 产品出镜开关:仅在上传了产品图时显示;点亮的段合成时带产品图作参考锁一致性 */}
+                      {/* Product appearance toggle: only shown when product images are uploaded; lit segments include product reference during synthesis to lock consistency */}
                       {productAssets.some((p) => p.url) && (
-                        <button onClick={() => setSegProduct(i, !seg.product)} title={locale === 'zh' ? '该段是否出现产品(点击切换);点亮时用你上传的产品图锁一致性' : 'Toggle product in this shot; when on, uses your uploaded product image'} className={`text-[10px] rounded-full px-1.5 py-0.5 border transition ${seg.product ? 'bg-[#7036F0]/20 border-[#7036F0]/50 text-white' : 'bg-white/5 border-white/10 text-white/40'}`}>🛍️ {locale === 'zh' ? '产品' : 'Product'}</button>
+                        <button onClick={() => setSegProduct(i, !seg.product)} title={locale === 'zh' ? '该段是否出现产品(点击切换);点亮时用你上传的产品图锁一致性' : 'Toggle product in this shot; when on, uses your uploaded product image'} className={`text-[10px] rounded-full px-1.5 py-0.5 border transition ${seg.product ? 'bg-[#00b2fc]/20 border-[#00b2fc]/50 text-white' : 'bg-white/5 border-white/10 text-white/40'}`}>🛍️ {locale === 'zh' ? '产品' : 'Product'}</button>
                       )}
                       {seg.hook && <span className="text-[10px] text-white/40">💡 {seg.hook}</span>}
                       {st && <StatusChip icon={<Video className="w-3 h-3" />} label={locale === 'zh' ? '图片' : 'Image'} s={st.img} />}
                       {st && <StatusChip icon={<Film className="w-3 h-3" />} label={locale === 'zh' ? '视频' : 'Video'} s={st.vid} />}
                     </div>
-                    <input value={seg.scene} onChange={(e) => editSeg(i, 'scene', e.target.value)} className="w-full mb-1.5 bg-white/5 border border-white/10 rounded px-2 py-1 text-xs text-white/80 focus:outline-none focus:border-[#7036F0]" placeholder={locale === 'zh' ? '镜头 / 构图' : 'Shot / framing'} />
-                    <textarea value={seg.action} onChange={(e) => editSeg(i, 'action', e.target.value)} rows={2} className="w-full mb-1.5 bg-white/5 border border-white/10 rounded px-2 py-1 text-xs text-white/80 resize-y focus:outline-none focus:border-[#7036F0]" placeholder={locale === 'zh' ? '剧情 / 动作' : 'Plot / action'} />
-                    <input value={seg.dialogue || ''} onChange={(e) => editSeg(i, 'dialogue', e.target.value)} className="w-full bg-white/5 border border-white/10 rounded px-2 py-1 text-xs text-white/70 focus:outline-none focus:border-[#7036F0]" placeholder={locale === 'zh' ? '台词(可选)' : 'Dialogue (optional)'} />
+                    <input value={seg.scene} onChange={(e) => editSeg(i, 'scene', e.target.value)} className="w-full mb-1.5 bg-white/5 border border-white/10 rounded px-2 py-1 text-xs text-white/80 focus:outline-none focus:border-[#00b2fc]" placeholder={locale === 'zh' ? '镜头 / 构图' : 'Shot / framing'} />
+                    <textarea value={seg.action} onChange={(e) => editSeg(i, 'action', e.target.value)} rows={2} className="w-full mb-1.5 bg-white/5 border border-white/10 rounded px-2 py-1 text-xs text-white/80 resize-y focus:outline-none focus:border-[#00b2fc]" placeholder={locale === 'zh' ? '剧情 / 动作' : 'Plot / action'} />
+                    <input value={seg.dialogue || ''} onChange={(e) => editSeg(i, 'dialogue', e.target.value)} className="w-full bg-white/5 border border-white/10 rounded px-2 py-1 text-xs text-white/70 focus:outline-none focus:border-[#00b2fc]" placeholder={locale === 'zh' ? '台词(可选)' : 'Dialogue (optional)'} />
                     <div className="mt-2 flex items-center gap-2 flex-wrap">
                       <button onClick={() => genOneShot(i)} disabled={!assetsReady || busy === 'all' || busy === 'assets' || st?.img === 'run' || st?.vid === 'run'} title={!assetsReady ? (locale === 'zh' ? '请先在下方生成定妆图 + 场景图' : 'Generate portraits + scene first') : ''} className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg disabled:opacity-40 transition" style={st?.vid === 'done' ? { border: '1px solid rgba(255,255,255,0.15)', color: '#fff' } : { background: ACCENT, color: '#fff' }}>
                         {(st?.img === 'run' || st?.vid === 'run') ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Video className="w-3.5 h-3.5" />}
@@ -808,16 +809,16 @@ export default function DramaStudioPage() {
             </div>
             {script.climax && <div className="mt-3 text-xs text-white/50">🔥 {locale === 'zh' ? '高潮' : 'Climax'}: {script.climax}</div>}
             <div className="mt-4 flex flex-wrap items-center gap-2">
-              {/* ① 先出定妆图 + 场景图(失败的可再点重试,只补跑未完成的) */}
-              <button onClick={genAssets} disabled={busy !== null || anyShotRunning} className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl font-bold disabled:opacity-50 border border-white/15 hover:border-[#7036F0] transition">
+              {/* ① Generate portraits + scene first (failed ones can retry, only re-runs incomplete) */}
+              <button onClick={genAssets} disabled={busy !== null || anyShotRunning} className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl font-bold disabled:opacity-50 border border-white/15 hover:border-[#00b2fc] transition">
                 {busy === 'assets' ? <Loader2 className="w-4 h-4 animate-spin" /> : <span className="text-sm">①</span>} {assetsReady ? (locale === 'zh' ? '定妆图/场景已就绪 ✓' : 'Reference ready ✓') : (locale === 'zh' ? `生成定妆图+场景 · ✦${assetCost}` : `Portraits + scene · ✦${assetCost}`)}
               </button>
-              {/* ② 全部生成:依次逐镜,某镜失败不影响其他,可单独重试 */}
+              {/* ② Generate all: sequential per-shot, one shot failing doesn't affect others, can retry individually */}
               <button onClick={genAllShots} disabled={busy !== null || !hasCreditsForVideo || anyShotRunning} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl font-extrabold disabled:opacity-50" style={{ background: ACCENT, color: '#fff' }}>
                 {busy === 'all' ? <Loader2 className="w-4 h-4 animate-spin" /> : <Video className="w-4 h-4" />} {byokActive ? (locale === 'zh' ? '全部生成' : 'Generate all') : <>{!hasCreditsForVideo ? (locale === 'zh' ? '积分不足' : 'Not enough credits') : (locale === 'zh' ? '全部生成' : 'Generate all')} · ✦{videoEst}</>}
               </button>
-              {/* ③ 拼接:所有分镜视频都完成才可点 */}
-              <button onClick={composeVideo} disabled={!allVidsDone || busy !== null || compose.status === 'run' || anyShotRunning} title={allVidsDone ? '' : (locale === 'zh' ? '所有分镜视频完成后才能拼接' : 'Available after every shot is done')} className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl font-bold disabled:opacity-40 border border-white/15 hover:border-[#7036F0] transition">
+              {/* ③ Stitch: only clickable after all shot videos are done */}
+              <button onClick={composeVideo} disabled={!allVidsDone || busy !== null || compose.status === 'run' || anyShotRunning} title={allVidsDone ? '' : (locale === 'zh' ? '所有分镜视频完成后才能拼接' : 'Available after every shot is done')} className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl font-bold disabled:opacity-40 border border-white/15 hover:border-[#00b2fc] transition">
                 {compose.status === 'run' ? <Loader2 className="w-4 h-4 animate-spin" /> : <Film className="w-4 h-4" />} {locale === 'zh' ? '拼接成片' : 'Stitch final'}
               </button>
             </div>
@@ -826,7 +827,7 @@ export default function DramaStudioPage() {
         </div>
       )}
 
-      {/* 成片 */}
+      {/* Final video */}
       {compose.status !== 'idle' && (
         <div className="max-w-3xl mx-auto px-4 pb-16">
           <div className="rounded-3xl border border-white/[0.06] p-5" style={{ background: PANEL }}>
@@ -838,7 +839,7 @@ export default function DramaStudioPage() {
             {compose.url && (
               <div className="mt-3">
                 <video controls autoPlay muted src={compose.url} className="w-full max-w-[300px] rounded-xl border border-white/10" />
-                <a href={compose.url} download="drama.mp4" className="mt-2 inline-flex items-center gap-1.5 text-sm px-3 py-1.5 rounded-lg border border-white/15 hover:border-[#7036F0]"><Download className="w-4 h-4" />{locale === 'zh' ? '下载' : 'Download'}</a>
+                <a href={compose.url} download="drama.mp4" className="mt-2 inline-flex items-center gap-1.5 text-sm px-3 py-1.5 rounded-lg border border-white/15 hover:border-[#00b2fc]"><Download className="w-4 h-4" />{locale === 'zh' ? '下载' : 'Download'}</a>
               </div>
             )}
           </div>
@@ -849,6 +850,6 @@ export default function DramaStudioPage() {
 }
 
 function StatusChip({ icon, label, s }: { icon: React.ReactNode; label: string; s: 'idle' | 'run' | 'done' | 'fail' }) {
-  const cls = s === 'done' ? 'text-[#7036F0]' : s === 'run' ? 'text-white' : s === 'fail' ? 'text-red-400' : 'text-white/30';
+  const cls = s === 'done' ? 'text-[#00b2fc]' : s === 'run' ? 'text-white' : s === 'fail' ? 'text-red-400' : 'text-white/30';
   return <span className={`inline-flex items-center gap-1 text-[10px] ${cls}`}>{s === 'run' ? <Loader2 className="w-3 h-3 animate-spin" /> : icon}{label}</span>;
 }

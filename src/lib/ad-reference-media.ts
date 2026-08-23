@@ -2,10 +2,10 @@ import { uploadBlobToAtlas, uploadRemoteMediaToAtlas } from '@/lib/atlas';
 import { readMedia } from '@/lib/media-storage';
 import { sameOriginMediaPath } from '@/lib/public-media-url';
 
-// 同源 R2 媒体(/api/marketing-studio/media/<key>)不能让 Atlas 走公网 URL 自抓——
-// Worker 自抓自己的 R2 路由在 CF 环境里会 404,Atlas 侧再抓就变成 1042 / "参数无效"。
-// 这里统一:同源媒体走 bucket.get(key) 直读后 uploadBlobToAtlas;外部 URL 才走 uploadRemoteMediaToAtlas。
-// ad-reference 的 character / edit 接口共用,避免各写一份。
+// Same-origin R2 media (/api/marketing-studio/media/<key>) cannot be fetched by Atlas via the public URL —
+// the Worker fetching its own R2 route returns 404 in the CF environment, and Atlas then fails with 1042 / "invalid parameter".
+// Unified approach here: same-origin media is read directly via bucket.get(key) then uploadBlobToAtlas; external URLs go through uploadRemoteMediaToAtlas.
+// Shared by ad-reference's character / edit endpoints, avoiding duplicate implementations.
 const MEDIA_PATH_PREFIX = '/api/marketing-studio/media/';
 
 export const ADREF_VIDEO_UPLOAD_LIMIT = 200_000_000;
@@ -37,7 +37,7 @@ async function uploadSameOriginMediaToAtlas(path: string, filenamePrefix: string
   );
 }
 
-// 把一个输入媒体(可能是同源 R2 路径,也可能是外部公网 URL)上传到 Atlas 临时媒体,返回 Atlas 可稳定抓取的 URL。
+// Upload an input media (either a same-origin R2 path or an external public URL) to Atlas temporary media, returning a URL Atlas can reliably fetch.
 export async function uploadInputMediaToAtlas(
   rawValue: unknown,
   publicUrl: string,

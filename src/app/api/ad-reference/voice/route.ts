@@ -7,7 +7,7 @@ import { chargeAndSubmit, chargeErrorResponse } from '@/lib/marketing-studio/gen
 
 export const maxDuration = 60;
 
-// elevenlabs v3 新配音(换声音+换台词):需登录 + 扣 AD_REF_VOICE_COST;提交/异步失败均退款,Atlas 报错透传。
+// elevenlabs v3 new dubbing (change voice + change dialogue): requires login + charges AD_REF_VOICE_COST; refunds on submit/async failure, Atlas errors pass through.
 async function __byokPOST(req: Request) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });

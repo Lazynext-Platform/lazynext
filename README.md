@@ -1,22 +1,20 @@
-# Atlas Marketing Studio
+# Lazynext
 
-**[Marketing Studio](https://atlas-saas-starter.atlascloudai.workers.dev/)** is an open-source AI e-commerce ad studio for generating UGC product ads, reference-ad remakes, AI drama ads, and short ad skits, powered by [Atlas Cloud](https://www.atlascloud.ai?utm_source=github&utm_campaign=atlas-marketing-studio).
+**Lazynext** is an AI e-commerce ad studio for generating UGC product ads, reference-ad remakes, AI drama ads, and short ad skits, powered by [Atlas Cloud](https://www.atlascloud.ai?utm_source=github&utm_campaign=atlas-marketing-studio).
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](#license)
 [![Next.js](https://img.shields.io/badge/Next.js-14-black)](https://nextjs.org/)
 [![Cloudflare Workers](https://img.shields.io/badge/Cloudflare-Workers-f38020)](https://workers.cloudflare.com/)
 [![Vercel](https://img.shields.io/badge/Vercel-ready-black)](https://vercel.com/)
-[![Powered by Atlas Cloud](https://img.shields.io/badge/powered%20by-Atlas%20Cloud-6d5dfc)](https://www.atlascloud.ai?utm_source=github&utm_campaign=atlas-marketing-studio)
+[![Powered by Atlas Cloud](https://img.shields.io/badge/powered%20by-Atlas%20Cloud-00b2fc)](https://www.atlascloud.ai?utm_source=github&utm_campaign=atlas-marketing-studio)
 
-> Most AI video tools generate a clip. Atlas Marketing Studio gives you the ad workflow around it: product input, script, shots, reference assets, video generation, credits, login, and deployment.
-
-<video src="https://github.com/AtlasCloudAI/atlas-marketing-studio/raw/main/public/samples/ad-skit-demo-en.mp4" controls playsinline width="720"></video>
+> Most AI video tools generate a clip. Lazynext gives you the ad workflow around it: product input, script, shots, reference assets, video generation, credits, login, and deployment.
 
 ## What this project is
 
-[Marketing Studio](https://atlas-saas-starter.atlascloudai.workers.dev/) is a self-hostable AI ad generator for e-commerce teams, agencies, and builders, powered by [Atlas Cloud](https://www.atlascloud.ai?utm_source=github&utm_campaign=atlas-marketing-studio). It turns product photos, presenter images, product links, prompts, or reference ads into ready-to-use video ad concepts.
+Lazynext is a self-hostable AI ad generator for e-commerce teams, agencies, and builders, powered by [Atlas Cloud](https://www.atlascloud.ai?utm_source=github&utm_campaign=atlas-marketing-studio). It turns product photos, presenter images, product links, prompts, or reference ads into ready-to-use video ad concepts.
 
-This is not a generic AI SaaS starter. It is a real, runnable e-commerce creative studio with opinionated workflows for:
+It is a real, runnable e-commerce creative studio with opinionated workflows for:
 
 - AI UGC ads and product review videos
 - Reference-ad remakes with your own product and presenter
@@ -29,14 +27,12 @@ This is not a generic AI SaaS starter. It is a real, runnable e-commerce creativ
 
 Each workflow is a complete AI ad generation path, not just a single model call.
 
-Demo links use the hosted app path. If you self-host, keep the same paths on your own domain.
-
-| Workflow | What it does | Use it for | Models | Try it |
-|---|---|---|---|---|
-| **UGC Product Ad** | Product + presenter photos -> lip-synced UGC ad | An **AI UGC ad generator** or **product-to-video ad generator** for product reviews, creator testimonials, direct-response e-commerce ads, and social ad variations. | Atlas Cloud prompt expansion, `nano-banana/edit` first frame, `seedance-2.0` image-to-video | [Open UGC Product Ad](https://atlas-saas-starter.atlascloudai.workers.dev/marketing-studio) |
-| **Reference to Ad** | Upload a viral ad -> remake it with your product and presenter | A **reference ad remake AI workflow** for adapting proven ad structure, talent framing, and product placement to your own offer. | `gemini-omni-flash/video-edit`, optional ElevenLabs TTS, optional `veed/lipsync`, fallback to `kling motion-control` | [Open Reference to Ad](https://atlas-saas-starter.atlascloudai.workers.dev/ad-reference) |
-| **AI Drama Ad** | One topic -> comedy script -> shot-by-shot drama ad | An **AI short drama ad generator** for social commerce, story-led e-commerce ads, and short-form video campaigns. | Atlas Cloud LLM script generation, reference image generation, `seedance-2.0/reference-to-video` per shot | [Open AI Drama Ad](https://atlas-saas-starter.atlascloudai.workers.dev/drama-studio) |
-| **Ad Skit** | One-line product -> two-person comedy skit | A **short ad skit generator** for creator ads, TikTok-style product jokes, hook testing, and fast creative iteration. | Atlas Cloud LLM script generation, `gpt-image-2` product shot, `seedance-2.0/reference-to-video` with audio | [Open Ad Skit](https://atlas-saas-starter.atlascloudai.workers.dev/ad-skit) |
+| Workflow | What it does | Use it for | Models |
+|---|---|---|---|
+| **UGC Product Ad** | Product + presenter photos -> lip-synced UGC ad | An **AI UGC ad generator** or **product-to-video ad generator** for product reviews, creator testimonials, direct-response e-commerce ads, and social ad variations. | Atlas Cloud prompt expansion, `nano-banana/edit` first frame, `seedance-2.0` image-to-video |
+| **Reference to Ad** | Upload a viral ad -> remake it with your product and presenter | A **reference ad remake AI workflow** for adapting proven ad structure, talent framing, and product placement to your own offer. | `gemini-omni-flash/video-edit`, optional ElevenLabs TTS, optional `veed/lipsync`, fallback to `kling motion-control` |
+| **AI Drama Ad** | One topic -> comedy script -> shot-by-shot drama ad | An **AI short drama ad generator** for social commerce, story-led e-commerce ads, and short-form video campaigns. | Atlas Cloud LLM script generation, reference image generation, `seedance-2.0/reference-to-video` per shot |
+| **Ad Skit** | One-line product -> two-person comedy skit | A **short ad skit generator** for creator ads, TikTok-style product jokes, hook testing, and fast creative iteration. | Atlas Cloud LLM script generation, `gpt-image-2` product shot, `seedance-2.0/reference-to-video` with audio |
 
 All workflows auto-detect the input language. Write the product brief in English, Chinese, or another language, and the generated script/ad follows that language.
 
@@ -129,7 +125,7 @@ select D1/R2.
 
 ### Deploy to Vercel
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FAtlasCloudAI%2Fatlas-marketing-studio&env=ATLASCLOUD_API_KEY,DATABASE_URL,BLOB_READ_WRITE_TOKEN,NEXTAUTH_SECRET,NEXTAUTH_URL,GOOGLE_CLIENT_ID,GOOGLE_CLIENT_SECRET,PAYMENT_PROVIDER&envDescription=Atlas%20Cloud%20key%2C%20Neon%20database%2C%20Public%20Vercel%20Blob%2C%20NextAuth%2C%20Google%20OAuth%2C%20and%20payment%20provider&project-name=atlas-marketing-studio&repository-name=atlas-marketing-studio)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FAtlasCloudAI%2Fatlas-marketing-studio&env=ATLASCLOUD_API_KEY,DATABASE_URL,BLOB_READ_WRITE_TOKEN,NEXTAUTH_SECRET,NEXTAUTH_URL,GOOGLE_CLIENT_ID,GOOGLE_CLIENT_SECRET,PAYMENT_PROVIDER&envDescription=Atlas%20Cloud%20key%2C%20Neon%20database%2C%20Public%20Vercel%20Blob%2C%20NextAuth%2C%20Google%20OAuth%2C%20and%20payment%20provider&project-name=lazynext&repository-name=lazynext)
 
 Create/connect a Neon database and a **Public** Vercel Blob store, initialize
 the Neon schema with `npm run db:push:vercel`, then deploy with the standard
@@ -173,7 +169,9 @@ Top-up packs live in `src/config/pricing.ts`, so you can adjust margin and packa
 
 ## License
 
-MIT. Built on [Atlas Cloud](https://www.atlascloud.ai?utm_source=github&utm_campaign=atlas-marketing-studio).
+MIT. AI generation powered by [Atlas Cloud](https://www.atlascloud.ai?utm_source=github&utm_campaign=atlas-marketing-studio).
+
+Lazynext is a Lazynext-branded distribution built on the open-source [Atlas Marketing Studio](https://github.com/AtlasCloudAI/atlas-marketing-studio) project (MIT). All AI generation runs through the Atlas Cloud API.
 
 ## Technical architecture
 

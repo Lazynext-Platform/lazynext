@@ -7,7 +7,7 @@ import { pollOnce } from '@/lib/atlas';
 import { grantCredits } from '@/lib/credits';
 import { pollMarketingTask } from '@/lib/marketing-studio/poll-task';
 
-// 前端生成中断/失败时,把自己的、仍在 processing 的占位作品标记为 failed(作品页显示"失败"而非永远转圈)。
+// When frontend generation is interrupted/fails, marks own still-processing placeholder creation as failed (creations page shows "failed" instead of spinning forever).
 async function __byokPOST(req: Request, { params }: { params: { id: string } }) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
@@ -29,8 +29,8 @@ async function __byokGET(_req: Request, { params }: { params: { id: string } }) 
   if (!c || c.userId !== session.user.id)
     return NextResponse.json({ error: 'not_found' }, { status: 404 });
 
-  // Marketing Studio 的最终视频任务由服务端直接挂到作品占位。作品页也能独立查询、转存并
-  // 回写成片，不再依赖生成页保持打开后执行最后一次 save-reel。
+  // Marketing Studio's final video task is directly attached to the creation placeholder by the server. The creations page can also independently query, transfer and
+  // write back the final video, no longer depending on the generation page staying open to execute the last save-reel.
   if (
     c.templateId === 'marketing-studio'
     && c.getUrl
@@ -71,16 +71,16 @@ async function __byokGET(_req: Request, { params }: { params: { id: string } }) 
     }
   }
 
-  // Terminal states: nothing more to do.(带 assets,drama 详情页要用)
+  // Terminal states: nothing more to do. (includes assets, drama detail page needs it)
   if (c.status === 'completed' || c.status === 'failed')
     return NextResponse.json({ id: c.id, status: c.status, outputs: c.outputs, error: c.error, assets: c.assets, prompt: c.prompt, templateId: c.templateId, inputImage: c.inputImage, createdAt: c.createdAt });
-  // 占位记录(无 getUrl):前端在完成/失败时更新它;若已停在 processing 超过超时时间,视为前端中断,
-  // 自动判失败,避免作品页永远转圈。占位不扣费,无需退款。
+  // Placeholder record (no getUrl): frontend updates it on completion/failure; if already stuck in processing beyond timeout, treat as frontend interruption,
+  // auto-mark as failed, to avoid creations page spinning forever. Placeholder has no charge, no refund needed.
   if (!c.getUrl) {
-    // drama 作品文件夹是分步手动生成、可能拖很久,豁免 15 分钟超时(否则文件夹还没生成完就被误标失败)。
+    // Drama creation folder is step-by-step manual generation, may take a long time, exempt from 15-minute timeout (otherwise folder gets mistakenly marked failed before generation completes).
     const isDramaFolder = !!c.assets && typeof c.assets === 'object' && (c.assets as { kind?: string }).kind === 'drama';
-    // Marketing Studio 的首帧和视频是串行任务，给足与前端总轮询一致的 90 分钟；
-    // 旧 15 分钟会在 Atlas 仍正常生成时把作品误判失败。
+    // Marketing Studio's first frame and video are serial tasks, give enough 90 minutes consistent with frontend total polling;
+    // old 15 minutes would mistakenly mark creation failed while Atlas is still generating normally.
     const placeholderTimeoutMs = c.templateId === 'marketing-studio' ? 90 * 60_000 : 15 * 60_000;
     if (!isDramaFolder && Date.now() - new Date(c.createdAt).getTime() > placeholderTimeoutMs) {
       await prisma.creation.updateMany({ where: { id: c.id, status: 'processing' }, data: { status: 'failed', error: 'timeout' } });

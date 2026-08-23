@@ -1,6 +1,6 @@
 # Dual-platform deployment
 
-Atlas Marketing Studio uses one business codebase with platform-specific
+Lazynext uses one business codebase with platform-specific
 database and media adapters selected before each build.
 
 | Target | Database | Media storage | Selection |

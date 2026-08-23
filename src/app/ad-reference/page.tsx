@@ -9,9 +9,9 @@ import { useMounted } from '@/lib/use-mounted';
 import { uploadDirectMediaIfSupported } from '@/lib/client-media-upload';
 import { videoCredits } from '@/lib/video-pricing';
 
-// 爆款广告复刻(Ad Reference):粘贴一条爆款广告 → 换成你的产品/出镜人/声音,同 hook 同能量。
-// 无登录直连(同 marketing-studio):upload → edit(gemini-omni video-edit)→ 可选 voice+lipsync → R2 成片。
-// bg #131416 · 面板 #1c1e21 · accent #7036F0 · Space Grotesk
+// Viral ad remake (Ad Reference): paste a viral ad → swap in your product/presenter/voice, same hook same energy.
+// No-login direct flow (same as marketing-studio): upload → edit (gemini-omni video-edit) → optional voice+lipsync → R2 final video.
+// bg #131416 · panel #1c1e21 · accent #00b2fc · Space Grotesk
 
 const GROTESK = 'var(--font-grotesk), "Space Grotesk", system-ui, sans-serif';
 const VOICES = [
@@ -19,16 +19,16 @@ const VOICES = [
   { id: 'EXAVITQu4vr4xnSDxMaL', label: 'Female · Warm' },
   { id: 'CwhRBWXzGAHq8TQ4Fs17', label: 'Male · Relaxed' },
 ];
-// voice(TTS 配音)走固定 COST;edit/motion(视频)与 lipsync(对口型)走动态 videoCredits。
+// voice (TTS dubbing) uses fixed COST; edit/motion (video) and lipsync use dynamic videoCredits.
 const AD_COSTS = { edit: 15, character: 15, voice: 10, lipsync: 2 };
-// 视频类模型(与后端 lib/ad-reference.ts 一致):edit/character = omni video-edit,lipsync = veed。
+// Video models (consistent with backend lib/ad-reference.ts): edit/character = omni video-edit, lipsync = veed.
 const EDIT_VIDEO_MODEL = 'google/gemini-omni-flash/video-edit';
 const LIPSYNC_MODEL = 'veed/lipsync';
-// 台词字数估音频秒数:中文按 字数/5 秒、英文按 词数/2.5 秒;空则保守 12s(与后端 lipsync route 默认一致)。
+// Estimate audio seconds from script word count: Chinese by characters/5s, English by words/2.5s; empty defaults to conservative 12s (matches backend lipsync route default).
 function estimateAudioSeconds(text: string): number {
   const t = (text || '').trim();
   if (!t) return 12;
-  const cjk = (t.match(/[一-鿿぀-ヿ가-힯]/g) || []).length; // 中/日/韩字符
+  const cjk = (t.match(/[一-鿿぀-ヿ가-힯]/g) || []).length; // CJK characters
   if (cjk >= t.length / 2) return Math.max(3, Math.ceil(cjk / 5));
   const words = t.split(/\s+/).filter(Boolean).length;
   return Math.max(3, Math.ceil(words / 2.5));
@@ -52,7 +52,7 @@ function adErrText(msg: string, locale: string) {
   return msg;
 }
 
-// 代理轮询 Atlas 任务(无数据库):复用 marketing-studio 的 /poll(完成自动转存 R2)。
+// Proxied polling of Atlas tasks (no database): reuses marketing-studio's /poll (auto-saves to R2 on completion).
 function pollGen(getUrl: string, timeoutMs = 480_000): Promise<string> {
   return new Promise((resolve, reject) => {
     const t0 = Date.now();
@@ -62,7 +62,7 @@ function pollGen(getUrl: string, timeoutMs = 480_000): Promise<string> {
       if (Date.now() - t0 > timeoutMs) { clearInterval(t); reject(new Error(lastError || 'Generation timed out, please try again')); return; }
       try {
         const c = await postJson('/api/marketing-studio/poll', { getUrl });
-        // transient=true:Atlas 状态查询网关瞬时超时(504),任务多半还在跑;计数不清零,连续太多次才放弃(避免静默转圈到超时)。
+        // transient=true: Atlas status query gateway transient timeout (504), task likely still running; count doesn't reset, only gives up after too many consecutive (avoids silent spinning to timeout).
         if (c.transient) {
           transientErrors += 1;
           if (transientErrors >= 8) { clearInterval(t); reject(new Error(lastError || 'poll_gateway_unstable')); }
@@ -111,7 +111,7 @@ function readVideoDuration(file: File): Promise<number> {
 type Slot = { url: string; preview: string } | null;
 type Step = 'idle' | 'edit' | 'character' | 'voice' | 'lipsync' | 'done';
 
-// 参考广告示例视频(用户可一键选用、免上传);素材在 R2 marketing-studio-media
+// Reference ad example videos (users can one-click try without uploading); assets on R2 marketing-studio-media
 const EXAMPLE_REF_VIDEOS = [
   '/api/marketing-studio/media/adref-example-1.mp4',
   '/api/marketing-studio/media/adref-example-2.mp4',
@@ -124,7 +124,7 @@ export default function AdReferencePage() {
   const { status } = useSession();
   const mounted = useMounted();
   const [refVideo, setRefVideo] = useState<Slot>(null);
-  const [refVideoSeconds, setRefVideoSeconds] = useState(0); // 参考视频时长(秒),上传时读出;示例视频未知则 0(计费/预估回退 30s)
+  const [refVideoSeconds, setRefVideoSeconds] = useState(0); // reference video duration (seconds), read on upload; 0 for unknown example videos (billing/estimate falls back to 30s)
   const [product, setProduct] = useState<Slot>(null);
   const [avatar, setAvatar] = useState<Slot>(null);
   const [productNote, setProductNote] = useState('');
@@ -168,11 +168,11 @@ export default function AdReferencePage() {
     const h = () => {
       if (status === 'authenticated') void refreshCredits();
     };
-    window.addEventListener('atlas:credits', h);
-    return () => window.removeEventListener('atlas:credits', h);
+    window.addEventListener('lazynext:credits', h);
+    return () => window.removeEventListener('lazynext:credits', h);
   }, [status, refreshCredits]);
 
-  // ── 输入持久化:填的内容实时存,登录 OAuth 跳转/刷新回来都不丢(视频/图只存 url,blob preview 重载即失效) ──
+  // ── Input persistence: entered content saved in real-time, login OAuth redirect/refresh return won't lose it (video/images only store url, blob preview invalid on reload) ──
   useEffect(() => {
     if (!mounted) return;
     try {
@@ -214,7 +214,7 @@ export default function AdReferencePage() {
         setBusy(locale === 'zh' ? '正在上传参考视频…' : 'Uploading reference video…');
         const url = await uploadFile(file);
         setRefVideo({ url, preview: URL.createObjectURL(file) });
-        setRefVideoSeconds(dur || 0); // 记参考视频时长,edit/character/motion 计费按它算
+        setRefVideoSeconds(dur || 0); // record reference video duration, edit/character/motion billing based on it
       } else {
         if (file.size > 10_000_000) throw new Error(locale === 'zh' ? '图片必须小于 10MB' : 'Image must be under 10MB');
         setBusy(kind === 'product' ? (locale === 'zh' ? '正在上传产品图…' : 'Uploading product image…') : (locale === 'zh' ? '正在上传出镜人照片…' : 'Uploading talent photo…'));
@@ -230,16 +230,16 @@ export default function AdReferencePage() {
   }
 
   const isGenerating = step === 'edit' || step === 'character' || step === 'voice' || step === 'lipsync';
-  // 纯 omni:换人+换产品合并为一次 edit,不再单独计 character。
-  // 视频步骤(edit)按参考视频秒数动态计费,lipsync 按台词字数估的音频秒数;voice(TTS)走固定 COST。
+  // Pure omni: swap person + product combined into one edit, no separate character charge.
+  // Video step (edit) billed dynamically by reference video seconds, lipsync by audio seconds estimated from script word count; voice (TTS) uses fixed COST.
   const editEst = (product || avatar) ? videoCredits(EDIT_VIDEO_MODEL, undefined, refVideoSeconds || 30) : 0;
   const lipsyncEst = videoCredits(LIPSYNC_MODEL, undefined, estimateAudioSeconds(script));
   const adEst = editEst + (newVoice ? AD_COSTS.voice + lipsyncEst : 0);
   const hasEnoughCredits = byokActive || status !== 'authenticated' || credits === null || credits >= adEst;
-  // 勾了换声音也不强制填脚本:没填就自动生成台词(见 generate ③)
+  // Checking replace voice doesn't require a script: if none entered, dialogue is auto-generated (see generate ③)
   const canGenerate = !!refVideo && (!!product || !!avatar) && !busy && !isGenerating && hasEnoughCredits;
 
-  // 提交 + 轮询;生成异步失败(如 omni 换人偶发 1010002)自动重试,参数/积分类错误不重试。
+  // Submit + poll; async generation failures (e.g. omni person-swap occasional 1010002) auto-retry, parameter/credit errors don't retry.
   async function submitAndPoll(url: string, body: unknown, pollTimeout = 480_000, retries = 2): Promise<string> {
     let last: unknown;
     for (let i = 0; i <= retries; i++) {
@@ -260,22 +260,22 @@ export default function AdReferencePage() {
     if (status !== 'authenticated') { signIn('google'); return; }
     if (!refVideo) return;
     setError(''); setResult('');
-    let cid = ''; // 作品占位 id,完成/失败时更新它
+    let cid = ''; // work placeholder id, updated on completion/failure
     try {
       const currentCredits = await refreshCredits();
       if (!byokActive && currentCredits !== null && currentCredits < adEst) {
         setError(locale === 'zh' ? `积分不足:本次预计需要 ${adEst} 积分,当前只有 ${currentCredits}。` : `Not enough credits: this run needs ${adEst}, you have ${currentCredits}.`);
         return;
       }
-      // 作品页立刻出现"生成中"这条作品
+      // Work page immediately shows this "generating" item
       try {
         const st = await postJson('/api/creations/start', { type: 'ad-reference', title: productNote.trim() || extraNote.trim() || '爆款广告复刻' });
         cid = st.id;
-      } catch { /* 占位失败不阻断生成 */ }
+      } catch { /* placeholder failure doesn't block generation */ }
       let final = refVideo.url;
 
-      // ①② 纯 omni:一次 video-edit 同时换出镜人+产品(编辑原片、保运镜/原声),异步失败自动重试。
-      // omni 换真人会稳定撞 1010002(deepfake);重试满 3 次仍失败 → 兜底 kling 动作迁移换人 + omni 加产品。
+      // ①② Pure omni: one video-edit swaps both presenter + product (edits original footage, preserves camera work/original audio), auto-retry on async failure.
+      // omni swapping a real person reliably hits 1010002 (deepfake); after 3 retries still failing → fall back to kling motion transfer for person swap + omni for product.
       if (avatar || product) {
         setStep('edit');
         try {
@@ -288,16 +288,16 @@ export default function AdReferencePage() {
             videoSeconds: refVideoSeconds,
           }, 600_000, 3);
         } catch (omniErr) {
-          // 只换产品(无出镜人)没有兜底路径,直接抛错
+          // Product-only swap (no presenter) has no fallback path, throw directly
           if (!avatar) throw omniErr;
-          // 兜底:kling 动作迁移——出镜人图 + 原参考视频(动作源)→ 你的人做原片动作(不撞 1010002)
+          // Fallback: kling motion transfer — presenter image + original reference video (motion source) → your person performs the original actions (avoids 1010002)
           setStep('character');
           let swapped = await submitAndPoll('/api/ad-reference/motion', {
             videoUrl: refVideo?.url || '',
             avatarUrl: avatar?.url || '',
             videoSeconds: refVideoSeconds,
           }, 600_000, 1);
-          // 有产品则在换人结果上再用 omni 加产品(换产品不拦)
+          // If there's a product, use omni again on the person-swapped result to add product (product swap isn't blocked)
           if (product) {
             setStep('edit');
             swapped = await submitAndPoll('/api/ad-reference/edit', {
@@ -312,7 +312,7 @@ export default function AdReferencePage() {
         }
       }
 
-      // ③ 可选:新配音 + 对口型。勾了换声音但没填脚本 → 自动用 LLM 按产品(图)/参考生成一段台词,不强制用户输入。
+      // ③ Optional: new voiceover + lip-sync. If replace voice is checked but no script entered → auto-generate dialogue via LLM based on product (image)/reference, doesn't force user input.
       if (newVoice) {
         let text = script.trim();
         if (text.length < 4) {
@@ -320,8 +320,8 @@ export default function AdReferencePage() {
           try {
             const gs = await postJson('/api/ad-reference/gen-script', { productNote, extraNote, productUrl: product?.url || '', avatarUrl: avatar?.url || '' });
             text = (gs.script || '').trim();
-            if (text) setScript(text); // 回填文本框:用户能看到并二次编辑自动生成的台词
-          } catch { /* 生成台词失败则跳过配音,不阻断整体出片 */ }
+            if (text) setScript(text); // backfill text box: user can see and re-edit the auto-generated dialogue
+          } catch { /* dialogue generation failure skips voiceover, doesn't block overall output */ }
         }
         if (text.length >= 4) {
           setStep('voice');
@@ -343,10 +343,10 @@ export default function AdReferencePage() {
     } catch (e) {
       setError(adErrText(String((e as Error).message || e), locale));
       setStep('idle');
-      // 作品页把这条占位标记为"失败"
+      // Work page marks this placeholder as "failed"
       if (cid) postJson(`/api/creations/${cid}`, { status: 'failed', error: String((e as Error).message || e) }).catch(() => {});
     } finally {
-      window.dispatchEvent(new Event('atlas:credits'));
+      window.dispatchEvent(new Event('lazynext:credits'));
     }
   }
 
@@ -358,12 +358,12 @@ export default function AdReferencePage() {
     lipsync: locale === 'zh' ? '④ 正在为新配音对口型…' : '④ Lip-syncing the new voiceover…',
   };
 
-  // 顶层 hydration gate:首帧统一空骨架,避免 session/locale 造成 SSR≠client 分歧(#418)。
+  // Top-level hydration gate: first frame renders a uniform empty skeleton, avoiding session/locale SSR≠client divergence (#418).
   if (!mounted) return <div className="min-h-screen" style={{ background: '#131416' }} />;
   return (
     <div className="min-h-screen" style={{ background: '#131416' }}>
       <div className="mx-auto max-w-[1200px] px-5 py-8">
-        <Link href="/" className="text-white/40 text-sm hover:text-white/70">← Marketing Studio</Link>
+        <Link href="/" className="text-white/40 text-sm hover:text-white/70">← Lazynext</Link>
         <div className="mt-6 mb-2 text-[11px] uppercase tracking-[0.24em] text-white/50 font-medium" style={{ fontFamily: GROTESK }}>Reference to Ad</div>
         <h1 className="font-bold uppercase leading-[1.1] tracking-[-0.03em] text-[clamp(30px,4.4vw,46px)] text-white/90" style={{ fontFamily: GROTESK }}>
           {locale === 'zh' ? '复刻任意爆款广告' : 'Remake Any Viral Ad'}
@@ -375,7 +375,7 @@ export default function AdReferencePage() {
         </p>
 
         <div className="mt-8 grid gap-6 lg:grid-cols-[420px_1fr]">
-          {/* 左:输入面板 */}
+          {/* Left: input panel */}
           <div className="rounded-2xl p-5" style={{ background: '#1c1e21' }}>
             <div className="text-white/60 text-xs uppercase tracking-wider mb-2" style={{ fontFamily: GROTESK }}>{locale === 'zh' ? '参考广告视频' : 'Reference Ad Video'}</div>
             {refVideo ? (
@@ -431,10 +431,10 @@ export default function AdReferencePage() {
             <input value={extraNote} onChange={(e) => setExtraNote(e.target.value)} placeholder={locale === 'zh' ? '补充说明(可选)' : 'Extra instructions (optional)'}
               className="mt-2 w-full rounded-lg bg-white/[0.05] border border-white/10 px-3 py-2 text-sm text-white/90 placeholder:text-white/25 outline-none focus:border-white/25" />
 
-            {/* 声音 */}
+            {/* Voice */}
             <div className="mt-5 rounded-xl bg-white/[0.03] border border-white/10 p-3">
               <label className="flex items-center gap-2 text-sm text-white/80 cursor-pointer">
-                <input type="checkbox" checked={newVoice} onChange={(e) => setNewVoice(e.target.checked)} className="accent-[#7036F0]" />
+                <input type="checkbox" checked={newVoice} onChange={(e) => setNewVoice(e.target.checked)} className="accent-[#00b2fc]" />
                 {locale === 'zh' ? '替换配音与台词(不勾选则保留编辑后的原声)' : 'Replace voice & script (leave unchecked to keep the edited original audio)'}
               </label>
               {newVoice && (
@@ -474,14 +474,14 @@ export default function AdReferencePage() {
             )}
             <div className="mt-2 text-center text-[11px] text-white/30">{locale === 'zh' ? '上传即表示你确认拥有使用该参考视频及肖像的权利' : 'By uploading, you confirm you have the rights to use this reference video and likeness'}</div>
 
-            {/* 示例参考广告:放在表单最下面,没素材时一键试用 */}
+            {/* Example reference ads: placed at the bottom of the form, one-click try when no footage */}
             {!refVideo && (
               <div className="mt-5 border-t border-white/[0.07] pt-4">
                 <div className="text-white/40 text-[11px] mb-2">{locale === 'zh' ? '没有素材?点示例广告一键试用 👇' : 'No footage? Try an example ad 👇'}</div>
                 <div className="grid grid-cols-2 gap-2">
                   {EXAMPLE_REF_VIDEOS.map((u) => (
                     <button key={u} type="button" onClick={() => setRefVideo({ url: u, preview: u })}
-                      className="rounded-lg overflow-hidden border border-white/10 hover:border-[#7036F0] transition aspect-[9/16] bg-black">
+                      className="rounded-lg overflow-hidden border border-white/10 hover:border-[#00b2fc] transition aspect-[9/16] bg-black">
                       {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
                       <video src={u} className="w-full h-full object-cover" muted loop autoPlay playsInline />
                     </button>
@@ -491,7 +491,7 @@ export default function AdReferencePage() {
             )}
           </div>
 
-          {/* 右:结果区 */}
+          {/* Right: result area */}
           <div className="rounded-2xl p-5 min-h-[420px]" style={{ background: 'linear-gradient(160deg,#1b1d21,#141517)' }}>
             {busy && <div className="text-white/60 text-sm">{busy}</div>}
             {error && <div className="mb-3 rounded-lg bg-red-500/10 border border-red-500/30 px-3 py-2 text-sm text-red-300">{error}</div>}

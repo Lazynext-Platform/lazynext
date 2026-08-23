@@ -9,25 +9,33 @@ import { Shell } from '@/components/Shell';
 
 
 export const metadata: Metadata = {
-  title: 'Atlas Marketing Studio - AI E-commerce Ad Studio',
+  title: 'Lazynext — AI E-commerce Ad Studio',
   description:
-    'Atlas Marketing Studio is an open-source AI e-commerce ad studio for UGC product ads, reference-ad remakes, AI drama ads, and ad skits.',
+    'Lazynext is an AI e-commerce ad studio for generating UGC product ads, reference-ad remakes, AI drama ads, and ad skits.',
   // Atlas OSS force-downloads media when a Referer is sent — drop it so <img>/<video> render inline.
   referrer: 'no-referrer',
+  icons: {
+    icon: [{ url: '/favicon-32.png', sizes: '32x32', type: 'image/png' }],
+    apple: [{ url: '/icon-180.png', sizes: '180x180', type: 'image/png' }],
+  },
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  // 服务端读真实 session 作为 SessionProvider 的初始值:让 SSR 与 client 首帧的 session 状态
-  // 完全一致(都用这份),从根上消除 next-auth 在登录态下的 SSR(loading) vs client(authenticated) 分歧(#418)。
-  // catch→null:即便 SSR 读库失败也不让整页 500,退化为未登录 SSR(客户端会自行 fetch)。
+  // Read the real session on the server as the SessionProvider initial value so SSR and the
+  // client first frame share the same session state, eliminating the next-auth SSR (loading) vs
+  // client (authenticated) divergence for signed-in users (#418).
+  // catch -> null: even if the SSR DB read fails, don't 500 the whole page; fall back to a
+  // signed-out SSR (the client will fetch on its own).
   const session = await getServerSession(authOptions).catch(() => null);
-  // 从 cookie 读用户语言,SSR 就渲染对应语言,并传给 client 作首帧初始值 → 语言层 SSR/client 一致。
+  // Read the user language from a cookie and render that language during SSR, then pass it to the
+  // client as the first-frame initial value -> language layer SSR/client consistency.
   const localeCookie = cookies().get('locale')?.value;
   const initialLocale = ((LOCALES as readonly string[]).includes(localeCookie || '') ? localeCookie : 'en') as Locale;
   return (
     <html lang={initialLocale}>
       <head>
-        {/* Space Grotesk 运行时经 CDN 加载(不在 build 期下载,避免离线/墙内构建失败);加载不到自动回退系统无衬线。 */}
+        {/* Space Grotesk is loaded at runtime via CDN (not downloaded at build time, to avoid
+            offline/build failures behind firewalls); falls back to a system sans-serif if unavailable. */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />

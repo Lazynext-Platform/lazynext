@@ -1,8 +1,8 @@
 import { putMedia, readMedia } from '@/lib/media-storage';
 
-// Atlas 生成结果落在带 force-download/防盗链/8天过期/无CORS 的临时 OSS,网页播不了。
-// 这里把它转存到我们自己的 R2(marketing-studio-media),返回同源、可内联播放、不过期的 url。
-// 转存失败时回退原 url(至少不让生成整个 break)。
+// Atlas generation results land on a temporary OSS with force-download/hotlink-protection/8-day expiry/no CORS, unplayable in browser.
+// Here we transfer them to our own R2 (marketing-studio-media), returning a same-origin, inline-playable, non-expiring url.
+// On transfer failure, falls back to the original url (at least doesn't break the entire generation).
 function ascii(bytes: Uint8Array, start: number, end: number): string {
   return String.fromCharCode(...bytes.slice(start, end));
 }
@@ -56,7 +56,7 @@ function sniffMedia(buffer: ArrayBuffer, declared: string): { contentType: strin
 export async function persistToR2(sourceUrl: string): Promise<string> {
   if (!/^https?:\/\//.test(sourceUrl)) return sourceUrl;
   try {
-    // 后端 fetch 不受浏览器 CORS/force-download 限制;不带 Referer 绕过 OSS 防盗链。
+    // Backend fetch is not subject to browser CORS/force-download restrictions; no Referer to bypass OSS hotlink protection.
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), 45_000);
     let buf: ArrayBuffer;
@@ -82,8 +82,8 @@ export async function persistToR2(sourceUrl: string): Promise<string> {
   }
 }
 
-// 从 R2 读一张媒体图转成 base64 data URI:给多模态 LLM 内联用。
-// 直接内联而不是把 /media/ URL 丢给 LLM,是因为海外 LLM(gemini)拉 workers.dev 图常超时(实测扩写卡死即此因)。
+// Read a media image from R2 and convert to base64 data URI: for inline use with multimodal LLM.
+// Inlining directly instead of passing the /media/ URL to the LLM, because overseas LLMs (gemini) often time out fetching workers.dev images (tested: expansion stalls due to this).
 export async function mediaToDataUri(url: string): Promise<string> {
   try {
     const media = await readMedia(url);

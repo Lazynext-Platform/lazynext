@@ -13,7 +13,7 @@ export async function POST(req: Request) {
   const body = await req.text();
   let event;
   try {
-    // Workers 无 Node crypto:必须用 async + SubtleCrypto 验签,否则付款成功但积分不到账。
+    // Workers has no Node crypto: must use async + SubtleCrypto for signature verification, otherwise payment succeeds but credits are not granted.
     event = await stripe.webhooks.constructEventAsync(body, sig, secret, undefined, Stripe.createSubtleCryptoProvider());
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);

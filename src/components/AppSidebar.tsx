@@ -12,7 +12,7 @@ import { CAT_META, catOf, appTitle, appDesc, isFeatured, type AppCat } from '@/c
 
 type NavApp = { href: string; id: string; icon: typeof Clapperboard };
 
-// 精简后侧栏只保留 4 个精品应用。
+// After trimming, the sidebar keeps only 4 premium apps.
 const PRIMARY_APPS: NavApp[] = [
   { href: '/marketing-studio', id: 'marketing-studio', icon: Clapperboard },
   { href: '/ad-reference', id: 'ad-reference', icon: Clapperboard },
@@ -36,7 +36,7 @@ export function AppSidebar() {
     return m;
   }, []);
 
-  // 默认展开「可投入生产」,其余折叠;点标题可展开/收起
+  // "Production-ready" is expanded by default, the rest are collapsed; click a title to expand/collapse.
   const [open, setOpen] = useState<Record<AppCat, boolean>>({ production: true, nocreative: false, incomplete: false });
 
   return (

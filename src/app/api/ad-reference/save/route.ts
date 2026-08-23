@@ -6,7 +6,7 @@ import { deliverableMediaUrl, sameOriginMediaPath } from '@/lib/public-media-url
 
 export const maxDuration = 30;
 
-// 保存爆款复刻最终成片到历史。编辑/配音/对口型中间任务各自落库但会被历史面板隐藏。
+// Save viral replica final video to history. Edit/dubbing/lip-sync intermediate tasks are each persisted but hidden from the history panel.
 export async function POST(req: Request) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });

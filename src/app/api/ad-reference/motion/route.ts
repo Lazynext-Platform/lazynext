@@ -10,9 +10,9 @@ import { uploadInputMediaToAtlas } from '@/lib/ad-reference-media';
 
 export const maxDuration = 60;
 
-// kling motion-control 兜底换人:出镜人图(image)+ 原参考视频(动作源 video)→ 让你的人做原片动作。
-// 用于 omni 换真人撞 1010002(deepfake)时的降级。kling 输入 image/video 均 ≤10MB;
-// 同源 R2 媒体先 bucket 直读上传 Atlas 临时 URL(绕 Worker 自抓 → 否则 Atlas 抓不到报参数无效)。
+// kling motion-control fallback person swap: on-camera person image + original reference video (motion source video) → let your person do the original video's motions.
+// Used as degradation when omni real-person swap hits 1010002 (deepfake). kling input image/video both ≤10MB;
+// same-origin R2 media is first read directly from bucket and uploaded to Atlas temporary URL (bypassing Worker self-fetch → otherwise Atlas can't fetch and reports invalid params).
 const KLING_MEDIA_LIMIT = 10_000_000;
 
 async function __byokPOST(req: Request) {
@@ -35,7 +35,7 @@ async function __byokPOST(req: Request) {
   if (!videoUrl) return NextResponse.json({ error: 'video_url_required' }, { status: 400 });
   if (!avatarUrl) return NextResponse.json({ error: 'avatar_url_required' }, { status: 400 });
 
-  // kling motion-control 按驱动视频秒数计费;前端随 body.videoSeconds 传参考视频时长,缺省保守用 30s。
+  // kling motion-control bills by driving video seconds; frontend passes reference video duration with body.videoSeconds, conservatively defaults to 30s.
   const videoSeconds = Number(body.videoSeconds) > 0 ? Number(body.videoSeconds) : 30;
 
   try {
@@ -47,7 +47,7 @@ async function __byokPOST(req: Request) {
       model: AD_REF_MOTION_MODEL,
       prompt: 'Motion transfer: animate the uploaded talent photo with the motion of the reference video.',
       submit: async () => {
-        // image=出镜人图,video=原参考视频(动作源);先上传 Atlas(kling ≤10MB,超限会在此抛 media_too_large)
+        // image=on-camera person image, video=original reference video (motion source); upload to Atlas first (kling ≤10MB, over limit throws media_too_large here)
         const [atlasImage, atlasVideo] = await Promise.all([
           uploadInputMediaToAtlas(body.avatarUrl, avatarUrl, req, 'adref-motion-image', KLING_MEDIA_LIMIT),
           uploadInputMediaToAtlas(body.videoUrl, videoUrl, req, 'adref-motion-video', KLING_MEDIA_LIMIT),

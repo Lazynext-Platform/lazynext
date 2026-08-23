@@ -14,8 +14,8 @@ export default function Providers({
   session: Session | null;
   initialLocale?: Locale;
 }) {
-  // session + initialLocale 均由 RootLayout 在服务端读好传入,让 SSR 与 client 首帧的
-  // session 状态和语言都一致 → 消除 hydration mismatch(#418)。
+  // Both session + initialLocale are read server-side by RootLayout and passed in, so SSR and client first frame
+  // share the same session state and locale → eliminates hydration mismatch (#418).
   return (
     <SessionProvider session={session} refetchOnWindowFocus={false}>
       <I18nProvider initialLocale={initialLocale}>{children}</I18nProvider>

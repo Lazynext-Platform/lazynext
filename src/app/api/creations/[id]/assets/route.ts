@@ -3,9 +3,9 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 
-// drama 作品文件夹的结构化资产更新。前端持有完整 assets(single source of truth),
-// 在关键节点(定妆图全部完成 / 每镜完成 / 成片完成)把最新整份 assets 覆盖写进 Creation。
-// 覆盖写而非深合并:drama 是单用户单会话顺序操作,前端 state 完整,覆盖最简单可靠。只允许本人。
+// Drama creation folder structured asset update. Frontend holds complete assets (single source of truth),
+// at key milestones (all look images complete / each shot complete / final video complete) overwrites the latest full assets into Creation.
+// Overwrite rather than deep merge: drama is single-user single-session sequential operation, frontend state is complete, overwrite is simplest and most reliable. Only allowed for owner.
 export async function PATCH(req: Request, { params }: { params: { id: string } }) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });

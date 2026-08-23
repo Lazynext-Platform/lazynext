@@ -1,8 +1,8 @@
 import Stripe from 'stripe';
 import type { PaymentProvider } from './types';
 
-// Cloudflare Workers 没有 Node 的 http 模块,Stripe SDK 必须用 fetch-based httpClient,
-// 否则 checkout.sessions.create 在线上直接失败(表现为前端点 "Buy credits" 没反应)。
+// Cloudflare Workers doesn't have Node's http module, so the Stripe SDK must use a fetch-based httpClient,
+// otherwise checkout.sessions.create fails in production (manifests as the frontend "Buy credits" button doing nothing).
 export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
   httpClient: Stripe.createFetchHttpClient(),
 });

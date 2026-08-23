@@ -1,4 +1,4 @@
-// Atlas Marketing Studio — canonical data model.
+// Lazynext — canonical data model.
 // This SQLite schema generates the Cloudflare D1 client. The build scripts
 // derive a PostgreSQL copy from the same models for Vercel/Neon.
 
@@ -110,7 +110,7 @@ model RedeemedCode {
   createdAt DateTime @default(now())
 }
 
-// ── Marketing Studio 资产层(可复用资产,复刻 Higgsfield Product/Avatar/BrandKit) ──
+// ── Reusable asset layer (reusable assets, modeled on Higgsfield Product/Avatar/BrandKit) ──
 model AdProduct {
   id          String   @id @default(cuid())
   userId      String

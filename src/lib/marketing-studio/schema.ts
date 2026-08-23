@@ -1,19 +1,19 @@
 /**
- * Marketing Studio 分镜计划校验(手写,风格对齐 product-ad-lab/schema.ts,不引第三方)。
+ * Marketing Studio storyboard plan validation (handwritten, style aligned with product-ad-lab/schema.ts, no third-party deps).
  */
 export interface AdShot {
   i: number;
-  shot: string; // 该镜画面/构图/景别(英文)
-  prompt: string; // 动作+运镜+对白(英文,台词双引号,喂给 Seedance 2.0)
+  shot: string; // this shot's framing/composition/shot size (English)
+  prompt: string; // action + camera motion + dialogue (English, dialogue in double quotes, fed to Seedance 2.0)
 }
 
 export interface MarketingPlan {
   title: string;
   ratio: string;
   formatId: string;
-  product: string; // 英文产品锚(每镜复述,锁一致性)
-  character: string; // 英文人物描述(可空)
-  scene: string; // 英文场景
+  product: string; // English product anchor (repeated per shot, locks consistency)
+  character: string; // English character description (can be empty)
+  scene: string; // English scene
   shots: AdShot[];
 }
 

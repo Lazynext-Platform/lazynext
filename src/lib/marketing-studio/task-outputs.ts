@@ -23,8 +23,8 @@ export function isInternalTaskTemplate(templateId: string): boolean {
 }
 
 /**
- * 同一个 Atlas getUrl 可能同时挂在“作品占位”和内部扣费任务上。
- * 状态认领、退款和持久化必须落到内部任务，不能误操作 cost=0 的作品占位。
+ * The same Atlas getUrl may be attached to both a "creation placeholder" and an internal billing task.
+ * Status claiming, refunds and persistence must land on the internal task, never mistakenly operating on a cost=0 creation placeholder.
  */
 export function selectInternalTask<T extends TaskCandidate>(tasks: T[]): T | undefined {
   return tasks.find((task) => isInternalTaskTemplate(task.templateId))

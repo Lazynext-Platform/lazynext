@@ -18,8 +18,8 @@ export type MarketingTaskPollResult = {
 };
 
 /**
- * Atlas 最终任务的单次“查询 + 持久化 + 落库”。
- * 生成页和作品页共用同一实现，因此即使生成页关闭，作品页也能把 Atlas 已完成结果自动回收到作品卡片。
+ * Single "poll + persist + record" pass for the final Atlas task.
+ * Shared by both the generation page and the creations page, so even if the generation page is closed, the creations page can automatically collect Atlas-completed results into the creation card.
  */
 export async function pollMarketingTask(getUrl: string): Promise<MarketingTaskPollResult> {
   try {

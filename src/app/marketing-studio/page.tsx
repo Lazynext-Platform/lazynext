@@ -21,14 +21,14 @@ import { planTaskResume } from '@/lib/marketing-studio/resume';
 import { videoCredits } from '@/lib/video-pricing';
 import { useI18n } from '@/i18n/provider';
 
-// ── Higgsfield marketing-studio/product 视觉规格(实测抓取)──
-// bg #131416 · 面板实心 #1c1e21 · accent lime #7036F0 · 近黑字 #131416
-// hero: Space Grotesk 700 uppercase / -1.6px / lh1.2 / 全白 rgba(255,255,255,.9)
-const LIME = '#7036F0';
-const INK = '#131416'; // lime 底上的近黑字(与页面底色一致)
+// ── Higgsfield marketing-studio/product visual specs (measured) ──
+// bg #131416 · solid panel #1c1e21 · accent lime #00b2fc · near-black text #131416
+// hero: Space Grotesk 700 uppercase / -1.6px / lh1.2 / all-white rgba(255,255,255,.9)
+const LIME = '#00b2fc';
+const INK = '#131416'; // near-black text on lime background (same as page background)
 const PANEL = '#1c1e21';
 const COSTS = { plan: 3, image: 5, video: 12 };
-// 视频模型:seedance-2.0/image-to-video(prompt 带台词 + generate_audio 即对口型,单步最便宜),与后端 REPLICA_VIDEO_MODEL 白名单一致
+// Video model: seedance-2.0/image-to-video (prompt with dialogue + generate_audio for lip-sync, cheapest single step), matches backend REPLICA_VIDEO_MODEL whitelist
 const REPLICA_VIDEO_MODEL = 'bytedance/seedance-2.0/image-to-video';
 
 async function postJson(url: string, body: unknown, signal?: AbortSignal) {
@@ -50,8 +50,9 @@ function imageToDataUrl(file: File): Promise<string> {
     r.readAsDataURL(file);
   });
 }
-// 代理轮询 Atlas 任务。必须串行查询:单次服务端查询最长 25s,用 setInterval 会堆出并发请求,
-// 把一次网关波动放大成 poll_gateway_unstable。瞬时错误自动退避,只在任务真实失败时终止。
+// Proxied polling of Atlas tasks. Must query serially: a single server-side query lasts up to 25s,
+// using setInterval would pile up concurrent requests and amplify a single gateway blip into poll_gateway_unstable.
+// Transient errors auto-back-off; only abort on genuine task failure.
 function pollGen(getUrl: string, signal: AbortSignal, onTransient: () => void): Promise<string> {
   return pollUntilComplete({
     getUrl,
@@ -76,12 +77,12 @@ function errText(code: string, locale: string) {
   return zh ? `出错了:${code}(可点重试)` : `Something went wrong: ${code} (try again)`;
 }
 
-// imgGetUrl/vidGetUrl = Atlas 任务查询地址:提交后立刻持久化,刷新/中断后凭它恢复轮询,不重复提交扣费。
+// imgGetUrl/vidGetUrl = Atlas task query URLs: persisted immediately after submission, so polling can resume after refresh/interruption without re-submitting or double-charging.
 type StepStatus = 'idle' | 'run' | 'paused' | 'done' | 'fail';
 type ShotState = { img: StepStatus; vid: StepStatus; imgUrl?: string; vidUrl?: string; imgGetUrl?: string; vidGetUrl?: string };
 type ComposeState = { status: 'idle' | 'run' | 'paused' | 'done' | 'fail'; frac: number; note: string; url: string };
 type ResumeSnapshot = { shot: ShotState; creationId: string };
-// 生成进度持久化 key:plan/视频状态存 localStorage,刷新或切页回来自动恢复现场、断点续跑。
+// Generation progress persistence key: plan/video state stored in localStorage, auto-restores on refresh or page return, resumes from checkpoint.
 const MK_SESSION_KEY = 'mk-session-v1';
 type Asset = { preview?: string; url?: string; uploading?: boolean };
 const CAT_LABEL: Record<string, string> = { all: 'All', ugc: 'UGC', commercial: 'Commercial', tiktok: 'TikTok' };
@@ -89,13 +90,13 @@ const CAT_ICON: Record<string, string> = { tiktok: '🎵', ugc: '👤', commerci
 const VIDEO_RATIOS = ['9:16', '16:9', '1:1', '4:3', '3:4'];
 const VIDEO_RESOLUTIONS = ['480p', '720p', '1080p'];
 const VIDEO_DURATIONS = [4, 5, 6, 8, 10, 12, 15];
-// 自定义 chevron(白色半透明),让原生 select 呈现统一 pill 外观
+// Custom chevron (white semi-transparent) to give native selects a unified pill appearance
 const CHEVRON = "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-opacity='0.55' stroke-width='3'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E\")";
 const selStyle: React.CSSProperties = { backgroundImage: CHEVRON, backgroundPosition: 'right 8px center', backgroundSize: '10px', backgroundRepeat: 'no-repeat' };
 
 function buildDirectMarketingPlan(input: { prompt: string; ratio: string; formatId: string; scene?: string }): MarketingPlan {
   const prompt = input.prompt.trim() || '产品视频';
-  // 选了场景则用它(→plan.scene→后端 buildShotImageEditPrompt 的 Scene:),否则退回无人产品场景默认
+  // If a scene is selected, use it (→plan.scene→backend buildShotImageEditPrompt's Scene:), otherwise fall back to the default no-presenter product scene
   const scene = input.scene
     ? `The whole scene is set in ${input.scene}. Request: ${prompt}.`
     : `Cinematic product scene for this request: ${prompt}. No presenter, no human, no storyboard panels.`;
@@ -143,7 +144,7 @@ export default function MarketingStudioPage() {
   const [videoRatio, setVideoRatio] = useState('9:16');
   const [videoResolution, setVideoResolution] = useState('1080p');
   const [videoDuration, setVideoDuration] = useState(15);
-  const [productAssets, setProductAssets] = useState<Asset[]>([]); // 产品图支持多张
+  const [productAssets, setProductAssets] = useState<Asset[]>([]); // product images support multiple
   const [avatarAsset, setAvatarAsset] = useState<Asset>({});
   const [plan, setPlan] = useState<MarketingPlan | null>(null);
   const [shots, setShots] = useState<ShotState[]>([]);
@@ -152,18 +153,18 @@ export default function MarketingStudioPage() {
   const [compose, setCompose] = useState<ComposeState>({ status: 'idle', frac: 0, note: '', url: '' });
   const [preview, setPreview] = useState<string | null>(null);
   const [credits, setCredits] = useState<number | null>(null);
-  const [creationId, setCreationId] = useState(''); // 点生成时创建的"作品占位"id,完成/失败时更新它
+  const [creationId, setCreationId] = useState(''); // "work placeholder" id created on generate, updated on completion/failure
   const [sessionHydrated, setSessionHydrated] = useState(false);
   const [resumeSnapshot, setResumeSnapshot] = useState<ResumeSnapshot | null>(null);
-  const [replica, setReplica] = useState<{ imgPrompt: string } | null>(null); // 非空=复刻模式(视频提示词已填入文本框可编辑),存出图专用构图 prompt
-  const [expanding, setExpanding] = useState(false); // AI 扩写提示词中
+  const [replica, setReplica] = useState<{ imgPrompt: string } | null>(null); // non-null = replica mode (video prompt filled into text box, editable), stores the image-generation-specific composition prompt
+  const [expanding, setExpanding] = useState(false); // AI expanding prompt in progress
   const productInput = useRef<HTMLInputElement>(null);
   const avatarInput = useRef<HTMLInputElement>(null);
   const runAbortRef = useRef<AbortController | null>(null);
 
   const fmt = useMemo(() => AD_FORMATS.find((f) => f.id === formatId) || AD_FORMATS[0], [formatId]);
   const visibleFormats = useMemo(() => (category === 'all' ? AD_FORMATS : AD_FORMATS.filter((f) => f.category === category)), [category]);
-  // 视频步骤动态计费(按当前选的分辨率/时长实时算);首帧图仍走固定 COST.image。
+  // Video step dynamic billing (calculated live from selected resolution/duration); first-frame image still uses fixed COST.image.
   const videoCost = videoCredits(REPLICA_VIDEO_MODEL, videoResolution, videoDuration);
   const shotCost = COSTS.image + videoCost;
   const hasCreditsForVideo = byokActive || status !== 'authenticated' || credits === null || credits >= shotCost;
@@ -195,28 +196,28 @@ export default function MarketingStudioPage() {
     const h = () => {
       if (status === 'authenticated') void refreshCredits();
     };
-    window.addEventListener('atlas:credits', h);
-    return () => window.removeEventListener('atlas:credits', h);
+    window.addEventListener('lazynext:credits', h);
+    return () => window.removeEventListener('lazynext:credits', h);
   }, [status, refreshCredits]);
 
-  // ── 生成进度持久化:刷新/切页不丢现场 ──
-  // 恢复(mounted 后一次):24h 内的会话恢复 plan/视频状态。只要保存了 getUrl,
-  // 刷新后就继续轮询同一 Atlas 任务,绝不重新提交或重复扣费。
+  // ── Generation progress persistence: refresh/page-switch won't lose state ──
+  // Restore (once after mounted): sessions within 24h restore plan/video state. As long as getUrl is saved,
+  // polling resumes on the same Atlas task after refresh — never re-submits or double-charges.
   useEffect(() => {
     if (!mounted) return;
     try {
       const raw = localStorage.getItem(MK_SESSION_KEY);
       if (!raw) return;
       const s = JSON.parse(raw);
-      if (Date.now() - (s.ts || 0) > 24 * 3600_000) return; // 只看时效;不再要求有 plan(填了输入还没生成也要恢复,登录跳转回来不丢)
-      // 输入项一律恢复(登录 OAuth 跳转/刷新回来都不丢)
+      if (Date.now() - (s.ts || 0) > 24 * 3600_000) return; // only check freshness; no longer require a plan (restore inputs even before generation, so login redirect return doesn't lose them)
+      // Restore all input fields (login OAuth redirect/refresh return won't lose them)
       if (typeof s.product === 'string') setProduct(s.product);
       if (typeof s.formatId === 'string' && s.formatId) setFormatId(s.formatId);
       if (typeof s.hookId === 'string' && s.hookId) setHookId(s.hookId);
       if (typeof s.settingId === 'string' && s.settingId) setSettingId(s.settingId);
       if (typeof s.avatarId === 'string' && s.avatarId) setAvatarId(s.avatarId);
       if (s.replica && typeof s.replica.imgPrompt === 'string') setReplica(s.replica);
-      // 图只存了 url(R2/同源,可恢复);blob preview 重载即失效,用 url 兜底
+      // Images only stored as url (R2/same-origin, restorable); blob preview is invalid on reload, url used as fallback
       const purls: string[] = Array.isArray(s.productUrls) ? s.productUrls.filter(Boolean) : (s.productUrl ? [s.productUrl] : []);
       if (purls.length) setProductAssets(purls.map((u: string) => ({ preview: u, url: u })));
       if (s.avatarUrl) setAvatarAsset({ preview: s.avatarUrl, url: s.avatarUrl });
@@ -225,8 +226,8 @@ export default function MarketingStudioPage() {
       if (VIDEO_RATIOS.includes(s.videoRatio)) setVideoRatio(s.videoRatio);
       const restoredCreationId = typeof s.creationId === 'string' ? s.creationId : '';
       if (restoredCreationId) setCreationId(restoredCreationId);
-      // plan/shots 仅在确有已生成内容时恢复。未完成步骤保留 getUrl 并标为 paused,
-      // 下一次 effect 直接恢复查询;旧实现清掉 getUrl 会导致重提任务和重复扣费。
+      // plan/shots only restored when there is actual generated content. Incomplete steps keep getUrl and are marked paused,
+      // so the next effect resumes polling directly; the old implementation cleared getUrl, causing task re-submission and double charges.
       if (s.plan?.shots?.length) {
         setPlan(s.plan);
         const first = Array.isArray(s.shots) && s.shots[0] ? s.shots[0] : { img: 'idle', vid: 'idle' };
@@ -262,14 +263,14 @@ export default function MarketingStudioPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mounted]);
 
-  // 保存:plan/视频状态每次变化都落 localStorage(imgUrl/vidUrl 是 R2 同源地址,持久可播)。
+  // Save: plan/video state persisted to localStorage on every change (imgUrl/vidUrl are R2 same-origin URLs, persistent and playable).
   useEffect(() => {
-    if (!mounted || !sessionHydrated) return; // 等恢复 effect 完成,避免首个空状态覆盖尚未读出的任务
+    if (!mounted || !sessionHydrated) return; // wait for restore effect to finish, avoid first empty state overwriting not-yet-read tasks
     try {
       localStorage.setItem(MK_SESSION_KEY, JSON.stringify({
         plan, shots, product, formatId, hookId, settingId, avatarId, replica,
         videoRatio, videoResolution, videoDuration, creationId,
-        productUrls: productAssets.map((a) => a.url).filter(Boolean), avatarUrl: avatarAsset.url || '', // 图只存 R2/同源 url(blob preview 重载即失效)
+        productUrls: productAssets.map((a) => a.url).filter(Boolean), avatarUrl: avatarAsset.url || '', // images only store R2/same-origin url (blob preview invalid on reload)
         ts: Date.now(),
       }));
     } catch { /* storage full etc. */ }
@@ -282,7 +283,7 @@ export default function MarketingStudioPage() {
     const snapshot = resumeSnapshot;
     setResumeSnapshot(null);
     void genDirectVideo(snapshot.shot, snapshot.creationId);
-    // 恢复快照只消费一次;genDirectVideo 使用恢复完成后的当前表单/plan 状态。
+    // Restore snapshot consumed only once; genDirectVideo uses the current form/plan state after restore completes.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sessionHydrated, resumeSnapshot]);
 
@@ -302,7 +303,7 @@ export default function MarketingStudioPage() {
       } catch (e) { setAvatarAsset({}); setErr(e instanceof Error ? e.message : 'upload_failed'); }
       return;
     }
-    // 产品图:追加到数组(可多张)。用对象引用定位这张,完成/失败只改这张。
+    // Product image: append to array (supports multiple). Use object reference to locate this one, only update it on completion/failure.
     const slot: Asset = { preview: dataUrl, uploading: true };
     setProductAssets((prev) => [...prev, slot]);
     try {
@@ -327,30 +328,30 @@ export default function MarketingStudioPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mounted]);
 
-  // 一键复刻:把该样例的产品图 + 产品描述带入生成器,选中对应玩法,滚回顶部,用户可直接生成同款广告(也可换成自己的产品图)。
+  // One-click replica: brings the example's product image + product description into the generator, selects the corresponding format, scrolls back to top, user can directly generate the same ad (or swap in their own product image).
   function replicateExample(fid: string) {
     const r = EXAMPLE_RECIPES[fid];
     setFormatId(fid);
     setReplica(r ? { imgPrompt: r.imgPrompt } : null);
     if (r) {
-      setProduct(r.vidPrompt); // 完整视频提示词填入文本框:用户可见、可编辑、可微调台词/动作/场景
-      setProductAssets(r.image ? [{ preview: r.image, url: r.image }] : []); // 带入产品图(可再加自己的多张)
-      setAvatarAsset(r.avatar ? { preview: r.avatar, url: r.avatar } : {}); // 带入人物图(UGC 口播类才有),无则清空
+      setProduct(r.vidPrompt); // full video prompt filled into text box: user can see, edit, and fine-tune dialogue/action/scene
+      setProductAssets(r.image ? [{ preview: r.image, url: r.image }] : []); // bring in product image (can add more of your own)
+      setAvatarAsset(r.avatar ? { preview: r.avatar, url: r.avatar } : {}); // bring in person image (UGC voiceover types only), clear if none
     }
     setPlan(null); setShots([]); setErr(null);
     setCompose({ status: 'idle', frac: 0, note: '', url: '' });
-    // 延迟到本次 setState 重渲染之后再滚,否则 smooth 动画会被打断,用户停在卡片墙看不到"已填好"。
+    // Delay scroll until after this setState re-render, otherwise the smooth animation gets interrupted and the user stays on the card wall without seeing "filled in".
     if (typeof window !== 'undefined') setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 60);
   }
 
-  // AI 扩写:把文本框里的简短描述扩写成完整 UGC 视频提示词(参考已上传的产品图/人物图,台词跟随输入语言)
+  // AI expand: expands the short description in the text box into a full UGC video prompt (references uploaded product/person images, dialogue follows input language)
   async function expandPrompt() {
     const brief = product.trim();
     if (!brief) { setErr(locale === 'zh' ? '请先输入简短描述再扩写' : 'Enter a short brief first'); return; }
     setExpanding(true); setErr(null);
     try {
       const r = await postJson('/api/marketing-studio/expand-prompt', { brief, formatId, productUrls: productAssets.map((a) => a.url).filter(Boolean), avatarUrl: avatarAsset.url || '' });
-      if (r.prompt) { setProduct(r.prompt); setReplica(null); } // 扩写结果=手动详细脚本(非复刻),出图也用它
+      if (r.prompt) { setProduct(r.prompt); setReplica(null); } // expand result = manual detailed script (not replica), image generation also uses it
     } catch (e) {
       setErr(String((e as Error).message || e));
     } finally {
@@ -368,9 +369,9 @@ export default function MarketingStudioPage() {
     const controller = new AbortController();
     runAbortRef.current = controller;
 
-    // 场景/钩子下拉 → 注入 prompt 占位(both 复刻/普通模式生效):场景进画面(出图+视频),钩子进视频开场
-    const settingRecipe = getSetting(settingId).recipe; // 英文场景描述(空=智能自选)
-    const hookEn = getHook(hookId).promptEn || ''; // 英文开场钩子指令
+    // Scene/hook dropdowns → inject prompt placeholders (effective in both replica/normal mode): scene into visuals (image+video), hook into video opening
+    const settingRecipe = getSetting(settingId).recipe; // English scene description (empty = smart auto-select)
+    const hookEn = getHook(hookId).promptEn || ''; // English opening hook instruction
     const sceneAdd = settingRecipe ? ` The whole scene is set in ${settingRecipe}.` : '';
     const hookAdd = hookEn ? ` Opening hook in the first 3 seconds: ${hookEn}.` : '';
     const directPlan = hasExistingWork && plan
@@ -406,17 +407,17 @@ export default function MarketingStudioPage() {
         return;
       }
 
-      // 新任务或真正失败后的重新生成才建占位;已有 getUrl 的恢复查询不新建、不扣费。
+      // Only create placeholder for new tasks or regeneration after genuine failure; resume queries with existing getUrl don't create new ones or charge.
       if (!cid && !hasPendingTask) {
         try {
           const st = await postJson('/api/creations/start', { type: 'marketing-studio', title: directPlan.title || product.slice(0, 60) || '产品广告' }, controller.signal);
           cid = st.id;
           setCreationId(cid);
-        } catch { /* 占位失败不阻断生成 */ }
+        } catch { /* placeholder failure doesn't block generation */ }
       }
 
       let imgUrl = local.imgUrl || '';
-      // 已经有视频任务时绝不回头重做首帧;轮询视频本身不再需要 imageUrl。
+      // Never redo the first frame when a video task already exists; polling the video itself no longer needs imageUrl.
       if (!local.vidGetUrl && !local.vidUrl && !imgUrl) {
         setCompose({ status: 'run', frac: 0.15, note: locale === 'zh' ? '生成首帧' : 'Generating first frame', url: '' });
         local.img = 'run';
@@ -427,7 +428,7 @@ export default function MarketingStudioPage() {
             shotIndex: 0,
             productUrls: productAssets.map((a) => a.url).filter(Boolean),
             avatarUrl: avatarAsset.url || '',
-            promptOverride: (replica ? replica.imgPrompt : product.trim()) + sceneAdd, // 出图 prompt:复刻用配方构图,手动/扩写用文本框内容
+            promptOverride: (replica ? replica.imgPrompt : product.trim()) + sceneAdd, // image prompt: replica uses recipe composition, manual/expand uses text box content
           }, controller.signal);
           local.imgGetUrl = im.getUrl;
           setShots([{ ...local }]);
@@ -446,11 +447,11 @@ export default function MarketingStudioPage() {
         if (!local.vidGetUrl) {
           const vd = await postJson('/api/marketing-studio/shot-video', {
             imageUrl: imgUrl,
-            prompt: product.trim() + sceneAdd + hookAdd + ' No subtitles, no captions, no on-screen text or watermark.', // 视频 prompt = 文本框内容 + 场景 + 钩子;明确禁字幕(seedance 常自动烧字幕)
+            prompt: product.trim() + sceneAdd + hookAdd + ' No subtitles, no captions, no on-screen text or watermark.', // video prompt = text box content + scene + hook; explicitly disable subtitles (seedance often auto-burns them)
             ratio: directPlan.ratio,
             resolution: videoResolution,
             duration: videoDuration,
-            model: REPLICA_VIDEO_MODEL, // 统一 seedance-2.0 i2v(prompt 带台词 + generate_audio):复刻和手动扩写都能对口型出口播
+            model: REPLICA_VIDEO_MODEL, // unified seedance-2.0 i2v (prompt with dialogue + generate_audio): both replica and manual expand can lip-sync voiceover
             creationId: cid,
           }, controller.signal);
           local.vidGetUrl = vd.getUrl;
@@ -463,7 +464,7 @@ export default function MarketingStudioPage() {
       setShots([{ ...local }]);
       setCompose({ status: 'done', frac: 1, note: 'Done', url: vidUrl });
 
-      // 存历史:成片 URL → 写 Creation(登录用户;失败不影响页面展示)
+      // Save history: final video URL → write Creation (logged-in users; failure doesn't affect page display)
       try {
         await postJson('/api/marketing-studio/save-reel', {
           url: vidUrl,
@@ -473,8 +474,8 @@ export default function MarketingStudioPage() {
           creationId: cid,
         }, controller.signal);
       } catch { /* ignore history save failure */ }
-      setCreationId(''); // 本条已完成,下次点生成再建新占位
-      setReplica(null); // 复刻完成,退出复刻模式
+      setCreationId(''); // this one is done, next generate creates a new placeholder
+      setReplica(null); // replica complete, exit replica mode
     } catch (e) {
       if (controller.signal.aborted) return;
       const message = e instanceof Error ? e.message : 'video_failed';
@@ -483,8 +484,8 @@ export default function MarketingStudioPage() {
       setErr(recoverable ? 'poll_temporarily_unavailable' : message);
       const activeStep = local.vid === 'run' ? 'vid' : local.img === 'run' ? 'img' : null;
       if (activeStep) local[activeStep] = recoverable ? 'paused' : 'fail';
-      // Atlas 明确返回 failed 时该步骤已经退款;清掉旧 getUrl,下次才允许重新提交该步骤。
-      // 网关/浏览器中断则必须保留 getUrl,让"继续查询"和刷新恢复同一个已扣费任务。
+      // When Atlas explicitly returns failed, that step has already been refunded; clear the old getUrl so the next attempt can re-submit that step.
+      // On gateway/browser interruption, getUrl must be kept so "continue checking" and refresh resume the same already-charged task.
       if (terminal && activeStep === 'img') local.imgGetUrl = undefined;
       if (terminal && activeStep === 'vid') local.vidGetUrl = undefined;
       setShots([{ ...local }]);
@@ -496,7 +497,7 @@ export default function MarketingStudioPage() {
           }
         : current);
       if (!recoverable) {
-        // 只有确定失败才把作品占位标为 failed;查询波动时保持 processing。
+        // Only mark the work placeholder as failed on definite failure; keep processing during query instability.
         if (cid) fetch(`/api/creations/${cid}`, { method: 'POST', headers: { 'Content-Type': 'application/json', ...byokHeaders() }, body: JSON.stringify({ status: 'failed', error: message }) }).catch(() => {});
         setCreationId('');
       }
@@ -504,7 +505,7 @@ export default function MarketingStudioPage() {
       if (runAbortRef.current === controller) {
         runAbortRef.current = null;
         setBusy(null);
-        window.dispatchEvent(new Event('atlas:credits'));
+        window.dispatchEvent(new Event('lazynext:credits'));
       }
     }
   }
@@ -516,9 +517,9 @@ export default function MarketingStudioPage() {
       'radial-gradient(70% 55% at 50% -6%, rgba(112,54,240,0.06) 0%, rgba(112,54,240,0) 60%), linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px)',
     backgroundSize: 'auto, 44px 44px, 44px 44px',
   } as React.CSSProperties;
-  const selCls = 'appearance-none bg-white/[0.04] rounded-lg pl-2.5 pr-7 py-2 text-xs text-white/90 focus:outline-none focus:ring-1 focus:ring-[#7036F0]';
+  const selCls = 'appearance-none bg-white/[0.04] rounded-lg pl-2.5 pr-7 py-2 text-xs text-white/90 focus:outline-none focus:ring-1 focus:ring-[#00b2fc]';
 
-  // 单张已上传缩略图(带删除);产品图可多张,人物图单张
+  // Single uploaded thumbnail (with delete); product images support multiple, person image is single
   const ThumbSlot = ({ asset, onRemove, label }: { asset: Asset; onRemove: () => void; label: string }) => (
     <div className="relative w-14 h-14 rounded-2xl overflow-hidden border border-white/15 shrink-0">
       {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -529,22 +530,23 @@ export default function MarketingStudioPage() {
     </div>
   );
   const AddSlot = ({ onClick, label }: { onClick: () => void; label: string }) => (
-    <button onClick={onClick} className="w-14 h-14 rounded-2xl bg-white/[0.03] border border-white/10 hover:border-[#7036F0]/60 hover:bg-white/[0.06] flex flex-col items-center justify-center gap-0.5 text-white/45 hover:text-[#7036F0] transition shrink-0">
+    <button onClick={onClick} className="w-14 h-14 rounded-2xl bg-white/[0.03] border border-white/10 hover:border-[#00b2fc]/60 hover:bg-white/[0.06] flex flex-col items-center justify-center gap-0.5 text-white/45 hover:text-[#00b2fc] transition shrink-0">
       <Plus className="w-4 h-4" /><span className="text-[8px] uppercase tracking-wide leading-none text-center px-0.5">{label}</span>
     </button>
   );
 
-  // 顶层 hydration gate:首帧(SSR + client hydration)统一渲染空骨架,mounted 后再渲染真实内容,
-  // 彻底规避页面内 client-only 状态(session/credits/locale)造成的 SSR≠client 分歧(React #418)。
+  // Top-level hydration gate: first frame (SSR + client hydration) renders a uniform empty skeleton, real content only after mounted,
+  // completely avoiding SSR≠client divergence caused by in-page client-only state (session/credits/locale) (React #418).
   if (!mounted) return <main className="min-h-screen text-[#f7f7f8]" style={gridBg} />;
   return (
     <main className="min-h-screen text-[#f7f7f8]" style={gridBg}>
-      {/* 顶栏 */}
+      {/* Top bar */}
       <div className="px-6 sm:px-8 py-5">
         <div className="mx-auto flex w-full max-w-6xl items-center gap-3">
           <a href="/" className="flex items-center gap-2 hover:opacity-80 transition">
-            <div className="w-7 h-7 rounded-lg grid place-items-center text-sm" style={{ background: LIME }}>🎬</div>
-            <b className="text-sm tracking-tight">Marketing Studio</b>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/lazynext-mark.png" alt="Lazynext" className="h-7 w-7 rounded-lg" />
+            <b className="text-sm tracking-tight">Lazynext</b>
           </a>
           <a href="/" className="flex items-center gap-1 text-xs text-white/60 hover:text-white transition">← {locale === 'zh' ? '全部应用' : 'All apps'}</a>
         </div>
@@ -552,7 +554,7 @@ export default function MarketingStudioPage() {
 
       {/* Hero */}
       <div className="text-center pt-14 pb-10 px-6">
-        <div className="text-[11px] uppercase tracking-[0.24em] text-white/50 font-medium mb-3" style={{ fontFamily: 'var(--font-grotesk), "Space Grotesk", sans-serif' }}>Marketing Studio</div>
+        <div className="text-[11px] uppercase tracking-[0.24em] text-white/50 font-medium mb-3" style={{ fontFamily: 'var(--font-grotesk), "Space Grotesk", sans-serif' }}>Lazynext</div>
         <h1 className="font-bold uppercase leading-[1.08] tracking-[-0.03em] text-[clamp(40px,5.4vw,58px)] text-white/90" style={{ fontFamily: 'var(--font-grotesk), "Space Grotesk", system-ui, sans-serif' }}>
           {locale === 'zh'
             ? <>把任何产品<br />变成视频广告</>
@@ -560,15 +562,15 @@ export default function MarketingStudioPage() {
         </h1>
       </div>
 
-      {/* 生成器面板 */}
+      {/* Generator panel */}
       <div className="max-w-4xl mx-auto px-4">
         <div className="rounded-3xl border border-white/[0.06] p-4 sm:p-5 shadow-[0_24px_70px_-24px_rgba(0,0,0,0.85)]" style={{ background: PANEL }}>
           <div className="flex items-stretch gap-4">
-            {/* prompt + 控件 */}
+            {/* prompt + controls */}
             <div className="flex-1 min-w-0 flex flex-col">
               <input ref={productInput} type="file" accept="image/*" multiple className="hidden" onChange={(e) => { Array.from(e.target.files || []).forEach((f) => void onPick('product', f)); e.target.value = ''; }} />
               <input ref={avatarInput} type="file" accept="image/*" className="hidden" onChange={(e) => { void onPick('avatar', e.target.files?.[0]); e.target.value = ''; }} />
-              {/* 上传图:产品(可多张,一次可多选)+ 人物,横排放输入框上方 */}
+              {/* Upload images: product (multiple, multi-select) + person, laid out above the input box */}
               <div className="flex flex-wrap items-center gap-1.5 mb-2.5">
                 {productAssets.map((a, i) => <ThumbSlot key={i} asset={a} onRemove={() => setProductAssets((prev) => prev.filter((_, j) => j !== i))} label={locale === 'zh' ? '产品' : 'Product'} />)}
                 {productAssets.length < 4 && <AddSlot onClick={() => productInput.current?.click()} label={productAssets.length ? (locale === 'zh' ? '加产品' : 'Add') : (locale === 'zh' ? '产品' : 'Product')} />}
@@ -594,13 +596,13 @@ export default function MarketingStudioPage() {
                 <select value={videoRatio} onChange={(e) => setVideoRatio(e.target.value)} className={selCls} style={selStyle} title={locale === 'zh' ? '画面比例' : 'Aspect ratio'}>{VIDEO_RATIOS.map((r) => <option key={r} value={r}>{r}</option>)}</select>
                 <select value={videoResolution} onChange={(e) => setVideoResolution(e.target.value)} className={selCls} style={selStyle} title={locale === 'zh' ? '分辨率' : 'Resolution'}>{VIDEO_RESOLUTIONS.map((r) => <option key={r} value={r}>{r}</option>)}</select>
                 <select value={videoDuration} onChange={(e) => setVideoDuration(Number(e.target.value))} className={selCls} style={selStyle} title={locale === 'zh' ? '时长' : 'Duration'}>{VIDEO_DURATIONS.map((d) => <option key={d} value={d}>{d}s</option>)}</select>
-                {/* 语言下拉已移除:台词语言自动跟随文本框里输入的语言(中文输入→中文台词) */}
+                {/* Language dropdown removed: dialogue language auto-follows the language typed in the text box (Chinese input → Chinese dialogue) */}
               </div>
             </div>
-            {/* GENERATE(通高) */}
+            {/* GENERATE (full height) */}
             <button onClick={() => void genDirectVideo()} disabled={busy !== null || productAssets.some((a) => a.uploading) || avatarAsset.uploading || !hasCreditsForVideo}
               className="self-stretch px-6 rounded-2xl font-extrabold text-sm flex flex-col items-center justify-center gap-1.5 disabled:opacity-50 transition hover:brightness-105 shrink-0"
-              style={{ background: `radial-gradient(90% 90% at 50% 120%, #a78bfa 0%, rgba(167,139,250,0) 60%), ${LIME}`, color: '#fff' }}>
+              style={{ background: `radial-gradient(90% 90% at 50% 120%, #22d3ee 0%, rgba(167,139,250,0) 60%), ${LIME}`, color: '#fff' }}>
               {busy === 'video' ? <Loader2 className="w-5 h-5 animate-spin" /> : <Video className="w-5 h-5" />}
               <span>{byokActive ? (locale === 'zh' ? '生成视频' : 'GENERATE') : (!hasCreditsForVideo ? (locale === 'zh' ? '积分不足' : 'LOW CREDITS') : (locale === 'zh' ? '生成视频' : 'GENERATE'))}</span>{!byokActive && <span className="text-[10px] opacity-70">✦ {shotCost}</span>}
             </button>
@@ -619,7 +621,7 @@ export default function MarketingStudioPage() {
 
       {err && <div className="max-w-4xl mx-auto px-4 mt-4 mb-6"><div className="flex items-center gap-2 text-sm text-red-400 bg-red-500/10 border border-red-500/25 rounded-lg px-3 py-2"><AlertCircle className="w-4 h-4" />{errText(err, locale)}</div></div>}
 
-      {/* 成片 */}
+      {/* Final video */}
       {compose.status !== 'idle' && (
         <div className="max-w-md mx-auto px-4 pb-16">
           <div className="rounded-3xl border border-white/10 p-5 shadow-[0_24px_80px_-28px_rgba(112,54,240,0.55)]" style={{ background: PANEL }}>
@@ -636,7 +638,7 @@ export default function MarketingStudioPage() {
             </div>
             {compose.status === 'run' && (
               <>
-                <div className="h-1.5 bg-white/10 rounded-full overflow-hidden mb-4"><div className="h-full rounded-full transition-all" style={{ width: `${Math.round(compose.frac * 100)}%`, background: `linear-gradient(90deg,#a78bfa,${LIME})` }} /></div>
+                <div className="h-1.5 bg-white/10 rounded-full overflow-hidden mb-4"><div className="h-full rounded-full transition-all" style={{ width: `${Math.round(compose.frac * 100)}%`, background: `linear-gradient(90deg,#22d3ee,${LIME})` }} /></div>
                 <div className="relative mx-auto aspect-[9/16] w-full max-w-[300px] rounded-2xl overflow-hidden border border-white/10 bg-black/40 grid place-items-center">
                   <div className="flex flex-col items-center gap-2 text-white/50"><Loader2 className="w-9 h-9 animate-spin" style={{ color: LIME }} /><span className="text-xs">{compose.note || (locale === 'zh' ? '生成中…' : 'Generating…')}</span></div>
                 </div>
@@ -656,7 +658,7 @@ export default function MarketingStudioPage() {
                 <p className="mt-2 text-[11px] text-white/35">{locale === 'zh' ? '点视频右下角开声音听口播 🔊' : 'Tap the video volume to hear the voiceover 🔊'}</p>
                 <div className="mt-2 flex items-center gap-2">
                   <a href={compose.url} download="ad.mp4" className="inline-flex items-center gap-1.5 text-sm font-bold px-4 py-2 rounded-xl text-white transition hover:brightness-110" style={{ background: LIME }}><Download className="w-4 h-4" />{locale === 'zh' ? '下载视频' : 'Download'}</a>
-                  <button onClick={() => void genDirectVideo()} disabled={busy !== null} className="inline-flex items-center gap-1.5 text-sm px-4 py-2 rounded-xl border border-white/15 hover:border-[#7036F0] disabled:opacity-50 transition">{busy ? <Loader2 className="w-4 h-4 animate-spin" /> : <Video className="w-4 h-4" />}{locale === 'zh' ? '再生成一个' : 'Regenerate'}</button>
+                  <button onClick={() => void genDirectVideo()} disabled={busy !== null} className="inline-flex items-center gap-1.5 text-sm px-4 py-2 rounded-xl border border-white/15 hover:border-[#00b2fc] disabled:opacity-50 transition">{busy ? <Loader2 className="w-4 h-4 animate-spin" /> : <Video className="w-4 h-4" />}{locale === 'zh' ? '再生成一个' : 'Regenerate'}</button>
                 </div>
               </div>
             )}
@@ -682,7 +684,7 @@ export default function MarketingStudioPage() {
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
           {visibleFormats.map((f) => (
             <button key={f.id} onClick={() => { setFormatId(f.id); setReplica(null); }}
-              className={`group relative text-left rounded-2xl overflow-hidden border transition aspect-[9/16] ${formatId === f.id ? 'border-[#7036F0] ring-2 ring-[#7036F0]/40' : 'border-white/8 hover:border-white/20'}`}
+              className={`group relative text-left rounded-2xl overflow-hidden border transition aspect-[9/16] ${formatId === f.id ? 'border-[#00b2fc] ring-2 ring-[#00b2fc]/40' : 'border-white/8 hover:border-white/20'}`}
               style={{ background: 'linear-gradient(160deg,#1b1d21,#141517)' }}>
               {EXAMPLE_VIDEOS[f.id] ? (
                 <LazyVideo src={EXAMPLE_VIDEOS[f.id]} className="absolute inset-0 w-full h-full object-cover" />

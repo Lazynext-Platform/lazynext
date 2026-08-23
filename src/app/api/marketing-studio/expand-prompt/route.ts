@@ -8,9 +8,9 @@ import { getFormat } from '@/lib/marketing-studio/formats';
 
 export const maxDuration = 60;
 
-// 多模态 LLM(gemini,能看图)把简短描述 + 上传的产品图/人物图 扩写成完美 UGC 视频 prompt。
-// 图片从 R2 读成 base64 内联(不给 LLM 外链 URL,否则海外 LLM 拉 workers.dev 图超时)→ 模型真正"看到"
-// 产品是什么(化妆品/水杯/耳机…),扩写才贴合实际产品。台词语言跟随输入语言。
+// Multimodal LLM (gemini, can see images) expands a short description + uploaded product/person images into a perfect UGC video prompt.
+// Images are read from R2 as base64 inline (not giving LLM external link URLs, otherwise overseas LLM fetching workers.dev images times out) → model actually "sees"
+// what the product is (cosmetics/tumbler/earbuds…), so the expansion matches the actual product. Dialogue language follows the input language.
 const MODEL = process.env.MK_EXPAND_MODEL || 'google/gemini-2.5-flash';
 type Part = { type: 'text'; text: string } | { type: 'image_url'; image_url: { url: string } };
 
@@ -22,14 +22,14 @@ async function __byokPOST(req: Request) {
   const brief = typeof body.brief === 'string' ? body.brief.trim().slice(0, 1200) : '';
   if (!brief) return NextResponse.json({ error: 'brief_required' }, { status: 400 });
 
-  // 从 R2 把图读成 base64 内联(避免让 gemini 拉 workers.dev URL 超时)。产品图支持多张(productUrls[]),兼容旧单 productUrl。
+  // Read images from R2 as base64 inline (avoid letting gemini fetch workers.dev URL timeout). Product images support multiple (productUrls[]), backward compatible with single productUrl.
   const productUrls: string[] = Array.isArray(body.productUrls)
     ? body.productUrls.filter((u: unknown): u is string => typeof u === 'string' && !!u)
     : (typeof body.productUrl === 'string' && body.productUrl ? [body.productUrl] : []);
   const productImgs = (await Promise.all(productUrls.slice(0, 4).map((u) => mediaToDataUri(u)))).filter(Boolean);
   const avatarImg = typeof body.avatarUrl === 'string' ? await mediaToDataUri(body.avatarUrl) : '';
 
-  // 玩法(format)注入:让扩写贴合当前选中的玩法(素人口播/情侣共享/开箱 ASMR…)的叙事、节奏、镜头。
+  // Format (play style) injection: makes the expansion fit the currently selected format's (amateur spoken/couple sharing/unboxing ASMR…) narrative, pacing, and shots.
   const fmt = getFormat(typeof body.formatId === 'string' ? body.formatId : 'none');
   const fmtLine = fmt && fmt.id !== 'none'
     ? `AD FORMAT — this video uses the "${fmt.label}"${fmt.zh ? ` (${fmt.zh})` : ''} format. Follow this format's narrative & shot recipe exactly: ${fmt.hint} The presenter, pacing, framing and the spoken line must all fit this format.`

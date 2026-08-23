@@ -7,11 +7,11 @@ import { chargeSync, refundSync, chargeErrorResponse } from '@/lib/marketing-stu
 
 export const maxDuration = 120;
 
-// 剧本长文本比单张出方案贵些,单独定价。
+// Long script text is more expensive than single-shot plan generation, priced separately.
 const DRAMA_SCRIPT_COST = 5;
 
-// 剧情长剧本:需登录 + 扣 DRAMA_SCRIPT_COST;只返回真实 AI 剧本。
-// LLM 失败时退款并返回错误,避免把本地兜底剧本误当作 AI 产物继续出片。
+// Drama long script: requires login + charges DRAMA_SCRIPT_COST; only returns real AI script.
+// On LLM failure refunds and returns error, avoiding mistaking local fallback script as AI output to continue production.
 async function __byokPOST(req: Request) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
@@ -21,7 +21,7 @@ async function __byokPOST(req: Request) {
   const topic = typeof body.topic === 'string' ? body.topic.trim().slice(0, 2000) : '';
   const style = typeof body.style === 'string' ? body.style : 'epic';
   const lang = typeof body.lang === 'string' ? body.lang : '中文';
-  // 分镜数量默认交给 AI 按剧情节奏决定(4-6 段);前端显式传 segments 时作为"精确段数"要求。
+  // Shot count defaults to AI deciding based on story pacing (4-6 segments); when frontend explicitly passes segments it's treated as an "exact segment count" requirement.
   const targetSegments = body.segments ? Math.max(2, Math.min(8, Number(body.segments))) : undefined;
   if (!topic) return NextResponse.json({ error: 'topic_required' }, { status: 400 });
 

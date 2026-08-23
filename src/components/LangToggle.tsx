@@ -2,7 +2,7 @@
 
 import { useI18n } from '@/i18n/provider';
 
-// 语言切换(英/中),默认英文。点一下在 en / zh 之间切,记住到 localStorage。
+// Language toggle (EN/ZH), default English. Click to switch between en / zh, persisted to localStorage.
 export function LangToggle() {
   const { locale, setLocale } = useI18n();
   const cur = locale === 'zh' ? 'zh' : 'en';
@@ -13,7 +13,7 @@ export function LangToggle() {
           key={l}
           onClick={() => setLocale(l)}
           className={`rounded-full px-2.5 py-1.5 transition ${cur === l ? 'text-white' : 'text-white/50 hover:text-white/80'}`}
-          style={cur === l ? { background: '#7036F0' } : undefined}
+          style={cur === l ? { background: '#00b2fc' } : undefined}
         >
           {l === 'en' ? 'EN' : '中'}
         </button>

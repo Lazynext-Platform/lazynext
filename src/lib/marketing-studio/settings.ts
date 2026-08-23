@@ -1,12 +1,12 @@
 /**
- * Setting = 场景环境(注入 scene + 每镜图 prompt)。复刻 Higgsfield 的 Setting 资产层。
+ * Setting = scene environment (injects scene + per-shot image prompt). Replicates Higgsfield's Setting asset layer.
  */
 export interface AdSetting {
   id: string;
   label: string;
   en: string;
-  zh?: string; // 中文场景名
-  recipe: string; // 英文场景描述(空=让 LLM 自选)
+  zh?: string; // Chinese scene name
+  recipe: string; // English scene description (empty = let LLM auto-select)
 }
 
 export const AD_SETTINGS: AdSetting[] = [

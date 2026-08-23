@@ -5,8 +5,8 @@ import { getSetting } from './settings';
 import { getAvatar } from './avatars';
 import { marketingPlanSchema, type MarketingPlan } from './schema';
 
-// glm-5.2 是推理模型,常把 token 预算耗在 reasoning_content 上导致 content 为空 → plan 一直 fallback。
-// 换成实测能稳定吐出 content 的 doubao(可用 MK_PLAN_MODEL 覆盖)。
+// glm-5.2 is a reasoning model, often burning token budget on reasoning_content causing content to be empty → plan keeps falling back.
+// Switched to doubao which reliably outputs content in testing (overridable via MK_PLAN_MODEL).
 const PLAN_MODEL = process.env.MK_PLAN_MODEL || 'bytedance/doubao-seed-2.1-turbo-260628';
 
 export interface PlanInput {
@@ -54,7 +54,7 @@ function buildUserPrompt(input: PlanInput): string {
   const hook = getHook(input.hookId);
   const setting = getSetting(input.settingId);
   const avatar = getAvatar(input.avatarId);
-  const explicitChar = input.character.trim() || avatar.desc; // 手填优先,否则用 avatar preset
+  const explicitChar = input.character.trim() || avatar.desc; // manual input takes priority, otherwise use avatar preset
   return [
     `产品: ${input.product}`,
     `玩法: ${fmt.label} — ${fmt.hint}`,
@@ -78,7 +78,7 @@ export async function draftMarketingPlan(input: PlanInput): Promise<MarketingPla
       { role: 'user', content: buildUserPrompt(input) },
     ],
     PLAN_MODEL,
-    6000, // 加大上限:推理模型 reasoning 会吃 token,留足空间保证 JSON content 完整
+    6000, // increased limit: reasoning model's reasoning consumes tokens, leave enough space to ensure JSON content is complete
     90_000,
   );
   const json = extractJson(raw);
@@ -88,7 +88,7 @@ export async function draftMarketingPlan(input: PlanInput): Promise<MarketingPla
   return parsed.data;
 }
 
-/** LLM 不可用时的兜底分镜(保证前端仍能拿到可编辑的 shots) */
+/** Fallback storyboard when LLM is unavailable (ensures frontend still gets editable shots) */
 export function buildFallbackMarketingPlan(input: PlanInput): MarketingPlan {
   const fmt = getFormat(input.formatId);
   const setting = getSetting(input.settingId);

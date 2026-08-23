@@ -6,7 +6,7 @@ import { uploadMedia } from '@/lib/atlas';
 
 export const maxDuration = 60;
 
-// 上传参考图到 Atlas 拿持久 URL:需登录(防匿名滥用上传额度),不扣费。失败记日志 + 透传 detail。
+// Upload reference image to Atlas to get a persistent URL: requires login (prevents anonymous abuse of upload quota), no charge. Logs errors + passes through detail.
 async function __byokPOST(req: Request) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });

@@ -1,13 +1,13 @@
 /**
- * Hook = 结构化开场钩子(前 3 秒抓住观众,注入第一镜)。复刻 Higgsfield 的 Hook 资产层。
+ * Hook = structured opening hook (grabs viewers in the first 3 seconds, injected into the first shot). Replicates Higgsfield's Hook asset layer.
  */
 export interface AdHook {
   id: string;
   label: string;
   en: string;
-  zh?: string; // 中文钩子名
-  recipe: string; // 注入首镜的开场指令(中文,给前端展示/plan 参考)
-  promptEn?: string; // 英文开场指令(注入生成视频的 prompt 占位符;空=不指定)
+  zh?: string; // Chinese hook name
+  recipe: string; // opening instruction injected into the first shot (Chinese, for frontend display/plan reference)
+  promptEn?: string; // English opening instruction (injected into the video generation prompt placeholder; empty = unspecified)
 }
 
 export const AD_HOOKS: AdHook[] = [

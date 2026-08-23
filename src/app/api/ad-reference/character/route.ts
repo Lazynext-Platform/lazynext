@@ -19,7 +19,7 @@ export const maxDuration = 60;
 const WAN_IMAGE_LIMIT = 5_000_000;
 const WAN_VIDEO_LIMIT = 200_000_000;
 
-// Wan-2.2 Character Swap 不稳定接受 Workers/R2 URL,所以先上传到 Atlas 临时媒体 URL 再提交。
+// Wan-2.2 Character Swap doesn't reliably accept Workers/R2 URLs, so upload to Atlas temporary media URL first before submitting.
 async function __byokPOST(req: Request) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
@@ -40,7 +40,7 @@ async function __byokPOST(req: Request) {
   if (!videoUrl) return NextResponse.json({ error: 'video_url_required' }, { status: 400 });
   if (!avatarUrl) return NextResponse.json({ error: 'avatar_url_required' }, { status: 400 });
 
-  // omni video-edit 按参考视频秒数计费(同 /edit);前端随 body.videoSeconds 传时长,缺省保守用 30s。
+  // omni video-edit bills by reference video seconds (same as /edit); frontend passes duration with body.videoSeconds, conservatively defaults to 30s.
   const videoSeconds = Number(body.videoSeconds) > 0 ? Number(body.videoSeconds) : 30;
 
   try {

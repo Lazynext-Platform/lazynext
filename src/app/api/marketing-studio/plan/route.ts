@@ -9,7 +9,7 @@ import { chargeSync, refundSync, chargeErrorResponse } from '@/lib/marketing-stu
 
 export const maxDuration = 60;
 
-// 出方案(LLM):需登录 + 扣 MK_PLAN_COST;LLM 失败退款并返回兜底方案(带 fallback 标记 + detail 供前端提示),Atlas 报错记日志。
+// Generate plan (LLM): requires login + charges MK_PLAN_COST; LLM failure refunds and returns fallback plan (with fallback flag + detail for frontend prompt), Atlas errors logged.
 async function __byokPOST(req: Request) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
@@ -38,7 +38,7 @@ async function __byokPOST(req: Request) {
     const plan = await draftMarketingPlan(input);
     return NextResponse.json({ plan });
   } catch (e) {
-    // AI 出方案失败:退回积分,给兜底方案,Atlas 原文记日志 + 返回 detail 供前端提示。
+    // AI plan generation failed: refund credits, provide fallback plan, log Atlas raw text + return detail for frontend prompt.
     await refundSync(uid, MK_PLAN_COST, 'marketing:plan');
     console.error('[marketing/plan] atlas error:', String(e));
     return NextResponse.json({ plan: buildFallbackMarketingPlan(input), fallback: true, detail: String(e) });

@@ -6,7 +6,8 @@ import { Clock } from 'lucide-react';
 import { useI18n } from '@/i18n/provider';
 import { useMounted } from '@/lib/use-mounted';
 
-// 右上固定区的「我的作品」入口:登录后在所有沉浸页(含首页)显示,跳到独立的 /my-work 作品页。
+// "My work" entry in the fixed top-right area: shown on all immersive pages (including home)
+// when signed in, links to the standalone /my-work creations page.
 export function HistoryButton() {
   const { data: session } = useSession();
   const { locale } = useI18n();

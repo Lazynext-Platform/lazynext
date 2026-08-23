@@ -5,8 +5,9 @@ import { useCallback, useEffect, useState } from 'react';
 import { Coins } from 'lucide-react';
 import { useMounted } from '@/lib/use-mounted';
 
-// 沉浸式深色壳右上角的积分余额徽章:读 /api/me,监听 'atlas:credits' 事件在每次扣费后刷新。
-// 未登录不显示。点击进 pricing 充值。
+// Credit balance badge in the top-right of the immersive dark shell: reads /api/me and listens
+// for the 'lazynext:credits' event to refresh after each charge. Hidden when signed out. Click to
+// top up on the pricing page.
 export function CreditBadge() {
   const { data: session } = useSession();
   const [credits, setCredits] = useState<number | null>(null);
@@ -28,8 +29,8 @@ export function CreditBadge() {
 
   useEffect(() => {
     const h = () => refresh();
-    window.addEventListener('atlas:credits', h);
-    return () => window.removeEventListener('atlas:credits', h);
+    window.addEventListener('lazynext:credits', h);
+    return () => window.removeEventListener('lazynext:credits', h);
   }, [refresh]);
 
   if (!mounted || !session) return null;

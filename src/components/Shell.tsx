@@ -11,14 +11,14 @@ import { CreditBadge } from '@/components/CreditBadge';
 import { HistoryButton } from '@/components/HistoryButton';
 import { ByokKey } from '@/components/ByokKey';
 
-// marketing-studio 走全出血沉浸式(深色、无浅色 starter 外壳),完全复刻 Higgsfield。
-// 其余页面保持 SaaS starter 的 Navbar + 侧栏 + Footer 外壳不变。
+// marketing-studio uses a full-bleed immersive (dark, no light starter shell) layout.
+// Other pages keep the SaaS starter Navbar + sidebar + Footer shell.
 const IMMERSIVE = ['/', '/pricing', '/my-work', '/marketing-studio', '/ad-reference', '/drama-studio', '/ad-skit'];
 
 export function Shell({ children }: { children: React.ReactNode }) {
   const p = usePathname() || '';
   if (IMMERSIVE.some((r) => p === r || p.startsWith(r + '/'))) {
-    // 星标应用统一深色满屏壳(无浅色 Navbar/侧栏/Footer),各页面内容在此之上。
+    // Star apps use a unified dark full-bleed shell (no light Navbar/sidebar/Footer), page content sits on top.
     return (
       <div className="min-h-screen bg-[#131416] text-[#f7f7f8]" style={{ colorScheme: 'dark' }}>
         {children}

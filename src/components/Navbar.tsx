@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useSession, signIn, signOut } from 'next-auth/react';
 import { useCallback, useEffect, useState } from 'react';
-import { Sparkles, Coins, LogOut } from 'lucide-react';
+import { Coins, LogOut } from 'lucide-react';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { useI18n } from '@/i18n/provider';
 
@@ -28,8 +28,8 @@ export function Navbar() {
 
   useEffect(() => {
     const h = () => refresh();
-    window.addEventListener('atlas:credits', h);
-    return () => window.removeEventListener('atlas:credits', h);
+    window.addEventListener('lazynext:credits', h);
+    return () => window.removeEventListener('lazynext:credits', h);
   }, [refresh]);
 
   const navLink =
@@ -39,10 +39,9 @@ export function Navbar() {
     <header className="sticky top-0 z-40 border-b border-neutral-200/70 bg-white/80 backdrop-blur-lg">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-2 px-4 py-3">
         <Link href="/" className="flex shrink-0 items-center gap-2 font-bold">
-          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-gradient text-white shadow-glow">
-            <Sparkles className="h-4 w-4" />
-          </span>
-          <span className="hidden text-[15px] tracking-tight sm:inline">Marketing Studio</span>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/lazynext-mark.png" alt="Lazynext" className="h-8 w-8 rounded-lg" />
+          <span className="hidden text-[15px] tracking-tight sm:inline">Lazynext</span>
         </Link>
         <nav className="flex items-center gap-1">
           <Link href="/pricing" className={navLink}>

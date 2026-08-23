@@ -30,7 +30,7 @@ type Creation = {
 type MediaKind = 'video' | 'image' | 'audio' | 'unknown';
 type PlayTarget = { url: string; kind: MediaKind } | null;
 
-// 只展示工作室级作品(逐镜/中间任务已由 /api/creations 在服务端排除)。
+// Only show studio-level works (per-shot/intermediate tasks already excluded server-side by /api/creations).
 const SOURCE: Record<string, { zh: string; en: string }> = {
   'marketing-studio': { zh: '产品广告', en: 'Ad' },
   'drama-studio': { zh: 'AI 剧情', en: 'Drama' },
@@ -67,7 +67,7 @@ export default function MyWorkPage() {
         .then((j) => {
           const list = ((j.creations || []) as Creation[]).filter((c) => Boolean(SOURCE[c.templateId]));
           setItems(list);
-          // 推进"生成中"的占位:触发后端任务对账 / 超时兜底,下次刷新即生效(不阻塞渲染)。
+          // Advance "generating" placeholders: trigger backend task reconciliation / timeout fallback, effective on next refresh (non-blocking render).
           list
             .filter((c) => c.status === 'processing')
             .forEach((c) => fetch(`/api/creations/${c.id}`, {
@@ -77,7 +77,7 @@ export default function MyWorkPage() {
         })
         .catch((e) => { if (e?.name !== 'AbortError') setItems((prev) => prev ?? []); });
     void load();
-    // 每 15s 轻刷:生成中 → 成片 / 失败 会自动更新卡片状态
+    // Light refresh every 15s: generating → final / failed auto-updates card status
     const t = setInterval(() => void load(), 15_000);
     return () => { ac.abort(); clearInterval(t); };
   }, [status]);
@@ -86,12 +86,13 @@ export default function MyWorkPage() {
 
   return (
     <div className="min-h-screen" style={{ background: '#131416' }}>
-      {/* 顶栏(右上固定区由 Shell 提供) */}
+      {/* Top bar (fixed right area provided by Shell) */}
       <div className="px-6 sm:px-8 py-5">
         <div className="flex items-center gap-4">
           <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition">
-            <div className="w-7 h-7 rounded-lg grid place-items-center text-sm font-bold" style={{ background: '#7036F0', color: '#fff' }}>✦</div>
-            <b className="text-sm tracking-tight">Marketing Studio</b>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/lazynext-mark.png" alt="Lazynext" className="h-7 w-7 rounded-lg" />
+            <b className="text-sm tracking-tight">Lazynext</b>
           </Link>
           <Link href="/" className="text-xs text-white/60 hover:text-white transition">{zh ? '← 全部应用' : '← All apps'}</Link>
         </div>
@@ -104,8 +105,8 @@ export default function MyWorkPage() {
             {zh ? '你生成的所有成片,永久保存,可随时重看和下载。点击"一键生成"后,任务会立刻出现在这里。' : 'All your generated reels, saved permanently — replay or download anytime. Every generation shows up here instantly.'}
           </p>
           {generating > 0 && (
-            <div className="mt-3 inline-flex items-center gap-2 rounded-full border border-[#7036F0]/30 bg-[#7036F0]/[0.08] px-3 py-1 text-xs text-white/80">
-              <Loader2 className="h-3.5 w-3.5 animate-spin" style={{ color: '#a78bfa' }} />
+            <div className="mt-3 inline-flex items-center gap-2 rounded-full border border-[#00b2fc]/30 bg-[#00b2fc]/[0.08] px-3 py-1 text-xs text-white/80">
+              <Loader2 className="h-3.5 w-3.5 animate-spin" style={{ color: '#22d3ee' }} />
               {zh ? `${generating} 个作品生成中` : `${generating} generating`}
             </div>
           )}
@@ -117,7 +118,7 @@ export default function MyWorkPage() {
           <div className="grid place-items-center gap-4 py-32 text-center">
             <div className="text-5xl">🔐</div>
             <p className="text-white/50">{zh ? '登录后查看你的作品。' : 'Sign in to see your work.'}</p>
-            <button onClick={() => signIn('google')} className="rounded-xl px-5 py-2.5 text-sm font-bold text-white" style={{ background: '#7036F0' }}>{zh ? '登录' : 'Sign in'}</button>
+            <button onClick={() => signIn('google')} className="rounded-xl px-5 py-2.5 text-sm font-bold text-white" style={{ background: '#00b2fc' }}>{zh ? '登录' : 'Sign in'}</button>
           </div>
         ) : items === null ? (
           <div className="grid place-items-center py-32"><Loader2 className="h-7 w-7 animate-spin text-white/40" /></div>
@@ -125,7 +126,7 @@ export default function MyWorkPage() {
           <div className="grid place-items-center gap-4 py-32 text-center">
             <div className="text-5xl">🎬</div>
             <p className="text-white/50">{zh ? '还没有作品。去生成你的第一个成片吧。' : 'No work yet. Go create your first reel.'}</p>
-            <Link href="/" className="rounded-xl px-5 py-2.5 text-sm font-bold text-white" style={{ background: '#7036F0' }}>{zh ? '去创作' : 'Start creating'}</Link>
+            <Link href="/" className="rounded-xl px-5 py-2.5 text-sm font-bold text-white" style={{ background: '#00b2fc' }}>{zh ? '去创作' : 'Start creating'}</Link>
           </div>
         ) : (
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
@@ -136,7 +137,7 @@ export default function MyWorkPage() {
               const time = new Date(c.createdAt).toLocaleString();
               const url = firstOutput(c);
 
-              // ★ drama 作品文件夹:点进独立详情页看 角色/各场景(首帧+视频)/成片。封面取首个定妆图→场景图→成片。
+              // ★ drama work folder: click into standalone detail page to see characters/each scene (first frame + video)/final. Cover takes first portrait → scene image → final video.
               if (c.assets && c.assets.kind === 'drama') {
                 const f = c.assets;
                 const cover = f.characters?.find((x) => x.portraitUrl)?.portraitUrl || f.sceneImageUrl || url || '';
@@ -168,17 +169,17 @@ export default function MyWorkPage() {
                 );
               }
 
-              // ① 生成中:占位卡(转圈),完成后自动变成片
+              // ① Generating: placeholder card (spinner), auto-becomes final video on completion
               if (c.status === 'processing') {
                 return (
-                  <div key={c.id} className="overflow-hidden rounded-2xl border border-[#7036F0]/30 bg-black/30">
+                  <div key={c.id} className="overflow-hidden rounded-2xl border border-[#00b2fc]/30 bg-black/30">
                     <div className="relative aspect-[9/16] w-full">
                       {c.inputImage && (
                         // eslint-disable-next-line @next/next/no-img-element
                         <img src={c.inputImage} alt="" className="h-full w-full object-cover opacity-40" referrerPolicy="no-referrer" />
                       )}
                       <div className="absolute inset-0 grid place-items-center gap-2 bg-black/50">
-                        <Loader2 className="h-8 w-8 animate-spin" style={{ color: '#a78bfa' }} />
+                        <Loader2 className="h-8 w-8 animate-spin" style={{ color: '#22d3ee' }} />
                         <span className="text-xs font-medium text-white/85">{zh ? '生成中…' : 'Generating…'}</span>
                       </div>
                       {badge && <span className="absolute left-2 top-2 rounded bg-black/60 px-2 py-0.5 text-[10px] font-medium text-white/90">{badge}</span>}
@@ -191,7 +192,7 @@ export default function MyWorkPage() {
                 );
               }
 
-              // ② 失败:占位卡(可去对应工作室重试)
+              // ② Failed: placeholder card (can retry in the corresponding studio)
               if (c.status === 'failed' || !url) {
                 return (
                   <div key={c.id} className="overflow-hidden rounded-2xl border border-red-500/25 bg-black/30">
@@ -214,7 +215,7 @@ export default function MyWorkPage() {
                 );
               }
 
-              // ③ 成片:可播放 + 下载
+              // ③ Final video: playable + downloadable
               const kind = mediaKind(url, c.model);
               return (
                 <div key={c.id} className="overflow-hidden rounded-2xl border border-white/10 bg-black/30">

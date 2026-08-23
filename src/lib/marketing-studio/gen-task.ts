@@ -7,7 +7,7 @@ import {
   taskOutputUrls,
 } from '@/lib/marketing-studio/task-outputs';
 
-// 扣费失败的两种区分:余额不足(→402) vs 系统/DB 错误(→500,不能伪装成"积分不足")。
+// Distinguish two charge failure types: insufficient balance (→402) vs system/DB error (→500, must not masquerade as "insufficient credits").
 export class InsufficientCreditsError extends Error {
   constructor() {
     super('INSUFFICIENT_CREDITS');
@@ -21,7 +21,7 @@ export class ChargeError extends Error {
   }
 }
 
-/** 同步扣费(用于 plan/script 这类同步返回、失败即退的场景)。区分余额不足与系统错误。 */
+/** Synchronous charge (for plan/script type sync-return, refund-on-failure scenarios). Distinguishes insufficient balance from system error. */
 export async function chargeSync(uid: string, cost: number, ref: string): Promise<void> {
   try {
     await deductCredits(uid, cost, 'generate', ref);
@@ -31,17 +31,17 @@ export async function chargeSync(uid: string, cost: number, ref: string): Promis
   }
 }
 
-/** 同步退款(用于 plan/script 生成失败回退)。 */
+/** Synchronous refund (for plan/script generation failure rollback). */
 export async function refundSync(uid: string, cost: number, ref: string): Promise<void> {
   await grantCredits(uid, cost, 'refund', ref);
 }
 
 /**
- * 异步生成任务的统一流程:扣费 → 提交 Atlas → 落一条 processing Creation(供 poll 异步失败退款)。
- * - 扣费失败:抛 InsufficientCreditsError / ChargeError,由路由分别转 402 / 500。
- * - 提交失败:立即退款并抛出原始 Atlas 错误(供路由透传 detail)。
- * - 落库失败:不影响出片,仅记日志(代价是该任务异步失败时无法自动退款)。
- * templateId 用分镜/中间步骤专用值(mk-shot/drama-shot/adref:*),避免混进「历史记录」面板。
+ * Unified flow for async generation tasks: charge → submit to Atlas → create a processing Creation record (for async failure refund on poll).
+ * - Charge failure: throws InsufficientCreditsError / ChargeError, route converts to 402 / 500 respectively.
+ * - Submit failure: refunds immediately and throws the original Atlas error (route passes through detail).
+ * - DB write failure: doesn't affect video output, only logs (cost is that async failure can't auto-refund for this task).
+ * templateId uses shot/intermediate-step-specific values (mk-shot/drama-shot/adref:*), to avoid mixing into the "history" panel.
  */
 export async function chargeAndSubmit(opts: {
   uid: string;
@@ -87,8 +87,8 @@ export async function chargeAndSubmit(opts: {
 }
 
 /**
- * 把最终视频任务挂到工作室级作品占位上。只允许关联当前用户自己的 Marketing Studio
- * processing 记录；关联失败不能让已提交、已扣费的 Atlas 任务在前端看起来“提交失败”并被重复提交。
+ * Attach the final video task to a studio-level creation placeholder. Only allows associating the current user's own Marketing Studio
+ * processing records; association failure must not make an already-submitted, already-charged Atlas task appear "submit failed" on the frontend and get re-submitted.
  */
 export async function linkMarketingCreationTask(opts: {
   uid: string;
@@ -135,9 +135,9 @@ async function trackedTask(getUrl: string, status?: string) {
 }
 
 /**
- * poll 发现 Atlas 任务失败时退款。用 getUrl 精确定位落库记录(前端原样传回的 getUrl === 落库时存的
- * getUrl,不依赖对 URL 格式的解析,最可靠)。用 processing→failed 的原子转移做幂等:
- * 只有把状态从 processing 成功改成 failed 的那一次(count===1)才退款,前端多次 poll 不会重复退。
+ * Refund when poll detects Atlas task failure. Uses getUrl to precisely locate the DB record (the getUrl passed back verbatim by frontend === the getUrl stored at DB write time,
+ * doesn't depend on URL format parsing, most reliable). Uses atomic processing→failed transition for idempotency:
+ * only the first successful processing→failed change (count===1) refunds; multiple frontend polls won't double-refund.
  */
 export async function refundFailedTask(getUrl: string, atlasError?: string): Promise<void> {
   if (!getUrl) return;
@@ -151,16 +151,16 @@ export async function refundFailedTask(getUrl: string, atlasError?: string): Pro
     try {
       await grantCredits(c.userId, c.cost, 'refund', c.taskId || `creation:${c.id}`);
     } catch (e) {
-      // 极低概率:状态已置 failed 但退款事务失败。留痕以便人工补退。
-      // 不自动回退状态——回退会让下次 poll 重试退款,与并发 poll 叠加可能双退,宁可留日志人工补。
+      // Very low probability: status already set to failed but refund transaction failed. Log for manual compensation.
+      // Don't auto-revert status — reverting would make the next poll retry the refund, combined with concurrent polls could double-refund; better to leave a log for manual compensation.
       console.error(`[gen-task] REFUND FAILED (needs manual comp) uid=${c.userId} cost=${c.cost} task=${c.taskId}:`, String(e));
     }
   }
 }
 
 /**
- * 已完成任务的输出是轮询接口的幂等缓存。刷新页面或网络重试时先返回这里的 R2/Blob URL,
- * 避免再次下载同一 Atlas 临时文件并重复写入对象存储。
+ * Completed task outputs serve as the idempotent cache for the poll endpoint. On page refresh or network retry, return the R2/Blob URLs here first,
+ * avoiding re-downloading the same Atlas temporary file and repeatedly writing to object storage.
  */
 export async function completedTaskOutputs(getUrl: string): Promise<string[] | null> {
   if (!getUrl) return null;
@@ -183,8 +183,8 @@ export type CompletionClaim =
   | { kind: 'untracked' };
 
 /**
- * 原子认领 completed 结果的转存权。多个标签页可能同时看到 Atlas completed;
- * 只有第一个 processing → persisting 成功的请求可以写对象存储,其它请求等待缓存。
+ * Atomically claim the right to persist the completed result. Multiple tabs may see Atlas completed simultaneously;
+ * only the first request to successfully transition processing → persisting may write to object storage, others wait for the cache.
  */
 export async function claimTaskCompletion(getUrl: string): Promise<CompletionClaim> {
   if (!getUrl) return { kind: 'untracked' };
@@ -208,7 +208,7 @@ export async function claimTaskCompletion(getUrl: string): Promise<CompletionCla
     creation.status === 'persisting'
     && Date.now() - new Date(creation.updatedAt).getTime() > 2 * 60_000
   ) {
-    // 上一个转存请求可能被平台强杀。2 分钟租约到期后允许一个请求原子接管。
+    // The previous persist request may have been killed by the platform. After the 2-minute lease expires, allow one request to atomically take over.
     const update = await prisma.creation.updateMany({
       where: {
         id: creation.id,
@@ -221,7 +221,7 @@ export async function claimTaskCompletion(getUrl: string): Promise<CompletionCla
   }
   if (claimed) return { kind: 'claimed' };
 
-  // 另一请求正在转存。短暂等候其写入缓存;仍未完成则让客户端稍后继续轮询。
+  // Another request is currently persisting. Briefly wait for it to write the cache; if still not done, let the client continue polling later.
   for (let attempt = 0; attempt < 8; attempt += 1) {
     await new Promise((resolve) => setTimeout(resolve, 350));
     const current = await prisma.creation.findUnique({ where: { id: creation.id } });
@@ -244,15 +244,15 @@ export async function releaseTaskCompletionClaim(getUrl: string): Promise<void> 
 }
 
 /**
- * poll 发现任务完成时把 processing 记录标记为 completed(幂等,按 getUrl 定位)并保存可播放输出。
- * 返回是否"可交付":若该任务已是 failed 终态(已退款),返回 false,poll 据此拒绝把成片下发给客户端,
- * 防止"退款 + 出片"并存(纵深防御)。没有落库记录(容错场景)则默认放行。
+ * When poll detects task completion, marks the processing record as completed (idempotent, located by getUrl) and saves playable outputs.
+ * Returns whether "deliverable": if the task is already in failed terminal state (already refunded), returns false, poll uses this to refuse delivering the video to the client,
+ * preventing "refund + delivery" coexistence (defense in depth). If no DB record exists (fault-tolerant scenario), defaults to allowing delivery.
  */
 export async function markTaskCompleted(getUrl: string, outputs?: string[]): Promise<boolean> {
   if (!getUrl) return true;
   const c = await trackedTask(getUrl);
-  if (!c) return true; // 没有落库记录,无从判断退款,放行
-  if (c.status === 'failed') return false; // 已退款,拒绝再交付成片
+  if (!c) return true; // no DB record, can't determine refund status, allow delivery
+  if (c.status === 'failed') return false; // already refunded, refuse to deliver the video again
   await prisma.creation.updateMany({
     where: { id: c.id },
     data: {
@@ -263,7 +263,7 @@ export async function markTaskCompleted(getUrl: string, outputs?: string[]): Pro
   return true;
 }
 
-/** 把扣费/提交阶段的异常统一转成 HTTP 响应:余额不足→402、扣费系统错误→500、Atlas 提交失败→502(透传原文)。 */
+/** Unifies charge/submit phase exceptions into HTTP responses: insufficient balance→402, charge system error→500, Atlas submit failure→502 (passes through original message). */
 export function chargeErrorResponse(e: unknown, tag: string) {
   if (e instanceof InsufficientCreditsError) {
     return NextResponse.json({ error: 'insufficient_credits' }, { status: 402 });

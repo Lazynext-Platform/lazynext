@@ -1,35 +1,35 @@
-// App 状态分类(依据《功能审查.md》),供 AppSidebar 与首页共用,保证一致。
+// App status classification (per "Feature Review.md"), shared by AppSidebar and home page for consistency.
 export type AppCat = 'production' | 'nocreative' | 'incomplete';
 
-// ✅ 可投入生产:有真实壁垒 / 多步 pipeline。精简后仓库只保留 4 个精品应用。
+// ✅ Production-ready: real moat / multi-step pipeline. After streamlining, repo only keeps 4 premium apps.
 export const PRODUCTION_ROUTES = new Set<string>([
   '/marketing-studio', '/ad-reference', '/drama-studio', '/ad-skit',
 ]);
 
-// ⭐ 精品:重点打磨、可对外主推的旗舰应用
-// 精简首发:首页只主推这 4 个打磨完善的应用(产品口播广告 / 爆款广告复刻 / AI 短剧广告 / 搞笑带货小剧场)。
-// 命名注:Reference to Ad 与 AI Drama Ad 两个名字是 Lark 需求文档定的,不要改;另两个按实际功能命名。
-// 其余应用页面仍在,只是不在首页精品区展示。
+// ⭐ Premium: flagship apps that are polished and can be promoted externally
+// Streamlined launch: home page only promotes these 4 polished apps (product voiceover ad / viral ad remake / AI drama ad / comedy product skit).
+// Naming note: "Reference to Ad" and "AI Drama Ad" names are from the Lark requirements doc, don't change; the other two are named by actual function.
+// Other app pages still exist, just not shown in the home premium section.
 export const FEATURED_ROUTES = new Set<string>(['/marketing-studio', '/ad-reference', '/drama-studio', '/ad-skit']);
 export function isFeatured(href: string): boolean {
   return FEATURED_ROUTES.has(href);
 }
 
-// 🔴 未完善:纯前端空壳 / 只出 LLM 文案 / 名不副实。精简后无此类应用。
+// 🔴 Incomplete: pure frontend shell / LLM text only / mislabeled. None after streamlining.
 export const INCOMPLETE_ROUTES = new Set<string>([]);
 
-// 其余 = 🟡 能跑但没壁垒(单步通用模型,GPT / 豆包一步可替代)
+// Others = 🟡 Works but no moat (single-step generic model, GPT / Doubao one-step replaceable)
 export function catOf(href: string): AppCat {
   return PRODUCTION_ROUTES.has(href) ? 'production' : INCOMPLETE_ROUTES.has(href) ? 'incomplete' : 'nocreative';
 }
 
 export const CAT_META: { key: AppCat; label: string; desc: string; dot: string; ring: string }[] = [
-  { key: 'production', label: '✅ 可投入生产', desc: '有真实壁垒 / 多步 pipeline', dot: 'bg-green-500', ring: 'ring-green-300' },
-  { key: 'nocreative', label: '🟡 能跑但没壁垒', desc: '单步通用模型,一步可替代', dot: 'bg-amber-500', ring: 'ring-amber-300' },
-  { key: 'incomplete', label: '🔴 未完善', desc: '空壳 / 只出文案 / 名不副实', dot: 'bg-red-500', ring: 'ring-red-300' },
+  { key: 'production', label: '✅ Production-ready', desc: 'Real moat / multi-step pipeline', dot: 'bg-green-500', ring: 'ring-green-300' },
+  { key: 'nocreative', label: '🟡 Works, no moat', desc: 'Single-step generic model, easily replaced', dot: 'bg-amber-500', ring: 'ring-amber-300' },
+  { key: 'incomplete', label: '🔴 Incomplete', desc: 'Shell / text-only / mislabeled', dot: 'bg-red-500', ring: 'ring-red-300' },
 ];
 
-// 4 个精品应用的自定义标题/描述(部分无 i18n key,单独给)
+// Custom titles/descriptions for 4 premium apps (some without i18n key, given directly)
 type Bi = { en: string; zh: string };
 const CUSTOM_TITLES: Record<string, Bi> = {
   'marketing-studio': { en: 'UGC Product Ad', zh: '产品口播广告' },

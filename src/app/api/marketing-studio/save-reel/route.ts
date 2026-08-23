@@ -10,7 +10,7 @@ import { prisma } from '@/lib/prisma';
 
 export const maxDuration = 60;
 
-// 保存成片到历史:成片 blob → R2,元数据 → D1 Creation。需登录(未登录不存历史,成片本地仍可看/下)。
+// Save final video to history: final video blob → R2, metadata → D1 Creation. Requires login (not logged in won't save history, final video still viewable/downloadable locally).
 export async function POST(req: Request) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
@@ -68,7 +68,7 @@ export async function POST(req: Request) {
     try { shots = JSON.parse(String(form.get('shots') || '[]')); } catch { /* ignore */ }
     const outputs = [reelUrl, ...shots.filter((s) => typeof s === 'string')];
 
-    // 有 creationId → 更新点生成时创建的占位记录(processing → completed);否则新建(兼容)。
+    // With creationId → update the placeholder record created at generation start (processing → completed); otherwise create new (backward compatible).
     if (creationId) {
       const upd = await prisma.creation.updateMany({
         where: { id: creationId, userId: session.user.id },

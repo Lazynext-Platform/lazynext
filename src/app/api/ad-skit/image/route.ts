@@ -21,7 +21,7 @@ async function __byokPOST(req: Request) {
       : [];
   const imagePrompt = typeof body.imagePrompt === 'string' ? body.imagePrompt.slice(0, 500) : '';
 
-  // 有上传的多张产品图:各自传到 Atlas 拿 URL,同步返回(上传不算生成,不扣费)
+  // With uploaded multiple product images: upload each to Atlas to get URL, return synchronously (upload is not generation, no charge)
   if (uploads.length) {
     const valid = uploads.slice(0, 4);
     if (valid.some((u) => u.length > 8_000_000)) return NextResponse.json({ error: 'image_too_large' }, { status: 400 });
@@ -35,7 +35,7 @@ async function __byokPOST(req: Request) {
     }
   }
 
-  // 无上传:按描述文生图(异步,前端轮询 /api/creations/[id])
+  // No upload: text-to-image by description (async, frontend polls /api/creations/[id])
   if (imagePrompt.length < 3) return NextResponse.json({ error: 'prompt_or_image_required' }, { status: 400 });
   try {
     await deductCredits(session.user.id, AD_SKIT_COSTS.image, 'generate', AD_SKIT_TEMPLATE_ID + ':image');

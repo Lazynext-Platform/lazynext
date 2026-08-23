@@ -31,7 +31,7 @@ async function post(path: string, payload: Record<string, unknown>, retries = 5)
   let lastErr: unknown;
   for (let i = 0; i < retries; i++) {
     const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 30000); // 单次提交 30s 超时,防 fetch 挂起被平台 maxDuration 强杀→扣费不退
+    const timer = setTimeout(() => controller.abort(), 30000); // 30s timeout per submit, prevents fetch hang from being killed by platform maxDuration → non-refundable charge
     try {
       const res = await fetch(`${BASE}${path}`, {
         method: 'POST',
@@ -47,12 +47,12 @@ async function post(path: string, payload: Record<string, unknown>, retries = 5)
       if (res.ok) return res.json();
       const body = await res.text();
       const err = new Error(`Atlas ${res.status}: ${body}`);
-      // 4xx 是客户端错误(参数/鉴权/余额),重试无意义 → 立即失败,尽快把 Atlas 原文暴露出来。
+      // 4xx is a client error (params/auth/balance), retrying is pointless → fail immediately to surface the original Atlas message ASAP.
       if (res.status < 500) throw Object.assign(err, { noRetry: true });
       lastErr = err;
     } catch (e) {
       if ((e as { noRetry?: boolean })?.noRetry) throw e;
-      lastErr = e; // 含 AbortError(提交超时):进入下一次重试
+      lastErr = e; // includes AbortError (submit timeout): proceed to next retry
     } finally {
       clearTimeout(timer);
     }
@@ -73,7 +73,7 @@ export async function submitRawGen(
 
 async function get(url: string): Promise<any> {
   const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), 25000); // 查询 25s 超时
+  const timer = setTimeout(() => controller.abort(), 25000); // 25s poll timeout
   let res: Response;
   try {
     res = await fetch(url, {
@@ -82,7 +82,7 @@ async function get(url: string): Promise<any> {
       signal: controller.signal,
     });
   } catch (e) {
-    // 超时/中断:抛成 timeout —— poll route 会当网关瞬时错误(前端继续轮询,不误判整体失败)
+    // timeout/interruption: throw as timeout — poll route treats it as a transient gateway error (frontend keeps polling, no false overall failure)
     throw new Error(`Atlas poll timeout: ${String((e as Error)?.message || e)}`);
   } finally {
     clearTimeout(timer);

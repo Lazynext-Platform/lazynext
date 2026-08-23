@@ -1,8 +1,8 @@
 {
-  "name": "atlas-marketing-studio",
+  "name": "lazynext",
   "version": "0.1.0",
   "private": true,
-  "description": "Atlas Marketing Studio is an open-source AI e-commerce ad studio for generating UGC product ads, reference-ad remakes, AI drama ads, and ad skits with Atlas Cloud multi-model workflows.",
+  "description": "Lazynext is an AI e-commerce ad studio for generating UGC product ads, reference-ad remakes, AI drama ads, and ad skits, powered by Atlas Cloud multi-model workflows.",
   "scripts": {
     "dev": "npm run platform:prepare && next dev",
     "dev:vercel": "DEPLOY_TARGET=vercel npm run dev",
@@ -43,7 +43,11 @@
     "@types/node": "^20.16.11",
     "@types/react": "^18.3.11",
     "@types/react-dom": "^18.3.0",
+    "@typescript-eslint/eslint-plugin": "^7.18.0",
+    "@typescript-eslint/parser": "^7.18.0",
     "autoprefixer": "^10.4.20",
+    "eslint": "^8.57.1",
+    "eslint-config-next": "^14.2.15",
     "postcss": "^8.4.47",
     "prisma": "6.19.3",
     "tailwindcss": "^3.4.13",

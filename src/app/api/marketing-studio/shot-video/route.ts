@@ -22,7 +22,7 @@ import { videoCredits } from '@/lib/video-pricing';
 
 export const maxDuration = 60;
 
-// 逐镜出视频(Seedance 2.0 i2v):需登录 + 扣 MK_VIDEO_COST;提交失败退款、异步失败由 poll 退款,Atlas 报错透传。
+// Per-shot video generation (Seedance 2.0 i2v): requires login + charges MK_VIDEO_COST; refunds on submit failure, poll refunds on async failure, Atlas errors pass through.
 async function __byokPOST(req: Request) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
@@ -36,15 +36,15 @@ async function __byokPOST(req: Request) {
   const creationId = typeof body.creationId === 'string' ? body.creationId.trim() : '';
   if (!prompt) return NextResponse.json({ error: 'prompt_required' }, { status: 400 });
 
-  // 本站相对路径(/api/marketing-studio/media/...)补成公网绝对 URL,否则 Atlas 拉不到。
+  // Convert site-relative paths (/api/marketing-studio/media/...) to public absolute URLs, otherwise Atlas cannot fetch them.
   const toAbs = (u: unknown): string => {
     const s = typeof u === 'string' ? u.trim() : '';
     if (s.startsWith('/api/marketing-studio/media/')) return new URL(s, req.url).toString();
     return /^https?:\/\//.test(s) ? s : '';
   };
 
-  // drama 逐镜:传了 referenceImages[] 就走 reference-to-video(产品图+角色定妆图+场景图 直接出视频);
-  // 否则 marketing 单首帧 i2v(imageUrl)。
+  // Drama per-shot: if referenceImages[] is provided, use reference-to-video (product image + character look image + scene image directly to video);
+  // otherwise marketing single first-frame i2v (imageUrl).
   const referenceImages = (Array.isArray(body.referenceImages) ? body.referenceImages : []).map(toAbs).filter(Boolean);
 
   try {
@@ -63,7 +63,7 @@ async function __byokPOST(req: Request) {
 
     const imageUrl = toAbs(body.imageUrl);
     if (!/^https?:\/\//.test(imageUrl)) return NextResponse.json({ error: 'image_url_required' }, { status: 400 });
-    // 复刻模式:前端可指定 veo3.1-fast(带台词对口型说话);白名单校验,不接受任意模型。
+    // Replica mode: frontend may specify veo3.1-fast (with dialogue lip-sync speaking); whitelist-validated, arbitrary models not accepted.
     const model = body.model === REPLICA_VIDEO_MODEL ? REPLICA_VIDEO_MODEL : SHOT_VIDEO_MODEL;
     const submit = await chargeAndSubmit({
       uid,

@@ -1,15 +1,15 @@
 /**
- * Avatar preset = 出镜数字人形象库(可选;选了则锁定人物描述,注入每镜图 prompt)。
- * 复刻 Higgsfield 的 Avatar 资产层(preset 部分)。自定义 Avatar 走 Phase 2 的 DB 资产表。
+ * Avatar preset = on-screen digital human character library (optional; selecting one locks the character description, injected into each shot's image prompt).
+ * Replicates Higgsfield's Avatar asset layer (preset portion). Custom Avatars go through Phase 2's DB asset table.
  */
 export interface AvatarPreset {
   id: string;
   label: string;
   en: string;
-  desc: string; // 英文人物描述(空=让 LLM 自动设计)
-  zh?: string; // 中文人物名
-  descZh?: string; // 中文人物描述
-  image?: string; // 形象图 URL(选下拉时自动填充到人物图槽,作 edit 人物参考)
+  desc: string; // English character description (empty = let LLM auto-design)
+  zh?: string; // Chinese character name
+  descZh?: string; // Chinese character description
+  image?: string; // character image URL (auto-fills the person image slot when selected from dropdown, used as edit person reference)
 }
 
 export const AVATAR_PRESETS: AvatarPreset[] = [

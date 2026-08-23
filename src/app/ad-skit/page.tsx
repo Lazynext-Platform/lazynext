@@ -9,9 +9,9 @@ import { videoCredits } from '@/lib/video-pricing';
 import { useI18n } from '@/i18n/provider';
 
 const COSTS = { plan: 4, image: 2, video: 25 };
-// 视频步骤动态计费(seedance ref-to-video 固定 720p/15s),与后端 ad-skit/video route 一致;plan/image 仍走固定 COST。
+// Video step dynamic billing (seedance ref-to-video fixed 720p/15s), consistent with backend ad-skit/video route; plan/image still use fixed COST.
 const VIDEO_COST = videoCredits('bytedance/seedance-2.0/reference-to-video', '720p', 15);
-// 语言选择已移除:剧本语种自动跟随产品输入的语言(见 lib/ad-skit.ts planSkit)
+// Language selection removed: script language auto-follows the product input language (see lib/ad-skit.ts planSkit)
 const STYLES = [
   { key: 'funny', label: 'Funny meme' }, { key: 'reversal', label: 'Wild plot twist' }, { key: 'skit', label: 'Sitcom skit' },
   { key: 'warm', label: 'Heartwarming' }, { key: 'luxury', label: 'Luxe & premium' }, { key: 'urgent', label: 'Urgent hard sell' },
@@ -82,7 +82,7 @@ export default function AdSkitPage() {
   const byokActive = useByokActive();
   const [product, setProduct] = useState('');
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
-  // 语言选择已移除:自动跟随产品输入的语种
+  // Language selection removed: auto-follows the product input language
   const [style, setStyle] = useState('funny');
   const [llm, setLlm] = useState(PLAN_MODELS[0].key);
   const [plan, setPlan] = useState<Plan | null>(null);
@@ -98,7 +98,7 @@ export default function AdSkitPage() {
     try {
       const j = await postJson('/api/ad-skit/plan', { product, styleKey: style, llmModel: llm });
       setPlan(j.plan);
-      window.dispatchEvent(new Event('atlas:credits'));
+      window.dispatchEvent(new Event('lazynext:credits'));
     } catch (e) { setErr(errText(e instanceof Error ? e.message : 'failed', locale)); }
     setBusy(null);
   }
@@ -123,7 +123,7 @@ export default function AdSkitPage() {
       const vj = await postJson('/api/ad-skit/video', { productUrls, videoPrompt: plan.videoPrompt, duration: 15, title: plan.idea });
       const vidUrl = await pollCreation(vj.id);
       setVideo({ status: 'done', url: vidUrl });
-      window.dispatchEvent(new Event('atlas:credits'));
+      window.dispatchEvent(new Event('lazynext:credits'));
     } catch (e) {
       setProductImg((s) => (s.status === 'processing' ? { status: 'failed' } : s));
       setVideo({ status: 'failed' });
@@ -144,7 +144,7 @@ export default function AdSkitPage() {
 
       <div className="mx-auto w-full max-w-6xl space-y-8 px-6 pb-16 sm:px-8">
       <div className="flex items-center gap-3">
-        <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#7036F0]/15 text-[#7036F0]"><Clapperboard className="h-6 w-6" /></span>
+        <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#00b2fc]/15 text-[#00b2fc]"><Clapperboard className="h-6 w-6" /></span>
         <div>
           <div className="flex flex-wrap items-center gap-2">
             <h1 className="text-2xl font-bold tracking-tight text-white">{locale === 'zh' ? '搞笑带货小剧场' : 'Ad Skit'}</h1>
@@ -157,15 +157,15 @@ export default function AdSkitPage() {
       </div>
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,400px)_minmax(0,1fr)]">
-        {/* 左:输入 */}
+        {/* Left: input */}
         <section className="space-y-5">
           <div className="rounded-2xl border border-white/10 bg-[#1c1e21] p-5">
             <h2 className="mb-3 flex items-center gap-2 text-sm font-semibold text-white">
-              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#7036F0] text-xs text-white">1</span>{locale === 'zh' ? '产品 + 设置' : 'Product + settings'}
+              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#00b2fc] text-xs text-white">1</span>{locale === 'zh' ? '产品 + 设置' : 'Product + settings'}
             </h2>
             <textarea value={product} onChange={(e) => setProduct(e.target.value)} rows={3}
               placeholder={locale === 'zh' ? '产品名 + 卖点，一行就够。例如：康师傅红烧牛肉面 / 便携榨汁杯，USB 充电几秒打出果昔' : 'Product name + selling point, one line is enough. E.g. Master Kong beef noodles / portable blender bottle, USB-charged smoothies in seconds'}
-              className="w-full resize-none rounded-xl border border-white/10 bg-white/[0.04] p-3 text-sm text-white outline-none transition placeholder:text-white/30 focus:border-[#7036F0] focus:ring-2 focus:ring-[#7036F0]/30" />
+              className="w-full resize-none rounded-xl border border-white/10 bg-white/[0.04] p-3 text-sm text-white outline-none transition placeholder:text-white/30 focus:border-[#00b2fc] focus:ring-2 focus:ring-[#00b2fc]/30" />
             <div className="mt-3">
               <div className="flex flex-wrap items-center gap-2">
                 {uploadedImages.map((u, i) => (
@@ -176,7 +176,7 @@ export default function AdSkitPage() {
                   </div>
                 ))}
                 {uploadedImages.length < 4 && (
-                  <label className="flex h-14 w-14 shrink-0 cursor-pointer items-center justify-center rounded-lg border-2 border-dashed border-white/15 bg-white/[0.04] hover:border-[#7036F0]/60">
+                  <label className="flex h-14 w-14 shrink-0 cursor-pointer items-center justify-center rounded-lg border-2 border-dashed border-white/15 bg-white/[0.04] hover:border-[#00b2fc]/60">
                     <input type="file" accept="image/*" multiple className="hidden" onChange={async (e) => {
                       const files = Array.from(e.target.files || []);
                       const urls = await Promise.all(files.map(imageToDataUrl));
@@ -189,16 +189,16 @@ export default function AdSkitPage() {
               <span className="mt-1 block text-xs text-white/50">{locale === 'zh' ? '可选：上传 1-4 张真实产品照（多角度 / 多款式，原样保留你的产品，全部作为 seedance 参考图）。不传则按描述生成。' : 'Optional: upload 1-4 real product photos (multiple angles / variants — keeps your product exactly as-is, all used as seedance references). Skip it to generate from your description.'}</span>
             </div>
             <label className="mt-3 block"><span className="mb-1 block text-xs font-medium text-white/60">{locale === 'zh' ? '风格' : 'Style'}</span>
-              <select value={style} onChange={(e) => setStyle(e.target.value)} className="w-full rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2 text-sm text-white outline-none focus:border-[#7036F0]">
+              <select value={style} onChange={(e) => setStyle(e.target.value)} className="w-full rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2 text-sm text-white outline-none focus:border-[#00b2fc]">
                 {STYLES.map((s) => <option key={s.key} value={s.key}>{locale === 'zh' ? STYLE_LABELS_ZH[s.key] : s.label}</option>)}
               </select>
             </label>
             <label className="mt-3 block"><span className="mb-1 block text-xs font-medium text-white/60">{locale === 'zh' ? '创意大模型' : 'Creative LLM'}</span>
-              <select value={llm} onChange={(e) => setLlm(e.target.value)} className="w-full rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2 text-sm text-white outline-none focus:border-[#7036F0]">
+              <select value={llm} onChange={(e) => setLlm(e.target.value)} className="w-full rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2 text-sm text-white outline-none focus:border-[#00b2fc]">
                 {PLAN_MODELS.map((m) => <option key={m.key} value={m.key}>{m.label}</option>)}
               </select>
             </label>
-            <button onClick={genPlan} disabled={busy !== null} className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#7036F0] px-5 py-3 font-semibold text-white transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50">
+            <button onClick={genPlan} disabled={busy !== null} className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#00b2fc] px-5 py-3 font-semibold text-white transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50">
               {busy === 'plan' ? <><Loader2 className="h-4 w-4 animate-spin" /> {locale === 'zh' ? '导演正在头脑风暴…' : 'Director brainstorming…'}</> : <><Wand2 className="h-4 w-4" /> {byokActive ? (locale === 'zh' ? '生成脚本' : 'Generate script') : (locale === 'zh' ? `生成脚本 · ${COSTS.plan} 积分` : `Generate script · ${COSTS.plan} credits`)}</>}
             </button>
             {err && <p className="mt-3 flex items-center gap-1.5 text-sm text-red-400"><AlertCircle className="h-4 w-4 shrink-0" /> {err}</p>}
@@ -206,34 +206,34 @@ export default function AdSkitPage() {
 
           {plan && (
             <div className="space-y-3 rounded-2xl border border-white/10 bg-[#1c1e21] p-5">
-              <h2 className="flex items-center gap-2 text-sm font-semibold text-white"><span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#7036F0] text-xs text-white">2</span>{locale === 'zh' ? '脚本确认' : 'Script review'}</h2>
+              <h2 className="flex items-center gap-2 text-sm font-semibold text-white"><span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#00b2fc] text-xs text-white">2</span>{locale === 'zh' ? '脚本确认' : 'Script review'}</h2>
               <div className="rounded-lg bg-white/[0.04] p-3 text-sm leading-6 text-white/80"><b>{locale === 'zh' ? '创意：' : 'Idea: '}</b>{plan.idea}</div>
               {plan.caption && <p className="text-xs text-white/50">{locale === 'zh' ? '文案：' : 'Caption: '}{plan.caption}</p>}
-              <button onClick={genVideo} disabled={busy !== null} className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#7036F0] px-5 py-3 font-semibold text-white transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50">
+              <button onClick={genVideo} disabled={busy !== null} className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#00b2fc] px-5 py-3 font-semibold text-white transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50">
                 {busy === 'video' ? <><Loader2 className="h-4 w-4 animate-spin" /> {locale === 'zh' ? '渲染产品照 + 视频，约 1-3 分钟…' : 'Rendering product photo + video ~1-3 min…'}</> : <><Sparkles className="h-4 w-4" /> {byokActive ? (locale === 'zh' ? '生成广告视频' : 'Generate ad video') : (locale === 'zh' ? `生成广告视频 · ${COSTS.image + VIDEO_COST} 积分` : `Generate ad video · ${COSTS.image + VIDEO_COST} credits`)}</>}
               </button>
             </div>
           )}
         </section>
 
-        {/* 右:输出 */}
+        {/* Right: output */}
         <section className="space-y-5">
           {plan ? (
             <>
               <div className="rounded-2xl border border-white/10 bg-[#1c1e21] p-5">
-                <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-white"><ImageIcon className="h-4 w-4 text-[#7036F0]" /> {locale === 'zh' ? '产品照片' : 'Product photo'}</h3>
+                <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-white"><ImageIcon className="h-4 w-4 text-[#00b2fc]" /> {locale === 'zh' ? '产品照片' : 'Product photo'}</h3>
                 <div className="flex aspect-video items-center justify-center overflow-hidden rounded-xl border border-white/10 bg-white/[0.03]">
                   {productImg.status === 'done' && productImg.url ? (/* eslint-disable-next-line @next/next/no-img-element */ <img src={productImg.url} alt={locale === 'zh' ? '产品' : 'product'} className="h-full w-full object-contain" />)
-                    : productImg.status === 'processing' ? <Loader2 className="h-6 w-6 animate-spin text-[#7036F0]" />
+                    : productImg.status === 'processing' ? <Loader2 className="h-6 w-6 animate-spin text-[#00b2fc]" />
                     : productImg.status === 'failed' ? <span className="text-sm text-red-400">{locale === 'zh' ? '产品照生成失败' : 'Product photo failed'}</span>
                     : <span className="text-sm text-white/30">{locale === 'zh' ? '点击“生成广告视频”后在此显示' : 'Appears after you click "Generate ad video"'}</span>}
                 </div>
               </div>
               <div className="rounded-2xl border border-white/10 bg-[#1c1e21] p-5">
-                <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-white"><Video className="h-4 w-4 text-[#7036F0]" /> {locale === 'zh' ? '成片广告（15 秒）' : 'Finished ad (15s)'}</h3>
+                <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-white"><Video className="h-4 w-4 text-[#00b2fc]" /> {locale === 'zh' ? '成片广告（15 秒）' : 'Finished ad (15s)'}</h3>
                 <div className="flex aspect-video items-center justify-center overflow-hidden rounded-xl border border-white/10 bg-white/[0.03]">
                   {video.status === 'done' && video.url ? <video src={video.url} controls className="h-full w-full object-contain" />
-                    : video.status === 'processing' ? <div className="flex flex-col items-center gap-2 text-white/40"><Loader2 className="h-7 w-7 animate-spin text-[#7036F0]" /><span className="text-xs">{locale === 'zh' ? 'seedance 渲染中，约 1-3 分钟' : 'seedance rendering ~1-3 min'}</span></div>
+                    : video.status === 'processing' ? <div className="flex flex-col items-center gap-2 text-white/40"><Loader2 className="h-7 w-7 animate-spin text-[#00b2fc]" /><span className="text-xs">{locale === 'zh' ? 'seedance 渲染中，约 1-3 分钟' : 'seedance rendering ~1-3 min'}</span></div>
                     : video.status === 'failed' ? <span className="text-sm text-red-400">{locale === 'zh' ? '渲染失败' : 'Render failed'}</span>
                     : <span className="text-sm text-white/30">{locale === 'zh' ? '产品照生成后自动渲染' : 'Renders automatically after the product photo'}</span>}
                 </div>
@@ -246,9 +246,9 @@ export default function AdSkitPage() {
             </div>
           )}
 
-          {/* 示例 */}
+          {/* Samples */}
           <div className="rounded-2xl border border-white/10 bg-[#1c1e21] p-5">
-            <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-white"><Sparkles className="h-4 w-4 text-[#7036F0]" /> {locale === 'zh' ? '示例成片（搞笑风格）' : 'Sample outputs (funny style)'}</h3>
+            <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-white"><Sparkles className="h-4 w-4 text-[#00b2fc]" /> {locale === 'zh' ? '示例成片（搞笑风格）' : 'Sample outputs (funny style)'}</h3>
             <div className="flex flex-wrap gap-4">
               {SAMPLES.map((s) => (
                 <div key={s.title} className="w-[220px] overflow-hidden rounded-xl border border-white/10">

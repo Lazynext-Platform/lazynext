@@ -1,10 +1,10 @@
 import { atlasChat } from '@/lib/atlas';
 
-// 剧本质量优先。2026-07-14 实测:openai/gpt-5.5 可稳定产出 3 角色、完整分镜的 JSON 剧本;
-// doubao 2.1 turbo/pro 在线路中会接近或超过 120s,flash 虽快但质量不符合 Drama Studio 的目标。
-// 2026-07-15 新提示词 A/B 实测(同题红烧牛肉面喜剧):gpt-5.5 30s 台词口语有梗明显最佳;
-// gemini 26s 但书面腔口号腔(用户实评"剧本太烂");deepseek 35s 略糙;glm 65s+JSON坏。
-// 旧 502 根因是旧提示词输出冗长致 CF 侧 ~53s 偶发超时;新提示词输出精简(~2.5k字符,30s),gpt-5.5 可回主力,gemini 留兜底。
+// Script quality first. 2026-07-14 testing: openai/gpt-5.5 reliably produces 3-character, full-storyboard JSON scripts;
+// doubao 2.1 turbo/pro approaches or exceeds 120s in production, flash is fast but quality doesn't meet Drama Studio's target.
+// 2026-07-15 new prompt A/B test (same topic: braised beef noodle comedy): gpt-5.5 30s dialogue is colloquial and punchy, clearly the best;
+// gemini 26s but written/stilted tone (user review: "script is terrible"); deepseek 35s slightly rough; glm 65s+ broken JSON.
+// Old 502 root cause was old prompt's verbose output causing ~53s occasional timeout on CF side; new prompt output is concise (~2.5k chars, 30s), gpt-5.5 back as primary, gemini as fallback.
 export const DRAMA_SCRIPT_MODEL = process.env.DRAMA_MODEL || 'openai/gpt-5.5';
 export const DRAMA_SCRIPT_FALLBACK_MODEL = process.env.DRAMA_FALLBACK_MODEL || 'google/gemini-2.5-flash';
 
@@ -18,7 +18,7 @@ function envInt(value: string | undefined, fallback: number, min: number, max: n
 const SCRIPT_TIMEOUT_MS = envInt(process.env.DRAMA_SCRIPT_TIMEOUT_MS || process.env.ATLASCLOUD_CHAT_TIMEOUT_MS, 110_000, 10_000, 115_000);
 const SCRIPT_MAX_TOKENS = envInt(process.env.DRAMA_SCRIPT_MAX_TOKENS, 6_500, 4_000, 12_000);
 
-// 影视 IP 混搭/角色反差的风格预设(源自 multiref-demo/gen_got.py 的"权游卖纸巾"创意套路,泛化成多风格)
+// Film/TV IP mashup / character contrast style presets (derived from multiref-demo/gen_got.py's "Game of Thrones selling tissues" creative pattern, generalized into multiple styles)
 export const DRAMA_STYLES = [
   { id: 'epic', label: 'Epic Fantasy', zh: '史诗奇幻', emoji: '⚔️', hint: '史诗、权谋、严肃庄重的气场,放进现代/日常场景形成强反差(如史诗英雄一本正经卖平价日用品)' },
   { id: 'palace', label: 'Palace Intrigue', zh: '宫斗权谋', emoji: '👑', hint: '深宫算计、步步为营、绵里藏针的台词张力' },
@@ -28,8 +28,8 @@ export const DRAMA_STYLES = [
   { id: 'hero', label: 'Superhero', zh: '超级英雄', emoji: '🦸', hint: '拯救世界的宏大使命 vs 鸡毛蒜皮日常的强反差' },
 ];
 
-// 正规影视流程:先定人设/场景("定妆图"), 再逐镜用参考图锁一致性出片。
-// 因此剧本产物必须给足:①每个角色一段英文外观(生成"定妆图");②每段标出场角色(cast)+时长(durationSec, AI 按节奏自定);③一段英文场景图 prompt。
+// Standard film/TV workflow: first define character designs/scenes ("costume reference photos"), then generate each shot using reference images to lock consistency.
+// Therefore the script output must provide enough: ① each character gets an English appearance description (for generating "costume reference photos"); ② each segment labels appearing characters (cast) + duration (durationSec, AI decides by pacing); ③ an English scene image prompt.
 const SYS = `你是顶级短剧编剧 + 病毒式带货短视频导演,擅长把强风格化角色(史诗/宫斗/武侠…)扔进现代日常场景,用"一本正经地荒诞"制造笑点。你产出的剧本会进入正规影视流程:先按你写的外观生成角色定妆图、场景图、产品参考图,再逐镜用参考图锁一致性出片。用原创角色名(不照搬有版权人物),保留该风格的味道。
 剧本质量硬标准:
 ① 开场 3 秒钩子必须是一个拍得出来的具体画面动作冲突(不是概念、不是气氛);
@@ -49,7 +49,7 @@ export interface ScriptInput {
   topic: string;
   style: string;
   lang: string;
-  // 用户指定的精确段数(可选);不传则完全交给 AI 按剧情节奏决定(4-6 段)。
+  // Exact segment count specified by the user (optional); if not provided, left entirely to AI to decide by story pacing (4-6 segments).
   targetSegments?: number;
 }
 
@@ -57,13 +57,13 @@ export interface DramaCharacter {
   key: string;
   name: string;
   persona: string;
-  appearance: string; // 英文,用于生成定妆图
+  appearance: string; // English, used to generate costume reference photos
 }
 export interface DramaSegment {
   i: number;
-  durationSec: number; // AI 决定,4-15
-  cast: string[]; // 出场角色 key
-  product?: boolean; // 该段画面是否出现产品(带货主题时 AI 标注;有上传产品图时用作参考锁一致性)
+  durationSec: number; // AI decides, 4-15
+  cast: string[]; // appearing character keys
+  product?: boolean; // whether the product appears in this shot's frame (AI labels for shopping themes; used to lock consistency when product image is uploaded)
   scene: string;
   action: string;
   dialogue?: string;
@@ -75,8 +75,8 @@ export interface DramaScript {
   sellingPoints: string[];
   characters: DramaCharacter[];
   setting: string;
-  sceneImagePrompt: string; // 英文,用于生成场景图
-  productImagePrompt: string; // 英文,用于生成"产品定妆图"(无实物产品则为空串)
+  sceneImagePrompt: string; // English, used to generate scene image
+  productImagePrompt: string; // English, used to generate "product costume reference photo" (empty string if no physical product)
   segments: DramaSegment[];
   climax: string;
 }
@@ -87,16 +87,15 @@ function extractJson(raw: string): Record<string, unknown> {
   if (a < 0) throw new Error('no_json_in_llm_output');
   const b = s.lastIndexOf('}');
   if (b > a) {
-    try { return JSON.parse(s.slice(a, b + 1)) as Record<string, unknown>; } catch { /* 可能被截断,下面尝试兜底修复 */ }
+    try { return JSON.parse(s.slice(a, b + 1)) as Record<string, unknown>; } catch { /* may be truncated, attempt fallback repair below */ }
   }
-  // 输出被 max_tokens 截断的兜底:截到最后一个看起来完整的位置,再尝试补齐尾部括号,尽量保住已生成的内容。
+  // Fallback for output truncated by max_tokens: cut to the last position that looks complete, then try appending closing brackets to preserve as much generated content as possible.
   const frag = s.slice(a);
   const cut = Math.max(frag.lastIndexOf('"}'), frag.lastIndexOf('}]'), frag.lastIndexOf('}'));
   if (cut > 0) {
     const head = frag.slice(0, cut + 1);
     for (const tail of ['', '}', ']}', '}]}', '"}]}', '"}]} ']) {
-      try { return JSON.parse(head + tail) as Record<string, unknown>; } catch { /* try next tail */ }
-    }
+      try { return JSON.parse(head + tail) as Record<string, unknown>; } catch { /* try next tail */ }    }
   }
   throw new Error('llm_json_unparseable');
 }
@@ -110,9 +109,9 @@ function asStr(v: unknown, fallback = ''): string {
   return typeof v === 'string' && v.trim() ? v.trim() : fallback;
 }
 
-// 把 LLM 原始 JSON 规范化成前后端都能安全消费的 DramaScript:
-// 角色补 key/appearance、每段 durationSec clamp、cast 过滤为合法 key(空则兜底)。
-// 尽量不抛错——保住已生成内容能出片,比严格校验更重要。
+// Normalize the LLM's raw JSON into a DramaScript that both frontend and backend can safely consume:
+// Characters get key/appearance filled in, each segment's durationSec is clamped, cast is filtered to valid keys (fallback if empty).
+// Try not to throw — preserving generated content so it can still produce video is more important than strict validation.
 export function normalizeScript(j: Record<string, unknown>): DramaScript {
   const rawChars = Array.isArray(j.characters) ? j.characters : [];
   const characters: DramaCharacter[] = rawChars.slice(0, 4).map((c, idx): DramaCharacter => {
@@ -123,12 +122,12 @@ export function normalizeScript(j: Record<string, unknown>): DramaScript {
       key: asStr(o.key, `char_${KEY_ALPHA[idx] || idx}`),
       name,
       persona,
-      // appearance 缺失时用 persona 兜底(至少给出图模型一点信息),避免定妆图完全随机。
+      // appearance fallback uses persona when missing (at least gives the image model some info), avoiding completely random costume reference photos.
       appearance: asStr(o.appearance, persona || `A distinctive character named ${name}, photorealistic, cinematic.`),
     };
   });
   const keySet = new Set(characters.map((c) => c.key));
-  const fallbackCast = characters.slice(0, 2).map((c) => c.key); // 无 cast 时至少给前两个角色当参考
+  const fallbackCast = characters.slice(0, 2).map((c) => c.key); // when no cast, at least use the first two characters as reference
 
   const rawSegs = Array.isArray(j.segments) ? j.segments : [];
   const segments: DramaSegment[] = rawSegs.slice(0, 8).map((s, idx): DramaSegment => {
@@ -192,8 +191,8 @@ export async function draftScript(input: ScriptInput): Promise<DramaScript> {
   "climax": "爆点:为什么好看/会传播"
 }
 注意:①characters 2-3 个(最多4),每个的 key 用 char_a/char_b/char_c;②每段 cast 里的 key 必须是上面 characters 定义过的;③durationSec 是整数秒(4-12),按节奏定,别所有段都一样;④按上面要求的段数产出,别少给;⑤带货主题:productImagePrompt 必填且产品出镜段标 product:true(至少一半段落),全剧同一件产品;纯剧情:productImagePrompt 给空字符串、所有段 false;⑥所有字符串值里禁止出现英文双引号字符,台词一律用中文引号「」(否则 JSON 会坏、分镜会丢)。`;
-  // 质量优先主模型;它偶发 502/超时(Atlas 网关波动)时降级到更快更稳的 gemini 兜底。
-  // 两次超时之和 <Worker 120s:主模型 ~68s(实测 53s 足够)+ 兜底 44s = 112s。
+  // Quality-first primary model; on occasional 502/timeout (Atlas gateway fluctuation), degrade to faster and more stable gemini fallback.
+  // Sum of two timeouts < Worker 120s: primary ~68s (tested 53s is enough) + fallback 44s = 112s.
   const attempts = [
     { model: DRAMA_SCRIPT_MODEL, timeout: Math.min(SCRIPT_TIMEOUT_MS, 58_000) },
     { model: DRAMA_SCRIPT_FALLBACK_MODEL, timeout: 50_000 },
@@ -204,7 +203,7 @@ export async function draftScript(input: ScriptInput): Promise<DramaScript> {
       const raw = await atlasChat(
         [{ role: 'system', content: SYS }, { role: 'user', content: usr }],
         model,
-        SCRIPT_MAX_TOKENS, // 富 schema(每角色外观 + 多段)较长,但必须留出 Worker 恢复时间。
+        SCRIPT_MAX_TOKENS, // rich schema (per-character appearance + multiple segments) is long, but must leave Worker recovery time.
         timeout,
       );
       return normalizeScript(extractJson(raw));

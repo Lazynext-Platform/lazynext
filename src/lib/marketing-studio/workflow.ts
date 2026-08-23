@@ -1,21 +1,21 @@
 import { submitRawGen } from '@/lib/atlas';
 import type { MarketingPlan, AdShot } from './schema';
 
-/** in-app 积分成本 */
+/** in-app credit cost */
 export const MK_PLAN_COST = 3;
-export const MK_IMAGE_COST = 5; // 每镜出图,按 nano-banana-2 当前约 $0.08 定价
-export const MK_VIDEO_COST = 12; // 每镜 Seedance 2.0 i2v,按当前约 $0.09 + SaaS 毛利定价
+export const MK_IMAGE_COST = 5; // per-shot image, priced at nano-banana-2's current ~$0.08
+export const MK_VIDEO_COST = 12; // per-shot Seedance 2.0 i2v, priced at current ~$0.09 + SaaS margin
 
 export const SHOT_IMAGE_MODEL = process.env.MK_SHOT_IMAGE_MODEL || 'google/nano-banana-2/text-to-image';
-// ⚠️ 用老版 nano-banana/edit,不用 nano-banana-2/edit:实测后者服务端间歇性 400
-// "Request parameters are invalid"(6 次里挂 4 次,~50-75%),drama 首帧每镜几乎必挂;老版实测无 400、~15s 出图、质量够 UGC/短剧。
+// ⚠️ Uses the old nano-banana/edit, not nano-banana-2/edit: testing shows the latter intermittently returns 400
+// "Request parameters are invalid" (4 out of 6 times, ~50-75%), drama first frame almost always fails; old version tested with no 400, ~15s per image, quality sufficient for UGC/short drama.
 export const SHOT_IMAGE_EDIT_MODEL = process.env.MK_SHOT_IMAGE_EDIT_MODEL || 'google/nano-banana/edit';
 export const SHOT_VIDEO_MODEL = process.env.MK_SHOT_VIDEO_MODEL || 'bytedance/seedance-2.0/image-to-video';
-// 复刻/生成的视频模型:seedance-2.0/image-to-video —— prompt 里带台词 + generate_audio 即可对口型说话,
-// 单步、最便宜(比 veo3.1 省),且吃用户选的时长。实测靠 prompt 台词就能出带音轨的口播,无需 TTS/reference_audios。
+// Replica/generation video model: seedance-2.0/image-to-video — prompt includes dialogue + generate_audio for lip-synced speech,
+// single step, cheapest (saves vs veo3.1), and respects user-selected duration. Testing shows prompt dialogue alone produces video with voiceover audio track, no TTS/reference_audios needed.
 export const REPLICA_VIDEO_MODEL = process.env.MK_REPLICA_VIDEO_MODEL || 'bytedance/seedance-2.0/image-to-video';
-// drama 逐镜:把 产品图 + 角色定妆图 + 场景图 一次性喂给 reference-to-video 直接出视频,
-// prompt 里 @image1.. 按 reference_images 顺序绑定;比"edit 合成首帧→i2v"少一步损耗,一致性由多参考锁定。
+// drama per-shot: feeds product image + character costume photo + scene image all at once to reference-to-video to directly produce video,
+// prompt binds @image1.. in reference_images order; saves one lossy step vs "edit composite first frame → i2v", consistency locked by multi-reference.
 export const SHOT_REF_VIDEO_MODEL = process.env.MK_SHOT_REF_VIDEO_MODEL || 'bytedance/seedance-2.0/reference-to-video';
 
 const RATIOS = new Set(['9:16', '16:9', '1:1', '4:3', '3:4']);
@@ -44,7 +44,7 @@ export function normalizeShotCount(v: unknown): number {
   return Number.isFinite(n) ? Math.max(2, Math.min(6, Math.round(n))) : 4;
 }
 
-/** 逐镜出图 prompt(无上传图时):靠文字描述锁产品 */
+/** Per-shot image prompt (no uploaded image): relies on text description to lock the product */
 export function buildShotImagePrompt(plan: MarketingPlan, shot: AdShot): string {
   const text = `${plan.scene} ${shot.shot} ${shot.prompt}`.toLowerCase();
   const sceneOnly = text.includes('no presenter') || text.includes('no human') || text.includes('cinematic product scene');
@@ -63,7 +63,7 @@ export function buildShotImagePrompt(plan: MarketingPlan, shot: AdShot): string 
     .join(' ');
 }
 
-/** 逐镜出图 prompt(有上传的真图时):用输入图里的真实产品/人物,一致性最强 */
+/** Per-shot image prompt (with uploaded real image): uses the real product/person from the input image, strongest consistency */
 export function buildShotImageEditPrompt(plan: MarketingPlan, shot: AdShot, hasProduct: boolean, hasAvatar: boolean): string {
   const text = `${plan.scene} ${shot.shot} ${shot.prompt}`.toLowerCase();
   const wantsPresenter = hasAvatar || !!plan.character;
@@ -92,14 +92,14 @@ export function buildShotImageEditPrompt(plan: MarketingPlan, shot: AdShot, hasP
     .join(' ');
 }
 
-/** nano-banana 出图:有参考图走 edit(吃真图),无则 text-to-image */
+/** nano-banana image generation: with reference images uses edit (consumes real images), otherwise text-to-image */
 export async function submitShotImage(prompt: string, ratio: string, refImages?: string[]) {
   const imgs = (refImages || []).filter((u) => typeof u === 'string' && /^https?:\/\//.test(u)).slice(0, 4);
   if (imgs.length) {
-    // ⚠️ nano-banana-2/edit 的比例参数名是 image_size(值如 '9:16'),不是 aspect_ratio。
-    // 传 aspect_ratio 或完全不传比例参数,提交都返回 200 但 GET prediction 会 400
-    // "Request parameters are invalid"(drama 首帧 edit 必现;marketing 复刻靠 promptOverride 退回 t2i 才侥幸没暴露)。
-    // 实测 image_size:'9:16' → completed。
+    // ⚠️ nano-banana-2/edit's aspect ratio parameter is named image_size (value like '9:16'), not aspect_ratio.
+    // Passing aspect_ratio or omitting the ratio param entirely, the submit returns 200 but GET prediction returns 400
+    // "Request parameters are invalid" (drama first frame edit always reproduces; marketing replica avoided exposure via promptOverride fallback to t2i).
+    // Tested: image_size:'9:16' → completed.
     return submitRawGen('generateImage', {
       model: SHOT_IMAGE_EDIT_MODEL,
       images: imgs,
@@ -115,7 +115,7 @@ export async function submitShotImage(prompt: string, ratio: string, refImages?:
   });
 }
 
-/** Seedance 2.0 image-to-video:首帧字段用 image,可原生生成对白/音效。 */
+/** Seedance 2.0 image-to-video: first frame field is image, can natively generate dialogue/sound effects. */
 export async function submitShotVideo(
   imageUrl: string,
   prompt: string,
@@ -138,12 +138,12 @@ export async function submitShotVideo(
       return_last_frame: false,
     });
   }
-  // 其他模型(veo3.1-fast 等):只传 model/image/prompt,原生音频 + 默认时长,不加 seedance 专属字段。
+  // Other models (veo3.1-fast etc.): only pass model/image/prompt, native audio + default duration, no seedance-specific fields.
   return submitRawGen('generateVideo', payload);
 }
 
-/** Seedance 2.0 reference-to-video:多张参考图(产品图/角色定妆图/场景图)直接出视频。
- *  prompt 里用 @image1、@image2…(按 reference_images 顺序)绑定各参考图,generate_audio 出对白。 */
+/** Seedance 2.0 reference-to-video: multiple reference images (product image/character costume photo/scene image) directly produce video.
+ *  The prompt uses @image1, @image2… (in reference_images order) to bind each reference image, generate_audio produces dialogue. */
 export async function submitShotRefVideo(
   referenceImages: string[],
   prompt: string,

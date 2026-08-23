@@ -7,7 +7,7 @@ import { chargeAndSubmit, chargeErrorResponse } from '@/lib/marketing-studio/gen
 
 export const maxDuration = 60;
 
-// 剧本分镜出图(复用 marketing 底层 nano-banana):需登录 + 扣 MK_IMAGE_COST;提交/异步失败均退款,Atlas 报错透传。
+// Script storyboard image generation (reuses marketing underlying nano-banana): requires login + charges MK_IMAGE_COST; refunds on submit/async failure, Atlas errors pass through.
 async function __byokPOST(req: Request) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
@@ -16,8 +16,8 @@ async function __byokPOST(req: Request) {
   const body = await req.json().catch(() => ({}));
   const prompt = typeof body.prompt === 'string' ? body.prompt.trim().slice(0, 3000) : '';
   const ratio = normalizeRatio(body.ratio);
-  // 相对路径(本站 /api/marketing-studio/media/...)补成绝对 URL,否则被过滤掉 → refImages 空 → 退回纯文生图,
-  // 定妆图/产品/场景参考图静默失效、每镜不一致(marketing 早修过 toAbsMedia,drama 这里之前漏修)。
+  // Convert relative paths (site /api/marketing-studio/media/...) to absolute URLs, otherwise they get filtered out → refImages empty → falls back to pure text-to-image,
+  // look images/product/scene reference images silently fail, inconsistent per shot (marketing fixed toAbsMedia earlier, drama was missed here before).
   const toAbs = (u: unknown): string => {
     const s = typeof u === 'string' ? u.trim() : '';
     if (s.startsWith('/api/marketing-studio/media/')) return new URL(s, req.url).toString();

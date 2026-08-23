@@ -72,13 +72,13 @@ export function ByokKey({ className = '' }: { className?: string }) {
               onChange={(e) => setDraft(e.target.value)}
               placeholder="apikey-..."
               autoFocus
-              className="mt-4 w-full rounded-lg border border-white/15 bg-black/30 px-3 py-2 text-sm outline-none focus:border-[#7036F0]"
+              className="mt-4 w-full rounded-lg border border-white/15 bg-black/30 px-3 py-2 text-sm outline-none focus:border-[#00b2fc]"
             />
             <a
               href="https://atlascloud.ai?utm_source=github&utm_campaign=ecommerce-studio"
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-2 inline-block text-xs text-[#a78bfa] hover:underline"
+              className="mt-2 inline-block text-xs text-[#22d3ee] hover:underline"
             >
               {zh ? '没有 Key?去 AtlasCloud 免费获取 ↗' : 'No key? Get one free at AtlasCloud ↗'}
             </a>
@@ -97,7 +97,7 @@ export function ByokKey({ className = '' }: { className?: string }) {
                 <button
                   type="button"
                   onClick={save}
-                  className="rounded-lg bg-[#7036F0] px-4 py-1.5 text-sm font-medium text-white hover:opacity-90"
+                  className="rounded-lg bg-[#00b2fc] px-4 py-1.5 text-sm font-medium text-white hover:opacity-90"
                 >
                   {zh ? '保存' : 'Save'}
                 </button>

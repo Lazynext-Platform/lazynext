@@ -1,35 +1,35 @@
 import { submitRawGen } from '@/lib/atlas';
 
 /**
- * 爆款广告复刻(Ad Reference):上传一条参考广告视频,把里面的 人/产品/声音/台词 换成你的。
- * 核心 = google/gemini-omni-flash/video-edit 一步同时换出镜人+产品(编辑原片、保运镜/节奏/原生音频),
- * 可选 elevenlabs 新配音 + veed/lipsync 对口型(换声音和台词)。
- * 2026-07-16:Wan-2.2/animate-mix 换人效果差且不复刻原片动作(会重编运镜/构图/服装),回归纯 omni——
- * 一次 video-edit 换人+换产品(实测 scratchpad/e2e-swap 碾压 seedance 重生成);
- * omni 换人偶发异步失败(1010002)由前端 submit+poll 自动重试兜底。
+ * Viral Ad Replica (Ad Reference): upload a reference ad video, replace the person/product/voice/lines with your own.
+ * Core = google/gemini-omni-flash/video-edit swaps both the on-screen person and product in one step (edits the original footage, preserves camera motion/pacing/native audio),
+ * optional elevenlabs new voiceover + veed/lipsync for lip-sync (swap voice and lines).
+ * 2026-07-16: Wan-2.2/animate-mix person-swap quality is poor and doesn't replicate the original footage's actions (re-encodes camera motion/composition/wardrobe), reverted to pure omni —
+ * one video-edit swaps person + product (scratchpad/e2e-swap tests show it crushes seedance regeneration);
+ * omni person-swap occasionally fails async (1010002), covered by frontend submit+poll auto-retry fallback.
  */
 
 export const AD_REF_EDIT_MODEL = 'google/gemini-omni-flash/video-edit';
-// 换人已并入 edit(同一次 omni video-edit 换人+换产品)。此常量仅兼容旧 /character 接口,同样走 omni。
+// Person-swap has been merged into edit (same omni video-edit swaps person + product). This constant is only for backward compat with the old /character endpoint, also uses omni.
 export const AD_REF_CHARACTER_MODEL = 'google/gemini-omni-flash/video-edit';
 export const AD_REF_TTS_MODEL = 'elevenlabs/v3/text-to-speech';
 export const AD_REF_LIPSYNC_MODEL = 'veed/lipsync';
-// 兜底换人:omni 换真人撞 deepfake(1010002)时改用 kling 动作迁移——出镜人图 + 原视频当动作源,
-// 让你的人做原片动作(驱动你自己的图、不篡改原视频真人,不触发 1010002)。kling 输入 image/video ≤10MB。
+// Fallback person-swap: when omni swapping a real person hits deepfake (1010002), switch to kling motion transfer — on-screen person image + original video as motion source,
+// letting your person perform the original footage's actions (driving your own image, not tampering with the original video's real person, avoiding 1010002). kling input image/video ≤10MB.
 export const AD_REF_MOTION_MODEL = 'kwaivgi/kling-v2.6-pro/motion-control';
 
-// in-app 积分成本:按 Atlas 实时成本的大致比例 + SaaS 毛利定价。
+// in-app credit cost: roughly proportional to Atlas real-time cost + SaaS margin pricing.
 export const AD_REF_EDIT_COST = 15;
 export const AD_REF_CHARACTER_COST = 15;
 export const AD_REF_VOICE_COST = 10;
 export const AD_REF_LIPSYNC_COST = 2;
 export const AD_REF_MOTION_COST = 15;
 
-// gemini-omni video-edit 输入限制:≤100MB / ≤30s;上传给自己 R2 的兜底上限
+// gemini-omni video-edit input limits: ≤100MB / ≤30s; fallback upper bound for uploads to our own R2
 export const AD_REF_MAX_VIDEO_BYTES = 60_000_000;
 export const AD_REF_MAX_IMAGE_BYTES = 10_000_000;
 
-// elevenlabs v3 多语言音色白名单(id 来自模型 schema enum)
+// elevenlabs v3 multilingual voice whitelist (ids from model schema enum)
 export const AD_REF_VOICES = [
   { id: 'hpp4J3VqNfWAUOO0d1Us', label: '女声 · 清亮' },
   { id: 'EXAVITQu4vr4xnSDxMaL', label: '女声 · 温柔 (Bella)' },
@@ -44,8 +44,8 @@ export function cleanRefText(v: unknown, fallback = '', max = 1200): string {
 }
 
 /**
- * 由结构化输入组装 video-edit 编辑指令(英文,已实测的模板):
- * 参考图动态编号:先人像后产品,prompt 里用 "reference image N" 指回。
+ * Assemble the video-edit instruction from structured input (English, tested template):
+ * Reference images are numbered dynamically: avatars first then products, referenced in the prompt as "reference image N".
  */
 export function buildEditRequest({
   videoUrl,
@@ -84,7 +84,7 @@ export function buildEditRequest({
   };
 }
 
-/** 出片:gemini-omni-flash 直接编辑原视频(原生音频)。 */
+/** Output: gemini-omni-flash directly edits the original video (native audio). */
 export async function submitAdRefEdit(videoUrl: string, prompt: string, images: string[]) {
   return submitRawGen('generateVideo', {
     model: AD_REF_EDIT_MODEL,
@@ -97,7 +97,7 @@ export async function submitAdRefEdit(videoUrl: string, prompt: string, images: 
   });
 }
 
-/** 换出镜人(兼容旧 /character 接口):omni video-edit 只换人,保留场景/产品/运镜/原声。 */
+/** Swap on-screen person (backward compat with old /character endpoint): omni video-edit swaps only the person, preserving scene/product/camera motion/native audio. */
 export async function submitAdRefCharacter(videoUrl: string, imageUrl: string) {
   const prompt = [
     'Keep the SAME scene, background, product, outfit, lighting, camera framing, camera motion, cuts, pacing and overall energy of the source video.',
@@ -115,7 +115,7 @@ export async function submitAdRefCharacter(videoUrl: string, imageUrl: string) {
   });
 }
 
-/** 兜底换人:kling 动作迁移——出镜人图(image)+ 原视频(动作源 video)→ 你的人做原片动作(真人不撞 1010002)。 */
+/** Fallback person-swap: kling motion transfer — on-screen person image (image) + original video (motion source video) → your person performs the original footage's actions (real person doesn't hit 1010002). */
 export async function submitAdRefMotion(imageUrl: string, videoUrl: string) {
   return submitRawGen('generateVideo', {
     model: AD_REF_MOTION_MODEL,
@@ -126,7 +126,7 @@ export async function submitAdRefMotion(imageUrl: string, videoUrl: string) {
   });
 }
 
-/** 新配音(换声音+换台词)。 */
+/** New voiceover (swap voice + swap lines). */
 export async function submitAdRefVoice(text: string, voice: string) {
   return submitRawGen('generateAudio', {
     model: AD_REF_TTS_MODEL,
@@ -136,7 +136,7 @@ export async function submitAdRefVoice(text: string, voice: string) {
   });
 }
 
-/** 把新配音对到成片嘴上(覆盖原声)。 */
+/** Lip-sync the new voiceover onto the final video's mouth (overwrites original audio). */
 export async function submitAdRefLipsync(videoUrl: string, audioUrl: string) {
   return submitRawGen('generateVideo', {
     model: AD_REF_LIPSYNC_MODEL,

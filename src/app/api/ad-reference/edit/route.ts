@@ -10,8 +10,8 @@ import { uploadInputMediaToAtlas, ADREF_VIDEO_UPLOAD_LIMIT, ADREF_IMAGE_UPLOAD_L
 
 export const maxDuration = 60;
 
-// gemini-omni-flash/video-edit 一步同时换人+换产品(纯 omni,2026-07-16 起换人也走这里)。
-// 换人偶发异步失败(1010002)由前端 submit+poll 自动重试兜底。
+// gemini-omni-flash/video-edit swaps person + product in one step (pure omni, person swap also goes here since 2026-07-16).
+// Person swap occasional async failure (1010002) is automatically retried as fallback by frontend submit+poll.
 async function __byokPOST(req: Request) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
@@ -32,10 +32,10 @@ async function __byokPOST(req: Request) {
     throw e;
   }
   if (!videoUrl) return NextResponse.json({ error: 'video_url_required' }, { status: 400 });
-  // 纯 omni:一次 video-edit 同时换人+换产品,avatar / product 至少一个。
+  // Pure omni: one video-edit swaps person + product simultaneously, at least one of avatar / product required.
   if (!avatarUrl && !productUrl) return NextResponse.json({ error: 'avatar_or_product_required' }, { status: 400 });
 
-  // omni video-edit 按参考视频秒数计费;前端上传时读出时长随 body.videoSeconds 传来,缺省保守用 30s。
+  // omni video-edit bills by reference video seconds; frontend reads duration on upload and passes with body.videoSeconds, conservatively defaults to 30s.
   const videoSeconds = Number(body.videoSeconds) > 0 ? Number(body.videoSeconds) : 30;
 
   const { prompt } = buildEditRequest({
@@ -55,8 +55,8 @@ async function __byokPOST(req: Request) {
       model: AD_REF_EDIT_MODEL,
       prompt,
       submit: async () => {
-        // 同源 R2 媒体不能让 Atlas 走 Worker 自抓(会 404→"参数无效");先 bucket 直读上传 Atlas 临时 URL 再提交。
-        // images 顺序须与 buildEditRequest 的 "reference image N" 一致:先人像(avatar)后产品(product)。
+        // Same-origin R2 media can't let Atlas self-fetch via Worker (would 404→"invalid params"); first read directly from bucket and upload to Atlas temporary URL then submit.
+        // images order must match buildEditRequest's "reference image N": portrait (avatar) first, then product.
         const atlasVideo = await uploadInputMediaToAtlas(body.videoUrl, videoUrl, req, 'adref-edit-video', ADREF_VIDEO_UPLOAD_LIMIT);
         const atlasImages: string[] = [];
         if (avatarUrl) atlasImages.push(await uploadInputMediaToAtlas(body.avatarUrl, avatarUrl, req, 'adref-edit-avatar', ADREF_IMAGE_UPLOAD_LIMIT));

@@ -17,13 +17,14 @@ interface Ctx {
 
 const I18nContext = createContext<Ctx | null>(null);
 
-// initialLocale 由服务端(RootLayout)从 cookie 读好传入:SSR 与 client 首帧用同一 locale,
-// 彻底消除 "SSR 英文 → client useEffect 切中文" 造成的 hydration mismatch(React #418)。
+// initialLocale is read from cookie server-side (RootLayout) and passed in: SSR and client first frame use the same locale,
+// completely eliminating hydration mismatch caused by "SSR English → client useEffect switches to Chinese" (React #418).
 export function I18nProvider({ children, initialLocale }: { children: React.ReactNode; initialLocale?: Locale }) {
   const [locale, setLocaleState] = useState<Locale>(initialLocale || 'en');
 
-  // 迁移老用户:只有 localStorage 有、cookie 没有(initialLocale 未传到期望值)时,采用并补写 cookie,
-  // 使下次 SSR 就能读到 → 之后首帧完全一致。首帧仍 = initialLocale,不破坏本次 hydration。
+  // Migrate old users: only when localStorage has it but cookie doesn't (initialLocale didn't reach the expected value),
+  // adopt it and write the cookie so next SSR can read it → first frame fully consistent thereafter.
+  // First frame still = initialLocale, doesn't break this hydration.
   useEffect(() => {
     try {
       const saved = localStorage.getItem('locale') as Locale | null;

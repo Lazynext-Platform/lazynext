@@ -1,11 +1,11 @@
-# Cloudflare 本地 cf:preview 使用（Wrangler 读取 .dev.vars）。
-# D1 和 R2 由 wrangler.jsonc bindings 提供，不需要 DATABASE_URL/Blob token。
-# 生产环境请用 `wrangler secret put <KEY>`，不要提交 .dev.vars。
+# Cloudflare local cf:preview (Wrangler reads .dev.vars).
+# D1 and R2 come from wrangler.jsonc bindings; DATABASE_URL/Blob token are not needed.
+# In production use `wrangler secret put <KEY>`; do not commit .dev.vars.
 NEXTAUTH_SECRET=        # openssl rand -base64 32
-NEXTAUTH_URL=           # https://<worker子域或自定义域>
+NEXTAUTH_URL=           # https://<worker subdomain or custom domain>
 GOOGLE_CLIENT_ID=
 GOOGLE_CLIENT_SECRET=
 ATLASCLOUD_API_KEY=
-STRIPE_SECRET_KEY=      # 不用 Stripe 可留空 + PAYMENT_PROVIDER=atlas
+STRIPE_SECRET_KEY=      # leave empty + PAYMENT_PROVIDER=atlas if not using Stripe
 STRIPE_WEBHOOK_SECRET=
 PAYMENT_PROVIDER=atlas

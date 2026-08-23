@@ -7,8 +7,8 @@ import { useSession, signIn } from 'next-auth/react';
 import { Loader2, ArrowLeft, Download, Film } from 'lucide-react';
 import { useI18n } from '@/i18n/provider';
 
-// drama 作品文件夹详情页:分区展示 角色定妆图 / 各场景(首帧+视频) / 最终成片。
-// 数据来自 /api/creations/[id](GET 返回含 assets)。制作中会持续变化,故 15s 轮询刷新。
+// Drama work folder detail page: displays sections for character portraits / each scene (first frame + video) / final video.
+// Data from /api/creations/[id] (GET returns with assets). Continuously changes during production, so polls every 15s to refresh.
 type DramaAssets = {
   kind: string;
   title?: string;
@@ -44,7 +44,7 @@ export default function WorkDetailPage() {
         .then((j) => { if (alive) setC(j && j.id ? j : 'notfound'); })
         .catch(() => { if (alive) setC((prev) => (prev && prev !== 'notfound' ? prev : 'notfound')); });
     void load();
-    const t = setInterval(load, 15_000); // 制作中持续更新
+    const t = setInterval(load, 15_000); // continuously update during production
     return () => { alive = false; clearInterval(t); };
   }, [id, status]);
 
@@ -65,13 +65,13 @@ export default function WorkDetailPage() {
           <div className="grid place-items-center gap-4 py-32 text-center">
             <div className="text-5xl">🔐</div>
             <p className="text-white/50">{zh ? '登录后查看作品。' : 'Sign in to view.'}</p>
-            <button onClick={() => signIn('google')} className="rounded-xl px-5 py-2.5 text-sm font-bold text-white" style={{ background: '#7036F0' }}>{zh ? '登录' : 'Sign in'}</button>
+            <button onClick={() => signIn('google')} className="rounded-xl px-5 py-2.5 text-sm font-bold text-white" style={{ background: '#00b2fc' }}>{zh ? '登录' : 'Sign in'}</button>
           </div>
         ) : c === 'notfound' || !c.assets || c.assets.kind !== 'drama' ? (
           <div className="grid place-items-center gap-4 py-32 text-center">
             <div className="text-5xl">🗂️</div>
             <p className="text-white/50">{zh ? '这个作品没有文件夹视图。' : 'No folder view for this item.'}</p>
-            <Link href="/my-work" className="rounded-xl px-5 py-2.5 text-sm font-bold text-white" style={{ background: '#7036F0' }}>{zh ? '返回作品' : 'Back to work'}</Link>
+            <Link href="/my-work" className="rounded-xl px-5 py-2.5 text-sm font-bold text-white" style={{ background: '#00b2fc' }}>{zh ? '返回作品' : 'Back to work'}</Link>
           </div>
         ) : (
           <DramaFolder c={c} zh={zh} finalVideo={finalVideo} />
@@ -89,10 +89,10 @@ function DramaFolder({ c, zh, finalVideo }: { c: Creation; zh: boolean; finalVid
 
   return (
     <div className="pt-4">
-      <div className="flex items-center gap-2 mb-1"><Film className="h-5 w-5" style={{ color: '#a78bfa' }} /><h1 className="text-2xl font-bold tracking-tight sm:text-3xl">{f.title || c.prompt || (zh ? '短剧' : 'Drama')}</h1></div>
+      <div className="flex items-center gap-2 mb-1"><Film className="h-5 w-5" style={{ color: '#22d3ee' }} /><h1 className="text-2xl font-bold tracking-tight sm:text-3xl">{f.title || c.prompt || (zh ? '短剧' : 'Drama')}</h1></div>
       <p className="mb-8 text-sm text-white/45">{zh ? `AI 剧情 · ${chars.length} 个角色 · ${scenes.length} 个场景 · ${doneVids}/${scenes.length} 镜已出片` : `Drama · ${chars.length} characters · ${scenes.length} scenes · ${doneVids}/${scenes.length} shots done`}</p>
 
-      {/* 最终成片 */}
+      {/* Final video */}
       <section className="mb-10">
         <h2 className="mb-3 text-sm font-semibold text-white/70">{zh ? '最终成片' : 'Final cut'}</h2>
         {finalVideo ? (
@@ -105,7 +105,7 @@ function DramaFolder({ c, zh, finalVideo }: { c: Creation; zh: boolean; finalVid
         )}
       </section>
 
-      {/* 角色定妆图 */}
+      {/* Character portraits */}
       <section className="mb-10">
         <h2 className="mb-3 text-sm font-semibold text-white/70">🎭 {zh ? '角色定妆图' : 'Cast portraits'}</h2>
         {chars.length ? (
@@ -127,7 +127,7 @@ function DramaFolder({ c, zh, finalVideo }: { c: Creation; zh: boolean; finalVid
         ) : <div className="text-xs text-white/40">{zh ? '暂无角色' : 'No characters'}</div>}
       </section>
 
-      {/* 产品参考图(带货剧:用户上传或自动生成,全剧锁同一件产品) */}
+      {/* Product reference image (product drama: user-uploaded or auto-generated, same product locked across all scenes) */}
       {f.productImageUrl && (
         <section className="mb-10">
           <h2 className="mb-3 text-sm font-semibold text-white/70">🛍️ {zh ? '产品参考图' : 'Product reference'}</h2>
@@ -136,14 +136,14 @@ function DramaFolder({ c, zh, finalVideo }: { c: Creation; zh: boolean; finalVid
         </section>
       )}
 
-      {/* 各场景资产 */}
+      {/* Per-scene assets */}
       <section>
         <h2 className="mb-3 text-sm font-semibold text-white/70">🎬 {zh ? '各场景(首帧 + 视频)' : 'Scenes (frame + video)'}</h2>
         <div className="space-y-4">
           {scenes.map((s) => (
             <div key={s.i} className="rounded-xl border border-white/10 bg-black/20 p-3">
               <div className="mb-2 flex items-center gap-2">
-                <span className="rounded-full bg-white/5 px-2 py-0.5 text-[11px]" style={{ color: '#a78bfa' }}>{zh ? `场景 ${s.i}` : `Scene ${s.i}`}</span>
+                <span className="rounded-full bg-white/5 px-2 py-0.5 text-[11px]" style={{ color: '#22d3ee' }}>{zh ? `场景 ${s.i}` : `Scene ${s.i}`}</span>
                 {s.dialogue && <span className="truncate text-[11px] text-white/50">「{s.dialogue}」</span>}
               </div>
               <div className="flex flex-wrap gap-3">

@@ -7,7 +7,7 @@ import { mediaToDataUri } from '@/lib/marketing-studio/r2';
 
 export const maxDuration = 60;
 
-// 用户勾了换声音但没填脚本时,自动生成一段 UGC 口播台词。多模态看产品图 → 台词贴合真实产品;语言跟随描述。
+// When user checked change voice but didn't fill in script, auto-generates a UGC spoken dialogue. Multimodal sees product image → dialogue matches real product; language follows description.
 const MODEL = process.env.MK_EXPAND_MODEL || 'google/gemini-2.5-flash';
 type Part = { type: 'text'; text: string } | { type: 'image_url'; image_url: { url: string } };
 

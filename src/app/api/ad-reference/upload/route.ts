@@ -40,8 +40,8 @@ function sniffContentType(buffer: ArrayBuffer, declared: string): string {
   return declared;
 }
 
-// 无登录直连:参考视频/产品图/人像直接进自己的 R2(Atlas uploadMedia 对视频几 MB 就 413,不能走它)。
-// 返回同源 media url(公网可达、带 Range,Atlas 后端可直接抓取)。
+// No-login direct: reference video/product image/portrait directly into own R2 (Atlas uploadMedia 413s on videos of just a few MB, can't use it).
+// Returns same-origin media url (publicly reachable, with Range, Atlas backend can fetch directly).
 async function __byokPOST(req: Request) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
