@@ -636,7 +636,7 @@ export default function DramaStudioPage() {
 
       {/* Hero */}
       <div className="text-center pt-14 pb-10 px-6">
-        <div className="text-[11px] uppercase tracking-[0.24em] text-white/50 font-medium mb-3" style={{ fontFamily: 'var(--font-grotesk), "Space Grotesk", sans-serif' }}>Drama Studio</div>
+        <div className="text-[11px] uppercase tracking-[0.24em] text-white/50 font-medium mb-3" style={{ fontFamily: 'var(--font-grotesk), "Space Grotesk", sans-serif' }}>{t('drama.kicker')}</div>
         <h1 className="font-bold uppercase leading-[1.08] tracking-[-0.03em] text-[clamp(40px,5.4vw,58px)] text-white/90" style={{ fontFamily: 'var(--font-grotesk), "Space Grotesk", system-ui, sans-serif' }}>
           {t('drama.titlePre')}<br />{t('drama.titleMid')}<span style={{ color: ACCENT }}>{t('drama.titleHl')}</span>
         </h1>

@@ -339,6 +339,7 @@ export const messages: Record<Locale, any> = {
       styleUrgent: 'Urgent hard sell',
     },
     adRef: {
+      kicker: 'Reference to Ad',
       errInsufficientCredits: 'Not enough credits. Please top up on the pricing page.',
       errMediaUrlNotPublic: 'The uploaded media URL is not public, so Atlas cannot fetch it. Use the deployed public domain or configure PUBLIC_MEDIA_BASE_URL / NEXTAUTH_URL.',
       videoTooLarge: 'Video must be under 60MB',
@@ -387,6 +388,7 @@ export const messages: Record<Locale, any> = {
       stepLipsync: '④ Lip-syncing the new voiceover…',
     },
     drama: {
+      kicker: 'Drama Studio',
       errInsufficientCredits: 'Not enough credits: this step needs {need}, you have {have}.',
       errInsufficientCreditsShort: 'Not enough credits. Please top up on the pricing page.',
       errScriptTimeout: 'The AI script service timed out. Please try again later.',
@@ -946,6 +948,7 @@ export const messages: Record<Locale, any> = {
       styleUrgent: '紧迫硬广',
     },
     adRef: {
+      kicker: '爆款复刻',
       errInsufficientCredits: '积分不足,请前往定价页充值。',
       errMediaUrlNotPublic: '当前上传后的媒体地址不是公网地址,Atlas 无法抓取。请在已部署的线上域名测试,或配置 PUBLIC_MEDIA_BASE_URL / NEXTAUTH_URL 为公网地址后重试。',
       videoTooLarge: '视频必须小于 60MB',
@@ -994,6 +997,7 @@ export const messages: Record<Locale, any> = {
       stepLipsync: '④ 正在为新配音对口型…',
     },
     drama: {
+      kicker: '短剧工作室',
       errInsufficientCredits: '积分不足:本次需要 {need} 积分,当前只有 {have}。',
       errInsufficientCreditsShort: '积分不足,请前往定价页充值。',
       errScriptTimeout: 'AI 剧本服务响应超时,请稍后重试。',
@@ -1555,6 +1559,7 @@ export const messages: Record<Locale, any> = {
       styleUrgent: '緊急セール',
     },
     adRef: {
+      kicker: '広告リメイク',
       errInsufficientCredits: 'クレジット不足です。価格ページでチャージしてください。',
       errMediaUrlNotPublic: 'アップロードされたメディアURLが公開されていないため、Atlasが取得できません。デプロイされた公開ドメインを使用するか、PUBLIC_MEDIA_BASE_URL / NEXTAUTH_URLを設定してください。',
       videoTooLarge: '動画は60MB以下にしてください',
@@ -1603,6 +1608,7 @@ export const messages: Record<Locale, any> = {
       stepLipsync: '④ 新しい音声にリップシンク中…',
     },
     drama: {
+      kicker: 'ドラマスタジオ',
       errInsufficientCredits: 'クレジット不足:このステップは {need} 必要、現在 {have}。',
       errInsufficientCreditsShort: 'クレジット不足です。価格ページでチャージしてください。',
       errScriptTimeout: 'AIスクリプトサービスがタイムアウトしました。後で再試行してください。',
@@ -2164,6 +2170,7 @@ export const messages: Record<Locale, any> = {
       styleUrgent: 'Venta dura urgente',
     },
     adRef: {
+      kicker: 'Referencia a Anuncio',
       errInsufficientCredits: 'Créditos insuficientes. Recarga en la página de precios.',
       errMediaUrlNotPublic: 'La URL del medio subido no es pública, Atlas no puede obtenerla. Usa el dominio público desplegado o configura PUBLIC_MEDIA_BASE_URL / NEXTAUTH_URL.',
       videoTooLarge: 'El vídeo debe ser menor de 60MB',
@@ -2212,6 +2219,7 @@ export const messages: Record<Locale, any> = {
       stepLipsync: '④ Sincronizando labios con la nueva narración…',
     },
     drama: {
+      kicker: 'Estudio de Drama',
       errInsufficientCredits: 'Créditos insuficientes: este paso necesita {need}, tienes {have}.',
       errInsufficientCreditsShort: 'Créditos insuficientes. Recarga en la página de precios.',
       errScriptTimeout: 'El servicio de guion IA agotó el tiempo. Inténtalo más tarde.',
@@ -2702,6 +2710,7 @@ export const messages: Record<Locale, any> = {
       styleUrgent: '긴급 하드셀',
     },
     adRef: {
+      kicker: '광고 참조',
       errInsufficientCredits: '크레딧이 부족합니다. 가격 페이지에서 충전하세요.',
       errMediaUrlNotPublic: '업로드된 미디어 URL이 공개되지 않아 Atlas가 가져올 수 없습니다. 배포된 공개 도메인을 사용하거나 PUBLIC_MEDIA_BASE_URL / NEXTAUTH_URL을 설정하세요.',
       videoTooLarge: '동영상은 60MB 이하여야 합니다',
@@ -2750,6 +2759,7 @@ export const messages: Record<Locale, any> = {
       stepLipsync: '④ 새 보이스오버 립싱크 중…',
     },
     drama: {
+      kicker: '드라마 스튜디오',
       errInsufficientCredits: '크레딧 부족: 이 단계는 {need} 필요, 현재 {have}.',
       errInsufficientCreditsShort: '크레딧이 부족합니다. 가격 페이지에서 충전하세요.',
       errScriptTimeout: 'AI 스크립트 서비스 시간 초과. 나중에 재시도하세요.',
@@ -3240,6 +3250,7 @@ export const messages: Record<Locale, any> = {
       styleUrgent: 'Venda dura urgente',
     },
     adRef: {
+      kicker: 'Referência a Anúncio',
       errInsufficientCredits: 'Créditos insuficientes. Recarregue na página de preços.',
       errMediaUrlNotPublic: 'A URL da mídia enviada não é pública, Atlas não pode buscá-la. Use o domínio público implantado ou configure PUBLIC_MEDIA_BASE_URL / NEXTAUTH_URL.',
       videoTooLarge: 'O vídeo deve ter menos de 60MB',
@@ -3288,6 +3299,7 @@ export const messages: Record<Locale, any> = {
       stepLipsync: '④ Sincronizando lábios com a nova narração…',
     },
     drama: {
+      kicker: 'Estúdio de Drama',
       errInsufficientCredits: 'Créditos insuficientes: este passo precisa de {need}, você tem {have}.',
       errInsufficientCreditsShort: 'Créditos insuficientes. Recarregue na página de preços.',
       errScriptTimeout: 'O serviço de roteiro IA esgotou o tempo. Tente novamente mais tarde.',
@@ -3778,6 +3790,7 @@ export const messages: Record<Locale, any> = {
       styleUrgent: 'Vente dure urgente',
     },
     adRef: {
+      kicker: 'Référence à l\'Annonce',
       errInsufficientCredits: 'Crédits insuffisants. Rechargez sur la page des prix.',
       errMediaUrlNotPublic: 'L\'URL du média téléchargé n\'est pas publique, Atlas ne peut pas la récupérer. Utilisez le domaine public déployé ou configurez PUBLIC_MEDIA_BASE_URL / NEXTAUTH_URL.',
       videoTooLarge: 'La vidéo doit être inférieure à 60MB',
@@ -3826,6 +3839,7 @@ export const messages: Record<Locale, any> = {
       stepLipsync: '④ Synchronisation labiale de la nouvelle voix off…',
     },
     drama: {
+      kicker: 'Studio de Drame',
       errInsufficientCredits: 'Crédits insuffisants : cette étape nécessite {need}, vous avez {have}.',
       errInsufficientCreditsShort: 'Crédits insuffisants. Rechargez sur la page des prix.',
       errScriptTimeout: 'Le service de script IA a expiré. Réessayez plus tard.',
@@ -4316,6 +4330,7 @@ export const messages: Record<Locale, any> = {
       styleUrgent: 'Dringender Hard-Sell',
     },
     adRef: {
+      kicker: 'Anzeigenreferenz',
       errInsufficientCredits: 'Nicht genug Credits. Bitte auf der Preisseite aufladen.',
       errMediaUrlNotPublic: 'Die hochgeladene Medien-URL ist nicht öffentlich, Atlas kann sie nicht abrufen. Verwende die bereitgestellte öffentliche Domain oder konfiguriere PUBLIC_MEDIA_BASE_URL / NEXTAUTH_URL.',
       videoTooLarge: 'Video muss unter 60MB sein',
@@ -4364,6 +4379,7 @@ export const messages: Record<Locale, any> = {
       stepLipsync: '④ Lip-Sync der neuen Stimme…',
     },
     drama: {
+      kicker: 'Drama-Studio',
       errInsufficientCredits: 'Nicht genug Credits: dieser Schritt braucht {need}, du hast {have}.',
       errInsufficientCreditsShort: 'Nicht genug Credits. Bitte auf der Preisseite aufladen.',
       errScriptTimeout: 'Der KI-Skriptdienst hat die Zeit überschritten. Versuche es später erneut.',
@@ -4854,6 +4870,7 @@ export const messages: Record<Locale, any> = {
       styleUrgent: 'بيع عاجل',
     },
     adRef: {
+      kicker: 'مرجع الإعلان',
       errInsufficientCredits: 'أرصدة غير كافية. اشحن في صفحة الأسعار.',
       errMediaUrlNotPublic: 'عنوان الوسائط المرفوع ليس عامًا، Atlas لا يستطيع جلبه. استخدم النطاق العام المنشور أو اضبط PUBLIC_MEDIA_BASE_URL / NEXTAUTH_URL.',
       videoTooLarge: 'يجب أن يكون الفيديو أقل من 60MB',
@@ -4902,6 +4919,7 @@ export const messages: Record<Locale, any> = {
       stepLipsync: '④ مزامنة الشفاه مع الصوت الجديد…',
     },
     drama: {
+      kicker: 'استوديو الدراما',
       errInsufficientCredits: 'أرصدة غير كافية: هذه الخطوة تحتاج {need}، لديك {have}.',
       errInsufficientCreditsShort: 'أرصدة غير كافية. اشحن في صفحة الأسعار.',
       errScriptTimeout: 'انتهت مهلة خدمة نص الذكاء الاصطناعي. أعد المحاولة لاحقًا.',
@@ -5392,6 +5410,7 @@ export const messages: Record<Locale, any> = {
       styleUrgent: 'तत्काल हार्ड सेल',
     },
     adRef: {
+      kicker: 'विज्ञापन संदर्भ',
       errInsufficientCredits: 'क्रेडिट अपर्याप्त। मूल्य पृष्ठ पर रिचार्ज करें।',
       errMediaUrlNotPublic: 'अपलोड की गई मीडिया URL सार्वजनिक नहीं है, Atlas इसे प्राप्त नहीं कर सकता। तैनात सार्वजनिक डोमेन का उपयोग करें या PUBLIC_MEDIA_BASE_URL / NEXTAUTH_URL कॉन्फ़िगर करें।',
       videoTooLarge: 'वीडियो 60MB से कम होना चाहिए',
@@ -5440,6 +5459,7 @@ export const messages: Record<Locale, any> = {
       stepLipsync: '④ नए वॉयसओवर के साथ लिप-सिंक हो रहा है…',
     },
     drama: {
+      kicker: 'ड्रामा स्टूडियो',
       errInsufficientCredits: 'क्रेडिट अपर्याप्त: इस चरण को {need} चाहिए, आपके पास {have} है।',
       errInsufficientCreditsShort: 'क्रेडिट अपर्याप्त। मूल्य पृष्ठ पर रिचार्ज करें।',
       errScriptTimeout: 'AI स्क्रिप्ट सेवा का समय समाप्त। बाद में पुनः प्रयास करें।',
@@ -6002,6 +6022,7 @@ export const messages: Record<Locale, any> = {
       styleUrgent: 'Bán gấp',
     },
     adRef: {
+      kicker: 'Tham Chiếu Quảng Cáo',
       errInsufficientCredits: 'Không đủ tín dụng. Vui lòng nạp thêm tại trang bảng giá.',
       errMediaUrlNotPublic: 'URL phương tiện tải lên không công khai, nên Atlas không thể tải. Hãy dùng domain công khai đã triển khai hoặc cấu hình PUBLIC_MEDIA_BASE_URL / NEXTAUTH_URL.',
       videoTooLarge: 'Video phải dưới 60MB',
@@ -6050,6 +6071,7 @@ export const messages: Record<Locale, any> = {
       stepLipsync: '④ Đang đồng môi voiceover mới…',
     },
     drama: {
+      kicker: 'Studio Kịch',
       errInsufficientCredits: 'Không đủ tín dụng: bước này cần {need}, bạn có {have}.',
       errInsufficientCreditsShort: 'Không đủ tín dụng. Vui lòng nạp thêm tại trang bảng giá.',
       errScriptTimeout: 'Dịch vụ kịch bản AI đã quá thời gian. Vui lòng thử lại sau.',
@@ -6612,6 +6634,7 @@ export const messages: Record<Locale, any> = {
       styleUrgent: 'ขายด่วน',
     },
     adRef: {
+      kicker: 'อ้างอิงโฆษณา',
       errInsufficientCredits: 'เครดิตไม่พอ กรุณาเติมได้ที่หน้าราคา',
       errMediaUrlNotPublic: 'URL สื่อที่อัปโหลดไม่สาธารณะ Atlas จึงดึงไม่ได้ ใช้โดเมนสาธารณะที่ดีพลอยแล้วหรือตั้งค่า PUBLIC_MEDIA_BASE_URL / NEXTAUTH_URL',
       videoTooLarge: 'วิดีโอต้องไม่เกิน 60MB',
@@ -6660,6 +6683,7 @@ export const messages: Record<Locale, any> = {
       stepLipsync: '④ กำลังซิงค์ริมฝีปากพากย์เสียงใหม่…',
     },
     drama: {
+      kicker: 'สตูดิโอดราม่า',
       errInsufficientCredits: 'เครดิตไม่พอ: ขั้นตอนนี้ต้องการ {need} คุณมี {have}',
       errInsufficientCreditsShort: 'เครดิตไม่พอ กรุณาเติมได้ที่หน้าราคา',
       errScriptTimeout: 'บริการสคริปต์ AI หมดเวลา กรุณาลองใหม่ภายหลัง',
@@ -7222,6 +7246,7 @@ export const messages: Record<Locale, any> = {
       styleUrgent: 'Jual keras',
     },
     adRef: {
+      kicker: 'Referensi Iklan',
       errInsufficientCredits: 'Kredit tidak cukup. Silakan isi ulang di halaman harga.',
       errMediaUrlNotPublic: 'URL media yang diunggah tidak publik, jadi Atlas tidak bisa mengambilnya. Gunakan domain publik yang dideploy atau konfigurasi PUBLIC_MEDIA_BASE_URL / NEXTAUTH_URL.',
       videoTooLarge: 'Video harus di bawah 60MB',
@@ -7270,6 +7295,7 @@ export const messages: Record<Locale, any> = {
       stepLipsync: '④ Sinkronisasi bibir voiceover baru…',
     },
     drama: {
+      kicker: 'Studio Drama',
       errInsufficientCredits: 'Kredit tidak cukup: langkah ini butuh {need}, kamu punya {have}.',
       errInsufficientCreditsShort: 'Kredit tidak cukup. Silakan isi ulang di halaman harga.',
       errScriptTimeout: 'Layanan skrip AI waktu habis. Silakan coba lagi nanti.',
