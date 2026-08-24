@@ -15,8 +15,9 @@ by the application.
 
 ## Cloudflare Workers: D1 and R2
 
-The checked-in `wrangler.jsonc` points at the hosted demo resources. For a fork,
-create your own resources:
+The checked-in `wrangler.jsonc` points at the hosted demo resources and
+includes a custom domain route for `lazynext.com`. For a fork, create your
+own resources:
 
 ```bash
 npx wrangler login
@@ -73,7 +74,7 @@ npx wrangler secret put DODO_PRODUCT_PRO
 npx wrangler secret put DODO_PRODUCT_ELITE
 
 # Configure webhook URL in Dodo dashboard:
-#   https://<your-domain>/api/webhook/dodo
+#   https://lazynext.com/api/webhook/dodo
 #   Subscribe to: payment.succeeded
 ```
 
@@ -161,7 +162,8 @@ do not connect to a database or Blob store.
 
 After deployment, verify:
 
-- `/`, `/lazynext-studio`, `/ad-reference`, and `/drama-studio` return `200`.
+- `https://lazynext.com/`, `/lazynext-studio`, `/ad-reference`, and `/drama-studio` return `200`.
+- `https://lazynext.dry-hall-6a50.workers.dev/` (workers.dev URL) also returns `200`.
 - `/api/media-storage/capabilities` reports the expected provider.
 - unauthenticated upload/save requests return `401`.
 - Cloudflare R2 media supports `Range` requests (`206`).

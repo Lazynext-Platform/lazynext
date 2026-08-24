@@ -61,8 +61,8 @@ All workflows auto-detect the input language. Write the product brief in English
 ## Quick start
 
 ```bash
-git clone https://github.com/AtlasCloudAI/atlas-marketing-studio.git
-cd atlas-marketing-studio
+git clone https://github.com/Lazynext-Platform/lazynext.git
+cd lazynext
 npm install
 ```
 
@@ -143,6 +143,8 @@ npm run cf:deploy
 
 Cloudflare uses the `DB` D1 binding and `MEDIA_BUCKET` R2 binding in
 `wrangler.jsonc`; it does not use `DATABASE_URL` or `BLOB_READ_WRITE_TOKEN`.
+The deployment includes a custom domain route for `lazynext.com`.
+
 Set application secrets with Wrangler or the dashboard:
 
 ```bash
