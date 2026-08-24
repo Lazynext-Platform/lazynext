@@ -37,7 +37,7 @@ export default function Home() {
     backgroundColor: '#131416',
     colorScheme: 'dark',
     backgroundImage:
-      'radial-gradient(70% 55% at 50% -6%, rgba(112,54,240,0.12) 0%, rgba(112,54,240,0) 60%), linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px)',
+      'radial-gradient(70% 55% at 50% -6%, rgba(0,178,252,0.12) 0%, rgba(0,178,252,0) 60%), linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px)',
     backgroundSize: 'auto, 44px 44px, 44px 44px',
   } as React.CSSProperties;
 

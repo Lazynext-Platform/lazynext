@@ -11,7 +11,7 @@ import { videoCredits } from '@/lib/video-pricing';
 import { useI18n } from '@/i18n/provider';
 import { useMounted } from '@/lib/use-mounted';
 
-// Visual specs unified with lazynext-studio: dark #131416 + purple #00b2fc + Space Grotesk
+// Visual specs unified with lazynext-studio: dark #131416 + cyan #00b2fc + Space Grotesk
 const ACCENT = '#00b2fc';
 const INK = '#131416';
 const PANEL = '#1c1e21';
@@ -614,7 +614,7 @@ export default function DramaStudioPage() {
     backgroundColor: INK,
     colorScheme: 'dark',
     backgroundImage:
-      'radial-gradient(70% 55% at 50% -6%, rgba(112,54,240,0.10) 0%, rgba(112,54,240,0) 60%), linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px)',
+      'radial-gradient(70% 55% at 50% -6%, rgba(0,178,252,0.10) 0%, rgba(0,178,252,0) 60%), linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px)',
     backgroundSize: 'auto, 44px 44px, 44px 44px',
   } as React.CSSProperties;
   const selCls = 'appearance-none bg-white/[0.04] rounded-lg pl-2.5 pr-7 py-2 text-xs text-white/90 focus:outline-none focus:ring-1 focus:ring-[#00b2fc]';

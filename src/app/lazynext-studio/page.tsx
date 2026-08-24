@@ -514,7 +514,7 @@ export default function MarketingStudioPage() {
     backgroundColor: INK,
     colorScheme: 'dark',
     backgroundImage:
-      'radial-gradient(70% 55% at 50% -6%, rgba(112,54,240,0.06) 0%, rgba(112,54,240,0) 60%), linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px)',
+      'radial-gradient(70% 55% at 50% -6%, rgba(0,178,252,0.06) 0%, rgba(0,178,252,0) 60%), linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px)',
     backgroundSize: 'auto, 44px 44px, 44px 44px',
   } as React.CSSProperties;
   const selCls = 'appearance-none bg-white/[0.04] rounded-lg pl-2.5 pr-7 py-2 text-xs text-white/90 focus:outline-none focus:ring-1 focus:ring-[#00b2fc]';
@@ -624,7 +624,7 @@ export default function MarketingStudioPage() {
       {/* Final video */}
       {compose.status !== 'idle' && (
         <div className="max-w-md mx-auto px-4 pb-16">
-          <div className="rounded-3xl border border-white/10 p-5 shadow-[0_24px_80px_-28px_rgba(112,54,240,0.55)]" style={{ background: PANEL }}>
+          <div className="rounded-3xl border border-white/10 p-5 shadow-[0_24px_80px_-28px_rgba(0,178,252,0.55)]" style={{ background: PANEL }}>
             <div className="flex items-center gap-2 text-sm mb-3">
               {compose.status === 'done' ? <CheckCircle2 className="w-4 h-4" style={{ color: LIME }} /> : compose.status === 'fail' || compose.status === 'paused' ? <AlertCircle className={`w-4 h-4 ${compose.status === 'paused' ? 'text-amber-300' : 'text-red-400'}`} /> : <Loader2 className="w-4 h-4 animate-spin" style={{ color: LIME }} />}
               <b>{compose.status === 'done'

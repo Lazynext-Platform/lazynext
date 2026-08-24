@@ -136,7 +136,7 @@ export default function PricingClient({
 
         {mode === 'redeem' && (
           <div className="mx-auto max-w-md rounded-2xl border border-white/[0.08] bg-white/[0.03] p-7 text-center">
-            <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl" style={{ background: 'rgba(112,54,240,0.15)' }}>
+            <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl" style={{ background: 'rgba(0,178,252,0.15)' }}>
               <Gift className="h-5 w-5" style={{ color: '#00b2fc' }} />
             </span>
             <h2 className="mt-3 font-semibold">{t('pricing.redeemTitle')}</h2>
