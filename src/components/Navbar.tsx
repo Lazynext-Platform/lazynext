@@ -48,12 +48,9 @@ export function Navbar() {
           <Link href="/pricing" className={navLink}>
             {t('nav.pricing')}
           </Link>
-          <Link href="/coverage" className={`hidden sm:inline-flex ${navLink}`}>
-            {t('common.coverage')}
-          </Link>
           {session ? (
             <>
-              <Link href="/dashboard" className={`hidden sm:inline-flex ${navLink}`}>
+              <Link href="/my-work" className={`hidden sm:inline-flex ${navLink}`}>
                 {t('nav.myWork')}
               </Link>
               <span className="ml-1 inline-flex items-center gap-1.5 rounded-full border border-brand-200 bg-brand-50 px-3 py-1.5 text-sm font-semibold text-brand-700">
