@@ -73,6 +73,7 @@ function errText(code: string, t: (key: string, vars?: Record<string, string | n
   if (code === 'not_image') return t('mkStudio.errNotImage');
   if (code === 'poll_temporarily_unavailable') return t('mkStudio.errPollUnavailable');
   if (code === 'video_failed' || code === 'empty_output' || code === 'generation failed' || code === 'failed') return t('mkStudio.errVideoFailed');
+  if (code === 'upload_failed' || code === 'read_failed') return t('mkStudio.errUploadFailed');
   return t('mkStudio.errGeneric', { code });
 }
 

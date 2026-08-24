@@ -40,14 +40,23 @@ async function postJson(url: string, body: unknown) {
   if (!r.ok) throw new Error(j.error ? `${j.error}${j.detail ? ': ' + String(j.detail).slice(0, 160) : ''}` : `HTTP ${r.status}`);
   return j;
 }
-function adErrText(msg: string, t: (k: string) => string) {
+function adErrText(msg: string, t: (k: string, vars?: Record<string, string | number>) => string) {
   if (msg === 'insufficient_credits' || msg.startsWith('insufficient_credits')) {
     return t('adRef.errInsufficientCredits');
   }
   if (msg === 'media_url_not_public' || msg.startsWith('media_url_not_public')) {
     return t('adRef.errMediaUrlNotPublic');
   }
-  return msg;
+  if (msg === 'file_too_large') {
+    return t('adRef.errFileTooLarge');
+  }
+  if (msg.startsWith('upload_failed')) {
+    return t('adRef.errUploadFailed');
+  }
+  if (msg === 'timeout') {
+    return t('adRef.errTimeout');
+  }
+  return t('adRef.errGeneric', { code: msg });
 }
 
 // Proxied polling of Atlas tasks (no database): reuses lazynext-studio's /poll (auto-saves to R2 on completion).
@@ -57,7 +66,7 @@ function pollGen(getUrl: string, timeoutMs = 480_000): Promise<string> {
     let transientErrors = 0;
     let lastError = '';
     const t = setInterval(async () => {
-      if (Date.now() - t0 > timeoutMs) { clearInterval(t); reject(new Error(lastError || 'Generation timed out, please try again')); return; }
+      if (Date.now() - t0 > timeoutMs) { clearInterval(t); reject(new Error(lastError || 'timeout')); return; }
       try {
         const c = await postJson('/api/lazynext-studio/poll', { getUrl });
         // transient=true: Atlas status query gateway transient timeout (504), task likely still running; count doesn't reset, only gives up after too many consecutive (avoids silent spinning to timeout).
@@ -92,7 +101,7 @@ async function uploadFile(file: File): Promise<string> {
   form.append('file', file);
   const r = await fetch('/api/ad-reference/upload', { method: 'POST', headers: byokHeaders(), body: form });
   const j = await r.json().catch(() => ({}));
-  if (!r.ok || !j.url) throw new Error(j.error === 'file_too_large' ? 'File too large' : `Upload failed ${j.detail || j.error || r.status}`);
+  if (!r.ok || !j.url) throw new Error(j.error === 'file_too_large' ? 'file_too_large' : `upload_failed:${j.detail || j.error || r.status}`);
   return j.url as string;
 }
 
@@ -221,7 +230,7 @@ export default function AdReferencePage() {
         if (kind === 'product') setProduct(slot); else setAvatar(slot);
       }
     } catch (e) {
-      setError(String((e as Error).message || e));
+      setError(adErrText(String((e as Error).message || e), t));
     } finally {
       setBusy(null);
     }

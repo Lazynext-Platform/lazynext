@@ -59,10 +59,11 @@ function dramaErrText(code: string, t: (k: string, vars?: Record<string, string 
     return t('drama.errInsufficientCredits', { need, have });
   }
   if (code === 'insufficient_credits') return t('drama.errInsufficientCreditsShort');
-  if (code.includes('Atlas chat timed out')) return t('drama.errScriptTimeout');
+  if (code.includes('Atlas chat timed out') || code === 'timeout') return t('drama.errScriptTimeout');
   if (code.startsWith('script_timeout_refunded')) return t('drama.errScriptTimeoutRefunded');
   if (code.startsWith('script_failed_refunded')) return t('drama.errScriptFailedRefunded');
-  return code;
+  if (code === 'upload_failed' || code === 'read_failed') return t('drama.errUploadFailed');
+  return t('drama.errGeneric', { code });
 }
 
 async function postJson(url: string, body: unknown) {
