@@ -22,8 +22,11 @@ export const RTL_LOCALES: ReadonlySet<Locale> = new Set(['ar']);
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export const messages: Record<Locale, any> = {
   en: {
-    nav: { studio: 'Studio', podcast: 'Podcast', pricing: 'Pricing', myWork: 'My work', signIn: 'Sign in' },
+    nav: { studio: 'Studio', podcast: 'Podcast', pricing: 'Pricing', myWork: 'My work', signIn: 'Sign in', settings: 'Settings' },
     sidebar: { apps: 'AI apps', studio: 'Image studio' },
+    auth: {
+      signInError: 'Sign-in failed or was cancelled. Please try again.',
+    },
     home: {
       badge: 'ready-to-sell AI apps',
       titlePre: 'Launch your own',
@@ -285,6 +288,7 @@ export const messages: Record<Locale, any> = {
       errPollUnavailable: 'The task is still running, but status lookup is temporarily unavailable. Continue checking without another charge.',
       errVideoFailed: 'Generation failed — please retry; if it persists it may be a content-safety block or low credits.',
       errGeneric: 'Something went wrong: {code} (try again)',
+      errAtlasQuota: 'Your Atlas key is invalid or out of quota — please check it and retry.',
       defaultProduct: 'Product video',
       defaultAdTitle: 'Product ad',
     },

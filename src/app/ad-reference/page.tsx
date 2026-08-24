@@ -118,10 +118,11 @@ function readVideoDuration(file: File): Promise<number> {
 type Slot = { url: string; preview: string } | null;
 type Step = 'idle' | 'edit' | 'character' | 'voice' | 'lipsync' | 'done';
 
-// Reference ad example videos (users can one-click try without uploading); assets on R2 lazynext-studio-media
+// Reference ad example videos (users can one-click try without uploading);
+// served from the public/examples/marketing directory (bundled with the app).
 const EXAMPLE_REF_VIDEOS = [
-  '/api/lazynext-studio/media/adref-example-1.mp4',
-  '/api/lazynext-studio/media/adref-example-2.mp4',
+  '/examples/marketing/ex-ugc.mp4',
+  '/examples/marketing/ex-direct-to-camera.mp4',
 ];
 const AD_REF_SESSION_KEY = 'adref-session-v1';
 

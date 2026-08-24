@@ -74,6 +74,9 @@ function errText(code: string, t: (key: string, vars?: Record<string, string | n
   if (code === 'poll_temporarily_unavailable') return t('mkStudio.errPollUnavailable');
   if (code === 'video_failed' || code === 'empty_output' || code === 'generation failed' || code === 'failed') return t('mkStudio.errVideoFailed');
   if (code === 'upload_failed' || code === 'read_failed') return t('mkStudio.errUploadFailed');
+  // Atlas API errors (quota/balance/key issues) — show a friendly message instead of the raw JSON
+  if (code.includes('atlas_submit_failed') || code.includes('"code":402') || code.includes('insufficient balance'))
+    return t('mkStudio.errAtlasQuota');
   return t('mkStudio.errGeneric', { code });
 }
 
@@ -169,21 +172,26 @@ export default function MarketingStudioPage() {
   const hasCreditsForVideo = byokActive || status !== 'authenticated' || credits === null || credits >= shotCost;
 
   const refreshCredits = useCallback(async () => {
-    try {
-      const r = await fetch('/api/me', { cache: 'no-store' });
-      if (!r.ok) {
-        setCredits(null);
+    const attempt = async (): Promise<number | null> => {
+      try {
+        const r = await fetch('/api/me', { cache: 'no-store' });
+        if (!r.ok) return null;
+        const j = await r.json();
+        const n = Number(j.credits);
+        return Number.isFinite(n) ? n : null;
+      } catch {
         return null;
       }
-      const j = await r.json();
-      const n = Number(j.credits);
-      const next = Number.isFinite(n) ? n : null;
-      setCredits(next);
-      return next;
-    } catch {
-      setCredits(null);
-      return null;
+    };
+    let next = await attempt();
+    // Retry once after a short delay if the first attempt fails (transient /api/me 500s
+    // are common in local wrangler dev due to the opennextjs runtime).
+    if (next === null) {
+      await new Promise((r) => setTimeout(r, 800));
+      next = await attempt();
     }
+    setCredits(next);
+    return next;
   }, []);
 
   useEffect(() => {

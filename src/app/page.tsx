@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { useI18n } from '@/i18n/provider';
 import {
   ArrowRight,
@@ -8,6 +9,7 @@ import {
   Zap,
   DollarSign,
   Percent,
+  AlertCircle,
 } from 'lucide-react';
 import { appTitle, appDesc, isFeatured } from '@/config/appCatalog';
 
@@ -24,6 +26,8 @@ const APPS: App[] = [
 export default function Home() {
   const { t, appText, locale } = useI18n();
   const appCount = APPS.length;
+  const searchParams = useSearchParams();
+  const authError = searchParams.get('error');
 
   const STATS = [
     { icon: Zap, value: '~$0.01-0.04', label: t('home.statCost') },
@@ -43,6 +47,15 @@ export default function Home() {
 
   return (
     <main className="min-h-screen text-[#f7f7f8]" style={gridBg}>
+      {/* Auth error banner — shown when OAuth sign-in fails (NextAuth redirects here with ?error=) */}
+      {authError && (
+        <div className="mx-auto max-w-6xl px-6 pt-4">
+          <div className="flex items-center gap-2 rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-300">
+            <AlertCircle className="h-4 w-4 shrink-0" />
+            <span>{t('auth.signInError')}</span>
+          </div>
+        </div>
+      )}
       {/* Top bar */}
       <div className="px-6 sm:px-8 py-5">
         <div className="mx-auto flex w-full max-w-6xl items-center gap-3">

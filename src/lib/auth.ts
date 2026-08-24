@@ -128,10 +128,44 @@ function buildProviders() {
   return providers;
 }
 
+// In local development (http://localhost), NextAuth would otherwise use __Secure-
+// prefixed cookies when NEXTAUTH_URL points at https. Chromium refuses to send
+// __Secure- cookies over plain http, so local auth silently breaks. Force the
+// non-secure cookie names whenever NEXTAUTH_URL is a localhost URL so local dev
+// works regardless of what NODE_ENV is (the OpenNext build sets NODE_ENV=production
+// at build time, so we can't rely on it for this runtime decision).
+const nextAuthUrl = process.env.NEXTAUTH_URL || '';
+const useSecureCookies = nextAuthUrl.startsWith('https://') && !nextAuthUrl.includes('localhost');
+const cookiePrefix = useSecureCookies ? '__Secure-' : '';
+const cookieOptions = {
+  httpOnly: true,
+  sameSite: 'lax' as const,
+  path: '/',
+  secure: useSecureCookies,
+};
+
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   providers: buildProviders(),
   session: { strategy: 'database' },
+  // Explicitly tell NextAuth not to use __Secure- cookies in dev. Without this,
+  // it falls back to url.base.startsWith("https://") which is true when
+  // NEXTAUTH_URL is misconfigured to the production URL in local .env.
+  useSecureCookies,
+  cookies: {
+    sessionToken: {
+      name: `${cookiePrefix}next-auth.session-token`,
+      options: cookieOptions,
+    },
+    callbackUrl: {
+      name: `${cookiePrefix}next-auth.callback-url`,
+      options: cookieOptions,
+    },
+    csrfToken: {
+      name: `${useSecureCookies ? '__Host-' : ''}next-auth.csrf-token`,
+      options: { ...cookieOptions, secure: useSecureCookies },
+    },
+  },
   callbacks: {
     async session({ session, user }) {
       if (session.user) {

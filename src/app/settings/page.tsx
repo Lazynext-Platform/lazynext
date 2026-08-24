@@ -1,6 +1,6 @@
 'use client';
 
-import { useSession } from 'next-auth/react';
+import { useSession, signIn } from 'next-auth/react';
 import { useI18n } from '@/i18n/provider';
 import { CountrySelector } from '@/components/CountrySelector';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
@@ -32,7 +32,16 @@ export default function SettingsPage() {
               {session.user.email && <p className="text-white/50">{session.user.email}</p>}
             </div>
           ) : (
-            <p className="text-sm text-white/50">{t('settings.notSignedIn')}</p>
+            <div className="space-y-3">
+              <p className="text-sm text-white/50">{t('settings.notSignedIn')}</p>
+              <button
+                onClick={() => signIn('google')}
+                className="rounded-xl px-4 py-2 text-sm font-bold text-white transition hover:brightness-110"
+                style={{ background: '#00b2fc' }}
+              >
+                {t('common.signIn')}
+              </button>
+            </div>
           )}
         </div>
       </div>

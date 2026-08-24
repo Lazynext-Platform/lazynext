@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useSession, signIn, signOut } from 'next-auth/react';
-import { LogOut, CreditCard } from 'lucide-react';
+import { LogOut, CreditCard, Settings } from 'lucide-react';
 import { useI18n } from '@/i18n/provider';
 import { useMounted } from '@/lib/use-mounted';
 
@@ -44,6 +44,7 @@ export function UserMenu() {
           <div className="absolute right-0 mt-2 w-44 rounded-xl border border-white/10 bg-[#1c1e21] p-1 shadow-xl">
             <div className="truncate px-3 py-2 text-[11px] text-white/40">{u?.email}</div>
             <a href="/pricing" className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs text-white/80 hover:bg-white/5"><CreditCard className="h-3.5 w-3.5" /> {t('nav.pricing')}</a>
+            <a href="/settings" className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs text-white/80 hover:bg-white/5"><Settings className="h-3.5 w-3.5" /> {t('nav.settings')}</a>
             <button onClick={() => signOut()} className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs text-white/80 hover:bg-white/5"><LogOut className="h-3.5 w-3.5" /> {t('userMenu.signOut')}</button>
           </div>
         </>
