@@ -168,7 +168,7 @@ export const messages: Record<Locale, any> = {
       generating: 'Generating…',
       failed: 'Failed (refunded)',
     },
-    common: { signIn: 'Sign in', signOut: 'Sign out', credits: 'Credits', language: 'Language', switchLanguage: 'Switch language', currency: 'Currency', cookieConsent: 'Cookie consent', new: 'NEW', poweredBy: 'Powered by', back: '← Back', backToLazynext: '← Lazynext', coverage: 'Coverage' },
+    common: { signIn: 'Sign in', signOut: 'Sign out', credits: 'Credits', language: 'Language', switchLanguage: 'Switch language', currency: 'Currency', cookieConsent: 'Cookie consent', new: 'NEW', poweredBy: 'Powered by', back: '← Back', backToLazynext: '← Lazynext' },
     userMenu: {
       account: 'Account',
       signOut: 'Sign out',
@@ -775,7 +775,7 @@ export const messages: Record<Locale, any> = {
       generating: '生成中…',
       failed: '失败(已退款)',
     },
-    common: { signIn: '登录', signOut: '退出登录', credits: '积分', language: '语言', switchLanguage: '切换语言', currency: '货币', cookieConsent: 'Cookie 同意', new: '新', poweredBy: '技术支持', back: '← 返回', backToLazynext: '← Lazynext', coverage: '覆盖范围' },
+    common: { signIn: '登录', signOut: '退出登录', credits: '积分', language: '语言', switchLanguage: '切换语言', currency: '货币', cookieConsent: 'Cookie 同意', new: '新', poweredBy: '技术支持', back: '← 返回', backToLazynext: '← Lazynext' },
     userMenu: {
       account: '账户',
       signOut: '退出登录',
@@ -1384,7 +1384,7 @@ export const messages: Record<Locale, any> = {
       generating: '生成中…',
       failed: '失敗(返金済み)',
     },
-    common: { signIn: 'ログイン', signOut: 'ログアウト', credits: 'クレジット', language: '言語', switchLanguage: '言語を切り替え', currency: '通貨', cookieConsent: 'Cookie 同意', new: '新着', poweredBy: 'Powered by', back: '← 戻る', backToLazynext: '← Lazynext', coverage: 'カバレッジ' },
+    common: { signIn: 'ログイン', signOut: 'ログアウト', credits: 'クレジット', language: '言語', switchLanguage: '言語を切り替え', currency: '通貨', cookieConsent: 'Cookie 同意', new: '新着', poweredBy: 'Powered by', back: '← 戻る', backToLazynext: '← Lazynext' },
     userMenu: {
       account: 'アカウント',
       signOut: 'サインアウト',
@@ -1993,7 +1993,7 @@ export const messages: Record<Locale, any> = {
       generating: 'Generando…',
       failed: 'Falló (reembolsado)',
     },
-    common: { signIn: 'Entrar', signOut: 'Cerrar sesión', credits: 'Créditos', language: 'Idioma', switchLanguage: 'Cambiar idioma', currency: 'Moneda', cookieConsent: 'Consentimiento de cookies', new: 'NUEVO', poweredBy: 'Desarrollado por', back: '← Volver', backToLazynext: '← Lazynext', coverage: 'Cobertura' },
+    common: { signIn: 'Entrar', signOut: 'Cerrar sesión', credits: 'Créditos', language: 'Idioma', switchLanguage: 'Cambiar idioma', currency: 'Moneda', cookieConsent: 'Consentimiento de cookies', new: 'NUEVO', poweredBy: 'Desarrollado por', back: '← Volver', backToLazynext: '← Lazynext' },
     userMenu: {
       account: 'Cuenta',
       signOut: 'Cerrar sesión',
@@ -2531,7 +2531,7 @@ export const messages: Record<Locale, any> = {
       generating: '생성 중…',
       failed: '실패 (환불됨)',
     },
-    common: { signIn: '로그인', signOut: '로그아웃', credits: '크레딧', language: '언어', switchLanguage: '언어 변경', currency: '통화', cookieConsent: '쿠키 동의', new: '신규', poweredBy: '제공', back: '← 돌아가기', backToLazynext: '← Lazynext', coverage: '커버리지' },
+    common: { signIn: '로그인', signOut: '로그아웃', credits: '크레딧', language: '언어', switchLanguage: '언어 변경', currency: '통화', cookieConsent: '쿠키 동의', new: '신규', poweredBy: '제공', back: '← 돌아가기', backToLazynext: '← Lazynext' },
     userMenu: {
       account: '계정',
       signOut: '로그아웃',
@@ -3069,7 +3069,7 @@ export const messages: Record<Locale, any> = {
       generating: 'Gerando…',
       failed: 'Falhou (reembolsado)',
     },
-    common: { signIn: 'Entrar', signOut: 'Sair', credits: 'Créditos', language: 'Idioma', switchLanguage: 'Mudar idioma', currency: 'Moeda', cookieConsent: 'Consentimento de cookies', new: 'NOVO', poweredBy: 'Desenvolvido por', back: '← Voltar', backToLazynext: '← Lazynext', coverage: 'Cobertura' },
+    common: { signIn: 'Entrar', signOut: 'Sair', credits: 'Créditos', language: 'Idioma', switchLanguage: 'Mudar idioma', currency: 'Moeda', cookieConsent: 'Consentimento de cookies', new: 'NOVO', poweredBy: 'Desenvolvido por', back: '← Voltar', backToLazynext: '← Lazynext' },
     userMenu: {
       account: 'Conta',
       signOut: 'Sair',
@@ -3607,7 +3607,7 @@ export const messages: Record<Locale, any> = {
       generating: 'Génération…',
       failed: 'Échec (remboursé)',
     },
-    common: { signIn: 'Se connecter', signOut: 'Déconnexion', credits: 'Crédits', language: 'Langue', switchLanguage: 'Changer de langue', currency: 'Devise', cookieConsent: 'Consentement aux cookies', new: 'NOUVEAU', poweredBy: 'Propulsé par', back: '← Retour', backToLazynext: '← Lazynext', coverage: 'Couverture' },
+    common: { signIn: 'Se connecter', signOut: 'Déconnexion', credits: 'Crédits', language: 'Langue', switchLanguage: 'Changer de langue', currency: 'Devise', cookieConsent: 'Consentement aux cookies', new: 'NOUVEAU', poweredBy: 'Propulsé par', back: '← Retour', backToLazynext: '← Lazynext' },
     userMenu: {
       account: 'Compte',
       signOut: 'Se déconnecter',
@@ -4145,7 +4145,7 @@ export const messages: Record<Locale, any> = {
       generating: 'Generierung…',
       failed: 'Fehlgeschlagen (erstattet)',
     },
-    common: { signIn: 'Anmelden', signOut: 'Abmelden', credits: 'Guthaben', language: 'Sprache', switchLanguage: 'Sprache wechseln', currency: 'Währung', cookieConsent: 'Cookie-Einwilligung', new: 'NEU', poweredBy: 'Unterstützt von', back: '← Zurück', backToLazynext: '← Lazynext', coverage: 'Abdeckung' },
+    common: { signIn: 'Anmelden', signOut: 'Abmelden', credits: 'Guthaben', language: 'Sprache', switchLanguage: 'Sprache wechseln', currency: 'Währung', cookieConsent: 'Cookie-Einwilligung', new: 'NEU', poweredBy: 'Unterstützt von', back: '← Zurück', backToLazynext: '← Lazynext' },
     userMenu: {
       account: 'Konto',
       signOut: 'Abmelden',
@@ -4683,7 +4683,7 @@ export const messages: Record<Locale, any> = {
       generating: 'جارٍ الإنشاء…',
       failed: 'فشل (تم الاسترداد)',
     },
-    common: { signIn: 'تسجيل الدخول', signOut: 'تسجيل الخروج', credits: 'الرصيد', language: 'اللغة', switchLanguage: 'تبديل اللغة', currency: 'العملة', cookieConsent: 'موافقة ملفات تعريف الارتباط', new: 'جديد', poweredBy: 'مدعوم من', back: '→ رجوع', backToLazynext: '→ Lazynext', coverage: 'التغطية' },
+    common: { signIn: 'تسجيل الدخول', signOut: 'تسجيل الخروج', credits: 'الرصيد', language: 'اللغة', switchLanguage: 'تبديل اللغة', currency: 'العملة', cookieConsent: 'موافقة ملفات تعريف الارتباط', new: 'جديد', poweredBy: 'مدعوم من', back: '→ رجوع', backToLazynext: '→ Lazynext' },
     userMenu: {
       account: 'الحساب',
       signOut: 'تسجيل الخروج',
@@ -5221,7 +5221,7 @@ export const messages: Record<Locale, any> = {
       generating: 'जनरेट हो रहा है…',
       failed: 'विफल (वापसी)',
     },
-    common: { signIn: 'साइन इन', signOut: 'साइन आउट', credits: 'क्रेडिट', language: 'भाषा', switchLanguage: 'भाषा बदलें', currency: 'मुद्रा', cookieConsent: 'कुकी सहमति', new: 'नया', poweredBy: 'द्वारा संचालित', back: '← वापस', backToLazynext: '← Lazynext', coverage: 'कवरेज' },
+    common: { signIn: 'साइन इन', signOut: 'साइन आउट', credits: 'क्रेडिट', language: 'भाषा', switchLanguage: 'भाषा बदलें', currency: 'मुद्रा', cookieConsent: 'कुकी सहमति', new: 'नया', poweredBy: 'द्वारा संचालित', back: '← वापस', backToLazynext: '← Lazynext' },
     userMenu: {
       account: 'खाता',
       signOut: 'साइन आउट',
@@ -5831,7 +5831,7 @@ export const messages: Record<Locale, any> = {
       generating: 'Đang tạo…',
       failed: 'Thất bại (đã hoàn tiền)',
     },
-    common: { signIn: 'Đăng nhập', signOut: 'Đăng xuất', credits: 'Tín dụng', language: 'Ngôn ngữ', switchLanguage: 'Chuyển ngôn ngữ', currency: 'Tiền tệ', cookieConsent: 'Đồng ý cookie', new: 'MỚI', poweredBy: 'Cung cấp bởi', back: '← Quay lại', backToLazynext: '← Lazynext', coverage: 'Phạm vi' },
+    common: { signIn: 'Đăng nhập', signOut: 'Đăng xuất', credits: 'Tín dụng', language: 'Ngôn ngữ', switchLanguage: 'Chuyển ngôn ngữ', currency: 'Tiền tệ', cookieConsent: 'Đồng ý cookie', new: 'MỚI', poweredBy: 'Cung cấp bởi', back: '← Quay lại', backToLazynext: '← Lazynext' },
     userMenu: {
       account: 'Tài khoản',
       signOut: 'Đăng xuất',
@@ -6441,7 +6441,7 @@ export const messages: Record<Locale, any> = {
       generating: 'กำลังสร้าง…',
       failed: 'ล้มเหลว (คืนเครดิตแล้ว)',
     },
-    common: { signIn: 'เข้าสู่ระบบ', signOut: 'ออกจากระบบ', credits: 'เครดิต', language: 'ภาษา', switchLanguage: 'เปลี่ยนภาษา', currency: 'สกุลเงิน', cookieConsent: 'ยินยอมคุกกี้', new: 'ใหม่', poweredBy: 'ขับเคลื่อนโดย', back: '← ย้อนกลับ', backToLazynext: '← Lazynext', coverage: 'ความครอบคลุม' },
+    common: { signIn: 'เข้าสู่ระบบ', signOut: 'ออกจากระบบ', credits: 'เครดิต', language: 'ภาษา', switchLanguage: 'เปลี่ยนภาษา', currency: 'สกุลเงิน', cookieConsent: 'ยินยอมคุกกี้', new: 'ใหม่', poweredBy: 'ขับเคลื่อนโดย', back: '← ย้อนกลับ', backToLazynext: '← Lazynext' },
     userMenu: {
       account: 'บัญชี',
       signOut: 'ออกจากระบบ',
@@ -7051,7 +7051,7 @@ export const messages: Record<Locale, any> = {
       generating: 'Membuat…',
       failed: 'Gagal (dikembalikan)',
     },
-    common: { signIn: 'Masuk', signOut: 'Keluar', credits: 'Kredit', language: 'Bahasa', switchLanguage: 'Ganti bahasa', currency: 'Mata uang', cookieConsent: 'Persetujuan cookie', new: 'BARU', poweredBy: 'Didukung oleh', back: '← Kembali', backToLazynext: '← Lazynext', coverage: 'Cakupan' },
+    common: { signIn: 'Masuk', signOut: 'Keluar', credits: 'Kredit', language: 'Bahasa', switchLanguage: 'Ganti bahasa', currency: 'Mata uang', cookieConsent: 'Persetujuan cookie', new: 'BARU', poweredBy: 'Didukung oleh', back: '← Kembali', backToLazynext: '← Lazynext' },
     userMenu: {
       account: 'Akun',
       signOut: 'Keluar',
