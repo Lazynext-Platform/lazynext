@@ -668,7 +668,7 @@ export default function MarketingStudioPage() {
               className={`inline-flex items-center gap-1.5 px-4 py-1.5 rounded-xl text-xs font-medium transition ${on ? 'bg-white text-[#131517]' : 'bg-white/5 text-white hover:bg-white/10'}`}>
               {CAT_ICON[c.id] && <span className="text-[13px] leading-none">{CAT_ICON[c.id]}</span>}
               {c.id === 'all' ? t('mkStudio.all') : c.id === 'commercial' ? t('mkStudio.commercial') : t(`presets.cat.${c.id}`)}
-              {c.id === 'tiktok' && <span className="ml-0.5 rounded px-1 py-0.5 text-[8px] font-bold leading-none" style={{ background: LIME, color: '#fff' }}>NEW</span>}
+              {c.id === 'tiktok' && <span className="ml-0.5 rounded px-1 py-0.5 text-[8px] font-bold leading-none" style={{ background: LIME, color: '#fff' }}>{t('common.new')}</span>}
             </button>
           );
         })}

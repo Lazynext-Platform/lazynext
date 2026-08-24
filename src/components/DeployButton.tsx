@@ -40,11 +40,11 @@ export function DeployButton() {
             <div className="space-y-3">
               <a href={VERCEL_URL} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/[0.03] p-4 hover:border-[#00b2fc]/60 hover:bg-white/[0.06] transition">
                 <span className="text-2xl font-black leading-none">▲</span>
-                <div><div className="font-semibold">{t('deploy.vercel')}</div><div className="text-xs text-white/45">Next.js + Neon + Public Blob</div></div>
+                <div><div className="font-semibold">{t('deploy.vercel')}</div><div className="text-xs text-white/45">{t('deploy.vercelStack')}</div></div>
               </a>
               <a href={CF_URL} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/[0.03] p-4 hover:border-[#00b2fc]/60 hover:bg-white/[0.06] transition">
                 <span className="text-2xl leading-none">☁️</span>
-                <div><div className="font-semibold">{t('deploy.cloudflare')}</div><div className="text-xs text-white/45">Workers + D1 + R2</div></div>
+                <div><div className="font-semibold">{t('deploy.cloudflare')}</div><div className="text-xs text-white/45">{t('deploy.cfStack')}</div></div>
               </a>
             </div>
             <p className="text-[11px] text-white/30 mt-4">{t('deploy.footer')}<a href={ENV_LINK} target="_blank" rel="noopener noreferrer" className="underline hover:text-white/60">.env.example</a></p>

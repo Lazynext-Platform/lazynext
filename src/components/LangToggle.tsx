@@ -6,14 +6,14 @@ import { LOCALES, LOCALE_NAMES, type Locale } from '@/i18n/messages';
 // Language toggle: compact dropdown showing all supported locales.
 // Replaces the old EN/ZH-only toggle with a full locale selector.
 export function LangToggle() {
-  const { locale, setLocale } = useI18n();
+  const { locale, setLocale, t } = useI18n();
   return (
     <select
-      aria-label="Language"
+      aria-label={t('common.language')}
       value={locale}
       onChange={(e) => setLocale(e.target.value as Locale)}
       className="cursor-pointer appearance-none rounded-full bg-white/10 px-3 py-1.5 text-xs font-medium text-white outline-none transition hover:bg-white/20"
-      title="Switch language"
+      title={t('common.switchLanguage')}
     >
       {LOCALES.map((l) => (
         <option key={l} value={l} className="bg-neutral-900 text-white">

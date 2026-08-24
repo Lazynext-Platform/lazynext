@@ -49,7 +49,7 @@ export function Navbar() {
             {t('nav.pricing')}
           </Link>
           <Link href="/coverage" className={`hidden sm:inline-flex ${navLink}`}>
-            Coverage
+            {t('common.coverage')}
           </Link>
           {session ? (
             <>
@@ -71,7 +71,7 @@ export function Navbar() {
               )}
               <button
                 onClick={() => signOut()}
-                title="Sign out"
+                title={t('common.signOut')}
                 className="rounded-lg p-2 text-neutral-400 transition hover:bg-neutral-100 hover:text-neutral-700"
               >
                 <LogOut className="h-4 w-4" />

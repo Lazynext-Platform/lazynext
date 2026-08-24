@@ -140,6 +140,9 @@ export const messages: Record<Locale, any> = {
       genVideo: 'Generating video…',
     },
     pricing: {
+      packStarter: 'Starter',
+      packPro: 'Pro',
+      packElite: 'Elite',
       title: 'Simple credit pricing',
       subtitle: 'Buy credits, generate media. Credits never expire.',
       popular: 'Most popular',
@@ -165,7 +168,7 @@ export const messages: Record<Locale, any> = {
       generating: 'Generating…',
       failed: 'Failed (refunded)',
     },
-    common: { signIn: 'Sign in' },
+    common: { signIn: 'Sign in', signOut: 'Sign out', credits: 'Credits', language: 'Language', switchLanguage: 'Switch language', currency: 'Currency', cookieConsent: 'Cookie consent', new: 'NEW', poweredBy: 'Powered by', back: '← Back', backToLazynext: '← Lazynext', coverage: 'Coverage' },
     userMenu: {
       account: 'Account',
       signOut: 'Sign out',
@@ -177,8 +180,7 @@ export const messages: Record<Locale, any> = {
       desc: 'Clone the entire Lazynext studio to your own account — add your Atlas Cloud key and go live.',
       vercel: 'Deploy to Vercel',
       cloudflare: 'Deploy to Cloudflare',
-      footer: 'Vercel needs Neon + Public Blob; Cloudflare needs D1 + R2 bindings. See ',
-    },
+      footer: 'Vercel needs Neon + Public Blob; Cloudflare needs D1 + R2 bindings. See ', vercelStack: 'Next.js + Neon + Public Blob', cfStack: 'Workers + D1 + R2' },
     byok: {
       useKey: 'Use your key',
       keyActive: 'Your key active',
@@ -496,6 +498,7 @@ export const messages: Record<Locale, any> = {
       back: '← Back to home',
     },
 
+    appCat: { production: '✅ Production-ready', nocreative: '🟡 Works, no moat', incomplete: '🔴 Incomplete', productionDesc: 'Real moat / multi-step pipeline', nocreativeDesc: 'Single-step generic model, easily replaced', incompleteDesc: 'Shell / text-only / mislabeled' },
     seo: {
       metaTitle: 'Lazynext — AI E-commerce Ad Studio',
       metaDesc: 'Lazynext is an AI e-commerce ad studio for generating UGC product ads, reference-ad remakes, AI drama ads, and ad skits.',
@@ -744,6 +747,9 @@ export const messages: Record<Locale, any> = {
       genVideo: '视频生成中…',
     },
     pricing: {
+      packStarter: '入门版',
+      packPro: '专业版',
+      packElite: '旗舰版',
       title: '简单的积分定价',
       subtitle: '买积分,生成内容。积分永不过期。',
       popular: '最受欢迎',
@@ -769,7 +775,7 @@ export const messages: Record<Locale, any> = {
       generating: '生成中…',
       failed: '失败(已退款)',
     },
-    common: { signIn: '登录' },
+    common: { signIn: '登录', signOut: '退出登录', credits: '积分', language: '语言', switchLanguage: '切换语言', currency: '货币', cookieConsent: 'Cookie 同意', new: '新', poweredBy: '技术支持', back: '← 返回', backToLazynext: '← Lazynext', coverage: '覆盖范围' },
     userMenu: {
       account: '账户',
       signOut: '退出登录',
@@ -781,8 +787,7 @@ export const messages: Record<Locale, any> = {
       desc: '将整个 Lazynext 工作室克隆到你自己的账户——添加你的 Atlas Cloud 密钥即可上线。',
       vercel: '部署到 Vercel',
       cloudflare: '部署到 Cloudflare',
-      footer: 'Vercel 需要 Neon + Public Blob；Cloudflare 需要 D1 + R2 绑定。详见 ',
-    },
+      footer: 'Vercel 需要 Neon + Public Blob；Cloudflare 需要 D1 + R2 绑定。详见 ', vercelStack: 'Next.js + Neon + Public Blob', cfStack: 'Workers + D1 + R2' },
     byok: {
       useKey: '使用你的密钥',
       keyActive: '你的密钥已生效',
@@ -1100,6 +1105,7 @@ export const messages: Record<Locale, any> = {
       back: '← 返回首页',
     },
 
+    appCat: { production: '✅ 生产就绪', nocreative: '🟡 可用，无护城河', incomplete: '🔴 未完成', productionDesc: '真正的护城河 / 多步流水线', nocreativeDesc: '单步通用模型，易被替代', incompleteDesc: '外壳 / 纯文本 / 标签错误' },
     seo: {
       metaTitle: 'Lazynext — AI 电商广告工作室',
       metaDesc: 'Lazynext 是一个 AI 电商广告工作室,可生成 UGC 产品广告、爆款广告复刻、AI 短剧广告和搞笑带货短剧。',
@@ -1350,6 +1356,9 @@ export const messages: Record<Locale, any> = {
       genVideo: '動画を生成中…',
     },
     pricing: {
+      packStarter: 'スターター',
+      packPro: 'プロ',
+      packElite: 'エリート',
       title: 'シンプルなクレジット料金',
       subtitle: 'クレジットを買って生成。クレジットは無期限。',
       popular: '人気',
@@ -1375,7 +1384,7 @@ export const messages: Record<Locale, any> = {
       generating: '生成中…',
       failed: '失敗(返金済み)',
     },
-    common: { signIn: 'ログイン' },
+    common: { signIn: 'ログイン', signOut: 'ログアウト', credits: 'クレジット', language: '言語', switchLanguage: '言語を切り替え', currency: '通貨', cookieConsent: 'Cookie 同意', new: '新着', poweredBy: 'Powered by', back: '← 戻る', backToLazynext: '← Lazynext', coverage: 'カバレッジ' },
     userMenu: {
       account: 'アカウント',
       signOut: 'サインアウト',
@@ -1387,8 +1396,7 @@ export const messages: Record<Locale, any> = {
       desc: 'Lazynextスタジオ全体をあなたのアカウントにクローン — Atlas Cloudキーを追加して公開しましょう。',
       vercel: 'Vercelにデプロイ',
       cloudflare: 'Cloudflareにデプロイ',
-      footer: 'VercelにはNeon + Public Blob、CloudflareにはD1 + R2バインディングが必要です。詳細は ',
-    },
+      footer: 'VercelにはNeon + Public Blob、CloudflareにはD1 + R2バインディングが必要です。詳細は ', vercelStack: 'Next.js + Neon + Public Blob', cfStack: 'Workers + D1 + R2' },
     byok: {
       useKey: '自分のキーを使用',
       keyActive: 'あなたのキーが有効',
@@ -1706,6 +1714,7 @@ export const messages: Record<Locale, any> = {
       back: '← ホームに戻る',
     },
 
+    appCat: { production: '✅ 本番環境対応', nocreative: '🟡 動作するが優位性なし', incomplete: '🔴 未完成', productionDesc: '真の優位性 / マルチステップパイプライン', nocreativeDesc: '単一ステップの汎用モデル、容易に置き換え可能', incompleteDesc: 'シェル / テキストのみ / 誤ラベル' },
     seo: {
       metaTitle: 'Lazynext — AI EC広告スタジオ',
       metaDesc: 'Lazynextは、UGC商品広告、リファレンス広告リメイク、AIドラマ広告、コメディ広告を生成するAI EC広告スタジオです。',
@@ -1956,6 +1965,9 @@ export const messages: Record<Locale, any> = {
       genVideo: 'Generando vídeo…',
     },
     pricing: {
+      packStarter: 'Inicial',
+      packPro: 'Pro',
+      packElite: 'Élite',
       title: 'Precios simples por créditos',
       subtitle: 'Compra créditos, genera contenido. Nunca caducan.',
       popular: 'Más popular',
@@ -1981,7 +1993,7 @@ export const messages: Record<Locale, any> = {
       generating: 'Generando…',
       failed: 'Falló (reembolsado)',
     },
-    common: { signIn: 'Entrar' },
+    common: { signIn: 'Entrar', signOut: 'Cerrar sesión', credits: 'Créditos', language: 'Idioma', switchLanguage: 'Cambiar idioma', currency: 'Moneda', cookieConsent: 'Consentimiento de cookies', new: 'NUEVO', poweredBy: 'Desarrollado por', back: '← Volver', backToLazynext: '← Lazynext', coverage: 'Cobertura' },
     userMenu: {
       account: 'Cuenta',
       signOut: 'Cerrar sesión',
@@ -1993,8 +2005,7 @@ export const messages: Record<Locale, any> = {
       desc: 'Clona todo el estudio Lazynext a tu propia cuenta — añade tu clave de Atlas Cloud y publícalo.',
       vercel: 'Desplegar en Vercel',
       cloudflare: 'Desplegar en Cloudflare',
-      footer: 'Vercel necesita Neon + Public Blob; Cloudflare necesita enlaces D1 + R2. Ver ',
-    },
+      footer: 'Vercel necesita Neon + Public Blob; Cloudflare necesita enlaces D1 + R2. Ver ', vercelStack: 'Next.js + Neon + Public Blob', cfStack: 'Workers + D1 + R2' },
     byok: {
       useKey: 'Usa tu clave',
       keyActive: 'Tu clave activa',
@@ -2312,6 +2323,7 @@ export const messages: Record<Locale, any> = {
       back: '← Volver al inicio',
     },
 
+    appCat: { production: '✅ Listo para producción', nocreative: '🟡 Funciona, sin ventaja', incomplete: '🔴 Incompleto', productionDesc: 'Ventaja real / pipeline multi-paso', nocreativeDesc: 'Modelo genérico de un solo paso, fácilmente reemplazable', incompleteDesc: 'Shell / solo texto / mal etiquetado' },
     seo: {
       metaTitle: 'Lazynext — Estudio de Anuncios IA para E-commerce',
       metaDesc: 'Lazynext es un estudio de anuncios IA para e-commerce que genera anuncios UGC, remakes de anuncios virales, anuncios dramáticos IA y sketches cómicos.',
@@ -2491,6 +2503,9 @@ export const messages: Record<Locale, any> = {
       genVideo: '비디오 생성 중…',
     },
     pricing: {
+      packStarter: '스타터',
+      packPro: '프로',
+      packElite: '엘리트',
       title: '간단한 크레딧 가격',
       subtitle: '크레딧을 구매하고 미디어를 생성하세요. 크레딧은 만료되지 않습니다.',
       popular: '가장 인기',
@@ -2516,7 +2531,7 @@ export const messages: Record<Locale, any> = {
       generating: '생성 중…',
       failed: '실패 (환불됨)',
     },
-    common: { signIn: '로그인' },
+    common: { signIn: '로그인', signOut: '로그아웃', credits: '크레딧', language: '언어', switchLanguage: '언어 변경', currency: '통화', cookieConsent: '쿠키 동의', new: '신규', poweredBy: '제공', back: '← 돌아가기', backToLazynext: '← Lazynext', coverage: '커버리지' },
     userMenu: {
       account: '계정',
       signOut: '로그아웃',
@@ -2528,8 +2543,7 @@ export const messages: Record<Locale, any> = {
       desc: 'Lazynext 스튜디오 전체를 내 계정으로 복제하세요 — Atlas Cloud 키를 추가하고 바로 시작하세요.',
       vercel: 'Vercel에 배포',
       cloudflare: 'Cloudflare에 배포',
-      footer: 'Vercel은 Neon + Public Blob이 필요하고, Cloudflare는 D1 + R2 바인딩이 필요합니다. 자세히 보기 ',
-    },
+      footer: 'Vercel은 Neon + Public Blob이 필요하고, Cloudflare는 D1 + R2 바인딩이 필요합니다. 자세히 보기 ', vercelStack: 'Next.js + Neon + Public Blob', cfStack: 'Workers + D1 + R2' },
     byok: {
       useKey: '내 키 사용',
       keyActive: '내 키 활성화됨',
@@ -2847,6 +2861,7 @@ export const messages: Record<Locale, any> = {
       back: '← 홈으로 돌아가기',
     },
 
+    appCat: { production: '✅ 프로덕션 준비 완료', nocreative: '🟡 작동하지만 차별성 없음', incomplete: '🔴 미완성', productionDesc: '실제 차별성 / 다단계 파이프라인', nocreativeDesc: '단일 단계 범용 모델, 쉽게 대체 가능', incompleteDesc: '셸 / 텍스트 전용 / 잘못된 라벨' },
     seo: {
       metaTitle: 'Lazynext — AI 이커머스 광고 스튜디오',
       metaDesc: 'Lazynext는 UGC 상품 광고, 바이럴 광고 리메이크, AI 드라마 광고, 코미디 광고를 생성하는 AI 이커머스 광고 스튜디오입니다.',
@@ -3026,6 +3041,9 @@ export const messages: Record<Locale, any> = {
       genVideo: 'Gerando vídeo…',
     },
     pricing: {
+      packStarter: 'Inicial',
+      packPro: 'Pro',
+      packElite: 'Elite',
       title: 'Preços simples de créditos',
       subtitle: 'Compre créditos, gere mídia. Créditos nunca expiram.',
       popular: 'Mais popular',
@@ -3051,7 +3069,7 @@ export const messages: Record<Locale, any> = {
       generating: 'Gerando…',
       failed: 'Falhou (reembolsado)',
     },
-    common: { signIn: 'Entrar' },
+    common: { signIn: 'Entrar', signOut: 'Sair', credits: 'Créditos', language: 'Idioma', switchLanguage: 'Mudar idioma', currency: 'Moeda', cookieConsent: 'Consentimento de cookies', new: 'NOVO', poweredBy: 'Desenvolvido por', back: '← Voltar', backToLazynext: '← Lazynext', coverage: 'Cobertura' },
     userMenu: {
       account: 'Conta',
       signOut: 'Sair',
@@ -3063,8 +3081,7 @@ export const messages: Record<Locale, any> = {
       desc: 'Clone todo o estúdio Lazynext para sua própria conta — adicione sua chave Atlas Cloud e entre no ar.',
       vercel: 'Publicar na Vercel',
       cloudflare: 'Publicar na Cloudflare',
-      footer: 'Vercel precisa de Neon + Public Blob; Cloudflare precisa de bindings D1 + R2. Veja ',
-    },
+      footer: 'Vercel precisa de Neon + Public Blob; Cloudflare precisa de bindings D1 + R2. Veja ', vercelStack: 'Next.js + Neon + Public Blob', cfStack: 'Workers + D1 + R2' },
     byok: {
       useKey: 'Use sua chave',
       keyActive: 'Sua chave ativa',
@@ -3382,6 +3399,7 @@ export const messages: Record<Locale, any> = {
       back: '← Voltar ao início',
     },
 
+    appCat: { production: '✅ Pronto para produção', nocreative: '🟡 Funciona, sem diferencial', incomplete: '🔴 Incompleto', productionDesc: 'Diferencial real / pipeline multi-etapa', nocreativeDesc: 'Modelo genérico de etapa única, facilmente substituível', incompleteDesc: 'Shell / apenas texto / rotulado incorretamente' },
     seo: {
       metaTitle: 'Lazynext — Estúdio de Anúncios IA para E-commerce',
       metaDesc: 'Lazynext é um estúdio de anúncios IA para e-commerce que gera anúncios UGC, remakes de anúncios virais, anúncios dramáticos IA e esquetes cômicos.',
@@ -3561,6 +3579,9 @@ export const messages: Record<Locale, any> = {
       genVideo: 'Génération vidéo…',
     },
     pricing: {
+      packStarter: 'Débutant',
+      packPro: 'Pro',
+      packElite: 'Élite',
       title: 'Tarification simple en crédits',
       subtitle: 'Achetez des crédits, générez des médias. Les crédits n\'expirent jamais.',
       popular: 'Le plus populaire',
@@ -3586,7 +3607,7 @@ export const messages: Record<Locale, any> = {
       generating: 'Génération…',
       failed: 'Échec (remboursé)',
     },
-    common: { signIn: 'Se connecter' },
+    common: { signIn: 'Se connecter', signOut: 'Déconnexion', credits: 'Crédits', language: 'Langue', switchLanguage: 'Changer de langue', currency: 'Devise', cookieConsent: 'Consentement aux cookies', new: 'NOUVEAU', poweredBy: 'Propulsé par', back: '← Retour', backToLazynext: '← Lazynext', coverage: 'Couverture' },
     userMenu: {
       account: 'Compte',
       signOut: 'Se déconnecter',
@@ -3598,8 +3619,7 @@ export const messages: Record<Locale, any> = {
       desc: 'Clonez entièrement le studio Lazynext sur votre propre compte — ajoutez votre clé Atlas Cloud et passez en ligne.',
       vercel: 'Déployer sur Vercel',
       cloudflare: 'Déployer sur Cloudflare',
-      footer: 'Vercel nécessite Neon + Public Blob ; Cloudflare nécessite les liaisons D1 + R2. Voir ',
-    },
+      footer: 'Vercel nécessite Neon + Public Blob ; Cloudflare nécessite les liaisons D1 + R2. Voir ', vercelStack: 'Next.js + Neon + Public Blob', cfStack: 'Workers + D1 + R2' },
     byok: {
       useKey: 'Utiliser votre clé',
       keyActive: 'Votre clé est active',
@@ -3917,6 +3937,7 @@ export const messages: Record<Locale, any> = {
       back: '← Retour à l\'accueil',
     },
 
+    appCat: { production: '✅ Prêt pour la production', nocreative: '🟡 Fonctionne, sans avantage', incomplete: '🔴 Incomplet', productionDesc: 'Avantage réel / pipeline multi-étapes', nocreativeDesc: 'Modèle générique à étape unique, facilement remplaçable', incompleteDesc: 'Shell / texte uniquement / mal étiqueté' },
     seo: {
       metaTitle: 'Lazynext — Studio de Publicité IA E-commerce',
       metaDesc: 'Lazynext est un studio de publicité IA pour e-commerce qui génère des publicités UGC, des remakes de publicités virales, des publicités dramatiques IA et des sketches comiques.',
@@ -4096,6 +4117,9 @@ export const messages: Record<Locale, any> = {
       genVideo: 'Video wird generiert…',
     },
     pricing: {
+      packStarter: 'Starter',
+      packPro: 'Pro',
+      packElite: 'Elite',
       title: 'Einfache Credit-Preise',
       subtitle: 'Credits kaufen, Medien generieren. Credits verfallen nie.',
       popular: 'Beliebteste',
@@ -4121,7 +4145,7 @@ export const messages: Record<Locale, any> = {
       generating: 'Generierung…',
       failed: 'Fehlgeschlagen (erstattet)',
     },
-    common: { signIn: 'Anmelden' },
+    common: { signIn: 'Anmelden', signOut: 'Abmelden', credits: 'Guthaben', language: 'Sprache', switchLanguage: 'Sprache wechseln', currency: 'Währung', cookieConsent: 'Cookie-Einwilligung', new: 'NEU', poweredBy: 'Unterstützt von', back: '← Zurück', backToLazynext: '← Lazynext', coverage: 'Abdeckung' },
     userMenu: {
       account: 'Konto',
       signOut: 'Abmelden',
@@ -4133,8 +4157,7 @@ export const messages: Record<Locale, any> = {
       desc: 'Klonen Sie das gesamte Lazynext-Studio auf Ihr eigenes Konto — fügen Sie Ihren Atlas-Cloud-Schlüssel hinzu und gehen Sie live.',
       vercel: 'Auf Vercel bereitstellen',
       cloudflare: 'Auf Cloudflare bereitstellen',
-      footer: 'Vercel benötigt Neon + Public Blob; Cloudflare benötigt D1 + R2 Bindings. Siehe ',
-    },
+      footer: 'Vercel benötigt Neon + Public Blob; Cloudflare benötigt D1 + R2 Bindings. Siehe ', vercelStack: 'Next.js + Neon + Public Blob', cfStack: 'Workers + D1 + R2' },
     byok: {
       useKey: 'Eigenen Schlüssel verwenden',
       keyActive: 'Ihr Schlüssel aktiv',
@@ -4452,6 +4475,7 @@ export const messages: Record<Locale, any> = {
       back: '← Zurück zur Startseite',
     },
 
+    appCat: { production: '✅ Produktionsbereit', nocreative: '🟡 Funktional, ohne Vorteil', incomplete: '🔴 Unvollständig', productionDesc: 'Echter Vorteil / mehrstufige Pipeline', nocreativeDesc: 'Einstufiges generisches Modell, leicht ersetzbar', incompleteDesc: 'Shell / nur Text / falsch beschriftet' },
     seo: {
       metaTitle: 'Lazynext — KI-Werbestudio für E-Commerce',
       metaDesc: 'Lazynext ist ein KI-Werbestudio für E-Commerce, das UGC-Werbeanzeigen, Viral-Ad-Remakes, KI-Drama-Werbeanzeigen und Comedy-Sketche erstellt.',
@@ -4631,6 +4655,9 @@ export const messages: Record<Locale, any> = {
       genVideo: 'جارٍ إنشاء الفيديو…',
     },
     pricing: {
+      packStarter: 'المبتدئ',
+      packPro: 'احترافي',
+      packElite: 'نخبة',
       title: 'تسعير بسيط بالأرصدة',
       subtitle: 'اشترِ أرصدة، أنشئ وسائط. الأرصدة لا تنتهي صلاحيتها.',
       popular: 'الأكثر شعبية',
@@ -4656,7 +4683,7 @@ export const messages: Record<Locale, any> = {
       generating: 'جارٍ الإنشاء…',
       failed: 'فشل (تم الاسترداد)',
     },
-    common: { signIn: 'تسجيل الدخول' },
+    common: { signIn: 'تسجيل الدخول', signOut: 'تسجيل الخروج', credits: 'الرصيد', language: 'اللغة', switchLanguage: 'تبديل اللغة', currency: 'العملة', cookieConsent: 'موافقة ملفات تعريف الارتباط', new: 'جديد', poweredBy: 'مدعوم من', back: '→ رجوع', backToLazynext: '→ Lazynext', coverage: 'التغطية' },
     userMenu: {
       account: 'الحساب',
       signOut: 'تسجيل الخروج',
@@ -4668,8 +4695,7 @@ export const messages: Record<Locale, any> = {
       desc: 'استنسخ استوديو Lazynext بالكامل إلى حسابك الخاص — أضف مفتاح Atlas Cloud الخاص بك وانطلق مباشرة.',
       vercel: 'النشر إلى Vercel',
       cloudflare: 'النشر إلى Cloudflare',
-      footer: 'يحتاج Vercel إلى Neon + Public Blob؛ يحتاج Cloudflare إلى روابط D1 + R2. راجع ',
-    },
+      footer: 'يحتاج Vercel إلى Neon + Public Blob؛ يحتاج Cloudflare إلى روابط D1 + R2. راجع ', vercelStack: 'Next.js + Neon + Public Blob', cfStack: 'Workers + D1 + R2' },
     byok: {
       useKey: 'استخدم مفتاحك',
       keyActive: 'مفتاحك مفعّل',
@@ -4987,6 +5013,7 @@ export const messages: Record<Locale, any> = {
       back: '→ العودة إلى الرئيسية',
     },
 
+    appCat: { production: '✅ جاهز للإنتاج', nocreative: '🟡 يعمل، بدون ميزة', incomplete: '🔴 غير مكتمل', productionDesc: 'ميزة حقيقية / خط أنابيب متعدد الخطوات', nocreativeDesc: 'نموذج عام بخطوة واحدة، يسهل استبداله', incompleteDesc: 'واجهة / نص فقط / تصنيف خاطئ' },
     seo: {
       metaTitle: 'Lazynext — استوديو إعلانات الذكاء الاصطناعي للتجارة الإلكترونية',
       metaDesc: 'Lazynext هو استوديو إعلانات بالذكاء الاصطناعي للتجارة الإلكترونية، ينتج إعلانات UGC، وإعادة صنع الإعلانات الفيروسية، وإعلانات درامية بالذكاء الاصطناعي، ومشاهد كوميدية.',
@@ -5166,6 +5193,9 @@ export const messages: Record<Locale, any> = {
       genVideo: 'वीडियो जनरेट हो रहा है…',
     },
     pricing: {
+      packStarter: 'स्टार्टर',
+      packPro: 'प्रो',
+      packElite: 'एलीट',
       title: 'सरल क्रेडिट मूल्य',
       subtitle: 'क्रेडिट खरीदें, मीडिया जनरेट करें। क्रेडिट कभी समाप्त नहीं होते।',
       popular: 'सबसे लोकप्रिय',
@@ -5191,7 +5221,7 @@ export const messages: Record<Locale, any> = {
       generating: 'जनरेट हो रहा है…',
       failed: 'विफल (वापसी)',
     },
-    common: { signIn: 'साइन इन' },
+    common: { signIn: 'साइन इन', signOut: 'साइन आउट', credits: 'क्रेडिट', language: 'भाषा', switchLanguage: 'भाषा बदलें', currency: 'मुद्रा', cookieConsent: 'कुकी सहमति', new: 'नया', poweredBy: 'द्वारा संचालित', back: '← वापस', backToLazynext: '← Lazynext', coverage: 'कवरेज' },
     userMenu: {
       account: 'खाता',
       signOut: 'साइन आउट',
@@ -5203,8 +5233,7 @@ export const messages: Record<Locale, any> = {
       desc: 'पूरे Lazynext स्टूडियो को अपने खाते में क्लोन करें — अपनी Atlas Cloud कुंजी जोड़ें और लाइव हो जाएं।',
       vercel: 'Vercel पर डिप्लॉय करें',
       cloudflare: 'Cloudflare पर डिप्लॉय करें',
-      footer: 'Vercel को Neon + Public Blob चाहिए; Cloudflare को D1 + R2 बाइंडिंग्स चाहिए। देखें ',
-    },
+      footer: 'Vercel को Neon + Public Blob चाहिए; Cloudflare को D1 + R2 बाइंडिंग्स चाहिए। देखें ', vercelStack: 'Next.js + Neon + Public Blob', cfStack: 'Workers + D1 + R2' },
     byok: {
       useKey: 'अपनी कुंजी इस्तेमाल करें',
       keyActive: 'आपकी कुंजी सक्रिय',
@@ -5522,6 +5551,7 @@ export const messages: Record<Locale, any> = {
       back: '← होम पर वापस जाएं',
     },
 
+    appCat: { production: '️ प्रोडक्शन के लिए तैयार', nocreative: '🟡 काम करता है, कोई बढ़त नहीं', incomplete: '🔴 अधूरा', productionDesc: 'वास्तविक बढ़त / मल्टी-स्टेप पाइपलाइन', nocreativeDesc: 'सिंगल-स्टेप सामान्य मॉडल, आसानी से बदला जा सकता है', incompleteDesc: 'शेल / केवल टेक्स्ट / गलत लेबल' },
     seo: {
       metaTitle: 'Lazynext — AI ई-कॉमर्स विज्ञापन स्टूडियो',
       metaDesc: 'Lazynext एक AI ई-कॉमर्स विज्ञापन स्टूडियो है जो UGC उत्पाद विज्ञापन, वायरल विज्ञापन रीमेक, AI ड्रामा विज्ञापन और कॉमेडी स्किट बनाता है।',
@@ -5773,6 +5803,9 @@ export const messages: Record<Locale, any> = {
       genVideo: 'Đang tạo video…',
     },
     pricing: {
+      packStarter: 'Khởi đầu',
+      packPro: 'Pro',
+      packElite: 'Elite',
       title: 'Bảng giá tín dụng đơn giản',
       subtitle: 'Mua tín dụng, tạo nội dung. Tín dụng không bao giờ hết hạn.',
       popular: 'Phổ biến nhất',
@@ -5798,7 +5831,7 @@ export const messages: Record<Locale, any> = {
       generating: 'Đang tạo…',
       failed: 'Thất bại (đã hoàn tiền)',
     },
-    common: { signIn: 'Đăng nhập' },
+    common: { signIn: 'Đăng nhập', signOut: 'Đăng xuất', credits: 'Tín dụng', language: 'Ngôn ngữ', switchLanguage: 'Chuyển ngôn ngữ', currency: 'Tiền tệ', cookieConsent: 'Đồng ý cookie', new: 'MỚI', poweredBy: 'Cung cấp bởi', back: '← Quay lại', backToLazynext: '← Lazynext', coverage: 'Phạm vi' },
     userMenu: {
       account: 'Tài khoản',
       signOut: 'Đăng xuất',
@@ -5810,8 +5843,7 @@ export const messages: Record<Locale, any> = {
       desc: 'Sao chép toàn bộ studio Lazynext về tài khoản của bạn — thêm key Atlas Cloud và bắt đầu hoạt động.',
       vercel: 'Triển khai lên Vercel',
       cloudflare: 'Triển khai lên Cloudflare',
-      footer: 'Vercel cần Neon + Public Blob; Cloudflare cần D1 + R2 bindings. Xem ',
-    },
+      footer: 'Vercel cần Neon + Public Blob; Cloudflare cần D1 + R2 bindings. Xem ', vercelStack: 'Next.js + Neon + Public Blob', cfStack: 'Workers + D1 + R2' },
     byok: {
       useKey: 'Dùng key của bạn',
       keyActive: 'Key của bạn đang hoạt động',
@@ -6129,6 +6161,7 @@ export const messages: Record<Locale, any> = {
       back: '← Về trang chủ',
     },
 
+    appCat: { production: '✅ Sẵn sàng cho production', nocreative: '🟡 Hoạt động, không có lợi thế', incomplete: '🔴 Chưa hoàn thiện', productionDesc: 'Lợi thế thực sự / pipeline nhiều bước', nocreativeDesc: 'Mô hình chung một bước, dễ bị thay thế', incompleteDesc: 'Shell / chỉ văn bản / nhãn sai' },
     seo: {
       metaTitle: 'Lazynext — Studio quảng cáo AI TMĐT',
       metaDesc: 'Lazynext là studio quảng cáo AI TMĐT để tạo quảng cáo sản phẩm UGC, remake quảng cáo tham chiếu, quảng cáo drama AI, và ad skit.',
@@ -6380,6 +6413,9 @@ export const messages: Record<Locale, any> = {
       genVideo: 'กำลังสร้างวิดีโอ…',
     },
     pricing: {
+      packStarter: 'เริ่มต้น',
+      packPro: 'โปร',
+      packElite: 'อีลิต',
       title: 'ราคาเครดิตแบบง่ายๆ',
       subtitle: 'ซื้อเครดิต สร้างสื่อ เครดิตไม่หมดอายุ',
       popular: 'ยอดนิยม',
@@ -6405,7 +6441,7 @@ export const messages: Record<Locale, any> = {
       generating: 'กำลังสร้าง…',
       failed: 'ล้มเหลว (คืนเครดิตแล้ว)',
     },
-    common: { signIn: 'เข้าสู่ระบบ' },
+    common: { signIn: 'เข้าสู่ระบบ', signOut: 'ออกจากระบบ', credits: 'เครดิต', language: 'ภาษา', switchLanguage: 'เปลี่ยนภาษา', currency: 'สกุลเงิน', cookieConsent: 'ยินยอมคุกกี้', new: 'ใหม่', poweredBy: 'ขับเคลื่อนโดย', back: '← ย้อนกลับ', backToLazynext: '← Lazynext', coverage: 'ความครอบคลุม' },
     userMenu: {
       account: 'บัญชี',
       signOut: 'ออกจากระบบ',
@@ -6417,8 +6453,7 @@ export const messages: Record<Locale, any> = {
       desc: 'โคลนสตูดิโอ Lazynext ทั้งหมดไปยังบัญชีของคุณ — เพิ่ม key Atlas Cloud แล้วใช้งานได้เลย',
       vercel: 'ดีพลอยไป Vercel',
       cloudflare: 'ดีพลอยไป Cloudflare',
-      footer: 'Vercel ต้องการ Neon + Public Blob; Cloudflare ต้องการ D1 + R2 bindings ดู ',
-    },
+      footer: 'Vercel ต้องการ Neon + Public Blob; Cloudflare ต้องการ D1 + R2 bindings ดู ', vercelStack: 'Next.js + Neon + Public Blob', cfStack: 'Workers + D1 + R2' },
     byok: {
       useKey: 'ใช้ key ของคุณ',
       keyActive: 'key ของคุณกำลังทำงาน',
@@ -6736,6 +6771,7 @@ export const messages: Record<Locale, any> = {
       back: '← กลับหน้าหลัก',
     },
 
+    appCat: { production: '✅ พร้อมใช้งานจริง', nocreative: '🟡 ใช้ได้แต่ไม่มีจุดเด่น', incomplete: '🔴 ยังไม่สมบูรณ์', productionDesc: 'จุดเด่นจริง / pipeline หลายขั้นตอน', nocreativeDesc: 'โมเดลทั่วไปขั้นตอนเดียว ถูกแทนที่ง่าย', incompleteDesc: 'เชลล์ / ข้อความเท่านั้น / ป้ายผิด' },
     seo: {
       metaTitle: 'Lazynext — สตูดิโอโฆษณา AI อีคอมเมิร์ซ',
       metaDesc: 'Lazynext คือสตูดิโอโฆษณา AI อีคอมเมิร์ซสำหรับสร้างโฆษณาสินค้า UGC, remake โฆษณาอ้างอิง, โฆษณา drama AI และ ad skit',
@@ -6987,6 +7023,9 @@ export const messages: Record<Locale, any> = {
       genVideo: 'Membuat video…',
     },
     pricing: {
+      packStarter: 'Pemula',
+      packPro: 'Pro',
+      packElite: 'Elite',
       title: 'Harga kredit sederhana',
       subtitle: 'Beli kredit, buat media. Kredit tidak pernah kedaluwarsa.',
       popular: 'Paling populer',
@@ -7012,7 +7051,7 @@ export const messages: Record<Locale, any> = {
       generating: 'Membuat…',
       failed: 'Gagal (dikembalikan)',
     },
-    common: { signIn: 'Masuk' },
+    common: { signIn: 'Masuk', signOut: 'Keluar', credits: 'Kredit', language: 'Bahasa', switchLanguage: 'Ganti bahasa', currency: 'Mata uang', cookieConsent: 'Persetujuan cookie', new: 'BARU', poweredBy: 'Didukung oleh', back: '← Kembali', backToLazynext: '← Lazynext', coverage: 'Cakupan' },
     userMenu: {
       account: 'Akun',
       signOut: 'Keluar',
@@ -7024,8 +7063,7 @@ export const messages: Record<Locale, any> = {
       desc: 'Klon seluruh studio Lazynext ke akunmu sendiri — tambahkan key Atlas Cloud dan mulai beroperasi.',
       vercel: 'Deploy ke Vercel',
       cloudflare: 'Deploy ke Cloudflare',
-      footer: 'Vercel butuh Neon + Public Blob; Cloudflare butuh D1 + R2 bindings. Lihat ',
-    },
+      footer: 'Vercel butuh Neon + Public Blob; Cloudflare butuh D1 + R2 bindings. Lihat ', vercelStack: 'Next.js + Neon + Public Blob', cfStack: 'Workers + D1 + R2' },
     byok: {
       useKey: 'Pakai key sendiri',
       keyActive: 'Key kamu aktif',
@@ -7343,6 +7381,7 @@ export const messages: Record<Locale, any> = {
       back: '← Kembali ke beranda',
     },
 
+    appCat: { production: '✅ Siap produksi', nocreative: '🟡 Berfungsi, tanpa keunggulan', incomplete: '🔴 Tidak lengkap', productionDesc: 'Keunggulan nyata / pipeline multi-langkah', nocreativeDesc: 'Model generik satu langkah, mudah diganti', incompleteDesc: 'Shell / hanya teks / salah label' },
     seo: {
       metaTitle: 'Lazynext — Studio Iklan AI E-commerce',
       metaDesc: 'Lazynext adalah studio iklan AI e-commerce untuk membuat iklan produk UGC, remake iklan referensi, iklan drama AI, dan ad skit.',

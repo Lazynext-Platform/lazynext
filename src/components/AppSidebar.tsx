@@ -54,7 +54,7 @@ export function AppSidebar() {
                   className="flex w-full items-center justify-between rounded-xl px-2 py-2 text-left transition hover:bg-white"
                 >
                   <span className="flex items-center gap-2 text-sm font-semibold text-neutral-700">
-                    <span className={`h-2 w-2 shrink-0 rounded-full ${c.dot}`} /> {c.label}
+                    <span className={`h-2 w-2 shrink-0 rounded-full ${c.dot}`} /> {t(`appCat.${c.key}`)}
                   </span>
                   <span className="flex items-center gap-1 text-xs text-neutral-400">
                     {apps.length}

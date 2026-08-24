@@ -107,7 +107,7 @@ export default function PricingClient({
           <div className="mt-5 inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2">
             <DollarSign className="h-4 w-4 text-white/50" />
             <select
-              aria-label="Currency"
+              aria-label={t('common.currency')}
               value={currency}
               onChange={(e) => changeCurrency(e.target.value)}
               className="cursor-pointer appearance-none bg-transparent text-sm font-medium text-white outline-none"
@@ -138,7 +138,7 @@ export default function PricingClient({
                     {t('pricing.popular')}
                   </span>
                 )}
-                <div className="text-sm font-medium text-white/50">{p.name}</div>
+                <div className="text-sm font-medium text-white/50">{p.id === 'starter' ? t('pricing.packStarter') : p.id === 'pro' ? t('pricing.packPro') : p.id === 'elite' ? t('pricing.packElite') : p.name}</div>
                 <div className="mt-2 text-4xl font-bold">
                   {dp.symbol}{dp.formatted}
                 </div>
