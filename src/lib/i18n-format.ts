@@ -87,3 +87,25 @@ export function formatRelativeTime(input: string | Date, locale: Locale): string
     return 'just now';
   }
 }
+
+/** Get a localized country name using Intl.DisplayNames */
+export function getCountryName(countryCode: string, locale: Locale): string {
+  try {
+    const dn = new (Intl as any).DisplayNames([BCP47[locale] || 'en-US'], { type: 'region' });
+    const name = dn.of(countryCode);
+    return name || countryCode;
+  } catch {
+    return countryCode;
+  }
+}
+
+/** Get a localized currency name using Intl.DisplayNames */
+export function getCurrencyName(currencyCode: string, locale: Locale): string {
+  try {
+    const dn = new (Intl as any).DisplayNames([BCP47[locale] || 'en-US'], { type: 'currency' });
+    const name = dn.of(currencyCode);
+    return name || currencyCode;
+  } catch {
+    return currencyCode;
+  }
+}

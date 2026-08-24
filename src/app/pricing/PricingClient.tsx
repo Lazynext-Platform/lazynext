@@ -5,7 +5,7 @@ import { useSession, signIn } from 'next-auth/react';
 import type { CreditPack } from '@/config/pricing';
 import { CURRENCIES, displayPrice } from '@/config/pricing';
 import { useI18n } from '@/i18n/provider';
-import { formatNumber } from '@/lib/i18n-format';
+import { formatNumber, getCurrencyName } from '@/lib/i18n-format';
 import { Check, Coins, Loader2, Gift, DollarSign } from 'lucide-react';
 
 export default function PricingClient({
@@ -114,7 +114,7 @@ export default function PricingClient({
             >
               {CURRENCIES.map((c) => (
                 <option key={c.code} value={c.code} className="bg-neutral-900 text-white">
-                  {c.symbol} {c.code} — {c.name}
+                  {c.symbol} {c.code} — {getCurrencyName(c.code, locale)}
                 </option>
               ))}
             </select>
