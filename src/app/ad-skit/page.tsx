@@ -249,7 +249,7 @@ export default function AdSkitPage() {
               {SAMPLES.map((s) => (
                 <div key={s.title} className="w-[220px] overflow-hidden rounded-xl border border-white/10">
                   <video src={s.video} controls preload="metadata" playsInline className="aspect-[9/16] w-full bg-neutral-900 object-cover" />
-                  <div className="px-2.5 py-1.5 text-xs font-medium text-white/60">{s.title}</div>
+                  <div className="px-2.5 py-1.5 text-xs font-medium text-white/60">{t('adSkit.sampleTitle')}</div>
                 </div>
               ))}
             </div>

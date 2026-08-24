@@ -293,6 +293,7 @@ export const messages: Record<Locale, any> = {
       label: 'Work',
     },
     adSkit: {
+      sampleTitle: 'Insulated Tumbler',
       allApps: '← All apps',
       title: 'Ad Skit',
       featured: '⭐ Featured',
@@ -902,6 +903,7 @@ export const messages: Record<Locale, any> = {
       label: '作品',
     },
     adSkit: {
+      sampleTitle: '保温杯',
       allApps: '← 全部应用',
       title: '搞笑带货小剧场',
       featured: '⭐ 精选',
@@ -1513,6 +1515,7 @@ export const messages: Record<Locale, any> = {
       label: '作品',
     },
     adSkit: {
+      sampleTitle: '断熱タンブラー',
       allApps: '← すべてのアプリ',
       title: 'コメディ広告',
       featured: '⭐ 注目',
@@ -2124,6 +2127,7 @@ export const messages: Record<Locale, any> = {
       label: 'Trabajo',
     },
     adSkit: {
+      sampleTitle: 'Vaso Térmico',
       allApps: '← Todas las apps',
       title: 'Anuncio Cómico',
       featured: '⭐ Destacado',
@@ -2664,6 +2668,7 @@ export const messages: Record<Locale, any> = {
       label: '작업',
     },
     adSkit: {
+      sampleTitle: '보온 텀블러',
       allApps: '← 모든 앱',
       title: '광고 스케치',
       featured: '⭐ 추천',
@@ -3204,6 +3209,7 @@ export const messages: Record<Locale, any> = {
       label: 'Trabalho',
     },
     adSkit: {
+      sampleTitle: 'Copo Térmico',
       allApps: '← Todos os apps',
       title: 'Anúncio Cômico',
       featured: '⭐ Destaque',
@@ -3744,6 +3750,7 @@ export const messages: Record<Locale, any> = {
       label: 'Travail',
     },
     adSkit: {
+      sampleTitle: 'Gobelet Isotherme',
       allApps: '← Toutes les apps',
       title: 'Annonce Comique',
       featured: '⭐ En vedette',
@@ -4284,6 +4291,7 @@ export const messages: Record<Locale, any> = {
       label: 'Arbeiten',
     },
     adSkit: {
+      sampleTitle: 'Isolierbecher',
       allApps: '← Alle Apps',
       title: 'Werbesketch',
       featured: '⭐ Empfohlen',
@@ -4824,6 +4832,7 @@ export const messages: Record<Locale, any> = {
       label: 'أعمالي',
     },
     adSkit: {
+      sampleTitle: 'كوب معزول',
       allApps: '← كل التطبيقات',
       title: 'إعلان كوميدي',
       featured: '⭐ مميز',
@@ -5364,6 +5373,7 @@ export const messages: Record<Locale, any> = {
       label: 'काम',
     },
     adSkit: {
+      sampleTitle: 'इन्सुलेटेड टम्बलर',
       allApps: '← सभी ऐप्स',
       title: 'विज्ञापन स्किट',
       featured: '⭐ फ़ीचर्ड',
@@ -5976,6 +5986,7 @@ export const messages: Record<Locale, any> = {
       label: 'Tác phẩm',
     },
     adSkit: {
+      sampleTitle: 'Cốc Giữ Nhiệt',
       allApps: '← Tất cả ứng dụng',
       title: 'Ad Skit',
       featured: '⭐ Nổi bật',
@@ -6588,6 +6599,7 @@ export const messages: Record<Locale, any> = {
       label: 'ผลงาน',
     },
     adSkit: {
+      sampleTitle: 'แก้วเก็บความร้อน',
       allApps: '← ทุกแอป',
       title: 'Ad Skit',
       featured: '⭐ แนะนำ',
@@ -7200,6 +7212,7 @@ export const messages: Record<Locale, any> = {
       label: 'Karya',
     },
     adSkit: {
+      sampleTitle: 'Tumbler Insulasi',
       allApps: '← Semua aplikasi',
       title: 'Ad Skit',
       featured: '⭐ Unggulan',
