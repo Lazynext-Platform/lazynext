@@ -5,6 +5,13 @@ export interface CheckoutArgs {
   email?: string | null;
   pack: CreditPack;
   origin: string;
+  // ── Global checkout params (passed through to Dodo Payments) ──
+  // UI locale → Dodo hosted checkout language (force_language)
+  locale?: string;
+  // ISO 3166-1 alpha-2 country code → billing_address.country + currency detection
+  country?: string;
+  // ISO 4217 currency code → billing_currency (when adaptive pricing is enabled)
+  currency?: string;
 }
 
 /**

@@ -13,13 +13,9 @@ const COSTS = { plan: 4, image: 2, video: 25 };
 const VIDEO_COST = videoCredits('bytedance/seedance-2.0/reference-to-video', '720p', 15);
 // Language selection removed: script language auto-follows the product input language (see lib/ad-skit.ts planSkit)
 const STYLES = [
-  { key: 'funny', label: 'Funny meme' }, { key: 'reversal', label: 'Wild plot twist' }, { key: 'skit', label: 'Sitcom skit' },
-  { key: 'warm', label: 'Heartwarming' }, { key: 'luxury', label: 'Luxe & premium' }, { key: 'urgent', label: 'Urgent hard sell' },
+  { key: 'funny', labelKey: 'adSkit.styleFunny' }, { key: 'reversal', labelKey: 'adSkit.styleReversal' }, { key: 'skit', labelKey: 'adSkit.styleSkit' },
+  { key: 'warm', labelKey: 'adSkit.styleWarm' }, { key: 'luxury', labelKey: 'adSkit.styleLuxury' }, { key: 'urgent', labelKey: 'adSkit.styleUrgent' },
 ];
-const STYLE_LABELS_ZH: Record<string, string> = {
-  funny: '搞笑梗图', reversal: '神反转', skit: '情景喜剧',
-  warm: '温情走心', luxury: '高奢质感', urgent: '紧迫硬广',
-};
 const PLAN_MODELS = [
   { key: 'deepseek-ai/deepseek-v4-pro', label: 'DeepSeek V4 Pro' },
   { key: 'zai-org/glm-5.2', label: 'GLM-5.2' },
@@ -62,23 +58,23 @@ function pollCreation(id: string): Promise<string> {
     }, 3000);
   });
 }
-function errText(code: string, locale: string) {
-  if (code === 'insufficient_credits') return locale === 'zh' ? '积分不足，请前往定价页充值。' : 'Not enough credits. Please top up on the pricing page.';
-  if (code === 'product_required') return locale === 'zh' ? '请先填写产品信息。' : 'Please enter a product first.';
+function errText(code: string, t: (k: string, vars?: Record<string, string | number>) => string) {
+  if (code === 'insufficient_credits') return t('adSkit.errInsufficientCredits');
+  if (code === 'product_required') return t('adSkit.errProductRequired');
   if (code.startsWith('plan_failed')) {
-    if (/401|402|403|429|unauthorized|quota|invalid_api_key/i.test(code)) return locale === 'zh' ? '你的 Atlas Key 无效或额度不足，请检查 Key 后重试。' : 'Your Atlas key is invalid or out of quota — please check it and retry.';
-    return locale === 'zh' ? '脚本生成失败，请重试或换种方式描述你的产品。' : 'Script generation failed. Please try again or reword your description.';
+    if (/401|402|403|429|unauthorized|quota|invalid_api_key/i.test(code)) return t('adSkit.errPlanFailedKey');
+    return t('adSkit.errPlanFailed');
   }
-  if (/401|402|403|429|unauthorized|quota|invalid_api_key/i.test(code)) return locale === 'zh' ? '你的 Atlas Key 无效或额度不足，请检查 Key 后重试。' : 'Your Atlas key is invalid or out of quota — please check it and retry.';
-  if (code.startsWith('submit_failed') || code.startsWith('upload_failed')) return locale === 'zh' ? '生成失败，请重试。' : 'Generation failed. Please retry.';
-  if (code === 'no_product_image') return locale === 'zh' ? '产品图生成失败，请重试或上传一张产品图。' : 'Product image failed. Retry or upload a product photo.';
-  if (code === 'timeout' || code === 'failed') return locale === 'zh' ? '视频生成失败或超时，请重试。' : 'Video generation failed or timed out. Please retry.';
-  return locale === 'zh' ? `出错了：${code}` : `Something went wrong: ${code}`;
+  if (/401|402|403|429|unauthorized|quota|invalid_api_key/i.test(code)) return t('adSkit.errPlanFailedKey');
+  if (code.startsWith('submit_failed') || code.startsWith('upload_failed')) return t('adSkit.errSubmitFailed');
+  if (code === 'no_product_image') return t('adSkit.errNoProductImage');
+  if (code === 'timeout' || code === 'failed') return t('adSkit.errVideoFailed');
+  return t('adSkit.errGeneric', { code });
 }
 
 export default function AdSkitPage() {
   const { data: session } = useSession();
-  const { locale } = useI18n();
+  const { t } = useI18n();
   const byokActive = useByokActive();
   const [product, setProduct] = useState('');
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
@@ -93,13 +89,13 @@ export default function AdSkitPage() {
 
   async function genPlan() {
     if (!session) return signIn('google');
-    if (product.trim().length < 2) return setErr(locale === 'zh' ? '请先填写产品信息（名称 / 卖点，一行就够）。' : 'Please enter a product first (name / selling point, one line is enough).');
+    if (product.trim().length < 2) return setErr(t('adSkit.enterProduct'));
     setErr(null); setBusy('plan'); setPlan(null); setProductImg({ status: 'idle' }); setVideo({ status: 'idle' });
     try {
       const j = await postJson('/api/ad-skit/plan', { product, styleKey: style, llmModel: llm });
       setPlan(j.plan);
       window.dispatchEvent(new Event('lazynext:credits'));
-    } catch (e) { setErr(errText(e instanceof Error ? e.message : 'failed', locale)); }
+    } catch (e) { setErr(errText(e instanceof Error ? e.message : 'failed', t)); }
     setBusy(null);
   }
 
@@ -127,7 +123,7 @@ export default function AdSkitPage() {
     } catch (e) {
       setProductImg((s) => (s.status === 'processing' ? { status: 'failed' } : s));
       setVideo({ status: 'failed' });
-      setErr(errText(e instanceof Error ? e.message : 'failed', locale));
+      setErr(errText(e instanceof Error ? e.message : 'failed', t));
     }
     setBusy(null);
   }
@@ -138,7 +134,7 @@ export default function AdSkitPage() {
     <div className="min-h-screen bg-[#131416] text-white" style={{ colorScheme: 'dark' }}>
       <div className="px-6 sm:px-8 py-5">
         <div className="mx-auto flex w-full max-w-6xl items-center gap-3">
-          <a href="/" className="text-sm text-white/60 hover:text-white transition">{locale === 'zh' ? '← 全部应用' : '← All apps'}</a>
+          <a href="/" className="text-sm text-white/60 hover:text-white transition">{t('adSkit.allApps')}</a>
         </div>
       </div>
 
@@ -147,11 +143,11 @@ export default function AdSkitPage() {
         <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#00b2fc]/15 text-[#00b2fc]"><Clapperboard className="h-6 w-6" /></span>
         <div>
           <div className="flex flex-wrap items-center gap-2">
-            <h1 className="text-2xl font-bold tracking-tight text-white">{locale === 'zh' ? '搞笑带货小剧场' : 'Ad Skit'}</h1>
-            <span className="rounded-full bg-amber-400/15 px-2 py-1 text-xs font-semibold text-amber-300">{locale === 'zh' ? '⭐ 精选' : '⭐ Featured'}</span>
+            <h1 className="text-2xl font-bold tracking-tight text-white">{t('adSkit.title')}</h1>
+            <span className="rounded-full bg-amber-400/15 px-2 py-1 text-xs font-semibold text-amber-300">{t('adSkit.featured')}</span>
           </div>
           <p className="mt-1 max-w-2xl text-sm text-white/60">
-            {locale === 'zh' ? <>丢进一个产品 → 开源大模型化身创意导演，写出一段<b>双人搞笑小剧场</b>（3 秒钩子 + 反转笑点）→ seedance-2.0 用你的产品照渲染出 15 秒带声广告。多语言、多风格。</> : <>Drop in a product → an open-source LLM plays creative director and writes a <b>two-hander comedy skit</b> (3-second hook + twist punchline) → seedance-2.0 uses your product photo to render a 15s ad with sound. Multi-language, multi-style.</>}
+            {t('adSkit.desc')}
           </p>
         </div>
       </div>
@@ -161,17 +157,17 @@ export default function AdSkitPage() {
         <section className="space-y-5">
           <div className="rounded-2xl border border-white/10 bg-[#1c1e21] p-5">
             <h2 className="mb-3 flex items-center gap-2 text-sm font-semibold text-white">
-              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#00b2fc] text-xs text-white">1</span>{locale === 'zh' ? '产品 + 设置' : 'Product + settings'}
+              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#00b2fc] text-xs text-white">1</span>{t('adSkit.productSettings')}
             </h2>
             <textarea value={product} onChange={(e) => setProduct(e.target.value)} rows={3}
-              placeholder={locale === 'zh' ? '产品名 + 卖点，一行就够。例如：康师傅红烧牛肉面 / 便携榨汁杯，USB 充电几秒打出果昔' : 'Product name + selling point, one line is enough. E.g. Master Kong beef noodles / portable blender bottle, USB-charged smoothies in seconds'}
+              placeholder={t('adSkit.placeholder')}
               className="w-full resize-none rounded-xl border border-white/10 bg-white/[0.04] p-3 text-sm text-white outline-none transition placeholder:text-white/30 focus:border-[#00b2fc] focus:ring-2 focus:ring-[#00b2fc]/30" />
             <div className="mt-3">
               <div className="flex flex-wrap items-center gap-2">
                 {uploadedImages.map((u, i) => (
                   <div key={i} className="relative h-14 w-14 overflow-hidden rounded-lg border border-white/10">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={u} alt={locale === 'zh' ? '产品照片' : 'product photo'} className="h-full w-full object-cover" />
+                    <img src={u} alt={t('adSkit.productPhotoAlt')} className="h-full w-full object-cover" />
                     <button type="button" onClick={() => setUploadedImages((a) => a.filter((_, j) => j !== i))} className="absolute right-0 top-0 flex h-4 w-4 items-center justify-center bg-black/60 text-[10px] leading-none text-white">×</button>
                   </div>
                 ))}
@@ -186,31 +182,31 @@ export default function AdSkitPage() {
                   </label>
                 )}
               </div>
-              <span className="mt-1 block text-xs text-white/50">{locale === 'zh' ? '可选：上传 1-4 张真实产品照（多角度 / 多款式，原样保留你的产品，全部作为 seedance 参考图）。不传则按描述生成。' : 'Optional: upload 1-4 real product photos (multiple angles / variants — keeps your product exactly as-is, all used as seedance references). Skip it to generate from your description.'}</span>
+              <span className="mt-1 block text-xs text-white/50">{t('adSkit.uploadHint')}</span>
             </div>
-            <label className="mt-3 block"><span className="mb-1 block text-xs font-medium text-white/60">{locale === 'zh' ? '风格' : 'Style'}</span>
+            <label className="mt-3 block"><span className="mb-1 block text-xs font-medium text-white/60">{t('adSkit.style')}</span>
               <select value={style} onChange={(e) => setStyle(e.target.value)} className="w-full rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2 text-sm text-white outline-none focus:border-[#00b2fc]">
-                {STYLES.map((s) => <option key={s.key} value={s.key}>{locale === 'zh' ? STYLE_LABELS_ZH[s.key] : s.label}</option>)}
+                {STYLES.map((s) => <option key={s.key} value={s.key}>{t(s.labelKey)}</option>)}
               </select>
             </label>
-            <label className="mt-3 block"><span className="mb-1 block text-xs font-medium text-white/60">{locale === 'zh' ? '创意大模型' : 'Creative LLM'}</span>
+            <label className="mt-3 block"><span className="mb-1 block text-xs font-medium text-white/60">{t('adSkit.creativeLlm')}</span>
               <select value={llm} onChange={(e) => setLlm(e.target.value)} className="w-full rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2 text-sm text-white outline-none focus:border-[#00b2fc]">
                 {PLAN_MODELS.map((m) => <option key={m.key} value={m.key}>{m.label}</option>)}
               </select>
             </label>
             <button onClick={genPlan} disabled={busy !== null} className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#00b2fc] px-5 py-3 font-semibold text-white transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50">
-              {busy === 'plan' ? <><Loader2 className="h-4 w-4 animate-spin" /> {locale === 'zh' ? '导演正在头脑风暴…' : 'Director brainstorming…'}</> : <><Wand2 className="h-4 w-4" /> {byokActive ? (locale === 'zh' ? '生成脚本' : 'Generate script') : (locale === 'zh' ? `生成脚本 · ${COSTS.plan} 积分` : `Generate script · ${COSTS.plan} credits`)}</>}
+              {busy === 'plan' ? <><Loader2 className="h-4 w-4 animate-spin" /> {t('adSkit.directorBrainstorming')}</> : <><Wand2 className="h-4 w-4" /> {byokActive ? t('adSkit.generateScript') : t('adSkit.generateScriptCredits', { n: COSTS.plan })}</>}
             </button>
             {err && <p className="mt-3 flex items-center gap-1.5 text-sm text-red-400"><AlertCircle className="h-4 w-4 shrink-0" /> {err}</p>}
           </div>
 
           {plan && (
             <div className="space-y-3 rounded-2xl border border-white/10 bg-[#1c1e21] p-5">
-              <h2 className="flex items-center gap-2 text-sm font-semibold text-white"><span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#00b2fc] text-xs text-white">2</span>{locale === 'zh' ? '脚本确认' : 'Script review'}</h2>
-              <div className="rounded-lg bg-white/[0.04] p-3 text-sm leading-6 text-white/80"><b>{locale === 'zh' ? '创意：' : 'Idea: '}</b>{plan.idea}</div>
-              {plan.caption && <p className="text-xs text-white/50">{locale === 'zh' ? '文案：' : 'Caption: '}{plan.caption}</p>}
+              <h2 className="flex items-center gap-2 text-sm font-semibold text-white"><span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#00b2fc] text-xs text-white">2</span>{t('adSkit.scriptReview')}</h2>
+              <div className="rounded-lg bg-white/[0.04] p-3 text-sm leading-6 text-white/80"><b>{t('adSkit.idea')}</b>{plan.idea}</div>
+              {plan.caption && <p className="text-xs text-white/50">{t('adSkit.caption')}{plan.caption}</p>}
               <button onClick={genVideo} disabled={busy !== null} className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#00b2fc] px-5 py-3 font-semibold text-white transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50">
-                {busy === 'video' ? <><Loader2 className="h-4 w-4 animate-spin" /> {locale === 'zh' ? '渲染产品照 + 视频，约 1-3 分钟…' : 'Rendering product photo + video ~1-3 min…'}</> : <><Sparkles className="h-4 w-4" /> {byokActive ? (locale === 'zh' ? '生成广告视频' : 'Generate ad video') : (locale === 'zh' ? `生成广告视频 · ${COSTS.image + VIDEO_COST} 积分` : `Generate ad video · ${COSTS.image + VIDEO_COST} credits`)}</>}
+                {busy === 'video' ? <><Loader2 className="h-4 w-4 animate-spin" /> {t('adSkit.renderingVideo')}</> : <><Sparkles className="h-4 w-4" /> {byokActive ? t('adSkit.generateAdVideo') : t('adSkit.generateAdVideoCredits', { n: COSTS.image + VIDEO_COST })}</>}
               </button>
             </div>
           )}
@@ -221,34 +217,34 @@ export default function AdSkitPage() {
           {plan ? (
             <>
               <div className="rounded-2xl border border-white/10 bg-[#1c1e21] p-5">
-                <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-white"><ImageIcon className="h-4 w-4 text-[#00b2fc]" /> {locale === 'zh' ? '产品照片' : 'Product photo'}</h3>
+                <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-white"><ImageIcon className="h-4 w-4 text-[#00b2fc]" /> {t('adSkit.productPhotoTitle')}</h3>
                 <div className="flex aspect-video items-center justify-center overflow-hidden rounded-xl border border-white/10 bg-white/[0.03]">
-                  {productImg.status === 'done' && productImg.url ? (/* eslint-disable-next-line @next/next/no-img-element */ <img src={productImg.url} alt={locale === 'zh' ? '产品' : 'product'} className="h-full w-full object-contain" />)
+                  {productImg.status === 'done' && productImg.url ? (/* eslint-disable-next-line @next/next/no-img-element */ <img src={productImg.url} alt={t('adSkit.productPhotoAlt')} className="h-full w-full object-contain" />)
                     : productImg.status === 'processing' ? <Loader2 className="h-6 w-6 animate-spin text-[#00b2fc]" />
-                    : productImg.status === 'failed' ? <span className="text-sm text-red-400">{locale === 'zh' ? '产品照生成失败' : 'Product photo failed'}</span>
-                    : <span className="text-sm text-white/30">{locale === 'zh' ? '点击“生成广告视频”后在此显示' : 'Appears after you click "Generate ad video"'}</span>}
+                    : productImg.status === 'failed' ? <span className="text-sm text-red-400">{t('adSkit.productPhotoFailed')}</span>
+                    : <span className="text-sm text-white/30">{t('adSkit.productPhotoPlaceholder')}</span>}
                 </div>
               </div>
               <div className="rounded-2xl border border-white/10 bg-[#1c1e21] p-5">
-                <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-white"><Video className="h-4 w-4 text-[#00b2fc]" /> {locale === 'zh' ? '成片广告（15 秒）' : 'Finished ad (15s)'}</h3>
+                <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-white"><Video className="h-4 w-4 text-[#00b2fc]" /> {t('adSkit.finishedAd')}</h3>
                 <div className="flex aspect-video items-center justify-center overflow-hidden rounded-xl border border-white/10 bg-white/[0.03]">
                   {video.status === 'done' && video.url ? <video src={video.url} controls className="h-full w-full object-contain" />
-                    : video.status === 'processing' ? <div className="flex flex-col items-center gap-2 text-white/40"><Loader2 className="h-7 w-7 animate-spin text-[#00b2fc]" /><span className="text-xs">{locale === 'zh' ? 'seedance 渲染中，约 1-3 分钟' : 'seedance rendering ~1-3 min'}</span></div>
-                    : video.status === 'failed' ? <span className="text-sm text-red-400">{locale === 'zh' ? '渲染失败' : 'Render failed'}</span>
-                    : <span className="text-sm text-white/30">{locale === 'zh' ? '产品照生成后自动渲染' : 'Renders automatically after the product photo'}</span>}
+                    : video.status === 'processing' ? <div className="flex flex-col items-center gap-2 text-white/40"><Loader2 className="h-7 w-7 animate-spin text-[#00b2fc]" /><span className="text-xs">{t('adSkit.seedanceRendering')}</span></div>
+                    : video.status === 'failed' ? <span className="text-sm text-red-400">{t('adSkit.renderFailed')}</span>
+                    : <span className="text-sm text-white/30">{t('adSkit.rendersAuto')}</span>}
                 </div>
-                {video.status === 'done' && video.url && <a href={dl(video.url)} className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.04] px-5 py-3 font-medium text-white transition hover:border-white/20 hover:bg-white/[0.08]"><Download className="h-4 w-4" /> {locale === 'zh' ? '下载视频' : 'Download video'}</a>}
+                {video.status === 'done' && video.url && <a href={dl(video.url)} className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.04] px-5 py-3 font-medium text-white transition hover:border-white/20 hover:bg-white/[0.08]"><Download className="h-4 w-4" /> {t('adSkit.downloadVideo')}</a>}
               </div>
             </>
           ) : (
             <div className="flex min-h-[240px] flex-col items-center justify-center gap-2 rounded-2xl border border-white/10 bg-[#1c1e21] p-8 text-center text-white/30">
-              <Clapperboard className="h-10 w-10" /><p className="text-sm">{locale === 'zh' ? '在左侧填写产品、选好风格，导演会先写出一段双人搞笑小剧场，再渲染成视频。' : 'Fill in a product on the left, pick a style, and the director will write a two-hander comedy skit before rendering the video.'}</p>
+              <Clapperboard className="h-10 w-10" /><p className="text-sm">{t('adSkit.emptyState')}</p>
             </div>
           )}
 
           {/* Samples */}
           <div className="rounded-2xl border border-white/10 bg-[#1c1e21] p-5">
-            <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-white"><Sparkles className="h-4 w-4 text-[#00b2fc]" /> {locale === 'zh' ? '示例成片（搞笑风格）' : 'Sample outputs (funny style)'}</h3>
+            <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-white"><Sparkles className="h-4 w-4 text-[#00b2fc]" /> {t('adSkit.sampleOutputs')}</h3>
             <div className="flex flex-wrap gap-4">
               {SAMPLES.map((s) => (
                 <div key={s.title} className="w-[220px] overflow-hidden rounded-xl border border-white/10">

@@ -10,17 +10,17 @@ import { useMounted } from '@/lib/use-mounted';
 // when signed in, links to the standalone /my-work creations page.
 export function HistoryButton() {
   const { data: session } = useSession();
-  const { locale } = useI18n();
+  const { t } = useI18n();
   const mounted = useMounted();
   if (!mounted || !session) return null;
   return (
     <Link
       href="/my-work"
-      title={locale === 'zh' ? '我的作品' : 'My work'}
+      title={t('historyButton.title')}
       className="flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-white/15"
     >
       <Clock className="h-3.5 w-3.5" />
-      <span className="hidden sm:inline">{locale === 'zh' ? '作品' : 'Work'}</span>
+      <span className="hidden sm:inline">{t('historyButton.label')}</span>
     </Link>
   );
 }

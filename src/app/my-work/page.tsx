@@ -7,6 +7,7 @@ import { useSession, signIn } from 'next-auth/react';
 import { Download, Loader2, Clock, Play, X, Film } from 'lucide-react';
 import { useI18n } from '@/i18n/provider';
 import { byokHeaders } from '@/lib/byok';
+import { formatDateTime } from '@/lib/i18n-format';
 
 type DramaAssets = {
   kind: string;
@@ -52,8 +53,7 @@ function mediaKind(url: string, model?: string): MediaKind {
 export default function MyWorkPage() {
   const { status } = useSession();
   const router = useRouter();
-  const { locale } = useI18n();
-  const zh = locale === 'zh';
+  const { t, locale } = useI18n();
   const [items, setItems] = useState<Creation[] | null>(null);
   const [play, setPlay] = useState<PlayTarget>(null);
 
@@ -94,20 +94,20 @@ export default function MyWorkPage() {
             <img src="/lazynext-mark.png" alt="Lazynext" className="h-7 w-7 rounded-lg" />
             <b className="text-sm tracking-tight">Lazynext</b>
           </Link>
-          <Link href="/" className="text-xs text-white/60 hover:text-white transition">{zh ? '← 全部应用' : '← All apps'}</Link>
+          <Link href="/" className="text-xs text-white/60 hover:text-white transition">{t('myWork.allApps')}</Link>
         </div>
       </div>
 
       <div className="mx-auto max-w-6xl px-4 sm:px-6 pb-24">
         <div className="pt-6 pb-8">
-          <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">{zh ? '我的作品' : 'My work'}</h1>
+          <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">{t('myWork.title')}</h1>
           <p className="mt-2 text-sm text-white/50">
-            {zh ? '你生成的所有成片,永久保存,可随时重看和下载。点击"一键生成"后,任务会立刻出现在这里。' : 'All your generated reels, saved permanently — replay or download anytime. Every generation shows up here instantly.'}
+            {t('myWork.subtitle')}
           </p>
           {generating > 0 && (
             <div className="mt-3 inline-flex items-center gap-2 rounded-full border border-[#00b2fc]/30 bg-[#00b2fc]/[0.08] px-3 py-1 text-xs text-white/80">
               <Loader2 className="h-3.5 w-3.5 animate-spin" style={{ color: '#22d3ee' }} />
-              {zh ? `${generating} 个作品生成中` : `${generating} generating`}
+              {t('myWork.generating', { n: generating })}
             </div>
           )}
         </div>
@@ -117,24 +117,24 @@ export default function MyWorkPage() {
         ) : status !== 'authenticated' ? (
           <div className="grid place-items-center gap-4 py-32 text-center">
             <div className="text-5xl">🔐</div>
-            <p className="text-white/50">{zh ? '登录后查看你的作品。' : 'Sign in to see your work.'}</p>
-            <button onClick={() => signIn('google')} className="rounded-xl px-5 py-2.5 text-sm font-bold text-white" style={{ background: '#00b2fc' }}>{zh ? '登录' : 'Sign in'}</button>
+            <p className="text-white/50">{t('myWork.signInPrompt')}</p>
+            <button onClick={() => signIn('google')} className="rounded-xl px-5 py-2.5 text-sm font-bold text-white" style={{ background: '#00b2fc' }}>{t('common.signIn')}</button>
           </div>
         ) : items === null ? (
           <div className="grid place-items-center py-32"><Loader2 className="h-7 w-7 animate-spin text-white/40" /></div>
         ) : items.length === 0 ? (
           <div className="grid place-items-center gap-4 py-32 text-center">
             <div className="text-5xl">🎬</div>
-            <p className="text-white/50">{zh ? '还没有作品。去生成你的第一个成片吧。' : 'No work yet. Go create your first reel.'}</p>
-            <Link href="/" className="rounded-xl px-5 py-2.5 text-sm font-bold text-white" style={{ background: '#00b2fc' }}>{zh ? '去创作' : 'Start creating'}</Link>
+            <p className="text-white/50">{t('myWork.empty')}</p>
+            <Link href="/" className="rounded-xl px-5 py-2.5 text-sm font-bold text-white" style={{ background: '#00b2fc' }}>{t('myWork.startCreating')}</Link>
           </div>
         ) : (
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
             {items.map((c) => {
-              const src = SOURCE[c.templateId];
-              const badge = src ? (zh ? src.zh : src.en) : null;
-              const title = c.prompt || (zh ? '未命名' : 'Untitled');
-              const time = new Date(c.createdAt).toLocaleString();
+              const sourceKey = c.templateId === 'lazynext-studio' ? 'myWork.sourceAd' : c.templateId === 'drama-studio' ? 'myWork.sourceDrama' : c.templateId === 'ad-reference' ? 'myWork.sourceRemake' : null;
+              const badge = sourceKey ? t(sourceKey) : null;
+              const title = c.prompt || t('myWork.untitled');
+              const time = formatDateTime(c.createdAt, locale);
               const url = firstOutput(c);
 
               // ★ drama work folder: click into standalone detail page to see characters/each scene (first frame + video)/final. Cover takes first portrait → scene image → final video.
@@ -144,7 +144,7 @@ export default function MyWorkPage() {
                 const total = f.scenes?.length || 0;
                 const doneVids = f.scenes?.filter((s) => s.videoUrl).length || 0;
                 const hasFinal = !!url;
-                const stateLabel = hasFinal ? (zh ? '✓ 成片已完成' : '✓ Final ready') : total ? (zh ? `制作中 · ${doneVids}/${total} 镜` : `${doneVids}/${total} shots`) : (zh ? '制作中' : 'In progress');
+                const stateLabel = hasFinal ? t('myWork.finalReady') : total ? t('myWork.shotsProgress', { done: doneVids, total }) : t('myWork.inProgress');
                 return (
                   <button key={c.id} onClick={() => router.push(`/my-work/${c.id}`)} className="group overflow-hidden rounded-2xl border border-white/10 bg-black/30 text-left">
                     <div className="relative aspect-[9/16] w-full">
@@ -154,12 +154,12 @@ export default function MyWorkPage() {
                       ) : (
                         <div className="grid h-full w-full place-items-center text-4xl">🎬</div>
                       )}
-                      <span className="absolute left-2 top-2 rounded bg-black/60 px-2 py-0.5 text-[10px] font-medium text-white/90">{zh ? 'AI 剧情' : 'Drama'}</span>
-                      <span className="absolute right-2 top-2 inline-flex items-center gap-1 rounded bg-black/60 px-2 py-0.5 text-[10px] font-medium text-white/90"><Film className="h-3 w-3" />{zh ? '文件夹' : 'Folder'}</span>
+                      <span className="absolute left-2 top-2 rounded bg-black/60 px-2 py-0.5 text-[10px] font-medium text-white/90">{t('myWork.drama')}</span>
+                      <span className="absolute right-2 top-2 inline-flex items-center gap-1 rounded bg-black/60 px-2 py-0.5 text-[10px] font-medium text-white/90"><Film className="h-3 w-3" />{t('myWork.folder')}</span>
                       <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 to-transparent p-2">
                         <div className="text-[11px] font-medium text-white/90">{stateLabel}</div>
                       </div>
-                      <div className="absolute inset-0 grid place-items-center bg-black/20 opacity-0 transition group-hover:opacity-100"><div className="rounded-full bg-black/60 px-3 py-1.5 text-xs text-white">{zh ? '打开文件夹' : 'Open folder'}</div></div>
+                      <div className="absolute inset-0 grid place-items-center bg-black/20 opacity-0 transition group-hover:opacity-100"><div className="rounded-full bg-black/60 px-3 py-1.5 text-xs text-white">{t('myWork.openFolder')}</div></div>
                     </div>
                     <div className="p-3">
                       <div className="truncate text-xs font-medium">{f.title || title}</div>
@@ -180,7 +180,7 @@ export default function MyWorkPage() {
                       )}
                       <div className="absolute inset-0 grid place-items-center gap-2 bg-black/50">
                         <Loader2 className="h-8 w-8 animate-spin" style={{ color: '#22d3ee' }} />
-                        <span className="text-xs font-medium text-white/85">{zh ? '生成中…' : 'Generating…'}</span>
+                        <span className="text-xs font-medium text-white/85">{t('myWork.generatingDots')}</span>
                       </div>
                       {badge && <span className="absolute left-2 top-2 rounded bg-black/60 px-2 py-0.5 text-[10px] font-medium text-white/90">{badge}</span>}
                     </div>
@@ -203,7 +203,7 @@ export default function MyWorkPage() {
                       )}
                       <div className="absolute inset-0 grid place-items-center gap-2 bg-black/40">
                         <div className="grid h-11 w-11 place-items-center rounded-full bg-red-500/15"><X className="h-5 w-5 text-red-400" /></div>
-                        <span className="text-xs font-medium text-red-300/90">{zh ? '生成失败' : 'Failed'}</span>
+                        <span className="text-xs font-medium text-red-300/90">{t('myWork.failed')}</span>
                       </div>
                       {badge && <span className="absolute left-2 top-2 rounded bg-black/60 px-2 py-0.5 text-[10px] font-medium text-white/90">{badge}</span>}
                     </div>

@@ -1,10 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useSession, signIn } from 'next-auth/react';
 import type { CreditPack } from '@/config/pricing';
+import { CURRENCIES, displayPrice } from '@/config/pricing';
 import { useI18n } from '@/i18n/provider';
-import { Check, Coins, Loader2, Gift } from 'lucide-react';
+import { formatNumber } from '@/lib/i18n-format';
+import { Check, Coins, Loader2, Gift, DollarSign } from 'lucide-react';
 
 export default function PricingClient({
   packs,
@@ -18,7 +20,17 @@ export default function PricingClient({
   const [busy, setBusy] = useState<string | null>(null);
   const [code, setCode] = useState('');
   const [msg, setMsg] = useState<{ text: string; ok: boolean } | null>(null);
-  const zh = locale === 'zh';
+
+  // ── Currency switcher: read from cookie (set by geo-detection layer) ──
+  const [currency, setCurrency] = useState<string>('USD');
+  useEffect(() => {
+    const match = document.cookie.match(/(?:^|;\s*)currency=([^;]+)/);
+    if (match) setCurrency(decodeURIComponent(match[1]));
+  }, []);
+  function changeCurrency(c: string) {
+    setCurrency(c);
+    document.cookie = `currency=${c}; path=/; max-age=31536000; samesite=lax`;
+  }
 
   async function buy(packId: string) {
     if (!session) return signIn('google');
@@ -37,13 +49,11 @@ export default function PricingClient({
       }
       console.error('[pricing] checkout failed:', j);
       setMsg({
-        text: zh
-          ? `发起支付失败:${j.error || 'checkout_failed'}${j.detail ? ' — ' + String(j.detail).slice(0, 200) : ''}`
-          : `Checkout failed: ${j.error || 'unknown'}${j.detail ? ' — ' + String(j.detail).slice(0, 200) : ''}`,
+        text: t('pricing.checkoutFailed', { error: `${j.error || 'unknown'}${j.detail ? ' — ' + String(j.detail).slice(0, 200) : ''}` }),
         ok: false,
       });
     } catch (e) {
-      setMsg({ text: (zh ? '网络错误:' : 'Network error: ') + String(e), ok: false });
+      setMsg({ text: t('pricing.networkError', { error: String(e) }), ok: false });
     } finally {
       setBusy(null);
     }
@@ -65,10 +75,10 @@ export default function PricingClient({
         setCode('');
         window.dispatchEvent(new Event('lazynext:credits'));
       } else {
-        setMsg({ text: `${zh ? '兑换失败' : 'Error'}: ${j.error || 'invalid code'}`, ok: false });
+        setMsg({ text: t('pricing.redeemFailed', { error: j.error || 'invalid code' }), ok: false });
       }
     } catch (e) {
-      setMsg({ text: (zh ? '网络错误:' : 'Network error: ') + String(e), ok: false });
+      setMsg({ text: t('pricing.networkError', { error: String(e) }), ok: false });
     } finally {
       setBusy(null);
     }
@@ -84,7 +94,7 @@ export default function PricingClient({
             <img src="/lazynext-mark.png" alt="Lazynext" className="h-7 w-7 rounded-lg" />
             <b className="text-sm tracking-tight">Lazynext</b>
           </a>
-          <a href="/" className="text-xs text-white/60 hover:text-white transition">{zh ? '← 全部应用' : '← All apps'}</a>
+          <a href="/" className="text-xs text-white/60 hover:text-white transition">{t('pricing.allApps')}</a>
         </div>
       </div>
 
@@ -92,6 +102,23 @@ export default function PricingClient({
         <div className="text-center pt-6">
           <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">{t('pricing.title')}</h1>
           <p className="mt-3 text-white/50">{t('pricing.subtitle')}</p>
+
+          {/* ── Currency switcher ── */}
+          <div className="mt-5 inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2">
+            <DollarSign className="h-4 w-4 text-white/50" />
+            <select
+              aria-label="Currency"
+              value={currency}
+              onChange={(e) => changeCurrency(e.target.value)}
+              className="cursor-pointer appearance-none bg-transparent text-sm font-medium text-white outline-none"
+            >
+              {CURRENCIES.map((c) => (
+                <option key={c.code} value={c.code} className="bg-neutral-900 text-white">
+                  {c.symbol} {c.code} — {c.name}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
 
         {msg && (
@@ -99,39 +126,47 @@ export default function PricingClient({
         )}
 
         <div className="grid gap-6 sm:grid-cols-3">
-          {packs.map((p) => (
-            <div
-              key={p.id}
-              className={`relative flex flex-col rounded-2xl border p-7 ${p.highlight ? 'border-[#00b2fc] ring-2 ring-[#00b2fc]/40 bg-white/[0.04]' : 'border-white/[0.08] bg-white/[0.03]'}`}
-            >
-              {p.highlight && (
-                <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full px-3 py-1 text-xs font-semibold text-white shadow-lg" style={{ background: '#00b2fc' }}>
-                  {t('pricing.popular')}
-                </span>
-              )}
-              <div className="text-sm font-medium text-white/50">{p.name}</div>
-              <div className="mt-2 text-4xl font-bold">${p.priceUsd}</div>
-              <div className="mt-1 flex items-center gap-1.5 text-sm font-medium" style={{ color: '#22d3ee' }}>
-                <Coins className="h-4 w-4" />
-                {p.credits.toLocaleString()} {t('pricing.credits')}
+          {packs.map((p) => {
+            const dp = displayPrice(p.priceUsd, currency);
+            return (
+              <div
+                key={p.id}
+                className={`relative flex flex-col rounded-2xl border p-7 ${p.highlight ? 'border-[#00b2fc] ring-2 ring-[#00b2fc]/40 bg-white/[0.04]' : 'border-white/[0.08] bg-white/[0.03]'}`}
+              >
+                {p.highlight && (
+                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full px-3 py-1 text-xs font-semibold text-white shadow-lg" style={{ background: '#00b2fc' }}>
+                    {t('pricing.popular')}
+                  </span>
+                )}
+                <div className="text-sm font-medium text-white/50">{p.name}</div>
+                <div className="mt-2 text-4xl font-bold">
+                  {dp.symbol}{dp.formatted}
+                </div>
+                <div className="mt-1 text-xs text-white/40">
+                  {currency === 'USD' ? '' : `≈ $${p.priceUsd} USD`}
+                </div>
+                <div className="mt-1 flex items-center gap-1.5 text-sm font-medium" style={{ color: '#22d3ee' }}>
+                  <Coins className="h-4 w-4" />
+                  {formatNumber(p.credits, locale)} {t('pricing.credits')}
+                </div>
+                <ul className="mt-5 space-y-2 text-sm text-white/60">
+                  <li className="flex gap-2"><Check className="h-4 w-4 shrink-0" style={{ color: '#00b2fc' }} />~{formatNumber(Math.floor(p.credits / 5), locale)}{t('pricing.featGen')}</li>
+                  <li className="flex gap-2"><Check className="h-4 w-4 shrink-0" style={{ color: '#00b2fc' }} />{t('pricing.featApps')}</li>
+                  <li className="flex gap-2"><Check className="h-4 w-4 shrink-0" style={{ color: '#00b2fc' }} />{t('pricing.featExpire')}</li>
+                </ul>
+                {mode === 'checkout' && (
+                  <button
+                    onClick={() => buy(p.id)}
+                    disabled={busy === p.id}
+                    className="mt-6 w-full rounded-xl px-4 py-2.5 text-sm font-bold text-white transition hover:brightness-110 disabled:opacity-50"
+                    style={{ background: p.highlight ? '#00b2fc' : 'rgba(255,255,255,0.08)' }}
+                  >
+                    {busy === p.id ? <Loader2 className="mx-auto h-4 w-4 animate-spin" /> : t('pricing.buy')}
+                  </button>
+                )}
               </div>
-              <ul className="mt-5 space-y-2 text-sm text-white/60">
-                <li className="flex gap-2"><Check className="h-4 w-4 shrink-0" style={{ color: '#00b2fc' }} />~{Math.floor(p.credits / 5).toLocaleString()}{t('pricing.featGen')}</li>
-                <li className="flex gap-2"><Check className="h-4 w-4 shrink-0" style={{ color: '#00b2fc' }} />{t('pricing.featApps')}</li>
-                <li className="flex gap-2"><Check className="h-4 w-4 shrink-0" style={{ color: '#00b2fc' }} />{t('pricing.featExpire')}</li>
-              </ul>
-              {mode === 'checkout' && (
-                <button
-                  onClick={() => buy(p.id)}
-                  disabled={busy === p.id}
-                  className="mt-6 w-full rounded-xl px-4 py-2.5 text-sm font-bold text-white transition hover:brightness-110 disabled:opacity-50"
-                  style={{ background: p.highlight ? '#00b2fc' : 'rgba(255,255,255,0.08)' }}
-                >
-                  {busy === p.id ? <Loader2 className="mx-auto h-4 w-4 animate-spin" /> : t('pricing.buy')}
-                </button>
-              )}
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         {mode === 'redeem' && (

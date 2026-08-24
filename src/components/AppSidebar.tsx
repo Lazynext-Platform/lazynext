@@ -28,7 +28,7 @@ function activeClass(active: boolean) {
 
 export function AppSidebar() {
   const pathname = usePathname();
-  const { t, appText } = useI18n();
+  const { t, appText, locale } = useI18n();
 
   const byCat = useMemo(() => {
     const m: Record<AppCat, NavApp[]> = { production: [], nocreative: [], incomplete: [] };
@@ -73,8 +73,8 @@ export function AppSidebar() {
                             <Icon className="h-4 w-4" />
                           </span>
                           <span className="min-w-0">
-                            <span className="block truncate text-sm font-semibold">{isFeatured(app.href) ? '⭐ ' : ''}{appTitle(app.id, text.title)}</span>
-                            <span className="mt-0.5 block line-clamp-2 text-xs leading-4 text-neutral-400">{appDesc(app.id, text.description)}</span>
+                            <span className="block truncate text-sm font-semibold">{isFeatured(app.href) ? '⭐ ' : ''}{appTitle(app.id, text.title, locale)}</span>
+                            <span className="mt-0.5 block line-clamp-2 text-xs leading-4 text-neutral-400">{appDesc(app.id, text.description, locale)}</span>
                           </span>
                         </Link>
                       );

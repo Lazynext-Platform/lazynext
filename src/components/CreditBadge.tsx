@@ -4,12 +4,15 @@ import { useSession } from 'next-auth/react';
 import { useCallback, useEffect, useState } from 'react';
 import { Coins } from 'lucide-react';
 import { useMounted } from '@/lib/use-mounted';
+import { useI18n } from '@/i18n/provider';
+import { formatNumber } from '@/lib/i18n-format';
 
 // Credit balance badge in the top-right of the immersive dark shell: reads /api/me and listens
 // for the 'lazynext:credits' event to refresh after each charge. Hidden when signed out. Click to
 // top up on the pricing page.
 export function CreditBadge() {
   const { data: session } = useSession();
+  const { locale } = useI18n();
   const [credits, setCredits] = useState<number | null>(null);
   const mounted = useMounted();
 
@@ -41,7 +44,7 @@ export function CreditBadge() {
       className="flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-white/15"
     >
       <Coins className="h-3.5 w-3.5" style={{ color: '#d1fe17' }} />
-      {credits === null ? '·' : credits.toLocaleString()}
+      {credits === null ? '·' : formatNumber(credits, locale)}
     </a>
   );
 }

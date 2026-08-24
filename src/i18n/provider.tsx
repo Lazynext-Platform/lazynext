@@ -1,7 +1,7 @@
 'use client';
 
 import { createContext, useCallback, useContext, useEffect, useState } from 'react';
-import { LOCALES, type Locale, messages, appMessages } from './messages';
+import { LOCALES, RTL_LOCALES, type Locale, messages, appMessages } from './messages';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 function get(obj: any, path: string): any {
@@ -46,6 +46,16 @@ export function I18nProvider({ children, initialLocale }: { children: React.Reac
       localStorage.setItem('locale', l);
       document.cookie = `locale=${l}; path=/; max-age=31536000; samesite=lax`;
       document.documentElement.lang = l;
+      document.documentElement.dir = RTL_LOCALES.has(l) ? 'rtl' : 'ltr';
+      // Persist to user's DB preferences (fire-and-forget; only if logged in)
+      // Check for next-auth session cookie to avoid 401 console noise when logged out
+      if (typeof document !== 'undefined' && document.cookie.includes('next-auth.session-token=')) {
+        fetch('/api/me/preferences', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ locale: l }),
+        }).catch(() => {});
+      }
     } catch {
       /* ignore */
     }

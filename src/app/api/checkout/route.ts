@@ -1,8 +1,10 @@
 import { NextResponse } from 'next/server';
+import { cookies } from 'next/headers';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { paymentProvider } from '@/lib/payments';
 import { getPack } from '@/config/pricing';
+import { LOCALES, type Locale } from '@/i18n/messages';
 
 export async function POST(req: Request) {
   const session = await getServerSession(authOptions);
@@ -17,12 +19,22 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'checkout_not_enabled' }, { status: 400 });
 
   const origin = req.headers.get('origin') || process.env.NEXTAUTH_URL || '';
+
+  // ── Global: gather locale/country/currency from cookies (set by the geo-detection layer) ──
+  const localeCookie = cookies().get('locale')?.value;
+  const locale = (LOCALES as readonly string[]).includes(localeCookie || '') ? (localeCookie as Locale) : 'en';
+  const country = cookies().get('country')?.value || undefined;
+  const currency = cookies().get('currency')?.value || undefined;
+
   try {
     const { url } = await provider.createCheckout({
       userId: session.user.id,
       email: session.user.email,
       pack,
       origin,
+      locale,
+      country,
+      currency,
     });
     return NextResponse.json({ url });
   } catch (e) {

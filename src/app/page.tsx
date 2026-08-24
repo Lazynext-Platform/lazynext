@@ -62,9 +62,9 @@ export default function Home() {
       <div className="text-center pt-14 pb-12 px-6">
         <div className="text-[11px] uppercase tracking-[0.24em] text-white/50 font-medium mb-3" style={{ fontFamily: 'var(--font-grotesk), "Space Grotesk", sans-serif' }}>Lazynext</div>
         <h1 className="font-bold uppercase leading-[1.06] tracking-[-0.03em] text-[clamp(38px,5.2vw,56px)] text-white/90" style={{ fontFamily: 'var(--font-grotesk), "Space Grotesk", system-ui, sans-serif' }}>
-          {locale === 'zh' ? (<>你的 AI<br /><span style={{ color: '#00b2fc' }}>创作工作室</span></>) : (<>Your AI<br /><span style={{ color: '#00b2fc' }}>Creative Studio</span></>)}
+          {t('home.heroTitle')}<br /><span style={{ color: '#00b2fc' }}>{t('home.heroTitleHl')}</span>
         </h1>
-        <p className="mx-auto mt-5 max-w-xl text-white/50">{locale === 'zh' ? `${featured.length} 个精品应用 · 上传即出片 · 每一步真调 Atlas` : `${featured.length} premium apps · upload and ship · every step powered by Atlas Cloud`}</p>
+        <p className="mx-auto mt-5 max-w-xl text-white/50">{t('home.heroSubtitle', { n: featured.length })}</p>
       </div>
 
       {/* Premium app cards */}
@@ -83,7 +83,7 @@ export default function Home() {
                   <span className="flex h-12 w-12 items-center justify-center rounded-xl transition duration-300 group-hover:scale-110" style={{ background: 'rgba(0,178,252,0.15)', color: '#22d3ee' }}>
                     <Icon className="h-6 w-6" />
                   </span>
-                  <span className="rounded-full px-2.5 py-1 text-[10px] font-semibold" style={{ background: 'rgba(0,178,252,0.15)', color: '#67e8f9' }}>⭐ {locale === 'zh' ? '精品' : 'Featured'}</span>
+                  <span className="rounded-full px-2.5 py-1 text-[10px] font-semibold" style={{ background: 'rgba(0,178,252,0.15)', color: '#67e8f9' }}>⭐ {t('home.featured')}</span>
                 </div>
                 <h3 className="mt-4 font-bold tracking-tight">{appTitle(app.id, a.title, locale)}</h3>
                 <p className="mt-1 text-sm text-white/50 leading-relaxed">{appDesc(app.id, a.description, locale)}</p>

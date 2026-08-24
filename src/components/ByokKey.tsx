@@ -9,8 +9,7 @@ import { getByokKey, setByokKey, BYOK_EVENT } from '@/lib/byok';
  * deduct no site credits.
  */
 export function ByokKey({ className = '' }: { className?: string }) {
-  const { locale } = useI18n();
-  const zh = locale === 'zh';
+  const { t } = useI18n();
   const [open, setOpen] = useState(false);
   const [draft, setDraft] = useState('');
   const [active, setActive] = useState(false);
@@ -41,14 +40,14 @@ export function ByokKey({ className = '' }: { className?: string }) {
       <button
         type="button"
         onClick={openModal}
-        title={zh ? '用自己的 Atlas Key 运行(不扣积分)' : 'Run with your own Atlas key (no credits used)'}
+        title={t('byok.buttonTitle')}
         className={`inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-xs transition ${
           active
             ? 'border-emerald-400/40 bg-emerald-400/10 text-emerald-300'
             : 'border-white/15 bg-white/5 text-white/70 hover:border-white/30 hover:text-white'
         } ${className}`}
       >
-        🔑 {active ? (zh ? '已用自己的 Key' : 'Your key active') : zh ? '用自己的 Key' : 'Use your key'}
+        🔑 {active ? t('byok.keyActive') : t('byok.useKey')}
       </button>
 
       {open && (
@@ -60,11 +59,9 @@ export function ByokKey({ className = '' }: { className?: string }) {
             className="w-full max-w-md rounded-2xl border border-white/10 bg-[#1a1b1e] p-6 text-white shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
-            <h3 className="text-lg font-bold">{zh ? '用自己的 Atlas Key 运行' : 'Bring your own Atlas key'}</h3>
+            <h3 className="text-lg font-bold">{t('byok.title')}</h3>
             <p className="mt-2 text-sm leading-relaxed text-white/60">
-              {zh
-                ? '填入你的 AtlasCloud API Key 后,本站每次生成都会直接计费到你自己的 Atlas 账户,不消耗本站积分。Key 只保存在你当前浏览器,不会上传到我们的服务器。'
-                : 'With your AtlasCloud API key set, every generation is billed directly to your own Atlas account and uses zero site credits. The key is stored only in this browser and is never sent to our servers.'}
+              {t('byok.desc')}
             </p>
             <input
               type="password"
@@ -80,11 +77,11 @@ export function ByokKey({ className = '' }: { className?: string }) {
               rel="noopener noreferrer"
               className="mt-2 inline-block text-xs text-[#22d3ee] hover:underline"
             >
-              {zh ? '没有 Key?去 AtlasCloud 免费获取 ↗' : 'No key? Get one free at AtlasCloud ↗'}
+              {t('byok.getKey')}
             </a>
             <div className="mt-5 flex items-center justify-between gap-3">
               <button type="button" onClick={clear} className="text-xs text-white/40 hover:text-white/70">
-                {zh ? '清除并改用积分' : 'Clear & use credits'}
+                {t('byok.clear')}
               </button>
               <div className="flex gap-2">
                 <button
@@ -92,14 +89,14 @@ export function ByokKey({ className = '' }: { className?: string }) {
                   onClick={() => setOpen(false)}
                   className="rounded-lg border border-white/15 px-3 py-1.5 text-sm text-white/70 hover:text-white"
                 >
-                  {zh ? '取消' : 'Cancel'}
+                  {t('byok.cancel')}
                 </button>
                 <button
                   type="button"
                   onClick={save}
                   className="rounded-lg bg-[#00b2fc] px-4 py-1.5 text-sm font-medium text-white hover:opacity-90"
                 >
-                  {zh ? '保存' : 'Save'}
+                  {t('byok.save')}
                 </button>
               </div>
             </div>

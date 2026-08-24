@@ -45,9 +45,17 @@ const CUSTOM_DESCS: Record<string, Bi> = {
 };
 export function appTitle(id: string, fallbackTitle: string, locale: string = 'en'): string {
   const c = CUSTOM_TITLES[id];
-  return c ? c[locale === 'zh' ? 'zh' : 'en'] : fallbackTitle;
+  if (!c) return fallbackTitle;
+  // For en/zh use the custom override; for all other locales use the
+  // translated fallback from appMessages (which is already locale-specific).
+  if (locale === 'en') return c.en;
+  if (locale === 'zh') return c.zh;
+  return fallbackTitle;
 }
 export function appDesc(id: string, fallbackDesc: string, locale: string = 'en'): string {
   const c = CUSTOM_DESCS[id];
-  return c ? c[locale === 'zh' ? 'zh' : 'en'] : fallbackDesc;
+  if (!c) return fallbackDesc;
+  if (locale === 'en') return c.en;
+  if (locale === 'zh') return c.zh;
+  return fallbackDesc;
 }

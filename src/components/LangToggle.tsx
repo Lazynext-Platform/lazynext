@@ -1,23 +1,25 @@
 'use client';
 
 import { useI18n } from '@/i18n/provider';
+import { LOCALES, LOCALE_NAMES, type Locale } from '@/i18n/messages';
 
-// Language toggle (EN/ZH), default English. Click to switch between en / zh, persisted to localStorage.
+// Language toggle: compact dropdown showing all supported locales.
+// Replaces the old EN/ZH-only toggle with a full locale selector.
 export function LangToggle() {
   const { locale, setLocale } = useI18n();
-  const cur = locale === 'zh' ? 'zh' : 'en';
   return (
-    <div className="flex items-center rounded-full bg-white/10 p-0.5 text-xs font-medium" title="Switch language / 切换语言">
-      {(['en', 'zh'] as const).map((l) => (
-        <button
-          key={l}
-          onClick={() => setLocale(l)}
-          className={`rounded-full px-2.5 py-1.5 transition ${cur === l ? 'text-white' : 'text-white/50 hover:text-white/80'}`}
-          style={cur === l ? { background: '#00b2fc' } : undefined}
-        >
-          {l === 'en' ? 'EN' : '中'}
-        </button>
+    <select
+      aria-label="Language"
+      value={locale}
+      onChange={(e) => setLocale(e.target.value as Locale)}
+      className="cursor-pointer appearance-none rounded-full bg-white/10 px-3 py-1.5 text-xs font-medium text-white outline-none transition hover:bg-white/20"
+      title="Switch language"
+    >
+      {LOCALES.map((l) => (
+        <option key={l} value={l} className="bg-neutral-900 text-white">
+          {LOCALE_NAMES[l]}
+        </option>
       ))}
-    </div>
+    </select>
   );
 }

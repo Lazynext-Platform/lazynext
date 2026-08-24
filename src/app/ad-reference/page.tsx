@@ -15,9 +15,9 @@ import { videoCredits } from '@/lib/video-pricing';
 
 const GROTESK = 'var(--font-grotesk), "Space Grotesk", system-ui, sans-serif';
 const VOICES = [
-  { id: 'hpp4J3VqNfWAUOO0d1Us', label: 'Female · Bright' },
-  { id: 'EXAVITQu4vr4xnSDxMaL', label: 'Female · Warm' },
-  { id: 'CwhRBWXzGAHq8TQ4Fs17', label: 'Male · Relaxed' },
+  { id: 'hpp4J3VqNfWAUOO0d1Us', labelKey: 'adRef.voiceFemaleBright' },
+  { id: 'EXAVITQu4vr4xnSDxMaL', labelKey: 'adRef.voiceFemaleWarm' },
+  { id: 'CwhRBWXzGAHq8TQ4Fs17', labelKey: 'adRef.voiceMaleRelaxed' },
 ];
 // voice (TTS dubbing) uses fixed COST; edit/motion (video) and lipsync use dynamic videoCredits.
 const AD_COSTS = { edit: 15, character: 15, voice: 10, lipsync: 2 };
@@ -40,14 +40,12 @@ async function postJson(url: string, body: unknown) {
   if (!r.ok) throw new Error(j.error ? `${j.error}${j.detail ? ': ' + String(j.detail).slice(0, 160) : ''}` : `HTTP ${r.status}`);
   return j;
 }
-function adErrText(msg: string, locale: string) {
+function adErrText(msg: string, t: (k: string) => string) {
   if (msg === 'insufficient_credits' || msg.startsWith('insufficient_credits')) {
-    return locale === 'zh' ? '积分不足,请前往定价页充值。' : 'Not enough credits. Please top up on the pricing page.';
+    return t('adRef.errInsufficientCredits');
   }
   if (msg === 'media_url_not_public' || msg.startsWith('media_url_not_public')) {
-    return locale === 'zh'
-      ? '当前上传后的媒体地址不是公网地址,Atlas 无法抓取。请在已部署的线上域名测试,或配置 PUBLIC_MEDIA_BASE_URL / NEXTAUTH_URL 为公网地址后重试。'
-      : 'The uploaded media URL is not public, so Atlas cannot fetch it. Use the deployed public domain or configure PUBLIC_MEDIA_BASE_URL / NEXTAUTH_URL.';
+    return t('adRef.errMediaUrlNotPublic');
   }
   return msg;
 }
@@ -119,7 +117,7 @@ const EXAMPLE_REF_VIDEOS = [
 const AD_REF_SESSION_KEY = 'adref-session-v1';
 
 export default function AdReferencePage() {
-  const { locale } = useI18n();
+  const { t } = useI18n();
   const byokActive = useByokActive();
   const { status } = useSession();
   const mounted = useMounted();
@@ -208,16 +206,16 @@ export default function AdReferencePage() {
     setError('');
     try {
       if (kind === 'video') {
-        if (file.size > 60_000_000) throw new Error(locale === 'zh' ? '视频必须小于 60MB' : 'Video must be under 60MB');
+        if (file.size > 60_000_000) throw new Error(t('adRef.videoTooLarge'));
         const dur = await readVideoDuration(file);
-        if (dur > 31) throw new Error(locale === 'zh' ? `参考视频必须 ≤30 秒(当前 ${Math.round(dur)} 秒)` : `Reference video must be ≤30s (currently ${Math.round(dur)}s)`);
-        setBusy(locale === 'zh' ? '正在上传参考视频…' : 'Uploading reference video…');
+        if (dur > 31) throw new Error(t('adRef.videoTooLong', { n: Math.round(dur) }));
+        setBusy(t('adRef.uploadingRefVideo'));
         const url = await uploadFile(file);
         setRefVideo({ url, preview: URL.createObjectURL(file) });
         setRefVideoSeconds(dur || 0); // record reference video duration, edit/character/motion billing based on it
       } else {
-        if (file.size > 10_000_000) throw new Error(locale === 'zh' ? '图片必须小于 10MB' : 'Image must be under 10MB');
-        setBusy(kind === 'product' ? (locale === 'zh' ? '正在上传产品图…' : 'Uploading product image…') : (locale === 'zh' ? '正在上传出镜人照片…' : 'Uploading talent photo…'));
+        if (file.size > 10_000_000) throw new Error(t('adRef.imageTooLarge'));
+        setBusy(kind === 'product' ? t('adRef.uploadingProduct') : t('adRef.uploadingTalent'));
         const url = await uploadFile(file);
         const slot = { url, preview: URL.createObjectURL(file) };
         if (kind === 'product') setProduct(slot); else setAvatar(slot);
@@ -250,7 +248,7 @@ export default function AdReferencePage() {
         last = e;
         const m = String((e as Error)?.message || e);
         if (/insufficient_credits|media_url_not_public|unauthorized|invalid_/.test(m)) throw e;
-        if (i < retries) { setBusy(locale === 'zh' ? `生成失败,自动重试中…(第 ${i + 1}/${retries} 次)` : `Generation failed, retrying… (${i + 1}/${retries})`); await new Promise((r2) => setTimeout(r2, 2000)); }
+        if (i < retries) { setBusy(t('adRef.retryFailed', { i: i + 1, n: retries })); await new Promise((r2) => setTimeout(r2, 2000)); }
       }
     }
     throw last;
@@ -264,12 +262,12 @@ export default function AdReferencePage() {
     try {
       const currentCredits = await refreshCredits();
       if (!byokActive && currentCredits !== null && currentCredits < adEst) {
-        setError(locale === 'zh' ? `积分不足:本次预计需要 ${adEst} 积分,当前只有 ${currentCredits}。` : `Not enough credits: this run needs ${adEst}, you have ${currentCredits}.`);
+        setError(t('adRef.insufficientCreditsRun', { need: adEst, have: currentCredits }));
         return;
       }
       // Work page immediately shows this "generating" item
       try {
-        const st = await postJson('/api/creations/start', { type: 'ad-reference', title: productNote.trim() || extraNote.trim() || '爆款广告复刻' });
+        const st = await postJson('/api/creations/start', { type: 'ad-reference', title: productNote.trim() || extraNote.trim() || t('adRef.adRemakeTitle') });
         cid = st.id;
       } catch { /* placeholder failure doesn't block generation */ }
       let final = refVideo.url;
@@ -333,7 +331,7 @@ export default function AdReferencePage() {
       try {
         await postJson('/api/ad-reference/save', {
           outputUrl: final,
-          title: productNote.trim() || extraNote.trim() || (locale === 'zh' ? '爆款广告复刻' : 'Ad reference remake'),
+          title: productNote.trim() || extraNote.trim() || t('adRef.adRemakeTitle'),
           thumbnail: product?.url || avatar?.url || '',
           creationId: cid,
         });
@@ -341,7 +339,7 @@ export default function AdReferencePage() {
       setResult(final);
       setStep('done');
     } catch (e) {
-      setError(adErrText(String((e as Error).message || e), locale));
+      setError(adErrText(String((e as Error).message || e), t));
       setStep('idle');
       // Work page marks this placeholder as "failed"
       if (cid) postJson(`/api/creations/${cid}`, { status: 'failed', error: String((e as Error).message || e) }).catch(() => {});
@@ -352,10 +350,10 @@ export default function AdReferencePage() {
 
   const stepLabel: Record<Step, string> = {
     idle: '', done: '',
-    character: locale === 'zh' ? '换脸方式切换中:用动作迁移让你的人物做原片动作…约需 2–4 分钟' : 'Switching method: animating your talent with the reference motion… about 2–4 min',
-    edit: locale === 'zh' ? '正在替换出镜人与产品(保留原片运镜/节奏)…约需 1–4 分钟' : 'Swapping presenter & product (keeping original motion/pacing)… about 1–4 min',
-    voice: locale === 'zh' ? '③ 正在生成新配音…' : '③ Generating new voiceover…',
-    lipsync: locale === 'zh' ? '④ 正在为新配音对口型…' : '④ Lip-syncing the new voiceover…',
+    character: t('adRef.stepCharacter'),
+    edit: t('adRef.stepEdit'),
+    voice: t('adRef.stepVoice'),
+    lipsync: t('adRef.stepLipsync'),
   };
 
   // Top-level hydration gate: first frame renders a uniform empty skeleton, avoiding session/locale SSR≠client divergence (#418).
@@ -366,18 +364,16 @@ export default function AdReferencePage() {
         <Link href="/" className="text-white/40 text-sm hover:text-white/70">← Lazynext</Link>
         <div className="mt-6 mb-2 text-[11px] uppercase tracking-[0.24em] text-white/50 font-medium" style={{ fontFamily: GROTESK }}>Reference to Ad</div>
         <h1 className="font-bold uppercase leading-[1.1] tracking-[-0.03em] text-[clamp(30px,4.4vw,46px)] text-white/90" style={{ fontFamily: GROTESK }}>
-          {locale === 'zh' ? '复刻任意爆款广告' : 'Remake Any Viral Ad'}
+          {t('adRef.title')}
         </h1>
         <p className="mt-3 max-w-xl text-white/50 text-[15px]">
-          {locale === 'zh'
-            ? '粘贴一条爆款广告,把它变成你自己的——同样的 hook、同样的节奏能量,卖你的产品。我们直接编辑原视频:场景、运镜、节奏全部保留,只替换出镜人、产品和声音。'
-            : 'Paste a viral ad and make it yours — same hook, same energy, selling your product. We edit the original video directly: scene, camera work, and pacing all stay, we only swap the talent, product, and voice.'}
+          {t('adRef.desc')}
         </p>
 
         <div className="mt-8 grid gap-6 lg:grid-cols-[420px_1fr]">
           {/* Left: input panel */}
           <div className="rounded-2xl p-5" style={{ background: '#1c1e21' }}>
-            <div className="text-white/60 text-xs uppercase tracking-wider mb-2" style={{ fontFamily: GROTESK }}>{locale === 'zh' ? '参考广告视频' : 'Reference Ad Video'}</div>
+            <div className="text-white/60 text-xs uppercase tracking-wider mb-2" style={{ fontFamily: GROTESK }}>{t('adRef.refAdVideo')}</div>
             {refVideo ? (
               <div className="relative w-full rounded-xl border border-white/15 bg-white/[0.03] p-2">
                 {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
@@ -385,11 +381,11 @@ export default function AdReferencePage() {
                 <div className="mt-2 flex items-center gap-2">
                   <button onClick={() => videoInput.current?.click()}
                     className="flex-1 rounded-lg border border-white/15 px-3 py-1.5 text-xs text-white/70 hover:border-white/30 transition">
-                    {locale === 'zh' ? '换一个视频' : 'Replace video'}
+                    {t('adRef.replaceVideo')}
                   </button>
-                  <button onClick={() => setRefVideo(null)} title={locale === 'zh' ? '移除' : 'Remove'}
+                  <button onClick={() => setRefVideo(null)} title={t('adRef.remove')}
                     className="rounded-lg border border-white/15 px-3 py-1.5 text-xs text-white/70 hover:border-red-400/60 hover:text-red-300 transition">
-                    ✕ {locale === 'zh' ? '移除' : 'Remove'}
+                    ✕ {t('adRef.remove')}
                   </button>
                 </div>
               </div>
@@ -399,7 +395,7 @@ export default function AdReferencePage() {
                 className="w-full rounded-xl border border-dashed border-white/15 bg-white/[0.03] px-4 py-5 text-left hover:border-white/30 transition"
               >
                 <div>
-                  <div className="text-white/90 text-sm font-medium">{locale === 'zh' ? '上传参考广告视频' : 'Upload reference ad video'}</div>
+                  <div className="text-white/90 text-sm font-medium">{t('adRef.uploadRefVideo')}</div>
                   <div className="text-white/40 text-xs mt-1">mp4/mov · ≤30s · ≤60MB</div>
                 </div>
               </button>
@@ -408,16 +404,16 @@ export default function AdReferencePage() {
               onChange={(e) => { onPick('video', e.target.files?.[0]); e.target.value = ''; }} />
 
             <div className="mt-4 grid grid-cols-2 gap-3">
-              {([['product', product, productInput, 'PRODUCT', 'Your product photo'], ['avatar', avatar, avatarInput, 'AVATAR', 'New talent photo']] as const).map(([kind, slot, ref, label, hint]) => (
+              {([['product', product, productInput, t('adRef.product'), t('adRef.productHint')], ['avatar', avatar, avatarInput, t('adRef.talent'), t('adRef.talentHint')]] as const).map(([kind, slot, ref, label, hint]) => (
                 <div key={kind}>
-                  <div className="text-white/60 text-xs uppercase tracking-wider mb-2" style={{ fontFamily: GROTESK }}>{locale === 'zh' ? (kind === 'product' ? '产品' : '出镜人') : label}</div>
+                  <div className="text-white/60 text-xs uppercase tracking-wider mb-2" style={{ fontFamily: GROTESK }}>{label}</div>
                   <button onClick={() => ref.current?.click()}
                     className="w-full aspect-square rounded-xl border border-dashed border-white/15 bg-white/[0.03] hover:border-white/30 transition overflow-hidden flex items-center justify-center">
                     {slot ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img src={slot.preview} alt="" className="h-full w-full object-cover" />
                     ) : (
-                      <span className="text-white/40 text-xs px-3 text-center">+ {locale === 'zh' ? (kind === 'product' ? '你的产品图' : '新出镜人照片') : hint}<br /><span className="text-white/25">{locale === 'zh' ? '(可选,至少一项)' : '(optional, at least one)'}</span></span>
+                      <span className="text-white/40 text-xs px-3 text-center">+ {hint}<br /><span className="text-white/25">{t('adRef.optionalAtLeastOne')}</span></span>
                     )}
                   </button>
                   <input ref={ref} type="file" accept="image/jpeg,image/png,image/webp" className="hidden"
@@ -426,25 +422,25 @@ export default function AdReferencePage() {
               ))}
             </div>
 
-            <input value={productNote} onChange={(e) => setProductNote(e.target.value)} placeholder={locale === 'zh' ? '产品细节(可选,例如:薄荷绿拍立得相机)' : 'Product details (optional, e.g. mint-green instant camera)'}
+            <input value={productNote} onChange={(e) => setProductNote(e.target.value)} placeholder={t('adRef.productDetails')}
               className="mt-4 w-full rounded-lg bg-white/[0.05] border border-white/10 px-3 py-2 text-sm text-white/90 placeholder:text-white/25 outline-none focus:border-white/25" />
-            <input value={extraNote} onChange={(e) => setExtraNote(e.target.value)} placeholder={locale === 'zh' ? '补充说明(可选)' : 'Extra instructions (optional)'}
+            <input value={extraNote} onChange={(e) => setExtraNote(e.target.value)} placeholder={t('adRef.extraInstructions')}
               className="mt-2 w-full rounded-lg bg-white/[0.05] border border-white/10 px-3 py-2 text-sm text-white/90 placeholder:text-white/25 outline-none focus:border-white/25" />
 
             {/* Voice */}
             <div className="mt-5 rounded-xl bg-white/[0.03] border border-white/10 p-3">
               <label className="flex items-center gap-2 text-sm text-white/80 cursor-pointer">
                 <input type="checkbox" checked={newVoice} onChange={(e) => setNewVoice(e.target.checked)} className="accent-[#00b2fc]" />
-                {locale === 'zh' ? '替换配音与台词(不勾选则保留编辑后的原声)' : 'Replace voice & script (leave unchecked to keep the edited original audio)'}
+                {t('adRef.replaceVoice')}
               </label>
               {newVoice && (
                 <div className="mt-3 space-y-2">
                   <textarea value={script} onChange={(e) => setScript(e.target.value)} rows={3} maxLength={600}
-                    placeholder={locale === 'zh' ? '新台词(推销你的产品)' : 'New script (pitch your product)'}
+                    placeholder={t('adRef.newScript')}
                     className="w-full rounded-lg bg-white/[0.05] border border-white/10 px-3 py-2 text-sm text-white/90 placeholder:text-white/25 outline-none focus:border-white/25 resize-none" />
                   <select value={voiceId} onChange={(e) => setVoiceId(e.target.value)}
                     className="w-full rounded-lg bg-[#26282c] border border-white/10 px-3 py-2 text-sm text-white/90 outline-none">
-                    {VOICES.map((v) => <option key={v.id} value={v.id}>{locale === 'zh' ? ({ 'hpp4J3VqNfWAUOO0d1Us': '女声 · 明亮', 'EXAVITQu4vr4xnSDxMaL': '女声 · 温暖', 'CwhRBWXzGAHq8TQ4Fs17': '男声 · 放松' }[v.id] ?? v.label) : v.label}</option>)}
+                    {VOICES.map((v) => <option key={v.id} value={v.id}>{t(v.labelKey)}</option>)}
                   </select>
                 </div>
               )}
@@ -454,30 +450,28 @@ export default function AdReferencePage() {
               className="mt-5 w-full rounded-xl py-3.5 font-bold uppercase tracking-wide text-[#131416] disabled:opacity-40 transition"
               style={{ fontFamily: GROTESK, background: 'linear-gradient(135deg,#ffd83d,#ff9550)' }}>
               {isGenerating
-                ? (locale === 'zh' ? '生成中…' : 'Generating…')
+                ? t('adRef.generating')
                 : byokActive
-                  ? (locale === 'zh' ? '生成' : 'GENERATE')
+                  ? t('adRef.generate')
                   : !hasEnoughCredits
-                    ? `${locale === 'zh' ? '积分不足' : 'Not enough credits'} · ✦${adEst}`
-                    : `${locale === 'zh' ? '生成' : 'GENERATE'} · ✦${adEst}`}
+                    ? `${t('adRef.notEnoughCredits')} · ✦${adEst}`
+                    : `${t('adRef.generate')} · ✦${adEst}`}
             </button>
             {byokActive ? (
               <div className="mt-2 text-center text-[11px] text-white/35">
-                {locale === 'zh' ? '用自己的 Key · 不扣积分' : 'Your own key · no credits charged'}
+                {t('adRef.byokHint')}
               </div>
             ) : status === 'authenticated' && (
               <div className="mt-2 text-center text-[11px] text-white/35">
-                {locale === 'zh'
-                  ? `本次预计消耗 ${adEst} 积分${credits === null ? '' : `,当前余额 ${credits}。`}`
-                  : `Estimated cost ${adEst} credits${credits === null ? '' : `, current balance ${credits}.`}`}
+                {credits === null ? t('adRef.estimatedCostNoBalance', { n: adEst }) : t('adRef.estimatedCost', { n: adEst, balance: credits })}
               </div>
             )}
-            <div className="mt-2 text-center text-[11px] text-white/30">{locale === 'zh' ? '上传即表示你确认拥有使用该参考视频及肖像的权利' : 'By uploading, you confirm you have the rights to use this reference video and likeness'}</div>
+            <div className="mt-2 text-center text-[11px] text-white/30">{t('adRef.rightsConfirm')}</div>
 
             {/* Example reference ads: placed at the bottom of the form, one-click try when no footage */}
             {!refVideo && (
               <div className="mt-5 border-t border-white/[0.07] pt-4">
-                <div className="text-white/40 text-[11px] mb-2">{locale === 'zh' ? '没有素材?点示例广告一键试用 👇' : 'No footage? Try an example ad 👇'}</div>
+                <div className="text-white/40 text-[11px] mb-2">{t('adRef.noFootage')}</div>
                 <div className="grid grid-cols-2 gap-2">
                   {EXAMPLE_REF_VIDEOS.map((u) => (
                     <button key={u} type="button" onClick={() => setRefVideo({ url: u, preview: u })}
@@ -503,24 +497,24 @@ export default function AdReferencePage() {
             )}
             {step === 'done' && result && (
               <div>
-                <div className="text-white/60 text-xs uppercase tracking-wider mb-3" style={{ fontFamily: GROTESK }}>{locale === 'zh' ? '前 / 后对比' : 'Before / After'}</div>
+                <div className="text-white/60 text-xs uppercase tracking-wider mb-3" style={{ fontFamily: GROTESK }}>{t('adRef.beforeAfter')}</div>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
                     <video src={refVideo?.preview} controls playsInline className="w-full rounded-xl bg-black" />
-                    <div className="mt-1 text-center text-xs text-white/40">{locale === 'zh' ? '原始参考' : 'Original reference'}</div>
+                    <div className="mt-1 text-center text-xs text-white/40">{t('adRef.originalRef')}</div>
                   </div>
                   <div>
                     <video src={result} controls playsInline className="w-full rounded-xl bg-black" />
-                    <div className="mt-1 text-center text-xs text-white/40">{locale === 'zh' ? '你的广告' : 'Your ad'}</div>
+                    <div className="mt-1 text-center text-xs text-white/40">{t('adRef.yourAd')}</div>
                   </div>
                 </div>
-                <a href={result} download className="mt-4 inline-block rounded-lg bg-white/10 px-4 py-2 text-sm text-white/80 hover:bg-white/15">{locale === 'zh' ? '下载视频' : 'Download video'}</a>
+                <a href={result} download className="mt-4 inline-block rounded-lg bg-white/10 px-4 py-2 text-sm text-white/80 hover:bg-white/15">{t('adRef.downloadVideo')}</a>
               </div>
             )}
             {step === 'idle' && !busy && !error && (
               <div className="flex h-full min-h-[380px] flex-col items-center justify-center text-white/30 text-sm">
                 <div className="text-4xl mb-3">🎬</div>
-                {locale === 'zh' ? '上传一条参考广告 + 产品/出镜人,你的复刻成片将显示在这里' : 'Upload a reference ad + product/talent, and your remake appears here'}
+                {t('adRef.emptyState')}
               </div>
             )}
           </div>

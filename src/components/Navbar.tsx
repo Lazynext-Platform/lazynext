@@ -6,10 +6,11 @@ import { useCallback, useEffect, useState } from 'react';
 import { Coins, LogOut } from 'lucide-react';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { useI18n } from '@/i18n/provider';
+import { formatNumber } from '@/lib/i18n-format';
 
 export function Navbar() {
   const { data: session } = useSession();
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const [credits, setCredits] = useState<number | null>(null);
 
   const refresh = useCallback(async () => {
@@ -57,7 +58,7 @@ export function Navbar() {
               </Link>
               <span className="ml-1 inline-flex items-center gap-1.5 rounded-full border border-brand-200 bg-brand-50 px-3 py-1.5 text-sm font-semibold text-brand-700">
                 <Coins className="h-3.5 w-3.5" />
-                {credits === null ? '·' : credits.toLocaleString()}
+                {credits === null ? '·' : formatNumber(credits, locale)}
               </span>
               {session.user?.image && (
                 // eslint-disable-next-line @next/next/no-img-element
