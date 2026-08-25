@@ -1,8 +1,6 @@
 import './globals.css';
 import type { Metadata } from 'next';
-import { getServerSession } from 'next-auth';
 import { cookies } from 'next/headers';
-import { authOptions } from '@/lib/auth';
 import { LOCALES, RTL_LOCALES, type Locale, messages } from '@/i18n/messages';
 import Providers from './providers';
 import { Shell } from '@/components/Shell';
@@ -46,12 +44,9 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  // Read the real session on the server as the SessionProvider initial value so SSR and the
-  // client first frame share the same session state, eliminating the next-auth SSR (loading) vs
-  // client (authenticated) divergence for signed-in users (#418).
-  // catch -> null: even if the SSR DB read fails, don't 500 the whole page; fall back to a
-  // signed-out SSR (the client will fetch on its own).
-  const session = await getServerSession(authOptions).catch(() => null);
+  // Session is fetched client-side via SessionProvider to avoid loading Prisma on every
+  // page request — a critical optimization for Cloudflare Workers' CPU time limit.
+  // The SessionProvider automatically fetches /api/auth/session on the client.
   // Read the user language from a cookie and render that language during SSR, then pass it to the
   // client as the first-frame initial value -> language layer SSR/client consistency.
   const localeCookie = (await cookies()).get('locale')?.value;
@@ -66,7 +61,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
       </head>
       <body className="flex min-h-screen flex-col font-sans" style={{ ['--font-grotesk']: "'Space Grotesk', ui-sans-serif, system-ui, sans-serif" } as React.CSSProperties}>
-        <Providers session={session} initialLocale={initialLocale}>
+        <Providers session={null} initialLocale={initialLocale}>
           <Shell>{children}</Shell>
           <CookieBanner />
         </Providers>
