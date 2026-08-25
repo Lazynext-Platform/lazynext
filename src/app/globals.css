@@ -16,6 +16,38 @@
   border-radius: 2px;
 }
 
+/* Skip-to-content link for keyboard accessibility.
+   Hidden by default, visible on focus. */
+.skip-link {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+  z-index: 100;
+}
+.skip-link:focus,
+.skip-link:focus-visible {
+  position: fixed;
+  top: 0.5rem;
+  left: 0.5rem;
+  width: auto;
+  height: auto;
+  padding: 0.5rem 1rem;
+  margin: 0;
+  overflow: visible;
+  clip: auto;
+  border-radius: 0.25rem;
+  background: #00b2fc;
+  color: #fff;
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
 body {
   @apply bg-neutral-50 text-neutral-900 antialiased;
   background-image:
