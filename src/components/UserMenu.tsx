@@ -31,7 +31,7 @@ export function UserMenu() {
     <div className="relative">
       <button onClick={() => setOpen((v) => !v)} className="flex items-center gap-2 rounded-full bg-white/10 py-1 pl-1 pr-3 hover:bg-white/15 transition">
         {u?.image ? (
-          // eslint-disable-next-line @next/next/no-img-element
+           
           <img src={u.image} alt="" className="h-7 w-7 rounded-full" referrerPolicy="no-referrer" />
         ) : (
           <div className="grid h-7 w-7 place-items-center rounded-full text-xs font-bold text-white" style={{ background: '#00b2fc' }}>{(u?.name || u?.email || 'U')[0]?.toUpperCase()}</div>

@@ -333,7 +333,7 @@ export default function MarketingStudioPage() {
     };
     window.addEventListener('paste', handlePaste);
     return () => window.removeEventListener('paste', handlePaste);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [mounted]);
 
   // A11y: the example preview dialog must be keyboard-dismissable (Escape).
@@ -540,7 +540,7 @@ export default function MarketingStudioPage() {
     const failed = Boolean(asset.preview && brokenAssets[asset.preview]);
     return (
     <div className="relative w-14 h-14 rounded-2xl overflow-hidden border border-white/15 shrink-0">
-      {/* eslint-disable-next-line @next/next/no-img-element */}
+      { }
       <img src={asset.preview} alt={label} onError={() => { if (asset.preview) setBrokenAssets((prev) => (prev[asset.preview!] ? prev : { ...prev, [asset.preview!]: true })); }} className={`w-full h-full object-cover ${failed ? 'opacity-25' : ''}`} />
       {failed && <div className="absolute inset-0 grid place-items-center text-[8px] text-center font-semibold leading-tight px-1" style={{ background: '#b91c1c', color: '#fff' }}>{t('mkStudio.imageFailed')}</div>}
       {asset.uploading && <div className="absolute inset-0 bg-black/60 grid place-items-center"><Loader2 className="w-4 h-4 animate-spin text-white" /></div>}
@@ -564,7 +564,7 @@ export default function MarketingStudioPage() {
       <div className="px-6 sm:px-8 py-5">
         <div className="mx-auto flex w-full max-w-6xl items-center gap-3">
           <a href="/" className="flex items-center gap-2 hover:opacity-80 transition">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
+            { }
             <img src="/lazynext-mark.png" alt="Lazynext" className="h-7 w-7 rounded-lg" />
             <b className="text-sm tracking-tight">Lazynext</b>
           </a>

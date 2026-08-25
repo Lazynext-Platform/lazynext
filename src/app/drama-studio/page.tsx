@@ -271,7 +271,7 @@ export default function DramaStudioPage() {
       }
       if (typeof s.creationId === 'string') setCreationId(s.creationId);
     } catch { /* ignore broken session */ }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [mounted]);
 
   useEffect(() => {
@@ -626,7 +626,7 @@ export default function DramaStudioPage() {
       <div className="px-6 sm:px-8 py-5">
         <div className="mx-auto flex w-full max-w-6xl items-center gap-3">
           <a href="/" className="flex items-center gap-2 hover:opacity-80 transition">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
+            { }
             <img src="/lazynext-mark.png" alt="Lazynext" className="h-7 w-7 rounded-lg" />
             <b className="text-sm tracking-tight">Lazynext</b>
           </a>

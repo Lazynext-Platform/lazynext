@@ -104,7 +104,7 @@ export default function MyWorkPage() {
       <div className="px-6 sm:px-8 py-5">
         <div className="flex items-center gap-4">
           <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
+            { }
             <img src="/lazynext-mark.png" alt="Lazynext" className="h-7 w-7 rounded-lg" />
             <b className="text-sm tracking-tight">Lazynext</b>
           </Link>
@@ -163,7 +163,7 @@ export default function MyWorkPage() {
                   <button key={c.id} onClick={() => router.push(`/my-work/${c.id}`)} className="group overflow-hidden rounded-2xl border border-white/10 bg-black/30 text-left">
                     <div className="relative aspect-[9/16] w-full">
                       {cover ? (
-                        // eslint-disable-next-line @next/next/no-img-element
+                         
                         <img src={cover} alt="" className="h-full w-full object-cover" referrerPolicy="no-referrer" />
                       ) : (
                         <div className="grid h-full w-full place-items-center text-4xl">🎬</div>
@@ -189,7 +189,7 @@ export default function MyWorkPage() {
                   <div key={c.id} className="overflow-hidden rounded-2xl border border-[#00b2fc]/30 bg-black/30">
                     <div className="relative aspect-[9/16] w-full">
                       {c.inputImage && (
-                        // eslint-disable-next-line @next/next/no-img-element
+                         
                         <img src={c.inputImage} alt="" className="h-full w-full object-cover opacity-40" referrerPolicy="no-referrer" />
                       )}
                       <div className="absolute inset-0 grid place-items-center gap-2 bg-black/50">
@@ -212,7 +212,7 @@ export default function MyWorkPage() {
                   <div key={c.id} className="overflow-hidden rounded-2xl border border-red-500/25 bg-black/30">
                     <div className="relative aspect-[9/16] w-full">
                       {c.inputImage && (
-                        // eslint-disable-next-line @next/next/no-img-element
+                         
                         <img src={c.inputImage} alt="" className="h-full w-full object-cover opacity-25" referrerPolicy="no-referrer" />
                       )}
                       <div className="absolute inset-0 grid place-items-center gap-2 bg-black/40">
@@ -238,10 +238,10 @@ export default function MyWorkPage() {
                 <div key={c.id} className="overflow-hidden rounded-2xl border border-white/10 bg-black/30">
                   <button onClick={() => setPlay({ url, kind })} className="group relative block aspect-[9/16] w-full">
                     {c.inputImage ? (
-                      // eslint-disable-next-line @next/next/no-img-element
+                       
                       <img src={c.inputImage} alt="" className="h-full w-full object-cover" referrerPolicy="no-referrer" />
                     ) : kind === 'image' ? (
-                      // eslint-disable-next-line @next/next/no-img-element
+                       
                       <img src={url} alt="" className="h-full w-full object-cover" referrerPolicy="no-referrer" />
                     ) : (
                       <div className="grid h-full w-full place-items-center text-4xl">{kind === 'audio' ? '♪' : '🎬'}</div>
@@ -270,7 +270,7 @@ export default function MyWorkPage() {
           <button onClick={() => setPlay(null)} className="absolute right-5 top-5 text-white/60 hover:text-white"><X className="h-6 w-6" /></button>
           <div className="relative" onClick={(e) => e.stopPropagation()}>
             {play.kind === 'image' ? (
-              // eslint-disable-next-line @next/next/no-img-element
+               
               <img src={play.url} alt="" className="max-h-[85vh] w-auto rounded-xl border border-white/10" referrerPolicy="no-referrer" />
             ) : play.kind === 'audio' ? (
               <div className="rounded-xl border border-white/10 bg-[#1c1e21] p-6"><audio src={play.url} controls autoPlay className="w-[min(80vw,420px)]" /></div>

@@ -19,7 +19,7 @@
 // by the client webpack pass (UnhandledSchemeError), but a bare specifier
 // resolves normally server-side and is aliased to false for the browser bundle
 // (see next.config.mjs). workerd (nodejs_compat) resolves it fine at runtime.
-// eslint-disable-next-line import/no-nodejs-modules
+ 
 import { AsyncLocalStorage } from 'async_hooks';
 
 type RequestCtx = { atlasKey?: string };

@@ -90,7 +90,7 @@ export default function PricingClient({
       <div className="px-6 sm:px-8 py-5">
         <div className="flex items-center gap-4">
           <a href="/" className="flex items-center gap-2 hover:opacity-80 transition">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
+            { }
             <img src="/lazynext-mark.png" alt="Lazynext" className="h-7 w-7 rounded-lg" />
             <b className="text-sm tracking-tight">Lazynext</b>
           </a>

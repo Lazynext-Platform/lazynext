@@ -198,7 +198,7 @@ export default function AdReferencePage() {
       if (typeof s.script === 'string') setScript(s.script);
       if (typeof s.voiceId === 'string' && s.voiceId) setVoiceId(s.voiceId);
     } catch { /* ignore broken session */ }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [mounted]);
 
   useEffect(() => {
@@ -386,7 +386,7 @@ export default function AdReferencePage() {
             <div className="text-white/60 text-xs uppercase tracking-wider mb-2" style={{ fontFamily: GROTESK }}>{t('adRef.refAdVideo')}</div>
             {refVideo ? (
               <div className="relative w-full rounded-xl border border-white/15 bg-white/[0.03] p-2">
-                {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
+                { }
                 <video src={refVideo.preview} className="w-full max-h-52 rounded-lg bg-black object-contain" muted loop autoPlay playsInline />
                 <div className="mt-2 flex items-center gap-2">
                   <button onClick={() => videoInput.current?.click()}
@@ -420,7 +420,7 @@ export default function AdReferencePage() {
                   <button onClick={() => ref.current?.click()}
                     className="w-full aspect-square rounded-xl border border-dashed border-white/15 bg-white/[0.03] hover:border-white/30 transition overflow-hidden flex items-center justify-center">
                     {slot ? (
-                      // eslint-disable-next-line @next/next/no-img-element
+                       
                       <img src={slot.preview} alt="" className="h-full w-full object-cover" />
                     ) : (
                       <span className="text-white/40 text-xs px-3 text-center">+ {hint}<br /><span className="text-white/25">{t('adRef.optionalAtLeastOne')}</span></span>
@@ -486,7 +486,7 @@ export default function AdReferencePage() {
                   {EXAMPLE_REF_VIDEOS.map((u) => (
                     <button key={u} type="button" onClick={() => setRefVideo({ url: u, preview: u })}
                       className="rounded-lg overflow-hidden border border-white/10 hover:border-[#00b2fc] transition aspect-[9/16] bg-black">
-                      {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
+                      { }
                       <video src={u} className="w-full h-full object-cover" muted loop autoPlay playsInline />
                     </button>
                   ))}

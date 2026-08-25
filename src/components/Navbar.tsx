@@ -40,7 +40,7 @@ export function Navbar() {
     <header className="sticky top-0 z-40 border-b border-neutral-200/70 bg-white/80 backdrop-blur-lg">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-2 px-4 py-3">
         <Link href="/" className="flex shrink-0 items-center gap-2 font-bold">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
+          { }
           <img src="/lazynext-mark.png" alt="Lazynext" className="h-8 w-8 rounded-lg" />
           <span className="hidden text-[15px] tracking-tight sm:inline">Lazynext</span>
         </Link>
@@ -61,7 +61,7 @@ export function Navbar() {
                 {credits === null ? '·' : formatNumber(credits, locale)}
               </span>
               {session.user?.image && (
-                // eslint-disable-next-line @next/next/no-img-element
+                 
                 <img
                   src={session.user.image}
                   alt=""

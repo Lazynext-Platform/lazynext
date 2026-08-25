@@ -113,7 +113,7 @@ function DramaFolder({ c, t, finalVideo }: { c: Creation; t: (key: string, vars?
               <div key={ch.key} className="overflow-hidden rounded-xl border border-white/10 bg-black/20">
                 <div className="relative aspect-[3/4] w-full">
                   {ch.portraitUrl ? (
-                    // eslint-disable-next-line @next/next/no-img-element
+                     
                     <img src={ch.portraitUrl} alt={ch.name} className="h-full w-full object-cover" referrerPolicy="no-referrer" />
                   ) : (
                     <div className="grid h-full w-full place-items-center text-3xl opacity-50">🎭</div>
@@ -130,7 +130,7 @@ function DramaFolder({ c, t, finalVideo }: { c: Creation; t: (key: string, vars?
       {f.productImageUrl && (
         <section className="mb-10">
           <h2 className="mb-3 text-sm font-semibold text-white/70">🛍️ {t('myWork.productReference')}</h2>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
+          { }
           <img src={f.productImageUrl} alt="product" className="h-40 rounded-xl border border-white/10 object-cover" referrerPolicy="no-referrer" />
         </section>
       )}
@@ -149,7 +149,7 @@ function DramaFolder({ c, t, finalVideo }: { c: Creation; t: (key: string, vars?
                 {s.frameUrl && (
                   <div>
                     <div className="mb-1 text-[10px] text-white/40">{t('myWork.firstFrame')}</div>
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    { }
                     <img src={s.frameUrl} alt="" className="h-40 rounded-lg border border-white/10 object-cover" referrerPolicy="no-referrer" />
                   </div>
                 )}

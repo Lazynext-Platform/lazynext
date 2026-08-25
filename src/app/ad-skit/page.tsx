@@ -166,7 +166,7 @@ export default function AdSkitPage() {
               <div className="flex flex-wrap items-center gap-2">
                 {uploadedImages.map((u, i) => (
                   <div key={i} className="relative h-14 w-14 overflow-hidden rounded-lg border border-white/10">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    { }
                     <img src={u} alt={t('adSkit.productPhotoAlt')} className="h-full w-full object-cover" />
                     <button type="button" onClick={() => setUploadedImages((a) => a.filter((_, j) => j !== i))} className="absolute right-0 top-0 flex h-4 w-4 items-center justify-center bg-black/60 text-[10px] leading-none text-white">×</button>
                   </div>
@@ -219,7 +219,7 @@ export default function AdSkitPage() {
               <div className="rounded-2xl border border-white/10 bg-[#1c1e21] p-5">
                 <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-white"><ImageIcon className="h-4 w-4 text-[#00b2fc]" /> {t('adSkit.productPhotoTitle')}</h3>
                 <div className="flex aspect-video items-center justify-center overflow-hidden rounded-xl border border-white/10 bg-white/[0.03]">
-                  {productImg.status === 'done' && productImg.url ? (/* eslint-disable-next-line @next/next/no-img-element */ <img src={productImg.url} alt={t('adSkit.productPhotoAlt')} className="h-full w-full object-contain" />)
+                  {productImg.status === 'done' && productImg.url ? (  <img src={productImg.url} alt={t('adSkit.productPhotoAlt')} className="h-full w-full object-contain" />)
                     : productImg.status === 'processing' ? <Loader2 className="h-6 w-6 animate-spin text-[#00b2fc]" />
                     : productImg.status === 'failed' ? <span className="text-sm text-red-400">{t('adSkit.productPhotoFailed')}</span>
                     : <span className="text-sm text-white/30">{t('adSkit.productPhotoPlaceholder')}</span>}

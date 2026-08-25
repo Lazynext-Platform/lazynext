@@ -19,7 +19,7 @@ export const LOCALE_NAMES: Record<Locale, string> = {
 // RTL languages (text direction right-to-left)
 export const RTL_LOCALES: ReadonlySet<Locale> = new Set(['ar']);
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 export const messages: Record<Locale, any> = {
   en: {
     nav: { studio: 'Studio', podcast: 'Podcast', pricing: 'Pricing', myWork: 'My work', signIn: 'Sign in', settings: 'Settings' },

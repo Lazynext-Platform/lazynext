@@ -3,7 +3,7 @@
 import { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import { LOCALES, RTL_LOCALES, type Locale, messages, appMessages } from './messages';
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 function get(obj: any, path: string): any {
   return path.split('.').reduce((o, k) => (o == null ? undefined : o[k]), obj);
 }
