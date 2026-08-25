@@ -1,5 +1,5 @@
 import './globals.css';
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { cookies } from 'next/headers';
 import { LOCALES, RTL_LOCALES, type Locale, messages } from '@/i18n/messages';
 import Providers from './providers';
@@ -42,6 +42,10 @@ export async function generateMetadata(): Promise<Metadata> {
     },
   };
 }
+
+export const viewport: Viewport = {
+  themeColor: '#131416',
+};
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   // Session is fetched client-side via SessionProvider to avoid loading Prisma on every
