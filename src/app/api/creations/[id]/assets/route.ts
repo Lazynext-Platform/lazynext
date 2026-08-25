@@ -1,13 +1,12 @@
 import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
+import { auth } from '@/../auth';
 import { prisma } from '@/lib/prisma';
 
 // Drama creation folder structured asset update. Frontend holds complete assets (single source of truth),
 // at key milestones (all look images complete / each shot complete / final video complete) overwrites the latest full assets into Creation.
 // Overwrite rather than deep merge: drama is single-user single-session sequential operation, frontend state is complete, overwrite is simplest and most reliable. Only allowed for owner.
 export async function PATCH(req: Request, { params }: { params: Promise<{ id: string }> }) {
-  const session = await getServerSession(authOptions);
+  const session = await auth();
   if (!session?.user?.id) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
 
   const body = await req.json().catch(() => ({}));

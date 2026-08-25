@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
+import { auth } from '@/../auth';
 import {
   isManagedMediaUrl,
   MediaStorageNotConfiguredError,
@@ -12,7 +11,7 @@ export const maxDuration = 60;
 
 // Save final video to history: final video blob → R2, metadata → D1 Creation. Requires login (not logged in won't save history, final video still viewable/downloadable locally).
 export async function POST(req: Request) {
-  const session = await getServerSession(authOptions);
+  const session = await auth();
   if (!session?.user?.id) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
   try {
     const contentType = req.headers.get('content-type') || '';

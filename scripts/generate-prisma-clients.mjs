@@ -52,6 +52,9 @@ neonSchema = replaceExactlyOnce(
   'SQLite datasource provider',
 );
 
+// Prisma 7: remove `url` from datasource (adapter is passed at runtime)
+neonSchema = neonSchema.replace(/\s*url\s*=\s*env\("DATABASE_URL"\)\s*\n/, '\n');
+
 mkdirSync(generatedSchemaDir, { recursive: true });
 writeFileSync(
   neonSchemaPath,

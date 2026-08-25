@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
+import { auth } from '@/../auth';
 import { prisma } from '@/lib/prisma';
 import { deliverableMediaUrl, sameOriginMediaPath } from '@/lib/public-media-url';
 
@@ -8,7 +7,7 @@ export const maxDuration = 30;
 
 // Save viral replica final video to history. Edit/dubbing/lip-sync intermediate tasks are each persisted but hidden from the history panel.
 export async function POST(req: Request) {
-  const session = await getServerSession(authOptions);
+  const session = await auth();
   if (!session?.user?.id) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
 
   const body = await req.json().catch(() => ({}));

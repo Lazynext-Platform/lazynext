@@ -1,7 +1,6 @@
 import { withAtlas } from '@/lib/request-context';
 import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
+import { auth } from '@/../auth';
 import {
   cleanText,
   normalizeVideoDuration,
@@ -24,7 +23,7 @@ export const maxDuration = 60;
 
 // Per-shot video generation (Seedance 2.0 i2v): requires login + charges MK_VIDEO_COST; refunds on submit failure, poll refunds on async failure, Atlas errors pass through.
 async function __byokPOST(req: Request) {
-  const session = await getServerSession(authOptions);
+  const session = await auth();
   if (!session?.user?.id) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
   const uid = session.user.id;
 

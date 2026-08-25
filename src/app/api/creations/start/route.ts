@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
+import { auth } from '@/../auth';
 import { prisma } from '@/lib/prisma';
 
 const TYPES = new Set(['lazynext-studio', 'drama-studio', 'ad-reference']);
@@ -9,7 +8,7 @@ const TYPES = new Set(['lazynext-studio', 'drama-studio', 'ad-reference']);
 // instead of "clicked generate but creations page still empty for a long time". On completion, save-reel / ad-reference/save uses the returned id to update to final video;
 // On interrupt/failure, /api/creations/[id] POST marks it failed.
 export async function POST(req: Request) {
-  const session = await getServerSession(authOptions);
+  const session = await auth();
   if (!session?.user?.id) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
   const body = await req.json().catch(() => ({}));
   const type = TYPES.has(body.type) ? body.type : 'lazynext-studio';

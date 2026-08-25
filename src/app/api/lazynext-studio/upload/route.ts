@@ -1,14 +1,13 @@
 import { withAtlas } from '@/lib/request-context';
 import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
+import { auth } from '@/../auth';
 import { uploadMedia } from '@/lib/atlas';
 
 export const maxDuration = 60;
 
 // Upload reference image to Atlas to get a persistent URL: requires login (prevents anonymous abuse of upload quota), no charge. Logs errors + passes through detail.
 async function __byokPOST(req: Request) {
-  const session = await getServerSession(authOptions);
+  const session = await auth();
   if (!session?.user?.id) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
 
   const body = await req.json().catch(() => ({}));

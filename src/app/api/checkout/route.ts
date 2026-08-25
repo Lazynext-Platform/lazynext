@@ -1,13 +1,12 @@
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
+import { auth } from '@/../auth';
 import { paymentProvider } from '@/lib/payments';
 import { getPack } from '@/config/pricing';
 import { LOCALES, type Locale } from '@/i18n/messages';
 
 export async function POST(req: Request) {
-  const session = await getServerSession(authOptions);
+  const session = await auth();
   if (!session?.user?.id) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
 
   const { packId } = await req.json().catch(() => ({}));

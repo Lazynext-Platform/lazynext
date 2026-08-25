@@ -1,7 +1,6 @@
 import { withAtlas } from '@/lib/request-context';
 import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
+import { auth } from '@/../auth';
 import { DRAMA_SCRIPT_MODEL, draftScript } from '@/lib/drama/prompt';
 import { chargeSync, refundSync, chargeErrorResponse } from '@/lib/lazynext-studio/gen-task';
 
@@ -13,7 +12,7 @@ const DRAMA_SCRIPT_COST = 5;
 // Drama long script: requires login + charges DRAMA_SCRIPT_COST; only returns real AI script.
 // On LLM failure refunds and returns error, avoiding mistaking local fallback script as AI output to continue production.
 async function __byokPOST(req: Request) {
-  const session = await getServerSession(authOptions);
+  const session = await auth();
   if (!session?.user?.id) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
   const uid = session.user.id;
 

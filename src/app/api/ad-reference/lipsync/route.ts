@@ -1,7 +1,6 @@
 import { withAtlas } from '@/lib/request-context';
 import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
+import { auth } from '@/../auth';
 import { submitAdRefLipsync, AD_REF_LIPSYNC_MODEL } from '@/lib/ad-reference';
 import { chargeAndSubmit, chargeErrorResponse } from '@/lib/lazynext-studio/gen-task';
 import { videoCredits } from '@/lib/video-pricing';
@@ -11,7 +10,7 @@ export const maxDuration = 60;
 
 // veed/lipsync syncs new dubbing to final video mouth: requires login + charges AD_REF_LIPSYNC_COST; refunds on submit/async failure, Atlas errors pass through.
 async function __byokPOST(req: Request) {
-  const session = await getServerSession(authOptions);
+  const session = await auth();
   if (!session?.user?.id) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
   const uid = session.user.id;
 

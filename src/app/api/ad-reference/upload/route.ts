@@ -1,7 +1,6 @@
 import { withAtlas } from '@/lib/request-context';
 import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
+import { auth } from '@/../auth';
 import { AD_REF_MAX_VIDEO_BYTES, AD_REF_MAX_IMAGE_BYTES } from '@/lib/ad-reference';
 import {
   MediaStorageNotConfiguredError,
@@ -43,7 +42,7 @@ function sniffContentType(buffer: ArrayBuffer, declared: string): string {
 // No-login direct: reference video/product image/portrait directly into own R2 (Atlas uploadMedia 413s on videos of just a few MB, can't use it).
 // Returns same-origin media url (publicly reachable, with Range, Atlas backend can fetch directly).
 async function __byokPOST(req: Request) {
-  const session = await getServerSession(authOptions);
+  const session = await auth();
   if (!session?.user?.id) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
   let form: FormData;
   try {

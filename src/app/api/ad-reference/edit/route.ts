@@ -1,7 +1,6 @@
 import { withAtlas } from '@/lib/request-context';
 import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
+import { auth } from '@/../auth';
 import { buildEditRequest, submitAdRefEdit, cleanRefText, AD_REF_EDIT_MODEL } from '@/lib/ad-reference';
 import { chargeAndSubmit, chargeErrorResponse } from '@/lib/lazynext-studio/gen-task';
 import { videoCredits } from '@/lib/video-pricing';
@@ -13,7 +12,7 @@ export const maxDuration = 60;
 // gemini-omni-flash/video-edit swaps person + product in one step (pure omni, person swap also goes here since 2026-07-16).
 // Person swap occasional async failure (1010002) is automatically retried as fallback by frontend submit+poll.
 async function __byokPOST(req: Request) {
-  const session = await getServerSession(authOptions);
+  const session = await auth();
   if (!session?.user?.id) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
   const uid = session.user.id;
 

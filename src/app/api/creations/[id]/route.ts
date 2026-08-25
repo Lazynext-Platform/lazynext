@@ -1,7 +1,6 @@
 import { withAtlas } from '@/lib/request-context';
 import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
+import { auth } from '@/../auth';
 import { prisma } from '@/lib/prisma';
 import { pollOnce } from '@/lib/atlas';
 import { grantCredits } from '@/lib/credits';
@@ -9,7 +8,7 @@ import { pollMarketingTask } from '@/lib/lazynext-studio/poll-task';
 
 // When frontend generation is interrupted/fails, marks own still-processing placeholder creation as failed (creations page shows "failed" instead of spinning forever).
 async function __byokPOST(req: Request, { params }: { params: Promise<{ id: string }> }) {
-  const session = await getServerSession(authOptions);
+  const session = await auth();
   if (!session?.user?.id) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
   const body = await req.json().catch(() => ({}));
   if (body.status !== 'failed') return NextResponse.json({ error: 'bad_status' }, { status: 400 });
@@ -23,7 +22,7 @@ async function __byokPOST(req: Request, { params }: { params: Promise<{ id: stri
 
 // Polled by the client. Each call advances the task status at most once.
 async function __byokGET(_req: Request, { params }: { params: Promise<{ id: string }> }) {
-  const session = await getServerSession(authOptions);
+  const session = await auth();
   if (!session?.user?.id) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
 
   const { id } = await params;
@@ -120,7 +119,7 @@ async function __byokGET(_req: Request, { params }: { params: Promise<{ id: stri
 // Delete a creation (owner only). Removes the D1 record. R2 media is not deleted
 // (orphaned media keys are harmless and cheaper than tracking references).
 async function __byokDELETE(_req: Request, { params }: { params: Promise<{ id: string }> }) {
-  const session = await getServerSession(authOptions);
+  const session = await auth();
   if (!session?.user?.id) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
   const { id } = await params;
 

@@ -11,7 +11,7 @@
  * This script runs after `opennextjs-cloudflare build` and before
  * `opennextjs-cloudflare deploy` to delete the unused engine files.
  */
-import { readdirSync, rmSync, statSync, existsSync } from 'node:fs';
+import { readdirSync, rmSync, statSync, existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 const projectRoot = new URL('..', import.meta.url).pathname;
@@ -37,10 +37,23 @@ const dotPrismaDir = join(
 );
 
 // Database engines we KEEP (used by this project)
-const KEEP_ENGINES = new Set(['sqlite', 'postgresql']);
+// For Cloudflare (D1), only sqlite is needed. PostgreSQL is used by Neon (Vercel).
+// When deploying to Cloudflare, we remove postgresql to reduce worker size.
+// This script runs after the OpenNext build, which is only used for Cloudflare,
+// so we default to cloudflare unless explicitly building for Vercel.
+const isCloudflareBuild = process.env.DEPLOY_TARGET !== 'vercel';
+const KEEP_ENGINES = isCloudflareBuild
+  ? new Set(['sqlite'])
+  : new Set(['sqlite', 'postgresql']);
 
 // Database engines we DELETE (not used by this project)
-const DELETE_ENGINES = ['cockroachdb', 'mysql', 'sqlserver'];
+const DELETE_ENGINES = isCloudflareBuild
+  ? ['cockroachdb', 'mysql', 'sqlserver', 'postgresql']
+  : ['cockroachdb', 'mysql', 'sqlserver'];
+
+// Prisma 7 ships both "fast" and "small" WASM engine variants.
+// We only need "fast" — "small" is a fallback for constrained environments.
+const DELETE_VARIANTS = ['small'];
 
 let removedCount = 0;
 let removedBytes = 0;
@@ -49,7 +62,9 @@ function removeEngineFiles(dir, engineName) {
   if (!existsSync(dir)) return;
   const entries = readdirSync(dir);
   for (const entry of entries) {
-    if (entry.includes(`_${engineName}.`) || entry.includes(`.${engineName}.`)) {
+    // Match patterns like _cockroachdb., .cockroachdb., _small_bg., _small.
+    if (entry.includes(`_${engineName}.`) || entry.includes(`.${engineName}.`) ||
+        entry.includes(`_${engineName}_`) || entry.includes(`.${engineName}_`)) {
       const fullPath = join(dir, entry);
       try {
         const stat = statSync(fullPath);
@@ -70,12 +85,107 @@ for (const engine of DELETE_ENGINES) {
   removeEngineFiles(prismaRuntimeDir, engine);
 }
 
+// Remove "small" engine variants (Prisma 7) — we only need "fast"
+for (const variant of DELETE_VARIANTS) {
+  removeEngineFiles(prismaRuntimeDir, variant);
+}
+
 // Also clean .prisma/client directory if it exists
 if (existsSync(dotPrismaDir)) {
   for (const engine of DELETE_ENGINES) {
     removeEngineFiles(dotPrismaDir, engine);
   }
+  for (const variant of DELETE_VARIANTS) {
+    removeEngineFiles(dotPrismaDir, variant);
+  }
 }
 
 console.log(`\nDone: removed ${removedCount} files, freed ${(removedBytes / 1024 / 1024).toFixed(1)} MB`);
 console.log(`Kept engines: ${[...KEEP_ENGINES].join(', ')}`);
+
+// Prisma 7: remove the legacy query_compiler_bg.wasm (not used in workerd/edge runtime).
+// The edge.js entry point only uses query_compiler_fast_bg.* and wasm-compiler-edge.
+const legacyWasmFiles = [
+  join(dotPrismaDir, 'query_compiler_bg.wasm'),
+  join(dotPrismaDir, 'query_compiler_bg.js'),
+  join(dotPrismaDir, 'wasm.js'),
+  // The .prisma/client/query_compiler_fast_bg.wasm-base64.js is a duplicate of
+  // @prisma/client/runtime/query_compiler_fast_bg.{sqlite,postgresql}.wasm-base64.js
+  // and is only referenced by index.js (not edge.js, which workerd uses).
+  join(dotPrismaDir, 'query_compiler_fast_bg.wasm-base64.js'),
+];
+for (const file of legacyWasmFiles) {
+  if (existsSync(file)) {
+    const stat = statSync(file);
+    rmSync(file, { force: true });
+    removedCount++;
+    removedBytes += stat.size;
+    console.log(`  removed legacy: ${file.split('/').pop()} (${(stat.size / 1024 / 1024).toFixed(1)} MB)`);
+  }
+}
+
+// Remove unused .mjs variants of wasm-base64 (only .js is referenced by the edge runtime)
+if (existsSync(prismaRuntimeDir)) {
+  const runtimeEntries = readdirSync(prismaRuntimeDir);
+  for (const entry of runtimeEntries) {
+    if (entry.endsWith('wasm-base64.mjs')) {
+      const fullPath = join(prismaRuntimeDir, entry);
+      try {
+        const stat = statSync(fullPath);
+        rmSync(fullPath, { force: true });
+        removedCount++;
+        removedBytes += stat.size;
+        console.log(`  removed mjs: ${entry} (${(stat.size / 1024 / 1024).toFixed(1)} MB)`);
+      } catch {}
+    }
+  }
+}
+
+// --- Patch __require to add MODULE_NOT_FOUND error code ---
+// The Node.js middleware (proxy.ts) runtime calls getInstrumentationModule()
+// which tries to require("instrumentation.js"). In workerd, `require` is not
+// defined, so __require throws "Dynamic require of ... is not supported".
+// The catch block in getInstrumentationModule checks for err.code ===
+// "MODULE_NOT_FOUND" but the thrown Error doesn't have that code. We patch
+// all __require functions in the OpenNext output to add the code so the
+// catch block swallows the error gracefully.
+const REQUIRE_PATCHES = [
+  // With spaces (index.mjs style)
+  [
+    `throw Error('Dynamic require of "' + x + '" is not supported')`,
+    `{const __e=new Error('Dynamic require of "' + x + '" is not supported');__e.code='MODULE_NOT_FOUND';throw __e}`,
+  ],
+  // Without spaces (handler.mjs esbuild style)
+  [
+    `throw Error('Dynamic require of "'+x+'" is not supported')`,
+    `{const __e=new Error('Dynamic require of "'+x+'" is not supported');__e.code='MODULE_NOT_FOUND';throw __e}`,
+  ],
+];
+
+const patchFiles = [
+  join(projectRoot, '.open-next', 'server-functions', 'default', 'index.mjs'),
+  join(projectRoot, '.open-next', 'server-functions', 'default', 'handler.mjs'),
+  join(projectRoot, '.open-next', 'middleware', 'handler.mjs'),
+];
+
+let patchCount = 0;
+for (const file of patchFiles) {
+  if (!existsSync(file)) continue;
+  let content = readFileSync(file, 'utf8');
+  let filePatched = false;
+  for (const [old, neu] of REQUIRE_PATCHES) {
+    const matches = content.split(old).length - 1;
+    if (matches > 0) {
+      content = content.split(old).join(neu);
+      patchCount += matches;
+      filePatched = true;
+    }
+  }
+  if (filePatched) {
+    writeFileSync(file, content);
+    console.log(`  patched __require in ${file.split('/').pop()}`);
+  }
+}
+if (patchCount > 0) {
+  console.log(`Patched ${patchCount} __require function(s) with MODULE_NOT_FOUND error code`);
+}

@@ -1,7 +1,6 @@
 import { withAtlas } from '@/lib/request-context';
 import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
+import { auth } from '@/../auth';
 import { marketingPlanSchema } from '@/lib/lazynext-studio/schema';
 import { buildShotImagePrompt, buildShotImageEditPrompt, normalizeRatio, submitShotImage, MK_IMAGE_COST, SHOT_IMAGE_MODEL, SHOT_IMAGE_EDIT_MODEL } from '@/lib/lazynext-studio/workflow';
 import { chargeAndSubmit, chargeErrorResponse } from '@/lib/lazynext-studio/gen-task';
@@ -19,7 +18,7 @@ function toAbsMedia(v: unknown, base: string): string {
 
 // Per-shot image generation (nano-banana): requires login + charges MK_IMAGE_COST; refunds on submit/async failure, Atlas errors pass through.
 async function __byokPOST(req: Request) {
-  const session = await getServerSession(authOptions);
+  const session = await auth();
   if (!session?.user?.id) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
   const uid = session.user.id;
 

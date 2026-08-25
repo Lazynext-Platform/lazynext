@@ -1,7 +1,6 @@
 import { withAtlas } from '@/lib/request-context';
 import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
+import { auth } from '@/../auth';
 import { submitAdRefVoice, isValidVoice, cleanRefText, AD_REF_VOICES, AD_REF_TTS_MODEL, AD_REF_VOICE_COST } from '@/lib/ad-reference';
 import { chargeAndSubmit, chargeErrorResponse } from '@/lib/lazynext-studio/gen-task';
 
@@ -9,7 +8,7 @@ export const maxDuration = 60;
 
 // elevenlabs v3 new dubbing (change voice + change dialogue): requires login + charges AD_REF_VOICE_COST; refunds on submit/async failure, Atlas errors pass through.
 async function __byokPOST(req: Request) {
-  const session = await getServerSession(authOptions);
+  const session = await auth();
   if (!session?.user?.id) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
   const uid = session.user.id;
 

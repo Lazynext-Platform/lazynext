@@ -1,10 +1,9 @@
 import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
+import { auth } from '@/../auth';
 import { prisma } from '@/lib/prisma';
 
 export async function GET() {
-  const session = await getServerSession(authOptions);
+  const session = await auth();
   if (!session?.user?.id) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
 
   // Only return "deliverable final videos": exclude per-shot/intermediate tasks (templateId containing ':' like adref:edit, sku:asset, or ending with '-shot' like mk-shot/drama-shot).

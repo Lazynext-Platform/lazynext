@@ -1,7 +1,6 @@
 import { withAtlas } from '@/lib/request-context';
 import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
+import { auth } from '@/../auth';
 import {
   AD_REF_CHARACTER_MODEL,
   submitAdRefCharacter,
@@ -21,7 +20,7 @@ const WAN_VIDEO_LIMIT = 200_000_000;
 
 // Wan-2.2 Character Swap doesn't reliably accept Workers/R2 URLs, so upload to Atlas temporary media URL first before submitting.
 async function __byokPOST(req: Request) {
-  const session = await getServerSession(authOptions);
+  const session = await auth();
   if (!session?.user?.id) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
   const uid = session.user.id;
 

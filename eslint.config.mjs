@@ -17,6 +17,13 @@ const eslintConfig = [
       "react-hooks/static-components": "off",
     },
   },
+  {
+    ignores: [
+      "src/generated/**",
+      ".open-next/**",
+      "node_modules/**",
+    ],
+  },
 ];
 
 export default eslintConfig;

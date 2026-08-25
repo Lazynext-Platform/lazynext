@@ -1,7 +1,6 @@
 import { withAtlas } from '@/lib/request-context';
 import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
+import { auth } from '@/../auth';
 import { pollMarketingTask } from '@/lib/lazynext-studio/poll-task';
 
 export const maxDuration = 60;
@@ -13,7 +12,7 @@ export const maxDuration = 60;
 // Atlas async failure (review block/timeout etc.) triggers idempotent refund by taskId (processing→failed atomic transition, only refunds once).
 // Requires authentication: only the logged-in user who submitted the task should be able to poll it.
 async function __byokPOST(req: Request) {
-  const session = await getServerSession(authOptions);
+  const session = await auth();
   if (!session?.user?.id) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
 
   const body = await req.json().catch(() => ({}));

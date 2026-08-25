@@ -1,7 +1,6 @@
 import { withAtlas } from '@/lib/request-context';
 import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
+import { auth } from '@/../auth';
 import { atlasChat } from '@/lib/atlas';
 import { mediaToDataUri } from '@/lib/lazynext-studio/r2';
 
@@ -12,7 +11,7 @@ const MODEL = process.env.MK_EXPAND_MODEL || 'google/gemini-2.5-flash';
 type Part = { type: 'text'; text: string } | { type: 'image_url'; image_url: { url: string } };
 
 async function __byokPOST(req: Request) {
-  const session = await getServerSession(authOptions);
+  const session = await auth();
   if (!session?.user?.id) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
 
   const body = await req.json().catch(() => ({}));

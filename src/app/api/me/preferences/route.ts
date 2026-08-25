@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
+import { auth } from '@/../auth';
 import { prisma } from '@/lib/prisma';
 import { LOCALES, type Locale } from '@/i18n/messages';
 import { CURRENCY_CODES, currencyForCountry } from '@/config/pricing';
@@ -21,7 +20,7 @@ import { CURRENCY_CODES, currencyForCountry } from '@/config/pricing';
  * Body: { locale?, country?, currency? }
  */
 export async function GET() {
-  const session = await getServerSession(authOptions);
+  const session = await auth();
   const c = await cookies();
 
   let locale = c.get('locale')?.value || 'en';
@@ -48,7 +47,7 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
-  const session = await getServerSession(authOptions);
+  const session = await auth();
   if (!session?.user?.id)
     return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
 

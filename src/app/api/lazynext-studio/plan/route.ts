@@ -1,7 +1,6 @@
 import { withAtlas } from '@/lib/request-context';
 import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
+import { auth } from '@/../auth';
 import { draftMarketingPlan, buildFallbackMarketingPlan, type PlanInput } from '@/lib/lazynext-studio/prompt';
 import { cleanText, normalizeRatio, normalizeShotCount, MK_PLAN_COST } from '@/lib/lazynext-studio/workflow';
 import { getFormat } from '@/lib/lazynext-studio/formats';
@@ -11,7 +10,7 @@ export const maxDuration = 60;
 
 // Generate plan (LLM): requires login + charges MK_PLAN_COST; LLM failure refunds and returns fallback plan (with fallback flag + detail for frontend prompt), Atlas errors logged.
 async function __byokPOST(req: Request) {
-  const session = await getServerSession(authOptions);
+  const session = await auth();
   if (!session?.user?.id) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
   const uid = session.user.id;
 
