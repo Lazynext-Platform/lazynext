@@ -14,10 +14,9 @@ export default function Providers({
   session?: Session | null;
   initialLocale?: Locale;
 }) {
-  // In Auth.js v5, passing session={null} tells the provider "no session" and it
-  // won't fetch. Passing undefined (or omitting the prop) makes it fetch
-  // /api/auth/session on mount. We omit the prop when session is null so the
-  // client-side SessionProvider always fetches the live session.
+  // When a session is passed from the server layout, provide it as the initial
+  // value so the client renders immediately without a fetch. When null, omit
+  // the prop so the provider can still fetch if needed (e.g. after sign-in).
   const sessionProps = session ? { session } : {};
   return (
     <SessionProvider {...sessionProps} refetchOnWindowFocus={false}>

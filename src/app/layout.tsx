@@ -5,6 +5,7 @@ import { LOCALES, RTL_LOCALES, type Locale, messages } from '@/i18n/messages';
 import Providers from './providers';
 import { Shell } from '@/components/Shell';
 import { CookieBanner } from '@/components/CookieBanner';
+import { auth } from '@/../auth';
 
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -20,7 +21,7 @@ export async function generateMetadata(): Promise<Metadata> {
     referrer: 'no-referrer',
     icons: {
       icon: [{ url: '/favicon-32.png', sizes: '32x32', type: 'image/png' }],
-      apple: [{ url: '/icon-180.png', sizes: '180x180', type: 'image/png' }],
+      apple: [{ url: '/icon-180.png', sizes: '180px', type: 'image/png' }],
     },
     openGraph: {
       title: seo.metaTitle,
@@ -48,11 +49,10 @@ export const viewport: Viewport = {
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  // Session is fetched client-side via SessionProvider to avoid loading Prisma on every
-  // page request — a critical optimization for Cloudflare Workers' CPU time limit.
-  // The SessionProvider automatically fetches /api/auth/session on the client.
-  // Read the user language from a cookie and render that language during SSR, then pass it to the
-  // client as the first-frame initial value -> language layer SSR/client consistency.
+  // Get the session server-side and pass it to SessionProvider. This avoids
+  // a separate client-side fetch to /api/auth/session which was causing worker
+  // hangs on Cloudflare due to concurrent Prisma/D1 queries exceeding CPU time.
+  const session = await auth().catch(() => null);
   const localeCookie = (await cookies()).get('locale')?.value;
   const initialLocale = ((LOCALES as readonly string[]).includes(localeCookie || '') ? localeCookie : 'en') as Locale;
   return (
@@ -62,10 +62,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             offline/build failures behind firewalls); falls back to a system sans-serif if unavailable. */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Space Grotesk:wght@500;700&display=swap" rel="stylesheet" />
       </head>
       <body className="flex min-h-screen flex-col font-sans" style={{ ['--font-grotesk']: "'Space Grotesk', ui-sans-serif, system-ui, sans-serif" } as React.CSSProperties}>
-        <Providers initialLocale={initialLocale}>
+        <Providers session={session} initialLocale={initialLocale}>
           <Shell>{children}</Shell>
           <CookieBanner />
         </Providers>
