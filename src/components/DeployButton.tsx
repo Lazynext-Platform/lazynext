@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Rocket, X } from 'lucide-react';
 import { useI18n } from '@/i18n/provider';
 
@@ -20,6 +20,13 @@ const CF_URL = `https://deploy.workers.cloudflare.com/?url=${encodeURIComponent(
 export function DeployButton() {
   const [open, setOpen] = useState(false);
   const { t } = useI18n();
+
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setOpen(false); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [open]);
   return (
     <>
       <button

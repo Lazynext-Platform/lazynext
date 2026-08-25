@@ -21,6 +21,13 @@ export function ByokKey({ className = '' }: { className?: string }) {
     return () => window.removeEventListener(BYOK_EVENT, sync);
   }, []);
 
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setOpen(false); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [open]);
+
   const openModal = () => {
     setDraft(getByokKey());
     setOpen(true);

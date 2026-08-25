@@ -43,7 +43,20 @@ export async function GET(req: Request) {
     return res;
   }
 
-  // Use a free, no-key-required IP geolocation API
+  // On Cloudflare Workers, use the native request.cf geo data (instant, no
+  // external fetch). This avoids the slow ipapi.co call that was causing
+  // "Worker exceeded resource limits" 503 errors.
+  const cf = (req as unknown as { cf?: { country?: string; timezone?: string } }).cf;
+  if (cf?.country && /^[A-Z]{2}$/.test(cf.country)) {
+    const country = cf.country.toUpperCase();
+    const currency = currencyForCountry(country);
+    const res = NextResponse.json({ country, currency, source: 'cloudflare', ip });
+    res.cookies.set('country', country, { path: '/', maxAge: 31536000, sameSite: 'lax' });
+    res.cookies.set('currency', currency, { path: '/', maxAge: 31536000, sameSite: 'lax' });
+    return res;
+  }
+
+  // Fallback: external geo API (only on non-Cloudflare platforms like Vercel)
   try {
     const geoRes = await fetch(`https://ipapi.co/${ip}/json/`, {
       headers: { Accept: 'application/json' },

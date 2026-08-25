@@ -1,8 +1,13 @@
 import type { Metadata } from 'next';
+import { cookies } from 'next/headers';
+import { LOCALES, type Locale, appMessages } from '@/i18n/messages';
 
-export const metadata: Metadata = {
-  title: 'Reference to Ad — Lazynext',
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const localeCookie = (await cookies()).get('locale')?.value;
+  const locale = ((LOCALES as readonly string[]).includes(localeCookie || '') ? localeCookie : 'en') as Locale;
+  const title = (appMessages[locale]?.['ad-reference']?.title || 'Reference to Ad') + ' — Lazynext';
+  return { title, referrer: 'no-referrer' };
+}
 
 export default function AdReferenceLayout({ children }: { children: React.ReactNode }) {
   return children;

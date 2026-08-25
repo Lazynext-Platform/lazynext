@@ -13,7 +13,7 @@ export async function grantCredits(
   ref?: string,
 ): Promise<void> {
   if (isByok()) return; // BYOK: user pays AtlasCloud directly — no credit movement at all.
-  if (amount <= 0) return;
+  if (amount === 0) return; // Allow negative amounts for refund claw-backs (e.g. webhook refund.succeeded).
   await prisma.$transaction([
     prisma.user.update({ where: { id: userId }, data: { credits: { increment: amount } } }),
     prisma.creditLedger.create({ data: { userId, delta: amount, reason, ref } }),

@@ -650,7 +650,7 @@ export const messages: Record<Locale, any> = {
 
   },
   zh: {
-    nav: { studio: '工作台', podcast: '播客', pricing: '价格', myWork: '我的作品', signIn: '登录' },
+    nav: { studio: '工作台', podcast: '播客', pricing: '价格', myWork: '我的作品', signIn: '登录', settings: '设置' },
     auth: {
       signInError: '登录失败或已取消。请重试。',
     },
@@ -917,6 +917,7 @@ export const messages: Record<Locale, any> = {
       errPollUnavailable: '任务仍在运行，但状态查询暂时不可用。可继续查询，不会再次扣费。',
       errVideoFailed: '生成失败——请重试；若持续失败可能是内容安全拦截或积分不足。',
       errGeneric: '出错了：{code}（请重试）',
+      errAtlasQuota: '您的 Atlas 密钥无效或配额已用完 — 请检查后重试。',
       defaultProduct: '产品视频',
       defaultAdTitle: '产品广告',
     },
@@ -1274,7 +1275,7 @@ export const messages: Record<Locale, any> = {
 
   },
   ja: {
-    nav: { studio: 'スタジオ', podcast: 'ポッドキャスト', pricing: '料金', myWork: '作品', signIn: 'ログイン' },
+    nav: { studio: 'スタジオ', podcast: 'ポッドキャスト', pricing: '料金', myWork: '作品', signIn: 'ログイン', settings: '設定' },
     auth: {
       signInError: 'ログインに失敗したか、キャンセルされました。もう一度お試しください。',
     },
@@ -1543,6 +1544,7 @@ export const messages: Record<Locale, any> = {
       errPollUnavailable: 'タスクはまだ実行中ですが、ステータス確認が一時的に利用できません。追加課金なしで確認を続けてください。',
       errVideoFailed: '生成に失敗しました — 再試行してください。継続する場合はコンテンツ安全ブロックまたはクレジット不足の可能性があります。',
       errGeneric: 'エラーが発生しました：{code}（再試行してください）',
+      errAtlasQuota: 'Atlasキーが無効またはクォータ切れです — 確認して再試行してください。',
       defaultProduct: '製品動画',
       defaultAdTitle: '製品広告',
     },
@@ -1900,7 +1902,7 @@ export const messages: Record<Locale, any> = {
 
   },
   es: {
-    nav: { studio: 'Estudio', podcast: 'Podcast', pricing: 'Precios', myWork: 'Mi trabajo', signIn: 'Entrar' },
+    nav: { studio: 'Estudio', podcast: 'Podcast', pricing: 'Precios', myWork: 'Mi trabajo', signIn: 'Entrar', settings: 'Configuración' },
     auth: {
       signInError: 'El inicio de sesión falló o se canceló. Inténtalo de nuevo.',
     },
@@ -2169,6 +2171,7 @@ export const messages: Record<Locale, any> = {
       errPollUnavailable: 'La tarea sigue en ejecución, pero la consulta de estado no está disponible temporalmente. Sigue comprobando sin otro cargo.',
       errVideoFailed: 'Generación fallida — por favor reintenta; si persiste puede ser un bloqueo de seguridad de contenido o créditos bajos.',
       errGeneric: 'Algo salió mal: {code} (intenta de nuevo)',
+      errAtlasQuota: 'Tu clave de Atlas no es válida o se agotó la cuota — verifícala e inténtalo de nuevo.',
       defaultProduct: 'Vídeo del producto',
       defaultAdTitle: 'Anuncio del producto',
     },
@@ -2526,7 +2529,7 @@ export const messages: Record<Locale, any> = {
 
   },
   ko: {
-    nav: { studio: '스튜디오', podcast: '팟캐스트', pricing: '가격', myWork: '내 작업', signIn: '로그인' },
+    nav: { studio: '스튜디오', podcast: '팟캐스트', pricing: '가격', myWork: '내 작업', signIn: '로그인', settings: '설정' },
     auth: {
       signInError: '로그인에 실패했거나 취소되었습니다. 다시 시도해 주세요.',
     },
@@ -2793,6 +2796,7 @@ export const messages: Record<Locale, any> = {
       errPollUnavailable: '작업이 여전히 실행 중이지만, 상태 조회가 일시적으로 불가능합니다. 추가 요금 없이 계속 확인하세요.',
       errVideoFailed: '생성 실패 — 다시 시도해 주세요; 지속되면 콘텐츠 안전 차단이거나 크레딧 부족일 수 있습니다.',
       errGeneric: '문제가 발생했습니다: {code} (다시 시도)',
+      errAtlasQuota: 'Atlas 키가 유효하지 않거나 할당량이 소진되었습니다 — 확인 후 다시 시도하세요.',
       defaultProduct: '제품 영상',
       defaultAdTitle: '제품 광고',
     },
@@ -3150,7 +3154,7 @@ export const messages: Record<Locale, any> = {
 
   },
   pt: {
-    nav: { studio: 'Estúdio', podcast: 'Podcast', pricing: 'Preços', myWork: 'Meus trabalhos', signIn: 'Entrar' },
+    nav: { studio: 'Estúdio', podcast: 'Podcast', pricing: 'Preços', myWork: 'Meus trabalhos', signIn: 'Entrar', settings: 'Configurações' },
     auth: {
       signInError: 'O login falhou ou foi cancelado. Tente novamente.',
     },
@@ -3417,6 +3421,7 @@ export const messages: Record<Locale, any> = {
       errPollUnavailable: 'A tarefa ainda está em execução, mas a consulta de status está temporariamente indisponível. Continue verificando sem cobrança adicional.',
       errVideoFailed: 'Geração falhou — tente novamente; se persistir, pode ser um bloqueio de segurança de conteúdo ou créditos baixos.',
       errGeneric: 'Algo deu errado: {code} (tente novamente)',
+      errAtlasQuota: 'Sua chave Atlas é inválida ou a cota acabou — verifique e tente novamente.',
       defaultProduct: 'Vídeo do produto',
       defaultAdTitle: 'Anúncio do produto',
     },
@@ -3774,7 +3779,7 @@ export const messages: Record<Locale, any> = {
 
   },
   fr: {
-    nav: { studio: 'Studio', podcast: 'Podcast', pricing: 'Tarifs', myWork: 'Mes travaux', signIn: 'Se connecter' },
+    nav: { studio: 'Studio', podcast: 'Podcast', pricing: 'Tarifs', myWork: 'Mes travaux', signIn: 'Se connecter', settings: 'Paramètres' },
     auth: {
       signInError: 'La connexion a échoué ou a été annulée. Veuillez réessayer.',
     },
@@ -4041,6 +4046,7 @@ export const messages: Record<Locale, any> = {
       errPollUnavailable: 'La tâche est encore en cours, mais la vérification du statut est temporairement indisponible. Continuez à vérifier sans frais supplémentaire.',
       errVideoFailed: 'Génération échouée — veuillez réessayer ; si le problème persiste, il peut s\'agir d\'un blocage de sécurité de contenu ou de crédits insuffisants.',
       errGeneric: 'Une erreur s\'est produite : {code} (réessayez)',
+      errAtlasQuota: 'Votre clé Atlas est invalide ou le quota est épuisé — vérifiez et réessayez.',
       defaultProduct: 'Vidéo du produit',
       defaultAdTitle: 'Publicité du produit',
     },
@@ -4398,7 +4404,7 @@ export const messages: Record<Locale, any> = {
 
   },
   de: {
-    nav: { studio: 'Studio', podcast: 'Podcast', pricing: 'Preise', myWork: 'Meine Arbeiten', signIn: 'Anmelden' },
+    nav: { studio: 'Studio', podcast: 'Podcast', pricing: 'Preise', myWork: 'Meine Arbeiten', signIn: 'Anmelden', settings: 'Einstellungen' },
     auth: {
       signInError: 'Die Anmeldung ist fehlgeschlagen oder wurde abgebrochen. Bitte versuchen Sie es erneut.',
     },
@@ -4665,6 +4671,7 @@ export const messages: Record<Locale, any> = {
       errPollUnavailable: 'Die Aufgabe läuft noch, aber die Statusabfrage ist vorübergehend nicht verfügbar. Weiter prüfen ohne erneute Berechnung.',
       errVideoFailed: 'Generierung fehlgeschlagen — bitte erneut versuchen; falls es bestehen bleibt, kann es eine Inhaltssicherheits-Sperre oder zu wenig Credits sein.',
       errGeneric: 'Etwas ist schiefgelaufen: {code} (erneut versuchen)',
+      errAtlasQuota: 'Ihr Atlas-Schlüssel ist ungültig oder das Kontingent ist erschöpft — bitte überprüfen und erneut versuchen.',
       defaultProduct: 'Produktvideo',
       defaultAdTitle: 'Produktwerbung',
     },
@@ -5022,7 +5029,7 @@ export const messages: Record<Locale, any> = {
 
   },
   ar: {
-    nav: { studio: 'الاستوديو', podcast: 'البودكاست', pricing: 'الأسعار', myWork: 'أعمالي', signIn: 'تسجيل الدخول' },
+    nav: { studio: 'الاستوديو', podcast: 'البودكاست', pricing: 'الأسعار', myWork: 'أعمالي', signIn: 'تسجيل الدخول', settings: 'الإعدادات' },
     auth: {
       signInError: 'فشل تسجيل الدخول أو تم إلغاؤه. يرجى المحاولة مرة أخرى.',
     },
@@ -5289,6 +5296,7 @@ export const messages: Record<Locale, any> = {
       errPollUnavailable: 'المهمة لا تزال قيد التشغيل، لكن البحث عن الحالة غير متاح مؤقتاً. تابع التحقق دون أي تكلفة إضافية.',
       errVideoFailed: 'فشل التوليد — يرجى إعادة المحاولة؛ إذا استمر قد يكون حظر أمان المحتوى أو رصيداً منخفضاً.',
       errGeneric: 'حدث خطأ ما: {code} (حاول مرة أخرى)',
+      errAtlasQuota: 'مفتاح Atlas غير صالح أو نفدت الحصة — يرجى التحقق وإعادة المحاولة.',
       defaultProduct: 'فيديو المنتج',
       defaultAdTitle: 'إعلان المنتج',
     },
@@ -5646,7 +5654,7 @@ export const messages: Record<Locale, any> = {
 
   },
   hi: {
-    nav: { studio: 'स्टूडियो', podcast: 'पॉडकास्ट', pricing: 'मूल्य', myWork: 'मेरा काम', signIn: 'साइन इन' },
+    nav: { studio: 'स्टूडियो', podcast: 'पॉडकास्ट', pricing: 'मूल्य', myWork: 'मेरा काम', signIn: 'साइन इन', settings: 'सेटिंग्स' },
     auth: {
       signInError: 'साइन-इन विफल हो गया या रद्द कर दिया गया। कृपया पुनः प्रयास करें।',
     },
@@ -5913,6 +5921,7 @@ export const messages: Record<Locale, any> = {
       errPollUnavailable: 'कार्य अभी चल रहा है, लेकिन स्थिति खोज अस्थायी रूप से अनुपलब्ध है। बिना अतिरिक्त शुल्क के जांच जारी रखें।',
       errVideoFailed: 'जनरेशन विफल — कृपया पुनः प्रयास करें; यदि बना रहता है तो यह कंटेंट-सेफ्टी ब्लॉक या कम क्रेडिट हो सकता है।',
       errGeneric: 'कुछ गलत हुआ: {code} (पुनः प्रयास करें)',
+      errAtlasQuota: 'आपकी Atlas कुंजी अमान्य है या कोटा समाप्त हो गया है — कृपया जांचें और पुनः प्रयास करें।',
       defaultProduct: 'उत्पाद वीडियो',
       defaultAdTitle: 'उत्पाद विज्ञापन',
     },
@@ -6270,7 +6279,7 @@ export const messages: Record<Locale, any> = {
 
   },
   vi: {
-    nav: { studio: 'Studio', podcast: 'Podcast', pricing: 'Bảng giá', myWork: 'Tác phẩm của tôi', signIn: 'Đăng nhập' },
+    nav: { studio: 'Studio', podcast: 'Podcast', pricing: 'Bảng giá', myWork: 'Tác phẩm của tôi', signIn: 'Đăng nhập', settings: 'Cài đặt' },
     auth: {
       signInError: 'Đăng nhập thất bại hoặc đã bị hủy. Vui lòng thử lại.',
     },
@@ -6540,6 +6549,7 @@ export const messages: Record<Locale, any> = {
       errPollUnavailable: 'Tác vụ vẫn đang chạy, nhưng tra cứu trạng thái tạm thời không khả dụng. Tiếp tục kiểm tra mà không tính thêm phí.',
       errVideoFailed: 'Tạo thất bại — vui lòng thử lại; nếu tiếp tục xảy ra có thể do chặn nội dung hoặc tín dụng thấp.',
       errGeneric: 'Đã xảy ra lỗi: {code} (thử lại)',
+      errAtlasQuota: 'Khóa Atlas của bạn không hợp lệ hoặc đã hết hạn ngạch — vui lòng kiểm tra và thử lại.',
       defaultProduct: 'Video sản phẩm',
       defaultAdTitle: 'Quảng cáo sản phẩm',
     },
@@ -6897,7 +6907,7 @@ export const messages: Record<Locale, any> = {
 
   },
   th: {
-    nav: { studio: 'Studio', podcast: 'พอดคาสต์', pricing: 'ราคา', myWork: 'ผลงานของฉัน', signIn: 'เข้าสู่ระบบ' },
+    nav: { studio: 'Studio', podcast: 'พอดคาสต์', pricing: 'ราคา', myWork: 'ผลงานของฉัน', signIn: 'เข้าสู่ระบบ', settings: 'การตั้งค่า' },
     auth: {
       signInError: 'การเข้าสู่ระบบล้มเหลวหรือถูกยกเลิก โปรดลองอีกครั้ง',
     },
@@ -7167,6 +7177,7 @@ export const messages: Record<Locale, any> = {
       errPollUnavailable: 'งานยังทำงานอยู่ แต่การตรวจสอบสถานะใช้ไม่ได้ชั่วคราว ตรวจสอบต่อโดยไม่มีค่าใช้จ่ายเพิ่ม',
       errVideoFailed: 'สร้างล้มเหลว — กรุณาลองใหม่ หากยังเป็นอยู่อาจเป็นการบล็อกเนื้อหาหรือเครดิตต่ำ',
       errGeneric: 'เกิดข้อผิดพลาด: {code} (ลองอีกครั้ง)',
+      errAtlasQuota: 'รหัส Atlas ไม่ถูกต้องหรือโควต้าหมดแล้ว — กรุณาตรวจสอบและลองอีกครั้ง',
       defaultProduct: 'วิดีโอสินค้า',
       defaultAdTitle: 'โฆษณาสินค้า',
     },
@@ -7524,7 +7535,7 @@ export const messages: Record<Locale, any> = {
 
   },
   id: {
-    nav: { studio: 'Studio', podcast: 'Podcast', pricing: 'Harga', myWork: 'Karya saya', signIn: 'Masuk' },
+    nav: { studio: 'Studio', podcast: 'Podcast', pricing: 'Harga', myWork: 'Karya saya', signIn: 'Masuk', settings: 'Pengaturan' },
     auth: {
       signInError: 'Login gagal atau dibatalkan. Silakan coba lagi.',
     },
@@ -7794,6 +7805,7 @@ export const messages: Record<Locale, any> = {
       errPollUnavailable: 'Tugas masih berjalan, tapi pencarian status sementara tidak tersedia. Lanjutkan pengecekan tanpa biaya tambahan.',
       errVideoFailed: 'Generasi gagal — silakan coba lagi; jika berlanjut mungkin pemblokiran konten atau kredit rendah.',
       errGeneric: 'Terjadi kesalahan: {code} (coba lagi)',
+      errAtlasQuota: 'Kunci Atlas Anda tidak valid atau kuota habis — periksa dan coba lagi.',
       defaultProduct: 'Video produk',
       defaultAdTitle: 'Iklan produk',
     },
