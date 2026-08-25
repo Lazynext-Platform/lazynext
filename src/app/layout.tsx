@@ -40,7 +40,7 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     alternates: {
       canonical: '/',
-      languages: Object.fromEntries(LOCALES.map((l) => [l, `/?locale=${l}`])),
+      languages: Object.fromEntries(LOCALES.map((l) => [l, l === 'en' ? '/' : `/${l}`])),
     },
   };
 }

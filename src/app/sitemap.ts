@@ -26,15 +26,20 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const entries: MetadataRoute.Sitemap = [];
 
   for (const page of PAGES) {
-    // Build alternate-language links for this page
+    // Build alternate-language links for this page (path-based routes)
     const alternates: Record<string, string> = {};
     for (const loc of LOCALES) {
-      alternates[loc] = `${base}${page}?locale=${loc}`;
+      alternates[loc] = loc === 'en'
+        ? `${base}${page}`
+        : `${base}/${loc}${page}`;
     }
 
     for (const loc of LOCALES) {
+      const url = loc === 'en'
+        ? `${base}${page}`
+        : `${base}/${loc}${page}`;
       entries.push({
-        url: `${base}${page}?locale=${loc}`,
+        url,
         lastModified: now,
         changeFrequency: page === '' ? 'daily' : 'weekly',
         priority: page === '' ? 1.0 : page === '/pricing' ? 0.9 : 0.7,

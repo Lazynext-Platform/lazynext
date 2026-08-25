@@ -22,7 +22,18 @@ export const atlasProvider: PaymentProvider = {
     if (kubedlConfigured()) {
       const logs = await cdkeyLogs(code);
       if (logs === null) throw new Error('INVALID_CODE');
-      // TODO: derive per-code face value from Atlas instead of the flat amount.
+      // Derive per-code face value from Atlas response when available;
+      // fall back to the configured flat amount.
+      const faceValue =
+        (typeof logs === 'object' && logs !== null &&
+          (typeof logs.credits === 'number' ? logs.credits :
+           typeof logs.amount === 'number' ? logs.amount :
+           typeof logs.faceValue === 'number' ? logs.faceValue : 0)) || REDEEM_CREDITS;
+      if (faceValue > 0) {
+        await prisma.redeemedCode.create({ data: { code, userId, amount: faceValue } });
+        await grantCredits(userId, faceValue, 'redeem', code);
+        return { amount: faceValue };
+      }
     } else if (REDEEM_CREDITS <= 0) {
       throw new Error('REDEEM_NOT_CONFIGURED');
     }

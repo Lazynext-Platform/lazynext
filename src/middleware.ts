@@ -95,15 +95,41 @@ if (rateBuckets.size > 500) {
  * country cookie is absent). Subsequent requests just pass through.
  */
 async function handleRequest(req: NextRequest): Promise<NextResponse> {
-  const localeParam = req.nextUrl.searchParams.get('locale') || '';
+  const pathname = req.nextUrl.pathname;
+
+  // Path-based locale routing: /zh, /zh/lazynext-studio, etc.
+  // Strip the locale prefix, set the cookie, and rewrite to the bare path.
+  const pathSegments = pathname.split('/').filter(Boolean);
+  const firstSegment = pathSegments[0] || '';
+  const isLocalePath = (LOCALES as readonly string[]).includes(firstSegment);
+
+  let localeParam = req.nextUrl.searchParams.get('locale') || '';
+  let rewritePath = pathname;
+
+  if (isLocalePath) {
+    localeParam = firstSegment;
+    // Remove the locale prefix from the path
+    pathSegments.shift();
+    rewritePath = '/' + pathSegments.join('/');
+    // Preserve trailing slash if original had one and there are remaining segments
+    if (pathSegments.length === 0) rewritePath = '/';
+  }
+
   const validLocaleParam = (LOCALES as readonly string[]).includes(localeParam) ? localeParam : '';
 
-  // When a valid locale param is present, mutate the request cookies so the
-  // server render below sees it, and persist it on the response.
+  // When a valid locale is determined (from path or query), set the cookie
   const res = validLocaleParam
     ? (() => {
         req.cookies.set('locale', validLocaleParam);
-        return NextResponse.next({ request: { headers: req.headers } });
+        const next = NextResponse.next({ request: { headers: req.headers } });
+        // Rewrite to the bare path so Next.js renders the correct page
+        if (isLocalePath) {
+          const url = req.nextUrl.clone();
+          url.pathname = rewritePath;
+          url.searchParams.delete('locale');
+          return NextResponse.rewrite(url, { request: { headers: req.headers } });
+        }
+        return next;
       })()
     : NextResponse.next();
   if (validLocaleParam) {
