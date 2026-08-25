@@ -40,3 +40,5 @@ scratchpad
 .wrangler
 tsconfig.tsbuildinfo
 .dev.vars
+prisma/prisma/
+worker-configuration.d.ts

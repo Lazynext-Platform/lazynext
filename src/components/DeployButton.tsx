@@ -28,7 +28,7 @@ export function DeployButton() {
         style={{ background: '#00b2fc', color: '#fff' }}
         title={t('deploy.buttonTitle')}
       >
-        <Rocket className="w-3.5 h-3.5" /> {t('deploy.button')}
+        <Rocket className="w-3.5 h-3.5" /> <span className="hidden sm:inline">{t('deploy.button')}</span>
       </button>
 
       {open && (

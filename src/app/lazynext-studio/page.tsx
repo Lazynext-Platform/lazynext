@@ -160,6 +160,7 @@ export default function MarketingStudioPage() {
   const [resumeSnapshot, setResumeSnapshot] = useState<ResumeSnapshot | null>(null);
   const [replica, setReplica] = useState<{ imgPrompt: string } | null>(null); // non-null = replica mode (video prompt filled into text box, editable), stores the image-generation-specific composition prompt
   const [expanding, setExpanding] = useState(false); // AI expanding prompt in progress
+  const [brokenAssets, setBrokenAssets] = useState<Record<string, boolean>>({}); // preview URLs whose <img> failed to load
   const productInput = useRef<HTMLInputElement>(null);
   const avatarInput = useRef<HTMLInputElement>(null);
   const runAbortRef = useRef<AbortController | null>(null);
@@ -334,6 +335,14 @@ export default function MarketingStudioPage() {
     return () => window.removeEventListener('paste', handlePaste);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mounted]);
+
+  // A11y: the example preview dialog must be keyboard-dismissable (Escape).
+  useEffect(() => {
+    if (!preview) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setPreview(null); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [preview]);
 
   // One-click replica: brings the example's product image + product description into the generator, selects the corresponding format, scrolls back to top, user can directly generate the same ad (or swap in their own product image).
   function replicateExample(fid: string) {
@@ -527,15 +536,19 @@ export default function MarketingStudioPage() {
   const selCls = 'appearance-none bg-white/[0.04] rounded-lg pl-2.5 pr-7 py-2 text-xs text-white/90 focus:outline-none focus:ring-1 focus:ring-[#00b2fc]';
 
   // Single uploaded thumbnail (with delete); product images support multiple, person image is single
-  const ThumbSlot = ({ asset, onRemove, label }: { asset: Asset; onRemove: () => void; label: string }) => (
+  const ThumbSlot = ({ asset, onRemove, label }: { asset: Asset; onRemove: () => void; label: string }) => {
+    const failed = Boolean(asset.preview && brokenAssets[asset.preview]);
+    return (
     <div className="relative w-14 h-14 rounded-2xl overflow-hidden border border-white/15 shrink-0">
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={asset.preview} alt={label} className="w-full h-full object-cover" />
+      <img src={asset.preview} alt={label} onError={() => { if (asset.preview) setBrokenAssets((prev) => (prev[asset.preview!] ? prev : { ...prev, [asset.preview!]: true })); }} className={`w-full h-full object-cover ${failed ? 'opacity-25' : ''}`} />
+      {failed && <div className="absolute inset-0 grid place-items-center text-[8px] text-center font-semibold leading-tight px-1" style={{ background: '#b91c1c', color: '#fff' }}>{t('mkStudio.imageFailed')}</div>}
       {asset.uploading && <div className="absolute inset-0 bg-black/60 grid place-items-center"><Loader2 className="w-4 h-4 animate-spin text-white" /></div>}
-      {asset.url && <div className="absolute bottom-0 inset-x-0 text-[8px] text-center font-semibold leading-tight" style={{ background: LIME, color: '#fff' }}>{t('mkStudio.uploaded')}</div>}
+      {asset.url && !failed && <div className="absolute bottom-0 inset-x-0 text-[8px] text-center font-semibold leading-tight" style={{ background: LIME, color: '#fff' }}>{t('mkStudio.uploaded')}</div>}
       <button onClick={onRemove} className="absolute top-0.5 right-0.5 bg-black/60 rounded-full p-0.5"><X className="w-3 h-3 text-white" /></button>
     </div>
-  );
+    );
+  };
   const AddSlot = ({ onClick, label }: { onClick: () => void; label: string }) => (
     <button onClick={onClick} className="w-14 h-14 rounded-2xl bg-white/[0.03] border border-white/10 hover:border-[#00b2fc]/60 hover:bg-white/[0.06] flex flex-col items-center justify-center gap-0.5 text-white/45 hover:text-[#00b2fc] transition shrink-0">
       <Plus className="w-4 h-4" /><span className="text-[8px] uppercase tracking-wide leading-none text-center px-0.5">{label}</span>
@@ -717,11 +730,11 @@ export default function MarketingStudioPage() {
       </div>
 
       {preview && EXAMPLE_VIDEOS[preview] && (
-        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur grid place-items-center p-4" onClick={() => setPreview(null)}>
+        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur grid place-items-center p-4" onClick={() => setPreview(null)} role="dialog" aria-modal="true" aria-label={t('mkStudio.closePreview')}>
           <div className="relative" onClick={(e) => e.stopPropagation()}>
             <video src={EXAMPLE_VIDEOS[preview]} controls autoPlay loop playsInline
               className="max-h-[85vh] w-auto rounded-2xl border border-white/10 bg-black" style={{ aspectRatio: '9 / 16' }} />
-            <button onClick={() => setPreview(null)} className="absolute -top-3 -right-3 w-9 h-9 rounded-full bg-white text-black grid place-items-center shadow-lg"><X className="w-5 h-5" /></button>
+            <button onClick={() => setPreview(null)} aria-label={t('mkStudio.closePreview')} className="absolute -top-3 -right-3 w-9 h-9 rounded-full bg-white text-black grid place-items-center shadow-lg"><X className="w-5 h-5" /></button>
             <div className="mt-3 text-center text-sm text-white/80">{(() => { const pf = AD_FORMATS.find((f) => f.id === preview); return pf ? t(`presets.fmt.${pf.id}.label`) : ''; })()} · {t('mkStudio.clickOutside')}</div>
           </div>
         </div>

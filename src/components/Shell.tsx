@@ -22,7 +22,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
     return (
       <div className="min-h-screen bg-[#131416] text-[#f7f7f8]" style={{ colorScheme: 'dark' }}>
         {children}
-        <div className="fixed top-3 right-4 z-50 flex items-center gap-2">
+        <div className="fixed top-3 right-3 z-50 flex items-center gap-1.5 sm:right-4 sm:gap-2">
           <HistoryButton />
           <CreditBadge />
           <ByokKey />

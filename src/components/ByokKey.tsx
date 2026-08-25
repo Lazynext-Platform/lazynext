@@ -47,7 +47,7 @@ export function ByokKey({ className = '' }: { className?: string }) {
             : 'border-white/15 bg-white/5 text-white/70 hover:border-white/30 hover:text-white'
         } ${className}`}
       >
-        🔑 {active ? t('byok.keyActive') : t('byok.useKey')}
+        🔑 <span className="hidden sm:inline">{active ? t('byok.keyActive') : t('byok.useKey')}</span>
       </button>
 
       {open && (

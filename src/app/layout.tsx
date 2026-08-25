@@ -13,7 +13,9 @@ export async function generateMetadata(): Promise<Metadata> {
   const localeCookie = cookies().get('locale')?.value;
   const locale = ((LOCALES as readonly string[]).includes(localeCookie || '') ? localeCookie : 'en') as Locale;
   const seo = (messages[locale] as any)?.seo || (messages.en as any).seo;
+  const siteUrl = process.env.NEXTAUTH_URL || 'https://lazynext.com';
   return {
+    metadataBase: new URL(siteUrl),
     title: seo.metaTitle,
     description: seo.metaDesc,
     // Atlas OSS force-downloads media when a Referer is sent — drop it so <img>/<video> render inline.
@@ -26,13 +28,18 @@ export async function generateMetadata(): Promise<Metadata> {
       title: seo.metaTitle,
       description: seo.metaDesc,
       type: 'website',
+      url: siteUrl,
+      siteName: 'Lazynext',
+      images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'Lazynext' }],
     },
     twitter: {
       card: 'summary_large_image',
       title: seo.metaTitle,
       description: seo.metaDesc,
+      images: ['/og-image.png'],
     },
     alternates: {
+      canonical: '/',
       languages: Object.fromEntries(LOCALES.map((l) => [l, `/?locale=${l}`])),
     },
   };

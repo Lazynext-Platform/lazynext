@@ -11,6 +11,11 @@ import { CURRENCY_CODES, currencyForCountry } from '@/config/pricing';
  * Returns the user's saved locale/country/currency, falling back to cookies,
  * then to defaults (en/US/USD).
  *
+ * INTENTIONAL: This endpoint is publicly accessible (no auth required) so that
+ * unauthenticated visitors get locale/currency detection via cookies + defaults.
+ * No user-specific data is exposed — only cookie values or hardcoded defaults.
+ * POST requires authentication (returns 401 if not signed in).
+ *
  * POST /api/me/preferences
  * Persists locale/country/currency to the User model and sets cookies.
  * Body: { locale?, country?, currency? }

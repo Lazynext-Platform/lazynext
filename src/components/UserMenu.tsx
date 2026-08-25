@@ -19,9 +19,9 @@ export function UserMenu() {
   if (status !== 'authenticated') {
     return (
       <div className="flex items-center gap-1">
-        <a href="/pricing" className="rounded-full px-3 py-2 text-xs font-medium text-white/60 hover:text-white transition">{t('nav.pricing')}</a>
-        <button onClick={() => signIn('google')} className="rounded-full px-3.5 py-2 text-xs font-medium text-white/75 hover:text-white transition">{t('nav.signIn')}</button>
-        <button onClick={() => signIn('google')} className="rounded-full px-3.5 py-2 text-xs font-bold text-white shadow-lg transition hover:brightness-110" style={{ background: '#00b2fc' }}>{t('home.signUp')}</button>
+        <a href="/pricing" className="hidden rounded-full px-3 py-2 text-xs font-medium text-white/60 hover:text-white transition sm:block">{t('nav.pricing')}</a>
+        <button onClick={() => signIn('google')} className="rounded-full px-2.5 py-2 text-xs font-medium text-white/75 hover:text-white transition sm:px-3.5">{t('nav.signIn')}</button>
+        <button onClick={() => signIn('google')} className="rounded-full px-2.5 py-2 text-xs font-bold text-white shadow-lg transition hover:brightness-110 sm:px-3.5" style={{ background: '#00b2fc' }}>{t('home.signUp')}</button>
       </div>
     );
   }

@@ -78,6 +78,17 @@ npx wrangler secret put DODO_PRODUCT_ELITE
 #   Subscribe to: payment.succeeded
 ```
 
+Seed the studio preset reference images (product/avatar shots used by the
+one-click "Remix this" recipes and the avatar dropdown) into the media bucket.
+The source frames are committed under `public/examples/marketing/reference/`:
+
+```bash
+node scripts/seed-example-media.mjs          # remote bucket from wrangler.jsonc
+node scripts/seed-example-media.mjs --local  # local preview bucket (cf:preview)
+```
+
+Then build and deploy:
+
 ```bash
 npm run cf:build
 npm run cf:deploy
