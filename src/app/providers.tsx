@@ -11,13 +11,16 @@ export default function Providers({
   initialLocale,
 }: {
   children: React.ReactNode;
-  session: Session | null;
+  session?: Session | null;
   initialLocale?: Locale;
 }) {
-  // Both session + initialLocale are read server-side by RootLayout and passed in, so SSR and client first frame
-  // share the same session state and locale → eliminates hydration mismatch (#418).
+  // In Auth.js v5, passing session={null} tells the provider "no session" and it
+  // won't fetch. Passing undefined (or omitting the prop) makes it fetch
+  // /api/auth/session on mount. We omit the prop when session is null so the
+  // client-side SessionProvider always fetches the live session.
+  const sessionProps = session ? { session } : {};
   return (
-    <SessionProvider session={session} refetchOnWindowFocus={false}>
+    <SessionProvider {...sessionProps} refetchOnWindowFocus={false}>
       <I18nProvider initialLocale={initialLocale}>{children}</I18nProvider>
     </SessionProvider>
   );

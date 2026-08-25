@@ -183,11 +183,20 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   },
   callbacks: {
     async session({ session, user }) {
-      if (session.user) {
-        session.user.id = user.id;
-        session.user.credits = (user as { credits?: number }).credits ?? 0;
-      }
-      return session;
+      // In v5 with database strategy, `session` is the raw DB record (includes
+      // sessionToken, userId, etc.). Return a clean object so the client-side
+      // SessionProvider gets the expected { user, expires } shape and no
+      // sensitive fields leak to the browser.
+      return {
+        expires: session.expires,
+        user: {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          image: user.image,
+          credits: (user as { credits?: number }).credits ?? 0,
+        },
+      };
     },
   },
   events: {

@@ -65,7 +65,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
       </head>
       <body className="flex min-h-screen flex-col font-sans" style={{ ['--font-grotesk']: "'Space Grotesk', ui-sans-serif, system-ui, sans-serif" } as React.CSSProperties}>
-        <Providers session={null} initialLocale={initialLocale}>
+        <Providers initialLocale={initialLocale}>
           <Shell>{children}</Shell>
           <CookieBanner />
         </Providers>
