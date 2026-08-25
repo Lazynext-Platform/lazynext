@@ -18,9 +18,9 @@
     "db:push:vercel": "npm run prisma:generate && prisma db push --schema prisma/.generated/schema.neon.prisma",
     "db:studio": "prisma studio",
     "cf:prepare": "DEPLOY_TARGET=cloudflare npm run prisma:generate && DEPLOY_TARGET=cloudflare npm run platform:prepare && node scripts/patch-wrangler-types.mjs",
-    "cf:build": "npm run cf:prepare && opennextjs-cloudflare build --dangerouslyUseUnsupportedNextVersion",
-    "cf:preview": "npm run cf:prepare && opennextjs-cloudflare build --dangerouslyUseUnsupportedNextVersion && opennextjs-cloudflare preview",
-    "cf:deploy": "npm run cf:prepare && opennextjs-cloudflare build --dangerouslyUseUnsupportedNextVersion && opennextjs-cloudflare deploy",
+    "cf:build": "npm run cf:prepare && opennextjs-cloudflare build --dangerouslyUseUnsupportedNextVersion && node scripts/trim-prisma-wasm.mjs",
+    "cf:preview": "npm run cf:prepare && opennextjs-cloudflare build --dangerouslyUseUnsupportedNextVersion && node scripts/trim-prisma-wasm.mjs && opennextjs-cloudflare preview",
+    "cf:deploy": "npm run cf:prepare && opennextjs-cloudflare build --dangerouslyUseUnsupportedNextVersion && node scripts/trim-prisma-wasm.mjs && opennextjs-cloudflare deploy",
     "setup:dodo": "node scripts/setup-dodo-products.mjs",
     "setup:dodo:localized": "node scripts/setup-dodo-localized-prices.mjs"
   },
