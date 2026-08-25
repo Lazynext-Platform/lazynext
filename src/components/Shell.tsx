@@ -21,24 +21,28 @@ export function Shell({ children }: { children: React.ReactNode }) {
     // Star apps use a unified dark full-bleed shell (no light Navbar/sidebar/Footer), page content sits on top.
     return (
       <div className="min-h-screen bg-[#131416] text-[#f7f7f8]" style={{ colorScheme: 'dark' }}>
-        {children}
-        <div className="fixed top-3 right-3 z-50 flex items-center gap-1.5 sm:right-4 sm:gap-2">
+        <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[100] focus:rounded focus:bg-[#00b2fc] focus:px-4 focus:py-2 focus:text-white">Skip to content</a>
+        <main id="main-content">
+          {children}
+        </main>
+        <nav aria-label="Toolbar" className="fixed top-3 right-3 z-50 flex items-center gap-1.5 sm:right-4 sm:gap-2">
           <HistoryButton />
           <CreditBadge />
           <ByokKey />
           <LangToggle />
           <UserMenu />
           <DeployButton />
-        </div>
+        </nav>
       </div>
     );
   }
   return (
     <>
+      <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[100] focus:rounded focus:bg-[#00b2fc] focus:px-4 focus:py-2 focus:text-white">Skip to content</a>
       <Navbar />
       <div className="mx-auto flex w-full max-w-[1440px] flex-1 gap-6 px-4 py-8 sm:py-10">
         <AppSidebar />
-        <main className="min-w-0 flex-1">{children}</main>
+        <main id="main-content" className="min-w-0 flex-1">{children}</main>
       </div>
       <Footer />
     </>
