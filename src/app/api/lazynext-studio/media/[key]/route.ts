@@ -4,14 +4,16 @@ export const dynamic = 'force-dynamic';
 
 export async function GET(
   request: Request,
-  { params }: { params: { key: string } },
+  { params }: { params: Promise<{ key: string }> },
 ) {
-  return serveMedia(request, params.key, true);
+  const { key } = await params;
+  return serveMedia(request, key, true);
 }
 
 export async function HEAD(
   request: Request,
-  { params }: { params: { key: string } },
+  { params }: { params: Promise<{ key: string }> },
 ) {
-  return serveMedia(request, params.key, false);
+  const { key } = await params;
+  return serveMedia(request, key, false);
 }

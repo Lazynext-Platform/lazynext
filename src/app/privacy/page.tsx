@@ -3,7 +3,7 @@ import { cookies } from 'next/headers';
 import { LOCALES, type Locale, messages } from '@/i18n/messages';
 
 export async function generateMetadata(): Promise<Metadata> {
-  const localeCookie = cookies().get('locale')?.value;
+  const localeCookie = (await cookies()).get('locale')?.value;
   const locale = ((LOCALES as readonly string[]).includes(localeCookie || '') ? localeCookie : 'en') as Locale;
   const legal = (messages[locale] as any)?.legal?.privacy || (messages.en as any).legal.privacy;
   return {
@@ -13,8 +13,8 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default function PrivacyPage() {
-  const localeCookie = cookies().get('locale')?.value;
+export default async function PrivacyPage() {
+  const localeCookie = (await cookies()).get('locale')?.value;
   const locale = ((LOCALES as readonly string[]).includes(localeCookie || '') ? localeCookie : 'en') as Locale;
   const t = (messages[locale] as any)?.legal?.privacy || (messages.en as any).legal.privacy;
   const year = new Date().getFullYear();

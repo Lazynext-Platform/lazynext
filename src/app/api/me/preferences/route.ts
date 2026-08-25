@@ -22,7 +22,7 @@ import { CURRENCY_CODES, currencyForCountry } from '@/config/pricing';
  */
 export async function GET() {
   const session = await getServerSession(authOptions);
-  const c = cookies();
+  const c = await cookies();
 
   let locale = c.get('locale')?.value || 'en';
   let country = c.get('country')?.value || 'US';

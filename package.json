@@ -6,11 +6,11 @@
   "scripts": {
     "dev": "npm run platform:prepare && next dev",
     "dev:vercel": "DEPLOY_TARGET=vercel npm run dev",
-    "build": "npm run prisma:generate && npm run platform:prepare && next build",
+    "build": "npm run prisma:generate && npm run platform:prepare && next build --webpack",
     "build:vercel": "DEPLOY_TARGET=vercel npm run build",
     "start": "next start",
     "test": "node --test --experimental-strip-types --no-warnings test/**/*.test.ts",
-    "lint": "next lint",
+    "lint": "eslint src/",
     "postinstall": "npm run prisma:generate && npm run platform:prepare",
     "prisma:generate": "node scripts/generate-prisma-clients.mjs",
     "platform:prepare": "node scripts/prepare-platform.mjs",
@@ -25,6 +25,7 @@
     "setup:dodo:localized": "node scripts/setup-dodo-localized-prices.mjs"
   },
   "dependencies": {
+    "@eslint/eslintrc": "^3.3.6",
     "@ffmpeg/ffmpeg": "^0.12.15",
     "@ffmpeg/util": "^0.12.2",
     "@neondatabase/serverless": "^0.10.4",
@@ -35,13 +36,13 @@
     "@vercel/blob": "^2.6.1",
     "dodopayments": "^2.47.0",
     "lucide-react": "^1.22.0",
-    "next": "^14.2.15",
+    "next": "^16.3.2",
     "next-auth": "^4.24.15",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
-    "@opennextjs/cloudflare": "^1.17.1",
+    "@opennextjs/cloudflare": "^1.20.2",
     "@prisma/adapter-better-sqlite3": "^7.9.1",
     "@types/node": "^20.16.11",
     "@types/react": "^18.3.11",
@@ -50,8 +51,8 @@
     "@typescript-eslint/parser": "^7.18.0",
     "autoprefixer": "^10.4.20",
     "better-sqlite3": "^13.0.3",
-    "eslint": "^8.57.1",
-    "eslint-config-next": "^14.2.15",
+    "eslint": "^9.39.5",
+    "eslint-config-next": "^16.3.2",
     "postcss": "^8.4.47",
     "prisma": "6.19.3",
     "tailwindcss": "^3.4.13",

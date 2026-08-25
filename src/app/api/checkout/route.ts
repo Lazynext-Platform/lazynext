@@ -21,10 +21,10 @@ export async function POST(req: Request) {
   const origin = req.headers.get('origin') || process.env.NEXTAUTH_URL || '';
 
   // ── Global: gather locale/country/currency from cookies (set by the geo-detection layer) ──
-  const localeCookie = cookies().get('locale')?.value;
+  const localeCookie = (await cookies()).get('locale')?.value;
   const locale = (LOCALES as readonly string[]).includes(localeCookie || '') ? (localeCookie as Locale) : 'en';
-  const country = cookies().get('country')?.value || undefined;
-  const currency = cookies().get('currency')?.value || undefined;
+  const country = (await cookies()).get('country')?.value || undefined;
+  const currency = (await cookies()).get('currency')?.value || undefined;
 
   try {
     const { url } = await provider.createCheckout({

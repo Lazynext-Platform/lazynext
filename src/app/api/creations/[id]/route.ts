@@ -8,24 +8,26 @@ import { grantCredits } from '@/lib/credits';
 import { pollMarketingTask } from '@/lib/lazynext-studio/poll-task';
 
 // When frontend generation is interrupted/fails, marks own still-processing placeholder creation as failed (creations page shows "failed" instead of spinning forever).
-async function __byokPOST(req: Request, { params }: { params: { id: string } }) {
+async function __byokPOST(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
   const body = await req.json().catch(() => ({}));
   if (body.status !== 'failed') return NextResponse.json({ error: 'bad_status' }, { status: 400 });
+  const { id } = await params;
   await prisma.creation.updateMany({
-    where: { id: params.id, userId: session.user.id, status: 'processing' },
+    where: { id, userId: session.user.id, status: 'processing' },
     data: { status: 'failed', error: (typeof body.error === 'string' ? body.error : 'canceled').slice(0, 500) },
   });
   return NextResponse.json({ ok: true });
 }
 
 // Polled by the client. Each call advances the task status at most once.
-async function __byokGET(_req: Request, { params }: { params: { id: string } }) {
+async function __byokGET(_req: Request, { params }: { params: Promise<{ id: string }> }) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
 
-  const c = await prisma.creation.findUnique({ where: { id: params.id } });
+  const { id } = await params;
+  const c = await prisma.creation.findUnique({ where: { id } });
   if (!c || c.userId !== session.user.id)
     return NextResponse.json({ error: 'not_found' }, { status: 404 });
 
@@ -117,12 +119,13 @@ async function __byokGET(_req: Request, { params }: { params: { id: string } }) 
 
 // Delete a creation (owner only). Removes the D1 record. R2 media is not deleted
 // (orphaned media keys are harmless and cheaper than tracking references).
-async function __byokDELETE(_req: Request, { params }: { params: { id: string } }) {
+async function __byokDELETE(_req: Request, { params }: { params: Promise<{ id: string }> }) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+  const { id } = await params;
 
   const result = await prisma.creation.deleteMany({
-    where: { id: params.id, userId: session.user.id },
+    where: { id, userId: session.user.id },
   });
   if (result.count === 0) return NextResponse.json({ error: 'not_found' }, { status: 404 });
   return NextResponse.json({ ok: true });

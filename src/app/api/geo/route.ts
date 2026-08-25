@@ -10,8 +10,8 @@ import { currencyForCountry } from '@/config/pricing';
  */
 export async function GET(req: Request) {
   // Try to get country from cookie first (already detected)
-  const existingCountry = cookies().get('country')?.value;
-  const existingCurrency = cookies().get('currency')?.value;
+  const existingCountry = (await cookies()).get('country')?.value;
+  const existingCurrency = (await cookies()).get('currency')?.value;
 
   // Get IP from various headers (Vercel, Cloudflare, generic proxies)
   const headers = Object.fromEntries(req.headers.entries());

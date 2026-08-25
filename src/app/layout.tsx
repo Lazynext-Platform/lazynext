@@ -10,7 +10,7 @@ import { CookieBanner } from '@/components/CookieBanner';
 
 
 export async function generateMetadata(): Promise<Metadata> {
-  const localeCookie = cookies().get('locale')?.value;
+  const localeCookie = (await cookies()).get('locale')?.value;
   const locale = ((LOCALES as readonly string[]).includes(localeCookie || '') ? localeCookie : 'en') as Locale;
   const seo = (messages[locale] as any)?.seo || (messages.en as any).seo;
   const siteUrl = process.env.NEXTAUTH_URL || 'https://lazynext.com';
@@ -54,7 +54,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const session = await getServerSession(authOptions).catch(() => null);
   // Read the user language from a cookie and render that language during SSR, then pass it to the
   // client as the first-frame initial value -> language layer SSR/client consistency.
-  const localeCookie = cookies().get('locale')?.value;
+  const localeCookie = (await cookies()).get('locale')?.value;
   const initialLocale = ((LOCALES as readonly string[]).includes(localeCookie || '') ? localeCookie : 'en') as Locale;
   return (
     <html lang={initialLocale} dir={RTL_LOCALES.has(initialLocale) ? 'rtl' : 'ltr'}>
