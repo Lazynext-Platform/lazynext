@@ -165,13 +165,13 @@ async function handleRequest(req: NextRequest): Promise<NextResponse> {
     return res;
   }
 
-  // On Cloudflare Workers, use the native request.cf geo data (instant, no
-  // external fetch). This avoids the slow ipapi.co call that was causing
-  // "Worker exceeded resource limits" 503 errors.
-  // On Vercel, cf is undefined, so we fall back to ipapi.co with a short timeout.
-  const cf = (req as unknown as { cf?: { country?: string; timezone?: string } }).cf;
-  if (cf?.country && /^[A-Z]{2}$/.test(cf.country)) {
-    const country = cf.country.toUpperCase();
+  // On Cloudflare Workers, use the cf-ipcountry header (set by Cloudflare on
+  // every request) for instant geo detection. The req.cf property is not
+  // available on the Next.js Request object in the OpenNext adapter.
+  // On Vercel, the header is absent, so we fall back to ipapi.co.
+  const cfCountry = headers.get('cf-ipcountry')?.trim();
+  if (cfCountry && /^[A-Z]{2}$/.test(cfCountry)) {
+    const country = cfCountry.toUpperCase();
     const currency = currencyForCountry(country);
     res.cookies.set('country', country, { path: '/', maxAge: 31536000, sameSite: 'lax' });
     res.cookies.set('currency', currency, { path: '/', maxAge: 31536000, sameSite: 'lax' });
