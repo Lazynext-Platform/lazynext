@@ -220,7 +220,7 @@ const SECURITY_HEADERS: Record<string, string> = {
     "font-src 'self' https://fonts.gstatic.com",
     "img-src 'self' data: blob: https:",
     "media-src 'self' blob: https:",
-    "connect-src 'self' https://*.atlascloud.ai https://ipapi.co https://*.dodopayments.com https://cloudflareinsights.com",
+    "connect-src 'self' https://*.atlascloud.ai https://*.dodopayments.com https://cloudflareinsights.com",
     "frame-ancestors 'none'",
     "form-action 'self'",
     "base-uri 'self'",
