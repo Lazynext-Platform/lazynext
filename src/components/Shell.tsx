@@ -15,8 +15,13 @@ import { ByokKey } from '@/components/ByokKey';
 // Other pages keep the SaaS starter Navbar + sidebar + Footer shell.
 const IMMERSIVE = ['/', '/pricing', '/my-work', '/lazynext-studio', '/ad-reference', '/drama-studio', '/ad-skit'];
 
+// Strip an optional locale prefix (e.g. /en, /zh) from the pathname so the
+// immersive layout check works on locale-prefixed routes too.
+const LOCALE_RE = /^\/(en|zh|ja|es|ko|pt|fr|de|ar|hi|vi|th|id)(?=\/|$)/;
+
 export function Shell({ children }: { children: React.ReactNode }) {
-  const p = usePathname() || '';
+  const raw = usePathname() || '';
+  const p = raw.replace(LOCALE_RE, '') || '/';
   if (IMMERSIVE.some((r) => p === r || p.startsWith(r + '/'))) {
     // Star apps use a unified dark full-bleed shell (no light Navbar/sidebar/Footer), page content sits on top.
     return (
