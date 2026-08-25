@@ -196,6 +196,16 @@ export function applySecurityHeaders(res: NextResponse): NextResponse {
 
 export async function middleware(req: NextRequest): Promise<NextResponse> {
   const pathname = req.nextUrl.pathname;
+  const rawUrl = req.url;
+
+  // CVE-2026-3125 mitigation: Block /cdn-cgi/ path normalization bypass.
+  // @opennextjs/cloudflare <=1.17.0 has an SSRF via backslash bypass
+  // (/cdn-cgi\image/ instead of /cdn-cgi/image/). Browsers normalize
+  // backslashes, so this only affects non-browser HTTP clients (curl --path-as-is).
+  // Block any request whose raw URL contains /cdn-cgi followed by a backslash.
+  if (/\/cdn-cgi[\\/]/i.test(rawUrl) || /\/cdn-cgi[\\/]/i.test(pathname)) {
+    return new NextResponse('Forbidden', { status: 403 });
+  }
 
   // API routes: apply rate limiting + security headers only (no geo/locale)
   // Skip rate limiting for webhooks (external service callbacks) and auth callbacks
