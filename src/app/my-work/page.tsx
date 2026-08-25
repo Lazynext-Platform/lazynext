@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useSession, signIn } from 'next-auth/react';
-import { Download, Loader2, Clock, Play, X, Film } from 'lucide-react';
+import { Download, Loader2, Clock, Play, X, Film, Trash2 } from 'lucide-react';
 import { useI18n } from '@/i18n/provider';
 import { byokHeaders } from '@/lib/byok';
 import { formatDateTime } from '@/lib/i18n-format';
@@ -83,6 +83,20 @@ export default function MyWorkPage() {
   }, [status]);
 
   const generating = items?.filter((c) => c.status === 'processing').length || 0;
+
+  const handleDelete = async (id: string) => {
+    if (!confirm(t('myWork.deleteConfirm'))) return;
+    setItems((prev) => prev?.filter((c) => c.id !== id) ?? null);
+    try {
+      await fetch(`/api/creations/${id}`, { method: 'DELETE' });
+    } catch {
+      // Optimistic delete failed — reload to restore
+      fetch('/api/creations', { cache: 'no-store' })
+        .then((r) => r.json())
+        .then((j) => setItems(((j.creations || []) as Creation[]).filter((c) => Boolean(SOURCE[c.templateId]))))
+        .catch(() => {});
+    }
+  };
 
   return (
     <div className="min-h-screen" style={{ background: '#131416' }}>
@@ -208,7 +222,10 @@ export default function MyWorkPage() {
                       {badge && <span className="absolute left-2 top-2 rounded bg-black/60 px-2 py-0.5 text-[10px] font-medium text-white/90">{badge}</span>}
                     </div>
                     <div className="p-3">
-                      <div className="truncate text-xs font-medium text-white/60">{title}</div>
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="truncate text-xs font-medium text-white/60">{title}</div>
+                        <button onClick={() => handleDelete(c.id)} className="shrink-0 text-white/30 hover:text-red-400 transition" aria-label={t('myWork.delete')}><Trash2 className="h-3.5 w-3.5" /></button>
+                      </div>
                       <div className="mt-1 flex items-center gap-1 text-[10px] text-white/40"><Clock className="h-2.5 w-2.5" />{time}</div>
                     </div>
                   </div>
@@ -235,7 +252,10 @@ export default function MyWorkPage() {
                     </div>
                   </button>
                   <div className="p-3">
-                    <div className="truncate text-xs font-medium">{title}</div>
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="truncate text-xs font-medium">{title}</div>
+                      <button onClick={() => handleDelete(c.id)} className="shrink-0 text-white/30 hover:text-red-400 transition" aria-label={t('myWork.delete')}><Trash2 className="h-3.5 w-3.5" /></button>
+                    </div>
                     <div className="mt-1 flex items-center gap-1 text-[10px] text-white/40"><Clock className="h-2.5 w-2.5" />{time}</div>
                   </div>
                 </div>

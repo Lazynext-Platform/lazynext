@@ -115,5 +115,19 @@ async function __byokGET(_req: Request, { params }: { params: { id: string } }) 
   }
 }
 
+// Delete a creation (owner only). Removes the D1 record. R2 media is not deleted
+// (orphaned media keys are harmless and cheaper than tracking references).
+async function __byokDELETE(_req: Request, { params }: { params: { id: string } }) {
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.id) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+
+  const result = await prisma.creation.deleteMany({
+    where: { id: params.id, userId: session.user.id },
+  });
+  if (result.count === 0) return NextResponse.json({ error: 'not_found' }, { status: 404 });
+  return NextResponse.json({ ok: true });
+}
+
 export const POST = withAtlas(__byokPOST);
 export const GET = withAtlas(__byokGET);
+export const DELETE = withAtlas(__byokDELETE);
