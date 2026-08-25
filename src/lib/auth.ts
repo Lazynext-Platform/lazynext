@@ -144,6 +144,20 @@ const cookieOptions = {
   secure: useSecureCookies,
 };
 
+// OAuth flow cookies (state, PKCE verifier) must be sent on the cross-site
+// redirect from Google back to our callback URL. SameSite=Lax cookies set via
+// fetch() responses are not reliably sent on cross-site top-level redirects in
+// modern Chrome (the 2-minute Lax+POST mitigation and third-party cookie
+// restrictions interfere). Use SameSite=None + Secure so the state and PKCE
+// cookies survive the Google → lazynext.com redirect.
+const oauthCookieOptions = {
+  httpOnly: true,
+  sameSite: 'none' as const,
+  path: '/',
+  secure: true,
+  maxAge: 60 * 15,
+};
+
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   providers: buildProviders(),
@@ -164,6 +178,16 @@ export const authOptions: NextAuthOptions = {
     csrfToken: {
       name: `${useSecureCookies ? '__Host-' : ''}next-auth.csrf-token`,
       options: { ...cookieOptions, secure: useSecureCookies },
+    },
+    // Override the default state and PKCE cookies to use SameSite=None so they
+    // are sent on the cross-site redirect from Google back to our callback.
+    state: {
+      name: `${cookiePrefix}next-auth.state`,
+      options: useSecureCookies ? oauthCookieOptions : { ...oauthCookieOptions, secure: false, sameSite: 'lax' as const },
+    },
+    pkceCodeVerifier: {
+      name: `${cookiePrefix}next-auth.pkce.code_verifier`,
+      options: useSecureCookies ? oauthCookieOptions : { ...oauthCookieOptions, secure: false, sameSite: 'lax' as const },
     },
   },
   callbacks: {
