@@ -13,7 +13,7 @@ export function LanguageSwitcher() {
         aria-label={t('common.language')}
         value={locale}
         onChange={(e) => setLocale(e.target.value as Locale)}
-        className="w-full cursor-pointer appearance-none rounded-xl border border-white/10 bg-white/[0.04] py-2.5 pl-8 pr-6 text-sm font-medium text-white outline-none transition focus:border-[#00b2fc]"
+        className="w-[110px] cursor-pointer appearance-none rounded-xl border border-white/10 bg-white/[0.04] py-2 pl-8 pr-6 text-sm font-medium text-white outline-none transition focus:border-[#00b2fc]"
       >
         {LOCALES.map((l) => (
           <option key={l} value={l} className="bg-neutral-900 text-white">
