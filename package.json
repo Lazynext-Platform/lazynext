@@ -18,8 +18,7 @@
     "cf:build": "npm run cf:prepare && opennextjs-cloudflare build --dangerouslyUseUnsupportedNextVersion && node scripts/trim-prisma-wasm.mjs",
     "cf:preview": "npm run cf:prepare && opennextjs-cloudflare build --dangerouslyUseUnsupportedNextVersion && node scripts/trim-prisma-wasm.mjs && opennextjs-cloudflare preview",
     "cf:deploy": "npm run cf:prepare && opennextjs-cloudflare build --dangerouslyUseUnsupportedNextVersion && node scripts/trim-prisma-wasm.mjs && npx wrangler deploy --dry-run --outdir .open-next/dist && node scripts/patch-worker.mjs && npx wrangler deploy --no-bundle --config .open-next/dist/wrangler.jsonc",
-    "setup:dodo": "node scripts/setup-dodo-products.mjs",
-    "setup:dodo:localized": "node scripts/setup-dodo-localized-prices.mjs"
+    "setup:dodo": "node scripts/setup-dodo-products.mjs"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.11.3",
