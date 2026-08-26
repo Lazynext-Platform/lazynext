@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import type { CreditPack } from '@/config/pricing';
 import { CURRENCIES, displayPrice } from '@/config/pricing';
 import { useI18n } from '@/i18n/provider';
@@ -16,6 +17,7 @@ export default function PricingClient({
   mode: 'checkout' | 'redeem';
 }) {
   const { data: session } = useSession();
+  const router = useRouter();
   const { t, locale } = useI18n();
   const [busy, setBusy] = useState<string | null>(null);
   const [code, setCode] = useState('');
@@ -33,7 +35,7 @@ export default function PricingClient({
   }
 
   async function buy(packId: string) {
-    if (!session) return window.location.href = '/';
+    if (!session) { router.push('/'); return; }
     setMsg(null);
     setBusy(packId);
     try {
@@ -60,7 +62,7 @@ export default function PricingClient({
   }
 
   async function redeem() {
-    if (!session) return window.location.href = '/';
+    if (!session) { router.push('/'); return; }
     setMsg(null);
     setBusy('redeem');
     try {

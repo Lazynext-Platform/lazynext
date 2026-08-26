@@ -194,16 +194,20 @@ export default function MyWorkPage() {
 
               // ② Failed: placeholder card (can retry in the corresponding studio)
               if (c.status === 'failed' || !url) {
+                const studioHref = c.templateId === 'lazynext-studio' ? '/lazynext-studio' : c.templateId === 'drama-studio' ? '/drama-studio' : c.templateId === 'ad-reference' ? '/ad-reference' : c.templateId === 'ad-skit' ? '/ad-skit' : null;
                 return (
                   <div key={c.id} className="overflow-hidden rounded-2xl border border-red-500/25 bg-black/30">
                     <div className="relative aspect-[9/16] w-full">
                       {c.inputImage && (
-                         
+
                         <img src={c.inputImage} alt="" className="h-full w-full object-cover opacity-25" referrerPolicy="no-referrer" />
                       )}
                       <div className="absolute inset-0 grid place-items-center gap-2 bg-black/40">
                         <div className="grid h-11 w-11 place-items-center rounded-full bg-red-500/15"><X className="h-5 w-5 text-red-400" /></div>
                         <span className="text-xs font-medium text-red-300/90">{t('myWork.failed')}</span>
+                        {studioHref && (
+                          <Link href={studioHref} className="mt-1 rounded-lg bg-white/10 px-3 py-1.5 text-[11px] font-medium text-white/80 transition hover:bg-white/15">{t('dashboard.startNow')}</Link>
+                        )}
                       </div>
                       {badge && <span className="absolute left-2 top-2 rounded bg-black/60 px-2 py-0.5 text-[10px] font-medium text-white/90">{badge}</span>}
                     </div>

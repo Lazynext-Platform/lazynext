@@ -5,7 +5,6 @@ import { useSession } from 'next-auth/react';
 import { useI18n } from '@/i18n/provider';
 import { Globe, Check, Loader2 } from 'lucide-react';
 import { CURRENCIES } from '@/config/pricing';
-import { getCountryName, getCurrencyName } from '@/lib/i18n-format';
 
 // Comprehensive country list (ISO 3166-1 alpha-2) with native names.
 // Grouped by region for the selector. Region labels are translated via t('country.regionXxx').
@@ -82,7 +81,7 @@ const ALL_COUNTRIES = COUNTRY_GROUPS.flatMap((g) => g.countries);
 
 export function CountrySelector() {
   const { data: session } = useSession();
-  const { t, locale } = useI18n();
+  const { t } = useI18n();
   const [country, setCountry] = useState('US');
   const [currency, setCurrency] = useState('USD');
   const [saving, setSaving] = useState(false);
@@ -138,7 +137,7 @@ export function CountrySelector() {
               <optgroup key={group.labelKey} label={t(group.labelKey)} className="bg-neutral-900 text-white">
                 {group.countries.map((c) => (
                   <option key={c.code} value={c.code} className="bg-neutral-900 text-white">
-                    {getCountryName(c.code, locale)} ({c.code})
+                    {c.name} ({c.code})
                   </option>
                 ))}
               </optgroup>
@@ -155,7 +154,7 @@ export function CountrySelector() {
           >
             {CURRENCIES.map((c) => (
               <option key={c.code} value={c.code} className="bg-neutral-900 text-white">
-                {c.symbol} {c.code} — {getCurrencyName(c.code, locale)}
+                {c.symbol} {c.code} — {c.name}
               </option>
             ))}
           </select>

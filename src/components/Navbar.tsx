@@ -73,7 +73,7 @@ export function Navbar() {
                 />
               )}
               <button
-                onClick={() => signOut()}
+                onClick={() => signOut({ callbackUrl: window.location.origin })}
                 title={t('common.signOut')}
                 className="shrink-0 rounded-lg p-2 text-white/40 transition hover:bg-white/[0.06] hover:text-white/80"
               >

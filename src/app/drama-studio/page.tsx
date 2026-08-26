@@ -1,12 +1,14 @@
 'use client';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import { AlertCircle, CheckCircle2, Download, Film, ImagePlus, Loader2, Pencil, RefreshCw, Video, Wand2, X } from 'lucide-react';
 import { uploadDirectMediaIfSupported } from '@/lib/client-media-upload';
 import { composeAdReel } from '@/lib/compose-client';
 import { DRAMA_STYLES } from '@/lib/drama/prompt';
 import { videoCredits } from '@/lib/video-pricing';
 import { useI18n } from '@/i18n/provider';
+import { AssetPicker } from '@/components/AssetPicker';
 import { useMounted } from '@/lib/use-mounted';
 
 // Visual specs unified with lazynext-studio: dark #131416 + cyan #00b2fc + Space Grotesk
@@ -115,6 +117,7 @@ function pollGen(getUrl: string): Promise<string> {
 
 export default function DramaStudioPage() {
   const { status } = useSession();
+  const router = useRouter();
   const mounted = useMounted();
   const { t } = useI18n();
   const [topic, setTopic] = useState('');
@@ -279,7 +282,7 @@ export default function DramaStudioPage() {
   }, [mounted, script, shots, charAssets, sceneAsset, productAssets, topic, videoRatio, videoResolution, creationId]);
 
   async function genScript() {
-    if (status !== 'authenticated') { window.location.href = '/'; return; }
+    if (status !== 'authenticated') { router.push('/'); return; }
     if (!topic.trim()) { setErr(t('drama.enterTopic')); return; }
     setErr(null); setNotice(null); setBusy('script'); setScript(null); setShots([]); setCharAssets({}); setSceneAsset({ status: 'idle' }); setCreationId(''); creationIdRef.current = ''; setCompose({ status: 'idle', frac: 0, note: '', url: '' });
     try {
@@ -411,7 +414,7 @@ export default function DramaStudioPage() {
 
   // STAGE A button: generate/complete portraits + scene image (failed ones can retry)
   async function genAssets() {
-    if (status !== 'authenticated') { window.location.href = '/'; return; }
+    if (status !== 'authenticated') { router.push('/'); return; }
     if (!script) return;
     setErr(null); setBusy('assets');
     try {
@@ -429,7 +432,7 @@ export default function DramaStudioPage() {
 
   // Single character portrait (re)generation: reuses single-character logic, syncs folder on completion. User can edit appearance then re-generate a specific character (doesn't affect others).
   async function genOneCharacter(key: string) {
-    if (status !== 'authenticated') { window.location.href = '/'; return; }
+    if (status !== 'authenticated') { router.push('/'); return; }
     const c = script?.characters?.find((x) => x.key === key);
     if (!c) return;
     setErr(null);
@@ -455,7 +458,7 @@ export default function DramaStudioPage() {
   }
   // Standalone (re)generate scene image: can retry individually after failure (no need to rerun everything), syncs folder on completion.
   async function genOneScene() {
-    if (status !== 'authenticated') { window.location.href = '/'; return; }
+    if (status !== 'authenticated') { router.push('/'); return; }
     if (!script) return;
     setErr(null);
     setSceneAsset({ status: 'run' });
@@ -531,7 +534,7 @@ export default function DramaStudioPage() {
 
   // One-click all: ensure assets ready → generate each shot sequentially (failure doesn't interrupt) → auto-stitch when all done. Each shot can retry individually.
   async function genAllShots() {
-    if (status !== 'authenticated') { window.location.href = '/'; return; }
+    if (status !== 'authenticated') { router.push('/'); return; }
     if (!script?.segments?.length) return;
     setErr(null); setBusy('all'); setCompose({ status: 'idle', frac: 0, note: '', url: '' });
     if (shots.length !== script.segments.length) {
@@ -664,6 +667,9 @@ export default function DramaStudioPage() {
               <button onClick={() => productInput.current?.click()} className="inline-flex items-center gap-1 px-2.5 py-2 rounded-lg text-[11px] text-white/55 bg-white/[0.03] border border-white/10 hover:border-[#00b2fc]/60 transition" title={t('drama.uploadProductTitle', { max: MAX_PRODUCT_IMAGES })}>
                 <ImagePlus className="w-3.5 h-3.5" />{t('drama.uploadProduct', { n: productAssets.length, max: MAX_PRODUCT_IMAGES })}
               </button>
+            )}
+            {productAssets.length < MAX_PRODUCT_IMAGES && (
+              <AssetPicker kind="product" label={t('assets.pickProduct')} onSelect={(url) => setProductAssets((prev) => [...prev, { preview: url, url }])} />
             )}
             <button onClick={genScript} disabled={busy !== null || !hasCreditsForScript}
               className="ml-auto px-6 py-2.5 rounded-xl font-extrabold text-sm inline-flex items-center gap-2 disabled:opacity-50 transition hover:brightness-110"

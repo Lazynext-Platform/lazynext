@@ -207,6 +207,9 @@ async function handleRequest(req: NextRequest): Promise<NextResponse> {
 // Baseline security headers for every response. CSP is intentionally pragmatic
 // (Next.js requires inline scripts/styles); media/img allow HTTPS because model
 // outputs and avatars are served from Atlas OSS / Vercel Blob / Google.
+// In development, React/Turbopack requires 'unsafe-eval' for stack
+// reconstruction; production keeps the strict policy (no unsafe-eval).
+const isDev = process.env.NODE_ENV !== 'production';
 const SECURITY_HEADERS: Record<string, string> = {
   'Strict-Transport-Security': 'max-age=63072000; includeSubDomains; preload',
   'X-Content-Type-Options': 'nosniff',
@@ -215,7 +218,7 @@ const SECURITY_HEADERS: Record<string, string> = {
   'Permissions-Policy': 'camera=(), microphone=(), geolocation=(), interest-cohort=()',
   'Content-Security-Policy': [
     "default-src 'self'",
-    "script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com",
+    `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ''} https://static.cloudflareinsights.com`,
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "font-src 'self' https://fonts.gstatic.com",
     "img-src 'self' data: blob: https:",

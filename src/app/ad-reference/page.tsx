@@ -2,8 +2,10 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { useI18n } from '@/i18n/provider';
+import { AssetPicker } from '@/components/AssetPicker';
 import { useMounted } from '@/lib/use-mounted';
 import { uploadDirectMediaIfSupported } from '@/lib/client-media-upload';
 import { videoCredits } from '@/lib/video-pricing';
@@ -128,6 +130,7 @@ const AD_REF_SESSION_KEY = 'adref-session-v1';
 export default function AdReferencePage() {
   const { t } = useI18n();
   const { status } = useSession();
+  const router = useRouter();
   const mounted = useMounted();
   const [refVideo, setRefVideo] = useState<Slot>(null);
   const [refVideoSeconds, setRefVideoSeconds] = useState(0); // reference video duration (seconds), read on upload; 0 for unknown example videos (billing/estimate falls back to 30s)
@@ -263,7 +266,7 @@ export default function AdReferencePage() {
   }
 
   async function generate() {
-    if (status !== 'authenticated') { window.location.href = '/'; return; }
+    if (status !== 'authenticated') { router.push('/'); return; }
     if (!refVideo) return;
     setError(''); setResult('');
     let cid = ''; // work placeholder id, updated on completion/failure
@@ -418,7 +421,7 @@ export default function AdReferencePage() {
                   <button onClick={() => ref.current?.click()}
                     className="w-full aspect-square rounded-xl border border-dashed border-white/15 bg-white/[0.03] hover:border-white/30 transition overflow-hidden flex items-center justify-center">
                     {slot ? (
-                       
+
                       <img src={slot.preview} alt="" className="h-full w-full object-cover" />
                     ) : (
                       <span className="text-white/40 text-xs px-3 text-center">+ {hint}<br /><span className="text-white/25">{t('adRef.optionalAtLeastOne')}</span></span>
@@ -426,6 +429,9 @@ export default function AdReferencePage() {
                   </button>
                   <input ref={ref} type="file" accept="image/jpeg,image/png,image/webp" className="hidden"
                     onChange={(e) => onPick(kind, e.target.files?.[0])} />
+                  <div className="mt-1.5">
+                    <AssetPicker kind={kind} label={kind === 'product' ? t('assets.pickProduct') : t('assets.pickAvatar')} onSelect={(url) => { const s = { url, preview: url }; if (kind === 'product') setProduct(s); else setAvatar(s); }} />
+                  </div>
                 </div>
               ))}
             </div>

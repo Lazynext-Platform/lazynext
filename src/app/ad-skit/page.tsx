@@ -2,10 +2,12 @@
 
 import { useState } from 'react';
 import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import { AlertCircle, Clapperboard, Download, ImageIcon, Loader2, Sparkles, UploadCloud, Video, Wand2 } from 'lucide-react';
 import { mediaDownloadUrl } from '@/lib/media-url';
 import { videoCredits } from '@/lib/video-pricing';
 import { useI18n } from '@/i18n/provider';
+import { AssetPicker } from '@/components/AssetPicker';
 
 const COSTS = { plan: 4, image: 2, video: 25 };
 // Video step dynamic billing (seedance ref-to-video fixed 720p/15s), consistent with backend ad-skit/video route; plan/image still use fixed COST.
@@ -73,6 +75,7 @@ function errText(code: string, t: (k: string, vars?: Record<string, string | num
 
 export default function AdSkitPage() {
   const { data: session } = useSession();
+  const router = useRouter();
   const { t } = useI18n();
   const [product, setProduct] = useState('');
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
@@ -86,7 +89,7 @@ export default function AdSkitPage() {
   const [video, setVideo] = useState<Slot>({ status: 'idle' });
 
   async function genPlan() {
-    if (!session) return window.location.href = '/';
+    if (!session) { router.push('/'); return; }
     if (product.trim().length < 2) return setErr(t('adSkit.enterProduct'));
     setErr(null); setBusy('plan'); setPlan(null); setProductImg({ status: 'idle' }); setVideo({ status: 'idle' });
     try {
@@ -178,6 +181,9 @@ export default function AdSkitPage() {
                     }} />
                     <UploadCloud className="h-5 w-5 text-white/40" />
                   </label>
+                )}
+                {uploadedImages.length < 4 && (
+                  <AssetPicker kind="product" label={t('assets.pickProduct')} onSelect={(url) => setUploadedImages((a) => [...a, url].slice(0, 4))} />
                 )}
               </div>
               <span className="mt-1 block text-xs text-white/50">{t('adSkit.uploadHint')}</span>

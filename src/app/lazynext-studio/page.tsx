@@ -1,6 +1,7 @@
 'use client';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import { AlertCircle, CheckCircle2, Download, Loader2, Play, Plus, Sparkles, Video, X } from 'lucide-react';
 import { LazyVideo } from '@/components/LazyVideo';
 import { useMounted } from '@/lib/use-mounted';
@@ -18,6 +19,7 @@ import {
 import { planTaskResume } from '@/lib/lazynext-studio/resume';
 import { videoCredits } from '@/lib/video-pricing';
 import { useI18n } from '@/i18n/provider';
+import { AssetPicker } from '@/components/AssetPicker';
 
 // ── Higgsfield lazynext-studio/product visual specs (measured) ──
 // bg #131416 · solid panel #1c1e21 · accent lime #00b2fc · near-black text #131416
@@ -131,6 +133,7 @@ function buildDirectVideoPrompt(plan: MarketingPlan, lang: string) {
 
 export default function MarketingStudioPage() {
   const { status } = useSession();
+  const router = useRouter();
   const mounted = useMounted();
   const { t } = useI18n();
   const [category, setCategory] = useState<AdCategory | 'all'>('all');
@@ -375,7 +378,7 @@ export default function MarketingStudioPage() {
   async function genDirectVideo(existing?: ShotState, existingCreationId = '') {
     const resumePlan = planTaskResume(existing, COSTS.image, videoCost);
     const { hasExistingWork, hasPendingTask, remainingCost } = resumePlan;
-    if (!hasExistingWork && status !== 'authenticated') { window.location.href = '/'; return; }
+    if (!hasExistingWork && status !== 'authenticated') { router.push('/'); return; }
     if (!hasExistingWork && !product.trim() && !productAssets.some((a) => a.url)) { setErr('product_required'); return; }
     if (productAssets.some((a) => a.uploading) || avatarAsset.uploading) return;
     runAbortRef.current?.abort();
@@ -577,10 +580,12 @@ export default function MarketingStudioPage() {
               <div className="flex flex-wrap items-center gap-1.5 mb-2.5">
                 {productAssets.map((a, i) => <ThumbSlot key={i} asset={a} onRemove={() => setProductAssets((prev) => prev.filter((_, j) => j !== i))} label={t('mkStudio.product')} />)}
                 {productAssets.length < 4 && <AddSlot onClick={() => productInput.current?.click()} label={productAssets.length ? t('mkStudio.addProduct') : t('mkStudio.product')} />}
+                {productAssets.length < 4 && <AssetPicker kind="product" label={t('assets.pickProduct')} onSelect={(url) => setProductAssets((prev) => [...prev, { preview: url, url }])} />}
                 <span className="w-px h-12 bg-white/10 mx-1 shrink-0" />
                 {avatarAsset.preview
                   ? <ThumbSlot asset={avatarAsset} onRemove={() => setAvatarAsset({})} label={t('mkStudio.avatar')} />
                   : <AddSlot onClick={() => avatarInput.current?.click()} label={t('mkStudio.avatar')} />}
+                {!avatarAsset.preview && <AssetPicker kind="avatar" label={t('assets.pickAvatar')} onSelect={(url) => setAvatarAsset({ preview: url, url })} />}
               </div>
               <textarea value={product} onChange={(e) => setProduct(e.target.value)} rows={4}
                 placeholder={t('mkStudio.placeholder')}

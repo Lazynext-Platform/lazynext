@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useSession, signOut } from 'next-auth/react';
-import { LogOut, CreditCard, Settings } from 'lucide-react';
+import { LogOut, CreditCard, Settings, FolderOpen, Boxes, LayoutDashboard, Shield } from 'lucide-react';
 import { useI18n } from '@/i18n/provider';
 import { useMounted } from '@/lib/use-mounted';
 import { AuthModal } from './AuthModal';
@@ -15,7 +15,13 @@ export function UserMenu() {
   const [open, setOpen] = useState(false);
   const [authOpen, setAuthOpen] = useState(false);
   const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin');
+  const [isAdmin, setIsAdmin] = useState(false);
   const mounted = useMounted();
+
+  useEffect(() => {
+    if (status !== 'authenticated') return;
+    fetch('/api/me').then((r) => r.json()).then((j) => setIsAdmin(!!j.isAdmin)).catch(() => {});
+  }, [status]);
 
   if (!mounted || status === 'loading') return null;
 
@@ -47,11 +53,21 @@ export function UserMenu() {
       {open && (
         <>
           <div className="fixed inset-0 z-[-1]" onClick={() => setOpen(false)} />
-          <div className="absolute right-0 mt-2 w-44 rounded-xl border border-white/10 bg-[#1c1e21] p-1 shadow-xl">
+          <div className="absolute right-0 mt-2 w-48 rounded-xl border border-white/10 bg-[#1c1e21] p-1 shadow-xl">
             <div className="truncate px-3 py-2 text-[11px] text-white/40">{u?.email}</div>
+            <a href="/dashboard" className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs text-white/80 hover:bg-white/5"><LayoutDashboard className="h-3.5 w-3.5" /> {t('nav.dashboard')}</a>
+            <a href="/my-work" className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs text-white/80 hover:bg-white/5"><FolderOpen className="h-3.5 w-3.5" /> {t('nav.myWork')}</a>
+            <a href="/assets" className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs text-white/80 hover:bg-white/5"><Boxes className="h-3.5 w-3.5" /> {t('nav.assets')}</a>
             <a href="/pricing" className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs text-white/80 hover:bg-white/5"><CreditCard className="h-3.5 w-3.5" /> {t('nav.pricing')}</a>
             <a href="/settings" className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs text-white/80 hover:bg-white/5"><Settings className="h-3.5 w-3.5" /> {t('nav.settings')}</a>
-            <button onClick={() => signOut()} className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs text-white/80 hover:bg-white/5"><LogOut className="h-3.5 w-3.5" /> {t('userMenu.signOut')}</button>
+            {isAdmin && (
+              <>
+                <div className="my-1 h-px bg-white/5" />
+                <a href="/admin" className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs text-[#00b2fc] hover:bg-white/5"><Shield className="h-3.5 w-3.5" /> Admin</a>
+              </>
+            )}
+            <div className="my-1 h-px bg-white/5" />
+            <button onClick={() => signOut({ callbackUrl: window.location.origin })} className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs text-white/80 hover:bg-white/5"><LogOut className="h-3.5 w-3.5" /> {t('userMenu.signOut')}</button>
           </div>
         </>
       )}
