@@ -97,7 +97,7 @@ function DramaFolder({ c, t, finalVideo }: { c: Creation; t: (key: string, vars?
         {finalVideo ? (
           <div className="relative w-full max-w-[300px]">
             <video src={finalVideo} controls playsInline poster={scenes.find((s) => s.frameUrl)?.frameUrl || undefined} className="w-full rounded-2xl border border-white/10 bg-black" />
-            <a href={finalVideo} download className="absolute -right-3 -top-3 grid h-9 w-9 place-items-center rounded-full bg-white text-black shadow-lg"><Download className="h-4 w-4" /></a>
+            <a href={finalVideo} download className="absolute -right-3 -top-3 grid h-9 w-9 place-items-center rounded-full bg-[#00b2fc] text-white shadow-lg"><Download className="h-4 w-4" /></a>
           </div>
         ) : (
           <div className="grid aspect-video max-w-[300px] place-items-center rounded-2xl border border-dashed border-white/15 bg-black/20 text-xs text-white/40">{t('myWork.finalPlaceholder')}</div>

@@ -100,7 +100,7 @@ export function AuthModal({ open, onClose, initialMode = 'signin' }: {
             {mode === 'signup' && t('auth.signUpTab')}
             {mode === 'forgot' && 'Forgot Password'}
           </h2>
-          <button onClick={onClose} className="rounded-lg p-1 text-neutral-400 hover:bg-white/10 hover:text-white">
+          <button onClick={onClose} className="rounded-lg p-1 text-white/40 hover:bg-white/10 hover:text-white">
             <X className="h-5 w-5" />
           </button>
         </div>
@@ -116,7 +116,7 @@ export function AuthModal({ open, onClose, initialMode = 'signin' }: {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-white placeholder-neutral-500 outline-none focus:border-brand-400"
+                className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-white placeholder-white/30 outline-none focus:border-brand-400"
               />
               {error && <p className="text-sm text-red-400">{error}</p>}
               {info && <p className="text-sm text-green-400">{info}</p>}
@@ -129,7 +129,7 @@ export function AuthModal({ open, onClose, initialMode = 'signin' }: {
                 {loading ? '…' : 'Send Reset Link'}
               </button>
             </form>
-            <p className="text-center text-sm text-neutral-400">
+            <p className="text-center text-sm text-white/40">
               <button onClick={() => { setMode('signin'); setError(''); setInfo(''); }} className="font-semibold text-brand-400 hover:underline">
                 ← {t('auth.signInLink')}
               </button>
@@ -141,13 +141,13 @@ export function AuthModal({ open, onClose, initialMode = 'signin' }: {
             <div className="mb-5 flex gap-1 rounded-lg bg-white/5 p-1">
               <button
                 onClick={() => { setMode('signin'); setError(''); setInfo(''); }}
-                className={`flex-1 rounded-md py-1.5 text-sm font-medium transition ${mode === 'signin' ? 'bg-white text-black' : 'text-neutral-400 hover:text-white'}`}
+                className={`flex-1 rounded-md py-1.5 text-sm font-medium transition ${mode === 'signin' ? 'bg-[#00b2fc] text-white' : 'text-white/40 hover:text-white'}`}
               >
                 {t('auth.signInTab')}
               </button>
               <button
                 onClick={() => { setMode('signup'); setError(''); setInfo(''); }}
-                className={`flex-1 rounded-md py-1.5 text-sm font-medium transition ${mode === 'signup' ? 'bg-white text-black' : 'text-neutral-400 hover:text-white'}`}
+                className={`flex-1 rounded-md py-1.5 text-sm font-medium transition ${mode === 'signup' ? 'bg-[#00b2fc] text-white' : 'text-white/40 hover:text-white'}`}
               >
                 {t('auth.signUpTab')}
               </button>
@@ -156,7 +156,7 @@ export function AuthModal({ open, onClose, initialMode = 'signin' }: {
             {/* Google button */}
             <button
               onClick={handleGoogle}
-              className="mb-4 flex w-full items-center justify-center gap-2 rounded-xl border border-white/15 bg-white px-4 py-2.5 text-sm font-semibold text-neutral-900 transition hover:bg-neutral-100"
+              className="mb-4 flex w-full items-center justify-center gap-2 rounded-xl border border-white/15 bg-white px-4 py-2.5 text-sm font-semibold text-black transition hover:bg-white/90"
             >
               <svg className="h-4 w-4" viewBox="0 0 24 24">
                 <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -170,7 +170,7 @@ export function AuthModal({ open, onClose, initialMode = 'signin' }: {
             {/* Divider */}
             <div className="mb-4 flex items-center gap-3">
               <div className="h-px flex-1 bg-white/10" />
-              <span className="text-xs text-neutral-500">{t('auth.orContinueWith')}</span>
+              <span className="text-xs text-white/50">{t('auth.orContinueWith')}</span>
               <div className="h-px flex-1 bg-white/10" />
             </div>
 
@@ -182,7 +182,7 @@ export function AuthModal({ open, onClose, initialMode = 'signin' }: {
                   placeholder={t('auth.name')}
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-white placeholder-neutral-500 outline-none focus:border-brand-400"
+                  className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-white placeholder-white/30 outline-none focus:border-brand-400"
                 />
               )}
               <input
@@ -191,7 +191,7 @@ export function AuthModal({ open, onClose, initialMode = 'signin' }: {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-white placeholder-neutral-500 outline-none focus:border-brand-400"
+                className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-white placeholder-white/30 outline-none focus:border-brand-400"
               />
               <input
                 type="password"
@@ -200,7 +200,7 @@ export function AuthModal({ open, onClose, initialMode = 'signin' }: {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 minLength={8}
-                className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-white placeholder-neutral-500 outline-none focus:border-brand-400"
+                className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-white placeholder-white/30 outline-none focus:border-brand-400"
               />
               {error && <p className="text-sm text-red-400">{error}</p>}
               {info && <p className="text-sm text-green-400">{info}</p>}
@@ -217,11 +217,11 @@ export function AuthModal({ open, onClose, initialMode = 'signin' }: {
             {/* Forgot password + switch mode links */}
             <div className="mt-4 flex items-center justify-between text-sm">
               {mode === 'signin' && (
-                <button onClick={() => { setMode('forgot'); setError(''); setInfo(''); }} className="text-neutral-400 hover:text-brand-400 hover:underline">
+                <button onClick={() => { setMode('forgot'); setError(''); setInfo(''); }} className="text-white/40 hover:text-brand-400 hover:underline">
                   Forgot password?
                 </button>
               )}
-              <p className="text-neutral-400">
+              <p className="text-white/40">
                 {mode === 'signin' ? t('auth.noAccount') : t('auth.haveAccount')}{' '}
                 <button
                   onClick={() => { setMode(mode === 'signin' ? 'signup' : 'signin'); setError(''); setInfo(''); }}

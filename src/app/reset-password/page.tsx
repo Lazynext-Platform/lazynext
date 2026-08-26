@@ -80,7 +80,7 @@ function ResetPasswordContent() {
             onChange={(e) => setPassword(e.target.value)}
             required
             minLength={8}
-            className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-white placeholder-neutral-500 outline-none focus:border-brand-400"
+            className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-white placeholder-white/30 outline-none focus:border-brand-400"
           />
           <input
             type="password"
@@ -89,7 +89,7 @@ function ResetPasswordContent() {
             onChange={(e) => setConfirm(e.target.value)}
             required
             minLength={8}
-            className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-white placeholder-neutral-500 outline-none focus:border-brand-400"
+            className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-white placeholder-white/30 outline-none focus:border-brand-400"
           />
           {error && <p className="text-sm text-red-400">{error}</p>}
           <button
@@ -101,7 +101,7 @@ function ResetPasswordContent() {
             {status === 'loading' ? 'Resetting…' : 'Reset Password'}
           </button>
         </form>
-        <p className="mt-4 text-center text-sm text-neutral-400">
+        <p className="mt-4 text-center text-sm text-white/40">
           <Link href="/" className="text-brand-400 hover:underline">Back to sign in</Link>
         </p>
       </div>

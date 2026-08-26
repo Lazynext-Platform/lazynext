@@ -734,7 +734,7 @@ export default function MarketingStudioPage() {
           <div className="relative" onClick={(e) => e.stopPropagation()}>
             <video src={EXAMPLE_VIDEOS[preview]} controls autoPlay loop playsInline
               className="max-h-[85vh] w-auto rounded-2xl border border-white/10 bg-black" style={{ aspectRatio: '9 / 16' }} />
-            <button onClick={() => setPreview(null)} aria-label={t('mkStudio.closePreview')} className="absolute -top-3 -right-3 w-9 h-9 rounded-full bg-white text-black grid place-items-center shadow-lg"><X className="w-5 h-5" /></button>
+            <button onClick={() => setPreview(null)} aria-label={t('mkStudio.closePreview')} className="absolute -top-3 -right-3 w-9 h-9 rounded-full bg-[#00b2fc] text-white grid place-items-center shadow-lg"><X className="w-5 h-5" /></button>
             <div className="mt-3 text-center text-sm text-white/80">{(() => { const pf = AD_FORMATS.find((f) => f.id === preview); return pf ? t(`presets.fmt.${pf.id}.label`) : ''; })()} · {t('mkStudio.clickOutside')}</div>
           </div>
         </div>

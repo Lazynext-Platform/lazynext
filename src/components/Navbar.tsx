@@ -37,10 +37,10 @@ export function Navbar() {
   }, [refresh]);
 
   const navLink =
-    'rounded-lg px-3 py-2 text-sm font-medium text-neutral-600 transition hover:bg-neutral-100 hover:text-neutral-900';
+    'rounded-lg px-3 py-2 text-sm font-medium text-white/60 transition hover:bg-white/[0.06] hover:text-white';
 
   return (
-    <header className="sticky top-0 z-40 border-b border-neutral-200/70 bg-white/80 backdrop-blur-lg">
+    <header className="sticky top-0 z-40 border-b border-white/10 bg-[#131416]/80 backdrop-blur-lg">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-2 px-4 py-3">
         <Link href="/" className="flex shrink-0 items-center gap-2 font-bold">
           { }
@@ -59,23 +59,23 @@ export function Navbar() {
               <Link href="/settings" aria-label={t('nav.settings')} title={t('nav.settings')} className={`hidden sm:inline-flex ${navLink}`}>
                 <Settings className="h-4 w-4" />
               </Link>
-              <span className="ml-1 inline-flex items-center gap-1.5 rounded-full border border-brand-200 bg-brand-50 px-3 py-1.5 text-sm font-semibold text-brand-700">
+              <span className="ml-1 inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.06] px-3 py-1.5 text-sm font-semibold text-white/80">
                 <Coins className="h-3.5 w-3.5" />
                 {credits === null ? '·' : formatNumber(credits, locale)}
               </span>
               {session.user?.image && (
-                 
+
                 <img
                   src={session.user.image}
                   alt=""
                   referrerPolicy="no-referrer"
-                  className="hidden h-8 w-8 rounded-full border border-neutral-200 sm:block"
+                  className="hidden h-8 w-8 rounded-full border border-white/10 sm:block"
                 />
               )}
               <button
                 onClick={() => signOut()}
                 title={t('common.signOut')}
-                className="rounded-lg p-2 text-neutral-400 transition hover:bg-neutral-100 hover:text-neutral-700"
+                className="rounded-lg p-2 text-white/40 transition hover:bg-white/[0.06] hover:text-white/80"
               >
                 <LogOut className="h-4 w-4" />
               </button>
@@ -84,7 +84,7 @@ export function Navbar() {
             <>
               <button
                 onClick={() => { setAuthMode('signup'); setAuthOpen(true); }}
-                className="ml-1 rounded-lg px-3 py-2 text-sm font-medium text-neutral-600 transition hover:bg-neutral-100 hover:text-neutral-900"
+                className="ml-1 rounded-lg px-3 py-2 text-sm font-medium text-white/60 transition hover:bg-white/[0.06] hover:text-white"
               >
                 {t('auth.signUpTab')}
               </button>

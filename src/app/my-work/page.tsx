@@ -277,7 +277,7 @@ export default function MyWorkPage() {
             ) : (
               <video src={play.url} controls autoPlay className="max-h-[85vh] w-auto rounded-xl border border-white/10" />
             )}
-            <a href={play.url} download className="absolute -top-3 -right-3 grid h-9 w-9 place-items-center rounded-full bg-white text-black shadow-lg"><Download className="h-4 w-4" /></a>
+            <a href={play.url} download className="absolute -top-3 -right-3 grid h-9 w-9 place-items-center rounded-full bg-[#00b2fc] text-white shadow-lg"><Download className="h-4 w-4" /></a>
           </div>
         </div>
       )}

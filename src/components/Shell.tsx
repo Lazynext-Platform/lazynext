@@ -42,7 +42,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
     );
   }
   return (
-    <>
+    <div className="min-h-screen bg-[#131416] text-[#f7f7f8]" style={{ colorScheme: 'dark' }}>
       <a href="#main-content" className="skip-link">Skip to content</a>
       <Navbar />
       <div className="mx-auto flex w-full max-w-[1440px] flex-1 gap-6 px-4 py-8 sm:py-10">
@@ -50,6 +50,6 @@ export function Shell({ children }: { children: React.ReactNode }) {
         <main id="main-content" className="min-w-0 flex-1">{children}</main>
       </div>
       <Footer />
-    </>
+    </div>
   );
 }
