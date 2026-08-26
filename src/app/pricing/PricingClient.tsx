@@ -92,13 +92,13 @@ export default function PricingClient({
           <p className="mt-3 text-white/50">{t('pricing.subtitle')}</p>
 
           {/* ── Currency switcher ── */}
-          <div className="mt-5 inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2">
-            <DollarSign className="h-4 w-4 text-white/50" />
+          <div className="mt-5 inline-flex max-w-full items-center gap-2 overflow-hidden rounded-xl border border-white/10 bg-white/[0.04] px-2.5 py-2 sm:px-3">
+            <DollarSign className="h-4 w-4 shrink-0 text-white/50" />
             <select
               aria-label={t('common.currency')}
               value={currency}
               onChange={(e) => changeCurrency(e.target.value)}
-              className="cursor-pointer appearance-none bg-transparent text-sm font-medium text-white outline-none"
+              className="min-w-0 cursor-pointer appearance-none bg-transparent text-sm font-medium text-white outline-none"
             >
               {CURRENCIES.map((c) => (
                 <option key={c.code} value={c.code} className="bg-neutral-900 text-white">
