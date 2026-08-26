@@ -98,18 +98,6 @@ export default function MyWorkPage() {
 
   return (
     <div className="min-h-screen" style={{ background: '#131416' }}>
-      {/* Top bar (fixed right area provided by Shell) */}
-      <div className="px-6 sm:px-8 py-5">
-        <div className="flex items-center gap-4">
-          <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition">
-            { }
-            <img src="/lazynext-mark.png" alt="Lazynext" className="h-7 w-7 rounded-lg" />
-            <b className="text-sm tracking-tight">Lazynext</b>
-          </Link>
-          <Link href="/" className="text-xs text-white/60 hover:text-white transition">{t('myWork.allApps')}</Link>
-        </div>
-      </div>
-
       <div className="mx-auto max-w-6xl px-4 sm:px-6 pb-24">
         <div className="pt-6 pb-8">
           <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">{t('myWork.title')}</h1>

@@ -76,12 +76,9 @@ export default function Home() {
           </div>
         </div>
       )}
-      {/* Top bar */}
-      <div className="px-6 sm:px-8 py-5">
-        <div className="mx-auto flex w-full max-w-6xl items-center gap-3">
-          { }
-          <img src="/lazynext-mark.png" alt="Lazynext" className="h-8 w-8 rounded-lg" />
-          <b className="text-sm tracking-tight">Lazynext</b>
+      {/* hero */}
+      <div className="text-center pt-10 pb-12 px-6">
+        <div className="mb-3 flex justify-center">
           <a href="https://atlascloud.ai?utm_source=github&utm_campaign=ecommerce-studio" target="_blank" rel="noopener noreferrer"
              className="inline-flex items-center gap-2 rounded-lg border border-white/10 px-3 py-1.5 text-xs text-white/45 transition hover:border-white/25 hover:text-white/80">
             <span>{t('common.poweredBy')}</span>
@@ -89,10 +86,6 @@ export default function Home() {
             <span aria-hidden="true">↗</span>
           </a>
         </div>
-      </div>
-
-      {/* hero */}
-      <div className="text-center pt-14 pb-12 px-6">
         <div className="text-[11px] uppercase tracking-[0.24em] text-white/50 font-medium mb-3" style={{ fontFamily: 'var(--font-grotesk), "Space Grotesk", sans-serif' }}>Lazynext</div>
         <h1 className="font-bold uppercase leading-[1.06] tracking-[-0.03em] text-[clamp(38px,5.2vw,56px)] text-white/90" style={{ fontFamily: 'var(--font-grotesk), "Space Grotesk", system-ui, sans-serif' }}>
           {t('home.heroTitle')}<br /><span style={{ color: '#00b2fc' }}>{t('home.heroTitleHl')}</span>

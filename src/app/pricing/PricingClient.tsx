@@ -86,18 +86,6 @@ export default function PricingClient({
 
   return (
     <div className="min-h-screen text-[#f7f7f8]" style={{ backgroundColor: '#131416', colorScheme: 'dark' }}>
-      {/* Top bar: only left-side logo + back, right side reserved for Shell's fixed area (balance/language/user/deploy), to avoid overlap */}
-      <div className="px-6 sm:px-8 py-5">
-        <div className="flex items-center gap-4">
-          <a href="/" className="flex items-center gap-2 hover:opacity-80 transition">
-            { }
-            <img src="/lazynext-mark.png" alt="Lazynext" className="h-7 w-7 rounded-lg" />
-            <b className="text-sm tracking-tight">Lazynext</b>
-          </a>
-          <a href="/" className="text-xs text-white/60 hover:text-white transition">{t('pricing.allApps')}</a>
-        </div>
-      </div>
-
       <div className="mx-auto max-w-5xl px-4 pb-24 space-y-8">
         <div className="text-center pt-6">
           <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">{t('pricing.title')}</h1>
