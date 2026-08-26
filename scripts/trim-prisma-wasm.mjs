@@ -2,9 +2,9 @@
  * Post-build step: remove unused Prisma WASM query engines from the
  * OpenNext server-functions bundle to reduce the Cloudflare Worker size.
  *
- * The project only uses SQLite (D1) and PostgreSQL (Neon). Prisma's client
+ * The project only uses SQLite (D1). Prisma's client
  * runtime includes WASM engines for ALL database types (CockroachDB, MySQL,
- * SQLServer) which are never loaded but inflate the bundle by ~25MB,
+ * SQLServer, PostgreSQL) which are never loaded but inflate the bundle by ~25MB,
  * pushing the Worker past Cloudflare's compressed size limit and causing
  * intermittent 503 "Worker exceeded resource limits" errors.
  *
