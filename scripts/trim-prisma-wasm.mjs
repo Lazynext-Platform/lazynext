@@ -152,6 +152,36 @@ const REQUIRE_PATCHES = [
     `throw Error('Dynamic require of "'+x+'" is not supported')`,
     `{const __e=new Error('Dynamic require of "'+x+'" is not supported');__e.code='MODULE_NOT_FOUND';throw __e}`,
   ],
+  // Patch the require.apply fallback: in workerd with nodejs_compat, `require`
+  // is defined, so the fallback error above is never reached. Instead, the
+  // actual `require` throws an error without MODULE_NOT_FOUND code, causing
+  // the instrumentation module loader to re-throw instead of silently catching.
+  // Wrap require.apply with a try/catch that adds the code.
+  [
+    `if (typeof require !== "undefined") return require.apply(this, arguments);`,
+    `if (typeof require !== "undefined") { try { return require.apply(this, arguments); } catch(__re) { if(!__re.code) __re.code='MODULE_NOT_FOUND'; throw __re; } }`,
+  ],
+  // Patch getInstrumentationModule: in workerd, the dynamic require of
+  // instrumentation.js fails because the file is in /bundle/.next/server/
+  // which is not resolvable by workerd's require. The instrumentation file
+  // is a no-op (just exports register()), so we short-circuit the function
+  // to return a no-op module instead of trying to require it.
+  // Match the unique pattern: interopDefault(await __require(
+  [
+    `cachedInstrumentationModule = (0, _interopdefault.interopDefault)(await __require(`,
+    `cachedInstrumentationModule = { register: async () => {} }; void (0, _interopdefault.interopDefault)(await __require(`,
+  ],
+];
+
+// Patch: remove afterRegistration() call in registerInstrumentation.
+// In workerd (Edge runtime), afterRegistration() throws
+// "Node.js instrumentation extensions should not be loaded in the Edge runtime."
+// Since our instrumentation is a no-op, there's nothing to after-register.
+const INSTRUMENTATION_PATCHES = [
+  [
+    `await instrumentation.register();\n          (0, _instrumentationnodeextensions.afterRegistration)();`,
+    `await instrumentation.register();`,
+  ],
 ];
 
 const patchFiles = [
@@ -180,4 +210,21 @@ for (const file of patchFiles) {
 }
 if (patchCount > 0) {
   console.log(`Patched ${patchCount} __require function(s) with MODULE_NOT_FOUND error code`);
+}
+
+// Apply instrumentation patches (only to middleware handler)
+const middlewareHandler = join(projectRoot, '.open-next', 'middleware', 'handler.mjs');
+if (existsSync(middlewareHandler)) {
+  let content = readFileSync(middlewareHandler, 'utf8');
+  let instPatched = false;
+  for (const [old, neu] of INSTRUMENTATION_PATCHES) {
+    if (content.includes(old)) {
+      content = content.split(old).join(neu);
+      instPatched = true;
+      console.log(`  patched instrumentation in handler.mjs`);
+    }
+  }
+  if (instPatched) {
+    writeFileSync(middlewareHandler, content);
+  }
 }
