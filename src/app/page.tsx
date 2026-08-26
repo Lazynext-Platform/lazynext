@@ -10,6 +10,7 @@ import {
   DollarSign,
   Percent,
   AlertCircle,
+  CheckCircle,
 } from 'lucide-react';
 import { appTitle, appDesc, isFeatured } from '@/config/appCatalog';
 
@@ -28,6 +29,16 @@ export default function Home() {
   const appCount = APPS.length;
   const searchParams = useSearchParams();
   const authError = searchParams.get('error');
+  const verified = searchParams.get('verified');
+
+  const errorMessages: Record<string, string> = {
+    'invalid-token': 'Invalid or missing verification token.',
+    'token-expired': 'Your verification link has expired. Please sign up again or request a new one.',
+    'verification-failed': 'Email verification failed. Please try again.',
+    'Configuration': t('auth.signInError'),
+    'OAuthCallback': t('auth.signInError'),
+  };
+  const errorText = authError ? (errorMessages[authError] || t('auth.signInError')) : '';
 
   const STATS = [
     { icon: Zap, value: '~$0.01-0.04', label: t('home.statCost') },
@@ -47,12 +58,21 @@ export default function Home() {
 
   return (
     <main className="min-h-screen text-[#f7f7f8]" style={gridBg}>
-      {/* Auth error banner — shown when OAuth sign-in fails (NextAuth redirects here with ?error=) */}
+      {/* Email verification success banner */}
+      {verified === 'true' && (
+        <div className="mx-auto max-w-6xl px-6 pt-4">
+          <div className="flex items-center gap-2 rounded-lg border border-green-500/30 bg-green-500/10 px-4 py-3 text-sm text-green-300">
+            <CheckCircle className="h-4 w-4 shrink-0" />
+            <span>Your email has been verified. You can now sign in.</span>
+          </div>
+        </div>
+      )}
+      {/* Auth error banner — shown when OAuth sign-in fails or email verification fails */}
       {authError && (
         <div className="mx-auto max-w-6xl px-6 pt-4">
           <div className="flex items-center gap-2 rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-300">
             <AlertCircle className="h-4 w-4 shrink-0" />
-            <span>{t('auth.signInError')}</span>
+            <span>{errorText}</span>
           </div>
         </div>
       )}
