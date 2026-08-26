@@ -43,7 +43,7 @@ export const messages: Record<Locale, any> = {
       invalidCreds: 'Invalid email or password.',
       passwordShort: 'Password must be at least 8 characters.',
       orContinueWith: 'or continue with',
-      googleBtn: 'Continue with Google',
+      googleBtn: 'Continue with Google', emailVerified: 'Your email has been verified. You can now sign in.', invalidToken: 'Invalid or missing verification token.', tokenExpired: 'Your verification link has expired. Please sign up again or request a new one.', verificationFailed: 'Email verification failed. Please try again.',
     },
     home: {
       badge: 'ready-to-sell AI apps',
@@ -734,7 +734,7 @@ export const messages: Record<Locale, any> = {
       invalidCreds: '邮箱或密码错误。',
       passwordShort: '密码至少需要8个字符。',
       orContinueWith: '或使用',
-      googleBtn: '使用 Google 登录',
+      googleBtn: '使用 Google 登录', emailVerified: '您的邮箱已验证。现在可以登录了。', invalidToken: '验证令牌无效或缺失。', tokenExpired: '您的验证链接已过期。请重新注册或请求新的链接。', verificationFailed: '邮箱验证失败。请重试。',
     },
     sidebar: { apps: 'AI 应用', studio: '图片工作台' },
     home: {
@@ -1379,7 +1379,7 @@ export const messages: Record<Locale, any> = {
       invalidCreds: 'メールまたはパスワードが正しくありません。',
       passwordShort: 'パスワードは8文字以上必要です。',
       orContinueWith: 'または続行',
-      googleBtn: 'Googleでログイン',
+      googleBtn: 'Googleでログイン', emailVerified: 'メールアドレスが確認されました。今すぐサインインできます。', invalidToken: '確認トークンが無効または不足しています。', tokenExpired: '確認リンクの有効期限が切れています。再度登録するか、新しいリンクを申請してください。', verificationFailed: 'メール確認に失敗しました。再試行してください。',
     },
     sidebar: { apps: 'AIアプリ', studio: '画像スタジオ' },
     home: {
@@ -2026,7 +2026,7 @@ export const messages: Record<Locale, any> = {
       invalidCreds: 'Correo o contraseña incorrectos.',
       passwordShort: 'La contraseña debe tener al menos 8 caracteres.',
       orContinueWith: 'o continúa con',
-      googleBtn: 'Continuar con Google',
+      googleBtn: 'Continuar con Google', emailVerified: 'Tu correo electrónico ha sido verificado. Ya puedes iniciar sesión.', invalidToken: 'Token de verificación inválido o faltante.', tokenExpired: 'Tu enlace de verificación ha expirado. Regístrate de nuevo o solicita uno nuevo.', verificationFailed: 'La verificación de correo falló. Inténtalo de nuevo.',
     },
     sidebar: { apps: 'Apps IA', studio: 'Estudio imagen' },
     home: {
@@ -2673,7 +2673,7 @@ export const messages: Record<Locale, any> = {
       invalidCreds: '이메일 또는 비밀번호가 잘못되었습니다.',
       passwordShort: '비밀번호는 최소 8자 이상이어야 합니다.',
       orContinueWith: '또는 계속',
-      googleBtn: 'Google로 계속',
+      googleBtn: 'Google로 계속', emailVerified: '이메일이 인증되었습니다. 이제 로그인할 수 있습니다.', invalidToken: '인증 토큰이 유효하지 않거나 누락되었습니다.', tokenExpired: '인증 링크가 만료되었습니다. 다시 가입하거나 새 링크를 요청하세요.', verificationFailed: '이메일 인증에 실패했습니다. 다시 시도해 주세요.',
     },
     podcast: {
       title: 'AI 팟캐스트 팩토리',
@@ -3318,7 +3318,7 @@ export const messages: Record<Locale, any> = {
       invalidCreds: 'Email ou senha inválidos.',
       passwordShort: 'A senha deve ter pelo menos 8 caracteres.',
       orContinueWith: 'ou continue com',
-      googleBtn: 'Continuar com Google',
+      googleBtn: 'Continuar com Google', emailVerified: 'Seu e-mail foi verificado. Você já pode entrar.', invalidToken: 'Token de verificação inválido ou ausente.', tokenExpired: 'Seu link de verificação expirou. Registre-se novamente ou solicite um novo.', verificationFailed: 'A verificação de e-mail falhou. Tente novamente.',
     },
     podcast: {
       title: 'Fábrica de Podcast AI',
@@ -3963,7 +3963,7 @@ export const messages: Record<Locale, any> = {
       invalidCreds: 'Email ou mot de passe invalide.',
       passwordShort: 'Le mot de passe doit contenir au moins 8 caractères.',
       orContinueWith: 'ou continuer avec',
-      googleBtn: 'Continuer avec Google',
+      googleBtn: 'Continuer avec Google', emailVerified: 'Votre e-mail a été vérifié. Vous pouvez maintenant vous connecter.', invalidToken: 'Jeton de vérification invalide ou manquant.', tokenExpired: 'Votre lien de vérification a expiré. Veuillez vous inscrire à nouveau ou en demander un nouveau.', verificationFailed: "La vérification de l'e-mail a échoué. Veuillez réessayer.",
     },
     podcast: {
       title: 'Usine à Podcasts IA',
@@ -4608,7 +4608,7 @@ export const messages: Record<Locale, any> = {
       invalidCreds: 'E-Mail oder Passwort ungültig.',
       passwordShort: 'Passwort muss mindestens 8 Zeichen lang sein.',
       orContinueWith: 'oder fortfahren mit',
-      googleBtn: 'Mit Google fortfahren',
+      googleBtn: 'Mit Google fortfahren', emailVerified: 'Ihre E-Mail wurde bestätigt. Sie können sich jetzt anmelden.', invalidToken: 'Ungültiges oder fehlendes Bestätigungstoken.', tokenExpired: 'Ihr Bestätigungslink ist abgelaufen. Bitte registrieren Sie sich erneut oder fordern Sie einen neuen an.', verificationFailed: 'E-Mail-Bestätigung fehlgeschlagen. Bitte erneut versuchen.',
     },
     podcast: {
       title: 'AI Podcast-Fabrik',
@@ -5253,7 +5253,7 @@ export const messages: Record<Locale, any> = {
       invalidCreds: 'البريد أو كلمة المرور غير صحيحة.',
       passwordShort: 'يجب أن تكون كلمة المرور 8 أحرف على الأقل.',
       orContinueWith: 'أو تابع بـ',
-      googleBtn: 'المتابعة مع Google',
+      googleBtn: 'المتابعة مع Google', emailVerified: 'تم التحقق من بريدك الإلكتروني. يمكنك تسجيل الدخول الآن.', invalidToken: 'رمز التحقق غير صالح أو مفقود.', tokenExpired: 'انتهت صلاحية رابط التحقق الخاص بك. يرجى التسجيل مرة أخرى أو طلب رابط جديد.', verificationFailed: 'فشل التحقق من البريد الإلكتروني. حاول مرة أخرى.',
     },
     podcast: {
       title: 'مصنع البودكاست بالذكاء الاصطناعي',
@@ -5898,7 +5898,7 @@ export const messages: Record<Locale, any> = {
       invalidCreds: 'ईमेल या पासवर्ड गलत है।',
       passwordShort: 'पासवर्ड कम से कम 8 अक्षर का होना चाहिए।',
       orContinueWith: 'या जारी रखें',
-      googleBtn: 'Google के साथ जारी रखें',
+      googleBtn: 'Google के साथ जारी रखें', emailVerified: 'आपका ईमेल सत्यापित हो गया है। अब आप साइन इन कर सकते हैं।', invalidToken: 'सत्यापन टोकन अमान्य या अनुपस्थित है।', tokenExpired: 'आपका सत्यापन लिंक समाप्त हो गया है। कृपया पुनः साइन अप करें या नया लिंक अनुरोध करें।', verificationFailed: 'ईमेल सत्यापन विफल हुआ। कृपया पुनः प्रयास करें।',
     },
     podcast: {
       title: 'एआई पॉडकास्ट फैक्ट्री',
@@ -6543,7 +6543,7 @@ export const messages: Record<Locale, any> = {
       invalidCreds: 'Email hoặc mật khẩu không đúng.',
       passwordShort: 'Mật khẩu phải có ít nhất 8 ký tự.',
       orContinueWith: 'hoặc tiếp tục với',
-      googleBtn: 'Tiếp tục với Google',
+      googleBtn: 'Tiếp tục với Google', emailVerified: 'Email của bạn đã được xác minh. Bạn có thể đăng nhập ngay.', invalidToken: 'Mã xác minh không hợp lệ hoặc bị thiếu.', tokenExpired: 'Liên kết xác minh của bạn đã hết hạn. Vui lòng đăng ký lại hoặc yêu cầu liên kết mới.', verificationFailed: 'Xác minh email thất bại. Vui lòng thử lại.',
     },
     sidebar: { apps: 'Ứng dụng AI', studio: 'Studio hình ảnh' },
     home: {
@@ -7191,7 +7191,7 @@ export const messages: Record<Locale, any> = {
       invalidCreds: 'อีเมลหรือรหัสผ่านไม่ถูกต้อง',
       passwordShort: 'รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร',
       orContinueWith: 'หรือดำเนินการต่อด้วย',
-      googleBtn: 'ดำเนินการต่อด้วย Google',
+      googleBtn: 'ดำเนินการต่อด้วย Google', emailVerified: 'อีเมลของคุณได้รับการยืนยันแล้ว คุณสามารถเข้าสู่ระบบได้เลย', invalidToken: 'โทเค็นยืนยันไม่ถูกต้องหรือหายไป', tokenExpired: 'ลิงก์ยืนยันของคุณหมดอายุแล้ว กรุณาสมัครใหม่หรือขอลิงก์ใหม่', verificationFailed: 'การยืนยันอีเมลล้มเหลว กรุณาลองอีกครั้ง',
     },
     sidebar: { apps: 'แอป AI', studio: 'สตูดิโอรูปภาพ' },
     home: {
@@ -7839,7 +7839,7 @@ export const messages: Record<Locale, any> = {
       invalidCreds: 'Email atau kata sandi salah.',
       passwordShort: 'Kata sandi minimal 8 karakter.',
       orContinueWith: 'atau lanjut dengan',
-      googleBtn: 'Lanjut dengan Google',
+      googleBtn: 'Lanjut dengan Google', emailVerified: 'Email Anda telah diverifikasi. Anda sekarang bisa masuk.', invalidToken: 'Token verifikasi tidak valid atau hilang.', tokenExpired: 'Tautan verifikasi Anda telah kedaluwarsa. Silakan daftar lagi atau minta yang baru.', verificationFailed: 'Verifikasi email gagal. Silakan coba lagi.',
     },
     sidebar: { apps: 'Aplikasi AI', studio: 'Studio gambar' },
     home: {

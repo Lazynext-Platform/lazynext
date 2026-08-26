@@ -32,9 +32,9 @@ export default function Home() {
   const verified = searchParams.get('verified');
 
   const errorMessages: Record<string, string> = {
-    'invalid-token': 'Invalid or missing verification token.',
-    'token-expired': 'Your verification link has expired. Please sign up again or request a new one.',
-    'verification-failed': 'Email verification failed. Please try again.',
+    'invalid-token': t('auth.invalidToken'),
+    'token-expired': t('auth.tokenExpired'),
+    'verification-failed': t('auth.verificationFailed'),
     'Configuration': t('auth.signInError'),
     'OAuthCallback': t('auth.signInError'),
   };
@@ -63,7 +63,7 @@ export default function Home() {
         <div className="mx-auto max-w-6xl px-6 pt-4">
           <div className="flex items-center gap-2 rounded-lg border border-green-500/30 bg-green-500/10 px-4 py-3 text-sm text-green-300">
             <CheckCircle className="h-4 w-4 shrink-0" />
-            <span>Your email has been verified. You can now sign in.</span>
+            <span>{t('auth.emailVerified')}</span>
           </div>
         </div>
       )}
