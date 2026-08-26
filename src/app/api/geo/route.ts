@@ -13,10 +13,9 @@ export async function GET(req: Request) {
   const existingCountry = (await cookies()).get('country')?.value;
   const existingCurrency = (await cookies()).get('currency')?.value;
 
-  // Get IP from various headers (Vercel, Cloudflare, generic proxies)
+  // Get IP from various headers (Cloudflare, generic proxies)
   const headers = Object.fromEntries(req.headers.entries());
   const ip =
-    headers['x-vercel-forwarded-for']?.split(',')[0]?.trim() ||
     headers['x-forwarded-for']?.split(',')[0]?.trim() ||
     headers['cf-connecting-ip']?.trim() ||
     headers['x-real-ip']?.trim() ||
@@ -56,7 +55,7 @@ export async function GET(req: Request) {
     return res;
   }
 
-  // Fallback: external geo API (only on non-Cloudflare platforms like Vercel)
+  // Fallback: external geo API (when Cloudflare headers are not available)
   try {
     const geoRes = await fetch(`https://ipapi.co/${ip}/json/`, {
       headers: { Accept: 'application/json' },

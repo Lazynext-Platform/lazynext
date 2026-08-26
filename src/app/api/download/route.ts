@@ -34,7 +34,7 @@ function isLargeMedia(contentType: string, ext: string): boolean {
 }
 
 // Default behavior is a 302 redirect to the original Atlas/OSS URL. Proxying
-// large media through a serverless function quickly exhausts Vercel/Workers
+// large media through a serverless function quickly exhausts Workers
 // origin-transfer quotas, so only explicit small-file proxy requests are served.
 export async function GET(req: Request) {
   const requestUrl = new URL(req.url);

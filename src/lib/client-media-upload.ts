@@ -1,11 +1,9 @@
 'use client';
 
-import { upload } from '@vercel/blob/client';
-
 type DirectUploadKind = 'ad-reference' | 'reel';
 
 type MediaStorageCapabilities = {
-  provider: 'r2' | 'vercel-blob';
+  provider: 'r2';
   configured: boolean;
   directUpload: boolean;
 };
@@ -22,7 +20,7 @@ async function mediaStorageCapabilities(): Promise<MediaStorageCapabilities> {
         .catch(() => ({}))) as Partial<MediaStorageCapabilities>;
       if (
         !response.ok ||
-        (body.provider !== 'r2' && body.provider !== 'vercel-blob')
+        body.provider !== 'r2'
       ) {
         throw new Error('media_storage_capabilities_failed');
       }
@@ -39,56 +37,13 @@ async function mediaStorageCapabilities(): Promise<MediaStorageCapabilities> {
   return capabilitiesPromise;
 }
 
-function extensionForUpload(file: Blob, filename: string): string {
-  const fromName = /\.([a-z0-9]{1,8})$/i.exec(filename)?.[1]?.toLowerCase();
-  if (fromName) return fromName;
-  const contentType = file.type.toLowerCase();
-  if (contentType === 'image/jpeg') return 'jpg';
-  if (contentType === 'image/png') return 'png';
-  if (contentType === 'image/webp') return 'webp';
-  if (contentType === 'video/quicktime') return 'mov';
-  if (contentType === 'video/webm') return 'webm';
-  return 'mp4';
-}
-
-function uploadDescriptor(file: Blob, kind: DirectUploadKind) {
-  if (kind === 'reel') {
-    return { tokenKind: 'reel', prefix: 'reel-' } as const;
-  }
-  if (file.type.startsWith('image/')) {
-    return {
-      tokenKind: 'ad-reference-image',
-      prefix: 'adref-image-',
-    } as const;
-  }
-  return {
-    tokenKind: 'ad-reference-video',
-    prefix: 'adref-video-',
-  } as const;
-}
-
-// Returns a Blob URL on Vercel, or an empty string on Cloudflare so callers
-// keep using the existing R2 API route.
+// On Cloudflare (R2), direct client upload is not supported — callers use the
+// server-side R2 upload API route instead. This function always returns an
+// empty string so callers fall back to the R2 upload path.
 export async function uploadDirectMediaIfSupported(
-  file: Blob,
-  options: { kind: DirectUploadKind; filename: string },
+  _file: Blob,
+  _options: { kind: DirectUploadKind; filename: string },
 ): Promise<string> {
-  const capabilities = await mediaStorageCapabilities();
-  if (capabilities.provider !== 'vercel-blob') return '';
-  if (!capabilities.configured || !capabilities.directUpload) {
-    throw new Error('blob_not_configured');
-  }
-
-  const descriptor = uploadDescriptor(file, options.kind);
-  const pathname =
-    `${descriptor.prefix}${crypto.randomUUID()}.` +
-    extensionForUpload(file, options.filename);
-  const blob = await upload(pathname, file, {
-    access: 'public',
-    contentType: file.type || 'application/octet-stream',
-    handleUploadUrl: '/api/media-storage/client-upload',
-    clientPayload: JSON.stringify({ kind: descriptor.tokenKind }),
-    multipart: file.size >= 5_000_000,
-  });
-  return blob.url;
+  await mediaStorageCapabilities();
+  return '';
 }

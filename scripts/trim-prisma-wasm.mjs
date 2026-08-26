@@ -37,19 +37,11 @@ const dotPrismaDir = join(
 );
 
 // Database engines we KEEP (used by this project)
-// For Cloudflare (D1), only sqlite is needed. PostgreSQL is used by Neon (Vercel).
-// When deploying to Cloudflare, we remove postgresql to reduce worker size.
-// This script runs after the OpenNext build, which is only used for Cloudflare,
-// so we default to cloudflare unless explicitly building for Vercel.
-const isCloudflareBuild = process.env.DEPLOY_TARGET !== 'vercel';
-const KEEP_ENGINES = isCloudflareBuild
-  ? new Set(['sqlite'])
-  : new Set(['sqlite', 'postgresql']);
+// For Cloudflare (D1), only sqlite is needed.
+const KEEP_ENGINES = new Set(['sqlite']);
 
 // Database engines we DELETE (not used by this project)
-const DELETE_ENGINES = isCloudflareBuild
-  ? ['cockroachdb', 'mysql', 'sqlserver', 'postgresql']
-  : ['cockroachdb', 'mysql', 'sqlserver'];
+const DELETE_ENGINES = ['cockroachdb', 'mysql', 'sqlserver', 'postgresql'];
 
 // Prisma 7 ships both "fast" and "small" WASM engine variants.
 // We only need "fast" — "small" is a fallback for constrained environments.

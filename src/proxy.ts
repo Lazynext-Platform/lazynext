@@ -152,7 +152,6 @@ async function handleRequest(req: NextRequest): Promise<NextResponse> {
   // Get IP from various headers
   const headers = req.headers;
   const ip =
-    headers.get('x-vercel-forwarded-for')?.split(',')[0]?.trim() ||
     headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
     headers.get('cf-connecting-ip')?.trim() ||
     headers.get('x-real-ip')?.trim() ||
@@ -168,7 +167,7 @@ async function handleRequest(req: NextRequest): Promise<NextResponse> {
   // On Cloudflare Workers, use the cf-ipcountry header (set by Cloudflare on
   // every request) for instant geo detection. The req.cf property is not
   // available on the Next.js Request object in the OpenNext adapter.
-  // On Vercel, the header is absent, so we fall back to ipapi.co.
+  // If the header is absent (e.g. local dev), we fall back to ipapi.co.
   const cfCountry = headers.get('cf-ipcountry')?.trim();
   if (cfCountry && /^[A-Z]{2}$/.test(cfCountry)) {
     const country = cfCountry.toUpperCase();
@@ -178,7 +177,7 @@ async function handleRequest(req: NextRequest): Promise<NextResponse> {
     return res;
   }
 
-  // Fallback: external geo API (only on non-Cloudflare platforms like Vercel)
+  // Fallback: external geo API (when Cloudflare headers are not available)
   try {
     const geoRes = await fetch(`https://ipapi.co/${ip}/json/`, {
       headers: { Accept: 'application/json' },
@@ -206,7 +205,7 @@ async function handleRequest(req: NextRequest): Promise<NextResponse> {
 
 // Baseline security headers for every response. CSP is intentionally pragmatic
 // (Next.js requires inline scripts/styles); media/img allow HTTPS because model
-// outputs and avatars are served from Atlas OSS / Vercel Blob / Google.
+// outputs and avatars are served from Atlas OSS / R2 / Google.
 // In development, React/Turbopack requires 'unsafe-eval' for stack
 // reconstruction; production keeps the strict policy (no unsafe-eval).
 const isDev = process.env.NODE_ENV !== 'production';

@@ -22,12 +22,8 @@ const prismaRuntimeDir = join(
   'runtime',
 );
 
-const isCloudflareBuild = process.env.DEPLOY_TARGET !== 'vercel';
-
-// Database engines to delete (not used by this project)
-const DELETE_ENGINES = isCloudflareBuild
-  ? ['cockroachdb', 'mysql', 'sqlserver', 'postgresql']
-  : ['cockroachdb', 'mysql', 'sqlserver'];
+// Database engines to delete (not used by this project — only SQLite/D1 is used)
+const DELETE_ENGINES = ['cockroachdb', 'mysql', 'sqlserver', 'postgresql'];
 
 // Prisma 7 "small" engine variants — we only need "fast"
 const DELETE_VARIANTS = ['small'];
@@ -53,7 +49,7 @@ function removeEngineFiles(dir, engineName) {
   }
 }
 
-console.log(`Pre-trimming unused Prisma WASM engines from node_modules (target: ${isCloudflareBuild ? 'cloudflare' : 'vercel'})...`);
+console.log(`Pre-trimming unused Prisma WASM engines from node_modules (target: cloudflare)...`);
 
 for (const engine of DELETE_ENGINES) {
   removeEngineFiles(prismaRuntimeDir, engine);
