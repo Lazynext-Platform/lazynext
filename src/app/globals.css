@@ -1,6 +1,18 @@
 @import "tailwindcss";
 
-@theme {
+/*
+ * Lazynext theme system
+ * ---------------------
+ * Three modes: light | dark | system.
+ * The resolved theme is applied to <html data-theme="light|dark"> by the
+ * pre-hydration inline script (src/app/layout.tsx) and the ThemeProvider
+ * (src/lib/theme.tsx). All semantic UI colors are CSS custom properties that
+ * swap based on [data-theme]. Tailwind utilities (bg-app, text-fg, border-line,
+ * ...) are generated from these via @theme inline so they always resolve to the
+ * active theme's value.
+ */
+
+@theme inline {
   --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 
   --color-brand-50: #ecfeff;
@@ -15,6 +27,35 @@
   --color-brand-900: #0648b8;
   --color-brand: #00b2fc;
   --color-brand-fg: #ffffff;
+  --color-brand-accent: var(--c-brand-accent);
+
+  /* Semantic surface tokens (resolve per [data-theme]) */
+  --color-app: var(--c-app);
+  --color-surface: var(--c-surface);
+  --color-elevated: var(--c-elevated);
+  --color-popover: var(--c-popover);
+  --color-hover: var(--c-hover);
+  --color-active: var(--c-active);
+  --color-input: var(--c-input);
+
+  /* Semantic foreground tokens */
+  --color-fg: var(--c-fg);
+  --color-fg-secondary: var(--c-fg-secondary);
+  --color-fg-muted: var(--c-fg-muted);
+  --color-fg-faint: var(--c-fg-faint);
+  --color-fg-placeholder: var(--c-fg-placeholder);
+  --color-fg-inverse: var(--c-fg-inverse);
+
+  /* Semantic border tokens */
+  --color-line: var(--c-line);
+  --color-line-strong: var(--c-line-strong);
+  --color-line-focus: var(--c-line-focus);
+
+  /* Status tokens */
+  --color-success: var(--c-success);
+  --color-warning: var(--c-warning);
+  --color-danger: var(--c-danger);
+  --color-info: var(--c-info);
 
   --shadow-soft: 0 1px 3px rgba(16,24,40,0.04), 0 10px 28px -10px rgba(16,24,40,0.10);
   --shadow-card: 0 1px 2px rgba(16,24,40,0.04), 0 16px 40px -16px rgba(16,24,40,0.14);
@@ -49,8 +90,69 @@
   }
 }
 
-:root {
+/* ───────────────────────── DARK (default identity) ───────────────────────── */
+:root,
+:root[data-theme='dark'] {
   color-scheme: dark;
+  --c-app: #131416;
+  --c-surface: rgba(255, 255, 255, 0.03);
+  --c-elevated: rgba(255, 255, 255, 0.06);
+  --c-popover: #1c1e21;
+  --c-hover: rgba(255, 255, 255, 0.06);
+  --c-active: rgba(255, 255, 255, 0.10);
+  --c-input: rgba(255, 255, 255, 0.05);
+
+  --c-fg: #f7f7f8;
+  --c-fg-secondary: rgba(247, 247, 248, 0.82);
+  --c-fg-muted: rgba(247, 247, 248, 0.60);
+  --c-fg-faint: rgba(247, 247, 248, 0.40);
+  --c-fg-placeholder: rgba(247, 247, 248, 0.30);
+  --c-fg-inverse: #131416;
+
+  --c-line: rgba(255, 255, 255, 0.10);
+  --c-line-strong: rgba(255, 255, 255, 0.20);
+  --c-line-focus: #22d3ee;
+
+  --c-success: #34d399;
+  --c-warning: #fbbf24;
+  --c-danger: #f87171;
+  --c-info: #38bdf8;
+  --c-brand-accent: #22d3ee;
+
+  --shadow-soft: 0 1px 3px rgba(0,0,0,0.30), 0 10px 28px -10px rgba(0,0,0,0.45);
+  --shadow-card: 0 1px 2px rgba(0,0,0,0.30), 0 16px 40px -16px rgba(0,0,0,0.55);
+}
+
+/* ───────────────────────── LIGHT ───────────────────────── */
+:root[data-theme='light'] {
+  color-scheme: light;
+  --c-app: #f7f7f8;
+  --c-surface: #ffffff;
+  --c-elevated: #f1f3f5;
+  --c-popover: #ffffff;
+  --c-hover: rgba(19, 20, 22, 0.05);
+  --c-active: rgba(19, 20, 22, 0.09);
+  --c-input: #ffffff;
+
+  --c-fg: #131416;
+  --c-fg-secondary: rgba(19, 20, 22, 0.78);
+  --c-fg-muted: rgba(19, 20, 22, 0.60);
+  --c-fg-faint: rgba(19, 20, 22, 0.45);
+  --c-fg-placeholder: rgba(19, 20, 22, 0.36);
+  --c-fg-inverse: #ffffff;
+
+  --c-line: rgba(19, 20, 22, 0.10);
+  --c-line-strong: rgba(19, 20, 22, 0.18);
+  --c-line-focus: #0072f9;
+
+  --c-success: #059669;
+  --c-warning: #b45309;
+  --c-danger: #dc2626;
+  --c-info: #0284c7;
+  --c-brand-accent: #0072f9;
+
+  --shadow-soft: 0 1px 3px rgba(16,24,40,0.04), 0 10px 28px -10px rgba(16,24,40,0.10);
+  --shadow-card: 0 1px 2px rgba(16,24,40,0.04), 0 16px 40px -16px rgba(16,24,40,0.14);
 }
 
 /* Global keyboard focus indicator for accessibility.
@@ -58,7 +160,7 @@
    navigated via keyboard (Tab), even if individual components don't
    define their own focus styles. */
 :focus-visible {
-  outline: 2px solid #00b2fc;
+  outline: 2px solid var(--c-line-focus);
   outline-offset: 2px;
   border-radius: 2px;
 }
@@ -96,11 +198,17 @@
 }
 
 body {
-  @apply bg-[#131416] text-[#f7f7f8] antialiased;
+  @apply bg-app text-fg antialiased;
   background-image:
     radial-gradient(55rem 55rem at 105% -10%, rgba(0, 178, 252, 0.07), transparent 60%),
     radial-gradient(45rem 45rem at -10% 5%, rgba(0, 114, 249, 0.06), transparent 55%);
   background-attachment: fixed;
+}
+/* Lighter, subtler ambient glow in light mode so the page doesn't look washed out. */
+:root[data-theme='light'] body {
+  background-image:
+    radial-gradient(55rem 55rem at 105% -10%, rgba(0, 178, 252, 0.10), transparent 60%),
+    radial-gradient(45rem 45rem at -10% 5%, rgba(0, 114, 249, 0.08), transparent 55%);
 }
 
 @layer components {
@@ -109,7 +217,7 @@ body {
     background-image: linear-gradient(135deg, #00e0fc, #00b2fc 55%, #0072f9);
   }
   .card {
-    @apply rounded-2xl border border-white/10 bg-white/[0.03] shadow-soft;
+    @apply rounded-2xl border border-line bg-surface shadow-soft;
   }
   .btn-brand {
     @apply inline-flex items-center justify-center gap-2 rounded-xl bg-brand-gradient px-5 py-3 font-semibold text-white shadow-glow transition-all;
@@ -124,19 +232,62 @@ body {
     @apply cursor-not-allowed opacity-50 shadow-none;
   }
   .btn-ghost {
-    @apply inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.04] px-5 py-3 font-medium text-white/80 transition hover:border-white/20 hover:bg-white/[0.08];
+    @apply inline-flex items-center justify-center gap-2 rounded-xl border border-line bg-elevated px-5 py-3 font-medium text-fg-secondary transition hover:border-line-strong hover:bg-active;
   }
 }
 
 /* skeleton shimmer for loading states */
 .skeleton {
-  @apply relative overflow-hidden bg-white/[0.06];
+  @apply relative overflow-hidden;
+  background-color: var(--c-elevated);
 }
 .skeleton::after {
   content: '';
   position: absolute;
   inset: 0;
   transform: translateX(-100%);
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.65), transparent);
+  background: linear-gradient(90deg, transparent, var(--skeleton-shimmer), transparent);
   animation: shimmer 1.6s infinite;
+}
+:root[data-theme='dark'] { --skeleton-shimmer: rgba(255, 255, 255, 0.65); }
+:root[data-theme='light'] { --skeleton-shimmer: rgba(19, 20, 22, 0.18); }
+
+/* Ambient grid background used by hero/landing sections. Theme-aware grid
+   lines so it reads in both light and dark. */
+.app-grid-bg {
+  background-image:
+    radial-gradient(70% 55% at 50% -6%, rgba(0, 178, 252, 0.12) 0%, rgba(0, 178, 252, 0) 60%),
+    linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(var(--grid-line) 1px, transparent 1px);
+  background-size: auto, 44px 44px, 44px 44px;
+}
+:root[data-theme='dark'] { --grid-line: rgba(255, 255, 255, 0.05); }
+:root[data-theme='light'] { --grid-line: rgba(19, 20, 22, 0.06); }
+
+/* Theme-aware dropdown chevron for native <select> elements. The stroke color
+   swaps with the theme so the chevron stays visible on light and dark. */
+.select-chevron {
+  background-image: var(--chevron);
+  background-position: right 8px center;
+  background-size: 10px;
+  background-repeat: no-repeat;
+}
+:root[data-theme='dark'] {
+  --chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-opacity='0.55' stroke-width='3'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+}
+:root[data-theme='light'] {
+  --chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%23131416' stroke-opacity='0.55' stroke-width='3'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+}
+
+/* Native select option backgrounds: browser <option> elements don't inherit
+   data-theme, so force a readable surface that matches the active theme. */
+:root[data-theme='light'] select option,
+:root[data-theme='light'] select optgroup {
+  background-color: #ffffff;
+  color: #131416;
+}
+:root[data-theme='dark'] select option,
+:root[data-theme='dark'] select optgroup {
+  background-color: #1c1e21;
+  color: #f7f7f8;
 }

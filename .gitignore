@@ -42,3 +42,6 @@ tsconfig.tsbuildinfo
 .dev.vars
 prisma/prisma/
 worker-configuration.d.ts
+
+# Playwright MCP QA artifacts
+.playwright-mcp/

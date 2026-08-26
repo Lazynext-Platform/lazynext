@@ -7,6 +7,7 @@
     "dev": "npm run platform:prepare && next dev",
     "build": "npm run prisma:generate && npm run platform:prepare && next build --webpack",
     "start": "next start",
+    "start:standalone": "node -e \"const{cpSync}=require('fs');cpSync('.next/static','.next/standalone/.next/static',{recursive:true});cpSync('public','.next/standalone/public',{recursive:true})\" && node .next/standalone/server.js",
     "test": "node --test --experimental-strip-types --no-warnings test/**/*.test.ts",
     "lint": "eslint src/",
     "postinstall": "npm run prisma:generate && npm run platform:prepare",

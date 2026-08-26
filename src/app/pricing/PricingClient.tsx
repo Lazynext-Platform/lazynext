@@ -87,23 +87,23 @@ export default function PricingClient({
   }
 
   return (
-    <div className="min-h-screen text-[#f7f7f8]" style={{ backgroundColor: '#131416', colorScheme: 'dark' }}>
+    <div className="min-h-screen text-fg bg-app">
       <div className="mx-auto max-w-5xl px-4 pb-24 space-y-8">
         <div className="text-center pt-6">
           <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">{t('pricing.title')}</h1>
-          <p className="mt-3 text-white/50">{t('pricing.subtitle')}</p>
+          <p className="mt-3 text-fg-faint">{t('pricing.subtitle')}</p>
 
           {/* ── Currency switcher ── */}
-          <div className="mt-5 inline-flex max-w-full items-center gap-2 overflow-hidden rounded-xl border border-white/10 bg-white/[0.04] px-2.5 py-2 sm:px-3">
-            <DollarSign className="h-4 w-4 shrink-0 text-white/50" />
+          <div className="mt-5 inline-flex max-w-full items-center gap-2 overflow-hidden rounded-xl border border-line bg-surface px-2.5 py-2 sm:px-3">
+            <DollarSign className="h-4 w-4 shrink-0 text-fg-faint" />
             <select
               aria-label={t('common.currency')}
               value={currency}
               onChange={(e) => changeCurrency(e.target.value)}
-              className="min-w-0 cursor-pointer appearance-none bg-transparent text-sm font-medium text-white outline-none"
+              className="min-w-0 cursor-pointer appearance-none bg-transparent text-sm font-medium text-fg outline-none"
             >
               {CURRENCIES.map((c) => (
-                <option key={c.code} value={c.code} className="bg-neutral-900 text-white">
+                <option key={c.code} value={c.code} className="text-fg">
                   {c.symbol} {c.code} — {getCurrencyName(c.code, locale)}
                 </option>
               ))}
@@ -121,34 +121,34 @@ export default function PricingClient({
             return (
               <div
                 key={p.id}
-                className={`relative flex flex-col rounded-2xl border p-7 ${p.highlight ? 'border-[#00b2fc] ring-2 ring-[#00b2fc]/40 bg-white/[0.04]' : 'border-white/[0.08] bg-white/[0.03]'}`}
+                className={`relative flex flex-col rounded-2xl border p-7 ${p.highlight ? 'border-[#00b2fc] ring-2 ring-[#00b2fc]/40 bg-surface' : 'border-line bg-surface'}`}
               >
                 {p.highlight && (
                   <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full px-3 py-1 text-xs font-semibold text-white shadow-lg" style={{ background: '#00b2fc' }}>
                     {t('pricing.popular')}
                   </span>
                 )}
-                <div className="text-sm font-medium text-white/50">{p.id === 'starter' ? t('pricing.packStarter') : p.id === 'pro' ? t('pricing.packPro') : p.id === 'elite' ? t('pricing.packElite') : p.name}</div>
+                <div className="text-sm font-medium text-fg-faint">{p.id === 'starter' ? t('pricing.packStarter') : p.id === 'pro' ? t('pricing.packPro') : p.id === 'elite' ? t('pricing.packElite') : p.name}</div>
                 <div className="mt-2 text-4xl font-bold">
                   {dp.symbol}{dp.formatted}
                 </div>
-                <div className="mt-1 text-xs text-white/40">
+                <div className="mt-1 text-xs text-fg-faint">
                   {currency === 'USD' ? '' : `≈ $${p.priceUsd} USD`}
                 </div>
-                <div className="mt-1 flex items-center gap-1.5 text-sm font-medium" style={{ color: '#22d3ee' }}>
+                <div className="mt-1 flex items-center gap-1.5 text-sm font-medium" style={{ color: 'var(--color-brand-accent)' }}>
                   <Coins className="h-4 w-4" />
                   {formatNumber(p.credits, locale)} {t('pricing.credits')}
                 </div>
-                <ul className="mt-5 space-y-2 text-sm text-white/60">
-                  <li className="flex gap-2"><Check className="h-4 w-4 shrink-0" style={{ color: '#00b2fc' }} />~{formatNumber(Math.floor(p.credits / 5), locale)}{t('pricing.featGen')}</li>
-                  <li className="flex gap-2"><Check className="h-4 w-4 shrink-0" style={{ color: '#00b2fc' }} />{t('pricing.featApps')}</li>
-                  <li className="flex gap-2"><Check className="h-4 w-4 shrink-0" style={{ color: '#00b2fc' }} />{t('pricing.featExpire')}</li>
+                <ul className="mt-5 space-y-2 text-sm text-fg-muted">
+                  <li className="flex gap-2"><Check className="h-4 w-4 shrink-0" style={{ color: 'var(--color-brand-accent)' }} />~{formatNumber(Math.floor(p.credits / 5), locale)}{t('pricing.featGen')}</li>
+                  <li className="flex gap-2"><Check className="h-4 w-4 shrink-0" style={{ color: 'var(--color-brand-accent)' }} />{t('pricing.featApps')}</li>
+                  <li className="flex gap-2"><Check className="h-4 w-4 shrink-0" style={{ color: 'var(--color-brand-accent)' }} />{t('pricing.featExpire')}</li>
                 </ul>
                 {mode === 'checkout' && (
                   <button
                     onClick={() => buy(p.id)}
                     disabled={busy === p.id}
-                    className="mt-6 w-full rounded-xl px-4 py-2.5 text-sm font-bold text-white transition hover:brightness-110 disabled:opacity-50"
+                    className="mt-6 w-full rounded-xl px-4 py-2.5 text-sm font-bold text-fg transition hover:brightness-110 disabled:opacity-50"
                     style={{ background: p.highlight ? '#00b2fc' : 'rgba(255,255,255,0.08)' }}
                   >
                     {busy === p.id ? <Loader2 className="mx-auto h-4 w-4 animate-spin" /> : t('pricing.buy')}
@@ -160,18 +160,18 @@ export default function PricingClient({
         </div>
 
         {mode === 'redeem' && (
-          <div className="mx-auto max-w-md rounded-2xl border border-white/[0.08] bg-white/[0.03] p-7 text-center">
+          <div className="mx-auto max-w-md rounded-2xl border border-line bg-surface p-7 text-center">
             <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl" style={{ background: 'rgba(0,178,252,0.15)' }}>
-              <Gift className="h-5 w-5" style={{ color: '#00b2fc' }} />
+              <Gift className="h-5 w-5" style={{ color: 'var(--color-brand-accent)' }} />
             </span>
             <h2 className="mt-3 font-semibold">{t('pricing.redeemTitle')}</h2>
-            <p className="mb-4 mt-1 text-sm text-white/50">{t('pricing.redeemDesc')}</p>
+            <p className="mb-4 mt-1 text-sm text-fg-faint">{t('pricing.redeemDesc')}</p>
             <div className="flex gap-2">
               <input
                 value={code}
                 onChange={(e) => setCode(e.target.value)}
                 placeholder="ATLAS-XXXX-XXXX"
-                className="flex-1 rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2.5 text-sm text-white outline-none transition focus:border-[#00b2fc] focus:ring-1 focus:ring-[#00b2fc]"
+                className="flex-1 rounded-xl border border-line bg-surface px-3 py-2.5 text-sm text-fg outline-none transition focus:border-[#00b2fc] focus:ring-1 focus:ring-[#00b2fc]"
               />
               <button onClick={redeem} disabled={busy === 'redeem' || !code} className="rounded-xl px-4 py-2.5 text-sm font-bold text-white transition hover:brightness-110 disabled:opacity-50" style={{ background: '#00b2fc' }}>
                 {busy === 'redeem' ? <Loader2 className="h-4 w-4 animate-spin" /> : t('pricing.redeem')}

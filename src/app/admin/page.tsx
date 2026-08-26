@@ -76,34 +76,31 @@ export default function AdminPage() {
   }
 
   if (status === 'loading') {
-    return <div className="grid min-h-screen place-items-center"><Loader2 className="h-7 w-7 animate-spin text-white/40" /></div>;
+    return <div className="grid min-h-screen place-items-center"><Loader2 className="h-7 w-7 animate-spin text-fg-faint" /></div>;
   }
 
   if (forbidden) {
     return (
       <div className="grid min-h-screen place-items-center gap-4 text-center">
         <AlertCircle className="h-10 w-10 text-red-400" />
-        <p className="text-white/60">Access denied. Your email is not in the admin list.</p>
+        <p className="text-fg-muted">Access denied. Your email is not in the admin list.</p>
       </div>
     );
   }
-
-  const bg = { backgroundColor: '#131416', colorScheme: 'dark' as const };
-
-  return (
-    <main className="min-h-screen text-white" style={bg}>
+return (
+    <main className="min-h-screen text-fg bg-app">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 pb-24">
         <div className="pt-6 pb-6">
           <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Admin Dashboard</h1>
-          <p className="mt-1 text-sm text-white/50">User management, credit adjustments, and creation monitoring.</p>
+          <p className="mt-1 text-sm text-fg-faint">User management, credit adjustments, and creation monitoring.</p>
         </div>
 
         {/* Tabs */}
         <div className="mb-6 flex gap-2">
-          <button onClick={() => setTab('users')} className={`inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition ${tab === 'users' ? 'bg-[#00b2fc] text-white' : 'bg-white/5 text-white/60 hover:bg-white/10'}`}>
+          <button onClick={() => setTab('users')} className={`inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition ${tab === 'users' ? 'bg-[#00b2fc] text-white' : 'bg-hover text-fg-muted hover:bg-elevated'}`}>
             <Users className="h-4 w-4" /> Users
           </button>
-          <button onClick={() => setTab('creations')} className={`inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition ${tab === 'creations' ? 'bg-[#00b2fc] text-white' : 'bg-white/5 text-white/60 hover:bg-white/10'}`}>
+          <button onClick={() => setTab('creations')} className={`inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition ${tab === 'creations' ? 'bg-[#00b2fc] text-white' : 'bg-hover text-fg-muted hover:bg-elevated'}`}>
             <Film className="h-4 w-4" /> Creations
           </button>
         </div>
@@ -113,30 +110,30 @@ export default function AdminPage() {
             {/* Search */}
             <div className="mb-4 flex gap-2">
               <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/30" />
+                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-fg-placeholder" />
                 <input
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && loadUsers()}
                   placeholder="Search by email…"
-                  className="w-full rounded-lg border border-white/10 bg-white/[0.05] py-2 pl-10 pr-4 text-sm text-white placeholder:text-white/30 outline-none focus:border-[#00b2fc]"
+                  className="w-full rounded-lg border border-line bg-surface py-2 pl-10 pr-4 text-sm text-fg placeholder:text-fg-placeholder outline-none focus:border-[#00b2fc]"
                 />
               </div>
-              <button onClick={loadUsers} className="rounded-lg bg-white/10 px-4 py-2 text-sm font-medium text-white/80 hover:bg-white/15">Search</button>
+              <button onClick={loadUsers} className="rounded-lg bg-elevated px-4 py-2 text-sm font-medium text-fg-secondary hover:bg-active">Search</button>
             </div>
 
             {/* Stats */}
-            <div className="mb-4 text-xs text-white/40">{total} user{total !== 1 ? 's' : ''} total</div>
+            <div className="mb-4 text-xs text-fg-faint">{total} user{total !== 1 ? 's' : ''} total</div>
 
             {/* Table */}
             {users === null ? (
-              <div className="grid place-items-center py-12"><Loader2 className="h-6 w-6 animate-spin text-white/30" /></div>
+              <div className="grid place-items-center py-12"><Loader2 className="h-6 w-6 animate-spin text-fg-placeholder" /></div>
             ) : users.length === 0 ? (
-              <div className="grid place-items-center py-12 text-sm text-white/40">No users found.</div>
+              <div className="grid place-items-center py-12 text-sm text-fg-faint">No users found.</div>
             ) : (
-              <div className="overflow-x-auto rounded-xl border border-white/10">
+              <div className="overflow-x-auto rounded-xl border border-line">
                 <table className="w-full text-sm">
-                  <thead className="bg-white/[0.03] text-xs uppercase text-white/40">
+                  <thead className="bg-surface text-xs uppercase text-fg-faint">
                     <tr>
                       <th className="px-4 py-3 text-left">User</th>
                       <th className="px-4 py-3 text-right">Credits</th>
@@ -147,14 +144,14 @@ export default function AdminPage() {
                   </thead>
                   <tbody className="divide-y divide-white/5">
                     {users.map((u) => (
-                      <tr key={u.id} className="hover:bg-white/[0.02]">
+                      <tr key={u.id} className="hover:bg-hover">
                         <td className="px-4 py-3">
-                          <div className="font-medium text-white/90">{u.name || '—'}</div>
-                          <div className="text-xs text-white/40">{u.email}</div>
+                          <div className="font-medium text-fg">{u.name || '—'}</div>
+                          <div className="text-xs text-fg-faint">{u.email}</div>
                         </td>
-                        <td className="px-4 py-3 text-right font-mono font-bold text-[#00b2fc]">{u.credits}</td>
-                        <td className="px-4 py-3 text-right text-white/60">{u._count.creations}</td>
-                        <td className="px-4 py-3 text-xs text-white/40">{formatDateTime(u.createdAt, 'en')}</td>
+                        <td className="px-4 py-3 text-right font-mono font-bold text-brand-accent">{u.credits}</td>
+                        <td className="px-4 py-3 text-right text-fg-muted">{u._count.creations}</td>
+                        <td className="px-4 py-3 text-xs text-fg-faint">{formatDateTime(u.createdAt, 'en')}</td>
                         <td className="px-4 py-3">
                           <div className="flex items-center gap-1">
                             <input
@@ -162,18 +159,18 @@ export default function AdminPage() {
                               value={adjusting === u.id ? adjustAmount : ''}
                               onChange={(e) => { setAdjusting(u.id); setAdjustAmount(e.target.value); }}
                               placeholder="±N"
-                              className="w-16 rounded border border-white/10 bg-white/5 px-2 py-1 text-xs text-white outline-none focus:border-[#00b2fc]"
+                              className="w-16 rounded border border-line bg-hover px-2 py-1 text-xs text-fg outline-none focus:border-[#00b2fc]"
                             />
                             <input
                               value={adjusting === u.id ? adjustReason : ''}
                               onChange={(e) => { setAdjusting(u.id); setAdjustReason(e.target.value); }}
                               placeholder="reason"
-                              className="w-24 rounded border border-white/10 bg-white/5 px-2 py-1 text-xs text-white outline-none focus:border-[#00b2fc]"
+                              className="w-24 rounded border border-line bg-hover px-2 py-1 text-xs text-fg outline-none focus:border-[#00b2fc]"
                             />
                             <button
                               onClick={() => adjustCredits(u.id)}
                               disabled={adjusting !== u.id || !adjustAmount}
-                              className="rounded bg-[#00b2fc]/20 px-2 py-1 text-xs text-[#00b2fc] hover:bg-[#00b2fc]/30 disabled:opacity-30"
+                              className="rounded bg-[#00b2fc]/20 px-2 py-1 text-xs text-brand-accent hover:bg-[#00b2fc]/30 disabled:opacity-30"
                             >
                               Apply
                             </button>
@@ -192,25 +189,25 @@ export default function AdminPage() {
           <div>
             {/* Status filter + counts */}
             <div className="mb-4 flex flex-wrap items-center gap-2">
-              <button onClick={() => setStatusFilter('')} className={`rounded-lg px-3 py-1.5 text-xs font-medium ${!statusFilter ? 'bg-[#00b2fc] text-white' : 'bg-white/5 text-white/60'}`}>All</button>
+              <button onClick={() => setStatusFilter('')} className={`rounded-lg px-3 py-1.5 text-xs font-medium ${!statusFilter ? 'bg-[#00b2fc] text-white' : 'bg-hover text-fg-muted'}`}>All</button>
               {statusCounts.map((sc) => (
-                <button key={sc.status} onClick={() => setStatusFilter(sc.status)} className={`rounded-lg px-3 py-1.5 text-xs font-medium ${statusFilter === sc.status ? 'bg-[#00b2fc] text-white' : 'bg-white/5 text-white/60'}`}>
+                <button key={sc.status} onClick={() => setStatusFilter(sc.status)} className={`rounded-lg px-3 py-1.5 text-xs font-medium ${statusFilter === sc.status ? 'bg-[#00b2fc] text-white' : 'bg-hover text-fg-muted'}`}>
                   {sc.status} ({sc._count})
                 </button>
               ))}
-              <button onClick={loadCreations} className="ml-auto rounded-lg bg-white/10 px-3 py-1.5 text-xs text-white/60 hover:bg-white/15"><RefreshCw className="h-3 w-3 inline" /> Refresh</button>
+              <button onClick={loadCreations} className="ml-auto rounded-lg bg-elevated px-3 py-1.5 text-xs text-fg-muted hover:bg-active"><RefreshCw className="h-3 w-3 inline" /> Refresh</button>
             </div>
 
-            <div className="mb-4 text-xs text-white/40">{total} creation{total !== 1 ? 's' : ''}</div>
+            <div className="mb-4 text-xs text-fg-faint">{total} creation{total !== 1 ? 's' : ''}</div>
 
             {creations === null ? (
-              <div className="grid place-items-center py-12"><Loader2 className="h-6 w-6 animate-spin text-white/30" /></div>
+              <div className="grid place-items-center py-12"><Loader2 className="h-6 w-6 animate-spin text-fg-placeholder" /></div>
             ) : creations.length === 0 ? (
-              <div className="grid place-items-center py-12 text-sm text-white/40">No creations found.</div>
+              <div className="grid place-items-center py-12 text-sm text-fg-faint">No creations found.</div>
             ) : (
-              <div className="overflow-x-auto rounded-xl border border-white/10">
+              <div className="overflow-x-auto rounded-xl border border-line">
                 <table className="w-full text-sm">
-                  <thead className="bg-white/[0.03] text-xs uppercase text-white/40">
+                  <thead className="bg-surface text-xs uppercase text-fg-faint">
                     <tr>
                       <th className="px-4 py-3 text-left">Template</th>
                       <th className="px-4 py-3 text-left">Status</th>
@@ -223,20 +220,20 @@ export default function AdminPage() {
                   </thead>
                   <tbody className="divide-y divide-white/5">
                     {creations.map((c) => (
-                      <tr key={c.id} className="hover:bg-white/[0.02]">
-                        <td className="px-4 py-3 text-xs text-white/60">{c.templateId}</td>
+                      <tr key={c.id} className="hover:bg-hover">
+                        <td className="px-4 py-3 text-xs text-fg-muted">{c.templateId}</td>
                         <td className="px-4 py-3">
                           <span className={`rounded px-2 py-0.5 text-xs font-medium ${
                             c.status === 'completed' ? 'bg-green-500/15 text-green-400' :
                             c.status === 'failed' ? 'bg-red-500/15 text-red-400' :
                             c.status === 'processing' ? 'bg-blue-500/15 text-blue-400' :
-                            'bg-white/10 text-white/60'
+                            'bg-elevated text-fg-muted'
                           }`}>{c.status}</span>
                         </td>
-                        <td className="max-w-xs truncate px-4 py-3 text-xs text-white/50">{c.prompt || '—'}</td>
-                        <td className="px-4 py-3 text-right font-mono text-xs text-white/60">{c.cost}</td>
-                        <td className="px-4 py-3 text-xs text-white/40">{c.userId.slice(0, 8)}…</td>
-                        <td className="px-4 py-3 text-xs text-white/40">{formatDateTime(c.createdAt, 'en')}</td>
+                        <td className="max-w-xs truncate px-4 py-3 text-xs text-fg-faint">{c.prompt || '—'}</td>
+                        <td className="px-4 py-3 text-right font-mono text-xs text-fg-muted">{c.cost}</td>
+                        <td className="px-4 py-3 text-xs text-fg-faint">{c.userId.slice(0, 8)}…</td>
+                        <td className="px-4 py-3 text-xs text-fg-faint">{formatDateTime(c.createdAt, 'en')}</td>
                         <td className="max-w-xs truncate px-4 py-3 text-xs text-red-400/70">{c.error || '—'}</td>
                       </tr>
                     ))}

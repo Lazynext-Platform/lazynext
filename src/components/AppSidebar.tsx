@@ -22,8 +22,8 @@ const PRIMARY_APPS: NavApp[] = [
 
 function activeClass(active: boolean) {
   return active
-    ? 'border-white/20 bg-white/[0.08] text-white shadow-soft'
-    : 'border-transparent text-white/60 hover:border-white/10 hover:bg-white/[0.04] hover:text-white';
+    ? 'border-line-strong bg-elevated text-fg shadow-soft'
+    : 'border-transparent text-fg-muted hover:border-line hover:bg-surface hover:text-fg';
 }
 
 export function AppSidebar() {
@@ -42,7 +42,7 @@ export function AppSidebar() {
   return (
     <aside className="hidden w-64 shrink-0 lg:block">
       <div className="sticky top-[76px] max-h-[calc(100vh-96px)] overflow-y-auto pr-1">
-        <div className="mb-3 px-2 text-xs font-semibold uppercase tracking-wider text-white/40">{t('sidebar.apps')}</div>
+        <div className="mb-3 px-2 text-xs font-semibold uppercase tracking-wider text-fg-faint">{t('sidebar.apps')}</div>
         <nav className="space-y-2">
           {CAT_META.map((c) => {
             const apps = byCat[c.key];
@@ -51,12 +51,12 @@ export function AppSidebar() {
               <div key={c.key}>
                 <button
                   onClick={() => setOpen((o) => ({ ...o, [c.key]: !o[c.key] }))}
-                  className="flex w-full items-center justify-between rounded-xl px-2 py-2 text-left transition hover:bg-white/[0.04]"
+                  className="flex w-full items-center justify-between rounded-xl px-2 py-2 text-left transition hover:bg-surface"
                 >
-                  <span className="flex items-center gap-2 text-sm font-semibold text-white/80">
+                  <span className="flex items-center gap-2 text-sm font-semibold text-fg-secondary">
                     <span className={`h-2 w-2 shrink-0 rounded-full ${c.dot}`} /> {t(`appCat.${c.key}`)}
                   </span>
-                  <span className="flex items-center gap-1 text-xs text-white/40">
+                  <span className="flex items-center gap-1 text-xs text-fg-faint">
                     {apps.length}
                     <ChevronDown className={`h-4 w-4 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
                   </span>
@@ -69,12 +69,12 @@ export function AppSidebar() {
                       const text = appText(app.id);
                       return (
                         <Link key={app.href} href={app.href} className={`flex gap-3 rounded-xl border p-3 transition ${activeClass(active)}`}>
-                          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white/[0.06] text-brand-400">
+                          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-elevated text-brand-400">
                             <Icon className="h-4 w-4" />
                           </span>
                           <span className="min-w-0">
                             <span className="block truncate text-sm font-semibold">{isFeatured(app.href) ? '⭐ ' : ''}{appTitle(app.id, text.title, locale)}</span>
-                            <span className="mt-0.5 block line-clamp-2 text-xs leading-4 text-white/40">{appDesc(app.id, text.description, locale)}</span>
+                            <span className="mt-0.5 block line-clamp-2 text-xs leading-4 text-fg-faint">{appDesc(app.id, text.description, locale)}</span>
                           </span>
                         </Link>
                       );

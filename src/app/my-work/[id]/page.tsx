@@ -50,26 +50,26 @@ export default function WorkDetailPage() {
   const finalVideo = c && c !== 'notfound' && Array.isArray(c.outputs) ? c.outputs[0] : '';
 
   return (
-    <div className="min-h-screen" style={{ background: '#131416' }}>
+    <div className="min-h-screen bg-app">
       <div className="px-6 sm:px-8 py-5">
         <div className="flex items-center gap-4">
-          <button onClick={() => router.push('/my-work')} className="inline-flex items-center gap-1.5 text-sm text-white/70 hover:text-white transition"><ArrowLeft className="h-4 w-4" />{t('myWork.title')}</button>
+          <button onClick={() => router.push('/my-work')} className="inline-flex items-center gap-1.5 text-sm text-fg-secondary hover:text-fg transition"><ArrowLeft className="h-4 w-4" />{t('myWork.title')}</button>
         </div>
       </div>
 
       <div className="mx-auto max-w-5xl px-4 sm:px-6 pb-24">
         {status === 'loading' || c === null ? (
-          <div className="grid place-items-center py-32"><Loader2 className="h-7 w-7 animate-spin text-white/40" /></div>
+          <div className="grid place-items-center py-32"><Loader2 className="h-7 w-7 animate-spin text-fg-faint" /></div>
         ) : status !== 'authenticated' ? (
           <div className="grid place-items-center gap-4 py-32 text-center">
             <div className="text-5xl">🔐</div>
-            <p className="text-white/50">{t('myWork.signInView')}</p>
+            <p className="text-fg-faint">{t('myWork.signInView')}</p>
             <Link href="/" className="rounded-xl px-5 py-2.5 text-sm font-bold text-white" style={{ background: '#00b2fc' }}>{t('common.signIn')}</Link>
           </div>
         ) : c === 'notfound' || !c.assets || c.assets.kind !== 'drama' ? (
           <div className="grid place-items-center gap-4 py-32 text-center">
             <div className="text-5xl">🗂️</div>
-            <p className="text-white/50">{t('myWork.noFolder')}</p>
+            <p className="text-fg-faint">{t('myWork.noFolder')}</p>
             <Link href="/my-work" className="rounded-xl px-5 py-2.5 text-sm font-bold text-white" style={{ background: '#00b2fc' }}>{t('myWork.backToWork')}</Link>
           </div>
         ) : (
@@ -88,29 +88,29 @@ function DramaFolder({ c, t, finalVideo }: { c: Creation; t: (key: string, vars?
 
   return (
     <div className="pt-4">
-      <div className="flex items-center gap-2 mb-1"><Film className="h-5 w-5" style={{ color: '#22d3ee' }} /><h1 className="text-2xl font-bold tracking-tight sm:text-3xl">{f.title || c.prompt || t('myWork.dramaTitle')}</h1></div>
-      <p className="mb-8 text-sm text-white/45">{t('myWork.dramaSummary', { chars: chars.length, scenes: scenes.length, done: doneVids, total: scenes.length })}</p>
+      <div className="flex items-center gap-2 mb-1"><Film className="h-5 w-5" style={{ color: 'var(--color-brand-accent)' }} /><h1 className="text-2xl font-bold tracking-tight sm:text-3xl">{f.title || c.prompt || t('myWork.dramaTitle')}</h1></div>
+      <p className="mb-8 text-sm text-fg-faint">{t('myWork.dramaSummary', { chars: chars.length, scenes: scenes.length, done: doneVids, total: scenes.length })}</p>
 
       {/* Final video */}
       <section className="mb-10">
-        <h2 className="mb-3 text-sm font-semibold text-white/70">{t('myWork.finalCut')}</h2>
+        <h2 className="mb-3 text-sm font-semibold text-fg-secondary">{t('myWork.finalCut')}</h2>
         {finalVideo ? (
           <div className="relative w-full max-w-[300px]">
-            <video src={finalVideo} controls playsInline poster={scenes.find((s) => s.frameUrl)?.frameUrl || undefined} className="w-full rounded-2xl border border-white/10 bg-black" />
+            <video src={finalVideo} controls playsInline poster={scenes.find((s) => s.frameUrl)?.frameUrl || undefined} className="w-full rounded-2xl border border-line bg-black" />
             <a href={finalVideo} download className="absolute -right-3 -top-3 grid h-9 w-9 place-items-center rounded-full bg-[#00b2fc] text-white shadow-lg"><Download className="h-4 w-4" /></a>
           </div>
         ) : (
-          <div className="grid aspect-video max-w-[300px] place-items-center rounded-2xl border border-dashed border-white/15 bg-black/20 text-xs text-white/40">{t('myWork.finalPlaceholder')}</div>
+          <div className="grid aspect-video max-w-[300px] place-items-center rounded-2xl border border-dashed border-line bg-black/20 text-xs text-fg-faint">{t('myWork.finalPlaceholder')}</div>
         )}
       </section>
 
       {/* Character portraits */}
       <section className="mb-10">
-        <h2 className="mb-3 text-sm font-semibold text-white/70">🎭 {t('myWork.castPortraits')}</h2>
+        <h2 className="mb-3 text-sm font-semibold text-fg-secondary">🎭 {t('myWork.castPortraits')}</h2>
         {chars.length ? (
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
             {chars.map((ch) => (
-              <div key={ch.key} className="overflow-hidden rounded-xl border border-white/10 bg-black/20">
+              <div key={ch.key} className="overflow-hidden rounded-xl border border-line bg-black/20">
                 <div className="relative aspect-[3/4] w-full">
                   {ch.portraitUrl ? (
                      
@@ -119,47 +119,47 @@ function DramaFolder({ c, t, finalVideo }: { c: Creation; t: (key: string, vars?
                     <div className="grid h-full w-full place-items-center text-3xl opacity-50">🎭</div>
                   )}
                 </div>
-                <div className="p-2 text-xs font-medium text-white/85">{ch.name}</div>
+                <div className="p-2 text-xs font-medium text-fg">{ch.name}</div>
               </div>
             ))}
           </div>
-        ) : <div className="text-xs text-white/40">{t('myWork.noCharacters')}</div>}
+        ) : <div className="text-xs text-fg-faint">{t('myWork.noCharacters')}</div>}
       </section>
 
       {/* Product reference image (product drama: user-uploaded or auto-generated, same product locked across all scenes) */}
       {f.productImageUrl && (
         <section className="mb-10">
-          <h2 className="mb-3 text-sm font-semibold text-white/70">🛍️ {t('myWork.productReference')}</h2>
+          <h2 className="mb-3 text-sm font-semibold text-fg-secondary">🛍️ {t('myWork.productReference')}</h2>
           { }
-          <img src={f.productImageUrl} alt="product" className="h-40 rounded-xl border border-white/10 object-cover" referrerPolicy="no-referrer" />
+          <img src={f.productImageUrl} alt="product" className="h-40 rounded-xl border border-line object-cover" referrerPolicy="no-referrer" />
         </section>
       )}
 
       {/* Per-scene assets */}
       <section>
-        <h2 className="mb-3 text-sm font-semibold text-white/70">🎬 {t('myWork.scenes')}</h2>
+        <h2 className="mb-3 text-sm font-semibold text-fg-secondary">🎬 {t('myWork.scenes')}</h2>
         <div className="space-y-4">
           {scenes.map((s) => (
-            <div key={s.i} className="rounded-xl border border-white/10 bg-black/20 p-3">
+            <div key={s.i} className="rounded-xl border border-line bg-black/20 p-3">
               <div className="mb-2 flex items-center gap-2">
-                <span className="rounded-full bg-white/5 px-2 py-0.5 text-[11px]" style={{ color: '#22d3ee' }}>{t('myWork.scene', { n: s.i })}</span>
-                {s.dialogue && <span className="truncate text-[11px] text-white/50">「{s.dialogue}」</span>}
+                <span className="rounded-full bg-hover px-2 py-0.5 text-[11px]" style={{ color: 'var(--color-brand-accent)' }}>{t('myWork.scene', { n: s.i })}</span>
+                {s.dialogue && <span className="truncate text-[11px] text-fg-faint">「{s.dialogue}」</span>}
               </div>
               <div className="flex flex-wrap gap-3">
                 {s.frameUrl && (
                   <div>
-                    <div className="mb-1 text-[10px] text-white/40">{t('myWork.firstFrame')}</div>
+                    <div className="mb-1 text-[10px] text-fg-faint">{t('myWork.firstFrame')}</div>
                     { }
-                    <img src={s.frameUrl} alt="" className="h-40 rounded-lg border border-white/10 object-cover" referrerPolicy="no-referrer" />
+                    <img src={s.frameUrl} alt="" className="h-40 rounded-lg border border-line object-cover" referrerPolicy="no-referrer" />
                   </div>
                 )}
                 {s.videoUrl ? (
                   <div>
-                    <div className="mb-1 text-[10px] text-white/40">{t('myWork.video')}</div>
-                    <video src={s.videoUrl} controls playsInline poster={s.frameUrl || undefined} className="h-40 rounded-lg border border-white/10 bg-black" />
+                    <div className="mb-1 text-[10px] text-fg-faint">{t('myWork.video')}</div>
+                    <video src={s.videoUrl} controls playsInline poster={s.frameUrl || undefined} className="h-40 rounded-lg border border-line bg-black" />
                   </div>
                 ) : (
-                  <div className="grid h-40 w-24 place-items-center rounded-lg border border-dashed border-white/15 bg-black/20 text-[10px] text-white/40">{t('myWork.pending')}</div>
+                  <div className="grid h-40 w-24 place-items-center rounded-lg border border-dashed border-line bg-black/20 text-[10px] text-fg-faint">{t('myWork.pending')}</div>
                 )}
               </div>
             </div>

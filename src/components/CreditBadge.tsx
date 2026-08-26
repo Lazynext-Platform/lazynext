@@ -41,9 +41,9 @@ export function CreditBadge() {
     <a
       href="/pricing"
       title={t('common.credits')}
-      className="flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-white/15"
+      className="flex items-center gap-1.5 rounded-full bg-elevated px-3 py-1.5 text-xs font-semibold text-fg transition hover:bg-active"
     >
-      <Coins className="h-3.5 w-3.5" style={{ color: '#d1fe17' }} />
+      <Coins className="h-3.5 w-3.5 text-brand-accent" />
       {credits === null ? '·' : formatNumber(credits, locale)}
     </a>
   );

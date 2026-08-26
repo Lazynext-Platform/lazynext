@@ -20,19 +20,19 @@ export default async function PrivacyPage() {
   const year = new Date().getFullYear();
 
   return (
-    <main className="min-h-screen text-[#f7f7f8]" style={{ backgroundColor: '#131416', colorScheme: 'dark', backgroundImage: 'radial-gradient(70% 55% at 50% -6%, rgba(0,178,252,0.12) 0%, rgba(0,178,252,0) 60%), linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px)', backgroundSize: 'auto, 44px 44px, 44px 44px' }}>
+    <main className="min-h-screen text-fg app-grid-bg bg-app">
       <div className="mx-auto max-w-3xl px-6 py-16">
         <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">{t.title}</h1>
-        <p className="mt-2 text-sm text-white/40">{t.lastUpdated.replace('{year}', String(year))}</p>
+        <p className="mt-2 text-sm text-fg-faint">{t.lastUpdated.replace('{year}', String(year))}</p>
 
-        <div className="mt-10 space-y-8 text-sm leading-relaxed text-white/70">
+        <div className="mt-10 space-y-8 text-sm leading-relaxed text-fg-secondary">
           <section>
-            <h2 className="text-lg font-semibold text-white/90">{t.s1Title}</h2>
+            <h2 className="text-lg font-semibold text-fg">{t.s1Title}</h2>
             <p className="mt-3">{t.s1Body}</p>
           </section>
 
           <section>
-            <h2 className="text-lg font-semibold text-white/90">{t.s2Title}</h2>
+            <h2 className="text-lg font-semibold text-fg">{t.s2Title}</h2>
             <ul className="mt-3 list-disc space-y-2 pl-5">
               <li>{t.s2Li1}</li>
               <li>{t.s2Li2}</li>
@@ -42,7 +42,7 @@ export default async function PrivacyPage() {
           </section>
 
           <section>
-            <h2 className="text-lg font-semibold text-white/90">{t.s3Title}</h2>
+            <h2 className="text-lg font-semibold text-fg">{t.s3Title}</h2>
             <ul className="mt-3 list-disc space-y-2 pl-5">
               <li>{t.s3Li1}</li>
               <li>{t.s3Li2}</li>
@@ -52,28 +52,28 @@ export default async function PrivacyPage() {
           </section>
 
           <section>
-            <h2 className="text-lg font-semibold text-white/90">{t.s4Title}</h2>
+            <h2 className="text-lg font-semibold text-fg">{t.s4Title}</h2>
             <p className="mt-3">{t.s4Body}</p>
           </section>
 
           <section>
-            <h2 className="text-lg font-semibold text-white/90">{t.s5Title}</h2>
+            <h2 className="text-lg font-semibold text-fg">{t.s5Title}</h2>
             <p className="mt-3">{t.s5Body}</p>
           </section>
 
           <section>
-            <h2 className="text-lg font-semibold text-white/90">{t.s6Title}</h2>
+            <h2 className="text-lg font-semibold text-fg">{t.s6Title}</h2>
             <p className="mt-3">{t.s6Body}</p>
           </section>
 
           <section>
-            <h2 className="text-lg font-semibold text-white/90">{t.s7Title}</h2>
+            <h2 className="text-lg font-semibold text-fg">{t.s7Title}</h2>
             <p className="mt-3">{t.s7Body}</p>
           </section>
         </div>
 
         <div className="mt-12">
-          <a href="/" className="text-sm text-white/50 hover:text-white transition">{t.back}</a>
+          <a href="/" className="text-sm text-fg-faint hover:text-fg transition">{t.back}</a>
         </div>
       </div>
     </main>

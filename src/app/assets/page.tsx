@@ -36,33 +36,26 @@ export default function AssetsPage() {
   const [tab, setTab] = useState<Tab>('products');
   const [authOpen, setAuthOpen] = useState(false);
 
-  const gridBg = {
-    backgroundColor: '#131416',
-    colorScheme: 'dark' as const,
-    backgroundImage:
-      'radial-gradient(70% 55% at 50% -6%, rgba(0,178,252,0.10) 0%, rgba(0,178,252,0) 60%)',
-  };
-
   return (
-    <main className="min-h-screen text-[#f7f7f8]" style={gridBg}>
+    <main className="min-h-screen text-fg app-grid-bg bg-app">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 pb-24">
         <div className="pt-6 pb-6">
           <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">{t('assets.title')}</h1>
-          <p className="mt-2 max-w-2xl text-sm text-white/50">{t('assets.subtitle')}</p>
+          <p className="mt-2 max-w-2xl text-sm text-fg-faint">{t('assets.subtitle')}</p>
         </div>
 
         {status === 'loading' ? (
-          <div className="grid place-items-center py-32"><Loader2 className="h-7 w-7 animate-spin text-white/40" /></div>
+          <div className="grid place-items-center py-32"><Loader2 className="h-7 w-7 animate-spin text-fg-faint" /></div>
         ) : status !== 'authenticated' ? (
           <div className="grid place-items-center gap-4 py-32 text-center">
             <div className="text-5xl">🔐</div>
-            <p className="text-white/50">{t('assets.signInPrompt')}</p>
+            <p className="text-fg-faint">{t('assets.signInPrompt')}</p>
             <button onClick={() => setAuthOpen(true)} className="rounded-xl px-5 py-2.5 text-sm font-bold text-white" style={{ background: '#00b2fc' }}>{t('common.signIn')}</button>
           </div>
         ) : (
           <>
             {/* Tabs */}
-            <div className="mb-6 flex gap-1 overflow-x-auto rounded-xl border border-white/10 bg-white/[0.03] p-1">
+            <div className="mb-6 flex gap-1 overflow-x-auto rounded-xl border border-line bg-surface p-1">
               {TABS.map((tb) => {
                 const Icon = tb.icon;
                 const active = tab === tb.key;
@@ -71,7 +64,7 @@ export default function AssetsPage() {
                   <button
                     key={tb.key}
                     onClick={() => setTab(tb.key)}
-                    className={`flex shrink-0 items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition ${active ? 'bg-white/[0.08] text-white' : 'text-white/50 hover:text-white/80'}`}
+                    className={`flex shrink-0 items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition ${active ? 'bg-elevated text-fg' : 'text-fg-faint hover:text-fg-secondary'}`}
                   >
                     <Icon className="h-4 w-4" /> {label}
                   </button>
@@ -119,19 +112,19 @@ function ImageField({
 
   return (
     <div>
-      <label className="mb-1.5 block text-xs font-medium text-white/60">{label}</label>
+      <label className="mb-1.5 block text-xs font-medium text-fg-muted">{label}</label>
       <div className="flex items-center gap-3">
-        <div className="grid h-16 w-16 shrink-0 place-items-center overflow-hidden rounded-lg border border-white/10 bg-black/30">
-          {url ? <img src={url} alt="" className="h-full w-full object-cover" referrerPolicy="no-referrer" /> : <ImageIcon className="h-5 w-5 text-white/30" />}
+        <div className="grid h-16 w-16 shrink-0 place-items-center overflow-hidden rounded-lg border border-line bg-black/30">
+          {url ? <img src={url} alt="" className="h-full w-full object-cover" referrerPolicy="no-referrer" /> : <ImageIcon className="h-5 w-5 text-fg-placeholder" />}
         </div>
         <div className="flex flex-col gap-1.5">
           <button type="button" onClick={() => inputRef.current?.click()} disabled={uploading}
-            className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 px-3 py-1.5 text-xs font-medium text-white/80 transition hover:bg-white/5 disabled:opacity-50">
+            className="inline-flex items-center gap-1.5 rounded-lg border border-line px-3 py-1.5 text-xs font-medium text-fg-secondary transition hover:bg-hover disabled:opacity-50">
             {uploading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Plus className="h-3.5 w-3.5" />}
             {uploading ? t('assets.uploading') : url ? t('assets.edit') : t('common.new')}
           </button>
           {url && (
-            <button type="button" onClick={() => onChange(null)} className="text-left text-[11px] text-white/40 hover:text-red-400 transition">{t('assets.delete')}</button>
+            <button type="button" onClick={() => onChange(null)} className="text-left text-[11px] text-fg-faint hover:text-red-400 transition">{t('assets.delete')}</button>
           )}
         </div>
         <input ref={inputRef} type="file" accept="image/*" className="hidden" onChange={(e) => onFile(e.target.files?.[0])} />
@@ -146,14 +139,14 @@ function Modal({ title, onClose, children, saving, onSave, saveLabel, cancelLabe
 }) {
   return (
     <div className="fixed inset-0 z-[90] grid place-items-center bg-black/70 p-4" onClick={onClose}>
-      <div className="w-full max-w-md max-h-[90vh] overflow-y-auto rounded-2xl border border-white/10 bg-[#1c1e21] p-5 shadow-2xl" onClick={(e) => e.stopPropagation()}>
+      <div className="w-full max-w-md max-h-[90vh] overflow-y-auto rounded-2xl border border-line bg-popover p-5 shadow-2xl" onClick={(e) => e.stopPropagation()}>
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-bold text-white">{title}</h2>
-          <button onClick={onClose} className="text-white/40 hover:text-white"><X className="h-5 w-5" /></button>
+          <h2 className="text-lg font-bold text-fg">{title}</h2>
+          <button onClick={onClose} className="text-fg-faint hover:text-fg"><X className="h-5 w-5" /></button>
         </div>
         <div className="space-y-4">{children}</div>
         <div className="mt-5 flex justify-end gap-2">
-          <button onClick={onClose} className="rounded-lg px-4 py-2 text-sm font-medium text-white/60 hover:text-white transition">{cancelLabel}</button>
+          <button onClick={onClose} className="rounded-lg px-4 py-2 text-sm font-medium text-fg-muted hover:text-fg transition">{cancelLabel}</button>
           <button onClick={onSave} disabled={saving} className="inline-flex items-center gap-1.5 rounded-lg px-4 py-2 text-sm font-bold text-white transition hover:brightness-110 disabled:opacity-50" style={{ background: '#00b2fc' }}>
             {saving ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : null}
             {saving ? savingLabel : saveLabel}
@@ -167,14 +160,14 @@ function Modal({ title, onClose, children, saving, onSave, saveLabel, cancelLabe
 // ── Card shell ──
 function Card({ children, onEdit, onDelete, t }: { children: React.ReactNode; onEdit: () => void; onDelete: () => void; t: (k: string) => string }) {
   return (
-    <div className="group overflow-hidden rounded-2xl border border-white/10 bg-black/30">
+    <div className="group overflow-hidden rounded-2xl border border-line bg-black/30">
       {children}
-      <div className="flex items-center justify-between gap-2 border-t border-white/5 px-3 py-2">
+      <div className="flex items-center justify-between gap-2 border-t border-line px-3 py-2">
         <div className="flex gap-1">
-          <button onClick={onEdit} className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-[11px] text-white/50 transition hover:bg-white/5 hover:text-white" aria-label={t('assets.edit')}>
+          <button onClick={onEdit} className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-[11px] text-fg-faint transition hover:bg-hover hover:text-fg" aria-label={t('assets.edit')}>
             <Pencil className="h-3 w-3" /> {t('assets.edit')}
           </button>
-          <button onClick={onDelete} className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-[11px] text-white/50 transition hover:bg-red-500/10 hover:text-red-400" aria-label={t('assets.delete')}>
+          <button onClick={onDelete} className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-[11px] text-fg-faint transition hover:bg-red-500/10 hover:text-red-400" aria-label={t('assets.delete')}>
             <Trash2 className="h-3 w-3" /> {t('assets.delete')}
           </button>
         </div>
@@ -185,10 +178,10 @@ function Card({ children, onEdit, onDelete, t }: { children: React.ReactNode; on
 
 function EmptyState({ icon, title, hint, cta, onCta }: { icon: React.ReactNode; title: string; hint: string; cta: string; onCta: () => void }) {
   return (
-    <div className="grid place-items-center gap-3 rounded-2xl border border-dashed border-white/10 bg-white/[0.02] px-6 py-16 text-center">
-      <div className="grid h-14 w-14 place-items-center rounded-2xl bg-white/[0.04] text-white/40">{icon}</div>
-      <p className="max-w-sm text-sm font-medium text-white/70">{title}</p>
-      <p className="max-w-sm text-xs text-white/40">{hint}</p>
+    <div className="grid place-items-center gap-3 rounded-2xl border border-dashed border-line bg-hover px-6 py-16 text-center">
+      <div className="grid h-14 w-14 place-items-center rounded-2xl bg-surface text-fg-faint">{icon}</div>
+      <p className="max-w-sm text-sm font-medium text-fg-secondary">{title}</p>
+      <p className="max-w-sm text-xs text-fg-faint">{hint}</p>
       <button onClick={onCta} className="mt-1 inline-flex items-center gap-1.5 rounded-lg px-4 py-2 text-sm font-bold text-white" style={{ background: '#00b2fc' }}>
         <Plus className="h-4 w-4" /> {cta}
       </button>
@@ -230,12 +223,12 @@ function ProductsPanel() {
       renderCard={(p) => (
         <Card key={p.id} t={t} onEdit={() => setEditing(p)} onDelete={() => del(p.id)}>
           <div className="relative aspect-video w-full bg-black/40">
-            {p.imageUrl ? <img src={p.imageUrl} alt="" className="h-full w-full object-cover" referrerPolicy="no-referrer" /> : <div className="grid h-full w-full place-items-center"><ImageIcon className="h-6 w-6 text-white/20" /></div>}
+            {p.imageUrl ? <img src={p.imageUrl} alt="" className="h-full w-full object-cover" referrerPolicy="no-referrer" /> : <div className="grid h-full w-full place-items-center"><ImageIcon className="h-6 w-6 text-fg-placeholder" /></div>}
           </div>
           <div className="p-3">
             <div className="truncate text-sm font-semibold">{p.name}</div>
-            <p className="mt-0.5 line-clamp-2 text-xs text-white/45">{p.description}</p>
-            {p.sourceUrl && <div className="mt-1 flex items-center gap-1 text-[10px] text-white/30"><Link2 className="h-2.5 w-2.5" />{p.sourceUrl.replace(/^https?:\/\//, '').slice(0, 40)}</div>}
+            <p className="mt-0.5 line-clamp-2 text-xs text-fg-faint">{p.description}</p>
+            {p.sourceUrl && <div className="mt-1 flex items-center gap-1 text-[10px] text-fg-placeholder"><Link2 className="h-2.5 w-2.5" />{p.sourceUrl.replace(/^https?:\/\//, '').slice(0, 40)}</div>}
           </div>
         </Card>
       )}
@@ -310,11 +303,11 @@ function AvatarsPanel() {
       renderCard={(a) => (
         <Card key={a.id} t={t} onEdit={() => setEditing(a)} onDelete={() => del(a.id)}>
           <div className="relative aspect-square w-full bg-black/40">
-            {a.imageUrl ? <img src={a.imageUrl} alt="" className="h-full w-full object-cover" referrerPolicy="no-referrer" /> : <div className="grid h-full w-full place-items-center"><UserCircle className="h-7 w-7 text-white/20" /></div>}
+            {a.imageUrl ? <img src={a.imageUrl} alt="" className="h-full w-full object-cover" referrerPolicy="no-referrer" /> : <div className="grid h-full w-full place-items-center"><UserCircle className="h-7 w-7 text-fg-placeholder" /></div>}
           </div>
           <div className="p-3">
             <div className="truncate text-sm font-semibold">{a.name}</div>
-            <p className="mt-0.5 line-clamp-2 text-xs text-white/45">{a.description}</p>
+            <p className="mt-0.5 line-clamp-2 text-xs text-fg-faint">{a.description}</p>
           </div>
         </Card>
       )}
@@ -387,16 +380,16 @@ function BrandKitsPanel() {
         <Card key={b.id} t={t} onEdit={() => setEditing(b)} onDelete={() => del(b.id)}>
           <div className="p-3">
             <div className="flex items-center gap-2">
-              {b.logoUrl ? <img src={b.logoUrl} alt="" className="h-8 w-8 rounded object-contain" referrerPolicy="no-referrer" /> : <div className="grid h-8 w-8 place-items-center rounded bg-white/5"><Palette className="h-4 w-4 text-white/30" /></div>}
+              {b.logoUrl ? <img src={b.logoUrl} alt="" className="h-8 w-8 rounded object-contain" referrerPolicy="no-referrer" /> : <div className="grid h-8 w-8 place-items-center rounded bg-hover"><Palette className="h-4 w-4 text-fg-placeholder" /></div>}
               <div className="truncate text-sm font-semibold">{b.name}</div>
             </div>
             {b.colors && b.colors.length > 0 && (
               <div className="mt-2 flex flex-wrap gap-1">
-                {b.colors.map((c) => <span key={c} className="h-4 w-4 rounded border border-white/10" style={{ background: c }} title={c} />)}
+                {b.colors.map((c) => <span key={c} className="h-4 w-4 rounded border border-line" style={{ background: c }} title={c} />)}
               </div>
             )}
-            {b.toneNote && <p className="mt-2 line-clamp-2 text-xs text-white/45">{b.toneNote}</p>}
-            {b.fontNote && <p className="mt-1 line-clamp-1 text-[11px] text-white/30">{b.fontNote}</p>}
+            {b.toneNote && <p className="mt-2 line-clamp-2 text-xs text-fg-faint">{b.toneNote}</p>}
+            {b.fontNote && <p className="mt-1 line-clamp-1 text-[11px] text-fg-placeholder">{b.fontNote}</p>}
           </div>
         </Card>
       )}
@@ -442,17 +435,17 @@ function BrandKitForm({ brandKit, onClose, onSaved }: { brandKit?: BrandKit; onC
       <Field label={t('assets.brandKitName')} value={name} onChange={setName} placeholder={t('assets.brandKitNamePh')} />
       <ImageField label={t('assets.brandLogo')} url={logoUrl} onChange={setLogoUrl} onError={setErr} t={t} />
       <div>
-        <label className="mb-1.5 block text-xs font-medium text-white/60">{t('assets.brandColors')}</label>
+        <label className="mb-1.5 block text-xs font-medium text-fg-muted">{t('assets.brandColors')}</label>
         <div className="flex items-center gap-2">
-          <input type="color" value={colorInput} onChange={(e) => setColorInput(e.target.value)} className="h-8 w-10 shrink-0 rounded border border-white/10 bg-transparent" />
-          <button type="button" onClick={addColor} className="rounded-lg border border-white/10 px-3 py-1.5 text-xs text-white/80 hover:bg-white/5">{t('assets.brandColorAdd')}</button>
+          <input type="color" value={colorInput} onChange={(e) => setColorInput(e.target.value)} className="h-8 w-10 shrink-0 rounded border border-line bg-transparent" />
+          <button type="button" onClick={addColor} className="rounded-lg border border-line px-3 py-1.5 text-xs text-fg-secondary hover:bg-hover">{t('assets.brandColorAdd')}</button>
         </div>
         {colors.length > 0 && (
           <div className="mt-2 flex flex-wrap gap-1.5">
             {colors.map((c) => (
-              <span key={c} className="inline-flex items-center gap-1 rounded-md border border-white/10 px-1.5 py-1 text-[11px] text-white/70">
+              <span key={c} className="inline-flex items-center gap-1 rounded-md border border-line px-1.5 py-1 text-[11px] text-fg-secondary">
                 <span className="h-3.5 w-3.5 rounded" style={{ background: c }} /> {c}
-                <button type="button" onClick={() => setColors((p) => p.filter((x) => x !== c))} className="text-white/30 hover:text-red-400"><X className="h-3 w-3" /></button>
+                <button type="button" onClick={() => setColors((p) => p.filter((x) => x !== c))} className="text-fg-placeholder hover:text-red-400"><X className="h-3 w-3" /></button>
               </span>
             ))}
           </div>
@@ -469,9 +462,9 @@ function BrandKitForm({ brandKit, onClose, onSaved }: { brandKit?: BrandKit; onC
 function Field({ label, value, onChange, placeholder }: { label: string; value: string; onChange: (v: string) => void; placeholder?: string }) {
   return (
     <div>
-      <label className="mb-1.5 block text-xs font-medium text-white/60">{label}</label>
+      <label className="mb-1.5 block text-xs font-medium text-fg-muted">{label}</label>
       <input value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder}
-        className="w-full rounded-lg border border-white/10 bg-black/30 px-3 py-2 text-sm text-white placeholder:text-white/30 focus:border-[#00b2fc]/50 focus:outline-none" />
+        className="w-full rounded-lg border border-line bg-elevated px-3 py-2 text-sm text-fg placeholder:text-fg-placeholder focus:border-[#00b2fc]/50 focus:outline-none" />
     </div>
   );
 }
@@ -479,9 +472,9 @@ function Field({ label, value, onChange, placeholder }: { label: string; value: 
 function TextareaField({ label, value, onChange, placeholder }: { label: string; value: string; onChange: (v: string) => void; placeholder?: string }) {
   return (
     <div>
-      <label className="mb-1.5 block text-xs font-medium text-white/60">{label}</label>
+      <label className="mb-1.5 block text-xs font-medium text-fg-muted">{label}</label>
       <textarea value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} rows={3}
-        className="w-full resize-y rounded-lg border border-white/10 bg-black/30 px-3 py-2 text-sm text-white placeholder:text-white/30 focus:border-[#00b2fc]/50 focus:outline-none" />
+        className="w-full resize-y rounded-lg border border-line bg-elevated px-3 py-2 text-sm text-fg placeholder:text-fg-placeholder focus:border-[#00b2fc]/50 focus:outline-none" />
     </div>
   );
 }
@@ -493,13 +486,13 @@ function PanelShell<T>({ items, onAdd, addLabel, empty, renderCard, children }: 
   return (
     <div>
       <div className="mb-4 flex items-center justify-between">
-        <span className="text-xs text-white/40">{items ? items.length : '…'}</span>
+        <span className="text-xs text-fg-faint">{items ? items.length : '…'}</span>
         <button onClick={onAdd} className="inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-bold text-white transition hover:brightness-110" style={{ background: '#00b2fc' }}>
           <Plus className="h-4 w-4" /> {addLabel}
         </button>
       </div>
       {items === null ? (
-        <div className="grid place-items-center py-24"><Loader2 className="h-7 w-7 animate-spin text-white/40" /></div>
+        <div className="grid place-items-center py-24"><Loader2 className="h-7 w-7 animate-spin text-fg-faint" /></div>
       ) : items.length === 0 ? (
         empty
       ) : (

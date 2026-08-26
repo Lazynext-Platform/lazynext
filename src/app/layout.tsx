@@ -45,8 +45,15 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export const viewport: Viewport = {
+  // Updated dynamically client-side by the theme system; this is the SSR
+  // fallback (matches the inline bootstrap script's dark default).
   themeColor: '#131416',
 };
+
+// Pre-hydration theme bootstrap. Runs before React mounts so the very first
+// paint already has the correct data-theme / color-scheme — no flash, no
+// hydration mismatch. Kept inline + synchronous for earliest execution.
+const THEME_INIT_SCRIPT = `(function(){try{var k='lazynext-theme';var s=localStorage.getItem(k);var v=(s==='light'||s==='dark'||s==='system')?s:'system';var d=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches;var r=(v==='system')?(d?'dark':'light'):v;var e=document.documentElement;e.setAttribute('data-theme',r);e.setAttribute('data-theme-selected',v);e.style.colorScheme=r;var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content',r==='dark'?'#131416':'#f7f7f8');}catch(_){document.documentElement.setAttribute('data-theme','dark');document.documentElement.style.colorScheme='dark';}})();`;
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   // Get the session server-side and pass it to SessionProvider. This avoids
@@ -56,8 +63,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const localeCookie = (await cookies()).get('locale')?.value;
   const initialLocale = ((LOCALES as readonly string[]).includes(localeCookie || '') ? localeCookie : 'en') as Locale;
   return (
-    <html lang={initialLocale} dir={RTL_LOCALES.has(initialLocale) ? 'rtl' : 'ltr'}>
+    <html lang={initialLocale} dir={RTL_LOCALES.has(initialLocale) ? 'rtl' : 'ltr'} data-theme="dark" suppressHydrationWarning>
       <head>
+        {/* Theme bootstrap — must run before body paints to avoid FOUC. */}
+        <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
         {/* Space Grotesk is loaded at runtime via CDN (not downloaded at build time, to avoid
             offline/build failures behind firewalls); falls back to a system sans-serif if unavailable. */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />

@@ -12,7 +12,7 @@ import { useRef } from 'react';
  */
 export function LazyVideo({ src, className }: { src?: string; className?: string }) {
   const ref = useRef<HTMLVideoElement>(null);
-  if (!src) return <div className={className} style={{ background: '#17181b' }} aria-hidden />;
+  if (!src) return <div className={`${className || ''} bg-elevated`} aria-hidden />;
   return (
     <video
       ref={ref}

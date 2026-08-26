@@ -37,10 +37,10 @@ export function Navbar() {
   }, [refresh]);
 
   const navLink =
-    'rounded-lg px-3 py-2 text-sm font-medium text-white/60 transition hover:bg-white/[0.06] hover:text-white';
+    'rounded-lg px-3 py-2 text-sm font-medium text-fg-muted transition hover:bg-elevated hover:text-fg';
 
   return (
-    <header className="sticky top-0 z-40 border-b border-white/10 bg-[#131416]/80 backdrop-blur-lg">
+    <header className="sticky top-0 z-40 border-b border-line bg-app/80 backdrop-blur-lg">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-2 px-3 py-2.5 sm:px-4 sm:py-3">
         <Link href="/" className="flex shrink-0 items-center gap-2 font-bold">
           { }
@@ -59,7 +59,7 @@ export function Navbar() {
               <Link href="/settings" aria-label={t('nav.settings')} title={t('nav.settings')} className={`hidden md:inline-flex ${navLink}`}>
                 <Settings className="h-4 w-4" />
               </Link>
-              <span className="ml-1 inline-flex shrink-0 items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.06] px-2.5 py-1.5 text-xs font-semibold text-white/80 sm:px-3 sm:text-sm">
+              <span className="ml-1 inline-flex shrink-0 items-center gap-1.5 rounded-full border border-line bg-elevated px-2.5 py-1.5 text-xs font-semibold text-fg-secondary sm:px-3 sm:text-sm">
                 <Coins className="h-3.5 w-3.5" />
                 {credits === null ? '·' : formatNumber(credits, locale)}
               </span>
@@ -69,13 +69,13 @@ export function Navbar() {
                   src={session.user.image}
                   alt=""
                   referrerPolicy="no-referrer"
-                  className="hidden h-8 w-8 shrink-0 rounded-full border border-white/10 md:block"
+                  className="hidden h-8 w-8 shrink-0 rounded-full border border-line md:block"
                 />
               )}
               <button
                 onClick={() => signOut({ callbackUrl: window.location.origin })}
                 title={t('common.signOut')}
-                className="shrink-0 rounded-lg p-2 text-white/40 transition hover:bg-white/[0.06] hover:text-white/80"
+                className="shrink-0 rounded-lg p-2 text-fg-faint transition hover:bg-elevated hover:text-fg-secondary"
               >
                 <LogOut className="h-4 w-4" />
               </button>
@@ -84,7 +84,7 @@ export function Navbar() {
             <>
               <button
                 onClick={() => { setAuthMode('signup'); setAuthOpen(true); }}
-                className="ml-0.5 shrink-0 rounded-lg px-2.5 py-2 text-xs font-medium text-white/60 transition hover:bg-white/[0.06] hover:text-white sm:ml-1 sm:px-3 sm:text-sm"
+                className="ml-0.5 shrink-0 rounded-lg px-2.5 py-2 text-xs font-medium text-fg-muted transition hover:bg-elevated hover:text-fg sm:ml-1 sm:px-3 sm:text-sm"
               >
                 {t('auth.signUpTab')}
               </button>

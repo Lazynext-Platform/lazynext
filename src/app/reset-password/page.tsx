@@ -54,11 +54,11 @@ function ResetPasswordContent() {
 
   if (status === 'success') {
     return (
-      <div className="mx-auto flex min-h-screen max-w-sm flex-col items-center justify-center px-4" style={{ backgroundColor: '#131416', colorScheme: 'dark', backgroundImage: 'radial-gradient(70% 55% at 50% -6%, rgba(0,178,252,0.12) 0%, rgba(0,178,252,0) 60%), linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px)', backgroundSize: 'auto, 44px 44px, 44px 44px' }}>
-        <div className="w-full rounded-2xl border border-white/10 bg-[#1a1b1e] p-8 text-center">
+      <div className="mx-auto flex min-h-screen max-w-sm flex-col items-center justify-center px-4 app-grid-bg bg-app">
+        <div className="w-full rounded-2xl border border-line bg-popover p-8 text-center">
           <div className="mb-4 text-5xl">✅</div>
-          <h1 className="mb-2 text-xl font-bold text-white">Password Reset</h1>
-          <p className="mb-6 text-sm text-white/60">Your password has been changed successfully. You can now sign in with your new password.</p>
+          <h1 className="mb-2 text-xl font-bold text-fg">Password Reset</h1>
+          <p className="mb-6 text-sm text-fg-muted">Your password has been changed successfully. You can now sign in with your new password.</p>
           <Link href="/" className="inline-block rounded-xl px-6 py-2.5 text-sm font-bold text-white" style={{ background: '#00b2fc' }}>
             Back to Sign In
           </Link>
@@ -68,10 +68,10 @@ function ResetPasswordContent() {
   }
 
   return (
-    <div className="mx-auto flex min-h-screen max-w-sm flex-col items-center justify-center px-4" style={{ backgroundColor: '#131416', colorScheme: 'dark', backgroundImage: 'radial-gradient(70% 55% at 50% -6%, rgba(0,178,252,0.12) 0%, rgba(0,178,252,0) 60%), linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px)', backgroundSize: 'auto, 44px 44px, 44px 44px' }}>
-      <div className="w-full rounded-2xl border border-white/10 bg-[#1a1b1e] p-8">
-        <h1 className="mb-2 text-xl font-bold text-white">Reset Password</h1>
-        <p className="mb-6 text-sm text-white/50">Enter your new password below.</p>
+    <div className="mx-auto flex min-h-screen max-w-sm flex-col items-center justify-center px-4 app-grid-bg bg-app">
+      <div className="w-full rounded-2xl border border-line bg-popover p-8">
+        <h1 className="mb-2 text-xl font-bold text-fg">Reset Password</h1>
+        <p className="mb-6 text-sm text-fg-faint">Enter your new password below.</p>
         <form onSubmit={handleSubmit} className="space-y-4">
           <input
             type="password"
@@ -80,7 +80,7 @@ function ResetPasswordContent() {
             onChange={(e) => setPassword(e.target.value)}
             required
             minLength={8}
-            className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-white placeholder-white/30 outline-none focus:border-brand-400"
+            className="w-full rounded-xl border border-line bg-hover px-4 py-2.5 text-sm text-fg placeholder-fg-placeholder outline-none focus:border-brand-400"
           />
           <input
             type="password"
@@ -89,7 +89,7 @@ function ResetPasswordContent() {
             onChange={(e) => setConfirm(e.target.value)}
             required
             minLength={8}
-            className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-white placeholder-white/30 outline-none focus:border-brand-400"
+            className="w-full rounded-xl border border-line bg-hover px-4 py-2.5 text-sm text-fg placeholder-fg-placeholder outline-none focus:border-brand-400"
           />
           {error && <p className="text-sm text-red-400">{error}</p>}
           <button
@@ -101,7 +101,7 @@ function ResetPasswordContent() {
             {status === 'loading' ? 'Resetting…' : 'Reset Password'}
           </button>
         </form>
-        <p className="mt-4 text-center text-sm text-white/40">
+        <p className="mt-4 text-center text-sm text-fg-faint">
           <Link href="/" className="text-brand-400 hover:underline">Back to sign in</Link>
         </p>
       </div>
@@ -111,7 +111,7 @@ function ResetPasswordContent() {
 
 export default function ResetPasswordPage() {
   return (
-    <Suspense fallback={<div className="grid min-h-screen place-items-center text-white/40">Loading…</div>}>
+    <Suspense fallback={<div className="grid min-h-screen place-items-center text-fg-faint">Loading…</div>}>
       <ResetPasswordContent />
     </Suspense>
   );

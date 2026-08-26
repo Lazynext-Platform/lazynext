@@ -368,34 +368,34 @@ export default function AdReferencePage() {
   };
 
   // Top-level hydration gate: first frame renders a uniform empty skeleton, avoiding session/locale SSR≠client divergence (#418).
-  if (!mounted) return <div className="min-h-screen" style={{ background: '#131416' }} />;
+  if (!mounted) return <div className="min-h-screen bg-app" />;
   return (
-    <div className="min-h-screen" style={{ background: '#131416' }}>
+    <div className="min-h-screen bg-app">
       <div className="mx-auto max-w-[1200px] px-5 py-8">
-        <Link href="/" className="text-white/40 text-sm hover:text-white/70">{t('common.backToLazynext')}</Link>
-        <div className="mt-6 mb-2 text-[14px] uppercase tracking-[0.24em] text-white/60 font-semibold" style={{ fontFamily: GROTESK }}>{t('adRef.kicker')}</div>
-        <h1 className="font-bold uppercase leading-[1.1] tracking-[-0.03em] text-[clamp(30px,4.4vw,46px)] text-white/90" style={{ fontFamily: GROTESK }}>
+        <Link href="/" className="text-fg-faint text-sm hover:text-fg-secondary">{t('common.backToLazynext')}</Link>
+        <div className="mt-6 mb-2 text-[14px] uppercase tracking-[0.24em] text-fg-muted font-semibold" style={{ fontFamily: GROTESK }}>{t('adRef.kicker')}</div>
+        <h1 className="font-bold uppercase leading-[1.1] tracking-[-0.03em] text-[clamp(30px,4.4vw,46px)] text-fg" style={{ fontFamily: GROTESK }}>
           {t('adRef.title')}
         </h1>
-        <p className="mt-3 max-w-xl text-white/50 text-[15px]">
+        <p className="mt-3 max-w-xl text-fg-faint text-[15px]">
           {t('adRef.desc')}
         </p>
 
         <div className="mt-8 grid gap-6 lg:grid-cols-[420px_1fr]">
           {/* Left: input panel */}
-          <div className="rounded-2xl p-5" style={{ background: '#1c1e21' }}>
-            <div className="text-white/60 text-xs uppercase tracking-wider mb-2" style={{ fontFamily: GROTESK }}>{t('adRef.refAdVideo')}</div>
+          <div className="rounded-2xl p-5 bg-popover">
+            <div className="text-fg-muted text-xs uppercase tracking-wider mb-2" style={{ fontFamily: GROTESK }}>{t('adRef.refAdVideo')}</div>
             {refVideo ? (
-              <div className="relative w-full rounded-xl border border-white/15 bg-white/[0.03] p-2">
+              <div className="relative w-full rounded-xl border border-line bg-surface p-2">
                 { }
                 <video src={refVideo.preview} className="w-full max-h-52 rounded-lg bg-black object-contain" muted loop autoPlay playsInline />
                 <div className="mt-2 flex items-center gap-2">
                   <button onClick={() => videoInput.current?.click()}
-                    className="flex-1 rounded-lg border border-white/15 px-3 py-1.5 text-xs text-white/70 hover:border-white/30 transition">
+                    className="flex-1 rounded-lg border border-line px-3 py-1.5 text-xs text-fg-secondary hover:border-line-strong transition">
                     {t('adRef.replaceVideo')}
                   </button>
                   <button onClick={() => setRefVideo(null)} title={t('adRef.remove')}
-                    className="rounded-lg border border-white/15 px-3 py-1.5 text-xs text-white/70 hover:border-red-400/60 hover:text-red-300 transition">
+                    className="rounded-lg border border-line px-3 py-1.5 text-xs text-fg-secondary hover:border-red-400/60 hover:text-red-300 transition">
                     ✕ {t('adRef.remove')}
                   </button>
                 </div>
@@ -403,11 +403,11 @@ export default function AdReferencePage() {
             ) : (
               <button
                 onClick={() => videoInput.current?.click()}
-                className="w-full rounded-xl border border-dashed border-white/15 bg-white/[0.03] px-4 py-5 text-left hover:border-white/30 transition"
+                className="w-full rounded-xl border border-dashed border-line bg-surface px-4 py-5 text-left hover:border-line-strong transition"
               >
                 <div>
-                  <div className="text-white/90 text-sm font-medium">{t('adRef.uploadRefVideo')}</div>
-                  <div className="text-white/40 text-xs mt-1">mp4/mov · ≤30s · ≤60MB</div>
+                  <div className="text-fg text-sm font-medium">{t('adRef.uploadRefVideo')}</div>
+                  <div className="text-fg-faint text-xs mt-1">mp4/mov · ≤30s · ≤60MB</div>
                 </div>
               </button>
             )}
@@ -417,14 +417,14 @@ export default function AdReferencePage() {
             <div className="mt-4 grid grid-cols-2 gap-3">
               {([['product', product, productInput, t('adRef.product'), t('adRef.productHint')], ['avatar', avatar, avatarInput, t('adRef.talent'), t('adRef.talentHint')]] as const).map(([kind, slot, ref, label, hint]) => (
                 <div key={kind}>
-                  <div className="text-white/60 text-xs uppercase tracking-wider mb-2" style={{ fontFamily: GROTESK }}>{label}</div>
+                  <div className="text-fg-muted text-xs uppercase tracking-wider mb-2" style={{ fontFamily: GROTESK }}>{label}</div>
                   <button onClick={() => ref.current?.click()}
-                    className="w-full aspect-square rounded-xl border border-dashed border-white/15 bg-white/[0.03] hover:border-white/30 transition overflow-hidden flex items-center justify-center">
+                    className="w-full aspect-square rounded-xl border border-dashed border-line bg-surface hover:border-line-strong transition overflow-hidden flex items-center justify-center">
                     {slot ? (
 
                       <img src={slot.preview} alt="" className="h-full w-full object-cover" />
                     ) : (
-                      <span className="text-white/40 text-xs px-3 text-center">+ {hint}<br /><span className="text-white/25">{t('adRef.optionalAtLeastOne')}</span></span>
+                      <span className="text-fg-faint text-xs px-3 text-center">+ {hint}<br /><span className="text-fg-placeholder">{t('adRef.optionalAtLeastOne')}</span></span>
                     )}
                   </button>
                   <input ref={ref} type="file" accept="image/jpeg,image/png,image/webp" className="hidden"
@@ -437,13 +437,13 @@ export default function AdReferencePage() {
             </div>
 
             <input value={productNote} onChange={(e) => setProductNote(e.target.value)} placeholder={t('adRef.productDetails')}
-              className="mt-4 w-full rounded-lg bg-white/[0.05] border border-white/10 px-3 py-2 text-sm text-white/90 placeholder:text-white/25 outline-none focus:border-white/25" />
+              className="mt-4 w-full rounded-lg bg-surface border border-line px-3 py-2 text-sm text-fg placeholder:text-fg-placeholder outline-none focus:border-line-strong" />
             <input value={extraNote} onChange={(e) => setExtraNote(e.target.value)} placeholder={t('adRef.extraInstructions')}
-              className="mt-2 w-full rounded-lg bg-white/[0.05] border border-white/10 px-3 py-2 text-sm text-white/90 placeholder:text-white/25 outline-none focus:border-white/25" />
+              className="mt-2 w-full rounded-lg bg-surface border border-line px-3 py-2 text-sm text-fg placeholder:text-fg-placeholder outline-none focus:border-line-strong" />
 
             {/* Voice */}
-            <div className="mt-5 rounded-xl bg-white/[0.03] border border-white/10 p-3">
-              <label className="flex items-center gap-2 text-sm text-white/80 cursor-pointer">
+            <div className="mt-5 rounded-xl bg-surface border border-line p-3">
+              <label className="flex items-center gap-2 text-sm text-fg-secondary cursor-pointer">
                 <input type="checkbox" checked={newVoice} onChange={(e) => setNewVoice(e.target.checked)} className="accent-[#00b2fc]" />
                 {t('adRef.replaceVoice')}
               </label>
@@ -451,9 +451,9 @@ export default function AdReferencePage() {
                 <div className="mt-3 space-y-2">
                   <textarea value={script} onChange={(e) => setScript(e.target.value)} rows={3} maxLength={600}
                     placeholder={t('adRef.newScript')}
-                    className="w-full rounded-lg bg-white/[0.05] border border-white/10 px-3 py-2 text-sm text-white/90 placeholder:text-white/25 outline-none focus:border-white/25 resize-none" />
+                    className="w-full rounded-lg bg-surface border border-line px-3 py-2 text-sm text-fg placeholder:text-fg-placeholder outline-none focus:border-line-strong resize-none" />
                   <select value={voiceId} onChange={(e) => setVoiceId(e.target.value)}
-                    className="w-full rounded-lg bg-[#26282c] border border-white/10 px-3 py-2 text-sm text-white/90 outline-none">
+                    className="w-full rounded-lg bg-elevated border border-line px-3 py-2 text-sm text-fg outline-none">
                     {VOICES.map((v) => <option key={v.id} value={v.id}>{t(v.labelKey)}</option>)}
                   </select>
                 </div>
@@ -470,20 +470,20 @@ export default function AdReferencePage() {
                     : `${t('adRef.generate')} · ✦${adEst}`}
             </button>
             {status === 'authenticated' && (
-              <div className="mt-2 text-center text-[11px] text-white/35">
+              <div className="mt-2 text-center text-[11px] text-fg-faint">
                 {credits === null ? t('adRef.estimatedCostNoBalance', { n: adEst }) : t('adRef.estimatedCost', { n: adEst, balance: credits })}
               </div>
             )}
-            <div className="mt-2 text-center text-[11px] text-white/30">{t('adRef.rightsConfirm')}</div>
+            <div className="mt-2 text-center text-[11px] text-fg-placeholder">{t('adRef.rightsConfirm')}</div>
 
             {/* Example reference ads: placed at the bottom of the form, one-click try when no footage */}
             {!refVideo && (
-              <div className="mt-5 border-t border-white/[0.07] pt-4">
-                <div className="text-white/40 text-[11px] mb-2">{t('adRef.noFootage')}</div>
+              <div className="mt-5 border-t border-line pt-4">
+                <div className="text-fg-faint text-[11px] mb-2">{t('adRef.noFootage')}</div>
                 <div className="grid grid-cols-2 gap-2">
                   {EXAMPLE_REF_VIDEOS.map((u) => (
                     <button key={u} type="button" onClick={() => setRefVideo({ url: u, preview: u })}
-                      className="rounded-lg overflow-hidden border border-white/10 hover:border-[#00b2fc] transition aspect-[9/16] bg-black">
+                      className="rounded-lg overflow-hidden border border-line hover:border-[#00b2fc] transition aspect-[9/16] bg-black">
                       { }
                       <video src={u} className="w-full h-full object-cover" muted loop autoPlay playsInline />
                     </button>
@@ -494,33 +494,33 @@ export default function AdReferencePage() {
           </div>
 
           {/* Right: result area */}
-          <div className="rounded-2xl p-5 min-h-[420px]" style={{ background: 'linear-gradient(160deg,#1b1d21,#141517)' }}>
-            {busy && <div className="text-white/60 text-sm">{busy}</div>}
+          <div className="rounded-2xl p-5 min-h-[420px] bg-popover">
+            {busy && <div className="text-fg-muted text-sm">{busy}</div>}
             {error && <div className="mb-3 rounded-lg bg-red-500/10 border border-red-500/30 px-3 py-2 text-sm text-red-300">{error}</div>}
             {isGenerating && (
               <div className="flex h-full min-h-[380px] flex-col items-center justify-center gap-3">
-                <div className="h-8 w-8 animate-spin rounded-full border-2 border-white/20 border-t-white/80" />
-                <div className="text-white/60 text-sm">{stepLabel[step]}</div>
+                <div className="h-8 w-8 animate-spin rounded-full border-2 border-line-strong border-t-white/80" />
+                <div className="text-fg-muted text-sm">{stepLabel[step]}</div>
               </div>
             )}
             {step === 'done' && result && (
               <div>
-                <div className="text-white/60 text-xs uppercase tracking-wider mb-3" style={{ fontFamily: GROTESK }}>{t('adRef.beforeAfter')}</div>
+                <div className="text-fg-muted text-xs uppercase tracking-wider mb-3" style={{ fontFamily: GROTESK }}>{t('adRef.beforeAfter')}</div>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
                     <video src={refVideo?.preview} controls playsInline className="w-full rounded-xl bg-black" />
-                    <div className="mt-1 text-center text-xs text-white/40">{t('adRef.originalRef')}</div>
+                    <div className="mt-1 text-center text-xs text-fg-faint">{t('adRef.originalRef')}</div>
                   </div>
                   <div>
                     <video src={result} controls playsInline className="w-full rounded-xl bg-black" />
-                    <div className="mt-1 text-center text-xs text-white/40">{t('adRef.yourAd')}</div>
+                    <div className="mt-1 text-center text-xs text-fg-faint">{t('adRef.yourAd')}</div>
                   </div>
                 </div>
-                <a href={result} download className="mt-4 inline-block rounded-lg bg-white/10 px-4 py-2 text-sm text-white/80 hover:bg-white/15">{t('adRef.downloadVideo')}</a>
+                <a href={result} download className="mt-4 inline-block rounded-lg bg-elevated px-4 py-2 text-sm text-fg-secondary hover:bg-active">{t('adRef.downloadVideo')}</a>
               </div>
             )}
             {step === 'idle' && !busy && !error && (
-              <div className="flex h-full min-h-[380px] flex-col items-center justify-center text-white/30 text-sm">
+              <div className="flex h-full min-h-[380px] flex-col items-center justify-center text-fg-placeholder text-sm">
                 <div className="text-4xl mb-3">🎬</div>
                 {t('adRef.emptyState')}
               </div>

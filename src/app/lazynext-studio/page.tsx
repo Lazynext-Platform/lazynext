@@ -25,8 +25,7 @@ import { AssetPicker } from '@/components/AssetPicker';
 // bg #131416 · solid panel #1c1e21 · accent lime #00b2fc · near-black text #131416
 // hero: Space Grotesk 700 uppercase / -1.6px / lh1.2 / all-white rgba(255,255,255,.9)
 const LIME = '#00b2fc';
-const INK = '#131416'; // near-black text on lime background (same as page background)
-const PANEL = '#1c1e21';
+const PANEL = 'var(--c-popover)';
 const COSTS = { plan: 3, image: 5, video: 12 };
 // Video model: seedance-2.0/image-to-video (prompt with dialogue + generate_audio for lip-sync, cheapest single step), matches backend REPLICA_VIDEO_MODEL whitelist
 const REPLICA_VIDEO_MODEL = 'bytedance/seedance-2.0/image-to-video';
@@ -93,8 +92,7 @@ const VIDEO_RATIOS = ['9:16', '16:9', '1:1', '4:3', '3:4'];
 const VIDEO_RESOLUTIONS = ['480p', '720p', '1080p'];
 const VIDEO_DURATIONS = [4, 5, 6, 8, 10, 12, 15];
 // Custom chevron (white semi-transparent) to give native selects a unified pill appearance
-const CHEVRON = "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-opacity='0.55' stroke-width='3'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E\")";
-const selStyle: React.CSSProperties = { backgroundImage: CHEVRON, backgroundPosition: 'right 8px center', backgroundSize: '10px', backgroundRepeat: 'no-repeat' };
+// Native <select> chevron is theme-aware via the .select-chevron CSS class.
 
 function buildDirectMarketingPlan(input: { prompt: string; ratio: string; formatId: string; scene?: string }): MarketingPlan {
   const prompt = input.prompt.trim() || 'Product video';
@@ -526,20 +524,13 @@ export default function MarketingStudioPage() {
     }
   }
 
-  const gridBg = {
-    backgroundColor: INK,
-    colorScheme: 'dark',
-    backgroundImage:
-      'radial-gradient(70% 55% at 50% -6%, rgba(0,178,252,0.06) 0%, rgba(0,178,252,0) 60%), linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px)',
-    backgroundSize: 'auto, 44px 44px, 44px 44px',
-  } as React.CSSProperties;
-  const selCls = 'appearance-none bg-white/[0.04] rounded-lg pl-2.5 pr-7 py-2 text-xs text-white/90 focus:outline-none focus:ring-1 focus:ring-[#00b2fc]';
+  const selCls = 'appearance-none bg-surface rounded-lg pl-2.5 pr-7 py-2 text-xs text-fg focus:outline-none focus:ring-1 focus:ring-[#00b2fc] select-chevron';
 
   // Single uploaded thumbnail (with delete); product images support multiple, person image is single
   const ThumbSlot = ({ asset, onRemove, label }: { asset: Asset; onRemove: () => void; label: string }) => {
     const failed = Boolean(asset.preview && brokenAssets[asset.preview]);
     return (
-    <div className="relative w-14 h-14 rounded-2xl overflow-hidden border border-white/15 shrink-0">
+    <div className="relative w-14 h-14 rounded-2xl overflow-hidden border border-line shrink-0">
       { }
       <img src={asset.preview} alt={label} onError={() => { if (asset.preview) setBrokenAssets((prev) => (prev[asset.preview!] ? prev : { ...prev, [asset.preview!]: true })); }} className={`w-full h-full object-cover ${failed ? 'opacity-25' : ''}`} />
       {failed && <div className="absolute inset-0 grid place-items-center text-[8px] text-center font-semibold leading-tight px-1" style={{ background: '#b91c1c', color: '#fff' }}>{t('mkStudio.imageFailed')}</div>}
@@ -550,27 +541,27 @@ export default function MarketingStudioPage() {
     );
   };
   const AddSlot = ({ onClick, label }: { onClick: () => void; label: string }) => (
-    <button onClick={onClick} className="w-14 h-14 rounded-2xl bg-white/[0.03] border border-white/10 hover:border-[#00b2fc]/60 hover:bg-white/[0.06] flex flex-col items-center justify-center gap-0.5 text-white/45 hover:text-[#00b2fc] transition shrink-0">
+    <button onClick={onClick} className="w-14 h-14 rounded-2xl bg-surface border border-line hover:border-[#00b2fc]/60 hover:bg-elevated flex flex-col items-center justify-center gap-0.5 text-fg-faint hover:text-brand-accent transition shrink-0">
       <Plus className="w-4 h-4" /><span className="text-[8px] uppercase tracking-wide leading-none text-center px-0.5">{label}</span>
     </button>
   );
 
   // Top-level hydration gate: first frame (SSR + client hydration) renders a uniform empty skeleton, real content only after mounted,
   // completely avoiding SSR≠client divergence caused by in-page client-only state (session/credits/locale) (React #418).
-  if (!mounted) return <main className="min-h-screen text-[#f7f7f8]" style={gridBg} />;
+  if (!mounted) return <main className="min-h-screen text-fg app-grid-bg bg-app" />;
   return (
-    <main className="min-h-screen text-[#f7f7f8]" style={gridBg}>
+    <main className="min-h-screen text-fg app-grid-bg bg-app">
       {/* Hero */}
       <div className="text-center pt-10 pb-10 px-6">
-        <div className="text-[14px] uppercase tracking-[0.24em] text-white/60 font-semibold mb-3" style={{ fontFamily: 'var(--font-grotesk), "Space Grotesk", sans-serif' }}>Lazynext</div>
-        <h1 className="font-bold uppercase leading-[1.08] tracking-[-0.03em] text-[clamp(40px,5.4vw,58px)] text-white/90" style={{ fontFamily: 'var(--font-grotesk), "Space Grotesk", system-ui, sans-serif' }}>
+        <div className="text-[14px] uppercase tracking-[0.24em] text-fg-muted font-semibold mb-3" style={{ fontFamily: 'var(--font-grotesk), "Space Grotesk", sans-serif' }}>Lazynext</div>
+        <h1 className="font-bold uppercase leading-[1.08] tracking-[-0.03em] text-[clamp(40px,5.4vw,58px)] text-fg" style={{ fontFamily: 'var(--font-grotesk), "Space Grotesk", system-ui, sans-serif' }}>
           <>{t('mkStudio.heroPre')}<br />{t('mkStudio.heroHl')}</>
         </h1>
       </div>
 
       {/* Generator panel */}
       <div className="max-w-4xl mx-auto px-4">
-        <div className="rounded-3xl border border-white/[0.06] p-4 sm:p-5 shadow-[0_24px_70px_-24px_rgba(0,0,0,0.85)]" style={{ background: PANEL }}>
+        <div className="rounded-3xl border border-line p-4 sm:p-5 shadow-card" style={{ background: PANEL }}>
           <div className="flex items-stretch gap-4">
             {/* prompt + controls */}
             <div className="flex-1 min-w-0 flex flex-col">
@@ -581,7 +572,7 @@ export default function MarketingStudioPage() {
                 {productAssets.map((a, i) => <ThumbSlot key={i} asset={a} onRemove={() => setProductAssets((prev) => prev.filter((_, j) => j !== i))} label={t('mkStudio.product')} />)}
                 {productAssets.length < 4 && <AddSlot onClick={() => productInput.current?.click()} label={productAssets.length ? t('mkStudio.addProduct') : t('mkStudio.product')} />}
                 {productAssets.length < 4 && <AssetPicker kind="product" label={t('assets.pickProduct')} onSelect={(url) => setProductAssets((prev) => [...prev, { preview: url, url }])} />}
-                <span className="w-px h-12 bg-white/10 mx-1 shrink-0" />
+                <span className="w-px h-12 bg-elevated mx-1 shrink-0" />
                 {avatarAsset.preview
                   ? <ThumbSlot asset={avatarAsset} onRemove={() => setAvatarAsset({})} label={t('mkStudio.avatar')} />
                   : <AddSlot onClick={() => avatarInput.current?.click()} label={t('mkStudio.avatar')} />}
@@ -589,21 +580,21 @@ export default function MarketingStudioPage() {
               </div>
               <textarea value={product} onChange={(e) => setProduct(e.target.value)} rows={4}
                 placeholder={t('mkStudio.placeholder')}
-                className="w-full flex-1 bg-transparent text-[15px] leading-relaxed resize-none focus:outline-none placeholder:text-white/30 px-1 pt-1" />
+                className="w-full flex-1 bg-transparent text-[15px] leading-relaxed resize-none focus:outline-none placeholder:text-fg-placeholder px-1 pt-1" />
               <div className="flex items-center gap-2 mt-1 mb-1">
                 <button onClick={expandPrompt} disabled={expanding || !product.trim()} className="inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg text-[#131517] disabled:opacity-40 transition hover:brightness-110" style={{ background: LIME }}>{expanding ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}{t('mkStudio.aiExpand')}</button>
-                {replica && <span className="text-[11px] text-white/45">{t('mkStudio.replicaLoaded')}</span>}
+                {replica && <span className="text-[11px] text-fg-faint">{t('mkStudio.replicaLoaded')}</span>}
               </div>
               <div className="flex items-center gap-2 flex-wrap mt-2">
-                <select value={formatId} onChange={(e) => setFormatId(e.target.value)} className={selCls} style={selStyle} title={t('mkStudio.format')}>
+                <select value={formatId} onChange={(e) => setFormatId(e.target.value)} className={selCls} title={t('mkStudio.format')}>
                   {AD_FORMATS.map((f) => <option key={f.id} value={f.id}>{f.emoji} {t(`presets.fmt.${f.id}.label`)}</option>)}
                 </select>
-                {!replica && <select value={hookId} onChange={(e) => setHookId(e.target.value)} className={selCls} style={selStyle} title={t('mkStudio.hook')}>{AD_HOOKS.map((h) => <option key={h.id} value={h.id}>{h.id === 'none' ? t('mkStudio.hook') : t(`presets.hook.${h.id}`)}</option>)}</select>}
-                {!replica && <select value={settingId} onChange={(e) => setSettingId(e.target.value)} className={selCls} style={selStyle} title={t('mkStudio.setting')}>{AD_SETTINGS.map((s) => <option key={s.id} value={s.id}>{s.id === 'none' ? t('mkStudio.setting') : t(`presets.setting.${s.id}`)}</option>)}</select>}
-                <select value={avatarId} onChange={(e) => { const id = e.target.value; setAvatarId(id); const a = getAvatar(id); setAvatarAsset(a.image ? { preview: a.image, url: a.image } : {}); }} disabled={!fmt.needsPerson} className={`${selCls} disabled:opacity-40`} style={selStyle} title={t('mkStudio.avatarTitle')}>{AVATAR_PRESETS.map((a) => <option key={a.id} value={a.id}>{a.id === 'none' ? t('mkStudio.avatarLabel') : t(`presets.avatar.${a.id}`)}</option>)}</select>
-                <select value={videoRatio} onChange={(e) => setVideoRatio(e.target.value)} className={selCls} style={selStyle} title={t('mkStudio.aspectRatio')}>{VIDEO_RATIOS.map((r) => <option key={r} value={r}>{r}</option>)}</select>
-                <select value={videoResolution} onChange={(e) => setVideoResolution(e.target.value)} className={selCls} style={selStyle} title={t('mkStudio.resolution')}>{VIDEO_RESOLUTIONS.map((r) => <option key={r} value={r}>{r}</option>)}</select>
-                <select value={videoDuration} onChange={(e) => setVideoDuration(Number(e.target.value))} className={selCls} style={selStyle} title={t('mkStudio.duration')}>{VIDEO_DURATIONS.map((d) => <option key={d} value={d}>{d}s</option>)}</select>
+                {!replica && <select value={hookId} onChange={(e) => setHookId(e.target.value)} className={selCls} title={t('mkStudio.hook')}>{AD_HOOKS.map((h) => <option key={h.id} value={h.id}>{h.id === 'none' ? t('mkStudio.hook') : t(`presets.hook.${h.id}`)}</option>)}</select>}
+                {!replica && <select value={settingId} onChange={(e) => setSettingId(e.target.value)} className={selCls} title={t('mkStudio.setting')}>{AD_SETTINGS.map((s) => <option key={s.id} value={s.id}>{s.id === 'none' ? t('mkStudio.setting') : t(`presets.setting.${s.id}`)}</option>)}</select>}
+                <select value={avatarId} onChange={(e) => { const id = e.target.value; setAvatarId(id); const a = getAvatar(id); setAvatarAsset(a.image ? { preview: a.image, url: a.image } : {}); }} disabled={!fmt.needsPerson} className={`${selCls} disabled:opacity-40`} title={t('mkStudio.avatarTitle')}>{AVATAR_PRESETS.map((a) => <option key={a.id} value={a.id}>{a.id === 'none' ? t('mkStudio.avatarLabel') : t(`presets.avatar.${a.id}`)}</option>)}</select>
+                <select value={videoRatio} onChange={(e) => setVideoRatio(e.target.value)} className={selCls} title={t('mkStudio.aspectRatio')}>{VIDEO_RATIOS.map((r) => <option key={r} value={r}>{r}</option>)}</select>
+                <select value={videoResolution} onChange={(e) => setVideoResolution(e.target.value)} className={selCls} title={t('mkStudio.resolution')}>{VIDEO_RESOLUTIONS.map((r) => <option key={r} value={r}>{r}</option>)}</select>
+                <select value={videoDuration} onChange={(e) => setVideoDuration(Number(e.target.value))} className={selCls} title={t('mkStudio.duration')}>{VIDEO_DURATIONS.map((d) => <option key={d} value={d}>{d}s</option>)}</select>
                 {/* Language dropdown removed: dialogue language auto-follows the language typed in the text box (Chinese input → Chinese dialogue) */}
               </div>
             </div>
@@ -616,7 +607,7 @@ export default function MarketingStudioPage() {
             </button>
           </div>
           {(status === 'authenticated') && (
-            <div className="mt-3 text-center text-[11px] text-white/35">
+            <div className="mt-3 text-center text-[11px] text-fg-faint">
               {t('mkStudio.costHint', { shotCost, image: COSTS.image, video: videoCost, balance: credits ?? '·' })}
             </div>
           )}
@@ -628,7 +619,7 @@ export default function MarketingStudioPage() {
       {/* Final video */}
       {compose.status !== 'idle' && (
         <div className="max-w-md mx-auto px-4 pb-16">
-          <div className="rounded-3xl border border-white/10 p-5 shadow-[0_24px_80px_-28px_rgba(0,178,252,0.55)]" style={{ background: PANEL }}>
+          <div className="rounded-3xl border border-line p-5 shadow-[0_24px_80px_-28px_rgba(0,178,252,0.55)]" style={{ background: PANEL }}>
             <div className="flex items-center gap-2 text-sm mb-3">
               {compose.status === 'done' ? <CheckCircle2 className="w-4 h-4" style={{ color: LIME }} /> : compose.status === 'fail' || compose.status === 'paused' ? <AlertCircle className={`w-4 h-4 ${compose.status === 'paused' ? 'text-amber-300' : 'text-red-400'}`} /> : <Loader2 className="w-4 h-4 animate-spin" style={{ color: LIME }} />}
               <b>{compose.status === 'done'
@@ -638,13 +629,13 @@ export default function MarketingStudioPage() {
                   : compose.status === 'fail'
                     ? t('mkStudio.genFailed')
                     : t('mkStudio.generatingLabel')}</b>
-              <span className="ml-auto text-xs text-white/40 truncate max-w-[45%]">{compose.note}</span>
+              <span className="ml-auto text-xs text-fg-faint truncate max-w-[45%]">{compose.note}</span>
             </div>
             {compose.status === 'run' && (
               <>
-                <div className="h-1.5 bg-white/10 rounded-full overflow-hidden mb-4"><div className="h-full rounded-full transition-all" style={{ width: `${Math.round(compose.frac * 100)}%`, background: `linear-gradient(90deg,#22d3ee,${LIME})` }} /></div>
-                <div className="relative mx-auto aspect-[9/16] w-full max-w-[300px] rounded-2xl overflow-hidden border border-white/10 bg-black/40 grid place-items-center">
-                  <div className="flex flex-col items-center gap-2 text-white/50"><Loader2 className="w-9 h-9 animate-spin" style={{ color: LIME }} /><span className="text-xs">{compose.note || t('mkStudio.generatingDots')}</span></div>
+                <div className="h-1.5 bg-elevated rounded-full overflow-hidden mb-4"><div className="h-full rounded-full transition-all" style={{ width: `${Math.round(compose.frac * 100)}%`, background: `linear-gradient(90deg, var(--color-brand-accent), ${LIME})` }} /></div>
+                <div className="relative mx-auto aspect-[9/16] w-full max-w-[300px] rounded-2xl overflow-hidden border border-line bg-black/40 grid place-items-center">
+                  <div className="flex flex-col items-center gap-2 text-fg-faint"><Loader2 className="w-9 h-9 animate-spin" style={{ color: LIME }} /><span className="text-xs">{compose.note || t('mkStudio.generatingDots')}</span></div>
                 </div>
               </>
             )}
@@ -657,12 +648,12 @@ export default function MarketingStudioPage() {
             {compose.url && (
               <div className="flex flex-col items-center">
                 <div className="relative mx-auto w-full max-w-[300px]">
-                  <video controls autoPlay loop playsInline src={compose.url} className="w-full aspect-[9/16] rounded-2xl border border-white/10 bg-black object-contain shadow-[0_16px_50px_-20px_rgba(0,0,0,0.8)]" />
+                  <video controls autoPlay loop playsInline src={compose.url} className="w-full aspect-[9/16] rounded-2xl border border-line bg-black object-contain shadow-card" />
                 </div>
-                <p className="mt-2 text-[11px] text-white/35">{t('mkStudio.volumeHint')}</p>
+                <p className="mt-2 text-[11px] text-fg-faint">{t('mkStudio.volumeHint')}</p>
                 <div className="mt-2 flex items-center gap-2">
                   <a href={compose.url} download="ad.mp4" className="inline-flex items-center gap-1.5 text-sm font-bold px-4 py-2 rounded-xl text-white transition hover:brightness-110" style={{ background: LIME }}><Download className="w-4 h-4" />{t('mkStudio.download')}</a>
-                  <button onClick={() => void genDirectVideo()} disabled={busy !== null} className="inline-flex items-center gap-1.5 text-sm px-4 py-2 rounded-xl border border-white/15 hover:border-[#00b2fc] disabled:opacity-50 transition">{busy ? <Loader2 className="w-4 h-4 animate-spin" /> : <Video className="w-4 h-4" />}{t('mkStudio.regenerate')}</button>
+                  <button onClick={() => void genDirectVideo()} disabled={busy !== null} className="inline-flex items-center gap-1.5 text-sm px-4 py-2 rounded-xl border border-line hover:border-[#00b2fc] disabled:opacity-50 transition">{busy ? <Loader2 className="w-4 h-4 animate-spin" /> : <Video className="w-4 h-4" />}{t('mkStudio.regenerate')}</button>
                 </div>
               </div>
             )}
@@ -675,7 +666,7 @@ export default function MarketingStudioPage() {
           const on = category === c.id;
           return (
             <button key={c.id} onClick={() => setCategory(c.id)}
-              className={`inline-flex items-center gap-1.5 px-4 py-1.5 rounded-xl text-xs font-medium transition ${on ? 'bg-white text-[#131517]' : 'bg-white/5 text-white hover:bg-white/10'}`}>
+              className={`inline-flex items-center gap-1.5 px-4 py-1.5 rounded-xl text-xs font-medium transition ${on ? 'bg-white text-[#131517]' : 'bg-hover text-fg hover:bg-elevated'}`}>
               {CAT_ICON[c.id] && <span className="text-[13px] leading-none">{CAT_ICON[c.id]}</span>}
               {c.id === 'all' ? t('mkStudio.all') : c.id === 'commercial' ? t('mkStudio.commercial') : t(`presets.cat.${c.id}`)}
               {c.id === 'tiktok' && <span className="ml-0.5 rounded px-1 py-0.5 text-[8px] font-bold leading-none" style={{ background: LIME, color: '#fff' }}>{t('common.new')}</span>}
@@ -688,8 +679,7 @@ export default function MarketingStudioPage() {
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
           {visibleFormats.map((f) => (
             <div key={f.id} role="button" tabIndex={0} onClick={() => { setFormatId(f.id); setReplica(null); }} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { setFormatId(f.id); setReplica(null); } }}
-              className={`group relative text-left rounded-2xl overflow-hidden border transition aspect-[9/16] cursor-pointer ${formatId === f.id ? 'border-[#00b2fc] ring-2 ring-[#00b2fc]/40' : 'border-white/8 hover:border-white/20'}`}
-              style={{ background: 'linear-gradient(160deg,#1b1d21,#141517)' }}>
+              className={`group relative text-left rounded-2xl overflow-hidden border transition aspect-[9/16] cursor-pointer bg-popover ${formatId === f.id ? 'border-[#00b2fc] ring-2 ring-[#00b2fc]/40' : 'border-line hover:border-line-strong'}`}>
               {EXAMPLE_VIDEOS[f.id] ? (
                 <LazyVideo src={EXAMPLE_VIDEOS[f.id]} className="absolute inset-0 w-full h-full object-cover" />
               ) : (
@@ -698,7 +688,7 @@ export default function MarketingStudioPage() {
               {formatId === f.id && <div className="absolute top-2 left-2 text-[9px] font-semibold uppercase tracking-wide rounded-full px-2 py-0.5 z-10" style={{ background: LIME, color: '#fff' }}>{t('mkStudio.selected')}</div>}
               <div className="absolute inset-x-0 bottom-0 p-3 bg-gradient-to-t from-black/90 via-black/50 to-transparent">
                 <div className="text-[13px] font-bold tracking-tight">{t(`presets.fmt.${f.id}.label`)}</div>
-                <div className="text-[10px] text-white/55 leading-tight mt-0.5 line-clamp-2">{t(`presets.fmt.${f.id}.desc`)}</div>
+                <div className="text-[10px] text-fg-muted leading-tight mt-0.5 line-clamp-2">{t(`presets.fmt.${f.id}.desc`)}</div>
                 {EXAMPLE_RECIPES[f.id] && (
                   <button onClick={(e) => { e.stopPropagation(); replicateExample(f.id); }}
                     className="mt-2 w-full inline-flex items-center justify-center gap-1 rounded-lg py-1.5 text-[11px] font-bold transition hover:brightness-110" style={{ background: LIME, color: '#fff' }}>
@@ -709,7 +699,7 @@ export default function MarketingStudioPage() {
               {EXAMPLE_VIDEOS[f.id] && (
                 <button onClick={(e) => { e.stopPropagation(); setPreview(f.id); }}
                   className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-black/50 backdrop-blur-sm grid place-items-center opacity-0 group-hover:opacity-100 transition hover:bg-black/75" title={t('mkStudio.expandPreview')}>
-                  <Play className="w-5 h-5 text-white" />
+                  <Play className="w-5 h-5 text-fg" />
                 </button>
               )}
             </div>
@@ -721,9 +711,9 @@ export default function MarketingStudioPage() {
         <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur grid place-items-center p-4" onClick={() => setPreview(null)} role="dialog" aria-modal="true" aria-label={t('mkStudio.closePreview')}>
           <div className="relative" onClick={(e) => e.stopPropagation()}>
             <video src={EXAMPLE_VIDEOS[preview]} controls autoPlay loop playsInline
-              className="max-h-[85vh] w-auto rounded-2xl border border-white/10 bg-black" style={{ aspectRatio: '9 / 16' }} />
+              className="max-h-[85vh] w-auto rounded-2xl border border-line bg-black" style={{ aspectRatio: '9 / 16' }} />
             <button onClick={() => setPreview(null)} aria-label={t('mkStudio.closePreview')} className="absolute -top-3 -right-3 w-9 h-9 rounded-full bg-[#00b2fc] text-white grid place-items-center shadow-lg"><X className="w-5 h-5" /></button>
-            <div className="mt-3 text-center text-sm text-white/80">{(() => { const pf = AD_FORMATS.find((f) => f.id === preview); return pf ? t(`presets.fmt.${pf.id}.label`) : ''; })()} · {t('mkStudio.clickOutside')}</div>
+            <div className="mt-3 text-center text-sm text-fg-secondary">{(() => { const pf = AD_FORMATS.find((f) => f.id === preview); return pf ? t(`presets.fmt.${pf.id}.label`) : ''; })()} · {t('mkStudio.clickOutside')}</div>
           </div>
         </div>
       )}

@@ -13,8 +13,7 @@ import { useMounted } from '@/lib/use-mounted';
 
 // Visual specs unified with lazynext-studio: dark #131416 + cyan #00b2fc + Space Grotesk
 const ACCENT = '#00b2fc';
-const INK = '#131416';
-const PANEL = '#1c1e21';
+const PANEL = 'var(--c-popover)';
 
 type Character = { key: string; name: string; persona: string; appearance?: string };
 type Script = {
@@ -47,8 +46,7 @@ const VIDEO_RATIOS = ['9:16', '16:9', '1:1'];
 const VIDEO_RESOLUTIONS = ['480p', '720p', '1080p'];
 // Per-segment duration options (AI gives a suggested value first, user can fine-tune per segment in the script card); matches backend normalizeVideoDuration supported range.
 const VIDEO_DURATIONS = [4, 5, 6, 7, 8, 9, 10, 12, 15];
-const CHEVRON = "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-opacity='0.55' stroke-width='3'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E\")";
-const selStyle: React.CSSProperties = { backgroundImage: CHEVRON, backgroundPosition: 'right 8px center', backgroundSize: '10px', backgroundRepeat: 'no-repeat' };
+// Native <select> chevron is theme-aware via the .select-chevron CSS class.
 // script/image (portraits + scene) use fixed COST; per-shot video uses dynamic videoCredits (see segVideoCost/videoEst).
 const DRAMA_COSTS = { script: 5, image: 8, video: 12 };
 // Per-shot video model: seedance-2.0/reference-to-video (product image + character portraits + scene image → direct output), consistent with backend.
@@ -609,62 +607,55 @@ export default function DramaStudioPage() {
     }
   }
 
-  const gridBg = {
-    backgroundColor: INK,
-    colorScheme: 'dark',
-    backgroundImage:
-      'radial-gradient(70% 55% at 50% -6%, rgba(0,178,252,0.10) 0%, rgba(0,178,252,0) 60%), linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px)',
-    backgroundSize: 'auto, 44px 44px, 44px 44px',
-  } as React.CSSProperties;
-  const selCls = 'appearance-none bg-white/[0.04] rounded-lg pl-2.5 pr-7 py-2 text-xs text-white/90 focus:outline-none focus:ring-1 focus:ring-[#00b2fc]';
+  const selCls = 'appearance-none bg-surface rounded-lg pl-2.5 pr-7 py-2 text-xs text-fg focus:outline-none focus:ring-1 focus:ring-[#00b2fc] select-chevron';
 
   // Top-level hydration gate: first frame renders a uniform empty skeleton, avoiding session/locale SSR≠client divergence (#418).
-  if (!mounted) return <main className="min-h-screen text-[#f7f7f8]" style={gridBg} />;
+  if (!mounted) return <main className="min-h-screen text-fg app-grid-bg bg-app" />;
   return (
-    <main className="min-h-screen text-[#f7f7f8]" style={gridBg}>
+    <main className="min-h-screen text-fg app-grid-bg bg-app">
       {/* Hero */}
       <div className="text-center pt-10 pb-10 px-6">
-        <div className="text-[14px] uppercase tracking-[0.24em] text-white/60 font-semibold mb-3" style={{ fontFamily: 'var(--font-grotesk), "Space Grotesk", sans-serif' }}>{t('drama.kicker')}</div>
-        <h1 className="font-bold uppercase leading-[1.08] tracking-[-0.03em] text-[clamp(40px,5.4vw,58px)] text-white/90" style={{ fontFamily: 'var(--font-grotesk), "Space Grotesk", system-ui, sans-serif' }}>
+        <div className="text-[14px] uppercase tracking-[0.24em] text-fg-muted font-semibold mb-3" style={{ fontFamily: 'var(--font-grotesk), "Space Grotesk", sans-serif' }}>{t('drama.kicker')}</div>
+        <h1 className="font-bold uppercase leading-[1.08] tracking-[-0.03em] text-[clamp(40px,5.4vw,58px)] text-fg" style={{ fontFamily: 'var(--font-grotesk), "Space Grotesk", system-ui, sans-serif' }}>
           {t('drama.titlePre')}<br />{t('drama.titleMid')}<span style={{ color: ACCENT }}>{t('drama.titleHl')}</span>
         </h1>
       </div>
 
       {/* Generator panel */}
       <div className="max-w-4xl mx-auto px-4">
-        <div className="rounded-3xl border border-white/[0.06] p-4 sm:p-5 shadow-[0_24px_70px_-24px_rgba(0,0,0,0.85)]" style={{ background: PANEL }}>
+        <div className="rounded-3xl border border-line p-4 sm:p-5 shadow-card" style={{ background: PANEL }}>
           <textarea value={topic} onChange={(e) => setTopic(e.target.value)} rows={3}
             placeholder={t('drama.placeholder')}
-            className="w-full bg-transparent text-[15px] leading-relaxed resize-none focus:outline-none placeholder:text-white/30 px-1 pt-1" />
+            className="w-full bg-transparent text-[15px] leading-relaxed resize-none focus:outline-none placeholder:text-fg-placeholder px-1 pt-1" />
           <div className="flex items-center gap-2 flex-wrap mt-3">
             {DRAMA_STYLES.map((s) => (
               <button key={s.id} onClick={() => setStyle(s.id)}
-                className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs transition border ${style === s.id ? 'border-[#00b2fc] bg-[#00b2fc]/15 text-white' : 'border-white/10 bg-white/[0.03] text-white/60 hover:bg-white/[0.06]'}`}>
+                className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs transition border ${style === s.id ? 'border-[#00b2fc] bg-[#00b2fc]/15 text-fg' : 'border-line bg-surface text-fg-muted hover:bg-elevated'}`}>
                 <span>{s.emoji}</span>{t(`drama.style${s.id.charAt(0).toUpperCase()}${s.id.slice(1)}`)}
               </button>
             ))}
           </div>
           <div className="flex items-center gap-2 flex-wrap mt-3">
-            <select value={segChoice} onChange={(e) => setSegChoice(e.target.value)} className={selCls} style={selStyle} title={t('drama.scenesTitle')}>
+            <select value={segChoice} onChange={(e) => setSegChoice(e.target.value)} className={selCls} title={t('drama.scenesTitle')}>
               <option value="auto">{t('drama.scenesAuto')}</option>
               {[2, 3, 4, 5, 6, 8].map((n) => <option key={n} value={String(n)}>{t('drama.scenesN', { n })}</option>)}
             </select>
-            <select value={videoRatio} onChange={(e) => setVideoRatio(e.target.value)} className={selCls} style={selStyle} title={t('drama.aspectRatio')}>{VIDEO_RATIOS.map((r) => <option key={r} value={r}>{r}</option>)}</select>
-            <select value={videoResolution} onChange={(e) => setVideoResolution(e.target.value)} className={selCls} style={selStyle} title={t('drama.resolution')}>{VIDEO_RESOLUTIONS.map((r) => <option key={r} value={r}>{r}</option>)}</select>
-            <span className="inline-flex items-center gap-1 px-2.5 py-2 rounded-lg text-[11px] text-white/45 bg-white/[0.03] border border-white/10" title={t('drama.aiTimingTitle')}>⏱️ {t('drama.aiTiming')}</span>
+            <select value={videoRatio} onChange={(e) => setVideoRatio(e.target.value)} className={selCls} title={t('drama.aspectRatio')}>{VIDEO_RATIOS.map((r) => <option key={r} value={r}>{r}</option>)}</select>
+            <select value={videoResolution} onChange={(e) => setVideoResolution(e.target.value)} className={selCls} title={t('drama.resolution')}>{VIDEO_RESOLUTIONS.map((r) => <option key={r} value={r}>{r}</option>)}</select>
+            <span className="inline-flex items-center gap-1 px-2.5 py-2 rounded-lg text-[11px] text-fg-faint bg-surface border border-line" title={t('drama.aiTimingTitle')}>⏱️ {t('drama.aiTiming')}</span>
             {/* Product image upload (optional): product drama uses your real product to lock consistency */}
             <input ref={productInput} type="file" multiple accept="image/png,image/jpeg,image/webp" className="hidden" onChange={(e) => { const fs = e.target.files; if (fs && fs.length) void uploadProducts(fs); e.currentTarget.value = ''; }} />
             {productAssets.map((pa, idx) => (
-              <span key={idx} className="inline-flex items-center gap-1.5 pl-1 pr-2 py-1 rounded-lg text-[11px] bg-white/[0.04] border border-white/10">
+              <span key={idx} className="inline-flex items-center gap-1.5 pl-1 pr-2 py-1 rounded-lg text-[11px] bg-surface border border-line">
                 <span className="relative w-6 h-6 rounded overflow-hidden bg-black/30 shrink-0">
                   {pa.preview && <img src={pa.preview} alt="product" className={`w-full h-full object-cover ${pa.url ? 'cursor-zoom-in' : ''}`} onClick={() => pa.url && setZoomImg(pa.url)} />}
                   {pa.uploading && <span className="absolute inset-0 bg-black/60 grid place-items-center"><Loader2 className="w-3 h-3 animate-spin text-white" /></span>}
                 </span>
-                <button onClick={() => setProductAssets((prev) => prev.filter((_, k) => k !== idx))} title={t('drama.remove')} className="text-white/40 hover:text-white"><X className="w-3 h-3" /></button>
+                <button onClick={() => setProductAssets((prev) => prev.filter((_, k) => k !== idx))} title={t('drama.remove')} className="text-fg-faint hover:text-fg"><X className="w-3 h-3" /></button>
               </span>
             ))}
             {productAssets.length < MAX_PRODUCT_IMAGES && (
-              <button onClick={() => productInput.current?.click()} className="inline-flex items-center gap-1 px-2.5 py-2 rounded-lg text-[11px] text-white/55 bg-white/[0.03] border border-white/10 hover:border-[#00b2fc]/60 transition" title={t('drama.uploadProductTitle', { max: MAX_PRODUCT_IMAGES })}>
+              <button onClick={() => productInput.current?.click()} className="inline-flex items-center gap-1 px-2.5 py-2 rounded-lg text-[11px] text-fg-muted bg-surface border border-line hover:border-[#00b2fc]/60 transition" title={t('drama.uploadProductTitle', { max: MAX_PRODUCT_IMAGES })}>
                 <ImagePlus className="w-3.5 h-3.5" />{t('drama.uploadProduct', { n: productAssets.length, max: MAX_PRODUCT_IMAGES })}
               </button>
             )}
@@ -678,7 +669,7 @@ export default function DramaStudioPage() {
             </button>
           </div>
           {status === 'authenticated' && (
-            <div className="mt-3 text-center text-[11px] text-white/35">
+            <div className="mt-3 text-center text-[11px] text-fg-faint">
               {t('drama.costEstimate', { total: totalEst, script: DRAMA_COSTS.script, asset: assetCost, per: segVideoCost(), balance: credits ?? '·' })}
             </div>
           )}
@@ -688,7 +679,7 @@ export default function DramaStudioPage() {
       {zoomImg && (
         <div onClick={() => setZoomImg(null)} className="fixed inset-0 z-[60] bg-black/85 flex items-center justify-center p-4 cursor-zoom-out" role="dialog" aria-modal="true">
           <img src={zoomImg} alt="preview" className="max-w-[94vw] max-h-[90vh] w-auto h-auto object-contain rounded-lg" onClick={(e) => e.stopPropagation()} />
-          <button onClick={() => setZoomImg(null)} className="absolute top-4 right-4 text-white/70 hover:text-white" aria-label="close"><X className="w-6 h-6" /></button>
+          <button onClick={() => setZoomImg(null)} className="absolute top-4 right-4 text-fg-secondary hover:text-fg" aria-label="close"><X className="w-6 h-6" /></button>
         </div>
       )}
       {err && <div className="max-w-4xl mx-auto px-4 mt-6"><div className="flex items-center gap-2 text-sm text-red-400 bg-red-500/10 border border-red-500/25 rounded-lg px-3 py-2"><AlertCircle className="w-4 h-4" />{t('drama.error')}: {dramaErrText(err, t)}</div></div>}
@@ -697,36 +688,36 @@ export default function DramaStudioPage() {
       {/* Script display */}
       {script && (
         <div ref={storyboardRef} className="max-w-3xl mx-auto px-4 py-10 scroll-mt-6">
-          <div className="rounded-3xl border border-white/[0.06] p-5" style={{ background: PANEL }}>
+          <div className="rounded-3xl border border-line p-5" style={{ background: PANEL }}>
             <div className="flex items-center gap-2 mb-1"><Wand2 className="w-4 h-4" style={{ color: ACCENT }} /><b className="text-lg">{script.title || t('drama.untitledScript')}</b></div>
-            {script.logline && <p className="text-sm text-white/60 mb-3">{script.logline}</p>}
+            {script.logline && <p className="text-sm text-fg-muted mb-3">{script.logline}</p>}
             {!!script.characters?.length && (
               <div className="mb-4">
-                <div className="text-xs text-white/45 mb-2">🎭 {t('drama.castTitle')}</div>
+                <div className="text-xs text-fg-faint mb-2">🎭 {t('drama.castTitle')}</div>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                   {script.characters.map((c) => {
                     const a = charAssets[c.key];
                     return (
-                      <div key={c.key} className="rounded-xl border border-white/10 bg-black/20 p-2">
+                      <div key={c.key} className="rounded-xl border border-line bg-black/20 p-2">
                         <div className="flex gap-2 items-center">
-                          <div className="w-12 h-16 rounded-lg overflow-hidden bg-white/5 border border-white/10 shrink-0 grid place-items-center">
+                          <div className="w-12 h-16 rounded-lg overflow-hidden bg-hover border border-line shrink-0 grid place-items-center">
                             {a?.url ? <img src={a.url} alt={c.name} className="w-full h-full object-cover cursor-zoom-in" onClick={() => setZoomImg(a.url!)} />
-                              : a?.status === 'run' ? <Loader2 className="w-4 h-4 animate-spin text-white/50" />
+                              : a?.status === 'run' ? <Loader2 className="w-4 h-4 animate-spin text-fg-faint" />
                               : a?.status === 'fail' ? <AlertCircle className="w-4 h-4 text-red-400" />
                               : <span className="text-lg opacity-60">🎭</span>}
                           </div>
                           <div className="min-w-0 flex-1">
                             <div className="text-xs font-bold truncate" style={{ color: ACCENT }}>{c.name}</div>
-                            <div className="text-[10px] text-white/50 overflow-hidden" style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>{c.persona}</div>
+                            <div className="text-[10px] text-fg-faint overflow-hidden" style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>{c.persona}</div>
                           </div>
                           <div className="flex flex-col gap-1 shrink-0">
-                            <button onClick={() => genOneCharacter(c.key)} disabled={a?.status === 'run' || busy === 'assets' || busy === 'all'} title={t('drama.regeneratePortrait')} className="p-1 rounded hover:bg-white/10 disabled:opacity-40 transition"><RefreshCw className={`w-3.5 h-3.5 text-white/60 ${a?.status === 'run' ? 'animate-spin' : ''}`} /></button>
-                            <button onClick={() => setEditingChar(editingChar === c.key ? null : c.key)} title={t('drama.editAppearance')} className={`p-1 rounded hover:bg-white/10 transition ${editingChar === c.key ? 'bg-white/10' : ''}`}><Pencil className="w-3.5 h-3.5 text-white/60" /></button>
+                            <button onClick={() => genOneCharacter(c.key)} disabled={a?.status === 'run' || busy === 'assets' || busy === 'all'} title={t('drama.regeneratePortrait')} className="p-1 rounded hover:bg-elevated disabled:opacity-40 transition"><RefreshCw className={`w-3.5 h-3.5 text-fg-muted ${a?.status === 'run' ? 'animate-spin' : ''}`} /></button>
+                            <button onClick={() => setEditingChar(editingChar === c.key ? null : c.key)} title={t('drama.editAppearance')} className={`p-1 rounded hover:bg-elevated transition ${editingChar === c.key ? 'bg-elevated' : ''}`}><Pencil className="w-3.5 h-3.5 text-fg-muted" /></button>
                           </div>
                         </div>
                         {editingChar === c.key && (
                           <div className="mt-2">
-                            <textarea value={c.appearance || ''} onChange={(e) => editCharAppearance(c.key, e.target.value)} rows={3} placeholder={t('drama.appearancePlaceholder')} className="w-full bg-white/5 border border-white/10 rounded px-2 py-1 text-[11px] text-white/80 resize-y focus:outline-none focus:border-[#00b2fc]" />
+                            <textarea value={c.appearance || ''} onChange={(e) => editCharAppearance(c.key, e.target.value)} rows={3} placeholder={t('drama.appearancePlaceholder')} className="w-full bg-hover border border-line rounded px-2 py-1 text-[11px] text-fg-secondary resize-y focus:outline-none focus:border-[#00b2fc]" />
                             <button onClick={() => { setEditingChar(null); void genOneCharacter(c.key); }} disabled={a?.status === 'run'} className="mt-1 inline-flex items-center gap-1 text-[11px] font-semibold px-2.5 py-1 rounded-lg disabled:opacity-40 transition" style={{ background: ACCENT, color: '#fff' }}><RefreshCw className="w-3 h-3" />{t('drama.regenerateCost', { n: DRAMA_COSTS.image })}</button>
                           </div>
                         )}
@@ -737,44 +728,44 @@ export default function DramaStudioPage() {
               </div>
             )}
             {(script.setting || sceneAsset.status !== 'idle') && (
-              <div className="flex items-center gap-2 text-xs text-white/45 mb-4">
+              <div className="flex items-center gap-2 text-xs text-fg-faint mb-4">
                 {sceneAsset.status !== 'idle' && (
-                  <span className="w-11 h-7 rounded overflow-hidden bg-white/5 border border-white/10 grid place-items-center shrink-0">
+                  <span className="w-11 h-7 rounded overflow-hidden bg-hover border border-line grid place-items-center shrink-0">
                     {sceneAsset.url ? <img src={sceneAsset.url} className="w-full h-full object-cover cursor-zoom-in" alt="scene" onClick={() => setZoomImg(sceneAsset.url!)} />
-                      : sceneAsset.status === 'run' ? <Loader2 className="w-3 h-3 animate-spin text-white/50" />
+                      : sceneAsset.status === 'run' ? <Loader2 className="w-3 h-3 animate-spin text-fg-faint" />
                       : sceneAsset.status === 'fail' ? <AlertCircle className="w-3 h-3 text-red-400" /> : null}
                   </span>
                 )}
                 <span className="flex-1 min-w-0 truncate">🎬 {t('drama.setting')}: {script.setting}</span>
                 {sceneAsset.status === 'fail' && sceneAsset.err && <span className="text-red-400 truncate max-w-[28%]" title={sceneAsset.err}>{dramaErrText(sceneAsset.err, t)}</span>}
-                <button onClick={genOneScene} disabled={sceneAsset.status === 'run' || busy === 'assets' || busy === 'all'} title={t('drama.regenerateScene')} className="p-1 rounded hover:bg-white/10 disabled:opacity-40 transition shrink-0"><RefreshCw className={`w-3.5 h-3.5 text-white/60 ${sceneAsset.status === 'run' ? 'animate-spin' : ''}`} /></button>
+                <button onClick={genOneScene} disabled={sceneAsset.status === 'run' || busy === 'assets' || busy === 'all'} title={t('drama.regenerateScene')} className="p-1 rounded hover:bg-elevated disabled:opacity-40 transition shrink-0"><RefreshCw className={`w-3.5 h-3.5 text-fg-muted ${sceneAsset.status === 'run' ? 'animate-spin' : ''}`} /></button>
               </div>
             )}
             <div className="space-y-2">
               {(script.segments || []).map((seg, i) => {
                 const st = shots[i];
                 return (
-                  <div key={i} className="rounded-xl border border-white/10 bg-black/20 p-3">
+                  <div key={i} className="rounded-xl border border-line bg-black/20 p-3">
                     <div className="flex items-center gap-2 mb-2 flex-wrap">
-                      <span className="text-[11px] rounded-full px-2 py-0.5 bg-white/5 border border-white/10" style={{ color: ACCENT }}>{t('drama.sceneN', { n: seg.i })}</span>
+                      <span className="text-[11px] rounded-full px-2 py-0.5 bg-hover border border-line" style={{ color: ACCENT }}>{t('drama.sceneN', { n: seg.i })}</span>
                       {/* Per-segment duration: AI gives suggested value, user can fine-tune */}
-                      <select value={seg.durationSec || 8} onChange={(e) => setSegDuration(i, Number(e.target.value))} className="appearance-none bg-white/[0.06] rounded px-1.5 py-0.5 text-[10px] text-white/80 focus:outline-none focus:ring-1 focus:ring-[#00b2fc]" title={t('drama.sceneDuration')}>{VIDEO_DURATIONS.map((d) => <option key={d} value={d}>{d}s</option>)}</select>
+                      <select value={seg.durationSec || 8} onChange={(e) => setSegDuration(i, Number(e.target.value))} className="appearance-none bg-elevated rounded px-1.5 py-0.5 text-[10px] text-fg-secondary focus:outline-none focus:ring-1 focus:ring-[#00b2fc]" title={t('drama.sceneDuration')}>{VIDEO_DURATIONS.map((d) => <option key={d} value={d}>{d}s</option>)}</select>
                       {/* Appearing characters (corresponding portrait references) */}
                       {(seg.cast || []).map((k) => {
                         const c = script.characters?.find((x) => x.key === k);
-                        return c ? <span key={k} className="text-[10px] rounded-full px-1.5 py-0.5 bg-[#00b2fc]/15 border border-[#00b2fc]/30 text-white/70">{c.name}</span> : null;
+                        return c ? <span key={k} className="text-[10px] rounded-full px-1.5 py-0.5 bg-[#00b2fc]/15 border border-[#00b2fc]/30 text-fg-secondary">{c.name}</span> : null;
                       })}
                       {/* Product appearance toggle: only shown when product images are uploaded; lit segments include product reference during synthesis to lock consistency */}
                       {productAssets.some((p) => p.url) && (
-                        <button onClick={() => setSegProduct(i, !seg.product)} title={t('drama.productToggleTitle')} className={`text-[10px] rounded-full px-1.5 py-0.5 border transition ${seg.product ? 'bg-[#00b2fc]/20 border-[#00b2fc]/50 text-white' : 'bg-white/5 border-white/10 text-white/40'}`}>🛍️ {t('drama.product')}</button>
+                        <button onClick={() => setSegProduct(i, !seg.product)} title={t('drama.productToggleTitle')} className={`text-[10px] rounded-full px-1.5 py-0.5 border transition ${seg.product ? 'bg-[#00b2fc]/20 border-[#00b2fc]/50 text-fg' : 'bg-hover border-line text-fg-faint'}`}>🛍️ {t('drama.product')}</button>
                       )}
-                      {seg.hook && <span className="text-[10px] text-white/40">💡 {seg.hook}</span>}
+                      {seg.hook && <span className="text-[10px] text-fg-faint">💡 {seg.hook}</span>}
                       {st && <StatusChip icon={<Video className="w-3 h-3" />} label={t('drama.image')} s={st.img} />}
                       {st && <StatusChip icon={<Film className="w-3 h-3" />} label={t('drama.video')} s={st.vid} />}
                     </div>
-                    <input value={seg.scene} onChange={(e) => editSeg(i, 'scene', e.target.value)} className="w-full mb-1.5 bg-white/5 border border-white/10 rounded px-2 py-1 text-xs text-white/80 focus:outline-none focus:border-[#00b2fc]" placeholder={t('drama.shotFraming')} />
-                    <textarea value={seg.action} onChange={(e) => editSeg(i, 'action', e.target.value)} rows={2} className="w-full mb-1.5 bg-white/5 border border-white/10 rounded px-2 py-1 text-xs text-white/80 resize-y focus:outline-none focus:border-[#00b2fc]" placeholder={t('drama.plotAction')} />
-                    <input value={seg.dialogue || ''} onChange={(e) => editSeg(i, 'dialogue', e.target.value)} className="w-full bg-white/5 border border-white/10 rounded px-2 py-1 text-xs text-white/70 focus:outline-none focus:border-[#00b2fc]" placeholder={t('drama.dialogueOptional')} />
+                    <input value={seg.scene} onChange={(e) => editSeg(i, 'scene', e.target.value)} className="w-full mb-1.5 bg-hover border border-line rounded px-2 py-1 text-xs text-fg-secondary focus:outline-none focus:border-[#00b2fc]" placeholder={t('drama.shotFraming')} />
+                    <textarea value={seg.action} onChange={(e) => editSeg(i, 'action', e.target.value)} rows={2} className="w-full mb-1.5 bg-hover border border-line rounded px-2 py-1 text-xs text-fg-secondary resize-y focus:outline-none focus:border-[#00b2fc]" placeholder={t('drama.plotAction')} />
+                    <input value={seg.dialogue || ''} onChange={(e) => editSeg(i, 'dialogue', e.target.value)} className="w-full bg-hover border border-line rounded px-2 py-1 text-xs text-fg-secondary focus:outline-none focus:border-[#00b2fc]" placeholder={t('drama.dialogueOptional')} />
                     <div className="mt-2 flex items-center gap-2 flex-wrap">
                       <button onClick={() => genOneShot(i)} disabled={!assetsReady || busy === 'all' || busy === 'assets' || st?.img === 'run' || st?.vid === 'run'} title={!assetsReady ? t('drama.genPortraitsFirst') : ''} className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg disabled:opacity-40 transition" style={st?.vid === 'done' ? { border: '1px solid rgba(255,255,255,0.15)', color: '#fff' } : { background: ACCENT, color: '#fff' }}>
                         {(st?.img === 'run' || st?.vid === 'run') ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Video className="w-3.5 h-3.5" />}
@@ -784,16 +775,16 @@ export default function DramaStudioPage() {
                       {st?.err && <span className="text-[11px] text-red-400 truncate max-w-[55%]" title={st.err}>{dramaErrText(st.err, t)}</span>}
                     </div>
                     {st?.vid === 'done' && st.vidUrl && (
-                      <video src={st.vidUrl} poster={st.imgUrl} controls playsInline className="mt-2 w-full max-w-[220px] rounded-lg border border-white/10 bg-black" />
+                      <video src={st.vidUrl} poster={st.imgUrl} controls playsInline className="mt-2 w-full max-w-[220px] rounded-lg border border-line bg-black" />
                     )}
                   </div>
                 );
               })}
             </div>
-            {script.climax && <div className="mt-3 text-xs text-white/50">🔥 {t('drama.climax')}: {script.climax}</div>}
+            {script.climax && <div className="mt-3 text-xs text-fg-faint">🔥 {t('drama.climax')}: {script.climax}</div>}
             <div className="mt-4 flex flex-wrap items-center gap-2">
               {/* ① Generate portraits + scene first (failed ones can retry, only re-runs incomplete) */}
-              <button onClick={genAssets} disabled={busy !== null || anyShotRunning} className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl font-bold disabled:opacity-50 border border-white/15 hover:border-[#00b2fc] transition">
+              <button onClick={genAssets} disabled={busy !== null || anyShotRunning} className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl font-bold disabled:opacity-50 border border-line hover:border-[#00b2fc] transition">
                 {busy === 'assets' ? <Loader2 className="w-4 h-4 animate-spin" /> : <span className="text-sm">①</span>} {assetsReady ? t('drama.referenceReady') : t('drama.portraitsScene', { n: assetCost })}
               </button>
               {/* ② Generate all: sequential per-shot, one shot failing doesn't affect others, can retry individually */}
@@ -801,11 +792,11 @@ export default function DramaStudioPage() {
                 {busy === 'all' ? <Loader2 className="w-4 h-4 animate-spin" /> : <Video className="w-4 h-4" />} <>{!hasCreditsForVideo ? t('drama.notEnoughCredits') : t('drama.generateAll')} · ✦{videoEst}</>
               </button>
               {/* ③ Stitch: only clickable after all shot videos are done */}
-              <button onClick={composeVideo} disabled={!allVidsDone || busy !== null || compose.status === 'run' || anyShotRunning} title={allVidsDone ? '' : t('drama.stitchTitle')} className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl font-bold disabled:opacity-40 border border-white/15 hover:border-[#00b2fc] transition">
+              <button onClick={composeVideo} disabled={!allVidsDone || busy !== null || compose.status === 'run' || anyShotRunning} title={allVidsDone ? '' : t('drama.stitchTitle')} className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl font-bold disabled:opacity-40 border border-line hover:border-[#00b2fc] transition">
                 {compose.status === 'run' ? <Loader2 className="w-4 h-4 animate-spin" /> : <Film className="w-4 h-4" />} {t('drama.stitchFinal')}
               </button>
             </div>
-            <div className="text-[11px] text-white/40 mt-2">{t('drama.keepPageOpen')}</div>
+            <div className="text-[11px] text-fg-faint mt-2">{t('drama.keepPageOpen')}</div>
           </div>
         </div>
       )}
@@ -813,16 +804,16 @@ export default function DramaStudioPage() {
       {/* Final video */}
       {compose.status !== 'idle' && (
         <div className="max-w-3xl mx-auto px-4 pb-16">
-          <div className="rounded-3xl border border-white/[0.06] p-5" style={{ background: PANEL }}>
+          <div className="rounded-3xl border border-line p-5" style={{ background: PANEL }}>
             <div className="flex items-center gap-2 text-sm mb-2">
               {compose.status === 'done' ? <CheckCircle2 className="w-4 h-4" style={{ color: ACCENT }} /> : compose.status === 'fail' ? <AlertCircle className="w-4 h-4 text-red-400" /> : <Loader2 className="w-4 h-4 animate-spin" style={{ color: ACCENT }} />}
-              <b>{compose.status === 'done' ? t('drama.videoReady') : compose.status === 'fail' ? t('drama.stitchingFailed') : t('drama.stitching')}</b><span className="text-xs text-white/40">{compose.note}</span>
+              <b>{compose.status === 'done' ? t('drama.videoReady') : compose.status === 'fail' ? t('drama.stitchingFailed') : t('drama.stitching')}</b><span className="text-xs text-fg-faint">{compose.note}</span>
             </div>
-            {compose.status === 'run' && <div className="h-1.5 bg-white/10 rounded-full overflow-hidden"><div className="h-full transition-all" style={{ width: `${Math.round(compose.frac * 100)}%`, background: ACCENT }} /></div>}
+            {compose.status === 'run' && <div className="h-1.5 bg-elevated rounded-full overflow-hidden"><div className="h-full transition-all" style={{ width: `${Math.round(compose.frac * 100)}%`, background: ACCENT }} /></div>}
             {compose.url && (
               <div className="mt-3">
-                <video controls autoPlay muted src={compose.url} className="w-full max-w-[300px] rounded-xl border border-white/10" />
-                <a href={compose.url} download="drama.mp4" className="mt-2 inline-flex items-center gap-1.5 text-sm px-3 py-1.5 rounded-lg border border-white/15 hover:border-[#00b2fc]"><Download className="w-4 h-4" />{t('drama.download')}</a>
+                <video controls autoPlay muted src={compose.url} className="w-full max-w-[300px] rounded-xl border border-line" />
+                <a href={compose.url} download="drama.mp4" className="mt-2 inline-flex items-center gap-1.5 text-sm px-3 py-1.5 rounded-lg border border-line hover:border-[#00b2fc]"><Download className="w-4 h-4" />{t('drama.download')}</a>
               </div>
             )}
           </div>
@@ -833,6 +824,6 @@ export default function DramaStudioPage() {
 }
 
 function StatusChip({ icon, label, s }: { icon: React.ReactNode; label: string; s: 'idle' | 'run' | 'done' | 'fail' }) {
-  const cls = s === 'done' ? 'text-[#00b2fc]' : s === 'run' ? 'text-white' : s === 'fail' ? 'text-red-400' : 'text-white/30';
+  const cls = s === 'done' ? 'text-brand-accent' : s === 'run' ? 'text-fg' : s === 'fail' ? 'text-red-400' : 'text-fg-placeholder';
   return <span className={`inline-flex items-center gap-1 text-[10px] ${cls}`}>{s === 'run' ? <Loader2 className="w-3 h-3 animate-spin" /> : icon}{label}</span>;
 }

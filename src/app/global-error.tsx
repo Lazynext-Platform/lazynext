@@ -9,6 +9,22 @@ export default function GlobalError({ error, reset }: { error: Error & { digest?
     console.error(error);
   }, [error]);
 
+  // Apply the persisted theme to this standalone document so the error page
+  // matches the rest of the app (the root layout's inline script didn't run).
+  useEffect(() => {
+    try {
+      const s = localStorage.getItem('lazynext-theme');
+      const v = s === 'light' || s === 'dark' || s === 'system' ? s : 'system';
+      const d = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const r = v === 'system' ? (d ? 'dark' : 'light') : v;
+      document.documentElement.setAttribute('data-theme', r);
+      document.documentElement.style.colorScheme = r;
+    } catch {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      document.documentElement.style.colorScheme = 'dark';
+    }
+  }, []);
+
   const locale = (() => {
     if (typeof document !== 'undefined') {
       const m = document.cookie.match(/(?:^|; )locale=([a-z]{2})/);
@@ -36,15 +52,15 @@ export default function GlobalError({ error, reset }: { error: Error & { digest?
   const dir = locale === 'ar' ? 'rtl' : 'ltr';
 
   return (
-    <html lang={locale} dir={dir}>
-      <body style={{ backgroundColor: '#131416', color: '#f7f7f8', colorScheme: 'dark' }}>
+    <html lang={locale} dir={dir} data-theme="dark" suppressHydrationWarning>
+      <body className="bg-app text-fg">
         <main className="min-h-screen flex items-center justify-center">
           <div className="max-w-md px-6 text-center">
             <h1 className="text-2xl font-bold tracking-tight">{t.title}</h1>
-            <p className="mt-3 text-sm text-white/50">{t.desc}</p>
+            <p className="mt-3 text-sm text-fg-faint">{t.desc}</p>
             <div className="mt-8 flex items-center justify-center gap-4">
-              <button onClick={reset} className="text-sm text-white/70 hover:text-white transition">{t.retry}</button>
-              <a href="/" className="text-sm text-white/70 hover:text-white transition">{t.back}</a>
+              <button onClick={reset} className="text-sm text-fg-secondary hover:text-fg transition">{t.retry}</button>
+              <a href="/" className="text-sm text-fg-secondary hover:text-fg transition">{t.back}</a>
             </div>
           </div>
         </main>

@@ -47,17 +47,8 @@ export default function Home() {
   ];
 
   const featured = APPS.filter((app) => isFeatured(app.href));
-
-  const gridBg = {
-    backgroundColor: '#131416',
-    colorScheme: 'dark',
-    backgroundImage:
-      'radial-gradient(70% 55% at 50% -6%, rgba(0,178,252,0.12) 0%, rgba(0,178,252,0) 60%), linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px)',
-    backgroundSize: 'auto, 44px 44px, 44px 44px',
-  } as React.CSSProperties;
-
-  return (
-    <main className="min-h-screen text-[#f7f7f8]" style={gridBg}>
+return (
+    <main className="min-h-screen text-fg app-grid-bg bg-app">
       {/* Email verification success banner */}
       {verified === 'true' && (
         <div className="mx-auto max-w-6xl px-6 pt-4">
@@ -80,17 +71,17 @@ export default function Home() {
       <div className="text-center pt-10 pb-12 px-6">
         <div className="mb-3 flex justify-center">
           <a href="https://atlascloud.ai?utm_source=github&utm_campaign=ecommerce-studio" target="_blank" rel="noopener noreferrer"
-             className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 px-2.5 py-1 text-[11px] text-white/40 transition hover:border-white/25 hover:text-white/70">
+             className="inline-flex items-center gap-1.5 rounded-lg border border-line px-2.5 py-1 text-[11px] text-fg-faint transition hover:border-line-strong hover:text-fg-secondary">
             <span>{t('common.poweredBy')}</span>
             <img src="/atlas-cloud-wordmark.png" alt="Atlas Cloud" className="h-3 w-auto opacity-80" />
             <span aria-hidden="true">↗</span>
           </a>
         </div>
-        <div className="text-[14px] uppercase tracking-[0.24em] text-white/60 font-semibold mb-3" style={{ fontFamily: 'var(--font-grotesk), "Space Grotesk", sans-serif' }}>Lazynext</div>
-        <h1 className="font-bold uppercase leading-[1.06] tracking-[-0.03em] text-[clamp(38px,5.2vw,56px)] text-white/90" style={{ fontFamily: 'var(--font-grotesk), "Space Grotesk", system-ui, sans-serif' }}>
-          {t('home.heroTitle')}<br /><span style={{ color: '#00b2fc' }}>{t('home.heroTitleHl')}</span>
+        <div className="text-[14px] uppercase tracking-[0.24em] text-fg-muted font-semibold mb-3" style={{ fontFamily: 'var(--font-grotesk), "Space Grotesk", sans-serif' }}>Lazynext</div>
+        <h1 className="font-bold uppercase leading-[1.06] tracking-[-0.03em] text-[clamp(38px,5.2vw,56px)] text-fg" style={{ fontFamily: 'var(--font-grotesk), "Space Grotesk", system-ui, sans-serif' }}>
+          {t('home.heroTitle')}<br /><span style={{ color: 'var(--color-brand-accent)' }}>{t('home.heroTitleHl')}</span>
         </h1>
-        <p className="mx-auto mt-5 max-w-xl text-white/50">{t('home.heroSubtitle', { n: featured.length })}</p>
+        <p className="mx-auto mt-5 max-w-xl text-fg-faint">{t('home.heroSubtitle', { n: featured.length })}</p>
       </div>
 
       {/* Premium app cards */}
@@ -103,17 +94,17 @@ export default function Home() {
               <Link
                 key={app.id}
                 href={app.href}
-                className="group rounded-2xl border border-white/8 bg-white/[0.03] p-6 transition hover:-translate-y-1 hover:border-[#00b2fc]/50 hover:bg-white/[0.05]"
+                className="group rounded-2xl border border-line bg-surface p-6 transition hover:-translate-y-1 hover:border-[#00b2fc]/50 hover:bg-surface"
               >
                 <div className="flex items-center justify-between">
-                  <span className="flex h-12 w-12 items-center justify-center rounded-xl transition duration-300 group-hover:scale-110" style={{ background: 'rgba(0,178,252,0.15)', color: '#22d3ee' }}>
+                  <span className="flex h-12 w-12 items-center justify-center rounded-xl transition duration-300 group-hover:scale-110" style={{ background: 'rgba(0,178,252,0.15)', color: 'var(--color-brand-accent)' }}>
                     <Icon className="h-6 w-6" />
                   </span>
-                  <span className="rounded-full px-2.5 py-1 text-[10px] font-semibold" style={{ background: 'rgba(0,178,252,0.15)', color: '#67e8f9' }}>⭐ {t('home.featured')}</span>
+                  <span className="rounded-full px-2.5 py-1 text-[10px] font-semibold" style={{ background: 'rgba(0,178,252,0.15)', color: 'var(--color-brand-accent)' }}>⭐ {t('home.featured')}</span>
                 </div>
                 <h3 className="mt-4 font-bold tracking-tight">{appTitle(app.id, a.title, locale)}</h3>
-                <p className="mt-1 text-sm text-white/50 leading-relaxed">{appDesc(app.id, a.description, locale)}</p>
-                <div className="mt-4 flex items-center gap-1 text-sm font-medium opacity-0 transition duration-300 group-hover:opacity-100" style={{ color: '#22d3ee' }}>
+                <p className="mt-1 text-sm text-fg-faint leading-relaxed">{appDesc(app.id, a.description, locale)}</p>
+                <div className="mt-4 flex items-center gap-1 text-sm font-medium opacity-0 transition duration-300 group-hover:opacity-100" style={{ color: 'var(--color-brand-accent)' }}>
                   {t('home.tryIt')} <ArrowRight className="h-3.5 w-3.5" />
                 </div>
               </Link>

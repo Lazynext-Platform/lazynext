@@ -64,7 +64,7 @@ export function AssetPicker({
         type="button"
         onClick={() => !disabled && setOpen((v) => !v)}
         disabled={disabled}
-        className="inline-flex items-center gap-1 rounded-lg border border-white/10 px-2.5 py-1.5 text-[11px] font-medium text-white/60 transition hover:bg-white/5 hover:text-white/80 disabled:opacity-30"
+        className="inline-flex items-center gap-1 rounded-lg border border-line px-2.5 py-1.5 text-[11px] font-medium text-fg-muted transition hover:bg-hover hover:text-fg-secondary disabled:opacity-30"
         title={label}
       >
         <Boxes className="h-3 w-3" />
@@ -72,27 +72,27 @@ export function AssetPicker({
         <ChevronDown className="h-2.5 w-2.5" />
       </button>
       {open && (
-        <div className="absolute left-0 top-full z-50 mt-1 max-h-64 w-64 overflow-y-auto rounded-xl border border-white/10 bg-[#1c1e21] p-1 shadow-2xl">
+        <div className="absolute left-0 top-full z-50 mt-1 max-h-64 w-64 overflow-y-auto rounded-xl border border-line bg-popover p-1 shadow-2xl">
           {loading ? (
-            <div className="grid place-items-center py-6"><Loader2 className="h-4 w-4 animate-spin text-white/40" /></div>
+            <div className="grid place-items-center py-6"><Loader2 className="h-4 w-4 animate-spin text-fg-faint" /></div>
           ) : !hasItems ? (
-            <div className="px-3 py-4 text-center text-[11px] text-white/40">No saved {kind === 'product' ? 'products' : 'avatars'} with images yet</div>
+            <div className="px-3 py-4 text-center text-[11px] text-fg-faint">No saved {kind === 'product' ? 'products' : 'avatars'} with images yet</div>
           ) : (
             items!.map((a) => (
               <button
                 key={a.id}
                 type="button"
                 onClick={() => { onSelect(a.imageUrl!, a.name, a.description); setOpen(false); }}
-                className="flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-left transition hover:bg-white/5"
+                className="flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-left transition hover:bg-hover"
               >
                 {a.imageUrl ? (
                   <img src={a.imageUrl} alt="" className="h-8 w-8 shrink-0 rounded object-cover" referrerPolicy="no-referrer" />
                 ) : (
-                  <div className="h-8 w-8 shrink-0 rounded bg-white/10" />
+                  <div className="h-8 w-8 shrink-0 rounded bg-elevated" />
                 )}
                 <div className="min-w-0 flex-1">
-                  <div className="truncate text-xs font-medium text-white/80">{a.name}</div>
-                  {a.description && <div className="truncate text-[10px] text-white/40">{a.description}</div>}
+                  <div className="truncate text-xs font-medium text-fg-secondary">{a.name}</div>
+                  {a.description && <div className="truncate text-[10px] text-fg-faint">{a.description}</div>}
                 </div>
                 <Check className="h-3 w-3 shrink-0 text-white/0" />
               </button>

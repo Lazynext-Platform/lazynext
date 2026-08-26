@@ -119,24 +119,24 @@ export function CountrySelector() {
   const tr = { title: t('country.title'), country: t('country.country'), currency: t('country.currency'), save: t('country.save'), saved: t('country.saved') };
 
   return (
-    <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6">
+    <div className="rounded-2xl border border-line bg-surface p-6">
       <div className="flex items-center gap-2 mb-4">
-        <Globe className="h-5 w-5 text-white/50" />
-        <h3 className="font-semibold text-white">{tr.title}</h3>
+        <Globe className="h-5 w-5 text-fg-faint" />
+        <h3 className="font-semibold text-fg">{tr.title}</h3>
       </div>
 
       <div className="space-y-4">
         <div>
-          <label className="mb-1.5 block text-xs font-medium text-white/50">{tr.country}</label>
+          <label className="mb-1.5 block text-xs font-medium text-fg-faint">{tr.country}</label>
           <select
             value={country}
             onChange={(e) => setCountry(e.target.value)}
-            className="w-full cursor-pointer appearance-none rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2.5 text-sm text-white outline-none transition focus:border-[#00b2fc]"
+            className="w-full cursor-pointer appearance-none rounded-xl border border-line bg-surface px-3 py-2.5 text-sm text-fg outline-none transition focus:border-[#00b2fc]"
           >
             {COUNTRY_GROUPS.map((group) => (
-              <optgroup key={group.labelKey} label={t(group.labelKey)} className="bg-neutral-900 text-white">
+              <optgroup key={group.labelKey} label={t(group.labelKey)} className="bg-neutral-900 text-fg">
                 {group.countries.map((c) => (
-                  <option key={c.code} value={c.code} className="bg-neutral-900 text-white">
+                  <option key={c.code} value={c.code} className="text-fg">
                     {c.name} ({c.code})
                   </option>
                 ))}
@@ -146,14 +146,14 @@ export function CountrySelector() {
         </div>
 
         <div>
-          <label className="mb-1.5 block text-xs font-medium text-white/50">{tr.currency}</label>
+          <label className="mb-1.5 block text-xs font-medium text-fg-faint">{tr.currency}</label>
           <select
             value={currency}
             onChange={(e) => setCurrency(e.target.value)}
-            className="w-full cursor-pointer appearance-none rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2.5 text-sm text-white outline-none transition focus:border-[#00b2fc]"
+            className="w-full cursor-pointer appearance-none rounded-xl border border-line bg-surface px-3 py-2.5 text-sm text-fg outline-none transition focus:border-[#00b2fc]"
           >
             {CURRENCIES.map((c) => (
-              <option key={c.code} value={c.code} className="bg-neutral-900 text-white">
+              <option key={c.code} value={c.code} className="text-fg">
                 {c.symbol} {c.code} — {c.name}
               </option>
             ))}

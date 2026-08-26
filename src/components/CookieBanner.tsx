@@ -37,19 +37,19 @@ export function CookieBanner() {
 
   return (
     <div
-      className="fixed bottom-0 left-0 right-0 z-50 border-t border-white/10 bg-[#1c1e21] px-4 py-4 shadow-2xl"
+      className="fixed bottom-0 left-0 right-0 z-50 border-t border-line bg-popover px-4 py-4 shadow-2xl"
       role="dialog"
       aria-label={t('common.cookieConsent')}
     >
       <div className="mx-auto flex max-w-4xl flex-col items-center gap-3 sm:flex-row sm:justify-between">
-        <p className="text-sm text-white/70">
+        <p className="text-sm text-fg-secondary">
           {tr.msg}{' '}
-          <a href="/privacy" className="underline hover:text-white">{tr.link}</a>
+          <a href="/privacy" className="underline hover:text-fg">{tr.link}</a>
         </p>
         <div className="flex shrink-0 gap-2">
           <button
             onClick={() => setConsent(false)}
-            className="rounded-lg border border-white/15 px-4 py-2 text-xs font-medium text-white/70 transition hover:bg-white/5"
+            className="rounded-lg border border-line px-4 py-2 text-xs font-medium text-fg-secondary transition hover:bg-hover"
           >
             {tr.decline}
           </button>
