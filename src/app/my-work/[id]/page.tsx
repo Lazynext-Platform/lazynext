@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
-import { useSession, signIn } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 import { Loader2, ArrowLeft, Download, Film } from 'lucide-react';
 import { useI18n } from '@/i18n/provider';
 
@@ -64,7 +64,7 @@ export default function WorkDetailPage() {
           <div className="grid place-items-center gap-4 py-32 text-center">
             <div className="text-5xl">🔐</div>
             <p className="text-white/50">{t('myWork.signInView')}</p>
-            <button onClick={() => signIn('google')} className="rounded-xl px-5 py-2.5 text-sm font-bold text-white" style={{ background: '#00b2fc' }}>{t('common.signIn')}</button>
+            <Link href="/" className="rounded-xl px-5 py-2.5 text-sm font-bold text-white" style={{ background: '#00b2fc' }}>{t('common.signIn')}</Link>
           </div>
         ) : c === 'notfound' || !c.assets || c.assets.kind !== 'drama' ? (
           <div className="grid place-items-center gap-4 py-32 text-center">

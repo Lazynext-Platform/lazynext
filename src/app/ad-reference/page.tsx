@@ -3,7 +3,7 @@ import { byokHeaders, useByokActive } from '@/lib/byok';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import { useSession, signIn } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 import { useI18n } from '@/i18n/provider';
 import { useMounted } from '@/lib/use-mounted';
 import { uploadDirectMediaIfSupported } from '@/lib/client-media-upload';
@@ -265,7 +265,7 @@ export default function AdReferencePage() {
   }
 
   async function generate() {
-    if (status !== 'authenticated') { signIn('google'); return; }
+    if (status !== 'authenticated') { window.location.href = '/'; return; }
     if (!refVideo) return;
     setError(''); setResult('');
     let cid = ''; // work placeholder id, updated on completion/failure

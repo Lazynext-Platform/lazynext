@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useSession, signIn } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 import type { CreditPack } from '@/config/pricing';
 import { CURRENCIES, displayPrice } from '@/config/pricing';
 import { useI18n } from '@/i18n/provider';
@@ -33,7 +33,7 @@ export default function PricingClient({
   }
 
   async function buy(packId: string) {
-    if (!session) return signIn('google');
+    if (!session) return window.location.href = '/';
     setMsg(null);
     setBusy(packId);
     try {
@@ -60,7 +60,7 @@ export default function PricingClient({
   }
 
   async function redeem() {
-    if (!session) return signIn('google');
+    if (!session) return window.location.href = '/';
     setMsg(null);
     setBusy('redeem');
     try {

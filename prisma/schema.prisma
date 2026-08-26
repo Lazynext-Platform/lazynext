@@ -18,6 +18,7 @@ model User {
   email         String?   @unique
   emailVerified DateTime?
   image         String?
+  password      String?   // hashed password for email+password auth (null for OAuth-only users)
   credits       Int       @default(0) // current balance snapshot
   // ── Global i18n / billing preferences (persisted per user) ──
   locale        String?   // UI language code: en, zh, ja, es, ko, pt, fr, de, ar, hi …

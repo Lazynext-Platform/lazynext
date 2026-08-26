@@ -1,10 +1,11 @@
 'use client';
 
 import { useState } from 'react';
-import { useSession, signIn, signOut } from 'next-auth/react';
+import { useSession, signOut } from 'next-auth/react';
 import { LogOut, CreditCard, Settings } from 'lucide-react';
 import { useI18n } from '@/i18n/provider';
 import { useMounted } from '@/lib/use-mounted';
+import { AuthModal } from './AuthModal';
 
 // Unified top-right user area (shared by all immersive pages, placed left of DeployButton):
 // Signed out -> Pricing / Sign in / Sign up; signed in -> avatar + name + dropdown (Pricing / Sign out). Bilingual.
@@ -12,17 +13,22 @@ export function UserMenu() {
   const { data: session, status } = useSession();
   const { t } = useI18n();
   const [open, setOpen] = useState(false);
+  const [authOpen, setAuthOpen] = useState(false);
+  const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin');
   const mounted = useMounted();
 
   if (!mounted || status === 'loading') return null;
 
   if (status !== 'authenticated') {
     return (
-      <div className="flex items-center gap-1">
-        <a href="/pricing" className="hidden rounded-full px-3 py-2 text-xs font-medium text-white/60 hover:text-white transition sm:block">{t('nav.pricing')}</a>
-        <button onClick={() => signIn('google')} className="rounded-full px-2.5 py-2 text-xs font-medium text-white/75 hover:text-white transition sm:px-3.5">{t('nav.signIn')}</button>
-        <button onClick={() => signIn('google')} className="rounded-full px-2.5 py-2 text-xs font-bold text-white shadow-lg transition hover:brightness-110 sm:px-3.5" style={{ background: '#00b2fc' }}>{t('home.signUp')}</button>
-      </div>
+      <>
+        <div className="flex items-center gap-1">
+          <a href="/pricing" className="hidden rounded-full px-3 py-2 text-xs font-medium text-white/60 hover:text-white transition sm:block">{t('nav.pricing')}</a>
+          <button onClick={() => { setAuthMode('signin'); setAuthOpen(true); }} className="rounded-full px-2.5 py-2 text-xs font-medium text-white/75 hover:text-white transition sm:px-3.5">{t('nav.signIn')}</button>
+          <button onClick={() => { setAuthMode('signup'); setAuthOpen(true); }} className="rounded-full px-2.5 py-2 text-xs font-bold text-white shadow-lg transition hover:brightness-110 sm:px-3.5" style={{ background: '#00b2fc' }}>{t('home.signUp')}</button>
+        </div>
+        <AuthModal open={authOpen} onClose={() => setAuthOpen(false)} initialMode={authMode} />
+      </>
     );
   }
 

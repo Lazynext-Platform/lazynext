@@ -2,7 +2,7 @@
 import { byokHeaders, useByokActive } from '@/lib/byok';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { useSession, signIn } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 import { AlertCircle, CheckCircle2, Download, Film, ImagePlus, Loader2, Pencil, RefreshCw, Video, Wand2, X } from 'lucide-react';
 import { uploadDirectMediaIfSupported } from '@/lib/client-media-upload';
 import { composeAdReel } from '@/lib/compose-client';
@@ -282,7 +282,7 @@ export default function DramaStudioPage() {
   }, [mounted, script, shots, charAssets, sceneAsset, productAssets, topic, videoRatio, videoResolution, creationId]);
 
   async function genScript() {
-    if (status !== 'authenticated') { signIn('google'); return; }
+    if (status !== 'authenticated') { window.location.href = '/'; return; }
     if (!topic.trim()) { setErr(t('drama.enterTopic')); return; }
     setErr(null); setNotice(null); setBusy('script'); setScript(null); setShots([]); setCharAssets({}); setSceneAsset({ status: 'idle' }); setCreationId(''); creationIdRef.current = ''; setCompose({ status: 'idle', frac: 0, note: '', url: '' });
     try {
@@ -414,7 +414,7 @@ export default function DramaStudioPage() {
 
   // STAGE A button: generate/complete portraits + scene image (failed ones can retry)
   async function genAssets() {
-    if (status !== 'authenticated') { signIn('google'); return; }
+    if (status !== 'authenticated') { window.location.href = '/'; return; }
     if (!script) return;
     setErr(null); setBusy('assets');
     try {
@@ -432,7 +432,7 @@ export default function DramaStudioPage() {
 
   // Single character portrait (re)generation: reuses single-character logic, syncs folder on completion. User can edit appearance then re-generate a specific character (doesn't affect others).
   async function genOneCharacter(key: string) {
-    if (status !== 'authenticated') { signIn('google'); return; }
+    if (status !== 'authenticated') { window.location.href = '/'; return; }
     const c = script?.characters?.find((x) => x.key === key);
     if (!c) return;
     setErr(null);
@@ -458,7 +458,7 @@ export default function DramaStudioPage() {
   }
   // Standalone (re)generate scene image: can retry individually after failure (no need to rerun everything), syncs folder on completion.
   async function genOneScene() {
-    if (status !== 'authenticated') { signIn('google'); return; }
+    if (status !== 'authenticated') { window.location.href = '/'; return; }
     if (!script) return;
     setErr(null);
     setSceneAsset({ status: 'run' });
@@ -534,7 +534,7 @@ export default function DramaStudioPage() {
 
   // One-click all: ensure assets ready → generate each shot sequentially (failure doesn't interrupt) → auto-stitch when all done. Each shot can retry individually.
   async function genAllShots() {
-    if (status !== 'authenticated') { signIn('google'); return; }
+    if (status !== 'authenticated') { window.location.href = '/'; return; }
     if (!script?.segments?.length) return;
     setErr(null); setBusy('all'); setCompose({ status: 'idle', frac: 0, note: '', url: '' });
     if (shots.length !== script.segments.length) {

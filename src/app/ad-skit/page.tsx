@@ -2,7 +2,7 @@
 import { byokHeaders, useByokActive } from '@/lib/byok';
 
 import { useState } from 'react';
-import { useSession, signIn } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 import { AlertCircle, Clapperboard, Download, ImageIcon, Loader2, Sparkles, UploadCloud, Video, Wand2 } from 'lucide-react';
 import { mediaDownloadUrl } from '@/lib/media-url';
 import { videoCredits } from '@/lib/video-pricing';
@@ -88,7 +88,7 @@ export default function AdSkitPage() {
   const [video, setVideo] = useState<Slot>({ status: 'idle' });
 
   async function genPlan() {
-    if (!session) return signIn('google');
+    if (!session) return window.location.href = '/';
     if (product.trim().length < 2) return setErr(t('adSkit.enterProduct'));
     setErr(null); setBusy('plan'); setPlan(null); setProductImg({ status: 'idle' }); setVideo({ status: 'idle' });
     try {

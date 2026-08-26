@@ -2,7 +2,7 @@
 import { byokHeaders, useByokActive } from '@/lib/byok';
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useSession, signIn } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 import { AlertCircle, CheckCircle2, Download, Loader2, Play, Plus, Sparkles, Video, X } from 'lucide-react';
 import { LazyVideo } from '@/components/LazyVideo';
 import { useMounted } from '@/lib/use-mounted';
@@ -378,7 +378,7 @@ export default function MarketingStudioPage() {
   async function genDirectVideo(existing?: ShotState, existingCreationId = '') {
     const resumePlan = planTaskResume(existing, COSTS.image, videoCost);
     const { hasExistingWork, hasPendingTask, remainingCost } = resumePlan;
-    if (!hasExistingWork && status !== 'authenticated') { signIn('google'); return; }
+    if (!hasExistingWork && status !== 'authenticated') { window.location.href = '/'; return; }
     if (!hasExistingWork && !product.trim() && !productAssets.some((a) => a.url)) { setErr('product_required'); return; }
     if (productAssets.some((a) => a.uploading) || avatarAsset.uploading) return;
     runAbortRef.current?.abort();

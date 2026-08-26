@@ -1,10 +1,11 @@
 'use client';
 
 import Link from 'next/link';
-import { useSession, signIn, signOut } from 'next-auth/react';
+import { useSession, signOut } from 'next-auth/react';
 import { useCallback, useEffect, useState } from 'react';
 import { Coins, LogOut, Settings } from 'lucide-react';
 import { LanguageSwitcher } from './LanguageSwitcher';
+import { AuthModal } from './AuthModal';
 import { useI18n } from '@/i18n/provider';
 import { formatNumber } from '@/lib/i18n-format';
 
@@ -12,6 +13,8 @@ export function Navbar() {
   const { data: session } = useSession();
   const { t, locale } = useI18n();
   const [credits, setCredits] = useState<number | null>(null);
+  const [authOpen, setAuthOpen] = useState(false);
+  const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin');
 
   const refresh = useCallback(async () => {
     try {
@@ -78,13 +81,25 @@ export function Navbar() {
               </button>
             </>
           ) : (
-            <button onClick={() => signIn('google')} className="btn-brand ml-1 px-4 py-2 text-sm">
-              {t('nav.signIn')}
-            </button>
+            <>
+              <button
+                onClick={() => { setAuthMode('signup'); setAuthOpen(true); }}
+                className="ml-1 rounded-lg px-3 py-2 text-sm font-medium text-neutral-600 transition hover:bg-neutral-100 hover:text-neutral-900"
+              >
+                {t('auth.signUpTab')}
+              </button>
+              <button
+                onClick={() => { setAuthMode('signin'); setAuthOpen(true); }}
+                className="btn-brand ml-1 px-4 py-2 text-sm"
+              >
+                {t('nav.signIn')}
+              </button>
+            </>
           )}
           <LanguageSwitcher />
         </nav>
       </div>
+      <AuthModal open={authOpen} onClose={() => setAuthOpen(false)} initialMode={authMode} />
     </header>
   );
 }

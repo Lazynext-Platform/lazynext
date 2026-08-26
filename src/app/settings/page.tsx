@@ -1,13 +1,16 @@
 'use client';
 
-import { useSession, signIn } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
+import { useState } from 'react';
 import { useI18n } from '@/i18n/provider';
 import { CountrySelector } from '@/components/CountrySelector';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
+import { AuthModal } from '@/components/AuthModal';
 
 export default function SettingsPage() {
   const { data: session, status } = useSession();
   const { t } = useI18n();
+  const [authOpen, setAuthOpen] = useState(false);
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-10">
@@ -35,7 +38,7 @@ export default function SettingsPage() {
             <div className="space-y-3">
               <p className="text-sm text-white/50">{t('settings.notSignedIn')}</p>
               <button
-                onClick={() => signIn('google')}
+                onClick={() => setAuthOpen(true)}
                 className="rounded-xl px-4 py-2 text-sm font-bold text-white transition hover:brightness-110"
                 style={{ background: '#00b2fc' }}
               >
@@ -45,6 +48,8 @@ export default function SettingsPage() {
           )}
         </div>
       </div>
+
+      <AuthModal open={authOpen} onClose={() => setAuthOpen(false)} initialMode="signin" />
     </div>
   );
 }
