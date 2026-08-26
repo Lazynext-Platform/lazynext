@@ -559,7 +559,7 @@ export default function MarketingStudioPage() {
     <main className="min-h-screen text-[#f7f7f8]" style={gridBg}>
       {/* Hero */}
       <div className="text-center pt-10 pb-10 px-6">
-        <div className="text-[11px] uppercase tracking-[0.24em] text-white/50 font-medium mb-3" style={{ fontFamily: 'var(--font-grotesk), "Space Grotesk", sans-serif' }}>Lazynext</div>
+        <div className="text-[14px] uppercase tracking-[0.24em] text-white/60 font-semibold mb-3" style={{ fontFamily: 'var(--font-grotesk), "Space Grotesk", sans-serif' }}>Lazynext</div>
         <h1 className="font-bold uppercase leading-[1.08] tracking-[-0.03em] text-[clamp(40px,5.4vw,58px)] text-white/90" style={{ fontFamily: 'var(--font-grotesk), "Space Grotesk", system-ui, sans-serif' }}>
           <>{t('mkStudio.heroPre')}<br />{t('mkStudio.heroHl')}</>
         </h1>

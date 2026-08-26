@@ -370,7 +370,7 @@ export default function AdReferencePage() {
     <div className="min-h-screen" style={{ background: '#131416' }}>
       <div className="mx-auto max-w-[1200px] px-5 py-8">
         <Link href="/" className="text-white/40 text-sm hover:text-white/70">{t('common.backToLazynext')}</Link>
-        <div className="mt-6 mb-2 text-[11px] uppercase tracking-[0.24em] text-white/50 font-medium" style={{ fontFamily: GROTESK }}>{t('adRef.kicker')}</div>
+        <div className="mt-6 mb-2 text-[14px] uppercase tracking-[0.24em] text-white/60 font-semibold" style={{ fontFamily: GROTESK }}>{t('adRef.kicker')}</div>
         <h1 className="font-bold uppercase leading-[1.1] tracking-[-0.03em] text-[clamp(30px,4.4vw,46px)] text-white/90" style={{ fontFamily: GROTESK }}>
           {t('adRef.title')}
         </h1>

@@ -45,7 +45,7 @@ export function Navbar() {
         <Link href="/" className="flex shrink-0 items-center gap-2 font-bold">
           { }
           <img src="/lazynext-mark.png" alt="Lazynext" className="h-7 w-7 rounded-lg sm:h-8 sm:w-8" />
-          <span className="hidden text-[15px] tracking-tight sm:inline">Lazynext</span>
+          <span className="hidden text-base font-bold tracking-tight sm:inline">Lazynext</span>
         </Link>
         <nav className="flex items-center gap-1 sm:gap-1.5">
           <Link href="/pricing" className={`hidden sm:inline-flex ${navLink}`}>

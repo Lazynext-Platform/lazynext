@@ -25,7 +25,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
           {/* Left group: logo + brand name */}
           <Link href="/" className="flex min-w-0 shrink-0 items-center gap-2 hover:opacity-80 transition">
             <img src="/lazynext-mark.png" alt="Lazynext" className="h-7 w-7 shrink-0 rounded-lg sm:h-8 sm:w-8" />
-            <span className="hidden text-sm font-bold tracking-tight sm:inline">Lazynext</span>
+            <span className="hidden text-base font-bold tracking-tight sm:inline">Lazynext</span>
           </Link>
           {/* Right group: toolbar items — all shrink-0 so they never compress each other */}
           <nav aria-label="Toolbar" className="flex min-w-0 items-center gap-1 sm:gap-1.5 md:gap-2">
