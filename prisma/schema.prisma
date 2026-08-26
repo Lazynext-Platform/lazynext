@@ -1,6 +1,5 @@
 // Lazynext — canonical data model.
-// This SQLite schema generates the Cloudflare D1 client. The build scripts
-// derive a PostgreSQL copy from the same models for Vercel/Neon.
+// This SQLite schema generates the Cloudflare D1 client via Prisma.
 
 generator client {
   provider   = "prisma-client-js"
