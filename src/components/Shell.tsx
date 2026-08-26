@@ -13,7 +13,7 @@ import { ByokKey } from '@/components/ByokKey';
 
 // lazynext-studio uses a full-bleed immersive (dark, no light starter shell) layout.
 // Other pages keep the SaaS starter Navbar + sidebar + Footer shell.
-const IMMERSIVE = ['/', '/pricing', '/my-work', '/lazynext-studio', '/ad-reference', '/drama-studio', '/ad-skit'];
+const IMMERSIVE = ['/', '/pricing', '/my-work', '/lazynext-studio', '/ad-reference', '/drama-studio', '/ad-skit', '/settings', '/privacy', '/terms', '/reset-password'];
 
 // Strip an optional locale prefix (e.g. /en, /zh) from the pathname so the
 // immersive layout check works on locale-prefixed routes too.

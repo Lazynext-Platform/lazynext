@@ -54,7 +54,7 @@ function ResetPasswordContent() {
 
   if (status === 'success') {
     return (
-      <div className="mx-auto flex min-h-screen max-w-sm flex-col items-center justify-center px-4">
+      <div className="mx-auto flex min-h-screen max-w-sm flex-col items-center justify-center px-4" style={{ backgroundColor: '#131416', colorScheme: 'dark', backgroundImage: 'radial-gradient(70% 55% at 50% -6%, rgba(0,178,252,0.12) 0%, rgba(0,178,252,0) 60%), linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px)', backgroundSize: 'auto, 44px 44px, 44px 44px' }}>
         <div className="w-full rounded-2xl border border-white/10 bg-[#1a1b1e] p-8 text-center">
           <div className="mb-4 text-5xl">✅</div>
           <h1 className="mb-2 text-xl font-bold text-white">Password Reset</h1>
@@ -68,7 +68,7 @@ function ResetPasswordContent() {
   }
 
   return (
-    <div className="mx-auto flex min-h-screen max-w-sm flex-col items-center justify-center px-4">
+    <div className="mx-auto flex min-h-screen max-w-sm flex-col items-center justify-center px-4" style={{ backgroundColor: '#131416', colorScheme: 'dark', backgroundImage: 'radial-gradient(70% 55% at 50% -6%, rgba(0,178,252,0.12) 0%, rgba(0,178,252,0) 60%), linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px)', backgroundSize: 'auto, 44px 44px, 44px 44px' }}>
       <div className="w-full rounded-2xl border border-white/10 bg-[#1a1b1e] p-8">
         <h1 className="mb-2 text-xl font-bold text-white">Reset Password</h1>
         <p className="mb-6 text-sm text-white/50">Enter your new password below.</p>

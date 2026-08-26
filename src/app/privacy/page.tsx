@@ -20,7 +20,7 @@ export default async function PrivacyPage() {
   const year = new Date().getFullYear();
 
   return (
-    <main className="min-h-screen text-[#f7f7f8]" style={{ backgroundColor: '#131416', colorScheme: 'dark' }}>
+    <main className="min-h-screen text-[#f7f7f8]" style={{ backgroundColor: '#131416', colorScheme: 'dark', backgroundImage: 'radial-gradient(70% 55% at 50% -6%, rgba(0,178,252,0.12) 0%, rgba(0,178,252,0) 60%), linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px)', backgroundSize: 'auto, 44px 44px, 44px 44px' }}>
       <div className="mx-auto max-w-3xl px-6 py-16">
         <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">{t.title}</h1>
         <p className="mt-2 text-sm text-white/40">{t.lastUpdated.replace('{year}', String(year))}</p>
