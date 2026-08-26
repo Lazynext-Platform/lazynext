@@ -5,7 +5,6 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](#license)
 [![Next.js](https://img.shields.io/badge/Next.js-14-black)](https://nextjs.org/)
 [![Cloudflare Workers](https://img.shields.io/badge/Cloudflare-Workers-f38020)](https://workers.cloudflare.com/)
-[![Vercel](https://img.shields.io/badge/Vercel-ready-black)](https://vercel.com/)
 [![Powered by Atlas Cloud](https://img.shields.io/badge/powered%20by-Atlas%20Cloud-00b2fc)](https://www.atlascloud.ai?utm_source=github&utm_campaign=atlas-marketing-studio)
 
 > Most AI video tools generate a clip. Lazynext gives you the ad workflow around it: product input, script, shots, reference assets, video generation, credits, login, and deployment.
@@ -52,9 +51,9 @@ All workflows auto-detect the input language. Write the product brief in English
 - Dynamic video credit pricing based on duration, model, and resolution
 - Google login with NextAuth
 - Dodo Payments checkout or Atlas redeem-code top-ups
-- Build-selected Prisma adapters: Cloudflare D1 or Neon Postgres
-- Build-selected media storage: Cloudflare R2 or Public Vercel Blob
-- Native Vercel build plus OpenNext target for Cloudflare Workers
+- Cloudflare D1 database via Prisma
+- Cloudflare R2 media storage
+- OpenNext Cloudflare Workers deployment
 - Public media URL handling for model APIs that need fetchable assets
 - MIT license for learning, forking, and self-hosting
 
@@ -66,12 +65,12 @@ cd lazynext
 npm install
 ```
 
-For a Vercel-compatible local Next.js runtime:
+For local development:
 
 ```bash
-cp .env.example .env
-# Fill Neon, Public Vercel Blob, auth, and Atlas Cloud values.
-npm run dev:vercel
+cp .env.example .env.local
+# Fill auth, Atlas Cloud, Dodo Payments, and Resend values.
+npm run dev
 ```
 
 For Cloudflare/OpenNext preview:
@@ -98,15 +97,12 @@ Platform resources:
 | Platform | Database | Media storage |
 |---|---|---|
 | Cloudflare | D1 binding `DB` | R2 binding `MEDIA_BUCKET` |
-| Vercel | `DATABASE_URL` for Neon Postgres | Public Blob via `BLOB_READ_WRITE_TOKEN` |
 
 Where to get each value:
 
 | Variable | Where to get it | Notes |
 |---|---|---|
 | `ATLASCLOUD_API_KEY` | [Atlas Cloud API Keys](https://www.atlascloud.ai/docs/api-keys) | Create an Atlas Cloud API key for image, video, LLM, TTS, and lip-sync generation. API keys are shown once, so store it safely. |
-| `DATABASE_URL` | [Neon connection string](https://neon.com/docs/connect/connect-from-any-app) | Vercel only. Use the pooled Neon Postgres connection string. |
-| `BLOB_READ_WRITE_TOKEN` | Vercel project Storage | Vercel only. Connect a **Public** Blob store; Vercel injects the token. |
 | `NEXTAUTH_SECRET` | [NextAuth secret](https://next-auth.js.org/configuration/options#nextauth_secret) | Generate locally with `openssl rand -base64 32`. |
 | `GOOGLE_CLIENT_ID` | [Google Cloud OAuth clients](https://console.cloud.google.com/auth/clients) | Create a Web application OAuth client for Google sign-in. |
 | `GOOGLE_CLIENT_SECRET` | [Google Cloud OAuth clients](https://console.cloud.google.com/auth/clients) | Copy the client secret from the same Web application OAuth client. |
@@ -116,6 +112,10 @@ Where to get each value:
 | `DODO_PRODUCT_STARTER` | — | Product ID from `npm run setup:dodo`. |
 | `DODO_PRODUCT_PRO` | — | Product ID from `npm run setup:dodo`. |
 | `DODO_PRODUCT_ELITE` | — | Product ID from `npm run setup:dodo`. |
+| `RESEND_API_KEY` | [Resend Dashboard](https://resend.com/api-keys) | API key for transactional email delivery. |
+| `FROM_EMAIL` | Resend Dashboard | Verified sender address (e.g. `Lazynext <support@lazynext.com>`). |
+| `SIGNUP_BONUS_CREDITS` | — | Credits granted to new users on signup. Defaults to `0`. |
+| `ADMIN_EMAILS` | — | Comma-separated admin email addresses. |
 
 Open [http://localhost:3000](http://localhost:3000).
 
@@ -123,17 +123,7 @@ Get an Atlas Cloud API key at [Atlas Cloud](https://www.atlascloud.ai?utm_source
 
 ## Deploy
 
-The same business code targets two infrastructure stacks. `VERCEL=1`
-automatically selects Neon/Blob during Vercel builds; `cf:*` scripts explicitly
-select D1/R2.
-
-### Deploy to Vercel
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FAtlasCloudAI%2Fatlas-marketing-studio&env=ATLASCLOUD_API_KEY,DATABASE_URL,BLOB_READ_WRITE_TOKEN,NEXTAUTH_SECRET,NEXTAUTH_URL,GOOGLE_CLIENT_ID,GOOGLE_CLIENT_SECRET,PAYMENT_PROVIDER&envDescription=Atlas%20Cloud%20key%2C%20Neon%20database%2C%20Public%20Vercel%20Blob%2C%20NextAuth%2C%20Google%20OAuth%2C%20and%20payment%20provider&project-name=lazynext&repository-name=lazynext)
-
-Create/connect a Neon database and a **Public** Vercel Blob store, initialize
-the Neon schema with `npm run db:push:vercel`, then deploy with the standard
-`npm run build` command.
+Lazynext deploys exclusively to Cloudflare Workers using OpenNext.
 
 ### Deploy to Cloudflare Workers
 
@@ -142,8 +132,7 @@ npm run cf:deploy
 ```
 
 Cloudflare uses the `DB` D1 binding and `MEDIA_BUCKET` R2 binding in
-`wrangler.jsonc`; it does not use `DATABASE_URL` or `BLOB_READ_WRITE_TOKEN`.
-The deployment includes a custom domain route for `lazynext.com`.
+`wrangler.jsonc`. The deployment includes a custom domain route for `lazynext.com`.
 
 Set application secrets with Wrangler or the dashboard:
 
