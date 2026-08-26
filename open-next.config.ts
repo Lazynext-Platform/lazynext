@@ -1,6 +1,6 @@
 import { defineCloudflareConfig } from '@opennextjs/cloudflare';
 
-// OpenNext Cloudflare adapter. Prisma uses queryCompiler(engineType=client) + Neon driver adapter,
+// OpenNext Cloudflare adapter. Prisma uses queryCompiler(engineType=client) + D1 driver adapter,
 // no Rust engine / no eval, runs on Workers (nodejs_compat).
 const config = defineCloudflareConfig({});
 
