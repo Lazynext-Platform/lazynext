@@ -1,5 +1,4 @@
 'use client';
-import { byokHeaders, useByokActive } from '@/lib/byok';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
@@ -35,7 +34,7 @@ function estimateAudioSeconds(text: string): number {
 }
 
 async function postJson(url: string, body: unknown) {
-  const r = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json', ...byokHeaders() }, body: JSON.stringify(body) });
+  const r = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
   const j = await r.json().catch(() => ({}));
   if (!r.ok) throw new Error(j.error ? `${j.error}${j.detail ? ': ' + String(j.detail).slice(0, 160) : ''}` : `HTTP ${r.status}`);
   return j;
@@ -99,7 +98,7 @@ async function uploadFile(file: File): Promise<string> {
 
   const form = new FormData();
   form.append('file', file);
-  const r = await fetch('/api/ad-reference/upload', { method: 'POST', headers: byokHeaders(), body: form });
+  const r = await fetch('/api/ad-reference/upload', { method: 'POST', body: form });
   const j = await r.json().catch(() => ({}));
   if (!r.ok || !j.url) throw new Error(j.error === 'file_too_large' ? 'file_too_large' : `upload_failed:${j.detail || j.error || r.status}`);
   return j.url as string;
@@ -128,7 +127,6 @@ const AD_REF_SESSION_KEY = 'adref-session-v1';
 
 export default function AdReferencePage() {
   const { t } = useI18n();
-  const byokActive = useByokActive();
   const { status } = useSession();
   const mounted = useMounted();
   const [refVideo, setRefVideo] = useState<Slot>(null);
@@ -243,7 +241,7 @@ export default function AdReferencePage() {
   const editEst = (product || avatar) ? videoCredits(EDIT_VIDEO_MODEL, undefined, refVideoSeconds || 30) : 0;
   const lipsyncEst = videoCredits(LIPSYNC_MODEL, undefined, estimateAudioSeconds(script));
   const adEst = editEst + (newVoice ? AD_COSTS.voice + lipsyncEst : 0);
-  const hasEnoughCredits = byokActive || status !== 'authenticated' || credits === null || credits >= adEst;
+  const hasEnoughCredits = status !== 'authenticated' || credits === null || credits >= adEst;
   // Checking replace voice doesn't require a script: if none entered, dialogue is auto-generated (see generate ③)
   const canGenerate = !!refVideo && (!!product || !!avatar) && !busy && !isGenerating && hasEnoughCredits;
 
@@ -271,7 +269,7 @@ export default function AdReferencePage() {
     let cid = ''; // work placeholder id, updated on completion/failure
     try {
       const currentCredits = await refreshCredits();
-      if (!byokActive && currentCredits !== null && currentCredits < adEst) {
+      if (currentCredits !== null && currentCredits < adEst) {
         setError(t('adRef.insufficientCreditsRun', { need: adEst, have: currentCredits }));
         return;
       }
@@ -461,17 +459,11 @@ export default function AdReferencePage() {
               style={{ fontFamily: GROTESK, background: 'linear-gradient(135deg,#ffd83d,#ff9550)' }}>
               {isGenerating
                 ? t('adRef.generating')
-                : byokActive
-                  ? t('adRef.generate')
-                  : !hasEnoughCredits
+                : !hasEnoughCredits
                     ? `${t('adRef.notEnoughCredits')} · ✦${adEst}`
                     : `${t('adRef.generate')} · ✦${adEst}`}
             </button>
-            {byokActive ? (
-              <div className="mt-2 text-center text-[11px] text-white/35">
-                {t('adRef.byokHint')}
-              </div>
-            ) : status === 'authenticated' && (
+            {status === 'authenticated' && (
               <div className="mt-2 text-center text-[11px] text-white/35">
                 {credits === null ? t('adRef.estimatedCostNoBalance', { n: adEst }) : t('adRef.estimatedCost', { n: adEst, balance: credits })}
               </div>

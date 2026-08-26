@@ -51,7 +51,7 @@ export const messages: Record<Locale, any> = {
       titleHl: 'AI media SaaS',
       titlePost: 'in an afternoon',
       subtitle:
-        'Open-source, Dodo Payments-ready, one-click deploy. You bring the brand, Atlas Cloud powers the AI, you keep the revenue.',
+        'Premium AI creative apps for ads, dramas, and short-form video. You bring the brand, Atlas Cloud powers the AI, you keep the revenue.',
       tryStudio: 'Try the studio',
       seePricing: 'See pricing',
       statCost: 'Atlas cost / generation',

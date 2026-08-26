@@ -7,7 +7,7 @@ import { useI18n } from '@/i18n/provider';
 import { useMounted } from '@/lib/use-mounted';
 import { AuthModal } from './AuthModal';
 
-// Unified top-right user area (shared by all immersive pages, placed left of DeployButton):
+// Unified top-right user area (shared by all immersive pages):
 // Signed out -> Pricing / Sign in / Sign up; signed in -> avatar + name + dropdown (Pricing / Sign out). Bilingual.
 export function UserMenu() {
   const { data: session, status } = useSession();

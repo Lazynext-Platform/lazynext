@@ -6,7 +6,6 @@ import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { Download, Loader2, Clock, Play, X, Film, Trash2 } from 'lucide-react';
 import { useI18n } from '@/i18n/provider';
-import { byokHeaders } from '@/lib/byok';
 import { formatDateTime } from '@/lib/i18n-format';
 
 type DramaAssets = {
@@ -72,7 +71,6 @@ export default function MyWorkPage() {
             .filter((c) => c.status === 'processing')
             .forEach((c) => fetch(`/api/creations/${c.id}`, {
               signal: ac.signal,
-              headers: byokHeaders(),
             }).catch(() => {}));
         })
         .catch((e) => { if (e?.name !== 'AbortError') setItems((prev) => prev ?? []); });

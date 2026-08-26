@@ -4,12 +4,10 @@ import { usePathname } from 'next/navigation';
 import { Navbar } from '@/components/Navbar';
 import { AppSidebar } from '@/components/AppSidebar';
 import { Footer } from '@/components/Footer';
-import { DeployButton } from '@/components/DeployButton';
 import { UserMenu } from '@/components/UserMenu';
 import { LangToggle } from '@/components/LangToggle';
 import { CreditBadge } from '@/components/CreditBadge';
 import { HistoryButton } from '@/components/HistoryButton';
-import { ByokKey } from '@/components/ByokKey';
 
 // lazynext-studio uses a full-bleed immersive (dark, no light starter shell) layout.
 // Other pages keep the SaaS starter Navbar + sidebar + Footer shell.
@@ -33,10 +31,8 @@ export function Shell({ children }: { children: React.ReactNode }) {
         <nav aria-label="Toolbar" className="fixed top-3 right-3 z-50 flex items-center gap-1.5 sm:right-4 sm:gap-2">
           <HistoryButton />
           <CreditBadge />
-          <ByokKey />
           <LangToggle />
           <UserMenu />
-          <DeployButton />
         </nav>
       </div>
     );

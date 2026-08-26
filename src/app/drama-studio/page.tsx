@@ -1,6 +1,4 @@
 'use client';
-import { byokHeaders, useByokActive } from '@/lib/byok';
-
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { AlertCircle, CheckCircle2, Download, Film, ImagePlus, Loader2, Pencil, RefreshCw, Video, Wand2, X } from 'lucide-react';
@@ -67,7 +65,7 @@ function dramaErrText(code: string, t: (k: string, vars?: Record<string, string 
 }
 
 async function postJson(url: string, body: unknown) {
-  const r = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json', ...byokHeaders() }, body: JSON.stringify(body) });
+  const r = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
   const j = await r.json().catch(() => ({}));
   if (!r.ok) throw new Error(j.detail ? `${j.error || 'error'}: ${j.detail}` : (j.error || 'failed'));
   return j;
@@ -119,7 +117,6 @@ export default function DramaStudioPage() {
   const { status } = useSession();
   const mounted = useMounted();
   const { t } = useI18n();
-  const byokActive = useByokActive();
   const [topic, setTopic] = useState('');
   const [style, setStyle] = useState('epic');
   // Language dropdown removed: script language auto-follows the topic input language (see lib/drama/prompt.ts rule ⑩)
@@ -158,8 +155,8 @@ export default function DramaStudioPage() {
     : segCount * segVideoCost();
   const videoEst = assetCost + videoSum;
   const totalEst = DRAMA_COSTS.script + videoEst;
-  const hasCreditsForScript = byokActive || status !== 'authenticated' || credits === null || credits >= DRAMA_COSTS.script;
-  const hasCreditsForVideo = byokActive || status !== 'authenticated' || credits === null || credits >= videoEst;
+  const hasCreditsForScript = status !== 'authenticated' || credits === null || credits >= DRAMA_COSTS.script;
+  const hasCreditsForVideo = status !== 'authenticated' || credits === null || credits >= videoEst;
 
   // ── Step-by-step generation: derived state + per-shot tools ──
   // Per-shot only allowed after portraits + scene are ready; stitching only after all shots' videos are done.
@@ -188,7 +185,7 @@ export default function DramaStudioPage() {
     const cid = creationIdRef.current;
     if (!cid) return;
     try {
-      await fetch(`/api/creations/${cid}/assets`, { method: 'PATCH', headers: { 'Content-Type': 'application/json', ...byokHeaders() }, body: JSON.stringify({ assets: buildDramaAssets(chars, scene, shotList, productUrls) }) });
+      await fetch(`/api/creations/${cid}/assets`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ assets: buildDramaAssets(chars, scene, shotList, productUrls) }) });
     } catch { /* folder update failure doesn't block generation */ }
   };
 
@@ -287,7 +284,7 @@ export default function DramaStudioPage() {
     setErr(null); setNotice(null); setBusy('script'); setScript(null); setShots([]); setCharAssets({}); setSceneAsset({ status: 'idle' }); setCreationId(''); creationIdRef.current = ''; setCompose({ status: 'idle', frac: 0, note: '', url: '' });
     try {
       const currentCredits = await refreshCredits();
-      if (!byokActive && currentCredits !== null && currentCredits < DRAMA_COSTS.script) {
+      if (currentCredits !== null && currentCredits < DRAMA_COSTS.script) {
         setErr(`insufficient_credits:${DRAMA_COSTS.script}:${currentCredits}`);
         setBusy(null);
         return;
@@ -422,7 +419,7 @@ export default function DramaStudioPage() {
       const charList = script.characters || [];
       const needProduct = 0; // product images use user-uploaded originals, no longer auto-generated or charged
       const need = (charList.filter((c) => !(charAssets[c.key]?.status === 'done' && charAssets[c.key]?.url)).length + (sceneAsset.status === 'done' && sceneAsset.url ? 0 : 1) + needProduct) * DRAMA_COSTS.image;
-      if (!byokActive && currentCredits !== null && currentCredits < need) { setErr(`insufficient_credits:${need}:${currentCredits}`); return; }
+      if (currentCredits !== null && currentCredits < need) { setErr(`insufficient_credits:${need}:${currentCredits}`); return; }
       await runAssets();
     } finally {
       setBusy(null);
@@ -605,7 +602,7 @@ export default function DramaStudioPage() {
       // Don't clear creationId: folder has saved the final video, keep id so character edits/regeneration can still patch after final; next genScript will reset.
     } catch (e) {
       setCompose((c) => (c.status === 'run' ? { ...c, status: 'fail', note: e instanceof Error ? e.message : 'compose_failed' } : c));
-      if (cid) fetch(`/api/creations/${cid}`, { method: 'POST', headers: { 'Content-Type': 'application/json', ...byokHeaders() }, body: JSON.stringify({ status: 'failed', error: e instanceof Error ? e.message : 'compose_failed' }) }).catch(() => {});
+      if (cid) fetch(`/api/creations/${cid}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ status: 'failed', error: e instanceof Error ? e.message : 'compose_failed' }) }).catch(() => {});
     }
   }
 
@@ -684,14 +681,12 @@ export default function DramaStudioPage() {
             <button onClick={genScript} disabled={busy !== null || !hasCreditsForScript}
               className="ml-auto px-6 py-2.5 rounded-xl font-extrabold text-sm inline-flex items-center gap-2 disabled:opacity-50 transition hover:brightness-110"
               style={{ background: `radial-gradient(90% 90% at 50% 120%, #22d3ee 0%, rgba(167,139,250,0) 60%), ${ACCENT}`, color: '#fff' }}>
-              {busy === 'script' ? <Loader2 className="w-4 h-4 animate-spin" /> : <Wand2 className="w-4 h-4" />} {byokActive ? t('drama.writeScript') : <>{!hasCreditsForScript ? t('drama.notEnoughCredits') : t('drama.writeScript')} · ✦{DRAMA_COSTS.script}</>}
+              {busy === 'script' ? <Loader2 className="w-4 h-4 animate-spin" /> : <Wand2 className="w-4 h-4" />} <>{!hasCreditsForScript ? t('drama.notEnoughCredits') : t('drama.writeScript')} · ✦{DRAMA_COSTS.script}</>
             </button>
           </div>
           {status === 'authenticated' && (
             <div className="mt-3 text-center text-[11px] text-white/35">
-              {byokActive
-                ? t('drama.byokHint')
-                : t('drama.costEstimate', { total: totalEst, script: DRAMA_COSTS.script, asset: assetCost, per: segVideoCost(), balance: credits ?? '·' })}
+              {t('drama.costEstimate', { total: totalEst, script: DRAMA_COSTS.script, asset: assetCost, per: segVideoCost(), balance: credits ?? '·' })}
             </div>
           )}
         </div>
@@ -810,7 +805,7 @@ export default function DramaStudioPage() {
               </button>
               {/* ② Generate all: sequential per-shot, one shot failing doesn't affect others, can retry individually */}
               <button onClick={genAllShots} disabled={busy !== null || !hasCreditsForVideo || anyShotRunning} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl font-extrabold disabled:opacity-50" style={{ background: ACCENT, color: '#fff' }}>
-                {busy === 'all' ? <Loader2 className="w-4 h-4 animate-spin" /> : <Video className="w-4 h-4" />} {byokActive ? t('drama.generateAll') : <>{!hasCreditsForVideo ? t('drama.notEnoughCredits') : t('drama.generateAll')} · ✦{videoEst}</>}
+                {busy === 'all' ? <Loader2 className="w-4 h-4 animate-spin" /> : <Video className="w-4 h-4" />} <>{!hasCreditsForVideo ? t('drama.notEnoughCredits') : t('drama.generateAll')} · ✦{videoEst}</>
               </button>
               {/* ③ Stitch: only clickable after all shot videos are done */}
               <button onClick={composeVideo} disabled={!allVidsDone || busy !== null || compose.status === 'run' || anyShotRunning} title={allVidsDone ? '' : t('drama.stitchTitle')} className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl font-bold disabled:opacity-40 border border-white/15 hover:border-[#00b2fc] transition">

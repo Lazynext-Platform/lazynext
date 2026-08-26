@@ -1,5 +1,4 @@
 'use client';
-import { byokHeaders, useByokActive } from '@/lib/byok';
 
 import { useState } from 'react';
 import { useSession } from 'next-auth/react';
@@ -39,7 +38,7 @@ async function imageToDataUrl(file: File): Promise<string> {
   } finally { URL.revokeObjectURL(objectUrl); }
 }
 async function postJson(url: string, body: unknown) {
-  const r = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json', ...byokHeaders() }, body: JSON.stringify(body) });
+  const r = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
   const j = await r.json().catch(() => ({}));
   if (!r.ok) throw new Error(j.error ? `${j.error}${j.detail ? ': ' + String(j.detail).slice(0, 160) : ''}` : `HTTP ${r.status}`);
   return j;
@@ -51,7 +50,7 @@ function pollCreation(id: string): Promise<string> {
       n += 1;
       if (n > 240) { clearInterval(t); reject(new Error('timeout')); return; }
       try {
-        const c = await (await fetch(`/api/creations/${id}`, { headers: byokHeaders() })).json();
+        const c = await (await fetch(`/api/creations/${id}`)).json();
         if (c.status === 'completed') { clearInterval(t); resolve((Array.isArray(c.outputs) ? c.outputs : [])[0] || ''); }
         else if (c.status === 'failed') { clearInterval(t); reject(new Error('failed')); }
       } catch { /* keep polling */ }
@@ -75,7 +74,6 @@ function errText(code: string, t: (k: string, vars?: Record<string, string | num
 export default function AdSkitPage() {
   const { data: session } = useSession();
   const { t } = useI18n();
-  const byokActive = useByokActive();
   const [product, setProduct] = useState('');
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
   // Language selection removed: auto-follows the product input language
@@ -195,7 +193,7 @@ export default function AdSkitPage() {
               </select>
             </label>
             <button onClick={genPlan} disabled={busy !== null} className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#00b2fc] px-5 py-3 font-semibold text-white transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50">
-              {busy === 'plan' ? <><Loader2 className="h-4 w-4 animate-spin" /> {t('adSkit.directorBrainstorming')}</> : <><Wand2 className="h-4 w-4" /> {byokActive ? t('adSkit.generateScript') : t('adSkit.generateScriptCredits', { n: COSTS.plan })}</>}
+              {busy === 'plan' ? <><Loader2 className="h-4 w-4 animate-spin" /> {t('adSkit.directorBrainstorming')}</> : <><Wand2 className="h-4 w-4" /> {t('adSkit.generateScriptCredits', { n: COSTS.plan })}</>}
             </button>
             {err && <p className="mt-3 flex items-center gap-1.5 text-sm text-red-400"><AlertCircle className="h-4 w-4 shrink-0" /> {err}</p>}
           </div>
@@ -206,7 +204,7 @@ export default function AdSkitPage() {
               <div className="rounded-lg bg-white/[0.04] p-3 text-sm leading-6 text-white/80"><b>{t('adSkit.idea')}</b>{plan.idea}</div>
               {plan.caption && <p className="text-xs text-white/50">{t('adSkit.caption')}{plan.caption}</p>}
               <button onClick={genVideo} disabled={busy !== null} className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#00b2fc] px-5 py-3 font-semibold text-white transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50">
-                {busy === 'video' ? <><Loader2 className="h-4 w-4 animate-spin" /> {t('adSkit.renderingVideo')}</> : <><Sparkles className="h-4 w-4" /> {byokActive ? t('adSkit.generateAdVideo') : t('adSkit.generateAdVideoCredits', { n: COSTS.image + VIDEO_COST })}</>}
+                {busy === 'video' ? <><Loader2 className="h-4 w-4 animate-spin" /> {t('adSkit.renderingVideo')}</> : <><Sparkles className="h-4 w-4" /> {t('adSkit.generateAdVideoCredits', { n: COSTS.image + VIDEO_COST })}</>}
               </button>
             </div>
           )}

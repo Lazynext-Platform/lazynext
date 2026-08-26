@@ -1,6 +1,4 @@
 'use client';
-import { byokHeaders, useByokActive } from '@/lib/byok';
-
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { AlertCircle, CheckCircle2, Download, Loader2, Play, Plus, Sparkles, Video, X } from 'lucide-react';
@@ -34,7 +32,7 @@ const REPLICA_VIDEO_MODEL = 'bytedance/seedance-2.0/image-to-video';
 async function postJson(url: string, body: unknown, signal?: AbortSignal) {
   const r = await fetch(url, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...byokHeaders() },
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
     signal,
   });
@@ -135,7 +133,6 @@ export default function MarketingStudioPage() {
   const { status } = useSession();
   const mounted = useMounted();
   const { t } = useI18n();
-  const byokActive = useByokActive();
   const [category, setCategory] = useState<AdCategory | 'all'>('all');
   const [formatId, setFormatId] = useState('ugc');
   const [product, setProduct] = useState('');
@@ -170,7 +167,7 @@ export default function MarketingStudioPage() {
   // Video step dynamic billing (calculated live from selected resolution/duration); first-frame image still uses fixed COST.image.
   const videoCost = videoCredits(REPLICA_VIDEO_MODEL, videoResolution, videoDuration);
   const shotCost = COSTS.image + videoCost;
-  const hasCreditsForVideo = byokActive || status !== 'authenticated' || credits === null || credits >= shotCost;
+  const hasCreditsForVideo = status !== 'authenticated' || credits === null || credits >= shotCost;
 
   const refreshCredits = useCallback(async () => {
     const attempt = async (): Promise<number | null> => {
@@ -417,7 +414,7 @@ export default function MarketingStudioPage() {
 
     try {
       const currentCredits = remainingCost > 0 ? await refreshCredits() : credits;
-      if (!byokActive && currentCredits !== null && currentCredits < remainingCost) {
+      if (currentCredits !== null && currentCredits < remainingCost) {
         setErr(`insufficient_credits:${remainingCost}:${currentCredits}`);
         setCompose({ status: 'idle', frac: 0, note: '', url: '' });
         return;
@@ -514,7 +511,7 @@ export default function MarketingStudioPage() {
         : current);
       if (!recoverable) {
         // Only mark the work placeholder as failed on definite failure; keep processing during query instability.
-        if (cid) fetch(`/api/creations/${cid}`, { method: 'POST', headers: { 'Content-Type': 'application/json', ...byokHeaders() }, body: JSON.stringify({ status: 'failed', error: message }) }).catch(() => {});
+        if (cid) fetch(`/api/creations/${cid}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ status: 'failed', error: message }) }).catch(() => {});
         setCreationId('');
       }
     } finally {
@@ -622,14 +619,12 @@ export default function MarketingStudioPage() {
               className="self-stretch px-6 rounded-2xl font-extrabold text-sm flex flex-col items-center justify-center gap-1.5 disabled:opacity-50 transition hover:brightness-105 shrink-0"
               style={{ background: `radial-gradient(90% 90% at 50% 120%, #22d3ee 0%, rgba(167,139,250,0) 60%), ${LIME}`, color: '#fff' }}>
               {busy === 'video' ? <Loader2 className="w-5 h-5 animate-spin" /> : <Video className="w-5 h-5" />}
-              <span>{byokActive ? t('mkStudio.generate') : (!hasCreditsForVideo ? t('mkStudio.lowCredits') : t('mkStudio.generate'))}</span>{!byokActive && <span className="text-[10px] opacity-70">✦ {shotCost}</span>}
+              <span>{(!hasCreditsForVideo ? t('mkStudio.lowCredits') : t('mkStudio.generate'))}</span><span className="text-[10px] opacity-70">✦ {shotCost}</span>
             </button>
           </div>
-          {(status === 'authenticated' || byokActive) && (
+          {(status === 'authenticated') && (
             <div className="mt-3 text-center text-[11px] text-white/35">
-              {byokActive
-                ? t('mkStudio.byokHint')
-                : t('mkStudio.costHint', { shotCost, image: COSTS.image, video: videoCost, balance: credits ?? '·' })}
+              {t('mkStudio.costHint', { shotCost, image: COSTS.image, video: videoCost, balance: credits ?? '·' })}
             </div>
           )}
         </div>
