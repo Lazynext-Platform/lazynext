@@ -637,12 +637,12 @@ export default function DramaStudioPage() {
             ))}
           </div>
           <div className="flex items-center gap-2 flex-wrap mt-3">
-            <select value={segChoice} onChange={(e) => setSegChoice(e.target.value)} className={selCls} title={t('drama.scenesTitle')}>
+            <select value={segChoice} onChange={(e) => setSegChoice(e.target.value)} className={selCls} title={t('drama.scenesTitle')} aria-label={t('drama.scenesTitle')}>
               <option value="auto">{t('drama.scenesAuto')}</option>
               {[2, 3, 4, 5, 6, 8].map((n) => <option key={n} value={String(n)}>{t('drama.scenesN', { n })}</option>)}
             </select>
-            <select value={videoRatio} onChange={(e) => setVideoRatio(e.target.value)} className={selCls} title={t('drama.aspectRatio')}>{VIDEO_RATIOS.map((r) => <option key={r} value={r}>{r}</option>)}</select>
-            <select value={videoResolution} onChange={(e) => setVideoResolution(e.target.value)} className={selCls} title={t('drama.resolution')}>{VIDEO_RESOLUTIONS.map((r) => <option key={r} value={r}>{r}</option>)}</select>
+            <select value={videoRatio} onChange={(e) => setVideoRatio(e.target.value)} className={selCls} title={t('drama.aspectRatio')} aria-label={t('drama.aspectRatio')}>{VIDEO_RATIOS.map((r) => <option key={r} value={r}>{r}</option>)}</select>
+            <select value={videoResolution} onChange={(e) => setVideoResolution(e.target.value)} className={selCls} title={t('drama.resolution')} aria-label={t('drama.resolution')}>{VIDEO_RESOLUTIONS.map((r) => <option key={r} value={r}>{r}</option>)}</select>
             <span className="inline-flex items-center gap-1 px-2.5 py-2 rounded-lg text-[11px] text-fg-faint bg-surface border border-line" title={t('drama.aiTimingTitle')}>⏱️ {t('drama.aiTiming')}</span>
             {/* Product image upload (optional): product drama uses your real product to lock consistency */}
             <input ref={productInput} type="file" multiple accept="image/png,image/jpeg,image/webp" className="hidden" onChange={(e) => { const fs = e.target.files; if (fs && fs.length) void uploadProducts(fs); e.currentTarget.value = ''; }} />
@@ -750,7 +750,7 @@ export default function DramaStudioPage() {
                     <div className="flex items-center gap-2 mb-2 flex-wrap">
                       <span className="text-[11px] rounded-full px-2 py-0.5 bg-hover border border-line" style={{ color: ACCENT }}>{t('drama.sceneN', { n: seg.i })}</span>
                       {/* Per-segment duration: AI gives suggested value, user can fine-tune */}
-                      <select value={seg.durationSec || 8} onChange={(e) => setSegDuration(i, Number(e.target.value))} className="appearance-none bg-elevated rounded px-1.5 py-0.5 text-[10px] text-fg-secondary focus:outline-none focus:ring-1 focus:ring-[#00b2fc]" title={t('drama.sceneDuration')}>{VIDEO_DURATIONS.map((d) => <option key={d} value={d}>{d}s</option>)}</select>
+                      <select value={seg.durationSec || 8} onChange={(e) => setSegDuration(i, Number(e.target.value))} className="appearance-none bg-elevated rounded px-1.5 py-0.5 text-[10px] text-fg-secondary focus:outline-none focus:ring-1 focus:ring-[#00b2fc]" title={t('drama.sceneDuration')} aria-label={t('drama.sceneDuration')}>{VIDEO_DURATIONS.map((d) => <option key={d} value={d}>{d}s</option>)}</select>
                       {/* Appearing characters (corresponding portrait references) */}
                       {(seg.cast || []).map((k) => {
                         const c = script.characters?.find((x) => x.key === k);
