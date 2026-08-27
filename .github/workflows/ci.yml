@@ -50,6 +50,8 @@ jobs:
           BUILD_TARGET: local
           NEXTAUTH_URL: http://localhost:3100
           AUTH_URL: http://localhost:3100
+          NEXTAUTH_SECRET: ci-test-secret-not-for-production
+          AUTH_SECRET: ci-test-secret-not-for-production
           ATLASCLOUD_BASE: http://localhost:3099/api/v1
           ATLASCLOUD_LLM_BASE: http://localhost:3099/v1
           ATLASCLOUD_API_KEY: mock-key-for-dev
@@ -72,6 +74,17 @@ jobs:
 
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
+
+      - name: Generate Prisma client
+        run: npm run prisma:generate
+        env:
+          BUILD_TARGET: local
+
+      - name: Create local database
+        run: npm run db:push
+        env:
+          BUILD_TARGET: local
+          DATABASE_URL: "file:./prisma/dev.db"
 
       - name: Start mock Atlas server
         run: |
