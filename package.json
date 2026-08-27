@@ -12,7 +12,7 @@
     "test": "node --test --experimental-strip-types --no-warnings --experimental-loader ./test/alias-loader.mjs test/**/*.test.ts",
     "test:e2e": "npx playwright test",
     "lint": "eslint src/ e2e/",
-    "postinstall": "npm run prisma:generate && npm run platform:prepare",
+    "postinstall": "npm run prisma:generate && npm run platform:prepare && node scripts/patch-eslint-plugin-react.mjs",
     "prisma:generate": "node scripts/generate-prisma-clients.mjs",
     "platform:prepare": "node scripts/prepare-platform.mjs",
     "db:push": "prisma db push",
