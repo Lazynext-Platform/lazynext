@@ -5,7 +5,9 @@ import { useSession } from 'next-auth/react';
 import {
   AlertCircle, CheckCircle2, Loader2, Sparkles, Link2, Lightbulb, Film,
   Copy, ChevronRight, Globe, Target, MessageSquare, Clapperboard,
+  Video, ArrowRight, Wand2,
 } from 'lucide-react';
+import Link from 'next/link';
 import { useI18n } from '@/i18n/provider';
 import { AuthModal } from '@/components/AuthModal';
 
@@ -61,10 +63,22 @@ type StoryboardCandidate = {
   ratio: string; totalDurationSec: number;
 };
 
+type ReferenceCreativeAnalysis = {
+  source: string; duration: number; format: string; platform: string;
+  hook: string; hookDuration: number; narrativeStructure: string;
+  scenes: Array<{ i: number; durationSec: number; description: string; shotType: string }>;
+  shotTypes: string[]; pacing: string; transitions: string[];
+  captions: string; cta: string; talent: string; productPlacement: string;
+  music: string; soundEffects: string[]; emotionalTone: string;
+  persuasionMechanisms: string[]; adaptationRecommendations: string[];
+  originalityConstraints: string[];
+};
+
 // ── Costs (must match backend) ──
 const COSTS = {
   brandExtract: 5, productExtract: 3,
   brief: 3, hooks: 2, angles: 2, script: 3, storyboard: 3,
+  referenceAnalysis: 5,
 };
 
 // ── Helpers ──
@@ -131,6 +145,12 @@ export default function CreativeStudioPage() {
   const [storyboardStep, setStoryboardStep] = useState<Step>('idle');
   const [storyboard, setStoryboard] = useState<StoryboardCandidate | null>(null);
   const [storyboardError, setStoryboardError] = useState('');
+
+  // Reference analysis state
+  const [refUrl, setRefUrl] = useState('');
+  const [refStep, setRefStep] = useState<Step>('idle');
+  const [refAnalysis, setRefAnalysis] = useState<ReferenceCreativeAnalysis | null>(null);
+  const [refError, setRefError] = useState('');
 
   // ── Actions ──
   const doBrandExtract = useCallback(async () => {
@@ -239,6 +259,19 @@ export default function CreativeStudioPage() {
       setStoryboardStep('error');
     }
   }, [brief, script, ratio]);
+
+  const doRefAnalysis = useCallback(async () => {
+    if (!refUrl.trim()) return;
+    setRefStep('loading'); setRefError(''); setRefAnalysis(null);
+    try {
+      const j = await postJson('/api/creative/reference-analysis', { url: refUrl.trim() });
+      setRefAnalysis(j.analysis as ReferenceCreativeAnalysis);
+      setRefStep('done');
+    } catch (e) {
+      setRefError(String(e instanceof Error ? e.message : e));
+      setRefStep('error');
+    }
+  }, [refUrl]);
 
   // ── Render ──
   if (status === 'loading') {
@@ -616,6 +649,117 @@ export default function CreativeStudioPage() {
           <Sparkles className="mx-auto mb-2 h-5 w-5 text-fg-placeholder" />
           {t('creativeStudio.footerNote')}
         </div>
+
+        {/* Step 6: Reference Creative Analysis */}
+        <Section
+          icon={Video}
+          title={t('creativeStudio.step6Title')}
+          subtitle={t('creativeStudio.step6Subtitle')}
+        >
+          <div className="rounded-2xl border border-line bg-surface p-4 space-y-3">
+            <label className="text-xs font-medium text-fg-faint">{t('creativeStudio.referenceUrl')}</label>
+            <div className="flex gap-2">
+              <input
+                type="url"
+                value={refUrl}
+                onChange={(e) => setRefUrl(e.target.value)}
+                placeholder="https://example.com/reference-ad.mp4"
+                className="min-w-0 flex-1 rounded-lg border border-line bg-app px-3 py-2 text-sm text-fg placeholder:text-fg-placeholder focus:border-[#00b2fc]/40 focus:outline-none"
+              />
+              <button
+                onClick={doRefAnalysis}
+                disabled={refStep === 'loading' || !refUrl.trim()}
+                className="shrink-0 rounded-lg px-4 py-2 text-sm font-bold text-white disabled:opacity-50"
+                style={{ background: '#0064d9' }}
+              >
+                {refStep === 'loading' ? <Loader2 className="h-4 w-4 animate-spin" /> : `${t('creativeStudio.analyze')} (${COSTS.referenceAnalysis})`}
+              </button>
+            </div>
+            {refStep === 'error' && <ErrorNote text={refError} />}
+            {refStep === 'done' && refAnalysis && (
+              <div className="mt-2 space-y-2 rounded-xl border border-line bg-app p-3 text-xs">
+                <div className="flex items-center gap-1 text-success"><CheckCircle2 className="h-3 w-3" /> {t('creativeStudio.analysisComplete')}</div>
+                <Field label="Duration" value={`${refAnalysis.duration}s`} />
+                <Field label="Platform" value={refAnalysis.platform} />
+                <Field label="Hook" value={refAnalysis.hook} />
+                <Field label="Hook duration" value={`${refAnalysis.hookDuration}s`} />
+                <Field label="Narrative structure" value={refAnalysis.narrativeStructure} />
+                <Field label="Pacing" value={refAnalysis.pacing} />
+                <Field label="Emotional tone" value={refAnalysis.emotionalTone} />
+                <Field label="CTA" value={refAnalysis.cta} />
+                <Field label="Talent" value={refAnalysis.talent} />
+                <Field label="Product placement" value={refAnalysis.productPlacement} />
+                <Field label="Music" value={refAnalysis.music} />
+                {refAnalysis.shotTypes.length > 0 && <Field label="Shot types" value={refAnalysis.shotTypes.join(', ')} />}
+                {refAnalysis.transitions.length > 0 && <Field label="Transitions" value={refAnalysis.transitions.join(', ')} />}
+                {refAnalysis.soundEffects.length > 0 && <Field label="Sound effects" value={refAnalysis.soundEffects.join(', ')} />}
+                {refAnalysis.persuasionMechanisms.length > 0 && <Field label="Persuasion mechanisms" value={refAnalysis.persuasionMechanisms.join(', ')} />}
+                {refAnalysis.adaptationRecommendations.length > 0 && (
+                  <div className="mt-2 rounded-lg bg-[#00b2fc]/5 p-2">
+                    <span className="font-bold text-fg">{t('creativeStudio.adaptationRecs')}:</span>
+                    <ul className="mt-1 list-inside list-disc space-y-0.5 text-fg">
+                      {refAnalysis.adaptationRecommendations.map((r, i) => <li key={i}>{r}</li>)}
+                    </ul>
+                  </div>
+                )}
+                {refAnalysis.originalityConstraints.length > 0 && (
+                  <div className="mt-2 rounded-lg bg-danger/5 p-2">
+                    <span className="font-bold text-danger">{t('creativeStudio.originalityConstraints')}:</span>
+                    <ul className="mt-1 list-inside list-disc space-y-0.5 text-fg">
+                      {refAnalysis.originalityConstraints.map((r, i) => <li key={i}>{r}</li>)}
+                    </ul>
+                  </div>
+                )}
+                {refAnalysis.scenes.length > 0 && (
+                  <div className="mt-2 space-y-1">
+                    <span className="font-bold text-fg">{t('creativeStudio.scenes')}:</span>
+                    {refAnalysis.scenes.map((s) => (
+                      <div key={s.i} className="rounded-lg border border-line bg-surface p-2">
+                        <div className="flex items-center justify-between">
+                          <span className="font-bold text-fg">{t('creativeStudio.scene')} {s.i}</span>
+                          <span className="text-fg-faint">{s.durationSec}s · {s.shotType}</span>
+                        </div>
+                        <p className="mt-1 text-fg-faint">{s.description}</p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        </Section>
+
+        {/* Send to Studio buttons */}
+        {(brief || storyboard || refAnalysis) && (
+          <Section
+            icon={Wand2}
+            title={t('creativeStudio.sendToStudioTitle')}
+            subtitle={t('creativeStudio.sendToStudioSubtitle')}
+          >
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              <StudioLink
+                href="/lazynext-studio"
+                label={t('creativeStudio.ugcStudio')}
+                desc={t('creativeStudio.ugcStudioDesc')}
+              />
+              <StudioLink
+                href="/ad-reference"
+                label={t('creativeStudio.adReference')}
+                desc={t('creativeStudio.adReferenceDesc')}
+              />
+              <StudioLink
+                href="/drama-studio"
+                label={t('creativeStudio.dramaStudio')}
+                desc={t('creativeStudio.dramaStudioDesc')}
+              />
+              <StudioLink
+                href="/ad-skit"
+                label={t('creativeStudio.adSkit')}
+                desc={t('creativeStudio.adSkitDesc')}
+              />
+            </div>
+          </Section>
+        )}
       </div>
     </div>
   );
@@ -657,5 +801,20 @@ function ErrorNote({ text }: { text: string }) {
     <div role="alert" className="mt-2 flex items-center gap-1.5 rounded-lg bg-danger/10 px-3 py-2 text-xs text-danger">
       <AlertCircle className="h-3 w-3 shrink-0" /> {text}
     </div>
+  );
+}
+
+function StudioLink({ href, label, desc }: { href: string; label: string; desc: string }) {
+  return (
+    <Link
+      href={href}
+      className="group rounded-2xl border border-line bg-surface p-4 transition hover:border-[#00b2fc]/40 hover:bg-hover"
+    >
+      <div className="flex items-center justify-between">
+        <span className="text-sm font-bold text-fg">{label}</span>
+        <ArrowRight className="h-4 w-4 text-fg-faint transition group-hover:text-brand-accent" />
+      </div>
+      <p className="mt-1 text-xs text-fg-faint">{desc}</p>
+    </Link>
   );
 }

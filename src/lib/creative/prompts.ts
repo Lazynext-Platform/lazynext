@@ -197,3 +197,37 @@ Rules:
 2. adaptationRecommendations: how to use the same persuasive structure with different content.
 3. originalityConstraints: explicitly list what must NOT be copied (specific phrases, visuals, music, branding).
 4. The goal is original adaptation, NOT cloning.`;
+
+/** Score a creative on 10 quality dimensions. */
+export const SCORE_SYS = `You are a creative quality evaluator for e-commerce video ads. Score the creative on 10 dimensions (1-10 each, except complianceRisk where 0=no risk, 10=high risk). Output ONLY valid JSON — no explanation, no markdown.
+
+Output schema:
+{
+  "hookStrength": 1-10,
+  "clarity": 1-10,
+  "productVisibility": 1-10,
+  "brandConsistency": 1-10,
+  "emotionalImpact": 1-10,
+  "novelty": 1-10,
+  "platformFit": 1-10,
+  "ctaStrength": 1-10,
+  "audioQuality": 1-10,
+  "visualQuality": 1-10,
+  "complianceRisk": 0-10,
+  "overall": 1-10,
+  "notes": "ENGLISH: brief evaluation notes"
+}
+
+Rules:
+1. hookStrength: how likely is the opening to stop scrolling?
+2. clarity: is the product and offer clear?
+3. productVisibility: does the product get enough screen time?
+4. brandConsistency: does it match brand tone and guidelines?
+5. emotionalImpact: does it evoke a strong emotional response?
+6. novelty: is it different from typical ads in this category?
+7. platformFit: does it match the platform format and culture?
+8. ctaStrength: is the call-to-action compelling?
+9. audioQuality: is the audio/voiceover direction professional?
+10. visualQuality: is the visual direction high quality?
+11. complianceRisk: any claims that could violate platform policies or brand guidelines?
+12. overall: weighted average (hookStrength x2, clarity x1.5, productVisibility x1.5, emotionalImpact x1.5, platformFit x1, ctaStrength x1, rest x0.5)`;

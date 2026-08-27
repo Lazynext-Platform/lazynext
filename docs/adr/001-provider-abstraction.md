@@ -43,3 +43,12 @@ The registry maps capabilities to providers, allowing future model routing by co
 - New code should use provider interfaces instead of calling atlas.ts directly
 - Existing workflow files can be gradually refactored to use providers
 - No breaking changes to existing API routes
+
+## Implementation Notes (Updated)
+
+All files listed above are now implemented:
+- `atlas-research.ts` — wraps `extractBrand` and `extractProduct` behind the `ResearchProvider` interface
+- `registry.ts` — model metadata registry with `modelsByCapability()` and `supportsCapability()`
+- `router.ts` — model router (`routeModel()`) that selects models by capability, cost, speed, ratio, and resolution
+
+The model router is a simple priority-based selector. Future work: integrate user plan tiers, latency metrics, and A/B testing.

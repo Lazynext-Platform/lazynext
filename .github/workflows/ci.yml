@@ -48,6 +48,11 @@ jobs:
         run: npm run build
         env:
           BUILD_TARGET: local
+          NEXTAUTH_URL: http://localhost:3100
+          AUTH_URL: http://localhost:3100
+          ATLASCLOUD_BASE: http://localhost:3099/api/v1
+          ATLASCLOUD_LLM_BASE: http://localhost:3099/v1
+          ATLASCLOUD_API_KEY: mock-key-for-dev
 
   e2e:
     name: E2E Tests
@@ -68,10 +73,22 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
 
+      - name: Start mock Atlas server
+        run: |
+          npm run mock-atlas &
+          sleep 3
+          curl -s http://localhost:3099/health || echo "mock-atlas may not have /health endpoint"
+
       - name: Run E2E tests
         run: npx playwright test --project=chromium
         env:
           CI: true
+          NEXTAUTH_URL: http://localhost:3100
+          AUTH_URL: http://localhost:3100
+          ATLASCLOUD_BASE: http://localhost:3099/api/v1
+          ATLASCLOUD_LLM_BASE: http://localhost:3099/v1
+          ATLASCLOUD_API_KEY: mock-key-for-dev
+          BUILD_TARGET: local
 
       - name: Upload test results
         if: always()

@@ -1,5 +1,60 @@
 # LazyNext Changelog
 
+## 2026-08-27 — Remaining Work Completion: Scoring, Variants, Model Router, BrandProfile, Reference Analysis UI
+
+### What Changed
+1. **Reference Creative Analysis UI** added to `/creative-studio`: users can now analyze reference
+   ad videos directly from the Creative Studio page. Shows hook, pacing, scenes, persuasion
+   mechanisms, adaptation recommendations, and originality constraints.
+2. **Send-to-Studio links** added to Creative Studio: quick links to UGC Product Ad, Reference to Ad,
+   AI Drama Ad, and Ad Skit workflows from the Creative Studio page.
+3. **Product extraction persistence**: `/api/brand/product-extract` now saves extracted products to
+   the `AdProduct` table for reuse in generation workflows.
+4. **`scoreCreative()` function** implemented in `src/lib/creative/intelligence.ts`: scores creatives
+   on 10 quality dimensions (hook strength, clarity, product visibility, brand consistency, emotional
+   impact, novelty, platform fit, CTA strength, audio quality, visual quality) plus compliance risk.
+5. **`generateVariants()` function** implemented: generates A/B test variants of a creative.
+6. **`buildProfile()` function** implemented in `src/lib/brand/profile.ts`: converts raw brand
+   extraction into a normalized BrandProfile.
+7. **`BrandProfile` Prisma model** added to `schema.prisma`: stores normalized brand intelligence
+   (company, domain, industry, positioning, audience, tone, visual style, colors, fonts, prohibited
+   claims, brand vocabulary, source URLs).
+8. **Model router** implemented in `src/lib/providers/router.ts`: selects best model by capability,
+   cost, speed, ratio, and resolution. Future: integrate user plan tiers and latency metrics.
+9. **`atlas-research.ts` provider adapter** created: wraps brand/product extraction behind the
+   `ResearchProvider` interface.
+10. **Brand extract API** now persists to both `BrandKit` (UI compatibility) and `BrandProfile`
+    (normalized structured storage).
+11. **CI E2E tests fixed**: GitHub Actions workflow now starts mock Atlas server and provides
+    required auth/base URL environment variables.
+12. **GitHub Actions Cloudflare deploy secrets configured**: `CLOUDFLARE_API_TOKEN` and
+    `CLOUDFLARE_ACCOUNT_ID` secrets set for automated deployment.
+13. **ADRs updated**: ADR-001, ADR-002, and ADR-003 now include implementation notes documenting
+    the actual file structure vs. the original plan.
+14. **Creative Studio i18n**: new keys added for reference analysis and send-to-studio sections
+    in English; translations for 12 non-English locales in progress.
+
+### Verification
+- `npx tsc --noEmit` — passed (0 errors)
+- `npx prisma generate` — passed (BrandProfile model added)
+
+### Files Changed
+- `src/app/creative-studio/page.tsx` (reference analysis UI + send-to-studio links)
+- `src/app/api/brand/extract/route.ts` (BrandProfile persistence)
+- `src/app/api/brand/product-extract/route.ts` (AdProduct persistence)
+- `src/lib/creative/intelligence.ts` (scoreCreative + generateVariants)
+- `src/lib/creative/types.ts` (CreativeScore type already existed)
+- `src/lib/creative/prompts.ts` (SCORE_SYS prompt)
+- `src/lib/brand/profile.ts` (new — buildProfile function)
+- `src/lib/providers/atlas-research.ts` (new — ResearchProvider adapter)
+- `src/lib/providers/router.ts` (new — model router)
+- `prisma/schema.prisma` (BrandProfile model + User back-relation)
+- `src/i18n/messages.ts` (new Creative Studio keys)
+- `docs/adr/001-provider-abstraction.md` (implementation notes)
+- `docs/adr/002-creative-intelligence.md` (implementation notes)
+- `docs/adr/003-brand-intelligence.md` (implementation notes)
+- `.github/workflows/ci.yml` (mock Atlas + env vars for E2E)
+
 ## 2026-08-27 — Creative Studio UI, Workflow Refactoring, License Verification
 
 ### What Changed

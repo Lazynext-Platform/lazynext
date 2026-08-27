@@ -32,6 +32,8 @@ model User {
   adProducts AdProduct[]
   adAvatars  AdAvatar[]
   brandKits  BrandKit[]
+  brandProfiles BrandProfile[]
+  assets     Asset[]
 }
 
 model Account {
@@ -145,7 +147,7 @@ model BrandKit {
   id        String   @id @default(cuid())
   userId    String
   name      String
-  logoUrl   String? 
+  logoUrl   String?
   colors    Json? // 品牌色数组
   fontNote  String?
   toneNote  String?  // 语气/风格
@@ -154,4 +156,59 @@ model BrandKit {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
+}
+
+model BrandProfile {
+  id              String   @id @default(cuid())
+  userId          String
+  company         String
+  domain          String
+  industry        String
+  positioning     String?
+  audience        String?
+  tone            String?
+  visualStyle     String?
+  colors          Json?    // string[]
+  fonts           Json?    // string[]
+  prohibitedClaims Json?   // string[]
+  brandVocabulary Json?    // string[]
+  sourceUrls      Json?    // string[]
+  extractionTimestamp DateTime?
+  createdAt       DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+// ── Unified asset system (lineage, versions, tags, reuse) ──
+model Asset {
+  id          String   @id @default(cuid())
+  userId      String
+  type        String   // image | video | audio | script | storyboard | brief | brand_profile
+  name        String
+  sourceUrl   String?  // original source (R2 URL, external URL, etc.)
+  parentId    String?  // lineage: parent asset this was derived from
+  tags        Json?    // string[]
+  metadata    Json?    // type-specific metadata
+  createdAt   DateTime @default(now())
+
+  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  versions    AssetVersion[]
+
+  @@index([userId])
+  @@index([parentId])
+}
+
+model AssetVersion {
+  id          String   @id @default(cuid())
+  assetId     String
+  version     Int      @default(1)
+  url         String   // R2 or external URL for this version
+  metadata    Json?    // version-specific metadata (resolution, duration, etc.)
+  createdAt   DateTime @default(now())
+
+  asset       Asset     @relation(fields: [assetId], references: [id], onDelete: Cascade)
+
+  @@index([assetId])
 }

@@ -4,6 +4,7 @@ import { auth } from '@/../auth';
 import { extractProduct, SSRFError } from '@/lib/brand/extract';
 import { deductCredits } from '@/lib/credits';
 import { refundSync } from '@/lib/lazynext-studio/gen-task';
+import { prisma } from '@/lib/prisma';
 
 export const maxDuration = 90;
 
@@ -31,7 +32,17 @@ async function __byokPOST(req: Request) {
 
   try {
     const extraction = await extractProduct(url);
-    return NextResponse.json({ extraction });
+    // Persist to AdProduct table for reuse in workflows
+    const adProduct = await prisma.adProduct.create({
+      data: {
+        userId: uid,
+        name: extraction.productName || 'Extracted Product',
+        description: extraction.description || `${extraction.productName}: ${extraction.benefits.join(', ')}`,
+        imageUrl: extraction.images[0] || null,
+        sourceUrl: url,
+      },
+    }).catch(() => null); // non-fatal — return extraction even if DB save fails
+    return NextResponse.json({ extraction, adProductId: adProduct?.id || null });
   } catch (e) {
     await refundSync(uid, PRODUCT_EXTRACT_COST, 'brand:product-extract');
     if (e instanceof SSRFError) {

@@ -2,6 +2,7 @@ import { withAtlas } from '@/lib/request-context';
 import { NextResponse } from 'next/server';
 import { auth } from '@/../auth';
 import { extractBrand, SSRFError } from '@/lib/brand/extract';
+import { buildProfile } from '@/lib/brand/profile';
 import { deductCredits } from '@/lib/credits';
 import { refundSync } from '@/lib/lazynext-studio/gen-task';
 import { prisma } from '@/lib/prisma';
@@ -63,6 +64,27 @@ async function __byokPOST(req: Request) {
         toneNote: extraction.tone,
       },
     });
+
+    // Also persist a normalized BrandProfile
+    // (non-fatal — return extraction even if DB save fails)
+    void prisma.brandProfile.create({
+      data: {
+        userId: uid,
+        company: extraction.company || extraction.domain,
+        domain: extraction.domain,
+        industry: extraction.industry,
+        positioning: extraction.positioning,
+        audience: extraction.audience,
+        tone: extraction.tone,
+        visualStyle: extraction.visualStyle,
+        colors: extraction.colors,
+        fonts: extraction.fonts,
+        prohibitedClaims: extraction.prohibitedClaims,
+        brandVocabulary: extraction.brandVocabulary,
+        sourceUrls: extraction.sourceUrls,
+        extractionTimestamp: new Date(extraction.extractionTimestamp || Date.now()),
+      },
+    }).catch(() => {});
 
     return NextResponse.json({ extraction, brandKitId: brandKit.id });
   } catch (e) {

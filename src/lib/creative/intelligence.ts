@@ -17,9 +17,11 @@ import type {
   ScriptCandidate,
   StoryboardCandidate,
   ReferenceCreativeAnalysis,
+  CreativeScore,
+  CreativeVariant,
 } from './types';
 import {
-  BRIEF_SYS, HOOKS_SYS, ANGLES_SYS, SCRIPT_SYS, STORYBOARD_SYS, REFERENCE_ANALYSIS_SYS,
+  BRIEF_SYS, HOOKS_SYS, ANGLES_SYS, SCRIPT_SYS, STORYBOARD_SYS, REFERENCE_ANALYSIS_SYS, SCORE_SYS,
 } from './prompts';
 
 // ── Credit costs per creative step ──
@@ -30,6 +32,8 @@ export const CREATIVE_COSTS = {
   script: 3,
   storyboard: 3,
   referenceAnalysis: 5,
+  score: 2,
+  variants: 3,
 } as const;
 
 const CREATIVE_MODEL = process.env.CREATIVE_MODEL || 'bytedance/doubao-seed-2.1-turbo-260628';
@@ -355,4 +359,102 @@ Output the reference creative analysis JSON now.`;
     adaptationRecommendations: asStrArr(j.adaptationRecommendations),
     originalityConstraints: asStrArr(j.originalityConstraints),
   };
+}
+
+// ── Creative scoring ──
+
+export async function scoreCreative(input: {
+  brief: CreativeBrief;
+  script: ScriptCandidate;
+  storyboard?: StoryboardCandidate | null;
+}): Promise<CreativeScore> {
+  const parts = [
+    `Brief: objective=${input.brief.objective}, platform=${input.brief.platform}, audience=${input.brief.audience}`,
+    `Hook: ${input.brief.hook}`,
+    `Angle: ${input.brief.angle}`,
+    `CTA: ${input.brief.cta}`,
+    `Script: ${input.script.title} (${input.script.totalDurationSec}s, ${input.script.scenes.length} scenes)`,
+    `Script scenes: ${input.script.scenes.map(s => `(${s.durationSec}s) ${s.voiceover.slice(0, 80)}`).join(' | ')}`,
+  ];
+  if (input.storyboard) {
+    parts.push(`Storyboard: ${input.storyboard.shots.length} shots, ${input.storyboard.totalDurationSec}s, ${input.storyboard.ratio}`);
+  }
+  parts.push('Output the creative score JSON now.');
+
+  const raw = await atlasChat(
+    [{ role: 'system', content: SCORE_SYS }, { role: 'user', content: parts.join('\n') }],
+    CREATIVE_MODEL, 2000, CREATIVE_TIMEOUT_MS,
+  );
+  const j = extractJson(raw);
+
+  const clamp = (v: unknown, fb: number, min: number, max: number) => Math.max(min, Math.min(max, asNum(v, fb, min, max)));
+  const scores = {
+    hookStrength: clamp(j.hookStrength, 5, 1, 10),
+    clarity: clamp(j.clarity, 5, 1, 10),
+    productVisibility: clamp(j.productVisibility, 5, 1, 10),
+    brandConsistency: clamp(j.brandConsistency, 5, 1, 10),
+    emotionalImpact: clamp(j.emotionalImpact, 5, 1, 10),
+    novelty: clamp(j.novelty, 5, 1, 10),
+    platformFit: clamp(j.platformFit, 5, 1, 10),
+    ctaStrength: clamp(j.ctaStrength, 5, 1, 10),
+    audioQuality: clamp(j.audioQuality, 5, 1, 10),
+    visualQuality: clamp(j.visualQuality, 5, 1, 10),
+    complianceRisk: clamp(j.complianceRisk, 0, 0, 10),
+  };
+  const overall = Math.round(
+    (scores.hookStrength * 2 + scores.clarity * 1.5 + scores.productVisibility * 1.5 +
+     scores.emotionalImpact * 1.5 + scores.platformFit + scores.ctaStrength +
+     scores.brandConsistency * 0.5 + scores.novelty * 0.5 + scores.audioQuality * 0.5 +
+     scores.visualQuality * 0.5) / 11.5,
+  );
+
+  return { ...scores, overall, notes: asStr(j.notes) };
+}
+
+// ── Creative variant generation ──
+
+export async function generateVariants(
+  brief: CreativeBrief,
+  script: ScriptCandidate,
+  count = 3,
+): Promise<CreativeVariant[]> {
+  const userPrompt = `Generate ${count} A/B variations of this ad creative.
+
+Brief: ${brief.productName} — ${brief.audience}
+Hook: ${brief.hook}
+Angle: ${brief.angle}
+CTA: ${brief.cta}
+Script: ${script.title} (${script.totalDurationSec}s)
+
+Output a JSON array of variants now.`;
+
+  const raw = await atlasChat(
+    [{ role: 'system', content: `You are a creative strategist generating A/B test variants for e-commerce ads. Output ONLY a JSON array — no markdown, no explanation.
+
+Each variant:
+{
+  "id": "v1",
+  "variationType": "hook|script|visual|cta",
+  "hook": "ENGLISH: alternative hook text",
+  "script": "ENGLISH: alternative script summary",
+  "visual": "ENGLISH: alternative visual direction",
+  "cta": "ENGLISH: alternative CTA",
+  "rationale": "ENGLISH: why this variant might perform better"
+}` }, { role: 'user', content: userPrompt }],
+    CREATIVE_MODEL, 3000, CREATIVE_TIMEOUT_MS,
+  );
+  const arr = extractJsonArray(raw);
+  return arr.slice(0, count).map((item, idx): CreativeVariant => {
+    const o = (item && typeof item === 'object' ? item : {}) as Record<string, unknown>;
+    return {
+      id: asStr(o.id, `v${idx + 1}`),
+      parentCreativeId: script.id,
+      variationType: asStr(o.variationType, 'hook'),
+      hook: asStr(o.hook),
+      script: asStr(o.script),
+      visual: asStr(o.visual),
+      cta: asStr(o.cta),
+      rationale: asStr(o.rationale),
+    };
+  });
 }
