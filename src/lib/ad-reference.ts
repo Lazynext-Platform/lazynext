@@ -1,4 +1,5 @@
-import { submitRawGen } from '@/lib/atlas';
+import { atlasVideo } from '@/lib/providers/atlas-video';
+import { atlasTTS } from '@/lib/providers/atlas-audio';
 
 /**
  * Viral Ad Replica (Ad Reference): upload a reference ad video, replace the person/product/voice/lines with your own.
@@ -86,14 +87,16 @@ export function buildEditRequest({
 
 /** Output: gemini-omni-flash directly edits the original video (native audio). */
 export async function submitAdRefEdit(videoUrl: string, prompt: string, images: string[]) {
-  return submitRawGen('generateVideo', {
+  return atlasVideo.generate({
     model: AD_REF_EDIT_MODEL,
     video: videoUrl,
     prompt,
-    ...(images.length ? { images: images.slice(0, 3) } : {}),
-    resolution: '720p',
-    thinking_level: 'high',
-    seed: -1,
+    extra: {
+      ...(images.length ? { images: images.slice(0, 3) } : {}),
+      resolution: '720p',
+      thinking_level: 'high',
+      seed: -1,
+    },
   });
 }
 
@@ -104,43 +107,49 @@ export async function submitAdRefCharacter(videoUrl: string, imageUrl: string) {
     'Replace ONLY the presenter/person with the person shown in reference image 1 — use their exact face, hair and identity, and keep the same head and hand motion, gestures, expressions and the way they talk. Do not change the product, the scene or the camera work.',
     'Photorealistic, natural, no added on-screen text, no watermark.',
   ].join(' ');
-  return submitRawGen('generateVideo', {
+  return atlasVideo.generate({
     model: AD_REF_CHARACTER_MODEL,
     video: videoUrl,
     prompt,
-    images: [imageUrl],
-    resolution: '720p',
-    thinking_level: 'high',
-    seed: -1,
+    extra: {
+      images: [imageUrl],
+      resolution: '720p',
+      thinking_level: 'high',
+      seed: -1,
+    },
   });
 }
 
 /** Fallback person-swap: kling motion transfer — on-screen person image (image) + original video (motion source video) → your person performs the original footage's actions (real person doesn't hit 1010002). */
 export async function submitAdRefMotion(imageUrl: string, videoUrl: string) {
-  return submitRawGen('generateVideo', {
+  return atlasVideo.generate({
     model: AD_REF_MOTION_MODEL,
     image: imageUrl,
     video: videoUrl,
-    character_orientation: 'video',
-    keep_original_sound: false,
+    extra: {
+      character_orientation: 'video',
+      keep_original_sound: false,
+    },
   });
 }
 
 /** New voiceover (swap voice + swap lines). */
 export async function submitAdRefVoice(text: string, voice: string) {
-  return submitRawGen('generateAudio', {
+  return atlasTTS.synthesize({
     model: AD_REF_TTS_MODEL,
     text,
     voice,
-    stability: 0.4,
+    extra: { stability: 0.4 },
   });
 }
 
 /** Lip-sync the new voiceover onto the final video's mouth (overwrites original audio). */
 export async function submitAdRefLipsync(videoUrl: string, audioUrl: string) {
-  return submitRawGen('generateVideo', {
+  return atlasVideo.generate({
     model: AD_REF_LIPSYNC_MODEL,
-    video_url: videoUrl,
-    audio_url: audioUrl,
+    extra: {
+      video_url: videoUrl,
+      audio_url: audioUrl,
+    },
   });
 }

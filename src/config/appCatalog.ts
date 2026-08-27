@@ -36,12 +36,14 @@ const CUSTOM_TITLES: Record<string, Bi> = {
   'ad-reference': { en: 'Reference to Ad', zh: '爆款广告复刻' },
   'drama-studio': { en: 'AI Drama Ad', zh: 'AI 短剧广告' },
   'ad-skit': { en: 'Ad Skit', zh: '搞笑带货小剧场' },
+  'creative-studio': { en: 'Creative Studio', zh: '创意工作室' },
 };
 const CUSTOM_DESCS: Record<string, Bi> = {
   'lazynext-studio': { en: 'Product + presenter photos → AI expands the prompt from your images → lip-synced UGC ad; one-click viral formats', zh: '产品图+人物图 → AI 看图扩写提示词 → 合成首帧 → 对口型真人口播广告;爆款玩法一键复刻' },
   'ad-reference': { en: 'Upload a viral reference video + your product/presenter (script auto-written) → remake it as your own ad', zh: '上传爆款参考视频 + 你的产品图/人物图(脚本可自动生成)→ 复刻成你自己的同款广告' },
   'drama-studio': { en: 'One topic → comedy script → cast/scene/product reference images lock consistency → shot-by-shot drama ad', zh: '一句主题 → AI 写反差喜剧剧本 → 角色/场景/产品定妆图锁一致 → 逐镜出片拼成短剧' },
   'ad-skit': { en: 'One-line product (+photos) → two-hander comedy script → 15s skit with audio (multilingual)', zh: '一行产品卖点(可配产品图)→ AI 写双人搞笑剧本 → 渲染 15 秒带声短剧(多语言)' },
+  'creative-studio': { en: 'URL → brand intelligence → creative brief → hooks → angles → script → storyboard. AI creative strategy before generation.', zh: 'URL → 品牌智能 → 创意简报 → 钩子 → 角度 → 脚本 → 分镜。生成前的 AI 创意策略。' },
 };
 export function appTitle(id: string, fallbackTitle: string, locale: string = 'en'): string {
   const c = CUSTOM_TITLES[id];

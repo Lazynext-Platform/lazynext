@@ -10,7 +10,9 @@
  *
  * No extra voiceover (no seed-audio/xai), uses seedance's built-in audio; subtitles burn in the selected language slogan.
  */
-import { atlasChat, submitGen, type SubmitResult } from '@/lib/atlas';
+import { atlasChat, type SubmitResult } from '@/lib/atlas';
+import { atlasImage } from '@/lib/providers/atlas-image';
+import { atlasVideo } from '@/lib/providers/atlas-video';
 
 export const AD_SKIT_TEMPLATE_ID = 'ad-skit';
 
@@ -129,19 +131,17 @@ export async function planSkit(input: {
 }
 
 /** Product image: edit to preserve product if uploaded, otherwise text-to-image. */
-export function submitProductImage(prompt: string, uploadedUrl?: string): Promise<SubmitResult> {
+export async function submitProductImage(prompt: string, uploadedUrl?: string): Promise<SubmitResult> {
   if (uploadedUrl) {
-    return submitGen({
-      endpoint: 'generateImage',
+    return atlasImage.generate({
       model: EDIT_MODEL,
-      images: [uploadedUrl],
-      imageField: 'images',
       prompt: `Keep this EXACT product identical (shape/color/label/logo/proportions). Clean commercial e-commerce product shot on pure white background. ${prompt}`,
+      referenceImages: [uploadedUrl],
+      imageField: 'images',
       extra: { aspect_ratio: '1:1' },
     });
   }
-  return submitGen({
-    endpoint: 'generateImage',
+  return atlasImage.generate({
     model: IMAGE_MODEL,
     prompt: `${prompt} sharp product photography, pure white background`,
     extra: { aspect_ratio: '1:1' },
@@ -149,13 +149,12 @@ export function submitProductImage(prompt: string, uploadedUrl?: string): Promis
 }
 
 /** seedance-2.0/reference-to-video: multiple product images as reference to produce a 15s two-person shopping skit (with built-in audio). */
-export function submitSkitVideo(productUrls: string[], videoPrompt: string, duration = 15): Promise<SubmitResult> {
-  return submitGen({
-    endpoint: 'generateVideo',
+export async function submitSkitVideo(productUrls: string[], videoPrompt: string, duration = 15): Promise<SubmitResult> {
+  return atlasVideo.generate({
     model: VIDEO_MODEL,
+    prompt: videoPrompt,
+    referenceImages: productUrls.filter((u) => typeof u === 'string' && u.startsWith('http')).slice(0, 4),
     extra: {
-      reference_images: productUrls.filter((u) => typeof u === 'string' && u.startsWith('http')).slice(0, 4),
-      prompt: videoPrompt,
       duration,
       resolution: '720p',
       ratio: 'adaptive',

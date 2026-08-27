@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import {
-  Clapperboard, Coins, Boxes, FolderOpen, ArrowRight, Loader2, Film, Play,
+  Clapperboard, Coins, Boxes, FolderOpen, ArrowRight, Loader2, Film, Play, Sparkles,
 } from 'lucide-react';
 import { useI18n } from '@/i18n/provider';
 import { appTitle, appDesc, isFeatured } from '@/config/appCatalog';
@@ -17,6 +17,7 @@ const APPS: App[] = [
   { id: 'ad-reference', href: '/ad-reference', icon: Clapperboard },
   { id: 'drama-studio', href: '/drama-studio', icon: Clapperboard },
   { id: 'ad-skit', href: '/ad-skit', icon: Clapperboard },
+  { id: 'creative-studio', href: '/creative-studio', icon: Sparkles },
 ];
 
 type Creation = {

@@ -1,0 +1,157 @@
+# LazyNext Changelog
+
+## 2026-08-27 — Creative Studio UI, Workflow Refactoring, License Verification
+
+### What Changed
+1. **New `/creative-studio` page** (`src/app/creative-studio/page.tsx`): Full UI for brand extraction,
+   product extraction, creative brief, hooks, angles, script, and storyboard generation. Integrated
+   into the dashboard quick-create grid and app catalog.
+2. **Existing workflows refactored to provider interfaces**: `src/lib/lazynext-studio/workflow.ts`,
+   `src/lib/ad-reference.ts`, and `src/lib/ad-skit.ts` now use `atlasImage`, `atlasVideo`, and `atlasTTS`
+   provider adapters instead of calling `submitRawGen`/`submitGen` directly. Behavior, credit accounting,
+   task lifecycle, polling, refunds, and BYOK are all preserved.
+3. **Provider interface fix**: `VideoGenOptions.prompt` made optional (some video operations like
+   kling motion transfer and veed lipsync don't use a prompt). `atlasImage` adapter updated to not
+   set `aspect_ratio` when caller specifies `image_size` via `extra`.
+4. **License verification for 76 category-classified repos** (`research/license-verification.md`):
+   Directly fetched LICENSE files and GitHub API metadata for all 76 repos.
+   - 18 MIT, 9 Apache-2.0, 6 AGPL-3.0, 1 MPL-2.0, 2 non-commercial, 1 sustainable-use, 28 no license, 12 not found.
+5. **E2E tests for Creative Studio** (`e2e/creative-studio.spec.ts`): 6 browser smoke tests verifying
+   page load, sign-in prompt, responsive layout, and route accessibility.
+
+### Verification
+- `npm run lint` — passed
+- `npm test` — 58 tests passed
+- `npm run build` — passed (includes `/creative-studio` route)
+- `npx playwright test` — 26 passed, 1 pre-existing failure (404 page `main` strict mode, not caused by these changes)
+- 6 new Creative Studio E2E tests all pass
+
+### Files Changed
+- `src/app/creative-studio/page.tsx` (new — 665 lines)
+- `src/app/dashboard/page.tsx` (added Creative Studio to APPS array)
+- `src/config/appCatalog.ts` (added creative-studio title/description)
+- `src/lib/lazynext-studio/workflow.ts` (refactored to provider interfaces)
+- `src/lib/ad-reference.ts` (refactored to provider interfaces)
+- `src/lib/ad-skit.ts` (refactored to provider interfaces)
+- `src/lib/providers/types.ts` (prompt made optional in VideoGenOptions)
+- `src/lib/providers/atlas-image.ts` (image_size handling fix)
+- `e2e/creative-studio.spec.ts` (new — 6 E2E tests)
+- `research/license-verification.md` (new — license audit results)
+- `research/do-not-integrate.md` (updated with verified licenses)
+
+## 2026-08-27 — Creative Intelligence & Brand Intelligence Layer
+
+### What Changed
+Added a creative intelligence layer and brand intelligence layer to LazyNext, plus a provider
+abstraction layer. These are additive — no existing code was modified or removed.
+
+### Why
+LazyNext previously went directly from product text → LLM storyboard → image/video generation,
+with no intermediate creative strategy step. The new layers enable:
+1. URL → brand/product extraction (brand intelligence)
+2. Product → creative brief → hooks → angles → scripts → storyboard (creative intelligence)
+3. Reference video → structured creative analysis (reference intelligence)
+4. Swappable provider interfaces (provider abstraction)
+
+### Repository Inspiration
+- **context-dot-dev/ad-maker (#1)**: brand website research concept → `src/lib/brand/extract.ts`
+- **DV0x/creative-ad-agent (#3)**: hook-first methodology, 6 diverse concepts → `src/lib/creative/intelligence.ts`
+- **AdsTurbo/product-page-to-ad-brief (#40)**: brief→angles→scripts→storyboard pipeline (MIT) → `src/lib/creative/intelligence.ts`
+- **caoqc4/RemixKit (#16)**: reference analysis + provider registry pattern → `src/lib/creative/intelligence.ts` + `src/lib/providers/registry.ts`
+- **attainmentlabs/meta-ads-mcp (#29)**: tool contract + safety patterns → future AdPublishingProvider
+
+### Code Reuse vs Reimplementation
+ALL code is clean-room reimplementation. No code was copied from any external repository.
+Only workflow concepts, prompt structures, and architectural patterns were adapted.
+
+### License Considerations
+- All new LazyNext code is MIT (matching LazyNext's existing license)
+- No AGPL/GPL code was used (OpenChatCut and forks explicitly excluded)
+- No FireRed model weights or code were integrated (GPU incompatible with Cloudflare Workers)
+- AdsTurbo/product-page-to-ad-brief is MIT but only the concept was adapted, not the code
+
+### New Files
+```
+src/lib/providers/
+  types.ts              — Provider interfaces shared types
+  image.ts              — ImageProvider interface
+  video.ts              — VideoProvider interface
+  audio.ts              — TTSProvider + ASRProvider interfaces
+  research.ts           — ResearchProvider interface
+  analysis.ts           — AdAnalysisProvider interface
+  registry.ts           — Model capability registry
+  atlas-image.ts        — Atlas Cloud ImageProvider implementation
+  atlas-video.ts        — Atlas Cloud VideoProvider implementation
+  atlas-audio.ts        — Atlas Cloud TTSProvider implementation
+
+src/lib/creative/
+  types.ts              — CreativeBrief, HookCandidate, CreativeAngle, ScriptCandidate,
+                         StoryboardCandidate, CreativeVariant, CreativeScore,
+                         ReferenceCreativeAnalysis
+  prompts.ts            — System prompts for each generation step
+  intelligence.ts       — generateBrief, generateHooks, generateAngles, generateScript,
+                         generateStoryboard, analyzeReferenceCreative
+
+src/lib/brand/
+  types.ts              — BrandExtraction, ProductExtraction, BrandProfile
+  fetch.ts              — SSRF-safe URL fetcher, htmlToText, extractImageUrls
+  prompts.ts            — Brand and product extraction system prompts
+  extract.ts            — extractBrand, extractProduct
+
+src/app/api/brand/extract/route.ts           — POST: URL → brand extraction (5 credits)
+src/app/api/brand/product-extract/route.ts   — POST: URL → product extraction (3 credits)
+src/app/api/creative/brief/route.ts          — POST: product → creative brief (3 credits)
+src/app/api/creative/hooks/route.ts          — POST: brief → hook candidates (2 credits)
+src/app/api/creative/angles/route.ts         — POST: brief → angle candidates (2 credits)
+src/app/api/creative/script/route.ts         — POST: brief+angle+hook → script (3 credits)
+src/app/api/creative/storyboard/route.ts     — POST: brief+script → storyboard (3 credits)
+src/app/api/creative/reference-analysis/route.ts — POST: URL → reference analysis (5 credits)
+
+test/ssrf-protection.test.ts                 — 12 SSRF validation tests
+test/creative-intelligence.test.ts           — 5 creative cost model tests
+test/provider-registry.test.ts               — 7 provider registry tests
+
+docs/adr/001-provider-abstraction.md         — ADR: provider abstraction
+docs/adr/002-creative-intelligence.md        — ADR: creative intelligence layer
+docs/adr/003-brand-intelligence.md           — ADR: brand intelligence layer
+
+research/lazynext-architecture-audit.md      — Phase 1 architecture audit
+research/repository-matrix.md                — 84-repository decision matrix
+research/best-ideas.md                       — Best ideas to absorb
+research/do-not-integrate.md                 — Excluded repositories report
+```
+
+### Configuration Requirements
+New optional environment variables:
+```
+BRAND_EXTRACTION_MODEL=bytedance/doubao-seed-2.1-turbo-260628  # LLM for brand/product extraction
+BRAND_EXTRACTION_TIMEOUT_MS=60000                              # extraction timeout
+BRAND_EXTRACTION_MAX_TOKENS=4000                               # extraction max tokens
+CREATIVE_MODEL=bytedance/doubao-seed-2.1-turbo-260628          # LLM for creative intelligence
+CREATIVE_TIMEOUT_MS=90000                                      # creative generation timeout
+CREATIVE_MAX_TOKENS=6000                                       # creative max tokens
+```
+
+All default to existing Atlas Cloud LLM model. No new dependencies required.
+
+### Migration Requirements
+None — all changes are additive. No database migrations needed (brand extraction stores
+structured data in the existing BrandKit.colors JSON field). No existing routes modified.
+
+### Test Coverage
+- 34 existing tests: all still pass (no regressions)
+- 24 new tests: all pass
+- Total: 58 tests pass
+- Lint: passes clean
+- New tests cover: SSRF protection (12 tests), creative cost model (5 tests), provider registry (7 tests)
+
+### Known Limitations
+1. Brand/product extraction fetches external URLs — SSRF protection is implemented but
+   DNS rebinding protection is limited on Cloudflare Workers (no DNS resolution API).
+   Production hardening should add Cloudflare Worker subrequest IP restrictions.
+2. Creative intelligence uses the same LLM (doubao) as existing workflows — no model router yet.
+3. No UI for the new creative intelligence APIs — they are API-only in this wave.
+4. Reference creative analysis accepts a URL but does not fetch/transcribe video yet —
+   it analyzes based on transcript text if provided, or generates analysis from the URL metadata.
+5. Provider abstraction interfaces are defined but existing workflow code has not been
+   refactored to use them — that's a gradual migration for future waves.

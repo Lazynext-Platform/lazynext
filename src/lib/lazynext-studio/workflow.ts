@@ -1,4 +1,5 @@
-import { submitRawGen } from '@/lib/atlas';
+import { atlasImage } from '@/lib/providers/atlas-image';
+import { atlasVideo } from '@/lib/providers/atlas-video';
 import type { MarketingPlan, AdShot } from './schema';
 
 /** in-app credit cost */
@@ -100,18 +101,19 @@ export async function submitShotImage(prompt: string, ratio: string, refImages?:
     // Passing aspect_ratio or omitting the ratio param entirely, the submit returns 200 but GET prediction returns 400
     // "Request parameters are invalid" (drama first frame edit always reproduces; marketing replica avoided exposure via promptOverride fallback to t2i).
     // Tested: image_size:'9:16' → completed.
-    return submitRawGen('generateImage', {
+    return atlasImage.generate({
       model: SHOT_IMAGE_EDIT_MODEL,
-      images: imgs,
       prompt,
-      image_size: ratio,
+      referenceImages: imgs,
+      imageField: 'images',
+      extra: { image_size: ratio },
     });
   }
-  return submitRawGen('generateImage', {
+  return atlasImage.generate({
     model: SHOT_IMAGE_MODEL,
     prompt,
-    aspect_ratio: ratio,
-    resolution: '2k',
+    ratio,
+    extra: { resolution: '2k' },
   });
 }
 
@@ -122,13 +124,9 @@ export async function submitShotVideo(
   opts: { ratio?: unknown; resolution?: unknown; duration?: unknown; model?: string } = {},
 ) {
   const model = typeof opts.model === 'string' && opts.model ? opts.model : SHOT_VIDEO_MODEL;
-  const payload: Record<string, unknown> = {
-    model,
-    image: imageUrl,
-    prompt,
-  };
+  const extra: Record<string, unknown> = {};
   if (model.includes('seedance-2.0')) {
-    Object.assign(payload, {
+    Object.assign(extra, {
       duration: normalizeVideoDuration(opts.duration),
       resolution: normalizeVideoResolution(opts.resolution),
       ratio: normalizeVideoRatio(opts.ratio),
@@ -139,7 +137,7 @@ export async function submitShotVideo(
     });
   }
   // Other models (veo3.1-fast etc.): only pass model/image/prompt, native audio + default duration, no seedance-specific fields.
-  return submitRawGen('generateVideo', payload);
+  return atlasVideo.generate({ model, prompt, image: imageUrl, extra });
 }
 
 /** Seedance 2.0 reference-to-video: multiple reference images (product image/character costume photo/scene image) directly produce video.
@@ -150,16 +148,18 @@ export async function submitShotRefVideo(
   opts: { ratio?: unknown; resolution?: unknown; duration?: unknown } = {},
 ) {
   const imgs = referenceImages.filter((u) => typeof u === 'string' && /^https?:\/\//.test(u)).slice(0, 9);
-  return submitRawGen('generateVideo', {
+  return atlasVideo.generate({
     model: SHOT_REF_VIDEO_MODEL,
     prompt,
-    reference_images: imgs,
-    duration: normalizeVideoDuration(opts.duration),
-    resolution: normalizeVideoResolution(opts.resolution),
-    ratio: normalizeVideoRatio(opts.ratio),
-    bitrate_mode: 'standard',
-    generate_audio: true,
-    watermark: false,
-    return_last_frame: false,
+    referenceImages: imgs,
+    extra: {
+      duration: normalizeVideoDuration(opts.duration),
+      resolution: normalizeVideoResolution(opts.resolution),
+      ratio: normalizeVideoRatio(opts.ratio),
+      bitrate_mode: 'standard',
+      generate_audio: true,
+      watermark: false,
+      return_last_frame: false,
+    },
   });
 }

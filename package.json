@@ -9,7 +9,7 @@
     "build": "npm run prisma:generate && npm run platform:prepare && next build --webpack",
     "start": "next start",
     "start:standalone": "node -e \"const{cpSync}=require('fs');cpSync('.next/static','.next/standalone/.next/static',{recursive:true});cpSync('public','.next/standalone/public',{recursive:true})\" && node .next/standalone/server.js",
-    "test": "node --test --experimental-strip-types --no-warnings test/**/*.test.ts",
+    "test": "node --test --experimental-strip-types --no-warnings --experimental-loader ./test/alias-loader.mjs test/**/*.test.ts",
     "test:e2e": "npx playwright test",
     "lint": "eslint src/ e2e/",
     "postinstall": "npm run prisma:generate && npm run platform:prepare",

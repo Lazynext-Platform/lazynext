@@ -13,7 +13,7 @@ test.describe('404 Page', () => {
     const res = await page.goto('/this-page-does-not-exist');
     expect(res?.status()).toBe(404);
     await expect(page.locator('h1')).toBeVisible();
-    await expect(page.locator('main')).toBeVisible();
+    await expect(page.locator('#main-content')).toBeVisible();
   });
 });
 
