@@ -1,12 +1,12 @@
-import { withAtlas } from '@/lib/request-context';
 import { NextResponse } from 'next/server';
 import { auth } from '@/../auth';
-import { uploadMedia } from '@/lib/atlas';
+import { putMedia } from '@/lib/media-storage';
 
 export const maxDuration = 60;
 
-// Upload reference image to Atlas to get a persistent URL: requires login (prevents anonymous abuse of upload quota), no charge. Logs errors + passes through detail.
-async function __byokPOST(req: Request) {
+// Upload a reference image to media storage (R2 in production, local filesystem in dev).
+// Requires login (prevents anonymous abuse of upload quota), no charge.
+async function POST(req: Request) {
   const session = await auth();
   if (!session?.user?.id) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
 
@@ -16,13 +16,19 @@ async function __byokPOST(req: Request) {
   if (dataUrl.length > 8_000_000) return NextResponse.json({ error: 'image_too_large' }, { status: 400 });
 
   try {
-    const url = await uploadMedia(dataUrl, 'mk-asset');
-    if (!/^https?:\/\//.test(url)) throw new Error('upload returned no url');
+    // Parse the data URL to extract content type and binary data
+    const match = /^data:(image\/[a-zA-Z+]+);base64,(.+)$/.exec(dataUrl);
+    if (!match) throw new Error('invalid_data_url');
+    const contentType = match[1];
+    const buffer = Uint8Array.from(atob(match[2]), (c) => c.charCodeAt(0)).buffer as ArrayBuffer;
+    const ext = contentType.split('/')[1] === 'jpeg' ? 'jpg' : (contentType.split('/')[1] || 'png');
+    const key = `mk-asset-${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+    const url = await putMedia(key, buffer, contentType);
     return NextResponse.json({ url });
   } catch (e) {
-    console.error('[marketing/upload] atlas error:', String(e));
+    console.error('[marketing/upload] error:', String(e));
     return NextResponse.json({ error: 'upload_failed', detail: String(e) }, { status: 502 });
   }
 }
 
-export const POST = withAtlas(__byokPOST);
+export { POST };

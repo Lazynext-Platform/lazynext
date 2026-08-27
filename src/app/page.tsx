@@ -73,7 +73,7 @@ return (
           <a href="https://atlascloud.ai?utm_source=github&utm_campaign=ecommerce-studio" target="_blank" rel="noopener noreferrer"
              className="inline-flex items-center gap-1.5 rounded-lg border border-line px-2.5 py-1 text-[11px] text-fg-faint transition hover:border-line-strong hover:text-fg-secondary">
             <span>{t('common.poweredBy')}</span>
-            <img src="/atlas-cloud-wordmark.png" alt="Atlas Cloud" className="h-3 w-auto opacity-80" />
+            <img src="/atlas-cloud-wordmark.png" alt="Atlas Cloud" className="h-3 w-auto opacity-80" loading="lazy" />
             <span aria-hidden="true">↗</span>
           </a>
         </div>

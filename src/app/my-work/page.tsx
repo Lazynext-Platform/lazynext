@@ -150,7 +150,7 @@ export default function MyWorkPage() {
                     <div className="relative aspect-[9/16] w-full">
                       {cover ? (
                          
-                        <img src={cover} alt="" className="h-full w-full object-cover" referrerPolicy="no-referrer" />
+                        <img src={cover} alt="" className="h-full w-full object-cover" referrerPolicy="no-referrer" loading="lazy" />
                       ) : (
                         <div className="grid h-full w-full place-items-center text-4xl">🎬</div>
                       )}
@@ -176,7 +176,7 @@ export default function MyWorkPage() {
                     <div className="relative aspect-[9/16] w-full">
                       {c.inputImage && (
                          
-                        <img src={c.inputImage} alt="" className="h-full w-full object-cover opacity-40" referrerPolicy="no-referrer" />
+                        <img src={c.inputImage} alt="" className="h-full w-full object-cover opacity-40" referrerPolicy="no-referrer" loading="lazy" />
                       )}
                       <div className="absolute inset-0 grid place-items-center gap-2 bg-black/50">
                         <Loader2 className="h-8 w-8 animate-spin" style={{ color: 'var(--color-brand-accent)' }} />
@@ -200,7 +200,7 @@ export default function MyWorkPage() {
                     <div className="relative aspect-[9/16] w-full">
                       {c.inputImage && (
 
-                        <img src={c.inputImage} alt="" className="h-full w-full object-cover opacity-25" referrerPolicy="no-referrer" />
+                        <img src={c.inputImage} alt="" className="h-full w-full object-cover opacity-25" referrerPolicy="no-referrer" loading="lazy" />
                       )}
                       <div className="absolute inset-0 grid place-items-center gap-2 bg-black/40">
                         <div className="grid h-11 w-11 place-items-center rounded-full bg-danger/15"><X className="h-5 w-5 text-danger" /></div>
@@ -229,10 +229,10 @@ export default function MyWorkPage() {
                   <button onClick={() => setPlay({ url, kind })} aria-label={t('myWork.play', { title })} className="group relative block aspect-[9/16] w-full">
                     {c.inputImage ? (
                        
-                      <img src={c.inputImage} alt="" className="h-full w-full object-cover" referrerPolicy="no-referrer" />
+                      <img src={c.inputImage} alt="" className="h-full w-full object-cover" referrerPolicy="no-referrer" loading="lazy" />
                     ) : kind === 'image' ? (
                        
-                      <img src={url} alt="" className="h-full w-full object-cover" referrerPolicy="no-referrer" />
+                      <img src={url} alt="" className="h-full w-full object-cover" referrerPolicy="no-referrer" loading="lazy" />
                     ) : (
                       <div className="grid h-full w-full place-items-center text-4xl">{kind === 'audio' ? '♪' : '🎬'}</div>
                     )}

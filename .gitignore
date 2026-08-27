@@ -48,3 +48,8 @@ worker-configuration.d.ts
 
 # Local dev media (generated during testing)
 .dev-media/
+
+# Playwright test artifacts
+/test-results/
+/playwright-report/
+/playwright/.cache/

@@ -115,7 +115,7 @@ function ImageField({
       <label className="mb-1.5 block text-xs font-medium text-fg-muted">{label}</label>
       <div className="flex items-center gap-3">
         <div className="grid h-16 w-16 shrink-0 place-items-center overflow-hidden rounded-lg border border-line bg-black/30">
-          {url ? <img src={url} alt="" className="h-full w-full object-cover" referrerPolicy="no-referrer" /> : <ImageIcon className="h-5 w-5 text-fg-placeholder" />}
+          {url ? <img src={url} alt="" className="h-full w-full object-cover" referrerPolicy="no-referrer" loading="lazy" /> : <ImageIcon className="h-5 w-5 text-fg-placeholder" />}
         </div>
         <div className="flex flex-col gap-1.5">
           <button type="button" onClick={() => inputRef.current?.click()} disabled={uploading}
@@ -223,7 +223,7 @@ function ProductsPanel() {
       renderCard={(p) => (
         <Card key={p.id} t={t} onEdit={() => setEditing(p)} onDelete={() => del(p.id)}>
           <div className="relative aspect-video w-full bg-black/40">
-            {p.imageUrl ? <img src={p.imageUrl} alt="" className="h-full w-full object-cover" referrerPolicy="no-referrer" /> : <div className="grid h-full w-full place-items-center"><ImageIcon className="h-6 w-6 text-fg-placeholder" /></div>}
+            {p.imageUrl ? <img src={p.imageUrl} alt="" className="h-full w-full object-cover" referrerPolicy="no-referrer" loading="lazy" /> : <div className="grid h-full w-full place-items-center"><ImageIcon className="h-6 w-6 text-fg-placeholder" /></div>}
           </div>
           <div className="p-3">
             <div className="truncate text-sm font-semibold">{p.name}</div>
@@ -303,7 +303,7 @@ function AvatarsPanel() {
       renderCard={(a) => (
         <Card key={a.id} t={t} onEdit={() => setEditing(a)} onDelete={() => del(a.id)}>
           <div className="relative aspect-square w-full bg-black/40">
-            {a.imageUrl ? <img src={a.imageUrl} alt="" className="h-full w-full object-cover" referrerPolicy="no-referrer" /> : <div className="grid h-full w-full place-items-center"><UserCircle className="h-7 w-7 text-fg-placeholder" /></div>}
+            {a.imageUrl ? <img src={a.imageUrl} alt="" className="h-full w-full object-cover" referrerPolicy="no-referrer" loading="lazy" /> : <div className="grid h-full w-full place-items-center"><UserCircle className="h-7 w-7 text-fg-placeholder" /></div>}
           </div>
           <div className="p-3">
             <div className="truncate text-sm font-semibold">{a.name}</div>

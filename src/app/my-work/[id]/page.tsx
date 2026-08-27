@@ -114,7 +114,7 @@ function DramaFolder({ c, t, finalVideo }: { c: Creation; t: (key: string, vars?
                 <div className="relative aspect-[3/4] w-full">
                   {ch.portraitUrl ? (
                      
-                    <img src={ch.portraitUrl} alt={ch.name} className="h-full w-full object-cover" referrerPolicy="no-referrer" />
+                    <img src={ch.portraitUrl} alt={ch.name} className="h-full w-full object-cover" referrerPolicy="no-referrer" loading="lazy" />
                   ) : (
                     <div className="grid h-full w-full place-items-center text-3xl opacity-50">🎭</div>
                   )}
@@ -131,7 +131,7 @@ function DramaFolder({ c, t, finalVideo }: { c: Creation; t: (key: string, vars?
         <section className="mb-10">
           <h2 className="mb-3 text-sm font-semibold text-fg-secondary">🛍️ {t('myWork.productReference')}</h2>
           { }
-          <img src={f.productImageUrl} alt="product" className="h-40 rounded-xl border border-line object-cover" referrerPolicy="no-referrer" />
+          <img src={f.productImageUrl} alt="product" className="h-40 rounded-xl border border-line object-cover" referrerPolicy="no-referrer" loading="lazy" />
         </section>
       )}
 
@@ -150,7 +150,7 @@ function DramaFolder({ c, t, finalVideo }: { c: Creation; t: (key: string, vars?
                   <div>
                     <div className="mb-1 text-[10px] text-fg-faint">{t('myWork.firstFrame')}</div>
                     { }
-                    <img src={s.frameUrl} alt="" className="h-40 rounded-lg border border-line object-cover" referrerPolicy="no-referrer" />
+                    <img src={s.frameUrl} alt="" className="h-40 rounded-lg border border-line object-cover" referrerPolicy="no-referrer" loading="lazy" />
                   </div>
                 )}
                 {s.videoUrl ? (

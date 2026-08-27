@@ -158,9 +158,9 @@ export default function DashboardPage() {
                   <Link key={c.id} href="/my-work" className="group overflow-hidden rounded-2xl border border-line bg-black/30">
                     <div className="relative aspect-[9/16] w-full">
                       {c.inputImage ? (
-                        <img src={c.inputImage} alt="" className="h-full w-full object-cover" referrerPolicy="no-referrer" />
+                        <img src={c.inputImage} alt="" className="h-full w-full object-cover" referrerPolicy="no-referrer" loading="lazy" />
                       ) : url ? (
-                        <img src={url} alt="" className="h-full w-full object-cover" referrerPolicy="no-referrer" />
+                        <img src={url} alt="" className="h-full w-full object-cover" referrerPolicy="no-referrer" loading="lazy" />
                       ) : (
                         <div className="grid h-full w-full place-items-center text-3xl">🎬</div>
                       )}
