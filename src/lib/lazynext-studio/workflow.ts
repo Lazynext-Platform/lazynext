@@ -1,5 +1,6 @@
 import { atlasImage } from '@/lib/providers/atlas-image';
 import { atlasVideo } from '@/lib/providers/atlas-video';
+import { emitProviderCalled, emitProviderCompleted } from '@/lib/observability/events';
 import type { MarketingPlan, AdShot } from './schema';
 
 /** in-app credit cost */
@@ -96,25 +97,31 @@ export function buildShotImageEditPrompt(plan: MarketingPlan, shot: AdShot, hasP
 /** nano-banana image generation: with reference images uses edit (consumes real images), otherwise text-to-image */
 export async function submitShotImage(prompt: string, ratio: string, refImages?: string[]) {
   const imgs = (refImages || []).filter((u) => typeof u === 'string' && /^https?:\/\//.test(u)).slice(0, 4);
-  if (imgs.length) {
-    // ⚠️ nano-banana-2/edit's aspect ratio parameter is named image_size (value like '9:16'), not aspect_ratio.
-    // Passing aspect_ratio or omitting the ratio param entirely, the submit returns 200 but GET prediction returns 400
-    // "Request parameters are invalid" (drama first frame edit always reproduces; marketing replica avoided exposure via promptOverride fallback to t2i).
-    // Tested: image_size:'9:16' → completed.
-    return atlasImage.generate({
-      model: SHOT_IMAGE_EDIT_MODEL,
+  const t0 = Date.now();
+  emitProviderCalled('', 'atlas-image', imgs.length ? SHOT_IMAGE_EDIT_MODEL : SHOT_IMAGE_MODEL, { ratio, hasRef: imgs.length > 0 });
+  try {
+    if (imgs.length) {
+      // ⚠️ nano-banana-2/edit's aspect ratio parameter is named image_size (value like '9:16'), not aspect_ratio.
+      // Passing aspect_ratio or omitting the ratio param entirely, the submit returns 200 but GET prediction returns 400
+      // "Request parameters are invalid" (drama first frame edit always reproduces; marketing replica avoided exposure via promptOverride fallback to t2i).
+      // Tested: image_size:'9:16' → completed.
+      return await atlasImage.generate({
+        model: SHOT_IMAGE_EDIT_MODEL,
+        prompt,
+        referenceImages: imgs,
+        imageField: 'images',
+        extra: { image_size: ratio },
+      });
+    }
+    return await atlasImage.generate({
+      model: SHOT_IMAGE_MODEL,
       prompt,
-      referenceImages: imgs,
-      imageField: 'images',
-      extra: { image_size: ratio },
+      ratio,
+      extra: { resolution: '2k' },
     });
+  } finally {
+    emitProviderCompleted('', 'atlas-image', imgs.length ? SHOT_IMAGE_EDIT_MODEL : SHOT_IMAGE_MODEL, Date.now() - t0);
   }
-  return atlasImage.generate({
-    model: SHOT_IMAGE_MODEL,
-    prompt,
-    ratio,
-    extra: { resolution: '2k' },
-  });
 }
 
 /** Seedance 2.0 image-to-video: first frame field is image, can natively generate dialogue/sound effects. */

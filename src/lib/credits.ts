@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma';
 import { isByok } from '@/lib/request-context';
+import { emitCreditsCharged, emitCreditsRefunded } from '@/lib/observability/events';
 
 export async function getCredits(userId: string): Promise<number> {
   const u = await prisma.user.findUnique({ where: { id: userId }, select: { credits: true } });
@@ -35,6 +36,7 @@ export async function deductCredits(
     data: { credits: { decrement: amount } },
   });
   if (res.count === 0) throw new Error('INSUFFICIENT_CREDITS');
+  emitCreditsCharged(userId, amount, reason);
   // Cloudflare D1 does not support interactive transactions, so we use compensation: if ledger write fails, add back the deducted credits to avoid "charged without a ledger entry".
   try {
     await prisma.creditLedger.create({ data: { userId, delta: -amount, reason, ref } });
@@ -43,6 +45,7 @@ export async function deductCredits(
     await prisma.user.update({ where: { id: userId }, data: { credits: { increment: amount } } }).catch((re) => {
       console.error(`[credits] CRITICAL: deduct succeeded but ledger+rollback both failed uid=${userId} amount=${amount} ref=${ref}:`, String(re));
     });
+    emitCreditsRefunded(userId, amount, `${reason}:ledger_rollback`);
     throw e;
   }
 }

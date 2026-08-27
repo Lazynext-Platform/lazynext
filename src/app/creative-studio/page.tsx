@@ -74,11 +74,23 @@ type ReferenceCreativeAnalysis = {
   originalityConstraints: string[];
 };
 
+type CreativeScore = {
+  hookStrength: number; clarity: number; productVisibility: number;
+  brandConsistency: number; emotionalImpact: number; novelty: number;
+  platformFit: number; ctaStrength: number; audioQuality: number;
+  visualQuality: number; complianceRisk: number; overall: number; notes: string;
+};
+
+type CreativeVariant = {
+  id: string; parentCreativeId: string; variationType: string;
+  hook: string; script: string; visual: string; cta: string; rationale: string;
+};
+
 // ── Costs (must match backend) ──
 const COSTS = {
   brandExtract: 5, productExtract: 3,
   brief: 3, hooks: 2, angles: 2, script: 3, storyboard: 3,
-  referenceAnalysis: 5,
+  referenceAnalysis: 5, score: 2, variants: 3,
 };
 
 // ── Helpers ──
@@ -151,6 +163,16 @@ export default function CreativeStudioPage() {
   const [refStep, setRefStep] = useState<Step>('idle');
   const [refAnalysis, setRefAnalysis] = useState<ReferenceCreativeAnalysis | null>(null);
   const [refError, setRefError] = useState('');
+
+  // Score state
+  const [scoreStep, setScoreStep] = useState<Step>('idle');
+  const [score, setScore] = useState<CreativeScore | null>(null);
+  const [scoreError, setScoreError] = useState('');
+
+  // Variants state
+  const [variantsStep, setVariantsStep] = useState<Step>('idle');
+  const [variants, setVariants] = useState<CreativeVariant[]>([]);
+  const [variantsError, setVariantsError] = useState('');
 
   // ── Actions ──
   const doBrandExtract = useCallback(async () => {
@@ -272,6 +294,32 @@ export default function CreativeStudioPage() {
       setRefStep('error');
     }
   }, [refUrl]);
+
+  const doScore = useCallback(async () => {
+    if (!brief || !script) return;
+    setScoreStep('loading'); setScoreError(''); setScore(null);
+    try {
+      const j = await postJson('/api/creative/score', { brief, script, storyboard });
+      setScore(j.score as CreativeScore);
+      setScoreStep('done');
+    } catch (e) {
+      setScoreError(String(e instanceof Error ? e.message : e));
+      setScoreStep('error');
+    }
+  }, [brief, script, storyboard]);
+
+  const doVariants = useCallback(async () => {
+    if (!brief || !script) return;
+    setVariantsStep('loading'); setVariantsError(''); setVariants([]);
+    try {
+      const j = await postJson('/api/creative/variants', { brief, script, count: 3 });
+      setVariants(j.variants as CreativeVariant[]);
+      setVariantsStep('done');
+    } catch (e) {
+      setVariantsError(String(e instanceof Error ? e.message : e));
+      setVariantsStep('error');
+    }
+  }, [brief, script]);
 
   // ── Render ──
   if (status === 'loading') {
@@ -644,6 +692,74 @@ export default function CreativeStudioPage() {
           </Section>
         )}
 
+        {/* Step 5b: Score & Variants */}
+        {brief && script && (
+          <Section
+            icon={Sparkles}
+            title={t('creativeStudio.scoreVariantsTitle')}
+            subtitle={t('creativeStudio.scoreVariantsSubtitle')}
+          >
+            <div className="grid gap-4 sm:grid-cols-2">
+              {/* Score */}
+              <div className="rounded-2xl border border-line bg-surface p-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-bold">{t('creativeStudio.qualityScore')}</span>
+                  <button
+                    onClick={doScore}
+                    disabled={scoreStep === 'loading'}
+                    className="rounded-lg px-3 py-1.5 text-xs font-bold text-white disabled:opacity-50"
+                    style={{ background: '#0064d9' }}
+                  >
+                    {scoreStep === 'loading' ? <Loader2 className="h-3 w-3 animate-spin" /> : `${t('creativeStudio.score')} (${COSTS.score})`}
+                  </button>
+                </div>
+                {scoreStep === 'error' && <ErrorNote text={scoreError} />}
+                {score && (
+                  <div className="mt-3 space-y-1.5 text-xs">
+                    <div className="flex items-center gap-1 text-success"><CheckCircle2 className="h-3 w-3" /> {t('creativeStudio.overall')}: {score.overall}/10</div>
+                    <ScoreBar label={t('creativeStudio.hookStrength')} value={score.hookStrength} />
+                    <ScoreBar label={t('creativeStudio.clarity')} value={score.clarity} />
+                    <ScoreBar label={t('creativeStudio.productVisibility')} value={score.productVisibility} />
+                    <ScoreBar label={t('creativeStudio.emotionalImpact')} value={score.emotionalImpact} />
+                    <ScoreBar label={t('creativeStudio.novelty')} value={score.novelty} />
+                    <ScoreBar label={t('creativeStudio.platformFit')} value={score.platformFit} />
+                    <ScoreBar label={t('creativeStudio.ctaStrength')} value={score.ctaStrength} />
+                    {score.complianceRisk > 0 && <div className="text-danger">⚠ {t('creativeStudio.complianceRisk')}: {score.complianceRisk}/10</div>}
+                    {score.notes && <p className="mt-1 text-fg-faint">{score.notes}</p>}
+                  </div>
+                )}
+              </div>
+
+              {/* Variants */}
+              <div className="rounded-2xl border border-line bg-surface p-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-bold">{t('creativeStudio.abVariants')}</span>
+                  <button
+                    onClick={doVariants}
+                    disabled={variantsStep === 'loading'}
+                    className="rounded-lg px-3 py-1.5 text-xs font-bold text-white disabled:opacity-50"
+                    style={{ background: '#0064d9' }}
+                  >
+                    {variantsStep === 'loading' ? <Loader2 className="h-3 w-3 animate-spin" /> : `${t('creativeStudio.generate')} (${COSTS.variants})`}
+                  </button>
+                </div>
+                {variantsStep === 'error' && <ErrorNote text={variantsError} />}
+                {variants.length > 0 && (
+                  <div className="mt-3 space-y-2">
+                    {variants.map((v) => (
+                      <div key={v.id} className="rounded-xl border border-line bg-app p-3 text-xs">
+                        <span className="rounded bg-[#00b2fc]/15 px-1.5 py-0.5 text-[10px] font-medium" style={{ color: 'var(--color-brand-accent)' }}>{v.variationType}</span>
+                        <p className="mt-1.5 text-fg">{v.hook}</p>
+                        <p className="mt-1 text-fg-faint">{v.rationale}</p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </Section>
+        )}
+
         {/* Footer note */}
         <div className="mt-8 rounded-2xl border border-dashed border-line bg-hover p-4 text-center text-xs text-fg-faint">
           <Sparkles className="mx-auto mb-2 h-5 w-5 text-fg-placeholder" />
@@ -816,5 +932,17 @@ function StudioLink({ href, label, desc }: { href: string; label: string; desc: 
       </div>
       <p className="mt-1 text-xs text-fg-faint">{desc}</p>
     </Link>
+  );
+}
+
+function ScoreBar({ label, value }: { label: string; value: number }) {
+  return (
+    <div className="flex items-center gap-2">
+      <span className="w-28 shrink-0 text-fg-faint">{label}</span>
+      <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-line">
+        <div className="h-full rounded-full" style={{ width: `${value * 10}%`, background: value >= 7 ? '#22c55e' : value >= 4 ? '#f59e0b' : '#ef4444' }} />
+      </div>
+      <span className="w-6 shrink-0 text-right text-fg">{value}</span>
+    </div>
   );
 }

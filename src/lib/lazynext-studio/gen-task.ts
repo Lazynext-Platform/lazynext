@@ -34,6 +34,11 @@ export async function chargeSync(uid: string, cost: number, ref: string): Promis
 /** Synchronous refund (for plan/script generation failure rollback). */
 export async function refundSync(uid: string, cost: number, ref: string): Promise<void> {
   await grantCredits(uid, cost, 'refund', ref);
+  // Emit refund event (imported lazily to avoid circular deps)
+  try {
+    const { emitCreditsRefunded } = await import('@/lib/observability/events');
+    emitCreditsRefunded(uid, cost, ref);
+  } catch { /* non-fatal */ }
 }
 
 /**
