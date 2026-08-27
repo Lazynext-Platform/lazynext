@@ -34,6 +34,9 @@ model User {
   brandKits  BrandKit[]
   brandProfiles BrandProfile[]
   assets     Asset[]
+  workflowRuns WorkflowRun[]
+  adCampaigns  AdCampaign[]
+  creativePerformance CreativePerformance[]
 }
 
 model Account {
@@ -211,4 +214,86 @@ model AssetVersion {
   asset       Asset     @relation(fields: [assetId], references: [id], onDelete: Cascade)
 
   @@index([assetId])
+}
+
+// ── Workflow engine state (durable step tracking) ──
+model WorkflowRun {
+  id           String   @id @default(cuid())
+  userId       String
+  workflowType String
+  status       String   @default("running") // running | completed | failed | cancelled
+  input        Json?
+  output       Json?
+  error        String?
+  startedAt    DateTime @default(now())
+  completedAt  DateTime?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model WorkflowStep {
+  id          String   @id @default(cuid())
+  runId       String
+  stepName    String
+  status      String   @default("pending") // pending | running | completed | failed | skipped
+  input       Json?
+  output      Json?
+  error       String?
+  creditsCost Int?
+  startedAt   DateTime?
+  completedAt DateTime?
+
+  @@index([runId])
+}
+
+// ── Ad platform integrations ──
+model AdCampaign {
+  id           String   @id @default(cuid())
+  userId       String
+  platform     String   // meta | google
+  campaignId   String?  // external platform campaign ID
+  name         String
+  status       String   @default("draft") // draft | pending_approval | active | paused | completed
+  budgetDaily  Float?
+  budgetTotal  Float?
+  currency     String   @default("USD")
+  targeting    Json?    // audience targeting config
+  creativeIds  Json?    // string[] of Creation IDs
+  metrics      Json?    // { impressions, clicks, conversions, spend, roas }
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([platform])
+}
+
+// ── Performance learning ──
+model CreativePerformance {
+  id            String   @id @default(cuid())
+  userId        String
+  creationId    String
+  campaignId    String?
+  platform      String
+  hookType      String?
+  angleName     String?
+  variantId     String?
+  impressions   Int      @default(0)
+  clicks        Int      @default(0)
+  conversions   Int      @default(0)
+  spend         Float    @default(0)
+  revenue       Float    @default(0)
+  ctr           Float    @default(0)
+  cvr           Float    @default(0)
+  roas          Float    @default(0)
+  recordedAt    DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([creationId])
+  @@index([platform])
 }
