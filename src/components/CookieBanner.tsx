@@ -37,7 +37,7 @@ export function CookieBanner() {
 
   return (
     <div
-      className="fixed bottom-0 left-0 right-0 z-50 border-t border-line bg-popover px-4 py-4 shadow-2xl"
+      className="fixed bottom-0 left-0 right-0 z-50 border-t border-line bg-popover px-4 pt-4 pb-safe shadow-2xl"
       role="dialog"
       aria-label={t('common.cookieConsent')}
     >
@@ -46,17 +46,17 @@ export function CookieBanner() {
           {tr.msg}{' '}
           <a href="/privacy" className="underline hover:text-fg">{tr.link}</a>
         </p>
-        <div className="flex shrink-0 gap-2">
+        <div className="flex w-full shrink-0 gap-2 sm:w-auto">
           <button
             onClick={() => setConsent(false)}
-            className="rounded-lg border border-line px-4 py-2 text-xs font-medium text-fg-secondary transition hover:bg-hover"
+            className="flex-1 rounded-lg border border-line px-4 py-2 text-xs font-medium text-fg-secondary transition hover:bg-hover sm:flex-none"
           >
             {tr.decline}
           </button>
           <button
             onClick={() => setConsent(true)}
-            className="rounded-lg px-4 py-2 text-xs font-bold text-white transition hover:brightness-110"
-            style={{ background: '#00b2fc' }}
+            className="flex-1 rounded-lg px-4 py-2 text-xs font-bold text-white transition hover:brightness-110 sm:flex-none"
+            style={{ background: '#0064d9' }}
           >
             {tr.accept}
           </button>

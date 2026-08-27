@@ -24,7 +24,7 @@ import { AssetPicker } from '@/components/AssetPicker';
 // ── Higgsfield lazynext-studio/product visual specs (measured) ──
 // bg #131416 · solid panel #1c1e21 · accent lime #00b2fc · near-black text #131416
 // hero: Space Grotesk 700 uppercase / -1.6px / lh1.2 / all-white rgba(255,255,255,.9)
-const LIME = '#00b2fc';
+const LIME = '#0064d9';
 const PANEL = 'var(--c-popover)';
 const COSTS = { plan: 3, image: 5, video: 12 };
 // Video model: seedance-2.0/image-to-video (prompt with dialogue + generate_audio for lip-sync, cheapest single step), matches backend REPLICA_VIDEO_MODEL whitelist
@@ -536,7 +536,7 @@ export default function MarketingStudioPage() {
       {failed && <div className="absolute inset-0 grid place-items-center text-[8px] text-center font-semibold leading-tight px-1" style={{ background: '#b91c1c', color: '#fff' }}>{t('mkStudio.imageFailed')}</div>}
       {asset.uploading && <div className="absolute inset-0 bg-black/60 grid place-items-center"><Loader2 className="w-4 h-4 animate-spin text-white" /></div>}
       {asset.url && !failed && <div className="absolute bottom-0 inset-x-0 text-[8px] text-center font-semibold leading-tight" style={{ background: LIME, color: '#fff' }}>{t('mkStudio.uploaded')}</div>}
-      <button onClick={onRemove} className="absolute top-0.5 right-0.5 bg-black/60 rounded-full p-0.5"><X className="w-3 h-3 text-white" /></button>
+      <button onClick={onRemove} aria-label={t('common.close')} className="absolute top-0.5 right-0.5 bg-black/60 rounded-full p-1.5"><X className="w-3 h-3 text-white" /></button>
     </div>
     );
   };
@@ -548,9 +548,9 @@ export default function MarketingStudioPage() {
 
   // Top-level hydration gate: first frame (SSR + client hydration) renders a uniform empty skeleton, real content only after mounted,
   // completely avoiding SSR≠client divergence caused by in-page client-only state (session/credits/locale) (React #418).
-  if (!mounted) return <main className="min-h-screen text-fg app-grid-bg bg-app" />;
+  if (!mounted) return <div className="min-h-screen text-fg app-grid-bg bg-app" />;
   return (
-    <main className="min-h-screen text-fg app-grid-bg bg-app">
+    <div className="min-h-screen text-fg app-grid-bg bg-app">
       {/* Hero */}
       <div className="text-center pt-10 pb-10 px-6">
         <div className="text-[14px] uppercase tracking-[0.24em] text-fg-muted font-semibold mb-3" style={{ fontFamily: 'var(--font-grotesk), "Space Grotesk", sans-serif' }}>Lazynext</div>
@@ -562,7 +562,7 @@ export default function MarketingStudioPage() {
       {/* Generator panel */}
       <div className="max-w-4xl mx-auto px-4">
         <div className="rounded-3xl border border-line p-4 sm:p-5 shadow-card" style={{ background: PANEL }}>
-          <div className="flex items-stretch gap-4">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-stretch">
             {/* prompt + controls */}
             <div className="flex-1 min-w-0 flex flex-col">
               <input ref={productInput} type="file" accept="image/*" multiple className="hidden" onChange={(e) => { Array.from(e.target.files || []).forEach((f) => void onPick('product', f)); e.target.value = ''; }} />
@@ -579,6 +579,7 @@ export default function MarketingStudioPage() {
                 {!avatarAsset.preview && <AssetPicker kind="avatar" label={t('assets.pickAvatar')} onSelect={(url) => setAvatarAsset({ preview: url, url })} />}
               </div>
               <textarea value={product} onChange={(e) => setProduct(e.target.value)} rows={4}
+                aria-label={t('mkStudio.placeholder')}
                 placeholder={t('mkStudio.placeholder')}
                 className="w-full flex-1 bg-transparent text-[15px] leading-relaxed resize-none focus:outline-none placeholder:text-fg-placeholder px-1 pt-1" />
               <div className="flex items-center gap-2 mt-1 mb-1">
@@ -600,7 +601,7 @@ export default function MarketingStudioPage() {
             </div>
             {/* GENERATE (full height) */}
             <button onClick={() => void genDirectVideo()} disabled={busy !== null || productAssets.some((a) => a.uploading) || avatarAsset.uploading || !hasCreditsForVideo}
-              className="self-stretch px-6 rounded-2xl font-extrabold text-sm flex flex-col items-center justify-center gap-1.5 disabled:opacity-50 transition hover:brightness-105 shrink-0"
+              className="sm:self-stretch px-6 py-3 sm:py-0 rounded-2xl font-extrabold text-sm flex flex-row sm:flex-col items-center justify-center gap-1.5 disabled:opacity-50 transition hover:brightness-105 shrink-0"
               style={{ background: `radial-gradient(90% 90% at 50% 120%, #22d3ee 0%, rgba(167,139,250,0) 60%), ${LIME}`, color: '#fff' }}>
               {busy === 'video' ? <Loader2 className="w-5 h-5 animate-spin" /> : <Video className="w-5 h-5" />}
               <span>{(!hasCreditsForVideo ? t('mkStudio.lowCredits') : t('mkStudio.generate'))}</span><span className="text-[10px] opacity-70">✦ {shotCost}</span>
@@ -614,14 +615,14 @@ export default function MarketingStudioPage() {
         </div>
       </div>
 
-      {err && <div className="max-w-4xl mx-auto px-4 mt-4 mb-6"><div className="flex items-center gap-2 text-sm text-red-400 bg-red-500/10 border border-red-500/25 rounded-lg px-3 py-2"><AlertCircle className="w-4 h-4" />{errText(err, t)}</div></div>}
+      {err && <div role="alert" className="max-w-4xl mx-auto px-4 mt-4 mb-6"><div className="flex items-center gap-2 text-sm text-danger bg-danger/10 border border-danger/25 rounded-lg px-3 py-2"><AlertCircle className="w-4 h-4" />{errText(err, t)}</div></div>}
 
       {/* Final video */}
       {compose.status !== 'idle' && (
         <div className="max-w-md mx-auto px-4 pb-16">
           <div className="rounded-3xl border border-line p-5 shadow-[0_24px_80px_-28px_rgba(0,178,252,0.55)]" style={{ background: PANEL }}>
             <div className="flex items-center gap-2 text-sm mb-3">
-              {compose.status === 'done' ? <CheckCircle2 className="w-4 h-4" style={{ color: LIME }} /> : compose.status === 'fail' || compose.status === 'paused' ? <AlertCircle className={`w-4 h-4 ${compose.status === 'paused' ? 'text-amber-300' : 'text-red-400'}`} /> : <Loader2 className="w-4 h-4 animate-spin" style={{ color: LIME }} />}
+              {compose.status === 'done' ? <CheckCircle2 className="w-4 h-4" style={{ color: LIME }} /> : compose.status === 'fail' || compose.status === 'paused' ? <AlertCircle className={`w-4 h-4 ${compose.status === 'paused' ? 'text-warning' : 'text-danger'}`} /> : <Loader2 className="w-4 h-4 animate-spin" style={{ color: LIME }} />}
               <b>{compose.status === 'done'
                 ? t('mkStudio.videoReady')
                 : compose.status === 'paused'
@@ -640,7 +641,7 @@ export default function MarketingStudioPage() {
               </>
             )}
             {(compose.status === 'fail' || compose.status === 'paused') && (
-              <div className={`rounded-2xl border p-4 text-sm text-center ${compose.status === 'paused' ? 'border-amber-400/25 bg-amber-400/10 text-amber-200' : 'border-red-500/25 bg-red-500/10 text-red-300'}`}>
+              <div role={compose.status === 'paused' ? 'status' : 'alert'} className={`rounded-2xl border p-4 text-sm text-center ${compose.status === 'paused' ? 'border-warning/25 bg-warning/10 text-warning' : 'border-danger/25 bg-danger/10 text-danger'}`}>
                 <div className="mb-3 leading-relaxed">{compose.note || t('mkStudio.genFailedRetry')}</div>
                 <button onClick={() => void genDirectVideo(shots[0], creationId)} disabled={busy !== null} className="inline-flex items-center gap-1.5 text-sm font-bold px-4 py-2 rounded-xl transition hover:brightness-110 disabled:opacity-50" style={{ background: LIME, color: '#131517' }}>{busy ? <Loader2 className="w-4 h-4 animate-spin" /> : <Video className="w-4 h-4" />}{compose.status === 'paused' ? t('mkStudio.continueChecking') : t('mkStudio.retryGeneration')}</button>
               </div>
@@ -708,15 +709,15 @@ export default function MarketingStudioPage() {
       </div>
 
       {preview && EXAMPLE_VIDEOS[preview] && (
-        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur grid place-items-center p-4" onClick={() => setPreview(null)} role="dialog" aria-modal="true" aria-label={t('mkStudio.closePreview')}>
-          <div className="relative" onClick={(e) => e.stopPropagation()}>
+        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur grid place-items-center p-4 pt-safe" onClick={() => setPreview(null)} role="dialog" aria-modal="true" aria-label={t('mkStudio.closePreview')}>
+          <div className="relative max-h-[90vh] flex flex-col items-center" onClick={(e) => e.stopPropagation()}>
             <video src={EXAMPLE_VIDEOS[preview]} controls autoPlay loop playsInline
-              className="max-h-[85vh] w-auto rounded-2xl border border-line bg-black" style={{ aspectRatio: '9 / 16' }} />
-            <button onClick={() => setPreview(null)} aria-label={t('mkStudio.closePreview')} className="absolute -top-3 -right-3 w-9 h-9 rounded-full bg-[#00b2fc] text-white grid place-items-center shadow-lg"><X className="w-5 h-5" /></button>
+              className="max-h-[80vh] w-auto max-w-full rounded-2xl border border-line bg-black" style={{ aspectRatio: '9 / 16' }} />
+            <button onClick={() => setPreview(null)} aria-label={t('mkStudio.closePreview')} className="absolute -top-3 -right-3 w-9 h-9 rounded-full bg-[#0064d9] text-white grid place-items-center shadow-lg"><X className="w-5 h-5" /></button>
             <div className="mt-3 text-center text-sm text-fg-secondary">{(() => { const pf = AD_FORMATS.find((f) => f.id === preview); return pf ? t(`presets.fmt.${pf.id}.label`) : ''; })()} · {t('mkStudio.clickOutside')}</div>
           </div>
         </div>
       )}
-    </main>
+    </div>
   );
 }

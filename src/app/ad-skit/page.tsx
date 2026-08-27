@@ -133,19 +133,19 @@ export default function AdSkitPage() {
 
   return (
     <div className="min-h-screen bg-app text-fg">
-      <div className="px-6 sm:px-8 py-5">
+      <div className="px-4 sm:px-8 py-5">
         <div className="mx-auto flex w-full max-w-6xl items-center gap-3">
           <a href="/" className="text-sm text-fg-muted hover:text-fg transition">{t('adSkit.allApps')}</a>
         </div>
       </div>
 
-      <div className="mx-auto w-full max-w-6xl space-y-8 px-6 pb-16 sm:px-8">
+      <div className="mx-auto w-full max-w-6xl space-y-8 px-4 pb-16 sm:px-8">
       <div className="flex items-center gap-3">
         <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#00b2fc]/15 text-brand-accent"><Clapperboard className="h-6 w-6" /></span>
         <div>
           <div className="flex flex-wrap items-center gap-2">
             <h1 className="text-2xl font-bold tracking-tight text-fg">{t('adSkit.title')}</h1>
-            <span className="rounded-full bg-amber-400/15 px-2 py-1 text-xs font-semibold text-amber-300">{t('adSkit.featured')}</span>
+            <span className="rounded-full bg-warning/15 px-2 py-1 text-xs font-semibold text-warning">{t('adSkit.featured')}</span>
           </div>
           <p className="mt-1 max-w-2xl text-sm text-fg-muted">
             {t('adSkit.desc')}
@@ -158,9 +158,10 @@ export default function AdSkitPage() {
         <section className="space-y-5">
           <div className="rounded-2xl border border-line bg-popover p-5">
             <h2 className="mb-3 flex items-center gap-2 text-sm font-semibold text-fg">
-              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#00b2fc] text-xs text-white">1</span>{t('adSkit.productSettings')}
+              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#0064d9] text-xs text-white">1</span>{t('adSkit.productSettings')}
             </h2>
             <textarea value={product} onChange={(e) => setProduct(e.target.value)} rows={3}
+              aria-label={t('adSkit.placeholder')}
               placeholder={t('adSkit.placeholder')}
               className="w-full resize-none rounded-xl border border-line bg-surface p-3 text-sm text-fg outline-none transition placeholder:text-fg-placeholder focus:border-[#00b2fc] focus:ring-2 focus:ring-[#00b2fc]/30" />
             <div className="mt-3">
@@ -169,7 +170,7 @@ export default function AdSkitPage() {
                   <div key={i} className="relative h-14 w-14 overflow-hidden rounded-lg border border-line">
                     { }
                     <img src={u} alt={t('adSkit.productPhotoAlt')} className="h-full w-full object-cover" />
-                    <button type="button" onClick={() => setUploadedImages((a) => a.filter((_, j) => j !== i))} className="absolute right-0 top-0 flex h-4 w-4 items-center justify-center bg-black/60 text-[10px] leading-none text-white">×</button>
+                    <button type="button" onClick={() => setUploadedImages((a) => a.filter((_, j) => j !== i))} aria-label={t('adSkit.removeImage')} className="absolute right-0 top-0 flex h-4 w-4 items-center justify-center bg-black/60 text-[10px] leading-none text-white">×</button>
                   </div>
                 ))}
                 {uploadedImages.length < 4 && (
@@ -189,27 +190,27 @@ export default function AdSkitPage() {
               <span className="mt-1 block text-xs text-fg-faint">{t('adSkit.uploadHint')}</span>
             </div>
             <label className="mt-3 block"><span className="mb-1 block text-xs font-medium text-fg-muted">{t('adSkit.style')}</span>
-              <select value={style} onChange={(e) => setStyle(e.target.value)} className="w-full rounded-xl border border-line bg-surface px-3 py-2 text-sm text-fg outline-none focus:border-[#00b2fc]">
+              <select value={style} onChange={(e) => setStyle(e.target.value)} aria-label={t('adSkit.style')} className="w-full rounded-xl border border-line bg-surface px-3 py-2 text-sm text-fg outline-none focus:border-[#00b2fc]">
                 {STYLES.map((s) => <option key={s.key} value={s.key}>{t(s.labelKey)}</option>)}
               </select>
             </label>
             <label className="mt-3 block"><span className="mb-1 block text-xs font-medium text-fg-muted">{t('adSkit.creativeLlm')}</span>
-              <select value={llm} onChange={(e) => setLlm(e.target.value)} className="w-full rounded-xl border border-line bg-surface px-3 py-2 text-sm text-fg outline-none focus:border-[#00b2fc]">
+              <select value={llm} onChange={(e) => setLlm(e.target.value)} aria-label={t('adSkit.creativeLlm')} className="w-full rounded-xl border border-line bg-surface px-3 py-2 text-sm text-fg outline-none focus:border-[#00b2fc]">
                 {PLAN_MODELS.map((m) => <option key={m.key} value={m.key}>{m.label}</option>)}
               </select>
             </label>
-            <button onClick={genPlan} disabled={busy !== null} className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#00b2fc] px-5 py-3 font-semibold text-white transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50">
+            <button onClick={genPlan} disabled={busy !== null} className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#0064d9] px-5 py-3 font-semibold text-white transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50">
               {busy === 'plan' ? <><Loader2 className="h-4 w-4 animate-spin" /> {t('adSkit.directorBrainstorming')}</> : <><Wand2 className="h-4 w-4" /> {t('adSkit.generateScriptCredits', { n: COSTS.plan })}</>}
             </button>
-            {err && <p className="mt-3 flex items-center gap-1.5 text-sm text-red-400"><AlertCircle className="h-4 w-4 shrink-0" /> {err}</p>}
+            {err && <p role="alert" className="mt-3 flex items-center gap-1.5 text-sm text-danger"><AlertCircle className="h-4 w-4 shrink-0" /> {err}</p>}
           </div>
 
           {plan && (
             <div className="space-y-3 rounded-2xl border border-line bg-popover p-5">
-              <h2 className="flex items-center gap-2 text-sm font-semibold text-fg"><span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#00b2fc] text-xs text-white">2</span>{t('adSkit.scriptReview')}</h2>
+              <h2 className="flex items-center gap-2 text-sm font-semibold text-fg"><span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#0064d9] text-xs text-white">2</span>{t('adSkit.scriptReview')}</h2>
               <div className="rounded-lg bg-surface p-3 text-sm leading-6 text-fg-secondary"><b>{t('adSkit.idea')}</b>{plan.idea}</div>
               {plan.caption && <p className="text-xs text-fg-faint">{t('adSkit.caption')}{plan.caption}</p>}
-              <button onClick={genVideo} disabled={busy !== null} className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#00b2fc] px-5 py-3 font-semibold text-white transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50">
+              <button onClick={genVideo} disabled={busy !== null} className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#0064d9] px-5 py-3 font-semibold text-white transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50">
                 {busy === 'video' ? <><Loader2 className="h-4 w-4 animate-spin" /> {t('adSkit.renderingVideo')}</> : <><Sparkles className="h-4 w-4" /> {t('adSkit.generateAdVideoCredits', { n: COSTS.image + VIDEO_COST })}</>}
               </button>
             </div>
@@ -225,7 +226,7 @@ export default function AdSkitPage() {
                 <div className="flex aspect-video items-center justify-center overflow-hidden rounded-xl border border-line bg-surface">
                   {productImg.status === 'done' && productImg.url ? (  <img src={productImg.url} alt={t('adSkit.productPhotoAlt')} className="h-full w-full object-contain" />)
                     : productImg.status === 'processing' ? <Loader2 className="h-6 w-6 animate-spin text-brand-accent" />
-                    : productImg.status === 'failed' ? <span className="text-sm text-red-400">{t('adSkit.productPhotoFailed')}</span>
+                    : productImg.status === 'failed' ? <span className="text-sm text-danger">{t('adSkit.productPhotoFailed')}</span>
                     : <span className="text-sm text-fg-placeholder">{t('adSkit.productPhotoPlaceholder')}</span>}
                 </div>
               </div>
@@ -234,7 +235,7 @@ export default function AdSkitPage() {
                 <div className="flex aspect-video items-center justify-center overflow-hidden rounded-xl border border-line bg-surface">
                   {video.status === 'done' && video.url ? <video src={video.url} controls className="h-full w-full object-contain" />
                     : video.status === 'processing' ? <div className="flex flex-col items-center gap-2 text-fg-faint"><Loader2 className="h-7 w-7 animate-spin text-brand-accent" /><span className="text-xs">{t('adSkit.seedanceRendering')}</span></div>
-                    : video.status === 'failed' ? <span className="text-sm text-red-400">{t('adSkit.renderFailed')}</span>
+                    : video.status === 'failed' ? <span className="text-sm text-danger">{t('adSkit.renderFailed')}</span>
                     : <span className="text-sm text-fg-placeholder">{t('adSkit.rendersAuto')}</span>}
                 </div>
                 {video.status === 'done' && video.url && <a href={dl(video.url)} className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-line bg-surface px-5 py-3 font-medium text-fg transition hover:border-line-strong hover:bg-elevated"><Download className="h-4 w-4" /> {t('adSkit.downloadVideo')}</a>}
@@ -251,7 +252,7 @@ export default function AdSkitPage() {
             <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-fg"><Sparkles className="h-4 w-4 text-brand-accent" /> {t('adSkit.sampleOutputs')}</h3>
             <div className="flex flex-wrap gap-4">
               {SAMPLES.map((s) => (
-                <div key={s.title} className="w-[220px] overflow-hidden rounded-xl border border-line">
+                <div key={s.title} className="w-full max-w-[220px] overflow-hidden rounded-xl border border-line">
                   <video src={s.video} controls preload="metadata" playsInline className="aspect-[9/16] w-full bg-neutral-900 object-cover" />
                   <div className="px-2.5 py-1.5 text-xs font-medium text-fg-muted">{t('adSkit.sampleTitle')}</div>
                 </div>

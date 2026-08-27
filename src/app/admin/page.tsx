@@ -82,13 +82,13 @@ export default function AdminPage() {
   if (forbidden) {
     return (
       <div className="grid min-h-screen place-items-center gap-4 text-center">
-        <AlertCircle className="h-10 w-10 text-red-400" />
+        <AlertCircle className="h-10 w-10 text-danger" />
         <p className="text-fg-muted">Access denied. Your email is not in the admin list.</p>
       </div>
     );
   }
 return (
-    <main className="min-h-screen text-fg bg-app">
+    <div className="min-h-screen text-fg bg-app">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 pb-24">
         <div className="pt-6 pb-6">
           <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Admin Dashboard</h1>
@@ -97,10 +97,10 @@ return (
 
         {/* Tabs */}
         <div className="mb-6 flex gap-2">
-          <button onClick={() => setTab('users')} className={`inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition ${tab === 'users' ? 'bg-[#00b2fc] text-white' : 'bg-hover text-fg-muted hover:bg-elevated'}`}>
+          <button onClick={() => setTab('users')} className={`inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition ${tab === 'users' ? 'bg-[#0064d9] text-white' : 'bg-hover text-fg-muted hover:bg-elevated'}`}>
             <Users className="h-4 w-4" /> Users
           </button>
-          <button onClick={() => setTab('creations')} className={`inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition ${tab === 'creations' ? 'bg-[#00b2fc] text-white' : 'bg-hover text-fg-muted hover:bg-elevated'}`}>
+          <button onClick={() => setTab('creations')} className={`inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition ${tab === 'creations' ? 'bg-[#0064d9] text-white' : 'bg-hover text-fg-muted hover:bg-elevated'}`}>
             <Film className="h-4 w-4" /> Creations
           </button>
         </div>
@@ -116,6 +116,7 @@ return (
                   onChange={(e) => setSearch(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && loadUsers()}
                   placeholder="Search by email…"
+                  aria-label="Search by email"
                   className="w-full rounded-lg border border-line bg-surface py-2 pl-10 pr-4 text-sm text-fg placeholder:text-fg-placeholder outline-none focus:border-[#00b2fc]"
                 />
               </div>
@@ -133,13 +134,14 @@ return (
             ) : (
               <div className="overflow-x-auto rounded-xl border border-line">
                 <table className="w-full text-sm">
+                  <caption className="sr-only">User management</caption>
                   <thead className="bg-surface text-xs uppercase text-fg-faint">
                     <tr>
-                      <th className="px-4 py-3 text-left">User</th>
-                      <th className="px-4 py-3 text-right">Credits</th>
-                      <th className="px-4 py-3 text-right">Creations</th>
-                      <th className="px-4 py-3 text-left">Joined</th>
-                      <th className="px-4 py-3 text-left">Adjust</th>
+                      <th scope="col" className="px-4 py-3 text-left">User</th>
+                      <th scope="col" className="px-4 py-3 text-right">Credits</th>
+                      <th scope="col" className="px-4 py-3 text-right">Creations</th>
+                      <th scope="col" className="px-4 py-3 text-left">Joined</th>
+                      <th scope="col" className="px-4 py-3 text-left">Adjust</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-white/5">
@@ -156,12 +158,14 @@ return (
                           <div className="flex items-center gap-1">
                             <input
                               type="number"
+                              aria-label="Credit adjustment amount"
                               value={adjusting === u.id ? adjustAmount : ''}
                               onChange={(e) => { setAdjusting(u.id); setAdjustAmount(e.target.value); }}
                               placeholder="±N"
                               className="w-16 rounded border border-line bg-hover px-2 py-1 text-xs text-fg outline-none focus:border-[#00b2fc]"
                             />
                             <input
+                              aria-label="Credit adjustment reason"
                               value={adjusting === u.id ? adjustReason : ''}
                               onChange={(e) => { setAdjusting(u.id); setAdjustReason(e.target.value); }}
                               placeholder="reason"
@@ -189,9 +193,9 @@ return (
           <div>
             {/* Status filter + counts */}
             <div className="mb-4 flex flex-wrap items-center gap-2">
-              <button onClick={() => setStatusFilter('')} className={`rounded-lg px-3 py-1.5 text-xs font-medium ${!statusFilter ? 'bg-[#00b2fc] text-white' : 'bg-hover text-fg-muted'}`}>All</button>
+              <button onClick={() => setStatusFilter('')} className={`rounded-lg px-3 py-1.5 text-xs font-medium ${!statusFilter ? 'bg-[#0064d9] text-white' : 'bg-hover text-fg-muted'}`}>All</button>
               {statusCounts.map((sc) => (
-                <button key={sc.status} onClick={() => setStatusFilter(sc.status)} className={`rounded-lg px-3 py-1.5 text-xs font-medium ${statusFilter === sc.status ? 'bg-[#00b2fc] text-white' : 'bg-hover text-fg-muted'}`}>
+                <button key={sc.status} onClick={() => setStatusFilter(sc.status)} className={`rounded-lg px-3 py-1.5 text-xs font-medium ${statusFilter === sc.status ? 'bg-[#0064d9] text-white' : 'bg-hover text-fg-muted'}`}>
                   {sc.status} ({sc._count})
                 </button>
               ))}
@@ -207,15 +211,16 @@ return (
             ) : (
               <div className="overflow-x-auto rounded-xl border border-line">
                 <table className="w-full text-sm">
+                  <caption className="sr-only">Creation monitoring</caption>
                   <thead className="bg-surface text-xs uppercase text-fg-faint">
                     <tr>
-                      <th className="px-4 py-3 text-left">Template</th>
-                      <th className="px-4 py-3 text-left">Status</th>
-                      <th className="px-4 py-3 text-left">Prompt</th>
-                      <th className="px-4 py-3 text-right">Cost</th>
-                      <th className="px-4 py-3 text-left">User</th>
-                      <th className="px-4 py-3 text-left">Created</th>
-                      <th className="px-4 py-3 text-left">Error</th>
+                      <th scope="col" className="px-4 py-3 text-left">Template</th>
+                      <th scope="col" className="px-4 py-3 text-left">Status</th>
+                      <th scope="col" className="px-4 py-3 text-left">Prompt</th>
+                      <th scope="col" className="px-4 py-3 text-right">Cost</th>
+                      <th scope="col" className="px-4 py-3 text-left">User</th>
+                      <th scope="col" className="px-4 py-3 text-left">Created</th>
+                      <th scope="col" className="px-4 py-3 text-left">Error</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-white/5">
@@ -224,9 +229,9 @@ return (
                         <td className="px-4 py-3 text-xs text-fg-muted">{c.templateId}</td>
                         <td className="px-4 py-3">
                           <span className={`rounded px-2 py-0.5 text-xs font-medium ${
-                            c.status === 'completed' ? 'bg-green-500/15 text-green-400' :
-                            c.status === 'failed' ? 'bg-red-500/15 text-red-400' :
-                            c.status === 'processing' ? 'bg-blue-500/15 text-blue-400' :
+                            c.status === 'completed' ? 'bg-success/15 text-success' :
+                            c.status === 'failed' ? 'bg-danger/15 text-danger' :
+                            c.status === 'processing' ? 'bg-info/15 text-info' :
                             'bg-elevated text-fg-muted'
                           }`}>{c.status}</span>
                         </td>
@@ -234,7 +239,7 @@ return (
                         <td className="px-4 py-3 text-right font-mono text-xs text-fg-muted">{c.cost}</td>
                         <td className="px-4 py-3 text-xs text-fg-faint">{c.userId.slice(0, 8)}…</td>
                         <td className="px-4 py-3 text-xs text-fg-faint">{formatDateTime(c.createdAt, 'en')}</td>
-                        <td className="max-w-xs truncate px-4 py-3 text-xs text-red-400/70">{c.error || '—'}</td>
+                        <td className="max-w-xs truncate px-4 py-3 text-xs text-danger/70">{c.error || '—'}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -244,6 +249,6 @@ return (
           </div>
         )}
       </div>
-    </main>
+    </div>
   );
 }

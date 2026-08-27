@@ -15,6 +15,11 @@
 @theme inline {
   --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 
+  /* Extra-narrow phone breakpoint (below Tailwind's default 640px sm).
+     Used to progressively reveal labels/controls that would otherwise crowd
+     the toolbar on the smallest devices. */
+  --breakpoint-xs: 400px;
+
   --color-brand-50: #ecfeff;
   --color-brand-100: #cffafe;
   --color-brand-200: #a5f3fc;
@@ -105,7 +110,7 @@
   --c-fg: #f7f7f8;
   --c-fg-secondary: rgba(247, 247, 248, 0.82);
   --c-fg-muted: rgba(247, 247, 248, 0.60);
-  --c-fg-faint: rgba(247, 247, 248, 0.40);
+  --c-fg-faint: rgba(247, 247, 248, 0.50);
   --c-fg-placeholder: rgba(247, 247, 248, 0.30);
   --c-fg-inverse: #131416;
 
@@ -137,7 +142,7 @@
   --c-fg: #131416;
   --c-fg-secondary: rgba(19, 20, 22, 0.78);
   --c-fg-muted: rgba(19, 20, 22, 0.60);
-  --c-fg-faint: rgba(19, 20, 22, 0.45);
+  --c-fg-faint: rgba(19, 20, 22, 0.60);
   --c-fg-placeholder: rgba(19, 20, 22, 0.36);
   --c-fg-inverse: #ffffff;
 
@@ -145,11 +150,11 @@
   --c-line-strong: rgba(19, 20, 22, 0.18);
   --c-line-focus: #0072f9;
 
-  --c-success: #059669;
+  --c-success: #047857;
   --c-warning: #b45309;
   --c-danger: #dc2626;
-  --c-info: #0284c7;
-  --c-brand-accent: #0072f9;
+  --c-info: #0369a1;
+  --c-brand-accent: #0064d9;
 
   --shadow-soft: 0 1px 3px rgba(16,24,40,0.04), 0 10px 28px -10px rgba(16,24,40,0.10);
   --shadow-card: 0 1px 2px rgba(16,24,40,0.04), 0 16px 40px -16px rgba(16,24,40,0.14);
@@ -191,18 +196,77 @@
   overflow: visible;
   clip: auto;
   border-radius: 0.25rem;
-  background: #00b2fc;
+  background: #0064d9;
   color: #fff;
   outline: 2px solid #fff;
   outline-offset: 2px;
 }
 
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
 body {
   @apply bg-app text-fg antialiased;
   background-image:
     radial-gradient(55rem 55rem at 105% -10%, rgba(0, 178, 252, 0.07), transparent 60%),
     radial-gradient(45rem 45rem at -10% 5%, rgba(0, 114, 249, 0.06), transparent 55%);
   background-attachment: fixed;
+  /* Long strings (URLs, filenames, prompts, localized text) must never create
+     horizontal overflow. Break anywhere rather than overflow the viewport. */
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+/* Root overflow guard: prevent accidental page-level horizontal scrollbars
+   caused by decorations/shadows/transforms without masking real overflow
+   sources (those are fixed at the component level). */
+:root {
+  overflow-x: clip;
+}
+/* Respect reduced-motion preferences across the app. Disables non-essential
+   animations/transitions so the UI stays usable for motion-sensitive users. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+/* On touch devices, remove the 300ms tap delay and prevent double-tap zoom
+   on interactive controls for a more native feel. Also expand the tappable
+   area of small toolbar controls to meet WCAG 2.5.5 (min 44×44px) without
+   changing their visual size — the ::before overlay extends the hit region
+   outward with negative insets. */
+@media (pointer: coarse) {
+  button,
+  a,
+  select,
+  summary,
+  [role="button"],
+  [role="menuitem"] {
+    touch-action: manipulation;
+  }
+  /* Expand tappable area for small interactive elements using a transparent
+     ::before pseudo-element. Only applies to elements without explicit
+     position (avoids interfering with dropdowns, tooltips, etc.). */
+  button:not([class*="absolute"]):not([class*="fixed"]),
+  a[href]:not([class*="absolute"]):not([class*="fixed"]),
+  [role="menuitem"] {
+    position: relative;
+  }
+  button:not([class*="absolute"]):not([class*="fixed"])::before,
+  a[href]:not([class*="absolute"]):not([class*="fixed"])::before,
+  [role="menuitem"]::before {
+    content: '';
+    position: absolute;
+    inset: -10px;
+    z-index: -1;
+    border-radius: inherit;
+  }
 }
 /* Lighter, subtler ambient glow in light mode so the page doesn't look washed out. */
 :root[data-theme='light'] body {
@@ -290,4 +354,66 @@ body {
 :root[data-theme='dark'] select optgroup {
   background-color: #1c1e21;
   color: #f7f7f8;
+}
+
+/* ───────────────────────── SAFE-AREA INSETS ─────────────────────────
+   Helpers for notched / rounded-corner / dynamic-island / home-indicator
+   devices. Applied to fixed/sticky UI so controls stay reachable. */
+.safe-top { padding-top: env(safe-area-inset-top); }
+.safe-right { padding-right: env(safe-area-inset-right); }
+.safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
+.safe-left { padding-left: env(safe-area-inset-left); }
+.safe-inset {
+  padding-top: env(safe-area-inset-top);
+  padding-right: env(safe-area-inset-right);
+  padding-bottom: env(safe-area-inset-bottom);
+  padding-left: env(safe-area-inset-left);
+}
+/* Sticky/fixed bars that need safe-area aware padding without doubling. */
+.pb-safe { padding-bottom: max(env(safe-area-inset-bottom), 0px); }
+.pt-safe { padding-top: max(env(safe-area-inset-top), 0px); }
+
+/* ───────────────────────── SCROLLBAR POLISH ─────────────────────────
+   Thin, theme-aware scrollbars for internal scroll regions (dropdowns,
+   drawers, modal bodies) so dense content stays readable. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--c-line-strong) transparent;
+}
+*::-webkit-scrollbar { width: 8px; height: 8px; }
+*::-webkit-scrollbar-track { background: transparent; }
+*::-webkit-scrollbar-thumb {
+  background-color: var(--c-line-strong);
+  border-radius: 9999px;
+}
+
+/* ───────────────────────── MEDIA OVERFLOW GUARD ─────────────────────────
+   Ensure images/videos never push beyond their container, regardless of
+   intrinsic dimensions or aspect ratio. Width is left to per-component
+   classes (w-full / w-auto / max-w-*); only the overflow cap is global. */
+img, video, svg { max-width: 100%; }
+/* Inline <video> without an explicit width class should still not overflow:
+   cap at container width while preserving aspect ratio. */
+video:where(:not([class*='w-'])) { width: 100%; height: auto; }
+
+/* ───────────────────────── PRINT STYLES ─────────────────────────
+   Basic print rules so pages are legible on paper. Hides interactive-only
+   UI (nav, buttons, cookie banner, dev overlays), forces dark text on
+   white, and prevents color-adjust suppression for branded elements. */
+@media print {
+  :root { --c-bg: #ffffff; --c-fg: #000000; --c-surface: #ffffff; }
+  body { background: #ffffff !important; color: #000000 !important; }
+  nav, header, button, .btn-brand, .btn-ghost,
+  [role="dialog"][aria-label="Cookie consent"],
+  .skip-link, button[class*="DevTools"] {
+    display: none !important;
+  }
+  a { color: #000000 !important; text-decoration: underline; }
+  a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 0.85em; }
+  img, video { max-width: 100% !important; page-break-inside: avoid; }
+  h1, h2, h3 { page-break-after: avoid; }
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
 }

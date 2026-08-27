@@ -122,13 +122,14 @@ export function CountrySelector() {
     <div className="rounded-2xl border border-line bg-surface p-6">
       <div className="flex items-center gap-2 mb-4">
         <Globe className="h-5 w-5 text-fg-faint" />
-        <h3 className="font-semibold text-fg">{tr.title}</h3>
+        <h2 className="font-semibold text-fg">{tr.title}</h2>
       </div>
 
       <div className="space-y-4">
         <div>
-          <label className="mb-1.5 block text-xs font-medium text-fg-faint">{tr.country}</label>
+          <label htmlFor="country-select" className="mb-1.5 block text-xs font-medium text-fg-faint">{tr.country}</label>
           <select
+            id="country-select"
             value={country}
             onChange={(e) => setCountry(e.target.value)}
             className="w-full cursor-pointer appearance-none rounded-xl border border-line bg-surface px-3 py-2.5 text-sm text-fg outline-none transition focus:border-[#00b2fc]"
@@ -146,8 +147,9 @@ export function CountrySelector() {
         </div>
 
         <div>
-          <label className="mb-1.5 block text-xs font-medium text-fg-faint">{tr.currency}</label>
+          <label htmlFor="currency-select" className="mb-1.5 block text-xs font-medium text-fg-faint">{tr.currency}</label>
           <select
+            id="currency-select"
             value={currency}
             onChange={(e) => setCurrency(e.target.value)}
             className="w-full cursor-pointer appearance-none rounded-xl border border-line bg-surface px-3 py-2.5 text-sm text-fg outline-none transition focus:border-[#00b2fc]"
@@ -164,7 +166,7 @@ export function CountrySelector() {
           onClick={save}
           disabled={saving}
           className="flex w-full items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-bold text-white transition hover:brightness-110 disabled:opacity-50"
-          style={{ background: '#00b2fc' }}
+          style={{ background: '#0064d9' }}
         >
           {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : saved ? <Check className="h-4 w-4" /> : null}
           {saved ? tr.saved : tr.save}

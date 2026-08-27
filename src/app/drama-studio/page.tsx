@@ -11,8 +11,8 @@ import { useI18n } from '@/i18n/provider';
 import { AssetPicker } from '@/components/AssetPicker';
 import { useMounted } from '@/lib/use-mounted';
 
-// Visual specs unified with lazynext-studio: dark #131416 + cyan #00b2fc + Space Grotesk
-const ACCENT = '#00b2fc';
+// Visual specs unified with lazynext-studio: dark #131416 + cyan #0064d9 + Space Grotesk
+const ACCENT = '#0064d9';
 const PANEL = 'var(--c-popover)';
 
 type Character = { key: string; name: string; persona: string; appearance?: string };
@@ -610,9 +610,9 @@ export default function DramaStudioPage() {
   const selCls = 'appearance-none bg-surface rounded-lg pl-2.5 pr-7 py-2 text-xs text-fg focus:outline-none focus:ring-1 focus:ring-[#00b2fc] select-chevron';
 
   // Top-level hydration gate: first frame renders a uniform empty skeleton, avoiding session/locale SSR≠client divergence (#418).
-  if (!mounted) return <main className="min-h-screen text-fg app-grid-bg bg-app" />;
+  if (!mounted) return <div className="min-h-screen text-fg app-grid-bg bg-app" />;
   return (
-    <main className="min-h-screen text-fg app-grid-bg bg-app">
+    <div className="min-h-screen text-fg app-grid-bg bg-app">
       {/* Hero */}
       <div className="text-center pt-10 pb-10 px-6">
         <div className="text-[14px] uppercase tracking-[0.24em] text-fg-muted font-semibold mb-3" style={{ fontFamily: 'var(--font-grotesk), "Space Grotesk", sans-serif' }}>{t('drama.kicker')}</div>
@@ -625,6 +625,7 @@ export default function DramaStudioPage() {
       <div className="max-w-4xl mx-auto px-4">
         <div className="rounded-3xl border border-line p-4 sm:p-5 shadow-card" style={{ background: PANEL }}>
           <textarea value={topic} onChange={(e) => setTopic(e.target.value)} rows={3}
+            aria-label={t('drama.placeholder')}
             placeholder={t('drama.placeholder')}
             className="w-full bg-transparent text-[15px] leading-relaxed resize-none focus:outline-none placeholder:text-fg-placeholder px-1 pt-1" />
           <div className="flex items-center gap-2 flex-wrap mt-3">
@@ -651,7 +652,7 @@ export default function DramaStudioPage() {
                   {pa.preview && <img src={pa.preview} alt="product" className={`w-full h-full object-cover ${pa.url ? 'cursor-zoom-in' : ''}`} onClick={() => pa.url && setZoomImg(pa.url)} />}
                   {pa.uploading && <span className="absolute inset-0 bg-black/60 grid place-items-center"><Loader2 className="w-3 h-3 animate-spin text-white" /></span>}
                 </span>
-                <button onClick={() => setProductAssets((prev) => prev.filter((_, k) => k !== idx))} title={t('drama.remove')} className="text-fg-faint hover:text-fg"><X className="w-3 h-3" /></button>
+                <button onClick={() => setProductAssets((prev) => prev.filter((_, k) => k !== idx))} title={t('drama.remove')} aria-label={t('drama.remove')} className="p-1 text-fg-faint hover:text-fg"><X className="w-3.5 h-3.5" /></button>
               </span>
             ))}
             {productAssets.length < MAX_PRODUCT_IMAGES && (
@@ -663,7 +664,7 @@ export default function DramaStudioPage() {
               <AssetPicker kind="product" label={t('assets.pickProduct')} onSelect={(url) => setProductAssets((prev) => [...prev, { preview: url, url }])} />
             )}
             <button onClick={genScript} disabled={busy !== null || !hasCreditsForScript}
-              className="ml-auto px-6 py-2.5 rounded-xl font-extrabold text-sm inline-flex items-center gap-2 disabled:opacity-50 transition hover:brightness-110"
+              className="ml-auto shrink-0 px-3 sm:px-6 py-2.5 rounded-xl font-extrabold text-sm inline-flex items-center gap-2 disabled:opacity-50 transition hover:brightness-110"
               style={{ background: `radial-gradient(90% 90% at 50% 120%, #22d3ee 0%, rgba(167,139,250,0) 60%), ${ACCENT}`, color: '#fff' }}>
               {busy === 'script' ? <Loader2 className="w-4 h-4 animate-spin" /> : <Wand2 className="w-4 h-4" />} <>{!hasCreditsForScript ? t('drama.notEnoughCredits') : t('drama.writeScript')} · ✦{DRAMA_COSTS.script}</>
             </button>
@@ -677,13 +678,13 @@ export default function DramaStudioPage() {
       </div>
 
       {zoomImg && (
-        <div onClick={() => setZoomImg(null)} className="fixed inset-0 z-[60] bg-black/85 flex items-center justify-center p-4 cursor-zoom-out" role="dialog" aria-modal="true">
-          <img src={zoomImg} alt="preview" className="max-w-[94vw] max-h-[90vh] w-auto h-auto object-contain rounded-lg" onClick={(e) => e.stopPropagation()} />
+        <div onClick={() => setZoomImg(null)} className="fixed inset-0 z-[60] bg-black/85 flex items-center justify-center p-4 pt-safe cursor-zoom-out" role="dialog" aria-modal="true" aria-label="Image preview">
+          <img src={zoomImg} alt="preview" className="max-w-[94vw] max-h-[85vh] w-auto h-auto object-contain rounded-lg" onClick={(e) => e.stopPropagation()} />
           <button onClick={() => setZoomImg(null)} className="absolute top-4 right-4 text-fg-secondary hover:text-fg" aria-label="close"><X className="w-6 h-6" /></button>
         </div>
       )}
-      {err && <div className="max-w-4xl mx-auto px-4 mt-6"><div className="flex items-center gap-2 text-sm text-red-400 bg-red-500/10 border border-red-500/25 rounded-lg px-3 py-2"><AlertCircle className="w-4 h-4" />{t('drama.error')}: {dramaErrText(err, t)}</div></div>}
-      {notice && <div className="max-w-4xl mx-auto px-4 mt-6"><div className="flex items-center gap-2 text-sm text-amber-300 bg-amber-500/10 border border-amber-500/25 rounded-lg px-3 py-2"><AlertCircle className="w-4 h-4" />{notice}</div></div>}
+      {err && <div role="alert" className="max-w-4xl mx-auto px-4 mt-6"><div className="flex items-center gap-2 text-sm text-danger bg-danger/10 border border-danger/25 rounded-lg px-3 py-2"><AlertCircle className="w-4 h-4" />{t('drama.error')}: {dramaErrText(err, t)}</div></div>}
+      {notice && <div role="status" className="max-w-4xl mx-auto px-4 mt-6"><div className="flex items-center gap-2 text-sm text-warning bg-warning/10 border border-warning/25 rounded-lg px-3 py-2"><AlertCircle className="w-4 h-4" />{notice}</div></div>}
 
       {/* Script display */}
       {script && (
@@ -694,7 +695,7 @@ export default function DramaStudioPage() {
             {!!script.characters?.length && (
               <div className="mb-4">
                 <div className="text-xs text-fg-faint mb-2">🎭 {t('drama.castTitle')}</div>
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 gap-2">
                   {script.characters.map((c) => {
                     const a = charAssets[c.key];
                     return (
@@ -703,21 +704,21 @@ export default function DramaStudioPage() {
                           <div className="w-12 h-16 rounded-lg overflow-hidden bg-hover border border-line shrink-0 grid place-items-center">
                             {a?.url ? <img src={a.url} alt={c.name} className="w-full h-full object-cover cursor-zoom-in" onClick={() => setZoomImg(a.url!)} />
                               : a?.status === 'run' ? <Loader2 className="w-4 h-4 animate-spin text-fg-faint" />
-                              : a?.status === 'fail' ? <AlertCircle className="w-4 h-4 text-red-400" />
+                              : a?.status === 'fail' ? <AlertCircle className="w-4 h-4 text-danger" />
                               : <span className="text-lg opacity-60">🎭</span>}
                           </div>
                           <div className="min-w-0 flex-1">
                             <div className="text-xs font-bold truncate" style={{ color: ACCENT }}>{c.name}</div>
                             <div className="text-[10px] text-fg-faint overflow-hidden" style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>{c.persona}</div>
                           </div>
-                          <div className="flex flex-col gap-1 shrink-0">
-                            <button onClick={() => genOneCharacter(c.key)} disabled={a?.status === 'run' || busy === 'assets' || busy === 'all'} title={t('drama.regeneratePortrait')} className="p-1 rounded hover:bg-elevated disabled:opacity-40 transition"><RefreshCw className={`w-3.5 h-3.5 text-fg-muted ${a?.status === 'run' ? 'animate-spin' : ''}`} /></button>
-                            <button onClick={() => setEditingChar(editingChar === c.key ? null : c.key)} title={t('drama.editAppearance')} className={`p-1 rounded hover:bg-elevated transition ${editingChar === c.key ? 'bg-elevated' : ''}`}><Pencil className="w-3.5 h-3.5 text-fg-muted" /></button>
+                          <div className="flex flex-col gap-1 shrink-0 min-w-0">
+                            <button onClick={() => genOneCharacter(c.key)} disabled={a?.status === 'run' || busy === 'assets' || busy === 'all'} title={t('drama.regeneratePortrait')} aria-label={t('drama.regeneratePortrait')} className="p-1.5 sm:p-2 rounded hover:bg-elevated disabled:opacity-40 transition"><RefreshCw className={`w-3.5 h-3.5 text-fg-muted ${a?.status === 'run' ? 'animate-spin' : ''}`} /></button>
+                            <button onClick={() => setEditingChar(editingChar === c.key ? null : c.key)} title={t('drama.editAppearance')} aria-label={t('drama.editAppearance')} className={`p-1.5 sm:p-2 rounded hover:bg-elevated transition ${editingChar === c.key ? 'bg-elevated' : ''}`}><Pencil className="w-3.5 h-3.5 text-fg-muted" /></button>
                           </div>
                         </div>
                         {editingChar === c.key && (
                           <div className="mt-2">
-                            <textarea value={c.appearance || ''} onChange={(e) => editCharAppearance(c.key, e.target.value)} rows={3} placeholder={t('drama.appearancePlaceholder')} className="w-full bg-hover border border-line rounded px-2 py-1 text-[11px] text-fg-secondary resize-y focus:outline-none focus:border-[#00b2fc]" />
+                            <textarea value={c.appearance || ''} onChange={(e) => editCharAppearance(c.key, e.target.value)} rows={3} aria-label={t('drama.appearancePlaceholder')} placeholder={t('drama.appearancePlaceholder')} className="w-full bg-hover border border-line rounded px-2 py-1 text-[11px] text-fg-secondary resize-y focus:outline-none focus:border-[#00b2fc]" />
                             <button onClick={() => { setEditingChar(null); void genOneCharacter(c.key); }} disabled={a?.status === 'run'} className="mt-1 inline-flex items-center gap-1 text-[11px] font-semibold px-2.5 py-1 rounded-lg disabled:opacity-40 transition" style={{ background: ACCENT, color: '#fff' }}><RefreshCw className="w-3 h-3" />{t('drama.regenerateCost', { n: DRAMA_COSTS.image })}</button>
                           </div>
                         )}
@@ -733,12 +734,12 @@ export default function DramaStudioPage() {
                   <span className="w-11 h-7 rounded overflow-hidden bg-hover border border-line grid place-items-center shrink-0">
                     {sceneAsset.url ? <img src={sceneAsset.url} className="w-full h-full object-cover cursor-zoom-in" alt="scene" onClick={() => setZoomImg(sceneAsset.url!)} />
                       : sceneAsset.status === 'run' ? <Loader2 className="w-3 h-3 animate-spin text-fg-faint" />
-                      : sceneAsset.status === 'fail' ? <AlertCircle className="w-3 h-3 text-red-400" /> : null}
+                      : sceneAsset.status === 'fail' ? <AlertCircle className="w-3 h-3 text-danger" /> : null}
                   </span>
                 )}
                 <span className="flex-1 min-w-0 truncate">🎬 {t('drama.setting')}: {script.setting}</span>
-                {sceneAsset.status === 'fail' && sceneAsset.err && <span className="text-red-400 truncate max-w-[28%]" title={sceneAsset.err}>{dramaErrText(sceneAsset.err, t)}</span>}
-                <button onClick={genOneScene} disabled={sceneAsset.status === 'run' || busy === 'assets' || busy === 'all'} title={t('drama.regenerateScene')} className="p-1 rounded hover:bg-elevated disabled:opacity-40 transition shrink-0"><RefreshCw className={`w-3.5 h-3.5 text-fg-muted ${sceneAsset.status === 'run' ? 'animate-spin' : ''}`} /></button>
+                {sceneAsset.status === 'fail' && sceneAsset.err && <span className="text-danger truncate max-w-[28%]" title={sceneAsset.err}>{dramaErrText(sceneAsset.err, t)}</span>}
+                <button onClick={genOneScene} disabled={sceneAsset.status === 'run' || busy === 'assets' || busy === 'all'} title={t('drama.regenerateScene')} aria-label={t('drama.regenerateScene')} className="p-2 rounded hover:bg-elevated disabled:opacity-40 transition shrink-0"><RefreshCw className={`w-3.5 h-3.5 text-fg-muted ${sceneAsset.status === 'run' ? 'animate-spin' : ''}`} /></button>
               </div>
             )}
             <div className="space-y-2">
@@ -763,16 +764,16 @@ export default function DramaStudioPage() {
                       {st && <StatusChip icon={<Video className="w-3 h-3" />} label={t('drama.image')} s={st.img} />}
                       {st && <StatusChip icon={<Film className="w-3 h-3" />} label={t('drama.video')} s={st.vid} />}
                     </div>
-                    <input value={seg.scene} onChange={(e) => editSeg(i, 'scene', e.target.value)} className="w-full mb-1.5 bg-hover border border-line rounded px-2 py-1 text-xs text-fg-secondary focus:outline-none focus:border-[#00b2fc]" placeholder={t('drama.shotFraming')} />
-                    <textarea value={seg.action} onChange={(e) => editSeg(i, 'action', e.target.value)} rows={2} className="w-full mb-1.5 bg-hover border border-line rounded px-2 py-1 text-xs text-fg-secondary resize-y focus:outline-none focus:border-[#00b2fc]" placeholder={t('drama.plotAction')} />
-                    <input value={seg.dialogue || ''} onChange={(e) => editSeg(i, 'dialogue', e.target.value)} className="w-full bg-hover border border-line rounded px-2 py-1 text-xs text-fg-secondary focus:outline-none focus:border-[#00b2fc]" placeholder={t('drama.dialogueOptional')} />
+                    <input value={seg.scene} onChange={(e) => editSeg(i, 'scene', e.target.value)} aria-label={t('drama.shotFraming')} className="w-full mb-1.5 bg-hover border border-line rounded px-2 py-1 text-xs text-fg-secondary focus:outline-none focus:border-[#00b2fc]" placeholder={t('drama.shotFraming')} />
+                    <textarea value={seg.action} onChange={(e) => editSeg(i, 'action', e.target.value)} rows={2} aria-label={t('drama.plotAction')} className="w-full mb-1.5 bg-hover border border-line rounded px-2 py-1 text-xs text-fg-secondary resize-y focus:outline-none focus:border-[#00b2fc]" placeholder={t('drama.plotAction')} />
+                    <input value={seg.dialogue || ''} onChange={(e) => editSeg(i, 'dialogue', e.target.value)} aria-label={t('drama.dialogueOptional')} className="w-full bg-hover border border-line rounded px-2 py-1 text-xs text-fg-secondary focus:outline-none focus:border-[#00b2fc]" placeholder={t('drama.dialogueOptional')} />
                     <div className="mt-2 flex items-center gap-2 flex-wrap">
                       <button onClick={() => genOneShot(i)} disabled={!assetsReady || busy === 'all' || busy === 'assets' || st?.img === 'run' || st?.vid === 'run'} title={!assetsReady ? t('drama.genPortraitsFirst') : ''} className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg disabled:opacity-40 transition" style={st?.vid === 'done' ? { border: '1px solid rgba(255,255,255,0.15)', color: '#fff' } : { background: ACCENT, color: '#fff' }}>
                         {(st?.img === 'run' || st?.vid === 'run') ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Video className="w-3.5 h-3.5" />}
                         {st?.vid === 'done' ? t('drama.regenerate') : (st?.img === 'fail' || st?.vid === 'fail') ? t('drama.retry') : t('drama.generateShot', { n: segVideoCost(seg) })}
                       </button>
-                      {st?.vid === 'done' && !!st?.vidUrl && <span className="text-[11px] text-emerald-400">✓ {t('drama.done')}</span>}
-                      {st?.err && <span className="text-[11px] text-red-400 truncate max-w-[55%]" title={st.err}>{dramaErrText(st.err, t)}</span>}
+                      {st?.vid === 'done' && !!st?.vidUrl && <span className="text-[11px] text-success">✓ {t('drama.done')}</span>}
+                      {st?.err && <span className="text-[11px] text-danger truncate max-w-[55%]" title={st.err}>{dramaErrText(st.err, t)}</span>}
                     </div>
                     {st?.vid === 'done' && st.vidUrl && (
                       <video src={st.vidUrl} poster={st.imgUrl} controls playsInline className="mt-2 w-full max-w-[220px] rounded-lg border border-line bg-black" />
@@ -806,7 +807,7 @@ export default function DramaStudioPage() {
         <div className="max-w-3xl mx-auto px-4 pb-16">
           <div className="rounded-3xl border border-line p-5" style={{ background: PANEL }}>
             <div className="flex items-center gap-2 text-sm mb-2">
-              {compose.status === 'done' ? <CheckCircle2 className="w-4 h-4" style={{ color: ACCENT }} /> : compose.status === 'fail' ? <AlertCircle className="w-4 h-4 text-red-400" /> : <Loader2 className="w-4 h-4 animate-spin" style={{ color: ACCENT }} />}
+              {compose.status === 'done' ? <CheckCircle2 className="w-4 h-4" style={{ color: ACCENT }} /> : compose.status === 'fail' ? <AlertCircle className="w-4 h-4 text-danger" /> : <Loader2 className="w-4 h-4 animate-spin" style={{ color: ACCENT }} />}
               <b>{compose.status === 'done' ? t('drama.videoReady') : compose.status === 'fail' ? t('drama.stitchingFailed') : t('drama.stitching')}</b><span className="text-xs text-fg-faint">{compose.note}</span>
             </div>
             {compose.status === 'run' && <div className="h-1.5 bg-elevated rounded-full overflow-hidden"><div className="h-full transition-all" style={{ width: `${Math.round(compose.frac * 100)}%`, background: ACCENT }} /></div>}
@@ -819,11 +820,11 @@ export default function DramaStudioPage() {
           </div>
         </div>
       )}
-    </main>
+    </div>
   );
 }
 
 function StatusChip({ icon, label, s }: { icon: React.ReactNode; label: string; s: 'idle' | 'run' | 'done' | 'fail' }) {
-  const cls = s === 'done' ? 'text-brand-accent' : s === 'run' ? 'text-fg' : s === 'fail' ? 'text-red-400' : 'text-fg-placeholder';
+  const cls = s === 'done' ? 'text-brand-accent' : s === 'run' ? 'text-fg' : s === 'fail' ? 'text-danger' : 'text-fg-placeholder';
   return <span className={`inline-flex items-center gap-1 text-[10px] ${cls}`}>{s === 'run' ? <Loader2 className="w-3 h-3 animate-spin" /> : icon}{label}</span>;
 }

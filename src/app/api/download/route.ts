@@ -48,7 +48,12 @@ export async function GET(req: Request) {
     return new Response('bad url', { status: 400 });
   }
   // SSRF guard: only proxy Atlas media hosts.
-  if (!/(^|\.)aliyuncs\.com$|(^|\.)atlascloud\.ai$/.test(source.hostname)) {
+  // In development, also allow localhost (mock Atlas server).
+  const isDev = process.env.NODE_ENV === 'development' || process.env.BUILD_TARGET === 'local';
+  const allowedHost = isDev
+    ? /(^|\.)aliyuncs\.com$|(^|\.)atlascloud\.ai$|^localhost$|^127\.0\.0\.1$/
+    : /(^|\.)aliyuncs\.com$|(^|\.)atlascloud\.ai$/;
+  if (!allowedHost.test(source.hostname)) {
     return new Response('forbidden', { status: 403 });
   }
 

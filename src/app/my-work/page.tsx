@@ -118,7 +118,7 @@ export default function MyWorkPage() {
           <div className="grid place-items-center gap-4 py-32 text-center">
             <div className="text-5xl">🔐</div>
             <p className="text-fg-faint">{t('myWork.signInPrompt')}</p>
-            <Link href="/" className="rounded-xl px-5 py-2.5 text-sm font-bold text-white" style={{ background: '#00b2fc' }}>{t('common.signIn')}</Link>
+            <Link href="/" className="rounded-xl px-5 py-2.5 text-sm font-bold text-white" style={{ background: '#0064d9' }}>{t('common.signIn')}</Link>
           </div>
         ) : items === null ? (
           <div className="grid place-items-center py-32"><Loader2 className="h-7 w-7 animate-spin text-fg-faint" /></div>
@@ -126,7 +126,7 @@ export default function MyWorkPage() {
           <div className="grid place-items-center gap-4 py-32 text-center">
             <div className="text-5xl">🎬</div>
             <p className="text-fg-faint">{t('myWork.empty')}</p>
-            <Link href="/" className="rounded-xl px-5 py-2.5 text-sm font-bold text-white" style={{ background: '#00b2fc' }}>{t('myWork.startCreating')}</Link>
+            <Link href="/" className="rounded-xl px-5 py-2.5 text-sm font-bold text-white" style={{ background: '#0064d9' }}>{t('myWork.startCreating')}</Link>
           </div>
         ) : (
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
@@ -196,15 +196,15 @@ export default function MyWorkPage() {
               if (c.status === 'failed' || !url) {
                 const studioHref = c.templateId === 'lazynext-studio' ? '/lazynext-studio' : c.templateId === 'drama-studio' ? '/drama-studio' : c.templateId === 'ad-reference' ? '/ad-reference' : c.templateId === 'ad-skit' ? '/ad-skit' : null;
                 return (
-                  <div key={c.id} className="overflow-hidden rounded-2xl border border-red-500/25 bg-black/30">
+                  <div key={c.id} className="overflow-hidden rounded-2xl border border-danger/25 bg-black/30">
                     <div className="relative aspect-[9/16] w-full">
                       {c.inputImage && (
 
                         <img src={c.inputImage} alt="" className="h-full w-full object-cover opacity-25" referrerPolicy="no-referrer" />
                       )}
                       <div className="absolute inset-0 grid place-items-center gap-2 bg-black/40">
-                        <div className="grid h-11 w-11 place-items-center rounded-full bg-red-500/15"><X className="h-5 w-5 text-red-400" /></div>
-                        <span className="text-xs font-medium text-red-300/90">{t('myWork.failed')}</span>
+                        <div className="grid h-11 w-11 place-items-center rounded-full bg-danger/15"><X className="h-5 w-5 text-danger" /></div>
+                        <span className="text-xs font-medium text-danger">{t('myWork.failed')}</span>
                         {studioHref && (
                           <Link href={studioHref} className="mt-1 rounded-lg bg-elevated px-3 py-1.5 text-[11px] font-medium text-fg-secondary transition hover:bg-active">{t('dashboard.startNow')}</Link>
                         )}
@@ -214,7 +214,7 @@ export default function MyWorkPage() {
                     <div className="p-3">
                       <div className="flex items-center justify-between gap-2">
                         <div className="truncate text-xs font-medium text-fg-muted">{title}</div>
-                        <button onClick={() => handleDelete(c.id)} className="shrink-0 text-fg-placeholder hover:text-red-400 transition" aria-label={t('myWork.delete')}><Trash2 className="h-3.5 w-3.5" /></button>
+                        <button onClick={() => handleDelete(c.id)} className="shrink-0 p-1 text-fg-placeholder hover:text-danger transition" aria-label={t('myWork.delete')}><Trash2 className="h-3.5 w-3.5" /></button>
                       </div>
                       <div className="mt-1 flex items-center gap-1 text-[10px] text-fg-faint"><Clock className="h-2.5 w-2.5" />{time}</div>
                     </div>
@@ -226,7 +226,7 @@ export default function MyWorkPage() {
               const kind = mediaKind(url, c.model);
               return (
                 <div key={c.id} className="overflow-hidden rounded-2xl border border-line bg-black/30">
-                  <button onClick={() => setPlay({ url, kind })} className="group relative block aspect-[9/16] w-full">
+                  <button onClick={() => setPlay({ url, kind })} aria-label={t('myWork.play', { title })} className="group relative block aspect-[9/16] w-full">
                     {c.inputImage ? (
                        
                       <img src={c.inputImage} alt="" className="h-full w-full object-cover" referrerPolicy="no-referrer" />
@@ -244,7 +244,7 @@ export default function MyWorkPage() {
                   <div className="p-3">
                     <div className="flex items-center justify-between gap-2">
                       <div className="truncate text-xs font-medium">{title}</div>
-                      <button onClick={() => handleDelete(c.id)} className="shrink-0 text-fg-placeholder hover:text-red-400 transition" aria-label={t('myWork.delete')}><Trash2 className="h-3.5 w-3.5" /></button>
+                      <button onClick={() => handleDelete(c.id)} className="shrink-0 p-1 text-fg-placeholder hover:text-danger transition" aria-label={t('myWork.delete')}><Trash2 className="h-3.5 w-3.5" /></button>
                     </div>
                     <div className="mt-1 flex items-center gap-1 text-[10px] text-fg-faint"><Clock className="h-2.5 w-2.5" />{time}</div>
                   </div>
@@ -256,18 +256,17 @@ export default function MyWorkPage() {
       </div>
 
       {play && (
-        <div className="fixed inset-0 z-[80] grid place-items-center bg-black/90 p-4" onClick={() => setPlay(null)}>
-          <button onClick={() => setPlay(null)} className="absolute right-5 top-5 text-fg-muted hover:text-fg"><X className="h-6 w-6" /></button>
-          <div className="relative" onClick={(e) => e.stopPropagation()}>
+        <div className="fixed inset-0 z-[80] grid place-items-center bg-black/90 p-4 pt-safe" onClick={() => setPlay(null)}>
+          <button onClick={() => setPlay(null)} className="absolute right-5 top-5 text-fg-muted hover:text-fg" aria-label={t('common.close')}><X className="h-6 w-6" /></button>
+          <div className="relative max-h-[90vh] flex flex-col items-center" onClick={(e) => e.stopPropagation()}>
             {play.kind === 'image' ? (
-               
-              <img src={play.url} alt="" className="max-h-[85vh] w-auto rounded-xl border border-line" referrerPolicy="no-referrer" />
+              <img src={play.url} alt="" className="max-h-[80vh] w-auto max-w-full rounded-xl border border-line" referrerPolicy="no-referrer" />
             ) : play.kind === 'audio' ? (
               <div className="rounded-xl border border-line bg-popover p-6"><audio src={play.url} controls autoPlay className="w-[min(80vw,420px)]" /></div>
             ) : (
-              <video src={play.url} controls autoPlay className="max-h-[85vh] w-auto rounded-xl border border-line" />
+              <video src={play.url} controls autoPlay className="max-h-[80vh] w-auto max-w-full rounded-xl border border-line" />
             )}
-            <a href={play.url} download className="absolute -top-3 -right-3 grid h-9 w-9 place-items-center rounded-full bg-[#00b2fc] text-white shadow-lg"><Download className="h-4 w-4" /></a>
+            <a href={play.url} download aria-label="Download video" className="absolute -top-3 -right-3 grid h-9 w-9 place-items-center rounded-full bg-[#0064d9] text-white shadow-lg"><Download className="h-4 w-4" /></a>
           </div>
         </div>
       )}

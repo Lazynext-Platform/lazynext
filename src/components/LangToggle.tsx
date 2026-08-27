@@ -12,7 +12,7 @@ export function LangToggle() {
       aria-label={t('common.language')}
       value={locale}
       onChange={(e) => setLocale(e.target.value as Locale)}
-      className="cursor-pointer appearance-none rounded-full bg-elevated px-3 py-1.5 text-xs font-medium text-fg outline-none transition hover:bg-active"
+      className="select-chevron max-w-[40vw] shrink-0 cursor-pointer appearance-none rounded-full bg-elevated px-3 py-1.5 text-xs font-medium text-fg outline-none transition hover:bg-active"
       title={t('common.switchLanguage')}
     >
       {LOCALES.map((l) => (

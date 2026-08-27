@@ -64,13 +64,13 @@ export default function WorkDetailPage() {
           <div className="grid place-items-center gap-4 py-32 text-center">
             <div className="text-5xl">🔐</div>
             <p className="text-fg-faint">{t('myWork.signInView')}</p>
-            <Link href="/" className="rounded-xl px-5 py-2.5 text-sm font-bold text-white" style={{ background: '#00b2fc' }}>{t('common.signIn')}</Link>
+            <Link href="/" className="rounded-xl px-5 py-2.5 text-sm font-bold text-white" style={{ background: '#0064d9' }}>{t('common.signIn')}</Link>
           </div>
         ) : c === 'notfound' || !c.assets || c.assets.kind !== 'drama' ? (
           <div className="grid place-items-center gap-4 py-32 text-center">
             <div className="text-5xl">🗂️</div>
             <p className="text-fg-faint">{t('myWork.noFolder')}</p>
-            <Link href="/my-work" className="rounded-xl px-5 py-2.5 text-sm font-bold text-white" style={{ background: '#00b2fc' }}>{t('myWork.backToWork')}</Link>
+            <Link href="/my-work" className="rounded-xl px-5 py-2.5 text-sm font-bold text-white" style={{ background: '#0064d9' }}>{t('myWork.backToWork')}</Link>
           </div>
         ) : (
           <DramaFolder c={c} t={t} finalVideo={finalVideo} />
@@ -97,7 +97,7 @@ function DramaFolder({ c, t, finalVideo }: { c: Creation; t: (key: string, vars?
         {finalVideo ? (
           <div className="relative w-full max-w-[300px]">
             <video src={finalVideo} controls playsInline poster={scenes.find((s) => s.frameUrl)?.frameUrl || undefined} className="w-full rounded-2xl border border-line bg-black" />
-            <a href={finalVideo} download className="absolute -right-3 -top-3 grid h-9 w-9 place-items-center rounded-full bg-[#00b2fc] text-white shadow-lg"><Download className="h-4 w-4" /></a>
+            <a href={finalVideo} download aria-label="Download video" className="absolute -right-3 -top-3 grid h-9 w-9 place-items-center rounded-full bg-[#0064d9] text-white shadow-lg"><Download className="h-4 w-4" /></a>
           </div>
         ) : (
           <div className="grid aspect-video max-w-[300px] place-items-center rounded-2xl border border-dashed border-line bg-black/20 text-xs text-fg-faint">{t('myWork.finalPlaceholder')}</div>

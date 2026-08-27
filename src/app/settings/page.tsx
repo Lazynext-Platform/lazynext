@@ -14,7 +14,7 @@ export default function SettingsPage() {
   const [authOpen, setAuthOpen] = useState(false);
 
   return (
-    <main className="min-h-screen text-fg app-grid-bg bg-app">
+    <div className="min-h-screen text-fg app-grid-bg bg-app">
       <div className="mx-auto max-w-2xl px-6 py-16 sm:py-20">
         <h1 className="mb-2 text-3xl font-bold text-fg" style={{ fontFamily: 'var(--font-grotesk), "Space Grotesk", system-ui, sans-serif' }}>{t('settings.title')}</h1>
         <p className="mb-8 text-sm text-fg-faint">{t('settings.language')} · {t('settings.account')}</p>
@@ -22,13 +22,13 @@ export default function SettingsPage() {
         <div className="space-y-6">
           {/* Theme section */}
           <div className="rounded-2xl border border-line bg-surface p-6">
-            <h3 className="mb-4 font-semibold text-fg">{t('settings.theme')}</h3>
+            <h2 className="mb-4 font-semibold text-fg">{t('settings.theme')}</h2>
             <ThemeSelector />
           </div>
 
           {/* Language section */}
           <div className="rounded-2xl border border-line bg-surface p-6">
-            <h3 className="mb-4 font-semibold text-fg">{t('settings.language')}</h3>
+            <h2 className="mb-4 font-semibold text-fg">{t('settings.language')}</h2>
             <LanguageSwitcher />
           </div>
 
@@ -37,7 +37,7 @@ export default function SettingsPage() {
 
           {/* Account section */}
           <div className="rounded-2xl border border-line bg-surface p-6">
-            <h3 className="mb-4 font-semibold text-fg">{t('settings.account')}</h3>
+            <h2 className="mb-4 font-semibold text-fg">{t('settings.account')}</h2>
             {status === 'authenticated' && session?.user ? (
               <div className="space-y-2 text-sm text-fg-secondary">
                 <p>{session.user.name || session.user.email}</p>
@@ -49,7 +49,7 @@ export default function SettingsPage() {
                 <button
                   onClick={() => setAuthOpen(true)}
                   className="rounded-xl px-4 py-2 text-sm font-bold text-white transition hover:brightness-110"
-                  style={{ background: '#00b2fc' }}
+                  style={{ background: '#0064d9' }}
                 >
                   {t('common.signIn')}
                 </button>
@@ -60,6 +60,6 @@ export default function SettingsPage() {
       </div>
 
       <AuthModal open={authOpen} onClose={() => setAuthOpen(false)} initialMode="signin" />
-    </main>
+    </div>
   );
 }

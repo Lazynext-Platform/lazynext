@@ -48,6 +48,12 @@ export const viewport: Viewport = {
   // Updated dynamically client-side by the theme system; this is the SSR
   // fallback (matches the inline bootstrap script's dark default).
   themeColor: '#131416',
+  // viewport-fit=cover so env(safe-area-inset-*) is exposed on notched /
+  // rounded-corner / dynamic-island devices. Width/device-width follow the
+  // device; initial-scale 1 prevents auto-zoom on input focus (iOS).
+  viewportFit: 'cover',
+  width: 'device-width',
+  initialScale: 1,
 };
 
 // Pre-hydration theme bootstrap. Runs before React mounts so the very first

@@ -381,7 +381,7 @@ export default function AdReferencePage() {
           {t('adRef.desc')}
         </p>
 
-        <div className="mt-8 grid gap-6 lg:grid-cols-[420px_1fr]">
+        <div className="mt-8 grid gap-6 lg:grid-cols-[minmax(0,420px)_minmax(0,1fr)]">
           {/* Left: input panel */}
           <div className="rounded-2xl p-5 bg-popover">
             <div className="text-fg-muted text-xs uppercase tracking-wider mb-2" style={{ fontFamily: GROTESK }}>{t('adRef.refAdVideo')}</div>
@@ -395,7 +395,7 @@ export default function AdReferencePage() {
                     {t('adRef.replaceVideo')}
                   </button>
                   <button onClick={() => setRefVideo(null)} title={t('adRef.remove')}
-                    className="rounded-lg border border-line px-3 py-1.5 text-xs text-fg-secondary hover:border-red-400/60 hover:text-red-300 transition">
+                    className="rounded-lg border border-line px-3 py-1.5 text-xs text-fg-secondary hover:border-danger/60 hover:text-danger transition">
                     ✕ {t('adRef.remove')}
                   </button>
                 </div>
@@ -418,7 +418,7 @@ export default function AdReferencePage() {
               {([['product', product, productInput, t('adRef.product'), t('adRef.productHint')], ['avatar', avatar, avatarInput, t('adRef.talent'), t('adRef.talentHint')]] as const).map(([kind, slot, ref, label, hint]) => (
                 <div key={kind}>
                   <div className="text-fg-muted text-xs uppercase tracking-wider mb-2" style={{ fontFamily: GROTESK }}>{label}</div>
-                  <button onClick={() => ref.current?.click()}
+                  <button onClick={() => ref.current?.click()} aria-label={hint}
                     className="w-full aspect-square rounded-xl border border-dashed border-line bg-surface hover:border-line-strong transition overflow-hidden flex items-center justify-center">
                     {slot ? (
 
@@ -436,9 +436,9 @@ export default function AdReferencePage() {
               ))}
             </div>
 
-            <input value={productNote} onChange={(e) => setProductNote(e.target.value)} placeholder={t('adRef.productDetails')}
+            <input value={productNote} onChange={(e) => setProductNote(e.target.value)} aria-label={t('adRef.productDetails')} placeholder={t('adRef.productDetails')}
               className="mt-4 w-full rounded-lg bg-surface border border-line px-3 py-2 text-sm text-fg placeholder:text-fg-placeholder outline-none focus:border-line-strong" />
-            <input value={extraNote} onChange={(e) => setExtraNote(e.target.value)} placeholder={t('adRef.extraInstructions')}
+            <input value={extraNote} onChange={(e) => setExtraNote(e.target.value)} aria-label={t('adRef.extraInstructions')} placeholder={t('adRef.extraInstructions')}
               className="mt-2 w-full rounded-lg bg-surface border border-line px-3 py-2 text-sm text-fg placeholder:text-fg-placeholder outline-none focus:border-line-strong" />
 
             {/* Voice */}
@@ -450,9 +450,10 @@ export default function AdReferencePage() {
               {newVoice && (
                 <div className="mt-3 space-y-2">
                   <textarea value={script} onChange={(e) => setScript(e.target.value)} rows={3} maxLength={600}
+                    aria-label={t('adRef.newScript')}
                     placeholder={t('adRef.newScript')}
                     className="w-full rounded-lg bg-surface border border-line px-3 py-2 text-sm text-fg placeholder:text-fg-placeholder outline-none focus:border-line-strong resize-none" />
-                  <select value={voiceId} onChange={(e) => setVoiceId(e.target.value)}
+                  <select value={voiceId} onChange={(e) => setVoiceId(e.target.value)} aria-label={t('adRef.replaceVoice')}
                     className="w-full rounded-lg bg-elevated border border-line px-3 py-2 text-sm text-fg outline-none">
                     {VOICES.map((v) => <option key={v.id} value={v.id}>{t(v.labelKey)}</option>)}
                   </select>
@@ -482,7 +483,7 @@ export default function AdReferencePage() {
                 <div className="text-fg-faint text-[11px] mb-2">{t('adRef.noFootage')}</div>
                 <div className="grid grid-cols-2 gap-2">
                   {EXAMPLE_REF_VIDEOS.map((u) => (
-                    <button key={u} type="button" onClick={() => setRefVideo({ url: u, preview: u })}
+                    <button key={u} type="button" onClick={() => setRefVideo({ url: u, preview: u })} aria-label={t('adRef.selectSampleVideo')}
                       className="rounded-lg overflow-hidden border border-line hover:border-[#00b2fc] transition aspect-[9/16] bg-black">
                       { }
                       <video src={u} className="w-full h-full object-cover" muted loop autoPlay playsInline />
@@ -496,7 +497,7 @@ export default function AdReferencePage() {
           {/* Right: result area */}
           <div className="rounded-2xl p-5 min-h-[420px] bg-popover">
             {busy && <div className="text-fg-muted text-sm">{busy}</div>}
-            {error && <div className="mb-3 rounded-lg bg-red-500/10 border border-red-500/30 px-3 py-2 text-sm text-red-300">{error}</div>}
+            {error && <div role="alert" className="mb-3 rounded-lg bg-danger/10 border border-danger/30 px-3 py-2 text-sm text-danger">{error}</div>}
             {isGenerating && (
               <div className="flex h-full min-h-[380px] flex-col items-center justify-center gap-3">
                 <div className="h-8 w-8 animate-spin rounded-full border-2 border-line-strong border-t-white/80" />
@@ -506,7 +507,7 @@ export default function AdReferencePage() {
             {step === 'done' && result && (
               <div>
                 <div className="text-fg-muted text-xs uppercase tracking-wider mb-3" style={{ fontFamily: GROTESK }}>{t('adRef.beforeAfter')}</div>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                   <div>
                     <video src={refVideo?.preview} controls playsInline className="w-full rounded-xl bg-black" />
                     <div className="mt-1 text-center text-xs text-fg-faint">{t('adRef.originalRef')}</div>

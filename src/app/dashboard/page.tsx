@@ -56,29 +56,29 @@ export default function DashboardPage() {
 
   if (status === 'loading') {
     return (
-      <main className="min-h-screen text-fg app-grid-bg bg-app">
+      <div className="min-h-screen text-fg app-grid-bg bg-app">
         <div className="grid place-items-center py-32"><Loader2 className="h-7 w-7 animate-spin text-fg-faint" /></div>
-      </main>
+      </div>
     );
   }
 
   if (status !== 'authenticated') {
     return (
-      <main className="min-h-screen text-fg app-grid-bg bg-app">
+      <div className="min-h-screen text-fg app-grid-bg bg-app">
         <div className="grid place-items-center gap-4 py-32 text-center">
           <div className="text-5xl">🔐</div>
           <p className="text-fg-faint">{t('dashboard.welcome')}</p>
-          <button onClick={() => setAuthOpen(true)} className="rounded-xl px-5 py-2.5 text-sm font-bold text-white" style={{ background: '#00b2fc' }}>{t('common.signIn')}</button>
+          <button onClick={() => setAuthOpen(true)} className="rounded-xl px-5 py-2.5 text-sm font-bold text-white" style={{ background: '#0064d9' }}>{t('common.signIn')}</button>
         </div>
         <AuthModal open={authOpen} onClose={() => setAuthOpen(false)} initialMode="signin" />
-      </main>
+      </div>
     );
   }
 
   const featured = APPS.filter((app) => isFeatured(app.href));
 
   return (
-    <main className="min-h-screen text-fg app-grid-bg bg-app">
+    <div className="min-h-screen text-fg app-grid-bg bg-app">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 pb-24">
         {/* Welcome + credits */}
         <div className="pt-6 pb-8">
@@ -147,7 +147,7 @@ export default function DashboardPage() {
             <div className="grid place-items-center gap-3 rounded-2xl border border-dashed border-line bg-hover py-12 text-center">
               <Film className="h-8 w-8 text-fg-placeholder" />
               <p className="text-sm text-fg-faint">{t('dashboard.noWork')}</p>
-              <Link href="/lazynext-studio" className="rounded-lg px-4 py-2 text-sm font-bold text-white" style={{ background: '#00b2fc' }}>{t('dashboard.startNow')}</Link>
+              <Link href="/lazynext-studio" className="rounded-lg px-4 py-2 text-sm font-bold text-white" style={{ background: '#0064d9' }}>{t('dashboard.startNow')}</Link>
             </div>
           ) : (
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
@@ -194,7 +194,7 @@ export default function DashboardPage() {
             <div className="grid place-items-center gap-3 rounded-2xl border border-dashed border-line bg-hover py-12 text-center">
               <Boxes className="h-8 w-8 text-fg-placeholder" />
               <p className="text-sm text-fg-faint">{t('dashboard.noAssets')}</p>
-              <Link href="/assets" className="rounded-lg px-4 py-2 text-sm font-bold text-white" style={{ background: '#00b2fc' }}>{t('nav.assets')}</Link>
+              <Link href="/assets" className="rounded-lg px-4 py-2 text-sm font-bold text-white" style={{ background: '#0064d9' }}>{t('nav.assets')}</Link>
             </div>
           ) : (
             <div className="grid grid-cols-3 gap-4">
@@ -214,6 +214,6 @@ export default function DashboardPage() {
           )}
         </div>
       </div>
-    </main>
+    </div>
   );
 }

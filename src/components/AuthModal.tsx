@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { signIn } from 'next-auth/react';
-import { X } from 'lucide-react';
+import { X, Eye, EyeOff } from 'lucide-react';
 import { useI18n } from '@/i18n/provider';
 
 type ModalMode = 'signin' | 'signup' | 'forgot';
@@ -20,9 +20,51 @@ export function AuthModal({ open, onClose, initialMode = 'signin' }: {
   const [error, setError] = useState('');
   const [info, setInfo] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => { setMode(initialMode); }, [initialMode, open]);
   useEffect(() => { if (open) { setError(''); setInfo(''); setEmail(''); setPassword(''); setName(''); } }, [open]);
+
+  // Accessibility: Escape closes the modal; focus is moved into the dialog on
+  // open and restored to the trigger on close. Body scroll is locked while open.
+  // Tab/Shift+Tab are trapped within the dialog.
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const previousFocus = useRef<HTMLElement | null>(null);
+  useEffect(() => {
+    if (!open) return;
+    previousFocus.current = document.activeElement as HTMLElement;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') { onClose(); return; }
+      if (e.key === 'Tab' && dialogRef.current) {
+        const focusable = dialogRef.current.querySelectorAll<HTMLElement>(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        );
+        if (focusable.length === 0) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    // Move focus into the dialog
+    requestAnimationFrame(() => {
+      const firstInput = dialogRef.current?.querySelector<HTMLElement>('input, button');
+      firstInput?.focus();
+    });
+    return () => {
+      window.removeEventListener('keydown', onKey);
+      document.body.style.overflow = prevOverflow;
+      previousFocus.current?.focus();
+    };
+  }, [open, onClose]);
 
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
@@ -89,10 +131,14 @@ export function AuthModal({ open, onClose, initialMode = 'signin' }: {
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 pt-safe pb-safe" onClick={onClose}>
       <div
-        className="w-full max-w-sm rounded-2xl border border-line bg-popover p-6 shadow-2xl"
+        ref={dialogRef}
+        className="w-full max-w-sm max-h-[90vh] overflow-y-auto rounded-2xl border border-line bg-popover p-5 sm:p-6 shadow-2xl"
         onClick={(e) => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        aria-label={mode === 'signin' ? t('auth.signInTab') : mode === 'signup' ? t('auth.signUpTab') : 'Forgot Password'}
       >
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-lg font-bold text-fg">
@@ -100,7 +146,7 @@ export function AuthModal({ open, onClose, initialMode = 'signin' }: {
             {mode === 'signup' && t('auth.signUpTab')}
             {mode === 'forgot' && 'Forgot Password'}
           </h2>
-          <button onClick={onClose} className="rounded-lg p-1 text-fg-faint hover:bg-elevated hover:text-fg">
+          <button onClick={onClose} aria-label="Close" className="rounded-lg p-1 text-fg-faint hover:bg-elevated hover:text-fg">
             <X className="h-5 w-5" />
           </button>
         </div>
@@ -112,19 +158,21 @@ export function AuthModal({ open, onClose, initialMode = 'signin' }: {
             <form onSubmit={handleSubmit} className="space-y-3">
               <input
                 type="email"
+                autoComplete="email"
+                aria-label={t('auth.email')}
                 placeholder={t('auth.email')}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 className="w-full rounded-xl border border-line bg-hover px-4 py-2.5 text-sm text-fg placeholder-fg-placeholder outline-none focus:border-brand-400"
               />
-              {error && <p className="text-sm text-red-400">{error}</p>}
-              {info && <p className="text-sm text-green-400">{info}</p>}
+              {error && <p role="alert" className="text-sm text-danger">{error}</p>}
+              {info && <p role="status" className="text-sm text-success">{info}</p>}
               <button
                 type="submit"
                 disabled={loading}
                 className="w-full rounded-xl px-4 py-2.5 text-sm font-bold text-white transition hover:brightness-110 disabled:opacity-50"
-                style={{ background: '#00b2fc' }}
+                style={{ background: '#0064d9' }}
               >
                 {loading ? '…' : 'Send Reset Link'}
               </button>
@@ -141,13 +189,13 @@ export function AuthModal({ open, onClose, initialMode = 'signin' }: {
             <div className="mb-5 flex gap-1 rounded-lg bg-hover p-1">
               <button
                 onClick={() => { setMode('signin'); setError(''); setInfo(''); }}
-                className={`flex-1 rounded-md py-1.5 text-sm font-medium transition ${mode === 'signin' ? 'bg-[#00b2fc] text-white' : 'text-fg-faint hover:text-fg'}`}
+                className={`flex-1 rounded-md py-1.5 text-sm font-medium transition ${mode === 'signin' ? 'bg-[#0064d9] text-white' : 'text-fg-faint hover:text-fg'}`}
               >
                 {t('auth.signInTab')}
               </button>
               <button
                 onClick={() => { setMode('signup'); setError(''); setInfo(''); }}
-                className={`flex-1 rounded-md py-1.5 text-sm font-medium transition ${mode === 'signup' ? 'bg-[#00b2fc] text-white' : 'text-fg-faint hover:text-fg'}`}
+                className={`flex-1 rounded-md py-1.5 text-sm font-medium transition ${mode === 'signup' ? 'bg-[#0064d9] text-white' : 'text-fg-faint hover:text-fg'}`}
               >
                 {t('auth.signUpTab')}
               </button>
@@ -179,6 +227,8 @@ export function AuthModal({ open, onClose, initialMode = 'signin' }: {
               {mode === 'signup' && (
                 <input
                   type="text"
+                  autoComplete="name"
+                  aria-label={t('auth.name')}
                   placeholder={t('auth.name')}
                   value={name}
                   onChange={(e) => setName(e.target.value)}
@@ -187,28 +237,42 @@ export function AuthModal({ open, onClose, initialMode = 'signin' }: {
               )}
               <input
                 type="email"
+                autoComplete="email"
+                aria-label={t('auth.email')}
                 placeholder={t('auth.email')}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 className="w-full rounded-xl border border-line bg-hover px-4 py-2.5 text-sm text-fg placeholder-fg-placeholder outline-none focus:border-brand-400"
               />
-              <input
-                type="password"
-                placeholder={t('auth.password')}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                minLength={8}
-                className="w-full rounded-xl border border-line bg-hover px-4 py-2.5 text-sm text-fg placeholder-fg-placeholder outline-none focus:border-brand-400"
-              />
-              {error && <p className="text-sm text-red-400">{error}</p>}
-              {info && <p className="text-sm text-green-400">{info}</p>}
+              <div className="relative">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  autoComplete={mode === 'signup' ? 'new-password' : 'current-password'}
+                  aria-label={t('auth.password')}
+                  placeholder={t('auth.password')}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  minLength={8}
+                  className="w-full rounded-xl border border-line bg-hover px-4 py-2.5 pr-11 text-sm text-fg placeholder-fg-placeholder outline-none focus:border-brand-400"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(s => !s)}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded-lg p-1.5 text-fg-faint hover:bg-elevated hover:text-fg"
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                >
+                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </button>
+              </div>
+              {error && <p role="alert" className="text-sm text-danger">{error}</p>}
+              {info && <p role="status" className="text-sm text-success">{info}</p>}
               <button
                 type="submit"
                 disabled={loading}
                 className="w-full rounded-xl px-4 py-2.5 text-sm font-bold text-white transition hover:brightness-110 disabled:opacity-50"
-                style={{ background: '#00b2fc' }}
+                style={{ background: '#0064d9' }}
               >
                 {loading ? '…' : mode === 'signin' ? t('auth.signInBtn') : t('auth.signUpBtn')}
               </button>

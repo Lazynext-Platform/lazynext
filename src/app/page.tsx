@@ -48,11 +48,11 @@ export default function Home() {
 
   const featured = APPS.filter((app) => isFeatured(app.href));
 return (
-    <main className="min-h-screen text-fg app-grid-bg bg-app">
+    <div className="min-h-screen text-fg app-grid-bg bg-app">
       {/* Email verification success banner */}
       {verified === 'true' && (
         <div className="mx-auto max-w-6xl px-6 pt-4">
-          <div className="flex items-center gap-2 rounded-lg border border-green-500/30 bg-green-500/10 px-4 py-3 text-sm text-green-300">
+          <div role="status" className="flex items-center gap-2 rounded-lg border border-success/30 bg-success/10 px-4 py-3 text-sm text-success">
             <CheckCircle className="h-4 w-4 shrink-0" />
             <span>{t('auth.emailVerified')}</span>
           </div>
@@ -61,7 +61,7 @@ return (
       {/* Auth error banner — shown when OAuth sign-in fails or email verification fails */}
       {authError && (
         <div className="mx-auto max-w-6xl px-6 pt-4">
-          <div className="flex items-center gap-2 rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-300">
+          <div role="alert" className="flex items-center gap-2 rounded-lg border border-danger/30 bg-danger/10 px-4 py-3 text-sm text-danger">
             <AlertCircle className="h-4 w-4 shrink-0" />
             <span>{errorText}</span>
           </div>
@@ -102,7 +102,7 @@ return (
                   </span>
                   <span className="rounded-full px-2.5 py-1 text-[10px] font-semibold" style={{ background: 'rgba(0,178,252,0.15)', color: 'var(--color-brand-accent)' }}>⭐ {t('home.featured')}</span>
                 </div>
-                <h3 className="mt-4 font-bold tracking-tight">{appTitle(app.id, a.title, locale)}</h3>
+                <h2 className="mt-4 font-bold tracking-tight">{appTitle(app.id, a.title, locale)}</h2>
                 <p className="mt-1 text-sm text-fg-faint leading-relaxed">{appDesc(app.id, a.description, locale)}</p>
                 <div className="mt-4 flex items-center gap-1 text-sm font-medium opacity-0 transition duration-300 group-hover:opacity-100" style={{ color: 'var(--color-brand-accent)' }}>
                   {t('home.tryIt')} <ArrowRight className="h-3.5 w-3.5" />
@@ -112,6 +112,6 @@ return (
           })}
         </div>
       </div>
-    </main>
+    </div>
   );
 }

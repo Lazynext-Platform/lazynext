@@ -45,3 +45,6 @@ worker-configuration.d.ts
 
 # Playwright MCP QA artifacts
 .playwright-mcp/
+
+# Local dev media (generated during testing)
+.dev-media/

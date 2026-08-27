@@ -1,4 +1,4 @@
-// App status classification (per "Feature Review.md"), shared by AppSidebar and home page for consistency.
+// App status classification (per "Feature Review.md"), shared by home page and dashboard for consistency.
 export type AppCat = 'production' | 'nocreative' | 'incomplete';
 
 // ✅ Production-ready: real moat / multi-step pipeline. After streamlining, repo only keeps 4 premium apps.

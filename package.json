@@ -5,6 +5,7 @@
   "description": "Lazynext is an AI e-commerce ad studio for generating UGC product ads, reference-ad remakes, AI drama ads, and ad skits, powered by Atlas Cloud multi-model workflows.",
   "scripts": {
     "dev": "npm run platform:prepare && next dev",
+    "mock-atlas": "node scripts/mock-atlas.mjs",
     "build": "npm run prisma:generate && npm run platform:prepare && next build --webpack",
     "start": "next start",
     "start:standalone": "node -e \"const{cpSync}=require('fs');cpSync('.next/static','.next/standalone/.next/static',{recursive:true});cpSync('public','.next/standalone/public',{recursive:true})\" && node .next/standalone/server.js",
@@ -39,6 +40,7 @@
   },
   "devDependencies": {
     "@opennextjs/cloudflare": "file:../../../../../tmp/opennextjs-cloudflare-1.20.2-fixed.tgz",
+    "@prisma/adapter-better-sqlite3": "^7.10.0",
     "@tailwindcss/postcss": "^4.3.3",
     "@types/bcryptjs": "^2.4.6",
     "@types/node": "^26.3.0",

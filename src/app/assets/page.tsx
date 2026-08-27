@@ -37,7 +37,7 @@ export default function AssetsPage() {
   const [authOpen, setAuthOpen] = useState(false);
 
   return (
-    <main className="min-h-screen text-fg app-grid-bg bg-app">
+    <div className="min-h-screen text-fg app-grid-bg bg-app">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 pb-24">
         <div className="pt-6 pb-6">
           <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">{t('assets.title')}</h1>
@@ -50,7 +50,7 @@ export default function AssetsPage() {
           <div className="grid place-items-center gap-4 py-32 text-center">
             <div className="text-5xl">🔐</div>
             <p className="text-fg-faint">{t('assets.signInPrompt')}</p>
-            <button onClick={() => setAuthOpen(true)} className="rounded-xl px-5 py-2.5 text-sm font-bold text-white" style={{ background: '#00b2fc' }}>{t('common.signIn')}</button>
+            <button onClick={() => setAuthOpen(true)} className="rounded-xl px-5 py-2.5 text-sm font-bold text-white" style={{ background: '#0064d9' }}>{t('common.signIn')}</button>
           </div>
         ) : (
           <>
@@ -79,7 +79,7 @@ export default function AssetsPage() {
         )}
       </div>
       <AuthModal open={authOpen} onClose={() => setAuthOpen(false)} initialMode="signin" />
-    </main>
+    </div>
   );
 }
 
@@ -124,7 +124,7 @@ function ImageField({
             {uploading ? t('assets.uploading') : url ? t('assets.edit') : t('common.new')}
           </button>
           {url && (
-            <button type="button" onClick={() => onChange(null)} className="text-left text-[11px] text-fg-faint hover:text-red-400 transition">{t('assets.delete')}</button>
+            <button type="button" onClick={() => onChange(null)} className="text-left text-[11px] text-fg-faint hover:text-danger transition">{t('assets.delete')}</button>
           )}
         </div>
         <input ref={inputRef} type="file" accept="image/*" className="hidden" onChange={(e) => onFile(e.target.files?.[0])} />
@@ -138,16 +138,16 @@ function Modal({ title, onClose, children, saving, onSave, saveLabel, cancelLabe
   title: string; onClose: () => void; children: React.ReactNode; saving: boolean; onSave: () => void; saveLabel: string; cancelLabel: string; savingLabel: string;
 }) {
   return (
-    <div className="fixed inset-0 z-[90] grid place-items-center bg-black/70 p-4" onClick={onClose}>
-      <div className="w-full max-w-md max-h-[90vh] overflow-y-auto rounded-2xl border border-line bg-popover p-5 shadow-2xl" onClick={(e) => e.stopPropagation()}>
+    <div className="fixed inset-0 z-[90] grid place-items-center bg-black/70 p-4 pt-safe" onClick={onClose}>
+      <div className="w-full max-w-md max-h-[90vh] overflow-y-auto rounded-2xl border border-line bg-popover p-5 shadow-2xl" onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true" aria-label={title}>
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-lg font-bold text-fg">{title}</h2>
-          <button onClick={onClose} className="text-fg-faint hover:text-fg"><X className="h-5 w-5" /></button>
+          <button onClick={onClose} className="text-fg-faint hover:text-fg" aria-label="close"><X className="h-5 w-5" /></button>
         </div>
         <div className="space-y-4">{children}</div>
-        <div className="mt-5 flex justify-end gap-2">
+        <div className="mt-5 flex flex-col-reverse justify-end gap-2 sm:flex-row">
           <button onClick={onClose} className="rounded-lg px-4 py-2 text-sm font-medium text-fg-muted hover:text-fg transition">{cancelLabel}</button>
-          <button onClick={onSave} disabled={saving} className="inline-flex items-center gap-1.5 rounded-lg px-4 py-2 text-sm font-bold text-white transition hover:brightness-110 disabled:opacity-50" style={{ background: '#00b2fc' }}>
+          <button onClick={onSave} disabled={saving} className="inline-flex items-center justify-center gap-1.5 rounded-lg px-4 py-2 text-sm font-bold text-white transition hover:brightness-110 disabled:opacity-50" style={{ background: '#0064d9' }}>
             {saving ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : null}
             {saving ? savingLabel : saveLabel}
           </button>
@@ -164,11 +164,11 @@ function Card({ children, onEdit, onDelete, t }: { children: React.ReactNode; on
       {children}
       <div className="flex items-center justify-between gap-2 border-t border-line px-3 py-2">
         <div className="flex gap-1">
-          <button onClick={onEdit} className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-[11px] text-fg-faint transition hover:bg-hover hover:text-fg" aria-label={t('assets.edit')}>
-            <Pencil className="h-3 w-3" /> {t('assets.edit')}
+          <button onClick={onEdit} className="inline-flex items-center gap-1 rounded-md px-2.5 py-1.5 text-[11px] text-fg-faint transition hover:bg-hover hover:text-fg" aria-label={t('assets.edit')}>
+            <Pencil className="h-3.5 w-3.5" /> {t('assets.edit')}
           </button>
-          <button onClick={onDelete} className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-[11px] text-fg-faint transition hover:bg-red-500/10 hover:text-red-400" aria-label={t('assets.delete')}>
-            <Trash2 className="h-3 w-3" /> {t('assets.delete')}
+          <button onClick={onDelete} className="inline-flex items-center gap-1 rounded-md px-2.5 py-1.5 text-[11px] text-fg-faint transition hover:bg-danger/10 hover:text-danger" aria-label={t('assets.delete')}>
+            <Trash2 className="h-3.5 w-3.5" /> {t('assets.delete')}
           </button>
         </div>
       </div>
@@ -182,7 +182,7 @@ function EmptyState({ icon, title, hint, cta, onCta }: { icon: React.ReactNode; 
       <div className="grid h-14 w-14 place-items-center rounded-2xl bg-surface text-fg-faint">{icon}</div>
       <p className="max-w-sm text-sm font-medium text-fg-secondary">{title}</p>
       <p className="max-w-sm text-xs text-fg-faint">{hint}</p>
-      <button onClick={onCta} className="mt-1 inline-flex items-center gap-1.5 rounded-lg px-4 py-2 text-sm font-bold text-white" style={{ background: '#00b2fc' }}>
+      <button onClick={onCta} className="mt-1 inline-flex items-center gap-1.5 rounded-lg px-4 py-2 text-sm font-bold text-white" style={{ background: '#0064d9' }}>
         <Plus className="h-4 w-4" /> {cta}
       </button>
     </div>
@@ -235,7 +235,7 @@ function ProductsPanel() {
     >
       {creating && <ProductForm onClose={() => setCreating(false)} onSaved={() => { setCreating(false); void load(); }} />}
       {editing && <ProductForm product={editing} onClose={() => setEditing(null)} onSaved={() => { setEditing(null); void load(); }} />}
-      {err && <div className="fixed bottom-4 left-1/2 -translate-x-1/2 rounded-lg bg-red-500/90 px-4 py-2 text-xs text-white">{err}</div>}
+      {err && <div role="alert" className="fixed bottom-4 left-1/2 -translate-x-1/2 rounded-lg bg-danger/90 px-4 py-2 text-xs text-white">{err}</div>}
     </PanelShell>
   );
 }
@@ -269,7 +269,7 @@ function ProductForm({ product, onClose, onSaved }: { product?: Product; onClose
       <TextareaField label={t('assets.productDesc')} value={description} onChange={setDescription} placeholder={t('assets.productDescPh')} />
       <ImageField label={t('assets.productImage')} url={imageUrl} onChange={setImageUrl} onError={setErr} t={t} />
       <Field label={t('assets.productSourceUrl')} value={sourceUrl} onChange={setSourceUrl} placeholder={t('assets.productSourceUrlPh')} />
-      {err && <p className="text-xs text-red-400">{err}</p>}
+      {err && <p role="alert" className="text-xs text-danger">{err}</p>}
     </Modal>
   );
 }
@@ -345,7 +345,7 @@ function AvatarForm({ avatar, onClose, onSaved }: { avatar?: Avatar; onClose: ()
       <Field label={t('assets.avatarName')} value={name} onChange={setName} placeholder={t('assets.avatarNamePh')} />
       <TextareaField label={t('assets.avatarDesc')} value={description} onChange={setDescription} placeholder={t('assets.avatarDescPh')} />
       <ImageField label={t('assets.avatarImage')} url={imageUrl} onChange={setImageUrl} onError={setErr} t={t} />
-      {err && <p className="text-xs text-red-400">{err}</p>}
+      {err && <p role="alert" className="text-xs text-danger">{err}</p>}
     </Modal>
   );
 }
@@ -445,7 +445,7 @@ function BrandKitForm({ brandKit, onClose, onSaved }: { brandKit?: BrandKit; onC
             {colors.map((c) => (
               <span key={c} className="inline-flex items-center gap-1 rounded-md border border-line px-1.5 py-1 text-[11px] text-fg-secondary">
                 <span className="h-3.5 w-3.5 rounded" style={{ background: c }} /> {c}
-                <button type="button" onClick={() => setColors((p) => p.filter((x) => x !== c))} className="text-fg-placeholder hover:text-red-400"><X className="h-3 w-3" /></button>
+                <button type="button" onClick={() => setColors((p) => p.filter((x) => x !== c))} aria-label="remove color" className="p-0.5 text-fg-placeholder hover:text-danger"><X className="h-3.5 w-3.5" /></button>
               </span>
             ))}
           </div>
@@ -453,7 +453,7 @@ function BrandKitForm({ brandKit, onClose, onSaved }: { brandKit?: BrandKit; onC
       </div>
       <Field label={t('assets.brandFont')} value={fontNote} onChange={setFontNote} placeholder={t('assets.brandFontPh')} />
       <TextareaField label={t('assets.brandTone')} value={toneNote} onChange={setToneNote} placeholder={t('assets.brandTonePh')} />
-      {err && <p className="text-xs text-red-400">{err}</p>}
+      {err && <p role="alert" className="text-xs text-danger">{err}</p>}
     </Modal>
   );
 }
@@ -487,7 +487,7 @@ function PanelShell<T>({ items, onAdd, addLabel, empty, renderCard, children }: 
     <div>
       <div className="mb-4 flex items-center justify-between">
         <span className="text-xs text-fg-faint">{items ? items.length : '…'}</span>
-        <button onClick={onAdd} className="inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-bold text-white transition hover:brightness-110" style={{ background: '#00b2fc' }}>
+        <button onClick={onAdd} className="inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-bold text-white transition hover:brightness-110" style={{ background: '#0064d9' }}>
           <Plus className="h-4 w-4" /> {addLabel}
         </button>
       </div>

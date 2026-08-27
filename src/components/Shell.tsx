@@ -20,15 +20,17 @@ export function Shell({ children }: { children: React.ReactNode }) {
       {/* Unified sticky header — single source of truth for top navigation.
           Left: logo + brand. Right: history, credits, language, user menu.
           Uses proper flexbox with min-w-0 and shrink-0 to prevent overlap at all viewport sizes. */}
-      <header className="sticky top-0 z-50 border-b border-line bg-app/80 backdrop-blur-lg">
+      <header className="sticky top-0 z-50 border-b border-line bg-app/80 pt-safe backdrop-blur-lg">
         <div className="mx-auto flex h-14 max-w-[1440px] items-center justify-between gap-2 px-3 sm:px-4 md:gap-4">
           {/* Left group: logo + brand name */}
           <Link href="/" className="flex min-w-0 shrink-0 items-center gap-2 hover:opacity-80 transition">
             <img src="/lazynext-mark.png" alt="Lazynext" className="h-7 w-7 shrink-0 rounded-lg sm:h-8 sm:w-8" />
             <span className="hidden text-base font-bold tracking-tight sm:inline">Lazynext</span>
           </Link>
-          {/* Right group: toolbar items — all shrink-0 so they never compress each other */}
-          <nav aria-label="Toolbar" className="flex min-w-0 items-center gap-1 sm:gap-1.5 md:gap-2">
+          {/* Right group: toolbar items — nav is min-w-0 so it can shrink; items
+              themselves are shrink-0 so they never compress each other. Toolbar
+              gap tightens on narrow screens. */}
+          <nav aria-label="Toolbar" className="flex min-w-0 items-center justify-end gap-1 sm:gap-1.5 md:gap-2">
             <HistoryButton />
             <CreditBadge />
             <LangToggle />
@@ -36,7 +38,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
           </nav>
         </div>
       </header>
-      <main id="main-content">
+      <main id="main-content" tabIndex={-1}>
         {children}
       </main>
     </div>

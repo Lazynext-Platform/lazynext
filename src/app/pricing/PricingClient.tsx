@@ -112,7 +112,7 @@ export default function PricingClient({
         </div>
 
         {msg && (
-          <p className={`text-center text-sm ${msg.ok ? 'text-emerald-400' : 'text-red-400'}`}>{msg.text}</p>
+          <p role="alert" className={`text-center text-sm ${msg.ok ? 'text-success' : 'text-danger'}`}>{msg.text}</p>
         )}
 
         <div className="grid gap-6 sm:grid-cols-3">
@@ -124,11 +124,11 @@ export default function PricingClient({
                 className={`relative flex flex-col rounded-2xl border p-7 ${p.highlight ? 'border-[#00b2fc] ring-2 ring-[#00b2fc]/40 bg-surface' : 'border-line bg-surface'}`}
               >
                 {p.highlight && (
-                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full px-3 py-1 text-xs font-semibold text-white shadow-lg" style={{ background: '#00b2fc' }}>
+                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full px-3 py-1 text-xs font-semibold text-white shadow-lg" style={{ background: '#0064d9' }}>
                     {t('pricing.popular')}
                   </span>
                 )}
-                <div className="text-sm font-medium text-fg-faint">{p.id === 'starter' ? t('pricing.packStarter') : p.id === 'pro' ? t('pricing.packPro') : p.id === 'elite' ? t('pricing.packElite') : p.name}</div>
+                <h2 className="text-sm font-medium text-fg-faint">{p.id === 'starter' ? t('pricing.packStarter') : p.id === 'pro' ? t('pricing.packPro') : p.id === 'elite' ? t('pricing.packElite') : p.name}</h2>
                 <div className="mt-2 text-4xl font-bold">
                   {dp.symbol}{dp.formatted}
                 </div>
@@ -148,8 +148,9 @@ export default function PricingClient({
                   <button
                     onClick={() => buy(p.id)}
                     disabled={busy === p.id}
-                    className="mt-6 w-full rounded-xl px-4 py-2.5 text-sm font-bold text-fg transition hover:brightness-110 disabled:opacity-50"
-                    style={{ background: p.highlight ? '#00b2fc' : 'rgba(255,255,255,0.08)' }}
+                    aria-label={`${t('pricing.buy')} ${p.name}`}
+                    className={`mt-6 w-full rounded-xl px-4 py-2.5 text-sm font-bold transition hover:brightness-110 disabled:opacity-50 ${p.highlight ? 'text-white' : 'text-fg'}`}
+                    style={{ background: p.highlight ? '#0064d9' : 'rgba(255,255,255,0.08)' }}
                   >
                     {busy === p.id ? <Loader2 className="mx-auto h-4 w-4 animate-spin" /> : t('pricing.buy')}
                   </button>
@@ -170,10 +171,11 @@ export default function PricingClient({
               <input
                 value={code}
                 onChange={(e) => setCode(e.target.value)}
+                aria-label="Redemption code"
                 placeholder="ATLAS-XXXX-XXXX"
                 className="flex-1 rounded-xl border border-line bg-surface px-3 py-2.5 text-sm text-fg outline-none transition focus:border-[#00b2fc] focus:ring-1 focus:ring-[#00b2fc]"
               />
-              <button onClick={redeem} disabled={busy === 'redeem' || !code} className="rounded-xl px-4 py-2.5 text-sm font-bold text-white transition hover:brightness-110 disabled:opacity-50" style={{ background: '#00b2fc' }}>
+              <button onClick={redeem} disabled={busy === 'redeem' || !code} className="rounded-xl px-4 py-2.5 text-sm font-bold text-white transition hover:brightness-110 disabled:opacity-50" style={{ background: '#0064d9' }}>
                 {busy === 'redeem' ? <Loader2 className="h-4 w-4 animate-spin" /> : t('pricing.redeem')}
               </button>
             </div>

@@ -17,7 +17,13 @@ async function __byokPOST(req: Request) {
 
   const body = await req.json().catch(() => ({}));
   const getUrl = typeof body.getUrl === 'string' ? body.getUrl : '';
-  if (!/^https:\/\/api\.atlascloud\.ai\//.test(getUrl)) {
+  // In development, allow mock Atlas Cloud URLs (http://localhost:3099).
+  // In production, restrict to the real Atlas Cloud API domain (SSRF protection).
+  const isDev = process.env.NODE_ENV === 'development' || process.env.BUILD_TARGET === 'local';
+  const allowedPattern = isDev
+    ? /^(https:\/\/api\.atlascloud\.ai\/|http:\/\/localhost:\d+\/api\/v1\/)/
+    : /^https:\/\/api\.atlascloud\.ai\//;
+  if (!allowedPattern.test(getUrl)) {
     return NextResponse.json({ error: 'invalid_get_url' }, { status: 400 });
   }
   try {

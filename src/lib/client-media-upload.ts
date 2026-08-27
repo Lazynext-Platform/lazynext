@@ -3,7 +3,7 @@
 type DirectUploadKind = 'ad-reference' | 'reel';
 
 type MediaStorageCapabilities = {
-  provider: 'r2';
+  provider: 'r2' | 'local';
   configured: boolean;
   directUpload: boolean;
 };
@@ -20,7 +20,7 @@ async function mediaStorageCapabilities(): Promise<MediaStorageCapabilities> {
         .catch(() => ({}))) as Partial<MediaStorageCapabilities>;
       if (
         !response.ok ||
-        body.provider !== 'r2'
+        (body.provider !== 'r2' && body.provider !== 'local')
       ) {
         throw new Error('media_storage_capabilities_failed');
       }

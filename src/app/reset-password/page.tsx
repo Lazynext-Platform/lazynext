@@ -59,7 +59,7 @@ function ResetPasswordContent() {
           <div className="mb-4 text-5xl">✅</div>
           <h1 className="mb-2 text-xl font-bold text-fg">Password Reset</h1>
           <p className="mb-6 text-sm text-fg-muted">Your password has been changed successfully. You can now sign in with your new password.</p>
-          <Link href="/" className="inline-block rounded-xl px-6 py-2.5 text-sm font-bold text-white" style={{ background: '#00b2fc' }}>
+          <Link href="/" className="inline-block rounded-xl px-6 py-2.5 text-sm font-bold text-white" style={{ background: '#0064d9' }}>
             Back to Sign In
           </Link>
         </div>
@@ -75,6 +75,8 @@ function ResetPasswordContent() {
         <form onSubmit={handleSubmit} className="space-y-4">
           <input
             type="password"
+            autoComplete="new-password"
+            aria-label="New password (min 8 characters)"
             placeholder="New password (min 8 characters)"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -84,6 +86,8 @@ function ResetPasswordContent() {
           />
           <input
             type="password"
+            autoComplete="new-password"
+            aria-label="Confirm new password"
             placeholder="Confirm new password"
             value={confirm}
             onChange={(e) => setConfirm(e.target.value)}
@@ -91,12 +95,12 @@ function ResetPasswordContent() {
             minLength={8}
             className="w-full rounded-xl border border-line bg-hover px-4 py-2.5 text-sm text-fg placeholder-fg-placeholder outline-none focus:border-brand-400"
           />
-          {error && <p className="text-sm text-red-400">{error}</p>}
+          {error && <p role="alert" className="text-sm text-danger">{error}</p>}
           <button
             type="submit"
             disabled={status === 'loading' || !token}
             className="w-full rounded-xl px-4 py-2.5 text-sm font-bold text-white transition hover:brightness-110 disabled:opacity-50"
-            style={{ background: '#00b2fc' }}
+            style={{ background: '#0064d9' }}
           >
             {status === 'loading' ? 'Resetting…' : 'Reset Password'}
           </button>
