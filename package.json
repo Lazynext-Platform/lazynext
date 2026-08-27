@@ -4,7 +4,7 @@
   "private": true,
   "description": "Lazynext is an AI e-commerce ad studio for generating UGC product ads, reference-ad remakes, AI drama ads, and ad skits, powered by Atlas Cloud multi-model workflows.",
   "scripts": {
-    "dev": "npm run platform:prepare && next dev",
+    "dev": "npm run platform:prepare && next dev -p 3100",
     "mock-atlas": "node scripts/mock-atlas.mjs",
     "build": "npm run prisma:generate && npm run platform:prepare && next build --webpack",
     "start": "next start",
