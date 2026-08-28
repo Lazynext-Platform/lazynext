@@ -11,6 +11,7 @@ import { useI18n } from '@/i18n/provider';
 import { AuthModal } from '@/components/AuthModal';
 import { VisualTimeline } from '@/components/editor/VisualTimeline';
 import { useKeyboardShortcuts } from '@/lib/use-keyboard-shortcuts';
+import { useUndoRedo } from '@/lib/editor/use-undo-redo';
 import type { Timeline as TimelineModel, Track as TrackModel, Clip as ClipModel } from '@/lib/editor/types';
 
 type Step = 'idle' | 'loading' | 'done' | 'error';
@@ -121,7 +122,7 @@ export default function EditorPage() {
   const [tlFps, setTlFps] = useState('30');
   const [tlRatio, setTlRatio] = useState('16:9');
   const [tlStep, setTlStep] = useState<Step>('idle');
-  const [timeline, setTimeline] = useState<Record<string, unknown> | null>(null);
+  const { present: timeline, commit: setTimeline, reset: resetTimeline, undo, redo, canUndo, canRedo } = useUndoRedo<Record<string, unknown> | null>(null);
   const [tlError, setTlError] = useState('');
 
   // Transcribe state
@@ -444,7 +445,7 @@ export default function EditorPage() {
       }
       const j = await res.json().catch(() => ({}));
       if (j.timeline) {
-        setTimeline(j.timeline);
+        resetTimeline(j.timeline);
         setTlName(j.timeline.name || 'Loaded');
         setTlFps(String(j.timeline.fps || 30));
         setTlRatio(j.timeline.ratio || '16:9');
@@ -519,7 +520,20 @@ export default function EditorPage() {
       description: 'Save Timeline',
       handler: () => { if (tab === 'timeline' && timeline) saveTimeline(); },
     },
-  ], [tab, transcript, timeline, generateRoughCut, saveTimeline]);
+    {
+      key: 'z',
+      description: 'Undo',
+      ctrl: true,
+      handler: () => undo(),
+    },
+    {
+      key: 'z',
+      description: 'Redo',
+      ctrl: true,
+      shift: true,
+      handler: () => redo(),
+    },
+  ], [tab, transcript, timeline, generateRoughCut, saveTimeline, undo, redo]);
 
   const { showHelp, setShowHelp } = useKeyboardShortcuts(shortcuts, 'Keyboard Shortcuts');
 
@@ -1274,11 +1288,32 @@ export default function EditorPage() {
                   onSeek={setTlPlayhead}
                   currentTimeSec={tlPlayhead}
                 />
+                {canUndo && (
+                  <p className="text-xs text-fg-faint mt-2">Undo history available ({canUndo ? 'undo' : 'no'} / {canRedo ? 'redo' : 'no'})</p>
+                )}
                 <pre className="rounded-lg border border-border bg-bg-card p-3 text-xs font-mono overflow-x-auto" role="status">
                   {JSON.stringify(timeline, null, 2)}
                 </pre>
                 {/* Save to D1 */}
                 <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={undo}
+                      disabled={!canUndo}
+                      className="rounded-lg border border-line bg-app px-3 py-1.5 text-xs font-medium text-fg transition hover:bg-surface disabled:opacity-40"
+                      aria-label="Undo"
+                    >
+                      ↶ Undo
+                    </button>
+                    <button
+                      onClick={redo}
+                      disabled={!canRedo}
+                      className="rounded-lg border border-line bg-app px-3 py-1.5 text-xs font-medium text-fg transition hover:bg-surface disabled:opacity-40"
+                      aria-label="Redo"
+                    >
+                      ↷ Redo
+                    </button>
+                  </div>
                   <button
                     onClick={saveTimeline}
                     disabled={tlSaveStep === 'loading'}
@@ -1368,6 +1403,8 @@ export default function EditorPage() {
               <div className="flex justify-between"><dt>Switch to Timeline</dt><dd><kbd className="kbd">3</kbd></dd></div>
               <div className="flex justify-between"><dt>Generate Rough Cut</dt><dd><kbd className="kbd">G</kbd></dd></div>
               <div className="flex justify-between"><dt>Save Timeline</dt><dd><kbd className="kbd">S</kbd></dd></div>
+              <div className="flex justify-between"><dt>Undo</dt><dd><kbd className="kbd">Ctrl+Z</kbd></dd></div>
+              <div className="flex justify-between"><dt>Redo</dt><dd><kbd className="kbd">Ctrl+Shift+Z</kbd></dd></div>
               <div className="flex justify-between"><dt>Show/hide this help</dt><dd><kbd className="kbd">?</kbd></dd></div>
               <div className="flex justify-between"><dt>Close this dialog</dt><dd><kbd className="kbd">Esc</kbd></dd></div>
             </dl>

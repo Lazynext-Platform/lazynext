@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import {
   Clapperboard, Coins, Boxes, FolderOpen, ArrowRight, Loader2, Film, Play, Sparkles,
-  TrendingDown, TrendingUp, BarChart3,
+  TrendingDown, TrendingUp, BarChart3, Trophy,
 } from 'lucide-react';
 import { useI18n } from '@/i18n/provider';
 import { appTitle, appDesc, isFeatured } from '@/config/appCatalog';
@@ -45,6 +45,15 @@ export default function DashboardPage() {
     byDay: Array<{ date: string; spent: number; granted: number }>;
     projection: { avgDailySpend: number; daysUntilEmpty: number | null; currentBalance: number };
   } | null>(null);
+  const [leaderboard, setLeaderboard] = useState<{
+    entries: Array<{
+      creationId: string; platform: string; hookType: string | null; angleName: string | null;
+      impressions: number; clicks: number; conversions: number; spend: number; revenue: number;
+      ctr: number; cvr: number; roas: number; recordedAt: string;
+    }>;
+    summary: { totalImpressions: number; totalClicks: number; totalConversions: number; totalSpend: number; totalRevenue: number; avgCtr: number; avgRoas: number };
+    byPlatform: Record<string, { count: number; avgRoas: number }>;
+  } | null>(null);
 
   useEffect(() => {
     if (status !== 'authenticated') return;
@@ -67,6 +76,10 @@ export default function DashboardPage() {
     fetch('/api/credits/analytics', { cache: 'no-store' })
       .then((r) => r.json())
       .then((j) => setAnalytics(j))
+      .catch(() => {});
+    fetch('/api/creative/leaderboard', { cache: 'no-store' })
+      .then((r) => r.json())
+      .then((j) => setLeaderboard(j))
       .catch(() => {});
   }, [status]);
 
@@ -200,6 +213,89 @@ export default function DashboardPage() {
                   })}
                 </div>
               </div>
+            )}
+          </div>
+        )}
+
+        {/* Performance leaderboard */}
+        {leaderboard && (
+          <div className="mb-10 rounded-2xl border border-line bg-surface p-5">
+            <div className="mb-4 flex items-center gap-2">
+              <Trophy className="h-5 w-5 text-brand-accent" />
+              <h2 className="text-lg font-bold text-fg">{t('dashboard.leaderboard')}</h2>
+            </div>
+
+            {leaderboard.entries.length === 0 ? (
+              <p className="text-xs text-fg-faint">{t('dashboard.leaderboardEmpty')}</p>
+            ) : (
+              <>
+                {/* Summary stats */}
+                <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 mb-4">
+                  <div className="rounded-lg border border-line bg-app p-3">
+                    <div className="text-xs text-fg-faint">{t('dashboard.totalImpressions')}</div>
+                    <div className="mt-1 text-xl font-bold text-fg">{formatNumber(leaderboard.summary.totalImpressions, locale)}</div>
+                  </div>
+                  <div className="rounded-lg border border-line bg-app p-3">
+                    <div className="text-xs text-fg-faint">{t('dashboard.totalClicks')}</div>
+                    <div className="mt-1 text-xl font-bold text-fg">{formatNumber(leaderboard.summary.totalClicks, locale)}</div>
+                  </div>
+                  <div className="rounded-lg border border-line bg-app p-3">
+                    <div className="text-xs text-fg-faint">{t('dashboard.totalConversions')}</div>
+                    <div className="mt-1 text-xl font-bold text-fg">{formatNumber(leaderboard.summary.totalConversions, locale)}</div>
+                  </div>
+                  <div className="rounded-lg border border-line bg-app p-3">
+                    <div className="text-xs text-fg-faint">{t('dashboard.avgRoas')}</div>
+                    <div className="mt-1 text-xl font-bold text-fg">{leaderboard.summary.avgRoas}x</div>
+                  </div>
+                </div>
+
+                {/* Platform breakdown */}
+                <div className="mb-4 flex gap-2">
+                  {Object.entries(leaderboard.byPlatform).map(([platform, data]) => (
+                    data.count > 0 && (
+                      <span key={platform} className="text-xs rounded-full bg-app border border-line px-3 py-1">
+                        {platform}: {data.count} campaigns, avg ROAS {data.avgRoas.toFixed(2)}x
+                      </span>
+                    )
+                  ))}
+                </div>
+
+                {/* Leaderboard table */}
+                <div className="overflow-x-auto">
+                  <table className="w-full text-xs">
+                    <thead>
+                      <tr className="border-b border-line text-left text-fg-faint">
+                        <th className="pb-2 pr-3 font-medium">#</th>
+                        <th className="pb-2 pr-3 font-medium">Platform</th>
+                        <th className="pb-2 pr-3 font-medium">Hook</th>
+                        <th className="pb-2 pr-3 font-medium">Angle</th>
+                        <th className="pb-2 pr-3 font-medium text-right">Impressions</th>
+                        <th className="pb-2 pr-3 font-medium text-right">CTR</th>
+                        <th className="pb-2 pr-3 font-medium text-right">ROAS</th>
+                        <th className="pb-2 pr-3 font-medium text-right">Revenue</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {leaderboard.entries.map((entry, i) => (
+                        <tr key={i} className="border-b border-line/50">
+                          <td className="py-2 pr-3 font-bold text-fg">{i + 1}</td>
+                          <td className="py-2 pr-3">
+                            <span className={`rounded px-1.5 py-0.5 text-[10px] font-medium ${entry.platform === 'meta' ? 'bg-blue-500/15 text-blue-500' : 'bg-red-500/15 text-red-500'}`}>
+                              {entry.platform}
+                            </span>
+                          </td>
+                          <td className="py-2 pr-3 text-fg-faint">{entry.hookType || '—'}</td>
+                          <td className="py-2 pr-3 text-fg-faint">{entry.angleName || '—'}</td>
+                          <td className="py-2 pr-3 text-right text-fg">{formatNumber(entry.impressions, locale)}</td>
+                          <td className="py-2 pr-3 text-right text-fg">{(entry.ctr * 100).toFixed(2)}%</td>
+                          <td className="py-2 pr-3 text-right font-bold text-fg">{entry.roas.toFixed(2)}x</td>
+                          <td className="py-2 pr-3 text-right text-fg">${entry.revenue.toFixed(2)}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </>
             )}
           </div>
         )}

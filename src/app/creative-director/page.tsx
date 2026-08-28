@@ -6,7 +6,7 @@ import { useSession } from 'next-auth/react';
 import {
   Sparkles, Loader2, ArrowRight, CheckCircle2, AlertCircle,
   Target, Fish, FileText, Clapperboard, TrendingUp, Coins,
-  MessageSquare, Wand2, X, Scissors,
+  MessageSquare, Wand2, X, Scissors, Rocket,
 } from 'lucide-react';
 import { useI18n } from '@/i18n/provider';
 import { AuthModal } from '@/components/AuthModal';
@@ -61,6 +61,82 @@ export default function CreativeDirectorPage() {
   const [refineLoading, setRefineLoading] = useState(false);
   const [refineResult, setRefineResult] = useState<{ refined: Record<string, unknown>; refinementNote: string } | null>(null);
   const [refineError, setRefineError] = useState('');
+
+  // Autonomous pipeline state
+  const [autoMode, setAutoMode] = useState(false);
+  const [autoDeployPlatform, setAutoDeployPlatform] = useState<'meta' | 'google'>('meta');
+  const [autoDeployBudget, setAutoDeployBudget] = useState('');
+  const [autoDryRun, setAutoDryRun] = useState(true);
+  const [autoRunning, setAutoRunning] = useState(false);
+  const [autoSteps, setAutoSteps] = useState<Array<{ event: string; data: Record<string, unknown> }>>([]);
+  const [autoResult, setAutoResult] = useState<{
+    directorResult: { bestScore: number; hookType: string; angleName: string; scriptTitle: string; totalCreditsSpent: number; assetPackageId?: string };
+    deployResult: { campaignId: string; campaignName: string; status: string; dryRun: boolean; dbId: string | null } | null;
+    deployError?: string;
+  } | null>(null);
+  const [autoError, setAutoError] = useState('');
+
+  const runAutoPipeline = useCallback(async () => {
+    if (!session?.user) { setAuthOpen(true); return; }
+    if (!productUrl.trim() && !productText.trim()) return;
+    setAutoRunning(true);
+    setAutoError('');
+    setAutoSteps([]);
+    setAutoResult(null);
+
+    try {
+      const res = await fetch('/api/creative/autonomous-pipeline', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          productUrl: productUrl.trim() || undefined,
+          brandUrl: brandUrl.trim() || undefined,
+          productText: productText.trim() || undefined,
+          productName: productName.trim() || undefined,
+          platform,
+          budgetCredits: budget,
+          deployPlatform: autoDeployPlatform,
+          deployBudgetDaily: autoDeployBudget ? Number(autoDeployBudget) : undefined,
+          deployDryRun: autoDryRun,
+        }),
+      });
+
+      if (!res.ok) {
+        const j = await res.json().catch(() => ({}));
+        throw new Error(j.error || 'pipeline_failed');
+      }
+
+      const reader = res.body?.getReader();
+      if (!reader) throw new Error('no_stream');
+      const decoder = new TextDecoder();
+      let buffer = '';
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split('\n');
+        buffer = lines.pop() || '';
+        for (const line of lines) {
+          if (!line.trim()) continue;
+          try {
+            const msg = JSON.parse(line);
+            setAutoSteps(prev => [...prev, msg]);
+            if (msg.event === 'pipeline_complete') {
+              setAutoResult(msg.data);
+            }
+            if (msg.event === 'error') {
+              setAutoError(msg.data?.message || 'Unknown error');
+            }
+          } catch { /* skip malformed */ }
+        }
+      }
+    } catch (e) {
+      setAutoError(e instanceof Error ? e.message : String(e));
+    } finally {
+      setAutoRunning(false);
+    }
+  }, [session?.user, productUrl, productText, brandUrl, productName, platform, budget, autoDeployPlatform, autoDeployBudget, autoDryRun]);
 
   const run = useCallback(async () => {
     if (!session?.user) { setAuthOpen(true); return; }
@@ -510,6 +586,156 @@ export default function CreativeDirectorPage() {
               )}
             </div>
           </section>
+        )}
+      </div>
+
+      {/* Autonomous Production Pipeline */}
+      <div className="mt-8 rounded-2xl border border-line bg-surface p-5">
+        <div className="mb-4 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Rocket className="h-5 w-5 text-brand-accent" />
+            <h2 className="text-lg font-bold text-fg">{t('director.autoPipelineTitle')}</h2>
+          </div>
+          <button
+            onClick={() => setAutoMode(!autoMode)}
+            className={`rounded-lg px-3 py-1.5 text-xs font-medium transition ${
+              autoMode ? 'bg-brand-accent text-white' : 'bg-app text-fg-faint hover:text-fg'
+            }`}
+          >
+            {autoMode ? t('director.autoPipelineActive') : t('director.autoPipelineActivate')}
+          </button>
+        </div>
+
+        {autoMode && (
+          <div className="space-y-4">
+            <p className="text-xs text-fg-faint">{t('director.autoPipelineDescription')}</p>
+
+            {/* Deploy configuration */}
+            <div className="grid gap-3 sm:grid-cols-3">
+              <div>
+                <label className="text-xs font-medium text-fg-faint">{t('director.autoDeployPlatform')}</label>
+                <select
+                  value={autoDeployPlatform}
+                  onChange={e => setAutoDeployPlatform(e.target.value as 'meta' | 'google')}
+                  className="mt-1 w-full rounded-lg border border-line bg-app px-3 py-2 text-sm text-fg focus:border-brand-accent focus:outline-none"
+                >
+                  <option value="meta">Meta (Facebook/Instagram)</option>
+                  <option value="google">Google Ads</option>
+                </select>
+              </div>
+              <div>
+                <label className="text-xs font-medium text-fg-faint">{t('director.autoDeployBudget')}</label>
+                <input
+                  type="number"
+                  value={autoDeployBudget}
+                  onChange={e => setAutoDeployBudget(e.target.value)}
+                  placeholder="50"
+                  min="1"
+                  className="mt-1 w-full rounded-lg border border-line bg-app px-3 py-2 text-sm text-fg placeholder:text-fg-faint/50 focus:border-brand-accent focus:outline-none"
+                />
+              </div>
+              <div className="flex items-end">
+                <label className="flex items-center gap-2 text-xs text-fg-faint">
+                  <input
+                    type="checkbox"
+                    checked={autoDryRun}
+                    onChange={e => setAutoDryRun(e.target.checked)}
+                    className="h-4 w-4 rounded border-line"
+                  />
+                  {t('director.autoDryRun')}
+                </label>
+              </div>
+            </div>
+
+            {/* Launch button */}
+            <button
+              onClick={runAutoPipeline}
+              disabled={autoRunning || (!productUrl.trim() && !productText.trim())}
+              className="flex items-center gap-2 rounded-lg bg-brand-accent px-4 py-2 text-sm font-bold text-white transition hover:opacity-90 disabled:opacity-40"
+            >
+              {autoRunning ? <Loader2 className="h-4 w-4 animate-spin" /> : <Rocket className="h-4 w-4" />}
+              {autoDryRun ? t('director.autoSimulate') : t('director.autoDeploy')}
+            </button>
+
+            {/* Live steps */}
+            {autoSteps.length > 0 && (
+              <div className="rounded-lg border border-line bg-app p-3">
+                <h3 className="mb-2 text-xs font-medium text-fg-faint">{t('director.autoProgress')}</h3>
+                <div className="space-y-1 max-h-60 overflow-y-auto">
+                  {autoSteps.map((s, i) => (
+                    <div key={i} className="flex items-center gap-2 text-xs">
+                      {s.event === 'phase' && s.data.status === 'completed' ? (
+                        <CheckCircle2 className="h-3 w-3 text-success shrink-0" />
+                      ) : s.event === 'error' ? (
+                        <AlertCircle className="h-3 w-3 text-danger shrink-0" />
+                      ) : s.event === 'director_step' && s.data.status === 'running' ? (
+                        <Loader2 className="h-3 w-3 animate-spin text-brand-accent shrink-0" />
+                      ) : (
+                        <span className="h-3 w-3 rounded-full bg-fg-faint/30 shrink-0" />
+                      )}
+                      <span className="text-fg-faint">
+                        [{s.event}] {String(s.data.phase || s.data.name || s.data.message || '')}
+                        {s.data.status ? ` — ${s.data.status}` : ''}
+                        {typeof s.data.totalSpent === 'number' ? ` (${s.data.totalSpent} credits)` : ''}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Error */}
+            {autoError && (
+              <div className="flex items-center gap-2 rounded-lg border border-danger/30 bg-danger/10 p-3 text-xs text-danger" role="alert">
+                <AlertCircle className="h-4 w-4 shrink-0" />
+                {autoError}
+              </div>
+            )}
+
+            {/* Result */}
+            {autoResult && (
+              <div className="rounded-lg border border-success/30 bg-success/5 p-4">
+                <div className="mb-3 flex items-center gap-2">
+                  <CheckCircle2 className="h-4 w-4 text-success" />
+                  <span className="text-sm font-bold text-fg">{t('director.autoComplete')}</span>
+                </div>
+                <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 mb-3 text-xs">
+                  <div className="rounded bg-surface p-2">
+                    <div className="text-fg-faint">{t('director.autoBestScore')}</div>
+                    <div className="text-lg font-bold text-fg">{autoResult.directorResult.bestScore}/100</div>
+                  </div>
+                  <div className="rounded bg-surface p-2">
+                    <div className="text-fg-faint">{t('director.autoCreditsSpent')}</div>
+                    <div className="text-lg font-bold text-fg">{autoResult.directorResult.totalCreditsSpent}</div>
+                  </div>
+                  <div className="rounded bg-surface p-2">
+                    <div className="text-fg-faint">{t('director.autoHookType')}</div>
+                    <div className="text-sm font-bold text-fg">{autoResult.directorResult.hookType}</div>
+                  </div>
+                  <div className="rounded bg-surface p-2">
+                    <div className="text-fg-faint">{t('director.autoAngleName')}</div>
+                    <div className="text-sm font-bold text-fg">{autoResult.directorResult.angleName}</div>
+                  </div>
+                </div>
+                {autoResult.deployResult ? (
+                  <div className="rounded bg-surface p-3 text-xs">
+                    <div className="flex items-center gap-2 mb-1">
+                      <CheckCircle2 className="h-3 w-3 text-success" />
+                      <span className="font-bold text-fg">
+                        {autoResult.deployResult.dryRun ? t('director.autoDeploySimulated') : t('director.autoDeployed')}
+                      </span>
+                    </div>
+                    <p className="text-fg-faint">{autoResult.deployResult.campaignName}</p>
+                    <p className="text-fg-faint mt-1">Status: {autoResult.deployResult.status}</p>
+                  </div>
+                ) : (
+                  <div className="rounded bg-surface p-3 text-xs text-danger">
+                    {t('director.autoDeployFailed')}: {autoResult.deployError}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
         )}
       </div>
 

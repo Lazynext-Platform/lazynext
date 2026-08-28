@@ -1,19 +1,14 @@
 import { withAtlas } from '@/lib/request-context';
 import { NextResponse } from 'next/server';
 import { auth } from '@/../auth';
-import { dryRunOCR, type OCRProvider } from '@/lib/providers/ocr';
+import { getOCRProvider } from '@/lib/providers/ocr';
 import { deductCredits } from '@/lib/credits';
 import { refundSync } from '@/lib/lazynext-studio/gen-task';
 
 export const maxDuration = 60;
 
 const OCR_COST = 1;
-const OCR_MODEL = 'firered/firered-ocr';
-
-/** Returns the OCR provider — currently only the dry-run stub. */
-function getOCRProvider(): OCRProvider {
-  return dryRunOCR;
-}
+const OCR_MODEL = process.env.OCR_VISION_MODEL || 'vision-llm-ocr';
 
 /**
  * POST /api/editor/ocr
