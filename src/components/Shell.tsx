@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Sparkles, Megaphone, BarChart3, LayoutDashboard, Package, Scissors, Library, Lightbulb, Calendar, Video, Wand2 } from 'lucide-react';
+import { Sparkles, Megaphone, BarChart3, LayoutDashboard, Package, Scissors, Library, Lightbulb, Calendar, Video, Wand2, ImageIcon, Send, BookOpen, Brain } from 'lucide-react';
 import { UserMenu } from '@/components/UserMenu';
 import { LangToggle } from '@/components/LangToggle';
 import { CreditBadge } from '@/components/CreditBadge';
@@ -20,6 +20,10 @@ const NAV_LINKS = [
   { href: '/creative-assets', label: 'Assets', icon: Package },
   { href: '/editor', label: 'Editor', icon: Scissors },
   { href: '/skills', label: 'Skills', icon: Wand2, hideOnMd: true },
+  { href: '/image-studio', label: 'Image Studio', icon: ImageIcon, hideOnMd: true },
+  { href: '/narrative-studio', label: 'Narrative', icon: BookOpen, hideOnMd: true },
+  { href: '/publish', label: 'Publish', icon: Send, hideOnMd: true },
+  { href: '/ml-insights', label: 'ML Insights', icon: Brain, hideOnMd: true },
   { href: '/templates', label: 'Templates', icon: Library, hideOnMd: true },
   { href: '/inspiration', label: 'Inspiration', icon: Lightbulb, hideOnMd: true },
   { href: '/calendar', label: 'Calendar', icon: Calendar, hideOnMd: true },
@@ -38,7 +42,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
       <header className="sticky top-0 z-50 border-b border-line bg-app/80 pt-safe backdrop-blur-lg">
         <div className="mx-auto flex h-14 max-w-[1440px] items-center justify-between gap-2 px-3 sm:px-4 md:gap-4">
           {/* Left group: logo + brand name + nav links */}
-          <div className="flex min-w-0 shrink-0 items-center gap-2">
+          <div className="flex min-w-0 items-center gap-2">
             <Link href="/" className="flex shrink-0 items-center gap-2 hover:opacity-80 transition">
               <img src="/lazynext-mark.png" alt="Lazynext" className="h-7 w-7 shrink-0 rounded-lg sm:h-8 sm:w-8" />
               <span className="hidden text-base font-bold tracking-tight sm:inline">Lazynext</span>
