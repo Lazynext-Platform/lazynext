@@ -1,5 +1,33 @@
 # LazyNext Changelog
 
+## 2026-08-28 — Creative Assets Browsing Page, Asset-Persist Tests, Docs Update
+
+### What Changed
+1. **Creative Assets browsing page**: new `/creative-assets` page lists saved Creative Director
+   packages with expandable child asset views (brief, hooks, angles, script, variants).
+2. **Filter bar**: filter assets by type (all, packages, brief, hooks, angles, script, variants).
+3. **Navigation**: Assets link added to Shell header nav and dashboard.
+4. **Asset-persist unit tests**: 17 new tests in `test/asset-persist.test.ts` covering
+   `parseMetadata`, `parseTags`, `groupAssets`, and asset type validation.
+5. **Documentation**: CHANGELOG, ADR-005, ADR-006, and AGENTS.md updated to cover asset
+   persistence, streaming director, metrics refresh UI, and i18n expansion.
+
+### Verification
+- `npm test` — 130 unit tests passed (113 existing + 17 new asset-persist tests)
+- `npx tsc --noEmit` — passed (0 errors)
+- `npm run lint` — passed
+- All CI checks green
+
+### Files Changed
+- `src/app/creative-assets/page.tsx` (new — asset browsing UI)
+- `src/app/dashboard/page.tsx` (added creative-assets card)
+- `src/components/Shell.tsx` (added Assets nav link)
+- `test/asset-persist.test.ts` (new — 17 tests)
+- `CHANGELOG.md` (new entry)
+- `docs/adr/005-autonomous-creative-director.md` (workflow/persistence/streaming update)
+- `docs/adr/006-performance-learning.md` (metrics refresh UI update)
+- `AGENTS.md` (new API routes and streaming note)
+
 ## 2026-08-28 — Asset Persistence, Streaming Director, Metrics Refresh UI, Nav, E2E
 
 ### What Changed
@@ -26,7 +54,7 @@
 10. **E2E fix**: `e2e/home.spec.ts` nav landmark strict-mode violation resolved.
 
 ### Verification
-- `npm test` — 113 unit tests passed
+- `npm test` — 130 unit tests passed (113 existing + 17 new asset-persist tests)
 - `npx playwright test` — 27 E2E tests passed (new-pages.spec.ts)
 - `npx tsc --noEmit` — passed (0 errors)
 - All CI checks green
