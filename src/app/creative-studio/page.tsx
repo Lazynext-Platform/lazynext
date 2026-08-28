@@ -5,7 +5,7 @@ import { useSession } from 'next-auth/react';
 import {
   AlertCircle, CheckCircle2, Loader2, Sparkles, Link2, Lightbulb, Film,
   Copy, ChevronRight, Globe, Target, MessageSquare, Clapperboard,
-  Video, ArrowRight, Wand2, StopCircle,
+  Video, ArrowRight, Wand2, StopCircle, Grid,
 } from 'lucide-react';
 import Link from 'next/link';
 import { useI18n } from '@/i18n/provider';
@@ -184,6 +184,17 @@ export default function CreativeStudioPage() {
   const [chainRunning, setChainRunning] = useState(false);
   const [chainError, setChainError] = useState<string | null>(null);
   const [chainPaused, setChainPaused] = useState(false); // true when waiting for user to continue
+
+  // Batch generation state
+  const [batchMode, setBatchMode] = useState(false);
+  const [batchTool, setBatchTool] = useState<'hooks' | 'angles' | 'scripts'>('hooks');
+  const [batchCount, setBatchCount] = useState(3);
+  const [batchResults, setBatchResults] = useState<any[]>([]);
+  const [batchLoading, setBatchLoading] = useState(false);
+  const [batchProgress, setBatchProgress] = useState(0);
+  const [batchScores, setBatchScores] = useState<Record<number, number>>({});
+  const [batchScoring, setBatchScoring] = useState<Set<number>>(new Set());
+  const [batchPartial, setBatchPartial] = useState(false); // true if some variants failed
 
   // ── Actions ──
   const doBrandExtract = useCallback(async () => {
@@ -457,6 +468,111 @@ export default function CreativeStudioPage() {
     setChainError(null);
   }, []);
 
+  // ── Batch generation ──
+  const runBatch = useCallback(async () => {
+    if (!brief) return;
+    setBatchLoading(true);
+    setBatchProgress(0);
+    setBatchResults([]);
+    setBatchScores({});
+    setBatchScoring(new Set());
+    setBatchPartial(false);
+
+    const endpoint =
+      batchTool === 'hooks' ? '/api/creative/hooks' :
+      batchTool === 'angles' ? '/api/creative/angles' :
+      '/api/creative/script';
+
+    // For scripts, we need angle + hook; for hooks/angles just brief
+    const baseBody: Record<string, unknown> = { brief };
+    if (batchTool === 'scripts') {
+      if (!selectedAngle || !selectedHook) return;
+      baseBody.angle = selectedAngle;
+      baseBody.hook = selectedHook;
+    }
+
+    const promises = Array.from({ length: batchCount }, (_, _i) =>
+      postJson(endpoint, baseBody).then((j) => {
+        // increment progress as each resolves
+        setBatchProgress((p) => p + 1);
+        return j;
+      }),
+    );
+
+    const settled = await Promise.allSettled(promises);
+    const ok: any[] = [];
+    let failCount = 0;
+    settled.forEach((s) => {
+      if (s.status === 'fulfilled') {
+        if (batchTool === 'hooks' && Array.isArray(s.value.hooks)) {
+          ok.push({ kind: 'hooks', data: s.value.hooks[0] || s.value.hooks });
+        } else if (batchTool === 'angles' && Array.isArray(s.value.angles)) {
+          ok.push({ kind: 'angles', data: s.value.angles[0] || s.value.angles });
+        } else if (batchTool === 'scripts' && s.value.script) {
+          ok.push({ kind: 'scripts', data: s.value.script });
+        }
+      } else {
+        failCount++;
+      }
+    });
+
+    setBatchResults(ok);
+    if (failCount > 0) setBatchPartial(true);
+    setBatchLoading(false);
+  }, [brief, batchTool, batchCount, selectedAngle, selectedHook]);
+
+  const scoreBatchVariant = useCallback(async (idx: number) => {
+    const variant = batchResults[idx];
+    if (!variant || !brief) return;
+    setBatchScoring((prev) => new Set(prev).add(idx));
+    try {
+      // The score API requires a script; for hooks/angles we synthesize a minimal script
+      let scriptObj: ScriptCandidate | undefined;
+      if (variant.kind === 'scripts') {
+        scriptObj = variant.data as ScriptCandidate;
+      } else if (variant.kind === 'hooks') {
+        const h = variant.data as HookCandidate;
+        scriptObj = {
+          id: h.id, angleId: 'batch', hookId: h.id, title: h.text.slice(0, 40),
+          scenes: [{ i: 1, durationSec: 5, visual: '', voiceover: h.text, onScreenText: h.text }],
+          totalDurationSec: 5, cta: brief.cta, language: brief.language,
+        };
+      } else if (variant.kind === 'angles') {
+        const a = variant.data as CreativeAngle;
+        scriptObj = {
+          id: a.id, angleId: a.id, hookId: 'batch', title: a.name,
+          scenes: [{ i: 1, durationSec: 5, visual: '', voiceover: a.description, onScreenText: a.name }],
+          totalDurationSec: 5, cta: brief.cta, language: brief.language,
+        };
+      }
+      if (!scriptObj) return;
+      const j = await postJson('/api/creative/score', { brief, script: scriptObj });
+      const sc = j.score as CreativeScore;
+      setBatchScores((prev) => ({ ...prev, [idx]: sc.overall }));
+    } catch {
+      // ignore score errors silently
+    } finally {
+      setBatchScoring((prev) => {
+        const next = new Set(prev);
+        next.delete(idx);
+        return next;
+      });
+    }
+  }, [batchResults, brief]);
+
+  const applyBatchVariant = useCallback((idx: number) => {
+    const variant = batchResults[idx];
+    if (!variant) return;
+    if (variant.kind === 'hooks') {
+      setSelectedHook(variant.data as HookCandidate);
+    } else if (variant.kind === 'angles') {
+      setSelectedAngle(variant.data as CreativeAngle);
+    } else if (variant.kind === 'scripts') {
+      setScript(variant.data as ScriptCandidate);
+      setScriptStep('done');
+    }
+  }, [batchResults]);
+
   // ── Render ──
   if (status === 'loading') {
     return (
@@ -701,6 +817,178 @@ export default function CreativeStudioPage() {
               {/* Cancelled message */}
               {!chainRunning && chainStep === 0 && chainError === null && productText.trim() && (
                 <p className="text-xs text-fg-faint">{t('creativeStudio.chainCancelled')}</p>
+              )}
+            </div>
+          )}
+        </section>
+
+        {/* Batch Generation */}
+        <section className="mb-6 rounded-2xl border border-line bg-surface p-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="flex h-8 w-8 items-center justify-center rounded-lg" style={{ background: 'rgba(0,178,252,0.15)', color: 'var(--color-brand-accent)' }}>
+                <Grid className="h-4 w-4" />
+              </span>
+              <div>
+                <h2 className="text-base font-bold text-fg">{t('creativeStudio.batchMode')}</h2>
+                <p className="text-xs text-fg-faint">{t('creativeStudio.batchModeDesc')}</p>
+              </div>
+            </div>
+            <button
+              onClick={() => setBatchMode(!batchMode)}
+              className={`rounded-lg px-3 py-1.5 text-xs font-bold transition ${batchMode ? 'bg-danger/10 text-danger' : 'text-white'}`}
+              style={batchMode ? {} : { background: '#0064d9' }}
+            >
+              {batchMode ? t('creativeStudio.stopChain') : t('creativeStudio.batchMode')}
+            </button>
+          </div>
+
+          {batchMode && (
+            <div className="mt-4 space-y-4">
+              {/* Controls */}
+              <div className="flex flex-wrap items-end gap-4">
+                <div>
+                  <label className="text-xs font-medium text-fg-faint">{t('creativeStudio.batchTool')}</label>
+                  <select
+                    value={batchTool}
+                    onChange={(e) => setBatchTool(e.target.value as 'hooks' | 'angles' | 'scripts')}
+                    className="mt-1 rounded-lg border border-line bg-app px-3 py-2 text-sm text-fg focus:border-[#00b2fc]/40 focus:outline-none"
+                  >
+                    <option value="hooks">{t('creativeStudio.batchHooks')}</option>
+                    <option value="angles">{t('creativeStudio.batchAngles')}</option>
+                    <option value="scripts">{t('creativeStudio.batchScripts')}</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="text-xs font-medium text-fg-faint">{t('creativeStudio.batchCount')}</label>
+                  <input
+                    type="number"
+                    min={2}
+                    max={5}
+                    value={batchCount}
+                    onChange={(e) => setBatchCount(Math.max(2, Math.min(5, Number(e.target.value) || 3)))}
+                    className="mt-1 w-20 rounded-lg border border-line bg-app px-3 py-2 text-sm text-fg focus:border-[#00b2fc]/40 focus:outline-none"
+                  />
+                </div>
+                <button
+                  onClick={runBatch}
+                  disabled={batchLoading || !brief || (batchTool === 'scripts' && (!selectedAngle || !selectedHook))}
+                  className="rounded-lg px-4 py-2 text-sm font-bold text-white disabled:opacity-50"
+                  style={{ background: '#0064d9' }}
+                >
+                  {batchLoading ? (
+                    <span className="flex items-center gap-1.5">
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      {t('creativeStudio.batchProgress').replace('{0}', String(batchProgress)).replace('{1}', String(batchCount))}
+                    </span>
+                  ) : (
+                    <span className="flex items-center gap-1.5">
+                      <Sparkles className="h-4 w-4" />
+                      {t('creativeStudio.batchGenerate')}
+                    </span>
+                  )}
+                </button>
+                {!brief && (
+                  <p className="text-xs text-fg-faint">{t('creativeStudio.batchNoResults')}</p>
+                )}
+                {batchTool === 'scripts' && brief && (!selectedAngle || !selectedHook) && (
+                  <p className="text-xs text-fg-faint">{t('creativeStudio.chainSelectHook')} / {t('creativeStudio.chainSelectAngle')}</p>
+                )}
+              </div>
+
+              {/* Partial error notice */}
+              {batchPartial && batchResults.length > 0 && (
+                <div role="alert" className="flex items-center gap-1.5 rounded-lg bg-warning/10 px-3 py-2 text-xs text-warning">
+                  <AlertCircle className="h-3.5 w-3.5 shrink-0" />
+                  {t('creativeStudio.batchPartialError').replace('{0}', String(batchResults.length)).replace('{1}', String(batchCount))}
+                </div>
+              )}
+
+              {/* Results grid */}
+              {batchResults.length > 0 && (
+                <div>
+                  <h3 className="mb-2 text-sm font-bold text-fg">{t('creativeStudio.batchResults')}</h3>
+                  <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                    {[...batchResults.map((v, idx) => ({ v, idx }))]
+                      .sort((a, b) => {
+                        const sa = batchScores[a.idx];
+                        const sb = batchScores[b.idx];
+                        if (sa === undefined && sb === undefined) return 0;
+                        if (sa === undefined) return 1;
+                        if (sb === undefined) return -1;
+                        return sb - sa;
+                      })
+                      .map(({ v, idx }) => {
+                        const scoreVal = batchScores[idx];
+                        const isScoring = batchScoring.has(idx);
+                        return (
+                          <div key={idx} className="flex flex-col rounded-xl border border-line bg-app p-3 text-xs">
+                            <div className="flex items-center justify-between">
+                              <span className="font-bold text-fg">#{idx + 1}</span>
+                              {scoreVal !== undefined && (
+                                <span className="rounded bg-success/10 px-1.5 py-0.5 text-[10px] font-bold text-success">
+                                  {t('creativeStudio.batchScore')}: {scoreVal}/10
+                                </span>
+                              )}
+                            </div>
+
+                            {/* Content */}
+                            <div className="mt-2 flex-1 space-y-1">
+                              {v.kind === 'hooks' && (
+                                <>
+                                  <span className="rounded bg-[#00b2fc]/15 px-1.5 py-0.5 text-[10px] font-medium" style={{ color: 'var(--color-brand-accent)' }}>{(v.data as HookCandidate).type}</span>
+                                  <p className="text-fg">{(v.data as HookCandidate).text}</p>
+                                  <p className="text-fg-faint">{(v.data as HookCandidate).rationale}</p>
+                                </>
+                              )}
+                              {v.kind === 'angles' && (
+                                <>
+                                  <span className="font-bold text-fg">{(v.data as CreativeAngle).name}</span>
+                                  <span className="ml-1 rounded bg-[#00b2fc]/15 px-1.5 py-0.5 text-[10px] font-medium" style={{ color: 'var(--color-brand-accent)' }}>{(v.data as CreativeAngle).emotionalTrigger}</span>
+                                  <p className="text-fg">{(v.data as CreativeAngle).description}</p>
+                                  <p className="text-fg-faint">{(v.data as CreativeAngle).rationale}</p>
+                                </>
+                              )}
+                              {v.kind === 'scripts' && (
+                                <>
+                                  <span className="font-bold text-fg">{(v.data as ScriptCandidate).title}</span>
+                                  <p className="text-fg-faint">{(v.data as ScriptCandidate).scenes.length} {t('creativeStudio.scene')}s · {(v.data as ScriptCandidate).totalDurationSec}s</p>
+                                  {(v.data as ScriptCandidate).scenes.slice(0, 3).map((s) => (
+                                    <p key={s.i} className="text-fg-faint">· {s.voiceover.slice(0, 60)}</p>
+                                  ))}
+                                </>
+                              )}
+                            </div>
+
+                            {/* Actions */}
+                            <div className="mt-3 flex items-center gap-2 border-t border-line pt-2">
+                              <button
+                                onClick={() => scoreBatchVariant(idx)}
+                                disabled={isScoring}
+                                className="flex items-center gap-1 rounded-lg bg-app px-2.5 py-1.5 text-[11px] font-medium text-fg hover:bg-hover disabled:opacity-50"
+                              >
+                                {isScoring ? <Loader2 className="h-3 w-3 animate-spin" /> : <Sparkles className="h-3 w-3" />}
+                                {isScoring ? t('creativeStudio.batchScoring') : t('creativeStudio.batchScore')}
+                              </button>
+                              <button
+                                onClick={() => applyBatchVariant(idx)}
+                                className="flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-[11px] font-bold text-white"
+                                style={{ background: '#0064d9' }}
+                              >
+                                <CheckCircle2 className="h-3 w-3" />
+                                {t('creativeStudio.batchUseThis')}
+                              </button>
+                            </div>
+                          </div>
+                        );
+                      })}
+                  </div>
+                </div>
+              )}
+
+              {/* No results placeholder */}
+              {!batchLoading && batchResults.length === 0 && (
+                <p className="text-xs text-fg-faint">{t('creativeStudio.batchNoResults')}</p>
               )}
             </div>
           )}

@@ -835,4 +835,202 @@ test('applySkillToPlan handles empty plan gracefully', () => {
   assert.equal(decisions.length, 0, 'no decisions for empty plan');
 });
 
+// ─────────────────────────────────────────────────────────────────────────────
+// 9. Rough cut export formats: FCPXML, Premiere XML, DaVinci XML, SRT
+// ─────────────────────────────────────────────────────────────────────────────
+
+import {
+  exportCutPlanAsFCPXML,
+  exportCutPlanAsPremiereXML,
+  exportCutPlanAsDaVinciXML,
+  exportCutPlanAsSRT,
+} from '@/lib/editor/transcript-cut';
+
+test('exportCutPlanAsFCPXML produces a non-empty string', () => {
+  const xml = exportCutPlanAsFCPXML(samplePlan, 'SOURCE.mp4');
+  assert.equal(typeof xml, 'string');
+  assert.ok(xml.length > 0, 'FCPXML output should be non-empty');
+});
+
+test('exportCutPlanAsFCPXML contains <fcpxml> root and <asset-clip> elements', () => {
+  const xml = exportCutPlanAsFCPXML(samplePlan, 'SOURCE.mp4');
+  assert.ok(xml.includes('<fcpxml'), 'FCPXML should contain <fcpxml> root element');
+  assert.ok(xml.includes('<asset-clip'), 'FCPXML should contain <asset-clip> elements');
+  assert.ok(xml.includes('<?xml'), 'FCPXML should have an XML declaration');
+});
+
+test('exportCutPlanAsFCPXML includes correct timecodes for the first cut', () => {
+  const xml = exportCutPlanAsFCPXML(samplePlan, 'SOURCE.mp4');
+  const firstCut = samplePlan.cuts[0];
+  assert.ok(firstCut, 'sample plan should have at least one cut');
+  const expectedStart = formatTimecodeForTest(firstCut.startSec);
+  assert.ok(
+    xml.includes(`start="${expectedStart}"`),
+    `FCPXML should contain the first cut source start timecode ${expectedStart}`,
+  );
+});
+
+test('exportCutPlanAsPremiereXML produces a non-empty string', () => {
+  const xml = exportCutPlanAsPremiereXML(samplePlan, 'SOURCE');
+  assert.equal(typeof xml, 'string');
+  assert.ok(xml.length > 0, 'Premiere XML output should be non-empty');
+});
+
+test('exportCutPlanAsPremiereXML contains <xmeml> root and clip data', () => {
+  const xml = exportCutPlanAsPremiereXML(samplePlan, 'SOURCE');
+  assert.ok(
+    xml.includes('<xmeml') || xml.includes('<premiereProject'),
+    'Premiere XML should contain <xmeml> or <premiereProject> root',
+  );
+  assert.ok(xml.includes('<clipitem'), 'Premiere XML should contain <clipitem> elements');
+  assert.ok(xml.includes('<name>'), 'Premiere XML should contain clip name data');
+});
+
+test('exportCutPlanAsPremiereXML includes in/out points for clips', () => {
+  const xml = exportCutPlanAsPremiereXML(samplePlan, 'SOURCE');
+  assert.ok(xml.includes('<in>'), 'Premiere XML should contain <in> points');
+  assert.ok(xml.includes('<out>'), 'Premiere XML should contain <out> points');
+});
+
+test('exportCutPlanAsDaVinciXML produces a non-empty string', () => {
+  const xml = exportCutPlanAsDaVinciXML(samplePlan, 'SOURCE');
+  assert.equal(typeof xml, 'string');
+  assert.ok(xml.length > 0, 'DaVinci XML output should be non-empty');
+});
+
+test('exportCutPlanAsDaVinciXML contains timeline and clip elements', () => {
+  const xml = exportCutPlanAsDaVinciXML(samplePlan, 'SOURCE');
+  assert.ok(xml.includes('<timeline'), 'DaVinci XML should contain a <timeline> element');
+  assert.ok(xml.includes('<track'), 'DaVinci XML should contain <track> elements');
+  assert.ok(xml.includes('<clip'), 'DaVinci XML should contain <clip> elements');
+  assert.ok(xml.includes('startFrame'), 'DaVinci XML should contain startFrame data');
+  assert.ok(xml.includes('endFrame'), 'DaVinci XML should contain endFrame data');
+});
+
+test('exportCutPlanAsSRT produces a non-empty string', () => {
+  const srt = exportCutPlanAsSRT(samplePlan);
+  assert.equal(typeof srt, 'string');
+  assert.ok(srt.length > 0, 'SRT output should be non-empty');
+});
+
+test('exportCutPlanAsSRT contains entry numbers, --> separators, and cut text', () => {
+  const srt = exportCutPlanAsSRT(samplePlan);
+  const lines = srt.split('\n');
+  // First line should be the entry index "1"
+  assert.equal(lines[0], '1', 'SRT first line should be the entry number 1');
+  // Should contain the --> timecode separator
+  assert.ok(srt.includes('-->'), 'SRT should contain --> timecode separators');
+  // Should contain the text of the first cut
+  const firstCut = samplePlan.cuts[0];
+  assert.ok(firstCut, 'sample plan should have at least one cut');
+  assert.ok(
+    srt.includes(firstCut.text),
+    'SRT should contain the first cut text as subtitle content',
+  );
+  // Timecodes should use the HH:MM:SS,mmm SRT format
+  assert.ok(
+    /\d{2}:\d{2}:\d{2},\d{3} --> \d{2}:\d{2}:\d{2},\d{3}/.test(srt),
+    'SRT timecodes should match HH:MM:SS,mmm format',
+  );
+});
+
+test('exportCutPlanAsSRT has one entry per cut with sequential indices', () => {
+  const srt = exportCutPlanAsSRT(samplePlan);
+  for (let i = 0; i < samplePlan.cuts.length; i++) {
+    assert.ok(
+      srt.includes(String(i + 1)),
+      `SRT should contain entry index ${i + 1}`,
+    );
+  }
+});
+
+test('all new export formats produce non-empty strings for the sample plan', () => {
+  assert.ok(exportCutPlanAsFCPXML(samplePlan).length > 0);
+  assert.ok(exportCutPlanAsPremiereXML(samplePlan).length > 0);
+  assert.ok(exportCutPlanAsDaVinciXML(samplePlan).length > 0);
+  assert.ok(exportCutPlanAsSRT(samplePlan).length > 0);
+});
+
+/** Local timecode formatter matching the private helper in transcript-cut.ts. */
+function formatTimecodeForTest(sec: number): string {
+  const fps = 30;
+  const totalFrames = Math.round(sec * fps);
+  const h = Math.floor(totalFrames / (fps * 3600));
+  const m = Math.floor((totalFrames % (fps * 3600)) / (fps * 60));
+  const s = Math.floor((totalFrames % (fps * 60)) / fps);
+  const f = totalFrames % fps;
+  return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}:${String(f).padStart(2, '0')}`;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 10. Creative templates: built-in template data
+// ─────────────────────────────────────────────────────────────────────────────
+
+import { BUILTIN_TEMPLATES } from '@/lib/creative/templates';
+
+test('BUILTIN_TEMPLATES has at least 10 templates', () => {
+  assert.ok(BUILTIN_TEMPLATES.length >= 10, `expected ≥10 templates, got ${BUILTIN_TEMPLATES.length}`);
+});
+
+test('all built-in templates have valid categories', () => {
+  const valid = ['brief', 'hooks', 'angles', 'script', 'skill-bundle'];
+  for (const t of BUILTIN_TEMPLATES) {
+    assert.ok(valid.includes(t.category), `template "${t.name}" has invalid category "${t.category}"`);
+  }
+});
+
+test('all built-in templates have non-empty names and descriptions', () => {
+  for (const t of BUILTIN_TEMPLATES) {
+    assert.ok(t.name.length > 0, 'template name should not be empty');
+    assert.ok(t.description.length > 0, `template "${t.name}" description should not be empty`);
+  }
+});
+
+test('all built-in templates have at least one tag', () => {
+  for (const t of BUILTIN_TEMPLATES) {
+    assert.ok(t.tags.length >= 1, `template "${t.name}" should have ≥1 tag`);
+  }
+});
+
+test('built-in templates cover all 5 categories', () => {
+  const categories = new Set(BUILTIN_TEMPLATES.map(t => t.category));
+  assert.ok(categories.has('brief'), 'should have brief templates');
+  assert.ok(categories.has('hooks'), 'should have hooks templates');
+  assert.ok(categories.has('angles'), 'should have angles templates');
+  assert.ok(categories.has('script'), 'should have script templates');
+  assert.ok(categories.has('skill-bundle'), 'should have skill-bundle templates');
+});
+
+test('built-in templates have unique names within their category', () => {
+  const seen = new Set<string>();
+  for (const t of BUILTIN_TEMPLATES) {
+    const key = `${t.category}:${t.name}`;
+    assert.ok(!seen.has(key), `duplicate template name "${t.name}" in category "${t.category}"`);
+    seen.add(key);
+  }
+});
+
+test('brief templates have payload with goals', () => {
+  const briefs = BUILTIN_TEMPLATES.filter(t => t.category === 'brief');
+  for (const b of briefs) {
+    assert.ok(b.payload.goals, `brief "${b.name}" should have goals`);
+    assert.ok(Array.isArray(b.payload.goals), `brief "${b.name}" goals should be array`);
+  }
+});
+
+test('hooks templates have payload with hooks array', () => {
+  const hooks = BUILTIN_TEMPLATES.filter(t => t.category === 'hooks');
+  for (const h of hooks) {
+    assert.ok(h.payload.hooks, `hooks template "${h.name}" should have hooks array`);
+    assert.ok(Array.isArray(h.payload.hooks), `hooks template "${h.name}" hooks should be array`);
+  }
+});
+
+test('script templates have payload with scenes array', () => {
+  const scripts = BUILTIN_TEMPLATES.filter(t => t.category === 'script');
+  for (const s of scripts) {
+    assert.ok(s.payload.scenes, `script template "${s.name}" should have scenes array`);
+    assert.ok(Array.isArray(s.payload.scenes), `script template "${s.name}" scenes should be array`);
+  }
+});
 

@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Sparkles, Megaphone, BarChart3, LayoutDashboard, Package, Scissors } from 'lucide-react';
+import { Sparkles, Megaphone, BarChart3, LayoutDashboard, Package, Scissors, Library } from 'lucide-react';
 import { UserMenu } from '@/components/UserMenu';
 import { LangToggle } from '@/components/LangToggle';
 import { CreditBadge } from '@/components/CreditBadge';
@@ -18,6 +18,7 @@ const NAV_LINKS = [
   { href: '/performance', label: 'Performance', icon: BarChart3 },
   { href: '/creative-assets', label: 'Assets', icon: Package },
   { href: '/editor', label: 'Editor', icon: Scissors },
+  { href: '/templates', label: 'Templates', icon: Library, hideOnMd: true },
 ];
 
 export function Shell({ children }: { children: React.ReactNode }) {
@@ -49,6 +50,8 @@ export function Shell({ children }: { children: React.ReactNode }) {
                     href={link.href}
                     aria-current={isActive ? 'page' : undefined}
                     className={`flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-medium transition ${
+                      'hideOnMd' in link && link.hideOnMd ? 'hidden lg:flex' : ''
+                    } ${
                       isActive
                         ? 'bg-[#00b2fc]/15 text-[#00b2fc]'
                         : 'text-fg-faint hover:bg-hover hover:text-fg'

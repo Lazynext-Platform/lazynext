@@ -220,6 +220,215 @@ export function exportCutPlanAsEDL(plan: RoughCutPlan, sourceName = 'SOURCE'): s
   return lines.join('\n');
 }
 
+/**
+ * Export a rough cut plan as FCPXML 1.10 (Final Cut Pro XML).
+ *
+ * Generates a valid FCPXML document with project metadata, a single sequence
+ * at 30fps, and one `<asset-clip>` per cut segment using timecode-based
+ * start/end offsets. The source media is declared as an `<asset>` and each
+ * clip references it via `ref`.
+ */
+export function exportCutPlanAsFCPXML(plan: RoughCutPlan, sourceName = 'SOURCE'): string {
+  const fps = 30;
+  const assetId = 'r1';
+  const assetName = sourceName;
+  const assetDuration = formatTimecode(plan.sourceDurationSec);
+
+  const clipsXml = plan.cuts.map((cut, i) => {
+    const srcStart = formatTimecode(cut.startSec);
+    const srcEnd = formatTimecode(cut.endSec);
+    const recStart = formatTimecode(
+      plan.cuts.slice(0, i).reduce((sum, c) => sum + c.durationSec, 0),
+    );
+    const recEnd = formatTimecode(
+      plan.cuts.slice(0, i).reduce((sum, c) => sum + c.durationSec, 0) + cut.durationSec,
+    );
+    const escapedLabel = escapeXml(cut.label);
+    return [
+      `      <asset-clip ref="${assetId}" offset="${recStart}" name="${escapedLabel}" start="${srcStart}" duration="${formatTimecode(cut.durationSec)}" tcFormat="NDF">`,
+      `        <note>${escapeXml(cut.reason)}</note>`,
+      `        <conform-rate src="${fps}/${fps}"/>`,
+      `      </asset-clip>`,
+    ].join('\n');
+  }).join('\n');
+
+  const sequenceDuration = formatTimecode(plan.totalDurationSec);
+
+  return [
+    '<?xml version="1.0" encoding="UTF-8"?>',
+    '<!DOCTYPE fcpxml>',
+    '<fcpxml version="1.10">',
+    '  <resources>',
+    `    <asset id="${assetId}" name="${escapeXml(assetName)}" start="0" duration="${assetDuration}" hasVideo="1" hasAudio="1" format="r2"/>`,
+    `    <format id="r2" name="FFVideoFormat1080p${fps}" frameDuration="${fps}/${fps}s"/>`,
+    '  </resources>',
+    '  <library>',
+    '    <event name="LazyNext Rough Cut">',
+    `      <project name="LazyNext Rough Cut">`,
+    `        <sequence format="r2" tcStart="0" tcFormat="NDF" duration="${sequenceDuration}">`,
+    '          <spine>',
+    clipsXml,
+    '          </spine>',
+    '        </sequence>',
+    '      </project>',
+    '    </event>',
+    '  </library>',
+    '</fcpxml>',
+  ].join('\n');
+}
+
+/**
+ * Export a rough cut plan as a simplified Premiere Pro XML project file.
+ *
+ * Uses the Final Cut Pro XML interchange format (`<xmeml>`) that Premiere Pro
+ * can import. Includes a project root, a single sequence, and one clipitem per
+ * cut segment with in/out points expressed as timecode.
+ */
+export function exportCutPlanAsPremiereXML(plan: RoughCutPlan, sourceName = 'SOURCE'): string {
+  const fps = 30;
+  const sequenceId = 'seq-1';
+  const videoTrackId = 'v1';
+  const fileUrl = `file://localhost/${escapeXml(sourceName)}.mp4`;
+
+  const clipItemsXml = plan.cuts.map((cut, i) => {
+    const clipId = `clip-${i + 1}`;
+    const inPoint = formatTimecode(cut.startSec);
+    const outPoint = formatTimecode(cut.endSec);
+    const recStart = formatTimecode(
+      plan.cuts.slice(0, i).reduce((sum, c) => sum + c.durationSec, 0),
+    );
+    const recEnd = formatTimecode(
+      plan.cuts.slice(0, i).reduce((sum, c) => sum + c.durationSec, 0) + cut.durationSec,
+    );
+    return [
+      `        <clipitem id="${clipId}">`,
+      `          <name>${escapeXml(cut.label)}</name>`,
+      `          <enabled>TRUE</enabled>`,
+      `          <duration>${formatTimecode(cut.durationSec)}</duration>`,
+      `          <rate><timebase>${fps}</timebase><ntsc>FALSE</ntsc></rate>`,
+      `          <start>${recStart}</start>`,
+      `          <end>${recEnd}</end>`,
+      `          <in>${inPoint}</in>`,
+      `          <out>${outPoint}</out>`,
+      '          <file id="file-1">',
+      `            <name>${escapeXml(sourceName)}.mp4</name>`,
+      `            <pathurl>${fileUrl}</pathurl>`,
+      `            <rate><timebase>${fps}</timebase><ntsc>FALSE</ntsc></rate>`,
+      `            <duration>${formatTimecode(plan.sourceDurationSec)}</duration>`,
+      '          </file>',
+      '        </clipitem>',
+    ].join('\n');
+  }).join('\n');
+
+  return [
+    '<?xml version="1.0" encoding="UTF-8"?>',
+    '<!DOCTYPE xmeml>',
+    '<xmeml version="5">',
+    '  <sequence id="' + sequenceId + '">',
+    `    <name>LazyNext Rough Cut</name>`,
+    `    <rate><timebase>${fps}</timebase><ntsc>FALSE</ntsc></rate>`,
+    `    <media>`,
+    '      <video>',
+    `        <track id="${videoTrackId}">`,
+    clipItemsXml,
+    '        </track>',
+    '      </video>',
+    '    </media>',
+    '  </sequence>',
+    '</xmeml>',
+  ].join('\n');
+}
+
+/**
+ * Export a rough cut plan as a simplified DaVinci Resolve timeline XML.
+ *
+ * Includes a timeline, a single video track, and one clip per cut segment with
+ * start/end expressed as frame counts (at 30fps).
+ */
+export function exportCutPlanAsDaVinciXML(plan: RoughCutPlan, sourceName = 'SOURCE'): string {
+  const fps = 30;
+  const frames = (sec: number) => Math.round(sec * fps);
+
+  const clipsXml = plan.cuts.map((cut, i) => {
+    const clipId = `clip-${i + 1}`;
+    const startFrame = frames(
+      plan.cuts.slice(0, i).reduce((sum, c) => sum + c.durationSec, 0),
+    );
+    const endFrame = frames(
+      plan.cuts.slice(0, i).reduce((sum, c) => sum + c.durationSec, 0) + cut.durationSec,
+    );
+    const srcStartFrame = frames(cut.startSec);
+    const srcEndFrame = frames(cut.endSec);
+    return [
+      `      <clip id="${clipId}" type="video">`,
+      `        <name>${escapeXml(cut.label)}</name>`,
+      `        <startFrame>${startFrame}</startFrame>`,
+      `        <endFrame>${endFrame}</endFrame>`,
+      `        <sourceStartFrame>${srcStartFrame}</sourceStartFrame>`,
+      `        <sourceEndFrame>${srcEndFrame}</sourceEndFrame>`,
+      `        <source>${escapeXml(sourceName)}</source>`,
+      `        <note>${escapeXml(cut.reason)}</note>`,
+      '      </clip>',
+    ].join('\n');
+  }).join('\n');
+
+  return [
+    '<?xml version="1.0" encoding="UTF-8"?>',
+    '<timeline version="1">',
+    `  <name>LazyNext Rough Cut</name>`,
+    `  <fps>${fps}</fps>`,
+    `  <durationFrames>${frames(plan.totalDurationSec)}</durationFrames>`,
+    '  <tracks>',
+    '    <track id="v1" type="video">',
+    clipsXml,
+    '    </track>',
+    '  </tracks>',
+    '</timeline>',
+  ].join('\n');
+}
+
+/**
+ * Export a rough cut plan as an SRT subtitle file.
+ *
+ * Each cut segment becomes one subtitle entry with a sequential index, a
+ * timecode range in `HH:MM:SS,mmm --> HH:MM:SS,mmm` format, and the cut's
+ * text as the subtitle content.
+ */
+export function exportCutPlanAsSRT(plan: RoughCutPlan): string {
+  const formatSrtTime = (sec: number): string => {
+    const ms = Math.round(sec * 1000);
+    const h = Math.floor(ms / 3_600_000);
+    const m = Math.floor((ms % 3_600_000) / 60_000);
+    const s = Math.floor((ms % 60_000) / 1000);
+    const millis = ms % 1000;
+    return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')},${String(millis).padStart(3, '0')}`;
+  };
+
+  const entries: string[] = [];
+  plan.cuts.forEach((cut, i) => {
+    const recStart = plan.cuts.slice(0, i).reduce((sum, c) => sum + c.durationSec, 0);
+    const recEnd = recStart + cut.durationSec;
+    entries.push(
+      String(i + 1),
+      `${formatSrtTime(recStart)} --> ${formatSrtTime(recEnd)}`,
+      cut.text,
+      '',
+    );
+  });
+
+  return entries.join('\n').trimEnd() + '\n';
+}
+
+/** Escape special XML characters in a string. */
+function escapeXml(s: string): string {
+  return s
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;');
+}
+
 /** Format seconds as SMPTE timecode (HH:MM:SS:FF at 30fps). */
 function formatTimecode(sec: number): string {
   const fps = 30;

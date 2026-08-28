@@ -39,6 +39,7 @@ model User {
   creativePerformance CreativePerformance[]
   timelines  Timeline[]
   editingSkills EditingSkill[]
+  creativeTemplates CreativeTemplate[]
 }
 
 model Account {
@@ -317,9 +318,26 @@ model Timeline {
 
   user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   creation  Creation?  @relation(fields: [creationId], references: [id], onDelete: SetNull)
+  versions  TimelineVersion[]
 
   @@index([userId])
   @@index([creationId])
+}
+
+model TimelineVersion {
+  id          String   @id @default(cuid())
+  timelineId  String
+  versionNum  Int      // sequential version number (1, 2, 3, ...)
+  name        String   @default("") // optional label for this version
+  tracksJson  String   @default("[]") // serialized Track[] snapshot
+  markersJson String   @default("[]") // serialized Marker[] snapshot
+  durationSec Float    @default(0)
+  createdAt   DateTime @default(now())
+
+  timeline Timeline @relation(fields: [timelineId], references: [id], onDelete: Cascade)
+
+  @@index([timelineId])
+  @@unique([timelineId, versionNum])
 }
 
 model EditingSkill {
@@ -338,4 +356,32 @@ model EditingSkill {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
+}
+
+// ── Creative Template Library ──
+// Pre-built and user-saved templates for creative briefs, hook formulas,
+// script structures, and editing skill bundles.  Built-in templates are
+// seeded at startup; user templates are persisted per-user.
+model CreativeTemplate {
+  id          String   @id @default(cuid())
+  userId      String?  // null = built-in template, non-null = user-saved
+  category    String   // "brief" | "hooks" | "angles" | "script" | "skill-bundle"
+  name        String
+  description String   @default("")
+  // Serialized template payload — shape depends on category:
+  //   brief: { product, audience, tone, goals, ... }
+  //   hooks: { hooks: [{ type, text, ... }] }
+  //   angles: { angles: [{ name, description, ... }] }
+  //   script: { structure, scenes, ... }
+  //   skill-bundle: { skillIds: [...], skills: [...] }
+  payloadJson String   @default("{}")
+  tagsJson    String   @default("[]") // serialized string[]
+  isFavorite  Boolean  @default(false) // user can favorite templates
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([category])
 }

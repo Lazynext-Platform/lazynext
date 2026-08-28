@@ -72,7 +72,7 @@ npm run build   # Production build (Cloudflare target)
 - Next.js 16 + React 19 + TypeScript 6
 - Tailwind CSS 4
 - NextAuth (JWT session, Google + Credentials providers)
-- Prisma 7 with D1 (prod) / SQLite (local) — 20 tables total
+- Prisma 7 with D1 (prod) / SQLite (local) — 22 tables total
 - Cloudflare R2 (prod) / file-based (local) media storage
 - Atlas Cloud AI generation API (prod) / mock server (local)
 - Dodo Payments for billing
