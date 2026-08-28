@@ -87,7 +87,8 @@ npm run build   # Production build (Cloudflare target)
 - New API routes: `/api/ads/create`, `/api/ads/metrics`, `/api/creative/director`,
   `/api/creative/performance`, `/api/creative/score`, `/api/creative/variants`,
   `/api/creative/assets`, `/api/creative/refine`, `/api/creative/remix`,
-  `/api/creative/tools`, `/api/editor/rough-cut`, `/api/editor/skills`, `/api/editor/timeline`
+  `/api/creative/tools`, `/api/creative/templates`, `/api/editor/rough-cut`,
+  `/api/editor/skills`, `/api/editor/timeline`, `/api/editor/timeline-versions`
 - `/api/creative/director` returns an NDJSON stream of step-by-step progress updates; legacy
   non-streaming mode available via `?stream=false`
 
@@ -160,4 +161,29 @@ Completed across 15+ sessions:
 - `POST /api/editor/ocr` — image URL → text extraction (1 credit, dry-run stub)
 - Editor UI has Rough Cut, Skills, and Timeline tabs
 - Director → Editor handoff uses word-count-based duration estimates
+
+## Creative Template Library
+- `CreativeTemplate` Prisma model — built-in (userId=null) and user-saved templates
+- 5 categories: brief, hooks, angles, script, skill-bundle
+- 15 built-in templates auto-seeded on first access
+- `GET/POST/PUT/DELETE /api/creative/templates` — full CRUD with ownership verification
+- `/templates` page with category filters, search, favorites, and preview modal
+- Templates nav link in header (visible lg+)
+
+## Batch Generation
+- Generate 2-5 creative variants in parallel via Promise.allSettled
+- Comparison grid with per-variant scoring and "Use This" selection
+- Reuses existing API endpoints (hooks, angles, scripts, score)
+- Partial success handling — shows successful variants even if some fail
+
+## Timeline Versioning
+- `TimelineVersion` Prisma model — sequential version snapshots per timeline
+- `GET/POST/PUT/DELETE /api/editor/timeline-versions`
+- Restore creates a pre-restore snapshot (undoable)
+- All operations verify timeline ownership
+
+## Pro Export Formats
+- FCPXML (Final Cut Pro 1.10), Premiere Pro XML, DaVinci Resolve XML, SRT subtitles
+- `POST /api/editor/rough-cut` with format=fcpxml|premiere|davinci|srt
+- All formats generated server-side, no external dependencies
 

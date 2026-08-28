@@ -1,15 +1,16 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import {
   AlertCircle, CheckCircle2, Loader2, Sparkles, Link2, Lightbulb, Film,
   Copy, ChevronRight, Globe, Target, MessageSquare, Clapperboard,
-  Video, ArrowRight, Wand2, StopCircle, Grid,
+  Video, ArrowRight, Wand2, StopCircle, Grid, FlaskConical,
 } from 'lucide-react';
 import Link from 'next/link';
 import { useI18n } from '@/i18n/provider';
 import { AuthModal } from '@/components/AuthModal';
+import { useKeyboardShortcuts } from '@/lib/use-keyboard-shortcuts';
 
 // ── Types matching the backend ──
 type BrandExtraction = {
@@ -195,6 +196,20 @@ export default function CreativeStudioPage() {
   const [batchScores, setBatchScores] = useState<Record<number, number>>({});
   const [batchScoring, setBatchScoring] = useState<Set<number>>(new Set());
   const [batchPartial, setBatchPartial] = useState(false); // true if some variants failed
+
+  // A/B test workflow state
+  const [abTestMode, setAbTestMode] = useState(false);
+  const [abPlatform, setAbPlatform] = useState<'meta' | 'google'>('meta');
+  const [abCampaignName, setAbCampaignName] = useState('');
+  const [abBudgetDaily, setAbBudgetDaily] = useState('');
+  const [abDryRun, setAbDryRun] = useState(true);
+  const [abLoading, setAbLoading] = useState(false);
+  const [abResult, setAbResult] = useState<{
+    campaignName: string; platform: string; dryRun: boolean;
+    totalVariants: number; succeeded: number; failed: number;
+    adSets: Array<{ variantIndex: number; name: string; score?: number; error?: string }>;
+  } | null>(null);
+  const [abError, setAbError] = useState('');
 
   // ── Actions ──
   const doBrandExtract = useCallback(async () => {
@@ -573,6 +588,84 @@ export default function CreativeStudioPage() {
     }
   }, [batchResults]);
 
+  // ── A/B test workflow ──
+  const runAbTest = useCallback(async () => {
+    if (status !== 'authenticated') { setAuthOpen(true); return; }
+    if (batchResults.length < 2) { setAbError('Generate at least 2 batch variants first'); return; }
+    if (!abCampaignName.trim()) { setAbError('Campaign name is required'); return; }
+    setAbLoading(true);
+    setAbError('');
+    setAbResult(null);
+    try {
+      // Build variants from batch results — only those with creation IDs can be deployed
+      // For now, use the batch results as creative variants with their scores
+      const variants = batchResults.map((r, i) => ({
+        creationId: r.data?.id || `batch-${Date.now()}-${i}`,
+        name: r.kind === 'hooks' ? (r.data as HookCandidate)?.text || `Variant ${i + 1}`
+              : r.kind === 'angles' ? (r.data as CreativeAngle)?.name || `Variant ${i + 1}`
+              : (r.data as ScriptCandidate)?.title || `Variant ${i + 1}`,
+        score: batchScores[i] || undefined,
+      }));
+      const res = await fetch('/api/creative/ab-test', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          variants,
+          platform: abPlatform,
+          campaignName: abCampaignName.trim(),
+          budgetDaily: abBudgetDaily ? Number(abBudgetDaily) : undefined,
+          dryRun: abDryRun,
+        }),
+      });
+      if (!res.ok) {
+        const j = await res.json().catch(() => ({}));
+        throw new Error(j.error || j.detail || `HTTP ${res.status}`);
+      }
+      const j = await res.json();
+      setAbResult(j);
+    } catch (e) {
+      setAbError(e instanceof Error ? e.message : String(e));
+    } finally {
+      setAbLoading(false);
+    }
+  }, [status, batchResults, batchScores, abPlatform, abCampaignName, abBudgetDaily, abDryRun]);
+
+  // ── Keyboard shortcuts ──
+  const shortcuts = useMemo(() => [
+    {
+      key: 'Enter',
+      description: 'Continue chain (when paused between steps)',
+      handler: () => { if (chainPaused && chainStep >= 1 && chainStep <= 5) continueChain(); },
+    },
+    { key: 'b', description: 'Toggle batch mode', handler: () => setBatchMode(prev => !prev) },
+    {
+      key: 'c',
+      description: 'Toggle chain mode',
+      handler: () => {
+        setChainMode(prev => {
+          const next = !prev;
+          if (!next) stopChain();
+          return next;
+        });
+      },
+    },
+  ], [chainPaused, chainStep, continueChain, stopChain]);
+
+  const { showHelp, setShowHelp } = useKeyboardShortcuts(shortcuts, 'Keyboard Shortcuts');
+
+  // Escape → stop chain when running (the hook reserves Escape for closing the
+  // help overlay, so we listen separately here). Works even while typing.
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && (chainRunning || chainPaused)) {
+        e.preventDefault();
+        stopChain();
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [chainRunning, chainPaused, stopChain]);
+
   // ── Render ──
   if (status === 'loading') {
     return (
@@ -602,6 +695,12 @@ export default function CreativeStudioPage() {
         <div className="pt-6 pb-8">
           <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">{t('creativeStudio.title')}</h1>
           <p className="mt-2 max-w-2xl text-sm text-fg-faint">{t('creativeStudio.subtitle')}</p>
+          <button
+            onClick={() => setShowHelp(true)}
+            className="mt-2 text-xs text-fg-faint hover:text-fg underline"
+          >
+            Keyboard shortcuts (?)
+          </button>
         </div>
 
         {/* Chain Workflow */}
@@ -989,6 +1088,148 @@ export default function CreativeStudioPage() {
               {/* No results placeholder */}
               {!batchLoading && batchResults.length === 0 && (
                 <p className="text-xs text-fg-faint">{t('creativeStudio.batchNoResults')}</p>
+              )}
+            </div>
+          )}
+        </section>
+
+        {/* A/B Test Workflow */}
+        <section className="rounded-2xl border border-line bg-surface p-5">
+          <div className="mb-4 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <FlaskConical className="h-5 w-5 text-brand-accent" />
+              <h2 className="text-lg font-bold text-fg">{t('creativeStudio.abTestTitle')}</h2>
+            </div>
+            <button
+              onClick={() => setAbTestMode(!abTestMode)}
+              className={`rounded-lg px-3 py-1.5 text-xs font-medium transition ${
+                abTestMode ? 'bg-brand-accent text-white' : 'bg-app text-fg-faint hover:text-fg'
+              }`}
+            >
+              {abTestMode ? t('creativeStudio.abTestActive') : t('creativeStudio.abTestActivate')}
+            </button>
+          </div>
+
+          {abTestMode && (
+            <div className="space-y-4">
+              <p className="text-xs text-fg-faint">{t('creativeStudio.abTestDescription')}</p>
+
+              {/* Prerequisites check */}
+              {batchResults.length < 2 && (
+                <div className="flex items-center gap-2 rounded-lg border border-warning/30 bg-warning/10 p-3 text-xs text-warning">
+                  <AlertCircle className="h-4 w-4 shrink-0" />
+                  {t('creativeStudio.abTestNeedVariants')}
+                </div>
+              )}
+
+              {/* Configuration form */}
+              <div className="grid gap-3 sm:grid-cols-2">
+                <div>
+                  <label className="text-xs font-medium text-fg-faint">{t('creativeStudio.abTestCampaignName')}</label>
+                  <input
+                    type="text"
+                    value={abCampaignName}
+                    onChange={e => setAbCampaignName(e.target.value)}
+                    placeholder="Q4 Product Launch A/B Test"
+                    className="mt-1 w-full rounded-lg border border-line bg-app px-3 py-2 text-sm text-fg placeholder:text-fg-faint/50 focus:border-brand-accent focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs font-medium text-fg-faint">{t('creativeStudio.abTestPlatform')}</label>
+                  <select
+                    value={abPlatform}
+                    onChange={e => setAbPlatform(e.target.value as 'meta' | 'google')}
+                    className="mt-1 w-full rounded-lg border border-line bg-app px-3 py-2 text-sm text-fg focus:border-brand-accent focus:outline-none"
+                  >
+                    <option value="meta">Meta (Facebook/Instagram)</option>
+                    <option value="google">Google Ads</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="text-xs font-medium text-fg-faint">{t('creativeStudio.abTestBudget')}</label>
+                  <input
+                    type="number"
+                    value={abBudgetDaily}
+                    onChange={e => setAbBudgetDaily(e.target.value)}
+                    placeholder="50"
+                    min="1"
+                    className="mt-1 w-full rounded-lg border border-line bg-app px-3 py-2 text-sm text-fg placeholder:text-fg-faint/50 focus:border-brand-accent focus:outline-none"
+                  />
+                </div>
+                <div className="flex items-end">
+                  <label className="flex items-center gap-2 text-xs text-fg-faint">
+                    <input
+                      type="checkbox"
+                      checked={abDryRun}
+                      onChange={e => setAbDryRun(e.target.checked)}
+                      className="h-4 w-4 rounded border-line"
+                    />
+                    {t('creativeStudio.abTestDryRun')}
+                  </label>
+                </div>
+              </div>
+
+              {/* Launch button */}
+              <button
+                onClick={runAbTest}
+                disabled={abLoading || batchResults.length < 2 || !abCampaignName.trim()}
+                className="flex items-center gap-2 rounded-lg bg-brand-accent px-4 py-2 text-sm font-bold text-white transition hover:opacity-90 disabled:opacity-40"
+              >
+                {abLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <FlaskConical className="h-4 w-4" />}
+                {abDryRun ? t('creativeStudio.abTestSimulate') : t('creativeStudio.abTestDeploy')}
+              </button>
+
+              {/* Error */}
+              {abError && (
+                <div className="flex items-center gap-2 rounded-lg border border-danger/30 bg-danger/10 p-3 text-xs text-danger" role="alert">
+                  <AlertCircle className="h-4 w-4 shrink-0" />
+                  {abError}
+                </div>
+              )}
+
+              {/* Results */}
+              {abResult && (
+                <div className="rounded-lg border border-line bg-app p-4">
+                  <div className="mb-3 flex items-center gap-2">
+                    <CheckCircle2 className="h-4 w-4 text-success" />
+                    <span className="text-sm font-bold text-fg">
+                      {abResult.dryRun ? t('creativeStudio.abTestSimulated') : t('creativeStudio.abTestDeployed')}
+                    </span>
+                  </div>
+                  <div className="mb-3 grid grid-cols-3 gap-2 text-xs">
+                    <div className="rounded bg-surface p-2">
+                      <div className="text-fg-faint">{t('creativeStudio.abTestVariants')}</div>
+                      <div className="text-lg font-bold text-fg">{abResult.totalVariants}</div>
+                    </div>
+                    <div className="rounded bg-surface p-2">
+                      <div className="text-fg-faint">{t('creativeStudio.abTestSucceeded')}</div>
+                      <div className="text-lg font-bold text-success">{abResult.succeeded}</div>
+                    </div>
+                    <div className="rounded bg-surface p-2">
+                      <div className="text-fg-faint">{t('creativeStudio.abTestFailed')}</div>
+                      <div className="text-lg font-bold text-danger">{abResult.failed}</div>
+                    </div>
+                  </div>
+                  <div className="space-y-1.5">
+                    {abResult.adSets.map((adSet, i) => (
+                      <div key={i} className="flex items-center justify-between rounded bg-surface px-3 py-2 text-xs">
+                        <span className="font-medium text-fg">
+                          {String.fromCharCode(65 + adSet.variantIndex)}. {adSet.name}
+                        </span>
+                        <span className="flex items-center gap-2">
+                          {adSet.score !== undefined && (
+                            <span className="text-fg-faint">Score: {adSet.score}</span>
+                          )}
+                          {adSet.error ? (
+                            <span className="text-danger">{t('creativeStudio.abTestError')}</span>
+                          ) : (
+                            <CheckCircle2 className="h-3 w-3 text-success" />
+                          )}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               )}
             </div>
           )}
@@ -1545,6 +1786,31 @@ export default function CreativeStudioPage() {
           </Section>
         )}
       </div>
+
+      {showHelp && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label="Keyboard shortcuts"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+          onClick={() => setShowHelp(false)}
+        >
+          <div
+            className="rounded-lg bg-surface border border-line max-w-md w-full p-6"
+            onClick={e => e.stopPropagation()}
+          >
+            <h2 className="text-lg font-bold mb-4">Keyboard Shortcuts</h2>
+            <dl className="space-y-2 text-sm">
+              <div className="flex justify-between"><dt>Continue chain (when paused)</dt><dd><kbd className="kbd">Enter</kbd></dd></div>
+              <div className="flex justify-between"><dt>Stop chain (when running)</dt><dd><kbd className="kbd">Esc</kbd></dd></div>
+              <div className="flex justify-between"><dt>Toggle batch mode</dt><dd><kbd className="kbd">B</kbd></dd></div>
+              <div className="flex justify-between"><dt>Toggle chain mode</dt><dd><kbd className="kbd">C</kbd></dd></div>
+              <div className="flex justify-between"><dt>Show/hide this help</dt><dd><kbd className="kbd">?</kbd></dd></div>
+              <div className="flex justify-between"><dt>Close this dialog</dt><dd><kbd className="kbd">Esc</kbd></dd></div>
+            </dl>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

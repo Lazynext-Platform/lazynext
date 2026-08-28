@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import {
   Clapperboard, Coins, Boxes, FolderOpen, ArrowRight, Loader2, Film, Play, Sparkles,
+  TrendingDown, TrendingUp, BarChart3,
 } from 'lucide-react';
 import { useI18n } from '@/i18n/provider';
 import { appTitle, appDesc, isFeatured } from '@/config/appCatalog';
@@ -38,6 +39,12 @@ export default function DashboardPage() {
   const [recent, setRecent] = useState<Creation[] | null>(null);
   const [counts, setCounts] = useState<Counts | null>(null);
   const [authOpen, setAuthOpen] = useState(false);
+  const [analytics, setAnalytics] = useState<{
+    totalSpent: number; totalGranted: number; currentBalance: number;
+    byReason: Record<string, { count: number; totalDelta: number }>;
+    byDay: Array<{ date: string; spent: number; granted: number }>;
+    projection: { avgDailySpend: number; daysUntilEmpty: number | null; currentBalance: number };
+  } | null>(null);
 
   useEffect(() => {
     if (status !== 'authenticated') return;
@@ -57,6 +64,10 @@ export default function DashboardPage() {
         brandKits: (b.brandKits || []).length,
       }))
       .catch(() => setCounts({ products: 0, avatars: 0, brandKits: 0 }));
+    fetch('/api/credits/analytics', { cache: 'no-store' })
+      .then((r) => r.json())
+      .then((j) => setAnalytics(j))
+      .catch(() => {});
   }, [status]);
 
   if (status === 'loading') {
@@ -116,6 +127,82 @@ export default function DashboardPage() {
             <div className="mt-1 text-[11px] text-brand-accent opacity-0 transition group-hover:opacity-100">{t('nav.settings')} →</div>
           </Link>
         </div>
+
+        {/* Credit analytics */}
+        {analytics && (
+          <div className="mb-10 rounded-2xl border border-line bg-surface p-5">
+            <div className="mb-4 flex items-center gap-2">
+              <BarChart3 className="h-5 w-5 text-brand-accent" />
+              <h2 className="text-lg font-bold text-fg">{t('dashboard.creditAnalytics')}</h2>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 mb-4">
+              <div className="rounded-lg border border-line bg-app p-3">
+                <div className="flex items-center gap-1 text-xs text-fg-faint">
+                  <TrendingDown className="h-3 w-3" />
+                  {t('dashboard.totalSpent')}
+                </div>
+                <div className="mt-1 text-xl font-bold text-fg">{analytics.totalSpent}</div>
+              </div>
+              <div className="rounded-lg border border-line bg-app p-3">
+                <div className="flex items-center gap-1 text-xs text-fg-faint">
+                  <TrendingUp className="h-3 w-3" />
+                  {t('dashboard.totalGranted')}
+                </div>
+                <div className="mt-1 text-xl font-bold text-fg">{analytics.totalGranted}</div>
+              </div>
+              <div className="rounded-lg border border-line bg-app p-3">
+                <div className="text-xs text-fg-faint">{t('dashboard.avgDailySpend')}</div>
+                <div className="mt-1 text-xl font-bold text-fg">{analytics.projection.avgDailySpend}</div>
+              </div>
+              <div className="rounded-lg border border-line bg-app p-3">
+                <div className="text-xs text-fg-faint">{t('dashboard.daysRemaining')}</div>
+                <div className="mt-1 text-xl font-bold text-fg">
+                  {analytics.projection.daysUntilEmpty !== null
+                    ? `${analytics.projection.daysUntilEmpty}d`
+                    : '∞'}
+                </div>
+              </div>
+            </div>
+
+            {/* By reason breakdown */}
+            {Object.keys(analytics.byReason).length > 0 && (
+              <div className="mb-4">
+                <h3 className="mb-2 text-xs font-medium text-fg-faint">{t('dashboard.spendByCategory')}</h3>
+                <div className="flex flex-wrap gap-2">
+                  {Object.entries(analytics.byReason)
+                    .sort(([, a], [, b]) => Math.abs(b.totalDelta) - Math.abs(a.totalDelta))
+                    .map(([reason, data]) => (
+                      <span key={reason} className="text-xs rounded-full bg-app border border-line px-3 py-1">
+                        {reason}: {data.totalDelta > 0 ? '+' : ''}{data.totalDelta} ({data.count}x)
+                      </span>
+                    ))}
+                </div>
+              </div>
+            )}
+
+            {/* 30-day spend chart (simple bar chart with divs) */}
+            {analytics.byDay.length > 0 && (
+              <div>
+                <h3 className="mb-2 text-xs font-medium text-fg-faint">{t('dashboard.spendLast30Days')}</h3>
+                <div className="flex items-end gap-px h-20 overflow-x-auto">
+                  {analytics.byDay.map(day => {
+                    const maxSpent = Math.max(...analytics.byDay.map(d => d.spent), 1);
+                    const heightPct = (day.spent / maxSpent) * 100;
+                    return (
+                      <div
+                        key={day.date}
+                        className="flex-1 min-w-[4px] bg-brand-accent/60 rounded-t hover:bg-brand-accent transition-colors"
+                        style={{ height: `${Math.max(heightPct, 2)}%` }}
+                        title={`${day.date}: -${day.spent} credits, +${day.granted} granted`}
+                      />
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Quick create */}
         <div className="mb-10">

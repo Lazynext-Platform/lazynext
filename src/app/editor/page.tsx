@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useMemo } from 'react';
 import { useSession } from 'next-auth/react';
 import { useSearchParams } from 'next/navigation';
 import {
@@ -10,6 +10,7 @@ import {
 import { useI18n } from '@/i18n/provider';
 import { AuthModal } from '@/components/AuthModal';
 import { VisualTimeline } from '@/components/editor/VisualTimeline';
+import { useKeyboardShortcuts } from '@/lib/use-keyboard-shortcuts';
 import type { Timeline as TimelineModel, Track as TrackModel, Clip as ClipModel } from '@/lib/editor/types';
 
 type Step = 'idle' | 'loading' | 'done' | 'error';
@@ -503,11 +504,39 @@ export default function EditorPage() {
     });
   }, []);
 
+  // ── Keyboard shortcuts ──
+  const shortcuts = useMemo(() => [
+    { key: '1', description: 'Switch to Rough Cut', handler: () => setTab('roughCut') },
+    { key: '2', description: 'Switch to Skills', handler: () => setTab('skills') },
+    { key: '3', description: 'Switch to Timeline', handler: () => setTab('timeline') },
+    {
+      key: 'g',
+      description: 'Generate Rough Cut',
+      handler: () => { if (tab === 'roughCut' && transcript.trim()) generateRoughCut(); },
+    },
+    {
+      key: 's',
+      description: 'Save Timeline',
+      handler: () => { if (tab === 'timeline' && timeline) saveTimeline(); },
+    },
+  ], [tab, transcript, timeline, generateRoughCut, saveTimeline]);
+
+  const { showHelp, setShowHelp } = useKeyboardShortcuts(shortcuts, 'Keyboard Shortcuts');
+
   return (
     <main id="main-content" className="min-h-screen bg-bg text-fg">
       <div className="max-w-5xl mx-auto px-4 pt-20 pb-12 safe-top">
         <h1 className="text-2xl sm:text-3xl font-bold mb-2">{t('editor.title')}</h1>
         <p className="text-fg-muted mb-6">{t('editor.subtitle')}</p>
+
+        <div className="mb-4">
+          <button
+            onClick={() => setShowHelp(true)}
+            className="text-xs text-fg-muted hover:text-fg underline"
+          >
+            Keyboard shortcuts (?)
+          </button>
+        </div>
 
         {!session?.user && (
           <div className="rounded-lg border border-border bg-bg-card p-4 mb-6 text-fg-muted">
@@ -1319,6 +1348,32 @@ export default function EditorPage() {
           </section>
         )}
       </div>
+
+      {showHelp && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label="Keyboard shortcuts"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+          onClick={() => setShowHelp(false)}
+        >
+          <div
+            className="rounded-lg bg-bg-card border border-border max-w-md w-full p-6"
+            onClick={e => e.stopPropagation()}
+          >
+            <h2 className="text-lg font-bold mb-4">Keyboard Shortcuts</h2>
+            <dl className="space-y-2 text-sm">
+              <div className="flex justify-between"><dt>Switch to Rough Cut</dt><dd><kbd className="kbd">1</kbd></dd></div>
+              <div className="flex justify-between"><dt>Switch to Skills</dt><dd><kbd className="kbd">2</kbd></dd></div>
+              <div className="flex justify-between"><dt>Switch to Timeline</dt><dd><kbd className="kbd">3</kbd></dd></div>
+              <div className="flex justify-between"><dt>Generate Rough Cut</dt><dd><kbd className="kbd">G</kbd></dd></div>
+              <div className="flex justify-between"><dt>Save Timeline</dt><dd><kbd className="kbd">S</kbd></dd></div>
+              <div className="flex justify-between"><dt>Show/hide this help</dt><dd><kbd className="kbd">?</kbd></dd></div>
+              <div className="flex justify-between"><dt>Close this dialog</dt><dd><kbd className="kbd">Esc</kbd></dd></div>
+            </dl>
+          </div>
+        </div>
+      )}
 
       <AuthModal open={authOpen} onClose={() => setAuthOpen(false)} />
     </main>

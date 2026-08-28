@@ -387,6 +387,19 @@ body {
   border-radius: 9999px;
 }
 
+/* ───────────────────────── KEYBOARD HINT ─────────────────────────
+   Styled <kbd> element for keyboard shortcut help overlays. */
+.kbd {
+  display: inline-block;
+  padding: 0.125rem 0.5rem;
+  font-size: 0.75rem;
+  font-family: ui-monospace, monospace;
+  background: var(--c-app);
+  border: 1px solid var(--c-line);
+  border-radius: 0.25rem;
+  box-shadow: 0 1px 0 var(--c-line);
+}
+
 /* ───────────────────────── MEDIA OVERFLOW GUARD ─────────────────────────
    Ensure images/videos never push beyond their container, regardless of
    intrinsic dimensions or aspect ratio. Width is left to per-component

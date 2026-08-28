@@ -1,5 +1,14 @@
 import { test, expect } from '@playwright/test';
 
+/** Dismiss cookie consent banner if present (mobile viewport fix). */
+async function dismissCookieConsent(page: import('@playwright/test').Page) {
+  const banner = page.locator('[role="dialog"]').filter({ hasText: /cookie|consent|同意|拒绝/i }).first();
+  if (await banner.isVisible({ timeout: 1000 }).catch(() => false)) {
+    await banner.locator('button').first().click();
+    await page.waitForTimeout(300);
+  }
+}
+
 /**
  * E2E tests for the streaming Creative Director progress UI and the
  * per-campaign metrics refresh button on the /ads page.
@@ -31,6 +40,7 @@ test.describe('Creative Director Streaming Progress UI', () => {
   test('run button opens auth modal when unauthenticated', async ({ page }) => {
     await page.goto('/creative-director');
     await page.waitForTimeout(1000);
+    await dismissCookieConsent(page);
     // Fill in product text to enable the run button
     await page.locator('#product-text').fill('A premium skincare serum with hyaluronic acid');
     await page.locator('#product-name').fill('Glow Serum');
@@ -69,6 +79,7 @@ test.describe('Creative Director Streaming Progress UI', () => {
   test('error state displays error message with alert role', async ({ page }) => {
     await page.goto('/creative-director');
     await page.waitForTimeout(1000);
+    await dismissCookieConsent(page);
     await page.locator('#product-text').fill('A premium skincare serum with hyaluronic acid');
     await page.locator('#product-name').fill('Glow Serum');
     await page.locator('button', { hasText: /Run Creative Director/i }).click();
