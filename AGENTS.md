@@ -49,7 +49,7 @@ Production uses Cloudflare R2 via `src/lib/media-storage.cloudflare.ts`.
 ## Verification Commands
 ```bash
 npm run lint    # ESLint
-npm test        # Node test runner (191 tests)
+npm test        # Node test runner (271 tests)
 npm run build   # Production build (Cloudflare target)
 ```
 
@@ -78,9 +78,14 @@ npm run build   # Production build (Cloudflare target)
 - Ad platform providers (Meta + Google Ads) with dry-run mode — see ADR-004
 - Autonomous Creative Director agent loop — see ADR-005
 - Performance learning loop (CreativePerformance model) — see ADR-006
+- Conversational creative refinement — see ADR-007
+- viral2viral remix flow — see ADR-008
+- Provider registry + model router with plan-tier filtering (`src/lib/providers/registry.ts`,
+  `src/lib/providers/router.ts`)
+- OCR provider interface with dry-run stub (`src/lib/providers/ocr.ts`)
 - New API routes: `/api/ads/create`, `/api/ads/metrics`, `/api/creative/director`,
   `/api/creative/performance`, `/api/creative/score`, `/api/creative/variants`,
-  `/api/creative/assets`
+  `/api/creative/assets`, `/api/creative/refine`, `/api/creative/remix`
 - `/api/creative/director` returns an NDJSON stream of step-by-step progress updates; legacy
   non-streaming mode available via `?stream=false`
 

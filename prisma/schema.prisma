@@ -37,6 +37,7 @@ model User {
   workflowRuns WorkflowRun[]
   adCampaigns  AdCampaign[]
   creativePerformance CreativePerformance[]
+  timelines  Timeline[]
 }
 
 model Account {
@@ -93,6 +94,7 @@ model Creation {
   updatedAt  DateTime @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  timelines Timeline[]
 
   @@index([userId])
 }
@@ -296,4 +298,25 @@ model CreativePerformance {
   @@index([userId])
   @@index([creationId])
   @@index([platform])
+}
+
+// ── Native video editor timeline ──
+model Timeline {
+  id          String   @id @default(cuid())
+  userId      String
+  creationId  String?  // optional link to the Creation this timeline edits
+  name        String
+  durationSec Float    @default(0) // total timeline duration in seconds
+  fps         Int      @default(30) // frames per second
+  ratio       String   @default("16:9") // aspect ratio: 16:9 | 9:16 | 1:1 | 4:5 | 4:3 | 21:9
+  tracksJson  String   @default("[]") // serialized Track[] (clips nested inside)
+  markersJson String   @default("[]") // serialized Marker[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  creation  Creation?  @relation(fields: [creationId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([creationId])
 }

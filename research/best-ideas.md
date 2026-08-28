@@ -32,7 +32,7 @@
 |---|---|---|---|---|
 | RemixKit (#16) | Reference video → evidence extraction → creative analysis → remix brief | `analyzeReferenceCreative(url)` → ReferenceCreativeAnalysis | `src/lib/creative/intelligence.ts` | P0 ✅ |
 | RemixKit (#16) | Provider registry: analysis (OpenAI/Gemini/Anthropic/DeepSeek) + video (Luma/Runway/Veo/fal/Replicate) | Model capability registry with provider abstraction | `src/lib/providers/registry.ts` | P0 ✅ |
-| viral2viral (#42) | Viral content remix | Reference analysis → adaptation recommendations | `src/lib/creative/types.ts` | P1 |
+| viral2viral (#42) | Viral content remix | Reference analysis → adaptation recommendations → remix brief | `src/lib/creative/intelligence.ts` (remixFromReference) | P1 ✅ |
 
 ## Storyboarding
 
@@ -46,8 +46,8 @@
 |---|---|---|---|---|
 | creative-ad-agent (#3) | Orchestrator → research → hook → art-style agents | Composable creative functions (not monolithic agent) | `src/lib/creative/intelligence.ts` | P0 ✅ |
 | creative-ad-agent (#3) | Session management with forking for A/B testing | Candidate-based generation (multiple hooks/scripts/angles) | `src/lib/creative/types.ts` | P0 ✅ |
-| FireRed-OpenStoryline (#64) | Conversational refinement via natural language | Future: conversational creative agent (P1) | Future | P1 |
-| OpenChatCut (#48) | Agent-native video editing with MCP | Future: MCP tool contract for creative operations (P2) | Future | P2 |
+| FireRed-OpenStoryline (#64) | Conversational refinement via natural language | `refineCreative()` — iterate on hooks/angles/scripts via NL | `src/lib/creative/intelligence.ts` | P1 ✅ |
+| OpenChatCut (#48) | Agent-native video editing with MCP | Creative tool contracts — 10 tools with JSON schemas, validation, registry | `src/lib/creative/tools.ts` | P2 ✅ |
 
 ## Provider Architecture
 
@@ -68,22 +68,22 @@
 
 | Source Repo | Original Concept | LazyNext Adaptation | Location | Priority |
 |---|---|---|---|---|
-| OpenChatCut (#48) | Conversational video editing, timeline, multitrack | Future: lightweight native editor (AGPL — ideas only, no code) | Future | P1 |
-| FireRed-OpenStoryline (#64) | Conversational refinement, editing skill archiving | Future: editing skill patterns (Apache-2.0 — ideas only) | Future | P1 |
-| pireel (#49) | Timeline architecture | Future: timeline data model study | Future | P1 |
+| OpenChatCut (#48) | Conversational video editing, timeline, multitrack | Timeline data model (types, builder, validation) + Prisma model | `src/lib/editor/types.ts`, `src/lib/editor/timeline-builder.ts` | P1 ✅ (data model) |
+| FireRed-OpenStoryline (#64) | Conversational refinement, editing skill archiving | Editing skill archive — 5 builtin skills, CRUD, recommendation | `src/lib/editor/skills.ts` | P1 ✅ |
+| pireel (#49) | Timeline architecture | Timeline data model with tracks, clips, transitions, markers | `src/lib/editor/types.ts` | P1 ✅ |
 
 ## ASR / Transcription
 
 | Source Repo | Original Concept | LazyNext Adaptation | Location | Priority |
 |---|---|---|---|---|
-| FireRedASR (#65) | High-quality ASR with word-level timestamps | Future: ASRProvider interface (SERVICE_BOUNDARY — GPU required) | Future | P2 |
-| FireRed-OpenStoryline (#64) | ASR-based rough cut for speech videos | Future: transcript-driven editing | Future | P2 |
+| FireRedASR (#65) | High-quality ASR with word-level timestamps | ASRProvider interface + Atlas implementation (whisper-large-v3) | `src/lib/providers/audio.ts`, `src/lib/providers/atlas-audio.ts` | P2 ✅ |
+| FireRed-OpenStoryline (#64) | ASR-based rough cut for speech videos | Transcript-driven rough cut planning with EDL export | `src/lib/editor/transcript-cut.ts` | P2 ✅ |
 
 ## OCR
 
 | Source Repo | Original Concept | LazyNext Adaptation | Location | Priority |
 |---|---|---|---|---|
-| FireRed-OCR (#72) | Extract text from product packaging/labels | Future: structured product ingestion from images (SERVICE_BOUNDARY) | Future | P2 |
+| FireRed-OCR (#72) | Extract text from product packaging/labels | OCRProvider interface + dryRunOCR stub; registry entry for firered-ocr | `src/lib/providers/ocr.ts` | P2 ✅ (stub) |
 
 ## Image Editing
 
