@@ -10,6 +10,7 @@ import {
 import Link from 'next/link';
 import { useI18n } from '@/i18n/provider';
 import { AuthModal } from '@/components/AuthModal';
+import { CostEstimator, type CostEstimateItem } from '@/components/CostEstimator';
 import { useKeyboardShortcuts } from '@/lib/use-keyboard-shortcuts';
 
 // ── Types matching the backend ──
@@ -113,6 +114,13 @@ export default function CreativeStudioPage() {
   const { status } = useSession();
   const { t } = useI18n();
   const [authOpen, setAuthOpen] = useState(false);
+  const [credits, setCredits] = useState<number | null>(null);
+
+  // Fetch credit balance
+  useEffect(() => {
+    if (status !== 'authenticated') return;
+    fetch('/api/me').then(r => r.json()).then(j => setCredits(j.credits ?? 0)).catch(() => {});
+  }, [status]);
 
   // Brand extraction state
   const [brandUrl, setBrandUrl] = useState('');
@@ -726,6 +734,19 @@ export default function CreativeStudioPage() {
 
           {chainMode && (
             <div className="mt-4 space-y-4">
+              {/* Cost estimate */}
+              <CostEstimator
+                items={[
+                  { tool: 'brief', label: t('creativeStudio.chainStepBrief'), credits: 3 },
+                  { tool: 'hooks', label: t('creativeStudio.chainStepHooks'), credits: 2 },
+                  { tool: 'angles', label: t('creativeStudio.chainStepAngles'), credits: 2 },
+                  { tool: 'script', label: t('creativeStudio.chainStepScript'), credits: 3 },
+                  { tool: 'storyboard', label: t('creativeStudio.chainStepStoryboard'), credits: 3 },
+                  { tool: 'score', label: t('creativeStudio.chainStepScore'), credits: 2 },
+                ]}
+                balance={credits}
+              />
+
               {/* Step indicators */}
               <div className="flex flex-wrap items-center gap-2">
                 {[
@@ -944,6 +965,21 @@ export default function CreativeStudioPage() {
 
           {batchMode && (
             <div className="mt-4 space-y-4">
+              {/* Cost estimate */}
+              <CostEstimator
+                items={[
+                  {
+                    tool: batchTool,
+                    label: batchTool === 'hooks' ? t('creativeStudio.batchHooks')
+                         : batchTool === 'angles' ? t('creativeStudio.batchAngles')
+                         : t('creativeStudio.batchScripts'),
+                    credits: batchTool === 'hooks' ? 2 : batchTool === 'angles' ? 2 : 3,
+                    count: batchCount,
+                  },
+                ]}
+                balance={credits}
+              />
+
               {/* Controls */}
               <div className="flex flex-wrap items-end gap-4">
                 <div>

@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import {
   Clapperboard, Coins, Boxes, FolderOpen, ArrowRight, Loader2, Film, Play, Sparkles,
-  TrendingDown, TrendingUp, BarChart3, Trophy,
+  TrendingDown, TrendingUp, BarChart3, Trophy, Calendar,
 } from 'lucide-react';
 import { useI18n } from '@/i18n/provider';
 import { appTitle, appDesc, isFeatured } from '@/config/appCatalog';
@@ -54,6 +54,12 @@ export default function DashboardPage() {
     summary: { totalImpressions: number; totalClicks: number; totalConversions: number; totalSpend: number; totalRevenue: number; avgCtr: number; avgRoas: number };
     byPlatform: Record<string, { count: number; avgRoas: number }>;
   } | null>(null);
+  const [calendar, setCalendar] = useState<{
+    month: string;
+    entries: Array<{ date: string; type: 'campaign' | 'creative'; name: string; platform?: string; status?: string; id: string }>;
+    upcoming: Array<{ date: string; type: 'campaign' | 'creative'; name: string; platform?: string; status?: string; id: string }>;
+    stats: { totalCampaigns: number; totalCreatives: number; activeCampaigns: number };
+  } | null>(null);
 
   useEffect(() => {
     if (status !== 'authenticated') return;
@@ -80,6 +86,10 @@ export default function DashboardPage() {
     fetch('/api/creative/leaderboard', { cache: 'no-store' })
       .then((r) => r.json())
       .then((j) => setLeaderboard(j))
+      .catch(() => {});
+    fetch('/api/creative/calendar', { cache: 'no-store' })
+      .then((r) => r.json())
+      .then((j) => setCalendar(j))
       .catch(() => {});
   }, [status]);
 
@@ -297,6 +307,68 @@ export default function DashboardPage() {
                 </div>
               </>
             )}
+          </div>
+        )}
+
+        {/* Content calendar */}
+        {calendar && (
+          <div className="mb-10 rounded-2xl border border-line bg-surface p-5">
+            <div className="mb-4 flex items-center gap-2">
+              <Calendar className="h-5 w-5 text-brand-accent" />
+              <h2 className="text-lg font-bold text-fg">{t('dashboard.contentCalendar')}</h2>
+              <span className="ml-auto text-xs text-fg-faint">{calendar.month}</span>
+            </div>
+
+            {/* Upcoming reminders */}
+            {calendar.upcoming.length > 0 && (
+              <div className="mb-4 rounded-lg border border-warning/30 bg-warning/5 p-3">
+                <h3 className="mb-2 text-xs font-medium text-warning">{t('dashboard.upcomingDeployments')}</h3>
+                <div className="space-y-1">
+                  {calendar.upcoming.map((u, i) => (
+                    <div key={i} className="flex items-center justify-between text-xs">
+                      <span className="text-fg">{u.name}</span>
+                      <span className="flex items-center gap-2">
+                        <span className="rounded bg-app border border-line px-1.5 py-0.5 text-[10px]">{u.platform}</span>
+                        <span className="text-fg-faint">{u.date}</span>
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Calendar grid */}
+            {calendar.entries.length > 0 ? (
+              <div className="space-y-1 max-h-60 overflow-y-auto">
+                {calendar.entries.map((e, i) => (
+                  <div key={i} className="flex items-center gap-3 rounded bg-app px-3 py-2 text-xs">
+                    <span className="text-fg-faint font-mono shrink-0">{e.date.slice(5)}</span>
+                    <span className={`rounded px-1.5 py-0.5 text-[10px] font-medium shrink-0 ${
+                      e.type === 'campaign'
+                        ? e.platform === 'meta' ? 'bg-blue-500/15 text-blue-500' : 'bg-red-500/15 text-red-500'
+                        : 'bg-brand-accent/15 text-brand-accent'
+                    }`}>
+                      {e.type === 'campaign' ? e.platform : e.type}
+                    </span>
+                    <span className="text-fg truncate">{e.name}</span>
+                    {e.status && (
+                      <span className="ml-auto text-fg-faint shrink-0">{e.status}</span>
+                    )}
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-xs text-fg-faint">{t('dashboard.calendarEmpty')}</p>
+            )}
+
+            {/* Stats */}
+            <div className="mt-3 flex gap-3 text-xs text-fg-faint">
+              <span>{calendar.stats.totalCampaigns} campaigns</span>
+              <span>·</span>
+              <span>{calendar.stats.totalCreatives} creatives</span>
+              <span>·</span>
+              <span className="text-success">{calendar.stats.activeCampaigns} active</span>
+            </div>
           </div>
         )}
 

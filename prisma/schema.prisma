@@ -40,6 +40,7 @@ model User {
   timelines  Timeline[]
   editingSkills EditingSkill[]
   creativeTemplates CreativeTemplate[]
+  sharedLinks  SharedLink[]
 }
 
 model Account {
@@ -205,6 +206,23 @@ model Asset {
 
   @@index([userId])
   @@index([parentId])
+}
+
+model SharedLink {
+  id          String    @id @default(cuid())
+  userId      String   // owner who created the share link
+  assetId     String   // the asset being shared
+  token       String   @unique // random token for the share URL
+  password    String?  // optional bcrypt hash
+  expiresAt   DateTime? // optional expiry
+  views       Int      @default(0)
+  createdAt   DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([assetId])
+  @@index([token])
 }
 
 model AssetVersion {

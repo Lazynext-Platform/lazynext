@@ -270,6 +270,9 @@ export const messages: Record<Locale, any> = {
       totalClicks: 'Total clicks',
       totalConversions: 'Total conversions',
       avgRoas: 'Avg ROAS',
+      contentCalendar: 'Content Calendar',
+      upcomingDeployments: 'Upcoming Deployments (7 days)',
+      calendarEmpty: 'No campaigns or creatives this month.',
     },
     common: { signIn: 'Sign in', signOut: 'Sign out', credits: 'Credits', language: 'Language', switchLanguage: 'Switch language', currency: 'Currency', cookieConsent: 'Cookie consent', new: 'NEW', poweredBy: 'Powered by', back: '← Back', backToLazynext: '← Lazynext', close: 'Close', errNetwork: 'Network error. Please check your connection and try again.', errUnauthorized: 'Your session has expired. Please sign in again.', errPaymentRequired: 'Not enough credits. Please top up on the pricing page.', errServer: 'Server error. Please try again later.', errGeneric: 'Something went wrong. Please try again.', dismissError: 'Dismiss', retry: 'Retry', loadingDots: 'Loading…' },
     userMenu: {
@@ -744,6 +747,14 @@ export const messages: Record<Locale, any> = {
       abTestError: 'Failed',
     },
 
+    costEstimate: {
+      title: 'Estimated Cost',
+      credits: 'credits',
+      total: 'Total',
+      insufficient: 'Insufficient credits (have {0})',
+      remaining: 'After: {0} credits remaining',
+    },
+
     templates: {
       title: 'Template Library',
       subtitle: 'Pre-built creative templates for briefs, hooks, angles, scripts, and skill bundles.',
@@ -1055,6 +1066,28 @@ export const messages: Record<Locale, any> = {
       standaloneAssets: 'Standalone Assets',
       noChildren: 'No child assets recorded.',
       errFailed: 'Failed to load creative assets. Please try again.',
+      gallerySearch: 'Search assets...',
+      galleryFilterAll: 'All',
+      gallerySelect: 'Select',
+      galleryDeleteSelected: 'Delete Selected',
+      galleryCancel: 'Cancel',
+      galleryPreview: 'Asset Preview',
+      galleryClose: 'Close',
+      galleryNoResults: 'No assets match your search.',
+      galleryDeleteConfirm: 'Delete {0} selected assets?',
+      galleryDeleteSuccess: 'Deleted {0} of {1} assets.',
+    },
+    share: {
+      title: 'Shared Creative',
+      passwordRequired: 'This shared link requires a password',
+      passwordPlaceholder: 'Enter password',
+      passwordSubmit: 'View',
+      passwordError: 'Incorrect password',
+      expired: 'This share link has expired.',
+      notFound: 'Share link not found.',
+      views: 'Views',
+      createdAt: 'Created',
+      backToLazynext: '← Back to Lazynext',
     },
     cstudio: {
       fldCompany: 'Company',
@@ -1382,6 +1415,9 @@ export const messages: Record<Locale, any> = {
       totalClicks: '总点击量',
       totalConversions: '总转化量',
       avgRoas: '平均ROAS',
+      contentCalendar: '内容日历',
+      upcomingDeployments: '即将部署（7天内）',
+      calendarEmpty: '本月无广告活动或创意。',
       title: '我的作品',
       empty: '还没有作品。',
       createFirst: '创作第一个',
@@ -1822,6 +1858,14 @@ export const messages: Record<Locale, any> = {
       abTestError: '失败',
     },
 
+    costEstimate: {
+      title: '预估费用',
+      credits: '积分',
+      total: '总计',
+      insufficient: '积分不足（当前 {0}）',
+      remaining: '剩余：{0} 积分',
+    },
+
     templates: {
       title: '模板库',
       subtitle: '预置的创意模板：简报、钩子、角度、脚本和技能包。',
@@ -2133,6 +2177,18 @@ export const messages: Record<Locale, any> = {
       standaloneAssets: '独立素材',
       noChildren: '暂无子素材记录。',
       errFailed: '加载创意素材失败，请重试。',
+    },
+    share: {
+      title: '共享创意',
+      passwordRequired: '此共享链接需要密码',
+      passwordPlaceholder: '输入密码',
+      passwordSubmit: '查看',
+      passwordError: '密码错误',
+      expired: '此共享链接已过期。',
+      notFound: '未找到共享链接。',
+      views: '浏览次数',
+      createdAt: '创建时间',
+      backToLazynext: '← 返回 Lazynext',
     },
     cstudio: {
       fldCompany: '公司',
@@ -2462,6 +2518,9 @@ export const messages: Record<Locale, any> = {
       totalClicks: '総クリック数',
       totalConversions: '総コンバージョン',
       avgRoas: '平均ROAS',
+      contentCalendar: 'コンテンツカレンダー',
+      upcomingDeployments: '今後のデプロイ（7日以内）',
+      calendarEmpty: '今月はキャンペーンやクリエイティブがありません。',
       title: '作品一覧',
       empty: 'まだ作品がありません。',
       createFirst: '最初の作品を作る',
@@ -2902,6 +2961,14 @@ export const messages: Record<Locale, any> = {
       abTestError: '失敗',
     },
 
+    costEstimate: {
+      title: '推定コスト',
+      credits: 'クレジット',
+      total: '合計',
+      insufficient: 'クレジット不足（所持 {0}）',
+      remaining: '残り：{0} クレジット',
+    },
+
     templates: {
       title: 'テンプレートライブラリ',
       subtitle: 'ブリーフ、フック、角度、スクリプト、スキルバンドルのテンプレート。',
@@ -3213,6 +3280,18 @@ export const messages: Record<Locale, any> = {
       standaloneAssets: '単体アセット',
       noChildren: '子アセットが記録されていません。',
       errFailed: 'クリエイティブアセットの読み込みに失敗しました。再試行してください。',
+    },
+    share: {
+      title: '共有クリエイティブ',
+      passwordRequired: 'この共有リンクにはパスワードが必要です',
+      passwordPlaceholder: 'パスワードを入力',
+      passwordSubmit: '表示',
+      passwordError: 'パスワードが正しくありません',
+      expired: 'この共有リンクは期限切れです。',
+      notFound: '共有リンクが見つかりません。',
+      views: '閲覧数',
+      createdAt: '作成日',
+      backToLazynext: '← Lazynextに戻る',
     },
     cstudio: {
       fldCompany: '会社',
@@ -3542,6 +3621,9 @@ export const messages: Record<Locale, any> = {
       totalClicks: 'Clics totales',
       totalConversions: 'Conversiones totales',
       avgRoas: 'ROAS promedio',
+      contentCalendar: 'Calendario de Contenido',
+      upcomingDeployments: 'Despliegues Próximos (7 días)',
+      calendarEmpty: 'Sin campañas ni creativos este mes.',
       title: 'Mis creaciones',
       empty: 'Aún no hay nada.',
       createFirst: 'Crea la primera',
@@ -3982,6 +4064,14 @@ export const messages: Record<Locale, any> = {
       abTestError: 'Falló',
     },
 
+    costEstimate: {
+      title: 'Costo Estimado',
+      credits: 'créditos',
+      total: 'Total',
+      insufficient: 'Créditos insuficientes (tiene {0})',
+      remaining: 'Después: {0} créditos restantes',
+    },
+
     templates: {
       title: 'Biblioteca de Plantillas',
       subtitle: 'Plantillas creativas predefinidas para briefs, ganchos, ángulos, guiones y paquetes de habilidades.',
@@ -4293,6 +4383,18 @@ export const messages: Record<Locale, any> = {
       standaloneAssets: 'Recursos Independientes',
       noChildren: 'No hay recursos secundarios registrados.',
       errFailed: 'Error al cargar los recursos creativos. Inténtelo de nuevo.',
+    },
+    share: {
+      title: 'Creativo Compartido',
+      passwordRequired: 'Este enlace compartido requiere contraseña',
+      passwordPlaceholder: 'Ingrese contraseña',
+      passwordSubmit: 'Ver',
+      passwordError: 'Contraseña incorrecta',
+      expired: 'Este enlace compartido ha expirado.',
+      notFound: 'Enlace compartido no encontrado.',
+      views: 'Vistas',
+      createdAt: 'Creado',
+      backToLazynext: '← Volver a Lazynext',
     },
     cstudio: {
       fldCompany: 'Empresa',
@@ -4620,6 +4722,9 @@ export const messages: Record<Locale, any> = {
       totalClicks: '총 클릭수',
       totalConversions: '총 전환수',
       avgRoas: '평균 ROAS',
+      contentCalendar: '콘텐츠 캘린더',
+      upcomingDeployments: '예정된 배포 (7일)',
+      calendarEmpty: '이번 달 캠페인이나 크리에이티브가 없습니다.',
       title: '내 작업',
       empty: '아직 아무것도 없습니다.',
       createFirst: '첫 작품 만들기',
@@ -5060,6 +5165,14 @@ export const messages: Record<Locale, any> = {
       abTestError: '실패',
     },
 
+    costEstimate: {
+      title: '예상 비용',
+      credits: '크레딧',
+      total: '합계',
+      insufficient: '크레딧 부족 (보유 {0})',
+      remaining: '이후: {0} 크레딧 남음',
+    },
+
     templates: {
       title: '템플릿 라이브러리',
       subtitle: '브리프, 훅, 각도, 스크립트, 스킬 번들을 위한 사전 제작 템플릿.',
@@ -5371,6 +5484,18 @@ export const messages: Record<Locale, any> = {
       standaloneAssets: '독립 에셋',
       noChildren: '기록된 하위 에셋이 없습니다.',
       errFailed: '크리에이티브 에셋 로드에 실패했습니다. 다시 시도해주세요.',
+    },
+    share: {
+      title: '공유 크리에이티브',
+      passwordRequired: '이 공유 링크에는 비밀번호가 필요합니다',
+      passwordPlaceholder: '비밀번호 입력',
+      passwordSubmit: '보기',
+      passwordError: '비밀번호가 올바르지 않습니다',
+      expired: '이 공유 링크가 만료되었습니다.',
+      notFound: '공유 링크를 찾을 수 없습니다.',
+      views: '조회수',
+      createdAt: '생성일',
+      backToLazynext: '← Lazynext로 돌아가기',
     },
     cstudio: {
       fldCompany: '회사',
@@ -5698,6 +5823,9 @@ export const messages: Record<Locale, any> = {
       totalClicks: 'Cliques totais',
       totalConversions: 'Conversões totais',
       avgRoas: 'ROAS médio',
+      contentCalendar: 'Calendário de Conteúdo',
+      upcomingDeployments: 'Implantações Próximas (7 dias)',
+      calendarEmpty: 'Sem campanhas ou criativos este mês.',
       title: 'Minhas criações',
       empty: 'Nada aqui ainda.',
       createFirst: 'Crie a primeira',
@@ -6138,6 +6266,14 @@ export const messages: Record<Locale, any> = {
       abTestError: 'Falhou',
     },
 
+    costEstimate: {
+      title: 'Custo Estimado',
+      credits: 'créditos',
+      total: 'Total',
+      insufficient: 'Créditos insuficientes (tem {0})',
+      remaining: 'Depois: {0} créditos restantes',
+    },
+
     templates: {
       title: 'Biblioteca de Modelos',
       subtitle: 'Modelos criativos pré-construídos para briefs, ganchos, ângulos, roteiros e pacotes de habilidades.',
@@ -6449,6 +6585,18 @@ export const messages: Record<Locale, any> = {
       standaloneAssets: 'Ativos Independentes',
       noChildren: 'Nenhum ativo filho registrado.',
       errFailed: 'Falha ao carregar ativos criativos. Tente novamente.',
+    },
+    share: {
+      title: 'Criativo Compartilhado',
+      passwordRequired: 'Este link compartilhado requer senha',
+      passwordPlaceholder: 'Digite a senha',
+      passwordSubmit: 'Ver',
+      passwordError: 'Senha incorreta',
+      expired: 'Este link compartilhado expirou.',
+      notFound: 'Link compartilhado não encontrado.',
+      views: 'Visualizações',
+      createdAt: 'Criado em',
+      backToLazynext: '← Voltar ao Lazynext',
     },
     cstudio: {
       fldCompany: 'Empresa',
@@ -6776,6 +6924,9 @@ export const messages: Record<Locale, any> = {
       totalClicks: 'Clics totaux',
       totalConversions: 'Conversions totales',
       avgRoas: 'ROAS moyen',
+      contentCalendar: 'Calendrier de Contenu',
+      upcomingDeployments: 'Déploiements à venir (7 jours)',
+      calendarEmpty: 'Aucune campagne ni créatif ce mois-ci.',
       title: 'Mes créations',
       empty: 'Rien ici pour l\'instant.',
       createFirst: 'Créer la première',
@@ -7216,6 +7367,14 @@ export const messages: Record<Locale, any> = {
       abTestError: 'Échec',
     },
 
+    costEstimate: {
+      title: 'Coût Estimé',
+      credits: 'crédits',
+      total: 'Total',
+      insufficient: 'Crédits insuffisants (vous avez {0})',
+      remaining: 'Après : {0} crédits restants',
+    },
+
     templates: {
       title: 'Bibliothèque de Modèles',
       subtitle: 'Modèles créatifs prédéfinis pour briefs, accroches, angles, scripts et packs de compétences.',
@@ -7527,6 +7686,18 @@ export const messages: Record<Locale, any> = {
       standaloneAssets: 'Ressources Indépendantes',
       noChildren: 'Aucune ressource enfant enregistrée.',
       errFailed: 'Échec du chargement des actifs créatifs. Veuillez réessayer.',
+    },
+    share: {
+      title: 'Créatif Partagé',
+      passwordRequired: 'Ce lien partagé nécessite un mot de passe',
+      passwordPlaceholder: 'Entrez le mot de passe',
+      passwordSubmit: 'Voir',
+      passwordError: 'Mot de passe incorrect',
+      expired: 'Ce lien partagé a expiré.',
+      notFound: 'Lien partagé introuvable.',
+      views: 'Vues',
+      createdAt: 'Créé le',
+      backToLazynext: '← Retour à Lazynext',
     },
     cstudio: {
       fldCompany: 'Entreprise',
@@ -7854,6 +8025,9 @@ export const messages: Record<Locale, any> = {
       totalClicks: 'Gesamt-Klicks',
       totalConversions: 'Gesamt-Conversions',
       avgRoas: 'Ø ROAS',
+      contentCalendar: 'Inhaltskalender',
+      upcomingDeployments: 'Bevorstehende Deployments (7 Tage)',
+      calendarEmpty: 'Keine Kampagnen oder Kreatives in diesem Monat.',
       title: 'Meine Kreationen',
       empty: 'Noch nichts hier.',
       createFirst: 'Erste erstellen',
@@ -8294,6 +8468,14 @@ export const messages: Record<Locale, any> = {
       abTestError: 'Fehlgeschlagen',
     },
 
+    costEstimate: {
+      title: 'Geschätzte Kosten',
+      credits: 'Credits',
+      total: 'Gesamt',
+      insufficient: 'Nicht genügend Credits (haben {0})',
+      remaining: 'Danach: {0} Credits übrig',
+    },
+
     templates: {
       title: 'Vorlagenbibliothek',
       subtitle: 'Vorgefertigte kreative Vorlagen für Briefs, Hooks, Winkel, Skripte und Fähigkeitspakete.',
@@ -8605,6 +8787,18 @@ export const messages: Record<Locale, any> = {
       standaloneAssets: 'Eigenständige Assets',
       noChildren: 'Keine untergeordneten Assets erfasst.',
       errFailed: 'Kreative Assets konnten nicht geladen werden. Bitte versuchen Sie es erneut.',
+    },
+    share: {
+      title: 'Geteiltes Kreativ',
+      passwordRequired: 'Dieser geteilte Link erfordert ein Passwort',
+      passwordPlaceholder: 'Passwort eingeben',
+      passwordSubmit: 'Anzeigen',
+      passwordError: 'Falsches Passwort',
+      expired: 'Dieser geteilte Link ist abgelaufen.',
+      notFound: 'Geteilter Link nicht gefunden.',
+      views: 'Aufrufe',
+      createdAt: 'Erstellt am',
+      backToLazynext: '← Zurück zu Lazynext',
     },
     cstudio: {
       fldCompany: 'Unternehmen',
@@ -8932,6 +9126,9 @@ export const messages: Record<Locale, any> = {
       totalClicks: 'إجمالي النقرات',
       totalConversions: 'إجمالي التحويلات',
       avgRoas: 'متوسط ROAS',
+      contentCalendar: 'تقويم المحتوى',
+      upcomingDeployments: 'النشر القادم (7 أيام)',
+      calendarEmpty: 'لا توجد حملات أو إبداعيين هذا الشهر.',
       title: 'إنشاءاتي',
       empty: 'لا يوجد شيء بعد.',
       createFirst: 'أنشئ الأول',
@@ -9372,6 +9569,14 @@ export const messages: Record<Locale, any> = {
       abTestError: 'فشل',
     },
 
+    costEstimate: {
+      title: 'التكلفة المقدرة',
+      credits: 'رصيد',
+      total: 'المجموع',
+      insufficient: 'رصيد غير كافٍ (لديك {0})',
+      remaining: 'بعد: {0} رصيد متبقي',
+    },
+
     templates: {
       title: 'مكتبة القوالب',
       subtitle: 'قوالب إبداعية جاهزة للملخصات والخطافات والزوايا والنصوص وحزم المهارات.',
@@ -9683,6 +9888,18 @@ export const messages: Record<Locale, any> = {
       standaloneAssets: 'الأصول المستقلة',
       noChildren: 'لا توجد أصول فرعية مسجّلة.',
       errFailed: 'فشل تحميل الأصول الإبداعية. حاول مرة أخرى.',
+    },
+    share: {
+      title: 'إبداعي مشترك',
+      passwordRequired: 'هذا الرابط المشترك يتطلب كلمة مرور',
+      passwordPlaceholder: 'أدخل كلمة المرور',
+      passwordSubmit: 'عرض',
+      passwordError: 'كلمة المرور غير صحيحة',
+      expired: 'انتهت صلاحية هذا الرابط المشترك.',
+      notFound: 'لم يتم العثور على الرابط المشترك.',
+      views: 'المشاهدات',
+      createdAt: 'تاريخ الإنشاء',
+      backToLazynext: '← العودة إلى Lazynext',
     },
     cstudio: {
       fldCompany: 'الشركة',
@@ -10010,6 +10227,9 @@ export const messages: Record<Locale, any> = {
       totalClicks: 'कुल क्लिक',
       totalConversions: 'कुल रूपांतरण',
       avgRoas: 'औसत ROAS',
+      contentCalendar: 'सामग्री कैलेंडर',
+      upcomingDeployments: 'आगामी तैनाती (7 दिन)',
+      calendarEmpty: 'इस महीने कोई कैम्पेन या क्रिएटिव नहीं।',
       title: 'मेरी क्रिएशन',
       empty: 'अभी यहां कुछ नहीं है।',
       createFirst: 'पहली बनाएं',
@@ -10450,6 +10670,14 @@ export const messages: Record<Locale, any> = {
       abTestError: 'विफल',
     },
 
+    costEstimate: {
+      title: 'अनुमानित लागत',
+      credits: 'क्रेडिट',
+      total: 'कुल',
+      insufficient: 'अपर्याप्त क्रेडिट (पास {0})',
+      remaining: 'बाद में: {0} क्रेडिट शेष',
+    },
+
     templates: {
       title: 'टेम्पलेट लाइब्रेरी',
       subtitle: 'ब्रीफ, हुक, कोण, स्क्रिप्ट और स्किल बंडल के लिए पूर्व-निर्मित रचनात्मक टेम्पलेट।',
@@ -10761,6 +10989,18 @@ export const messages: Record<Locale, any> = {
       standaloneAssets: 'स्टैंडअलोन एसेट',
       noChildren: 'कोई चाइल्ड एसेट रिकॉर्ड नहीं।',
       errFailed: 'क्रिएटिव एसेट लोड करने में विफल। कृपया पुनः प्रयास करें।',
+    },
+    share: {
+      title: 'साझा क्रिएटिव',
+      passwordRequired: 'इस साझा लिंक के लिए पासवर्ड आवश्यक है',
+      passwordPlaceholder: 'पासवर्ड दर्ज करें',
+      passwordSubmit: 'देखें',
+      passwordError: 'गलत पासवर्ड',
+      expired: 'यह साझा लिंक समाप्त हो गया है।',
+      notFound: 'साझा लिंक नहीं मिला।',
+      views: 'दृश्य',
+      createdAt: 'बनाया गया',
+      backToLazynext: '← Lazynext पर वापस',
     },
     cstudio: {
       fldCompany: 'कंपनी',
@@ -11091,6 +11331,9 @@ export const messages: Record<Locale, any> = {
       totalClicks: 'Tổng lượt nhấp',
       totalConversions: 'Tổng chuyển đổi',
       avgRoas: 'ROAS trung bình',
+      contentCalendar: 'Lịch Nội Dung',
+      upcomingDeployments: 'Triển Khai Sắp Tới (7 ngày)',
+      calendarEmpty: 'Không có chiến dịch hoặc sáng tạo trong tháng này.',
       title: 'Tác phẩm của tôi',
       empty: 'Chưa có gì ở đây.',
       createFirst: 'Tạo tác phẩm đầu tiên',
@@ -11531,6 +11774,14 @@ export const messages: Record<Locale, any> = {
       abTestError: 'Thất bại',
     },
 
+    costEstimate: {
+      title: 'Chi Phí Ước Tính',
+      credits: 'tín dụng',
+      total: 'Tổng',
+      insufficient: 'Không đủ tín dụng (có {0})',
+      remaining: 'Còn lại: {0} tín dụng',
+    },
+
     templates: {
       title: 'Thư Viện Mẫu',
       subtitle: 'Mẫu sáng tạo có sẵn cho tóm tắt, hook, góc độ, kịch bản và gói kỹ năng.',
@@ -11841,6 +12092,18 @@ export const messages: Record<Locale, any> = {
       noDataHint: 'Chạy Giám đốc Sáng tạo để tạo và lưu các gói sáng tạo.',
       standaloneAssets: 'Tài sản Độc lập',
       noChildren: 'Chưa có tài sản con được ghi nhận.',
+    },
+    share: {
+      title: 'Sáng Tạo Chia Sẻ',
+      passwordRequired: 'Liên kết chia sẻ này yêu cầu mật khẩu',
+      passwordPlaceholder: 'Nhập mật khẩu',
+      passwordSubmit: 'Xem',
+      passwordError: 'Mật khẩu không đúng',
+      expired: 'Liên kết chia sẻ này đã hết hạn.',
+      notFound: 'Không tìm thấy liên kết chia sẻ.',
+      views: 'Lượt xem',
+      createdAt: 'Ngày tạo',
+      backToLazynext: '← Quay lại Lazynext',
     },
     cstudio: {
       fldCompany: 'Công ty',
@@ -12171,6 +12434,9 @@ export const messages: Record<Locale, any> = {
       totalClicks: 'คลิกทั้งหมด',
       totalConversions: 'การแปลงทั้งหมด',
       avgRoas: 'ROAS เฉลี่ย',
+      contentCalendar: 'ปฏิทินเนื้อหา',
+      upcomingDeployments: 'การปรับใช้ที่กำลังจะมา (7 วัน)',
+      calendarEmpty: 'ไม่มีแคมเปญหรือครีเอทีฟในเดือนนี้',
       title: 'ผลงานของฉัน',
       empty: 'ยังไม่มีอะไรที่นี่',
       createFirst: 'สร้างชิ้นแรกของคุณ',
@@ -12611,6 +12877,14 @@ export const messages: Record<Locale, any> = {
       abTestError: 'ล้มเหลว',
     },
 
+    costEstimate: {
+      title: 'ค่าใช้จ่ายโดยประมาณ',
+      credits: 'เครดิต',
+      total: 'รวม',
+      insufficient: 'เครดิตไม่เพียงพอ (มี {0})',
+      remaining: 'หลังจาก: เหลือ {0} เครดิต',
+    },
+
     templates: {
       title: 'ไลบรารีเทมเพลต',
       subtitle: 'เทมเพลตสร้างสรรค์สำเร็จรูปสำหรับบรีฟ ฮุก มุม สคริปต์ และชุดทักษะ',
@@ -12921,6 +13195,18 @@ export const messages: Record<Locale, any> = {
       noDataHint: 'เรียกผู้กำกับครีเอทีฟเพื่อสร้างและบันทึกแพ็กเกจครีเอทีฟ',
       standaloneAssets: 'แอสเซตแบบสแตนด์อโลน',
       noChildren: 'ไม่มีแอสเซตย่อยที่บันทึกไว้',
+    },
+    share: {
+      title: 'ครีเอทีฟที่แชร์',
+      passwordRequired: 'ลิงก์ที่แชร์นี้ต้องการรหัสผ่าน',
+      passwordPlaceholder: 'ป้อนรหัสผ่าน',
+      passwordSubmit: 'ดู',
+      passwordError: 'รหัสผ่านไม่ถูกต้อง',
+      expired: 'ลิงก์ที่แชร์นี้หมดอายุแล้ว',
+      notFound: 'ไม่พบลิงก์ที่แชร์',
+      views: 'การดู',
+      createdAt: 'สร้างเมื่อ',
+      backToLazynext: '← กลับไป Lazynext',
     },
     cstudio: {
       fldCompany: 'บริษัท',
@@ -13251,6 +13537,9 @@ export const messages: Record<Locale, any> = {
       totalClicks: 'Total klik',
       totalConversions: 'Total konversi',
       avgRoas: 'ROAS rata-rata',
+      contentCalendar: 'Kalender Konten',
+      upcomingDeployments: 'Deploy Mendatang (7 hari)',
+      calendarEmpty: 'Tidak ada kampanye atau kreatif bulan ini.',
       title: 'Karya saya',
       empty: 'Belum ada apa-apa di sini.',
       createFirst: 'Buat karya pertama kamu',
@@ -13691,6 +13980,14 @@ export const messages: Record<Locale, any> = {
       abTestError: 'Gagal',
     },
 
+    costEstimate: {
+      title: 'Biaya Estimasi',
+      credits: 'kredit',
+      total: 'Total',
+      insufficient: 'Kredit tidak cukup (punya {0})',
+      remaining: 'Setelah: {0} kredit tersisa',
+    },
+
     templates: {
       title: 'Perpustakaan Templat',
       subtitle: 'Templat kreatif siap pakai untuk brief, hook, sudut, skrip, dan paket keterampilan.',
@@ -13979,6 +14276,18 @@ export const messages: Record<Locale, any> = {
       noDataHint: 'Jalankan Direktur Kreatif untuk membuat dan menyimpan paket kreatif.',
       standaloneAssets: 'Aset Mandiri',
       noChildren: 'Tidak ada aset turunan tercatat.',
+    },
+    share: {
+      title: 'Kreatif Dibagikan',
+      passwordRequired: 'Link berbagi ini memerlukan kata sandi',
+      passwordPlaceholder: 'Masukkan kata sandi',
+      passwordSubmit: 'Lihat',
+      passwordError: 'Kata sandi salah',
+      expired: 'Link berbagi ini telah kedaluwarsa.',
+      notFound: 'Link berbagi tidak ditemukan.',
+      views: 'Penayangan',
+      createdAt: 'Dibuat',
+      backToLazynext: '← Kembali ke Lazynext',
     },
     cstudio: {
       fldCompany: 'Perusahaan',

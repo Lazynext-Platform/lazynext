@@ -134,3 +134,26 @@ export async function listAssets(userId: string, type?: AssetType): Promise<Arra
     return [];
   }
 }
+
+/**
+ * Delete an asset and its child assets (cascade).
+ * Verifies ownership before deleting.
+ * Returns the number of deleted assets.
+ */
+export async function deleteAsset(userId: string, assetId: string): Promise<number> {
+  // Verify ownership
+  const asset = await prisma.asset.findFirst({ where: { id: assetId, userId } });
+  if (!asset) return 0;
+
+  // Delete children first (if this is a package)
+  const children = await prisma.asset.findMany({ where: { parentId: assetId }, select: { id: true } });
+  let deleted = 0;
+  for (const child of children) {
+    deleted += await deleteAsset(userId, child.id);
+  }
+
+  // Delete the asset itself
+  await prisma.asset.delete({ where: { id: assetId } });
+  deleted += 1;
+  return deleted;
+}
