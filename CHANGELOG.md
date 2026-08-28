@@ -18,7 +18,7 @@
    (impressions, clicks, spend, conversions, CTR, CPC, ROAS) aggregated by hook, angle, and platform.
    - `getPerformanceSummary()` — aggregate metrics for a user/workspace
    - `getLearningsContext()` — distills top/bottom performers into a context string
-   - `POST /api/creative/performance` — records and retrieves performance data
+   - `GET /api/creative/performance` — retrieves aggregated performance data
    - Learnings are injected into brief generation so future creatives leverage past results
 4. **New Prisma models**: `WorkflowRun`, `WorkflowStep`, `AdCampaign`, `CreativePerformance`
    added to `prisma/schema.prisma`. All D1 migrations applied (18 tables total).
@@ -32,32 +32,41 @@
    fr, de, ar, hi, vi, th, id).
 
 ### Verification
-- `npm test` — 61 tests passed
+- `npm test` — 113 tests passed
 - `npx tsc --noEmit` — passed (0 errors)
 - `npx prisma generate` — passed (4 new models)
 - D1 migrations applied — 18 tables total
 
 ### Files Changed
-- `src/lib/ads/types.ts` (new — AdPlatformProvider interface, ad types)
-- `src/lib/ads/meta.ts` (new — Meta Ads provider)
-- `src/lib/ads/google.ts` (new — Google Ads provider)
-- `src/lib/ads/registry.ts` (new — provider registry)
+- `src/lib/ad-platforms/types.ts` (new — AdPlatformProvider interface, ad types)
+- `src/lib/ad-platforms/meta.ts` (new — Meta Ads provider)
+- `src/lib/ad-platforms/google.ts` (new — Google Ads provider)
 - `src/app/api/ads/create/route.ts` (new)
 - `src/app/api/ads/metrics/route.ts` (new)
+- `src/app/api/ads/list/route.ts` (new — GET campaign list)
 - `src/lib/creative/director.ts` (new — runCreativeDirector agent loop)
 - `src/app/api/creative/director/route.ts` (new)
-- `src/lib/creative/performance.ts` (new — CreativePerformance helpers)
-- `src/app/api/creative/performance/route.ts` (new)
+- `src/lib/creative/learning.ts` (new — CreativePerformance aggregation + learnings context)
+- `src/app/api/creative/performance/route.ts` (new — GET aggregated performance)
 - `src/app/api/creative/score/route.ts` (new)
 - `src/app/api/creative/variants/route.ts` (new)
+- `src/app/creative-director/page.tsx` (new — Creative Director UI)
+- `src/app/ads/page.tsx` (new — Ad Campaigns UI)
+- `src/app/performance/page.tsx` (new — Performance Dashboard UI)
+- `src/app/dashboard/page.tsx` (added 3 new pages to navigation grid)
 - `prisma/schema.prisma` (WorkflowRun, WorkflowStep, AdCampaign, CreativePerformance)
 - `src/lib/credits.ts` (observability logging)
 - `src/lib/providers/atlas-image.ts` (observability logging)
+- `src/lib/creative/intelligence.ts` (learnings field added to BriefInput)
+- `src/app/api/creative/brief/route.ts` (injects getLearningsContext into brief generation)
 - `src/i18n/messages.ts` (score/variants keys for 12 locales)
 - `.github/workflows/ci.yml` (prisma generate, db:push, port 3100, NEXTAUTH_SECRET)
 - `docs/adr/004-ad-platform-integration.md` (new)
 - `docs/adr/005-autonomous-creative-director.md` (new)
 - `docs/adr/006-performance-learning.md` (new)
+- `test/ad-platforms.test.ts` (new — 18 tests)
+- `test/creative-director.test.ts` (new — 13 tests)
+- `test/creative-learning.test.ts` (new — 21 tests)
 
 ## 2026-08-27 — Remaining Work Completion: Scoring, Variants, Model Router, BrandProfile, Reference Analysis UI
 

@@ -22,6 +22,7 @@ import {
   generateStoryboard, scoreCreative, generateVariants, CREATIVE_COSTS,
 } from './intelligence';
 import { getLearningsContext } from './learning';
+import { startWorkflow, recordStep, completeWorkflow, failWorkflow } from '@/lib/workflow/engine';
 import type {
   CreativeBrief, HookCandidate, CreativeAngle, ScriptCandidate,
   StoryboardCandidate, CreativeScore, CreativeVariant,
@@ -87,14 +88,15 @@ export async function runCreativeDirector(
   let spent = 0;
   const steps: DirectorStep<unknown>[] = [];
   const result: DirectorResult = { steps, totalCreditsSpent: 0, budgetCredits: budget };
+  const startedAt = Date.now();
 
-  const addStep = <T>(name: string, result_data: T | null, credits: number, status: DirectorStep<unknown>['status'] = 'completed'): DirectorStep<T> => {
-    const step: DirectorStep<T> = { name, status, result: result_data ?? undefined, creditsSpent: credits };
-    steps.push(step as DirectorStep<unknown>);
-    spent += credits;
-    result.totalCreditsSpent = spent;
-    return step;
-  };
+  // Start a durable workflow run (non-fatal if DB table doesn't exist)
+  const wfId = input.userId
+    ? await startWorkflow(input.userId, 'creative_director', {
+        productUrl: input.productUrl, brandUrl: input.brandUrl,
+        platform: input.platform, budgetCredits: budget,
+      }).catch(() => null)
+    : null;
 
   const checkBudget = (cost: number, stepName: string): boolean => {
     if (spent + cost > budget) {
@@ -106,14 +108,19 @@ export async function runCreativeDirector(
   };
 
   const runStep = async <T>(name: string, cost: number, fn: () => Promise<T>): Promise<T | null> => {
-    if (!checkBudget(cost, name)) return null;
+    if (!checkBudget(cost, name)) {
+      if (wfId) await recordStep(wfId, name, 'failed', { error: 'Budget exceeded', creditsCost: 0 }).catch(() => {});
+      return null;
+    }
     const step: DirectorStep<T> = { name, status: 'running', creditsSpent: cost };
     steps.push(step as DirectorStep<unknown>);
+    if (wfId) await recordStep(wfId, name, 'running', { creditsCost: cost }).catch(() => {});
     if (onStep) await onStep(step as DirectorStep<unknown>, result);
     try {
       const res = await fn();
       step.status = input.requireStepApproval ? 'awaiting_approval' : 'completed';
       step.result = res as T | undefined;
+      if (wfId) await recordStep(wfId, name, 'completed', { creditsCost: cost, output: res as Record<string, unknown> | undefined }).catch(() => {});
       if (onStep) {
         const proceed = await onStep(step as DirectorStep<unknown>, result);
         if (proceed === false) { step.status = 'failed'; return null; }
@@ -125,6 +132,7 @@ export async function runCreativeDirector(
     } catch (e) {
       step.status = 'failed';
       step.error = String(e);
+      if (wfId) await recordStep(wfId, name, 'failed', { error: String(e), creditsCost: 0 }).catch(() => {});
       return null;
     }
   };
@@ -151,6 +159,7 @@ export async function runCreativeDirector(
   if (!input.productText) {
     const failStep: DirectorStep<unknown> = { name: 'brief', status: 'failed', creditsSpent: 0, error: 'No product text available' };
     steps.push(failStep);
+    if (wfId && input.userId) await failWorkflow(wfId, input.userId, 'No product text available').catch(() => {});
     return result;
   }
 
@@ -226,6 +235,15 @@ export async function runCreativeDirector(
       generateVariants(brief, best.script, 3),
     );
     if (variants) result.variants = variants;
+  }
+
+  // Complete the durable workflow run
+  if (wfId && input.userId) {
+    await completeWorkflow(wfId, input.userId, {
+      totalCreditsSpent: spent,
+      bestScore: best.score.overall,
+      variantsCount: result.variants?.length || 0,
+    }, Date.now() - startedAt).catch(() => {});
   }
 
   return result;

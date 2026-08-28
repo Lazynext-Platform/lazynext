@@ -49,7 +49,7 @@ export default function PerformancePage() {
 
   if (!session?.user) {
     return (
-      <main id="main-content" className="min-h-screen bg-app pb-safe">
+      <div className="min-h-screen bg-app pb-safe">
         <div className="mx-auto max-w-4xl px-4 py-6 sm:py-8">
           <h1 className="text-2xl font-bold text-fg sm:text-3xl">
             <BarChart3 className="mr-2 inline h-7 w-7 text-brand-accent" />
@@ -65,12 +65,12 @@ export default function PerformancePage() {
           </button>
           <AuthModal open={authOpen} onClose={() => setAuthOpen(false)} />
         </div>
-      </main>
+      </div>
     );
   }
 
   return (
-    <main id="main-content" className="min-h-screen bg-app pb-safe">
+    <div className="min-h-screen bg-app pb-safe">
       <div className="mx-auto max-w-4xl px-4 py-6 sm:py-8">
         <h1 className="text-2xl font-bold text-fg sm:text-3xl">
           <BarChart3 className="mr-2 inline h-7 w-7 text-brand-accent" />
@@ -190,7 +190,7 @@ export default function PerformancePage() {
           </>
         )}
       </div>
-    </main>
+    </div>
   );
 }
 
