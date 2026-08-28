@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Sparkles, Megaphone, BarChart3, LayoutDashboard, Package, Scissors, Library, Lightbulb, Calendar, Video, Wand2, ImageIcon, Send, BookOpen, Brain } from 'lucide-react';
+import { Sparkles, Megaphone, BarChart3, LayoutDashboard, Package, Scissors, Library, Lightbulb, Calendar, Video, Wand2, ImageIcon, Send, BookOpen, Brain, Volume2, Eye, ShieldCheck, Wallet } from 'lucide-react';
 import { UserMenu } from '@/components/UserMenu';
 import { LangToggle } from '@/components/LangToggle';
 import { CreditBadge } from '@/components/CreditBadge';
@@ -17,13 +17,17 @@ const NAV_LINKS = [
   { href: '/ugc-studio', label: 'UGC Studio', icon: Video, hideOnMd: true },
   { href: '/ads', label: 'Ads', icon: Megaphone },
   { href: '/performance', label: 'Performance', icon: BarChart3 },
+  { href: '/competitor-intel', label: 'Competitors', icon: Eye, hideOnMd: true },
+  { href: '/budget-optimizer', label: 'Budget', icon: Wallet, hideOnMd: true },
   { href: '/creative-assets', label: 'Assets', icon: Package },
   { href: '/editor', label: 'Editor', icon: Scissors },
   { href: '/skills', label: 'Skills', icon: Wand2, hideOnMd: true },
   { href: '/image-studio', label: 'Image Studio', icon: ImageIcon, hideOnMd: true },
+  { href: '/audio-studio', label: 'Audio', icon: Volume2, hideOnMd: true },
   { href: '/narrative-studio', label: 'Narrative', icon: BookOpen, hideOnMd: true },
   { href: '/publish', label: 'Publish', icon: Send, hideOnMd: true },
   { href: '/ml-insights', label: 'ML Insights', icon: Brain, hideOnMd: true },
+  { href: '/compliance', label: 'Compliance', icon: ShieldCheck, hideOnMd: true },
   { href: '/templates', label: 'Templates', icon: Library, hideOnMd: true },
   { href: '/inspiration', label: 'Inspiration', icon: Lightbulb, hideOnMd: true },
   { href: '/calendar', label: 'Calendar', icon: Calendar, hideOnMd: true },
