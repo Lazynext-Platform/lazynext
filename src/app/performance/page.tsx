@@ -53,15 +53,15 @@ export default function PerformancePage() {
         <div className="mx-auto max-w-4xl px-4 py-6 sm:py-8">
           <h1 className="text-2xl font-bold text-fg sm:text-3xl">
             <BarChart3 className="mr-2 inline h-7 w-7 text-brand-accent" />
-            Performance Dashboard
+            {t('perf.title')}
           </h1>
-          <p className="mt-2 text-sm text-fg-faint">Sign in to view your campaign performance insights.</p>
+          <p className="mt-2 text-sm text-fg-faint">{t('perf.signInPrompt')}</p>
           <button
             onClick={() => setAuthOpen(true)}
             className="mt-4 rounded-xl px-4 py-2 text-sm font-bold text-white"
             style={{ background: '#0064d9' }}
           >
-            Sign in
+            {t('perf.signIn')}
           </button>
           <AuthModal open={authOpen} onClose={() => setAuthOpen(false)} />
         </div>
@@ -74,10 +74,10 @@ export default function PerformancePage() {
       <div className="mx-auto max-w-4xl px-4 py-6 sm:py-8">
         <h1 className="text-2xl font-bold text-fg sm:text-3xl">
           <BarChart3 className="mr-2 inline h-7 w-7 text-brand-accent" />
-          Performance Dashboard
+          {t('perf.title')}
         </h1>
         <p className="mt-2 text-sm text-fg-faint">
-          Campaign performance insights that feed back into future creative generation.
+          {t('perf.subtitle')}
         </p>
 
         {loading && <Loader2 className="mt-6 h-6 w-6 animate-spin text-brand-accent" />}
@@ -92,12 +92,12 @@ export default function PerformancePage() {
           <>
             {/* Overview metrics */}
             <section className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
-              <MetricCard icon={Target} label="Campaigns" value={summary.totalCampaigns.toString()} />
-              <MetricCard icon={DollarSign} label="Total Spend" value={`$${summary.totalSpend.toFixed(2)}`} />
-              <MetricCard icon={TrendingUp} label="Total Revenue" value={`$${summary.totalRevenue.toFixed(2)}`} />
+              <MetricCard icon={Target} label={t('perf.campaigns')} value={summary.totalCampaigns.toString()} />
+              <MetricCard icon={DollarSign} label={t('perf.totalSpend')} value={`$${summary.totalSpend.toFixed(2)}`} />
+              <MetricCard icon={TrendingUp} label={t('perf.totalRevenue')} value={`$${summary.totalRevenue.toFixed(2)}`} />
               <MetricCard
                 icon={BarChart3}
-                label="ROAS"
+                label={t('perf.roas')}
                 value={`${summary.overallRoas.toFixed(2)}x`}
                 highlight={summary.overallRoas >= 1 ? 'positive' : 'negative'}
               />
@@ -106,7 +106,7 @@ export default function PerformancePage() {
             {/* Recommendations */}
             {summary.recommendations.length > 0 && (
               <section className="mt-4 rounded-2xl border border-line bg-surface p-5">
-                <h2 className="text-sm font-bold text-fg">Recommendations</h2>
+                <h2 className="text-sm font-bold text-fg">{t('perf.recommendations')}</h2>
                 <ul className="mt-3 space-y-2">
                   {summary.recommendations.map((r, i) => (
                     <li key={i} className="flex items-start gap-2 text-xs text-fg">
@@ -121,7 +121,7 @@ export default function PerformancePage() {
             {/* Top hooks */}
             {summary.topHooks.length > 0 && (
               <section className="mt-4 rounded-2xl border border-line bg-surface p-5">
-                <h2 className="flex items-center gap-2 text-sm font-bold text-fg"><Fish className="h-4 w-4 text-brand-accent" /> Top Hook Types</h2>
+                <h2 className="flex items-center gap-2 text-sm font-bold text-fg"><Fish className="h-4 w-4 text-brand-accent" /> {t('perf.topHooks')}</h2>
                 <div className="mt-3 space-y-2">
                   {summary.topHooks.map((h, i) => (
                     <div key={i} className="flex items-center justify-between rounded-xl bg-app p-3 text-xs">
@@ -139,7 +139,7 @@ export default function PerformancePage() {
             {/* Top angles */}
             {summary.topAngles.length > 0 && (
               <section className="mt-4 rounded-2xl border border-line bg-surface p-5">
-                <h2 className="flex items-center gap-2 text-sm font-bold text-fg"><Target className="h-4 w-4 text-brand-accent" /> Top Angles</h2>
+                <h2 className="flex items-center gap-2 text-sm font-bold text-fg"><Target className="h-4 w-4 text-brand-accent" /> {t('perf.topAngles')}</h2>
                 <div className="mt-3 space-y-2">
                   {summary.topAngles.map((a, i) => (
                     <div key={i} className="flex items-center justify-between rounded-xl bg-app p-3 text-xs">
@@ -157,7 +157,7 @@ export default function PerformancePage() {
             {/* Top platforms */}
             {summary.topPlatforms.length > 0 && (
               <section className="mt-4 rounded-2xl border border-line bg-surface p-5">
-                <h2 className="flex items-center gap-2 text-sm font-bold text-fg"><BarChart3 className="h-4 w-4 text-brand-accent" /> Top Platforms</h2>
+                <h2 className="flex items-center gap-2 text-sm font-bold text-fg"><BarChart3 className="h-4 w-4 text-brand-accent" /> {t('perf.topPlatforms')}</h2>
                 <div className="mt-3 space-y-2">
                   {summary.topPlatforms.map((p, i) => (
                     <div key={i} className="flex items-center justify-between rounded-xl bg-app p-3 text-xs">
@@ -175,7 +175,7 @@ export default function PerformancePage() {
             {/* Learnings context (injected into future briefs) */}
             {learnings && (
               <section className="mt-4 rounded-2xl border border-line bg-surface p-5">
-                <h2 className="text-sm font-bold text-fg">Learnings Context (auto-injected into future briefs)</h2>
+                <h2 className="text-sm font-bold text-fg">{t('perf.learningsContext')}</h2>
                 <pre className="mt-3 whitespace-pre-wrap rounded-xl bg-app p-3 text-xs text-fg-faint">{learnings}</pre>
               </section>
             )}
@@ -183,8 +183,8 @@ export default function PerformancePage() {
             {summary.totalCampaigns === 0 && (
               <div className="mt-6 rounded-2xl border border-dashed border-line bg-hover p-6 text-center">
                 <BarChart3 className="mx-auto mb-2 h-8 w-8 text-fg-placeholder" />
-                <p className="text-sm text-fg-faint">No performance data yet.</p>
-                <p className="mt-1 text-xs text-fg-faint">Run ad campaigns to start collecting insights that improve future creatives.</p>
+                <p className="text-sm text-fg-faint">{t('perf.noData')}</p>
+                <p className="mt-1 text-xs text-fg-faint">{t('perf.noDataHint')}</p>
               </div>
             )}
           </>

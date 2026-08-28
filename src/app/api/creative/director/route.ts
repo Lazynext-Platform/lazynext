@@ -1,7 +1,7 @@
 import { withAtlas } from '@/lib/request-context';
 import { NextResponse } from 'next/server';
 import { auth } from '@/../auth';
-import { runCreativeDirector } from '@/lib/creative/director';
+import { runCreativeDirector, type DirectorStep, type DirectorResult } from '@/lib/creative/director';
 import { deductCredits } from '@/lib/credits';
 import { refundSync } from '@/lib/lazynext-studio/gen-task';
 
@@ -27,32 +27,103 @@ async function __byokPOST(req: Request) {
     );
   }
 
-  try {
-    const result = await runCreativeDirector({
-      brandUrl: body.brandUrl,
-      productUrl: body.productUrl,
-      productText: body.productText,
-      productName: body.productName,
-      platform: body.platform,
-      format: body.format,
-      budgetCredits: budget,
-      requireStepApproval: false,
-      userId: uid,
-    });
+  // Check if client wants streaming (default: yes for newer clients)
+  const url = new URL(req.url);
+  const wantsStream = url.searchParams.get('stream') !== 'false';
 
-    // Refund unused credits
-    const unused = budget - result.totalCreditsSpent;
-    if (unused > 0) {
-      await refundSync(uid, unused, 'creative:director:refund');
+  if (!wantsStream) {
+    // Legacy non-streaming response
+    try {
+      const result = await runCreativeDirector({
+        brandUrl: body.brandUrl,
+        productUrl: body.productUrl,
+        productText: body.productText,
+        productName: body.productName,
+        platform: body.platform,
+        format: body.format,
+        budgetCredits: budget,
+        requireStepApproval: false,
+        userId: uid,
+      });
+
+      const unused = budget - result.totalCreditsSpent;
+      if (unused > 0) await refundSync(uid, unused, 'creative:director:refund');
+
+      return NextResponse.json({ result });
+    } catch (e) {
+      await refundSync(uid, budget, 'creative:director:failed');
+      console.error('[creative/director] error:', String(e));
+      return NextResponse.json({ error: 'director_failed', detail: String(e) }, { status: 500 });
     }
-
-    return NextResponse.json({ result });
-  } catch (e) {
-    // Refund all credits on failure
-    await refundSync(uid, budget, 'creative:director:failed');
-    console.error('[creative/director] error:', String(e));
-    return NextResponse.json({ error: 'director_failed', detail: String(e) }, { status: 500 });
   }
+
+  // Streaming response: send step updates as SSE-style JSON lines
+  const encoder = new TextEncoder();
+  const stream = new ReadableStream({
+    async start(controller) {
+      const send = (event: string, data: unknown) => {
+        controller.enqueue(encoder.encode(JSON.stringify({ event, data }) + '\n'));
+      };
+
+      try {
+        const result = await runCreativeDirector(
+          {
+            brandUrl: body.brandUrl,
+            productUrl: body.productUrl,
+            productText: body.productText,
+            productName: body.productName,
+            platform: body.platform,
+            format: body.format,
+            budgetCredits: budget,
+            requireStepApproval: false,
+            userId: uid,
+          },
+          async (step: DirectorStep<unknown>, current: DirectorResult) => {
+            // Send step update after each step transition
+            send('step', {
+              name: step.name,
+              status: step.status,
+              creditsSpent: step.creditsSpent,
+              error: step.error,
+              totalCreditsSpent: current.totalCreditsSpent,
+              budgetCredits: current.budgetCredits,
+            });
+          },
+        );
+
+        // Refund unused credits
+        const unused = budget - result.totalCreditsSpent;
+        if (unused > 0) await refundSync(uid, unused, 'creative:director:refund');
+
+        // Send final result
+        send('complete', {
+          steps: result.steps,
+          brief: result.brief,
+          hooks: result.hooks,
+          angles: result.angles,
+          bestCombination: result.bestCombination,
+          variants: result.variants,
+          totalCreditsSpent: result.totalCreditsSpent,
+          budgetCredits: result.budgetCredits,
+          assetPackageId: result.assetPackageId,
+        });
+      } catch (e) {
+        await refundSync(uid, budget, 'creative:director:failed');
+        console.error('[creative/director] stream error:', String(e));
+        send('error', { error: 'director_failed', detail: String(e) });
+      } finally {
+        controller.close();
+      }
+    },
+  });
+
+  return new Response(stream, {
+    headers: {
+      'Content-Type': 'application/x-ndjson',
+      'Cache-Control': 'no-cache',
+      'Connection': 'keep-alive',
+    },
+  });
 }
 
 export const POST = withAtlas(__byokPOST);

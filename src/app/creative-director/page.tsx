@@ -51,11 +51,15 @@ export default function CreativeDirectorPage() {
   const [step, setStep] = useState<'idle' | 'loading' | 'done' | 'error'>('idle');
   const [result, setResult] = useState<DirectorResult | null>(null);
   const [error, setError] = useState('');
+  const [liveSteps, setLiveSteps] = useState<DirectorStep[]>([]);
+  const [liveCredits, setLiveCredits] = useState(0);
 
   const run = useCallback(async () => {
     if (!session?.user) { setAuthOpen(true); return; }
     if (!productUrl.trim() && !productText.trim()) return;
     setStep('loading'); setError(''); setResult(null);
+    setLiveSteps([]); setLiveCredits(0);
+
     try {
       const res = await fetch('/api/creative/director', {
         method: 'POST',
@@ -69,9 +73,61 @@ export default function CreativeDirectorPage() {
           budgetCredits: budget,
         }),
       });
-      const j = await res.json();
-      if (!res.ok) throw new Error(j.error || 'director_failed');
-      setResult(j.result as DirectorResult);
+
+      if (!res.ok) {
+        const j = await res.json().catch(() => ({}));
+        throw new Error(j.error || 'director_failed');
+      }
+
+      // Stream NDJSON response for real-time step updates
+      const reader = res.body?.getReader();
+      if (!reader) throw new Error('no_stream');
+
+      const decoder = new TextDecoder();
+      let buffer = '';
+      let finalResult: DirectorResult | null = null;
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split('\n');
+        buffer = lines.pop() || '';
+        for (const line of lines) {
+          if (!line.trim()) continue;
+          try {
+            const msg = JSON.parse(line);
+            if (msg.event === 'step') {
+              const s = msg.data as DirectorStep;
+              setLiveSteps((prev) => {
+                const idx = prev.findIndex((p) => p.name === s.name);
+                if (idx >= 0) {
+                  const next = [...prev];
+                  next[idx] = s;
+                  return next;
+                }
+                return [...prev, s];
+              });
+              if (msg.data.totalCreditsSpent !== undefined) {
+                setLiveCredits(msg.data.totalCreditsSpent);
+              }
+            } else if (msg.event === 'complete') {
+              finalResult = msg.data as DirectorResult;
+            } else if (msg.event === 'error') {
+              throw new Error(msg.data.error || 'director_failed');
+            }
+          } catch (parseErr) {
+            if (parseErr instanceof Error && parseErr.message !== 'Unexpected end of JSON input') {
+              throw parseErr;
+            }
+          }
+        }
+      }
+
+      if (finalResult) {
+        setResult(finalResult);
+        setLiveSteps(finalResult.steps);
+      }
       setStep('done');
     } catch (e) {
       setError(String(e instanceof Error ? e.message : e));
@@ -94,19 +150,18 @@ export default function CreativeDirectorPage() {
       <div className="mx-auto max-w-4xl px-4 py-6 sm:py-8">
         <h1 className="text-2xl font-bold text-fg sm:text-3xl">
           <Sparkles className="mr-2 inline h-7 w-7 text-brand-accent" />
-          Creative Director
+          {t('director.title')}
         </h1>
         <p className="mt-2 text-sm text-fg-faint">
-          Autonomous agent that runs the full creative pipeline: extract → brief → hooks → angles → scripts → score → storyboard → variants.
-          Budget-constrained with automatic best-pick selection.
+          {t('director.subtitle')}
         </p>
 
         {/* Input */}
         <section className="mt-6 rounded-2xl border border-line bg-surface p-5">
-          <h2 className="text-sm font-bold text-fg">Input</h2>
+          <h2 className="text-sm font-bold text-fg">{t('director.input')}</h2>
           <div className="mt-4 grid gap-4 sm:grid-cols-2">
             <div>
-              <label className="text-xs font-medium text-fg-faint" htmlFor="product-url">Product URL (optional)</label>
+              <label className="text-xs font-medium text-fg-faint" htmlFor="product-url">{t('director.productUrl')}</label>
               <input
                 id="product-url"
                 type="url"
@@ -117,7 +172,7 @@ export default function CreativeDirectorPage() {
               />
             </div>
             <div>
-              <label className="text-xs font-medium text-fg-faint" htmlFor="brand-url">Brand URL (optional)</label>
+              <label className="text-xs font-medium text-fg-faint" htmlFor="brand-url">{t('director.brandUrl')}</label>
               <input
                 id="brand-url"
                 type="url"
@@ -128,7 +183,7 @@ export default function CreativeDirectorPage() {
               />
             </div>
             <div className="sm:col-span-2">
-              <label className="text-xs font-medium text-fg-faint" htmlFor="product-text">Or paste product description</label>
+              <label className="text-xs font-medium text-fg-faint" htmlFor="product-text">{t('director.productDesc')}</label>
               <textarea
                 id="product-text"
                 value={productText}
@@ -139,7 +194,7 @@ export default function CreativeDirectorPage() {
               />
             </div>
             <div>
-              <label className="text-xs font-medium text-fg-faint" htmlFor="product-name">Product name</label>
+              <label className="text-xs font-medium text-fg-faint" htmlFor="product-name">{t('director.productName')}</label>
               <input
                 id="product-name"
                 type="text"
@@ -150,7 +205,7 @@ export default function CreativeDirectorPage() {
               />
             </div>
             <div>
-              <label className="text-xs font-medium text-fg-faint" htmlFor="platform">Platform</label>
+              <label className="text-xs font-medium text-fg-faint" htmlFor="platform">{t('director.platform')}</label>
               <select
                 id="platform"
                 value={platform}
@@ -164,7 +219,7 @@ export default function CreativeDirectorPage() {
               </select>
             </div>
             <div>
-              <label className="text-xs font-medium text-fg-faint" htmlFor="budget">Credit budget: {budget}</label>
+              <label className="text-xs font-medium text-fg-faint" htmlFor="budget">{t('director.creditBudget', { budget })}</label>
               <input
                 id="budget"
                 type="range"
@@ -184,7 +239,7 @@ export default function CreativeDirectorPage() {
             style={{ background: '#0064d9' }}
           >
             {step === 'loading' ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
-            {step === 'loading' ? 'Running pipeline...' : `Run Creative Director (${budget} credits)`}
+            {step === 'loading' ? t('director.running') : t('director.run', { budget })}
           </button>
         </section>
 
@@ -196,12 +251,14 @@ export default function CreativeDirectorPage() {
           </div>
         )}
 
-        {/* Steps progress */}
-        {result && (
+        {/* Steps progress — live during loading, final when done */}
+        {(liveSteps.length > 0 || result) && (
           <section className="mt-6 rounded-2xl border border-line bg-surface p-5">
-            <h2 className="text-sm font-bold text-fg">Pipeline Steps</h2>
+            <h2 className="text-sm font-bold text-fg">
+              {step === 'loading' ? t('director.pipelineProgress') : t('director.pipelineSteps')}
+            </h2>
             <div className="mt-3 space-y-2">
-              {result.steps.map((s, i) => (
+              {(step === 'loading' ? liveSteps : result?.steps || []).map((s, i) => (
                 <div key={i} className="flex items-center gap-3 text-xs">
                   {stepIcon(s.status)}
                   <span className="font-medium text-fg">{s.name}</span>
@@ -212,7 +269,7 @@ export default function CreativeDirectorPage() {
             </div>
             <div className="mt-3 flex items-center gap-2 text-xs text-fg-faint">
               <Coins className="h-3 w-3" />
-              Spent: {result.totalCreditsSpent} / {result.budgetCredits} credits
+              {t('director.spent', { spent: step === 'loading' ? liveCredits : result?.totalCreditsSpent || 0, budget: result?.budgetCredits || budget })}
             </div>
           </section>
         )}
@@ -220,15 +277,15 @@ export default function CreativeDirectorPage() {
         {/* Brief */}
         {result?.brief && (
           <section className="mt-4 rounded-2xl border border-line bg-surface p-5">
-            <h2 className="flex items-center gap-2 text-sm font-bold text-fg"><FileText className="h-4 w-4 text-brand-accent" /> Brief</h2>
+            <h2 className="flex items-center gap-2 text-sm font-bold text-fg"><FileText className="h-4 w-4 text-brand-accent" /> {t('director.brief')}</h2>
             <div className="mt-3 grid gap-2 text-xs sm:grid-cols-2">
-              <div><span className="text-fg-faint">Product:</span> <span className="text-fg">{result.brief.product}</span></div>
-              <div><span className="text-fg-faint">Platform:</span> <span className="text-fg">{result.brief.platform}</span></div>
-              <div><span className="text-fg-faint">Format:</span> <span className="text-fg">{result.brief.format}</span></div>
-              <div><span className="text-fg-faint">Audience:</span> <span className="text-fg">{result.brief.targetAudience}</span></div>
-              <div className="sm:col-span-2"><span className="text-fg-faint">Key message:</span> <span className="text-fg">{result.brief.keyMessage}</span></div>
-              <div><span className="text-fg-faint">Tone:</span> <span className="text-fg">{result.brief.tone}</span></div>
-              <div><span className="text-fg-faint">CTA:</span> <span className="text-fg">{result.brief.cta}</span></div>
+              <div><span className="text-fg-faint">{t('director.briefProduct')}</span> <span className="text-fg">{result.brief.product}</span></div>
+              <div><span className="text-fg-faint">{t('director.briefPlatform')}</span> <span className="text-fg">{result.brief.platform}</span></div>
+              <div><span className="text-fg-faint">{t('director.briefFormat')}</span> <span className="text-fg">{result.brief.format}</span></div>
+              <div><span className="text-fg-faint">{t('director.briefAudience')}</span> <span className="text-fg">{result.brief.targetAudience}</span></div>
+              <div className="sm:col-span-2"><span className="text-fg-faint">{t('director.briefKeyMessage')}</span> <span className="text-fg">{result.brief.keyMessage}</span></div>
+              <div><span className="text-fg-faint">{t('director.briefTone')}</span> <span className="text-fg">{result.brief.tone}</span></div>
+              <div><span className="text-fg-faint">{t('director.briefCta')}</span> <span className="text-fg">{result.brief.cta}</span></div>
             </div>
           </section>
         )}
@@ -236,7 +293,7 @@ export default function CreativeDirectorPage() {
         {/* Hooks */}
         {result?.hooks && result.hooks.length > 0 && (
           <section className="mt-4 rounded-2xl border border-line bg-surface p-5">
-            <h2 className="flex items-center gap-2 text-sm font-bold text-fg"><Fish className="h-4 w-4 text-brand-accent" /> Hooks</h2>
+            <h2 className="flex items-center gap-2 text-sm font-bold text-fg"><Fish className="h-4 w-4 text-brand-accent" /> {t('director.hooks')}</h2>
             <div className="mt-3 space-y-2">
               {result.hooks.map((h, i) => (
                 <div key={i} className="rounded-xl border border-line bg-app p-3 text-xs">
@@ -253,19 +310,19 @@ export default function CreativeDirectorPage() {
         {result?.bestCombination && (
           <section className="mt-4 rounded-2xl border-2 border-brand-accent/30 bg-surface p-5">
             <h2 className="flex items-center gap-2 text-sm font-bold text-fg">
-              <TrendingUp className="h-4 w-4 text-success" /> Best Combination (Score: {result.bestCombination.score.overall}/10)
+              <TrendingUp className="h-4 w-4 text-success" /> {t('director.bestCombination', { score: result.bestCombination.score.overall })}
             </h2>
             <div className="mt-3 space-y-3 text-xs">
               <div className="rounded-xl bg-app p-3">
-                <span className="font-bold text-fg">Angle:</span> <span className="text-fg">{result.bestCombination.angle.name}</span>
+                <span className="font-bold text-fg">{t('director.angle')}</span> <span className="text-fg">{result.bestCombination.angle.name}</span>
                 <p className="mt-1 text-fg-faint">{result.bestCombination.angle.description}</p>
               </div>
               <div className="rounded-xl bg-app p-3">
-                <span className="font-bold text-fg">Hook:</span> <span className="text-fg">{result.bestCombination.hook.hook}</span>
+                <span className="font-bold text-fg">{t('director.hook')}</span> <span className="text-fg">{result.bestCombination.hook.hook}</span>
               </div>
               {result.bestCombination.script.scenes && (
                 <div className="rounded-xl bg-app p-3">
-                  <span className="font-bold text-fg">Script scenes:</span>
+                  <span className="font-bold text-fg">{t('director.scriptScenes')}</span>
                   <div className="mt-1 space-y-1">
                     {result.bestCombination.script.scenes.map((s, i) => (
                       <div key={i} className="text-fg-faint">
@@ -276,18 +333,18 @@ export default function CreativeDirectorPage() {
                 </div>
               )}
               <div className="rounded-xl bg-app p-3">
-                <span className="font-bold text-fg">Score breakdown:</span>
+                <span className="font-bold text-fg">{t('director.scoreBreakdown')}</span>
                 <div className="mt-1 grid grid-cols-2 gap-1 text-fg-faint">
-                  <span>Hook: {result.bestCombination.score.hookStrength}/10</span>
-                  <span>Clarity: {result.bestCombination.score.clarity}/10</span>
-                  <span>Emotion: {result.bestCombination.score.emotionalImpact}/10</span>
-                  <span>CTA: {result.bestCombination.score.ctaStrength}/10</span>
+                  <span>{t('director.scoreHook')} {result.bestCombination.score.hookStrength}/10</span>
+                  <span>{t('director.scoreClarity')} {result.bestCombination.score.clarity}/10</span>
+                  <span>{t('director.scoreEmotion')} {result.bestCombination.score.emotionalImpact}/10</span>
+                  <span>{t('director.scoreCta')} {result.bestCombination.score.ctaStrength}/10</span>
                 </div>
                 {result.bestCombination.score.notes && <p className="mt-1 text-fg-faint">{result.bestCombination.score.notes}</p>}
               </div>
             </div>
             <Link href="/creative-studio" className="mt-3 flex items-center gap-1 text-xs font-medium text-brand-accent hover:underline">
-              <Clapperboard className="h-3 w-3" /> Open in Creative Studio <ArrowRight className="h-3 w-3" />
+              <Clapperboard className="h-3 w-3" /> {t('director.openInStudio')} <ArrowRight className="h-3 w-3" />
             </Link>
           </section>
         )}
@@ -295,7 +352,7 @@ export default function CreativeDirectorPage() {
         {/* Variants */}
         {result?.variants && result.variants.length > 0 && (
           <section className="mt-4 rounded-2xl border border-line bg-surface p-5">
-            <h2 className="flex items-center gap-2 text-sm font-bold text-fg"><Sparkles className="h-4 w-4 text-brand-accent" /> A/B Variants</h2>
+            <h2 className="flex items-center gap-2 text-sm font-bold text-fg"><Sparkles className="h-4 w-4 text-brand-accent" /> {t('director.variants')}</h2>
             <div className="mt-3 space-y-2">
               {result.variants.map((v) => (
                 <div key={v.id} className="rounded-xl border border-line bg-app p-3 text-xs">

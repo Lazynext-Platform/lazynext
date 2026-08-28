@@ -22,6 +22,7 @@ import {
   generateStoryboard, scoreCreative, generateVariants, CREATIVE_COSTS,
 } from './intelligence';
 import { getLearningsContext } from './learning';
+import { persistCreativePackage } from './asset-persist';
 import { startWorkflow, recordStep, completeWorkflow, failWorkflow } from '@/lib/workflow/engine';
 import type {
   CreativeBrief, HookCandidate, CreativeAngle, ScriptCandidate,
@@ -69,6 +70,8 @@ export interface DirectorResult {
   variants?: CreativeVariant[];
   totalCreditsSpent: number;
   budgetCredits: number;
+  /** ID of the persisted Asset package (if userId was provided). */
+  assetPackageId?: string;
 }
 
 type StepCallback = (step: DirectorStep<unknown>, result: DirectorResult) => Promise<boolean | void>;
@@ -244,6 +247,20 @@ export async function runCreativeDirector(
       bestScore: best.score.overall,
       variantsCount: result.variants?.length || 0,
     }, Date.now() - startedAt).catch(() => {});
+  }
+
+  // Persist the creative package as Asset records (non-fatal)
+  if (input.userId) {
+    const { packageId } = await persistCreativePackage(input.userId, {
+      brief: brief as unknown as Record<string, unknown>,
+      hooks: hooks as unknown as Record<string, unknown>,
+      angles: angles as unknown as Record<string, unknown>,
+      bestCombination: best as unknown as Record<string, unknown>,
+      variants: result.variants as unknown as Record<string, unknown>,
+      totalCreditsSpent: spent,
+      budgetCredits: budget,
+    }).catch(() => ({ packageId: null, childIds: [] }));
+    result.assetPackageId = packageId ?? undefined;
   }
 
   return result;
