@@ -10,6 +10,7 @@ import {
 import { useI18n } from '@/i18n/provider';
 import { AuthModal } from '@/components/AuthModal';
 import { VisualTimeline } from '@/components/editor/VisualTimeline';
+import { ConversationalEditor } from '@/components/ConversationalEditor';
 import { useKeyboardShortcuts } from '@/lib/use-keyboard-shortcuts';
 import { useUndoRedo } from '@/lib/editor/use-undo-redo';
 import type { Timeline as TimelineModel, Track as TrackModel, Clip as ClipModel } from '@/lib/editor/types';
@@ -69,7 +70,7 @@ export default function EditorPage() {
   const searchParams = useSearchParams();
   const [authOpen, setAuthOpen] = useState(false);
 
-  const [tab, setTab] = useState<'roughCut' | 'skills' | 'timeline'>('roughCut');
+  const [tab, setTab] = useState<'roughCut' | 'skills' | 'timeline' | 'conversational'>('roughCut');
 
   // Rough cut state — initialize from URL query param if present (e.g., from Creative Director)
   const [transcript, setTranscript] = useState(() => {
@@ -592,6 +593,17 @@ export default function EditorPage() {
           >
             <Film className="inline w-4 h-4 mr-1.5" aria-hidden="true" />
             {t('editor.tabTimeline')}
+          </button>
+          <button
+            role="tab"
+            aria-selected={tab === 'conversational'}
+            onClick={() => setTab('conversational')}
+            className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
+              tab === 'conversational' ? 'border-brand-accent text-brand-accent' : 'border-transparent text-fg-muted hover:text-fg'
+            }`}
+          >
+            <Sparkles className="inline w-4 h-4 mr-1.5" aria-hidden="true" />
+            {t('editorChat.title')}
           </button>
         </div>
 
@@ -1413,6 +1425,13 @@ export default function EditorPage() {
       )}
 
       <AuthModal open={authOpen} onClose={() => setAuthOpen(false)} />
+
+      {tab === 'conversational' && (
+        <ConversationalEditor
+          timeline={timeline as TimelineModel | null}
+          onTimelineUpdate={(tl) => setTimeline(tl as unknown as Record<string, unknown>)}
+        />
+      )}
     </main>
   );
 }

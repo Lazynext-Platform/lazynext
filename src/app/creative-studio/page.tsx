@@ -18,6 +18,7 @@ import { AutoVariantsModal } from '@/components/AutoVariantsModal';
 import { RegenerationModal } from '@/components/RegenerationModal';
 import { MultiPlatformAdapterModal } from '@/components/MultiPlatformAdapterModal';
 import { BrandVoiceCheckerModal } from '@/components/BrandVoiceCheckerModal';
+import { UrlToBriefModal } from '@/components/UrlToBriefModal';
 
 // ── Types matching the backend ──
 type BrandExtraction = {
@@ -156,6 +157,7 @@ export default function CreativeStudioPage() {
   const [regenElement, setRegenElement] = useState<Record<string, unknown> | null>(null);
   const [adapterOpen, setAdapterOpen] = useState(false);
   const [brandCheckOpen, setBrandCheckOpen] = useState(false);
+  const [urlToBriefOpen, setUrlToBriefOpen] = useState(false);
 
   // Hooks state
   const [hooksStep, setHooksStep] = useState<Step>('idle');
@@ -1434,6 +1436,13 @@ export default function CreativeStudioPage() {
                 <Sparkles className="h-4 w-4" />
                 {t('briefAssistant.button')}
               </button>
+              <button
+                onClick={() => setUrlToBriefOpen(true)}
+                className="flex items-center gap-1.5 rounded-lg border border-brand-accent/30 bg-brand-accent/10 px-4 py-2 text-sm font-bold text-brand-accent"
+              >
+                <Link2 className="h-4 w-4" />
+                {t('urlToBrief.button')}
+              </button>
             </div>
             {briefStep === 'error' && <ErrorNote text={briefError} />}
             {briefStep === 'done' && brief && (
@@ -1996,6 +2005,12 @@ export default function CreativeStudioPage() {
         angle={selectedAngle}
         script={script}
         brandKitId={brandKitId}
+      />
+
+      <UrlToBriefModal
+        open={urlToBriefOpen}
+        onClose={() => setUrlToBriefOpen(false)}
+        onApply={(b) => { setBrief(b as typeof brief); }}
       />
     </div>
   );

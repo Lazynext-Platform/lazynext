@@ -6,6 +6,8 @@ export type WebhookEvent =
   | 'creative.scored'
   | 'campaign.deployed'
   | 'campaign.metrics_updated'
+  | 'campaign.budget_updated'
+  | 'campaign.report_generated'
   | 'pipeline.completed'
   | 'performance.recorded';
 

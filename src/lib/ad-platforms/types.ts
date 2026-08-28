@@ -69,6 +69,12 @@ export interface AdPlatformProvider {
   pauseCampaign(campaignId: string): Promise<void>;
   /** Get performance metrics for a campaign. */
   getMetrics(campaignId: string): Promise<CampaignMetrics>;
+  /** Update a campaign's daily budget (dry-run returns a simulated result). */
+  updateBudget?(id: string, budgetDaily: number, opts?: PublishOptions): Promise<AdCampaignResult>;
+  /** Get a detailed performance report (demographics, placements, creatives). */
+  getReport?(id: string, opts?: PublishOptions): Promise<CampaignReport>;
+  /** Get the current spend for a campaign. */
+  getSpend?(id: string, opts?: PublishOptions): Promise<{ spend: number; currency: string }>;
 }
 
 export interface PublishOptions {
@@ -86,4 +92,51 @@ export interface DryRunResult {
   estimatedCpc: number;
   estimatedDailySpend: number;
   warnings: string[];
+}
+
+/** Demographics breakdown row. */
+export interface DemographicBreakdown {
+  age: string;
+  gender: string;
+  impressions: number;
+  clicks: number;
+  conversions: number;
+}
+
+/** Placement breakdown row. */
+export interface PlacementBreakdown {
+  placement: string;
+  impressions: number;
+  clicks: number;
+  spend: number;
+}
+
+/** Creative breakdown row. */
+export interface CreativeBreakdown {
+  creativeId: string;
+  impressions: number;
+  clicks: number;
+  ctr: number;
+  conversions: number;
+}
+
+/** Time-series datapoint. */
+export interface TimeSeriesPoint {
+  date: string;
+  impressions: number;
+  clicks: number;
+  spend: number;
+  conversions: number;
+}
+
+/** Detailed performance report for a campaign. */
+export interface CampaignReport {
+  campaignId: string;
+  platform: string;
+  summary: CampaignMetrics;
+  demographics: DemographicBreakdown[];
+  placements: PlacementBreakdown[];
+  creativeBreakdown: CreativeBreakdown[];
+  timeSeries: TimeSeriesPoint[];
+  recommendations: string[];
 }

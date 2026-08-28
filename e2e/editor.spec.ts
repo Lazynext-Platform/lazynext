@@ -16,10 +16,10 @@ test.describe('Editor page (/editor)', () => {
     await expect(page.locator('h1')).toHaveCount(1);
   });
 
-  test('has three tabs: Rough Cut, Skills, Timeline', async ({ page }) => {
+  test('has four tabs: Rough Cut, Skills, Timeline, Conversational', async ({ page }) => {
     await page.goto('/editor');
     const tabs = page.locator('[role="tab"]');
-    await expect(tabs).toHaveCount(3);
+    await expect(tabs).toHaveCount(4);
   });
 
   test('rough cut tab is active by default', async ({ page }) => {

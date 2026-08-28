@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { useI18n } from '@/i18n/provider';
 import { AuthModal } from '@/components/AuthModal';
+import { DeepReferenceAnalysisModal } from '@/components/DeepReferenceAnalysisModal';
 
 type StepStatus = 'pending' | 'running' | 'completed' | 'failed' | 'awaiting_approval';
 
@@ -41,6 +42,7 @@ export default function CreativeDirectorPage() {
   const { data: session } = useSession();
   const { t } = useI18n();
   const [authOpen, setAuthOpen] = useState(false);
+  const [deepAnalysisOpen, setDeepAnalysisOpen] = useState(false);
 
   const [productUrl, setProductUrl] = useState('');
   const [brandUrl, setBrandUrl] = useState('');
@@ -738,6 +740,17 @@ export default function CreativeDirectorPage() {
           </div>
         )}
       </div>
+
+      <button
+        onClick={() => setDeepAnalysisOpen(true)}
+        className="flex items-center gap-1.5 rounded-lg border border-brand-accent/30 bg-brand-accent/10 px-4 py-2 text-sm font-bold text-brand-accent"
+      >
+        {t('deepAnalysis.button')}
+      </button>
+      <DeepReferenceAnalysisModal
+        open={deepAnalysisOpen}
+        onClose={() => setDeepAnalysisOpen(false)}
+      />
 
       <AuthModal open={authOpen} onClose={() => setAuthOpen(false)} />
     </div>

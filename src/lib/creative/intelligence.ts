@@ -19,12 +19,16 @@ import type {
   ScriptCandidate,
   StoryboardCandidate,
   ReferenceCreativeAnalysis,
+  DeepReferenceAnalysis,
+  SceneBreakdown,
+  HookAnalysis,
+  PacingAnalysis,
   CreativeScore,
   CreativeVariant,
 } from './types';
 import {
   BRIEF_SYS, HOOKS_SYS, ANGLES_SYS, SCRIPT_SYS, STORYBOARD_SYS, REFERENCE_ANALYSIS_SYS, SCORE_SYS,
-  REFINE_SYS, REMIX_SYS,
+  REFINE_SYS, REMIX_SYS, DEEP_REFERENCE_ANALYSIS_SYS,
 } from './prompts';
 
 // ── Credit costs per creative step ──
@@ -35,6 +39,7 @@ export const CREATIVE_COSTS = {
   script: 3,
   storyboard: 3,
   referenceAnalysis: 5,
+  deepReferenceAnalysis: 8,
   score: 2,
   variants: 3,
   refine: 2,
@@ -383,6 +388,149 @@ Output the reference creative analysis JSON now.`;
     persuasionMechanisms: asStrArr(j.persuasionMechanisms),
     adaptationRecommendations: asStrArr(j.adaptationRecommendations),
     originalityConstraints: asStrArr(j.originalityConstraints),
+  };
+}
+
+// ── Deep reference creative analysis (RemixKit #16) ──
+
+/**
+ * Run a deep, structured breakdown of a reference video: scene detection, hook
+ * extraction, pacing analysis, emotional arc, persuasion timeline, remix brief,
+ * and performance prediction. The existing basic analysis is merged in as
+ * `basicAnalysis` so callers get a single complete object.
+ *
+ * Cost: CREATIVE_COSTS.deepReferenceAnalysis (8 credits).
+ */
+export async function analyzeReferenceDeep(
+  sourceUrl: string,
+  transcript?: string,
+  planTier?: PlanTier,
+): Promise<DeepReferenceAnalysis> {
+  // Run the basic analysis and the deep analysis in parallel to save latency.
+  const [basicAnalysis, deepRaw] = await Promise.all([
+    analyzeReferenceCreative(sourceUrl, transcript, planTier),
+    (async () => {
+      const userPrompt = `Perform a deep creative analysis of this reference ad.
+
+Source: ${sourceUrl}
+${transcript ? `Transcript:\n${transcript.slice(0, 5000)}\n` : ''}
+
+Break it down into scenes, analyze the hook, map pacing, trace the emotional arc, identify persuasion techniques, generate a remix brief, and predict performance. Output the deep analysis JSON now.`;
+
+      return atlasChat(
+        [{ role: 'system', content: DEEP_REFERENCE_ANALYSIS_SYS }, { role: 'user', content: userPrompt }],
+        resolveCreativeModel(planTier), CREATIVE_MAX_TOKENS, CREATIVE_TIMEOUT_MS,
+      );
+    })(),
+  ]);
+
+  const j = extractJson(deepRaw);
+
+  // ── Scenes ──
+  const scenes: SceneBreakdown[] = (Array.isArray(j.scenes) ? j.scenes : []).slice(0, 12).map((s, idx) => {
+    const o = (s && typeof s === 'object' ? s : {}) as Record<string, unknown>;
+    const tr = (o.timeRange && typeof o.timeRange === 'object' ? o.timeRange : {}) as Record<string, unknown>;
+    return {
+      sceneNumber: asNum(o.sceneNumber, idx + 1, 1, 99),
+      timeRange: {
+        startSec: Math.max(0, asNum(tr.startSec, 0, 0, 600)),
+        endSec: asNum(tr.endSec, 0, 0, 600),
+      },
+      shotType: asStr(o.shotType, 'medium'),
+      description: asStr(o.description),
+      emotionScore: asNum(o.emotionScore, 50, 0, 100),
+      engagementScore: asNum(o.engagementScore, 50, 0, 100),
+      visualElements: asStrArr(o.visualElements),
+      audioElements: asStrArr(o.audioElements),
+      textElements: asStrArr(o.textElements),
+    };
+  });
+
+  // ── Hook analysis ──
+  const ha = (j.hookAnalysis && typeof j.hookAnalysis === 'object' ? j.hookAnalysis : {}) as Record<string, unknown>;
+  const haTiming = (ha.hookTiming && typeof ha.hookTiming === 'object' ? ha.hookTiming : {}) as Record<string, unknown>;
+  const hookAnalysis: HookAnalysis = {
+    hookType: asStr(ha.hookType, 'visual'),
+    hookText: asStr(ha.hookText),
+    hookTiming: {
+      startSec: Math.max(0, asNum(haTiming.startSec, 0, 0, 30)),
+      endSec: asNum(haTiming.endSec, 3, 0, 30),
+    },
+    effectivenessScore: asNum(ha.effectivenessScore, 50, 0, 100),
+    psychologicalTrigger: asStr(ha.psychologicalTrigger),
+    audienceAttentionFactor: asStr(ha.audienceAttentionFactor),
+    variantSuggestions: asStrArr(ha.variantSuggestions),
+  };
+
+  // ── Pacing ──
+  const p = (j.pacing && typeof j.pacing === 'object' ? j.pacing : {}) as Record<string, unknown>;
+  const paceChanges = (Array.isArray(p.paceChanges) ? p.paceChanges : []).slice(0, 20).map((c) => {
+    const o = (c && typeof c === 'object' ? c : {}) as Record<string, unknown>;
+    return { timeSec: Math.max(0, asNum(o.timeSec, 0, 0, 600)), change: asStr(o.change) };
+  });
+  const energyCurve = (Array.isArray(p.energyCurve) ? p.energyCurve : []).slice(0, 30).map((e) => {
+    const o = (e && typeof e === 'object' ? e : {}) as Record<string, unknown>;
+    return { timeSec: Math.max(0, asNum(o.timeSec, 0, 0, 600)), energy: asNum(o.energy, 50, 0, 100) };
+  });
+  const pacing: PacingAnalysis = {
+    overallPace: asStr(p.overallPace, 'medium'),
+    averageShotDuration: Math.max(0, asNum(p.averageShotDuration, 3, 0, 60)),
+    shotCount: asNum(p.shotCount, scenes.length || 1, 1, 99),
+    paceChanges,
+    energyCurve,
+    recommendedPace: asStr(p.recommendedPace),
+  };
+
+  // ── Emotional arc ──
+  const emotionalArc = (Array.isArray(j.emotionalArc) ? j.emotionalArc : []).slice(0, 30).map((e) => {
+    const o = (e && typeof e === 'object' ? e : {}) as Record<string, unknown>;
+    return {
+      timeSec: Math.max(0, asNum(o.timeSec, 0, 0, 600)),
+      emotion: asStr(o.emotion),
+      intensity: asNum(o.intensity, 50, 0, 100),
+    };
+  });
+
+  // ── Persuasion timeline ──
+  const persuasionTimeline = (Array.isArray(j.persuasionTimeline) ? j.persuasionTimeline : []).slice(0, 30).map((p2) => {
+    const o = (p2 && typeof p2 === 'object' ? p2 : {}) as Record<string, unknown>;
+    return {
+      timeSec: Math.max(0, asNum(o.timeSec, 0, 0, 600)),
+      technique: asStr(o.technique),
+      description: asStr(o.description),
+    };
+  });
+
+  // ── Remix brief ──
+  const rb = (j.remixBrief && typeof j.remixBrief === 'object' ? j.remixBrief : {}) as Record<string, unknown>;
+  const remixBrief = {
+    preservedElements: asStrArr(rb.preservedElements),
+    adaptedElements: asStrArr(rb.adaptedElements),
+    newElements: asStrArr(rb.newElements),
+    recommendedStructure: asStr(rb.recommendedStructure),
+    differentiationStrategy: asStr(rb.differentiationStrategy),
+  };
+
+  // ── Performance prediction ──
+  const pp = (j.performancePrediction && typeof j.performancePrediction === 'object'
+    ? j.performancePrediction : {}) as Record<string, unknown>;
+  const hookStrength = asNum(pp.hookStrength, 50, 0, 100);
+  const storyFlow = asNum(pp.storyFlow, 50, 0, 100);
+  const ctaClarity = asNum(pp.ctaClarity, 50, 0, 100);
+  const brandAlignment = asNum(pp.brandAlignment, 50, 0, 100);
+  const overallScore = asNum(pp.overallScore,
+    Math.round((hookStrength + storyFlow + ctaClarity + brandAlignment) / 4), 0, 100);
+  const performancePrediction = { hookStrength, storyFlow, ctaClarity, brandAlignment, overallScore };
+
+  return {
+    basicAnalysis,
+    scenes,
+    hookAnalysis,
+    pacing,
+    emotionalArc,
+    persuasionTimeline,
+    remixBrief,
+    performancePrediction,
   };
 }
 

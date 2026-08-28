@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { useI18n } from '@/i18n/provider';
 import { AuthModal } from '@/components/AuthModal';
+import { MetaAdsDashboard } from '@/components/MetaAdsDashboard';
 
 type Campaign = {
   id: string;
@@ -293,6 +294,12 @@ export default function AdsPage() {
             </div>
           )}
         </section>
+
+        {session?.user && (
+          <section className="mt-8">
+            <MetaAdsDashboard />
+          </section>
+        )}
       </div>
 
       <AuthModal open={authOpen} onClose={() => setAuthOpen(false)} />

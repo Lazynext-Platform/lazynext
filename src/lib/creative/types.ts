@@ -144,3 +144,63 @@ export interface ReferenceCreativeAnalysis {
   adaptationRecommendations: string[];
   originalityConstraints: string[]; // what NOT to copy
 }
+
+// ── Deep reference analysis (RemixKit #16: evidence → analysis → remix brief) ──
+
+/** A single scene breakdown from a deep reference analysis. */
+export interface SceneBreakdown {
+  sceneNumber: number;
+  timeRange: { startSec: number; endSec: number };
+  shotType: string;
+  description: string;
+  emotionScore: number; // 0-100
+  engagementScore: number; // 0-100
+  visualElements: string[];
+  audioElements: string[];
+  textElements: string[];
+}
+
+/** Hook analysis extracted from a reference video. */
+export interface HookAnalysis {
+  hookType: string; // question, shock, story, statistic, visual, contrast
+  hookText: string;
+  hookTiming: { startSec: number; endSec: number };
+  effectivenessScore: number; // 0-100
+  psychologicalTrigger: string;
+  audienceAttentionFactor: string;
+  variantSuggestions: string[];
+}
+
+/** Pacing analysis of a reference video. */
+export interface PacingAnalysis {
+  overallPace: string; // fast, medium, slow
+  averageShotDuration: number;
+  shotCount: number;
+  paceChanges: { timeSec: number; change: string }[];
+  energyCurve: { timeSec: number; energy: number }[]; // 0-100
+  recommendedPace: string;
+}
+
+/** A deep, structured breakdown of a reference video. */
+export interface DeepReferenceAnalysis {
+  basicAnalysis: ReferenceCreativeAnalysis; // existing basic analysis
+  scenes: SceneBreakdown[];
+  hookAnalysis: HookAnalysis;
+  pacing: PacingAnalysis;
+  emotionalArc: { timeSec: number; emotion: string; intensity: number }[];
+  persuasionTimeline: { timeSec: number; technique: string; description: string }[];
+  remixBrief: {
+    preservedElements: string[];
+    adaptedElements: string[];
+    newElements: string[];
+    recommendedStructure: string;
+    differentiationStrategy: string;
+  };
+  performancePrediction: {
+    hookStrength: number;
+    storyFlow: number;
+    ctaClarity: number;
+    brandAlignment: number;
+    overallScore: number;
+  };
+}
