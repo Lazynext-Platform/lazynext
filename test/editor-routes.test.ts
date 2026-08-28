@@ -264,16 +264,28 @@ test('executeTool validates input before execution and returns validation error'
   assert.equal(result.cost, 0);
 });
 
-test('route cost lookup uses the full tool name as key (documents actual behavior)', () => {
-  // The route does:
-  //   const cost = CREATIVE_TOOL_COSTS[toolName as keyof typeof CREATIVE_TOOL_COSTS] || 0;
-  // where `toolName` is the full name (e.g. 'creative.generateBrief').
-  // CREATIVE_TOOL_COSTS keys are short labels ('brief', 'hooks', ...), NOT the
-  // full tool names, so the full-name lookup returns undefined → 0. This test
-  // documents that the route's cost lookup does not match any registered tool.
-  const toolName = 'creative.generateBrief';
-  const cost = CREATIVE_TOOL_COSTS[toolName as keyof typeof CREATIVE_TOOL_COSTS] || 0;
-  assert.equal(cost, 0, 'full tool name is not a key in CREATIVE_TOOL_COSTS');
+test('route uses tool.cost property for cost lookup (fixed)', () => {
+  // The route previously used CREATIVE_TOOL_COSTS[toolName] which was broken
+  // because toolName is the full name (e.g. 'creative.generateBrief') but
+  // the cost map is keyed by short labels ('brief', 'hooks', ...).
+  // The fix uses tool.cost directly. Verify each tool has a positive cost.
+  const toolNames = [
+    'creative.generateBrief',
+    'creative.generateHooks',
+    'creative.generateAngles',
+    'creative.generateScript',
+    'creative.generateStoryboard',
+    'creative.scoreCombination',
+    'creative.generateVariants',
+    'creative.refine',
+    'creative.remix',
+    'creative.analyzeReference',
+  ];
+  for (const name of toolNames) {
+    const tool = getTool(name);
+    assert.ok(tool, `${name} should be registered`);
+    assert.ok(tool!.cost > 0, `${name} should have positive cost, got ${tool!.cost}`);
+  }
 });
 
 test('CREATIVE_TOOL_COSTS lookup returns 0 for an unknown tool name', () => {
@@ -282,10 +294,9 @@ test('CREATIVE_TOOL_COSTS lookup returns 0 for an unknown tool name', () => {
   assert.equal(cost, 0);
 });
 
-test('no registered creative tool name is a direct key in CREATIVE_TOOL_COSTS', () => {
-  // Documents that the route's `CREATIVE_TOOL_COSTS[toolName]` lookup pattern
-  // returns 0 for EVERY registered tool, because the keys are short labels
-  // (brief, hooks, ...) rather than full tool names (creative.generateBrief).
+test('full tool names are NOT direct keys in CREATIVE_TOOL_COSTS (historical bug context)', () => {
+  // Documents why the route was originally broken: the cost map uses short
+  // labels as keys, not full tool names. The route now uses tool.cost instead.
   const toolNames = [
     'creative.generateBrief',
     'creative.generateHooks',
@@ -300,7 +311,7 @@ test('no registered creative tool name is a direct key in CREATIVE_TOOL_COSTS', 
   ];
   for (const name of toolNames) {
     const cost = CREATIVE_TOOL_COSTS[name as keyof typeof CREATIVE_TOOL_COSTS] || 0;
-    assert.equal(cost, 0, `${name} should not be a direct key (route lookup yields 0)`);
+    assert.equal(cost, 0, `${name} should not be a direct key in CREATIVE_TOOL_COSTS`);
   }
 });
 

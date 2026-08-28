@@ -15,7 +15,7 @@
 10. 4 new E2E tests for Director → Editor flow
 
 ### Verification
-- npm test — 271 unit tests passed
+- npm test — 310 unit tests passed (39 new)
 - npx playwright test — 117 E2E tests passed
 - npx tsc --noEmit — passed
 - npm run lint — passed
