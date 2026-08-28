@@ -1,0 +1,177 @@
+import { withAtlas } from '@/lib/request-context';
+import { NextResponse } from 'next/server';
+import { auth } from '@/../auth';
+import { prisma } from '@/lib/prisma';
+import { deductCredits } from '@/lib/credits';
+import {
+  advancePipeline,
+  pausePipeline,
+  resumePipeline,
+  cancelPipeline,
+  skipStage,
+  retryStage,
+  failStage,
+  PIPELINE_COSTS,
+  type PipelineState,
+} from '@/lib/creative/pipeline';
+
+export const maxDuration = 60;
+
+/** Load a persisted pipeline state (WorkflowRun row) owned by the user. */
+async function loadPipeline(uid: string, id: string): Promise<PipelineState | null> {
+  const run = await prisma.workflowRun.findFirst({
+    where: { id, userId: uid, workflowType: 'creative-pipeline' },
+  });
+  if (!run) return null;
+  try {
+    const state = typeof run.output === 'string' ? JSON.parse(run.output) : run.output;
+    if (state && typeof state === 'object' && 'pipelineId' in state) return state as PipelineState;
+  } catch {
+    /* ignore */
+  }
+  return null;
+}
+
+/** Persist the pipeline state back to its WorkflowRun row. */
+async function savePipeline(state: PipelineState): Promise<void> {
+  try {
+    await prisma.workflowRun.update({
+      where: { id: state.pipelineId },
+      data: {
+        status: state.status,
+        output: JSON.parse(JSON.stringify(state)),
+        completedAt: state.status === 'completed' || state.status === 'failed' ? new Date() : undefined,
+      },
+    });
+  } catch (e) {
+    console.error('[creative/pipeline/[id]] persist failed:', String(e));
+  }
+}
+
+/**
+ * GET /api/creative/pipeline/[id]
+ * Returns the current pipeline state.
+ */
+async function __byokGET(_req: Request, { params }: { params: Promise<{ id: string }> }) {
+  const session = await auth();
+  if (!session?.user?.id) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+  const uid = session.user.id;
+  const { id } = await params;
+
+  const state = await loadPipeline(uid, id);
+  if (!state) return NextResponse.json({ error: 'not_found' }, { status: 404 });
+
+  return NextResponse.json({ state });
+}
+
+/**
+ * POST /api/creative/pipeline/[id]
+ * Body: { action: 'advance' | 'pause' | 'resume' | 'cancel' | 'skip' | 'retry' | 'fail', stage?, error? }
+ *
+ * - advance: complete the current stage and start the next (deducts credits for the next stage).
+ * - pause / resume / cancel: lifecycle control.
+ * - skip: skip a specific stage (body.stage).
+ * - retry: retry a failed stage (body.stage).
+ * - fail: mark a stage as failed (body.stage, body.error).
+ */
+async function __byokPOST(req: Request, { params }: { params: Promise<{ id: string }> }) {
+  const session = await auth();
+  if (!session?.user?.id) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+  const uid = session.user.id;
+  const { id } = await params;
+
+  let state = await loadPipeline(uid, id);
+  if (!state) return NextResponse.json({ error: 'not_found' }, { status: 404 });
+
+  const body = await req.json().catch(() => ({}));
+  const action = String(body.action || '');
+
+  switch (action) {
+    case 'advance': {
+      // Deduct credits for the stage we are about to start (the next pending one).
+      if (state.currentStage && state.status === 'running') {
+        // No-op: current stage already paid for when it started.
+      }
+      const before = state.currentStage;
+      state = advancePipeline(state);
+      // If we advanced to a new running stage, deduct its cost.
+      if (state.currentStage && state.currentStage !== before && state.currentStage !== 'completed') {
+        const cost = PIPELINE_COSTS[state.currentStage] ?? 0;
+        if (cost > 0) {
+          try {
+            await deductCredits(uid, cost, `creative:pipeline:${state.currentStage}`, state.pipelineId);
+          } catch (e) {
+            // Mark the new stage as failed if we can't pay for it.
+            state = failStage(state, state.currentStage, 'insufficient_credits');
+            await savePipeline(state);
+            return NextResponse.json(
+              {
+                error:
+                  e instanceof Error && e.message === 'INSUFFICIENT_CREDITS' ? 'insufficient_credits' : 'charge_failed',
+                state,
+              },
+              { status: 402 },
+            );
+          }
+        }
+      }
+      break;
+    }
+    case 'pause': {
+      state = pausePipeline(state);
+      break;
+    }
+    case 'resume': {
+      state = resumePipeline(state);
+      break;
+    }
+    case 'cancel': {
+      state = cancelPipeline(state);
+      break;
+    }
+    case 'skip': {
+      const stage = String(body.stage || '');
+      if (stage) state = skipStage(state, stage as PipelineState['currentStage'] & string);
+      break;
+    }
+    case 'retry': {
+      const stage = String(body.stage || '');
+      if (stage) {
+        state = retryStage(state, stage as PipelineState['currentStage'] & string);
+        // Re-deduct credits for the retried stage.
+        const cost = PIPELINE_COSTS[stage as keyof typeof PIPELINE_COSTS] ?? 0;
+        if (cost > 0) {
+          try {
+            await deductCredits(uid, cost, `creative:pipeline:${stage}:retry`, state.pipelineId);
+          } catch (e) {
+            state = failStage(state, stage as PipelineState['currentStage'] & string, 'insufficient_credits');
+            await savePipeline(state);
+            return NextResponse.json(
+              {
+                error:
+                  e instanceof Error && e.message === 'INSUFFICIENT_CREDITS' ? 'insufficient_credits' : 'charge_failed',
+                state,
+              },
+              { status: 402 },
+            );
+          }
+        }
+      }
+      break;
+    }
+    case 'fail': {
+      const stage = String(body.stage || state.currentStage || '');
+      const error = String(body.error || 'stage_failed');
+      if (stage) state = failStage(state, stage as PipelineState['currentStage'] & string, error);
+      break;
+    }
+    default:
+      return NextResponse.json({ error: 'invalid_action' }, { status: 400 });
+  }
+
+  await savePipeline(state);
+  return NextResponse.json({ state });
+}
+
+export const GET = withAtlas(__byokGET);
+export const POST = withAtlas(__byokPOST);
