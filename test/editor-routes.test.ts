@@ -697,3 +697,142 @@ test('recommendSkills returns skills sorted by tag count', () => {
   }
 });
 
+// ─────────────────────────────────────────────────────────────────────────────
+// 8. Rough cut skill application: applySkillToPlan, applySkillsToPlan
+// ─────────────────────────────────────────────────────────────────────────────
+
+import {
+  generateRoughCut,
+  applySkillToPlan,
+  applySkillsToPlan,
+  type RoughCutPlan,
+} from '@/lib/editor/transcript-cut';
+
+// Build a sample plan for testing skill application
+const sampleTranscript = {
+  text: 'Hey guys check out this product. It has amazing features. The battery lasts all day. So check it out link in bio.',
+  duration: 20,
+  segments: [
+    { start: 0, end: 4, text: 'Hey guys check out this product.' },
+    { start: 4.5, end: 8, text: 'It has amazing features.' },
+    { start: 8.5, end: 13, text: 'The battery lasts all day.' },
+    { start: 13.5, end: 16, text: 'So check it out link in bio.' },
+  ],
+};
+
+const samplePlan = generateRoughCut(sampleTranscript);
+
+test('sample plan has cuts for skill application tests', () => {
+  assert.ok(samplePlan.cuts.length >= 1, 'sample plan should have at least 1 cut');
+});
+
+test('applySkillToPlan returns edit decisions for all cuts with "throughout" trigger', () => {
+  const decisions = applySkillToPlan(samplePlan, {
+    name: 'Test Skill',
+    steps: [{ order: 1, action: 'caption', trigger: 'throughout', description: 'Add captions', params: { style: 'bold' } }],
+  });
+  assert.equal(decisions.length, samplePlan.cuts.length, 'should have one decision per cut');
+  assert.equal(decisions[0].action, 'caption');
+  assert.equal(decisions[0].params.style, 'bold');
+});
+
+test('applySkillToPlan applies "at hook" trigger to first cut only', () => {
+  const decisions = applySkillToPlan(samplePlan, {
+    name: 'Hook Skill',
+    steps: [{ order: 1, action: 'zoom', trigger: 'at hook', description: 'Zoom on hook', params: {} }],
+  });
+  assert.equal(decisions.length, 1, 'should apply to first cut only');
+  assert.equal(decisions[0].cutIndex, 0);
+});
+
+test('applySkillToPlan applies "at CTA" trigger to last cut only', () => {
+  const decisions = applySkillToPlan(samplePlan, {
+    name: 'CTA Skill',
+    steps: [{ order: 1, action: 'text-overlay', trigger: 'at CTA', description: 'Add CTA overlay', params: {} }],
+  });
+  assert.equal(decisions.length, 1, 'should apply to last cut only');
+  assert.equal(decisions[0].cutIndex, samplePlan.cuts.length - 1);
+});
+
+test('applySkillToPlan applies "on product" trigger to product-related cuts', () => {
+  const decisions = applySkillToPlan(samplePlan, {
+    name: 'Product Skill',
+    steps: [{ order: 1, action: 'zoom', trigger: 'on product closeup', description: 'Zoom on product', params: {} }],
+  });
+  // Should match cuts that mention "product" or "feature"
+  assert.ok(decisions.length >= 1, 'should match at least one product-related cut');
+  for (const d of decisions) {
+    assert.ok(samplePlan.cuts[d.cutIndex].text.toLowerCase().match(/product|feature|demo|show|look/), 'should match product keywords');
+  }
+});
+
+test('applySkillToPlan applies "between" trigger to transitions', () => {
+  const decisions = applySkillToPlan(samplePlan, {
+    name: 'Transition Skill',
+    steps: [{ order: 1, action: 'transition', trigger: 'between features', description: 'Slide transition', params: {} }],
+  });
+  // Should have one decision per gap (cuts.length - 1)
+  assert.equal(decisions.length, Math.max(0, samplePlan.cuts.length - 1));
+});
+
+test('applySkillToPlan handles multiple steps', () => {
+  const decisions = applySkillToPlan(samplePlan, {
+    name: 'Multi-step Skill',
+    steps: [
+      { order: 1, action: 'cut', trigger: 'on every pause', description: 'Remove pauses', params: {} },
+      { order: 2, action: 'zoom', trigger: 'at hook', description: 'Zoom on hook', params: {} },
+      { order: 3, action: 'caption', trigger: 'throughout', description: 'Add captions', params: {} },
+    ],
+  });
+  // Step 1: all cuts, Step 2: first cut, Step 3: all cuts
+  const expected = samplePlan.cuts.length + 1 + samplePlan.cuts.length;
+  assert.equal(decisions.length, expected, `should have ${expected} total decisions`);
+  assert.equal(decisions[0].stepOrder, 1);
+  assert.equal(decisions[samplePlan.cuts.length].stepOrder, 2);
+});
+
+test('applySkillsToPlan combines multiple skills', () => {
+  const enhanced = applySkillsToPlan(samplePlan, [
+    {
+      name: 'Skill A',
+      steps: [{ order: 1, action: 'caption', trigger: 'throughout', description: 'Captions', params: {} }],
+    },
+    {
+      name: 'Skill B',
+      steps: [{ order: 1, action: 'zoom', trigger: 'at hook', description: 'Zoom', params: {} }],
+    },
+  ]);
+  assert.ok(enhanced.editDecisions.length > 0, 'should have edit decisions');
+  assert.equal(enhanced.appliedSkills.length, 2, 'should list both skill names');
+  assert.ok(enhanced.appliedSkills.includes('Skill A'));
+  assert.ok(enhanced.appliedSkills.includes('Skill B'));
+  // Should preserve original plan fields
+  assert.equal(enhanced.cuts.length, samplePlan.cuts.length);
+  assert.equal(enhanced.totalDurationSec, samplePlan.totalDurationSec);
+});
+
+test('applySkillsToPlan with empty skills returns plan unchanged plus empty arrays', () => {
+  const enhanced = applySkillsToPlan(samplePlan, []);
+  assert.equal(enhanced.editDecisions.length, 0);
+  assert.equal(enhanced.appliedSkills.length, 0);
+  assert.equal(enhanced.cuts.length, samplePlan.cuts.length);
+});
+
+test('applySkillToPlan handles empty plan gracefully', () => {
+  const emptyPlan: RoughCutPlan = {
+    sourceSegments: [],
+    cuts: [],
+    totalDurationSec: 0,
+    sourceDurationSec: 0,
+    compressionRatio: 0,
+    transitions: [],
+    notes: [],
+  };
+  const decisions = applySkillToPlan(emptyPlan, {
+    name: 'Test',
+    steps: [{ order: 1, action: 'caption', trigger: 'throughout', description: 'Captions', params: {} }],
+  });
+  assert.equal(decisions.length, 0, 'no decisions for empty plan');
+});
+
+

@@ -230,3 +230,148 @@ function formatTimecode(sec: number): string {
   const f = totalFrames % fps;
   return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}:${String(f).padStart(2, '0')}`;
 }
+
+// ── Editing skill application ──
+
+/** An edit decision derived from applying a skill step to a cut segment. */
+export interface EditDecision {
+  /** Index of the cut segment this applies to. */
+  cutIndex: number;
+  /** The skill step that generated this decision. */
+  stepOrder: number;
+  /** The action type. */
+  action: string;
+  /** When to apply. */
+  trigger: string;
+  /** Human-readable description. */
+  description: string;
+  /** Parameters for the action. */
+  params: Record<string, unknown>;
+}
+
+/** A rough cut plan enhanced with edit decisions from applied skills. */
+export interface SkillEnhancedPlan extends RoughCutPlan {
+  /** Edit decisions generated from applying editing skills. */
+  editDecisions: EditDecision[];
+  /** Names of skills that were applied. */
+  appliedSkills: string[];
+}
+
+/**
+ * Apply an editing skill's steps to a rough cut plan, generating edit decisions.
+ *
+ * Each step's trigger is matched against cut segments to determine where it applies:
+ * - "on every pause" / "throughout" → all cuts
+ * - "at hook" → first cut
+ * - "at CTA" / "at end" → last cut
+ * - "on B-roll" / "on product" → cuts mentioning product/demo keywords
+ * - "between features" / "between segments" → transitions
+ * - default → all cuts
+ */
+export function applySkillToPlan(plan: RoughCutPlan, skill: {
+  name: string;
+  steps: Array<{ order: number; action: string; trigger: string; description: string; params?: Record<string, unknown> }>;
+}): EditDecision[] {
+  const decisions: EditDecision[] = [];
+  const triggerLower = (t: string) => t.toLowerCase();
+
+  for (const step of skill.steps) {
+    const trig = triggerLower(step.trigger);
+    const params = step.params || {};
+
+    if (trig.includes('between') || trig.includes('transition')) {
+      // Apply to transitions between cuts
+      for (let i = 0; i < plan.cuts.length - 1; i++) {
+        decisions.push({
+          cutIndex: i,
+          stepOrder: step.order,
+          action: step.action,
+          trigger: step.trigger,
+          description: step.description,
+          params,
+        });
+      }
+    } else if (trig.includes('hook') || trig.includes('first') || trig.includes('start')) {
+      // Apply to first cut only
+      if (plan.cuts.length > 0) {
+        decisions.push({
+          cutIndex: 0,
+          stepOrder: step.order,
+          action: step.action,
+          trigger: step.trigger,
+          description: step.description,
+          params,
+        });
+      }
+    } else if (trig.includes('cta') || trig.includes('end') || trig.includes('last') || trig.includes('closing')) {
+      // Apply to last cut only
+      if (plan.cuts.length > 0) {
+        decisions.push({
+          cutIndex: plan.cuts.length - 1,
+          stepOrder: step.order,
+          action: step.action,
+          trigger: step.trigger,
+          description: step.description,
+          params,
+        });
+      }
+    } else if (trig.includes('product') || trig.includes('demo') || trig.includes('b-roll') || trig.includes('feature')) {
+      // Apply to cuts that mention product/demo keywords
+      const keywords = ['product', 'feature', 'demo', 'show', 'look', 'see', 'here'];
+      plan.cuts.forEach((cut, i) => {
+        if (keywords.some(k => cut.text.toLowerCase().includes(k))) {
+          decisions.push({
+            cutIndex: i,
+            stepOrder: step.order,
+            action: step.action,
+            trigger: step.trigger,
+            description: step.description,
+            params,
+          });
+        }
+      });
+    } else {
+      // Default: apply to all cuts (throughout, every pause, etc.)
+      plan.cuts.forEach((_, i) => {
+        decisions.push({
+          cutIndex: i,
+          stepOrder: step.order,
+          action: step.action,
+          trigger: step.trigger,
+          description: step.description,
+          params,
+        });
+      });
+    }
+  }
+
+  return decisions;
+}
+
+/**
+ * Apply multiple editing skills to a rough cut plan and return an enhanced plan.
+ */
+export function applySkillsToPlan(
+  plan: RoughCutPlan,
+  skills: Array<{
+    name: string;
+    steps: Array<{ order: number; action: string; trigger: string; description: string; params?: Record<string, unknown> }>;
+  }>,
+): SkillEnhancedPlan {
+  const allDecisions: EditDecision[] = [];
+  const appliedNames: string[] = [];
+
+  for (const skill of skills) {
+    const decisions = applySkillToPlan(plan, skill);
+    if (decisions.length > 0) {
+      allDecisions.push(...decisions);
+      appliedNames.push(skill.name);
+    }
+  }
+
+  return {
+    ...plan,
+    editDecisions: allDecisions,
+    appliedSkills: appliedNames,
+  };
+}

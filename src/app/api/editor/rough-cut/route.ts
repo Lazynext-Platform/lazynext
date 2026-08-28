@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@/../auth';
-import { generateRoughCut, exportCutPlanAsJSON, exportCutPlanAsEDL, type RoughCutOptions } from '@/lib/editor/transcript-cut';
+import { generateRoughCut, exportCutPlanAsJSON, exportCutPlanAsEDL, applySkillsToPlan, type RoughCutOptions } from '@/lib/editor/transcript-cut';
+import { getSkill } from '@/lib/editor/skills';
+import { prisma } from '@/lib/prisma';
 import type { ASRResult } from '@/lib/providers/types';
 
 export const maxDuration = 60;
@@ -33,8 +35,31 @@ export async function POST(req: Request) {
   };
 
   try {
-    const plan = generateRoughCut(transcript, opts);
+    const basePlan = generateRoughCut(transcript, opts);
     const format = body.format === 'edl' ? 'edl' : 'json';
+
+    // Apply editing skills if requested
+    const skillIds: string[] = Array.isArray(body.skillIds) ? body.skillIds.filter((s: unknown) => typeof s === 'string') : [];
+    const skillsToApply: Array<{ name: string; steps: Array<{ order: number; action: string; trigger: string; description: string; params?: Record<string, unknown> }> }> = [];
+
+    for (const skillId of skillIds) {
+      // Check built-in skills first
+      const builtin = getSkill(skillId);
+      if (builtin) {
+        skillsToApply.push({ name: builtin.name, steps: builtin.steps });
+        continue;
+      }
+      // Check user-persisted skills (ownership verified)
+      const persisted = await prisma.editingSkill.findFirst({ where: { id: skillId, userId: session.user.id } });
+      if (persisted) {
+        skillsToApply.push({
+          name: persisted.name,
+          steps: JSON.parse(persisted.stepsJson || '[]'),
+        });
+      }
+    }
+
+    const plan = skillsToApply.length > 0 ? applySkillsToPlan(basePlan, skillsToApply) : basePlan;
 
     if (format === 'edl') {
       const edl = exportCutPlanAsEDL(plan, body.sourceName || 'SOURCE');

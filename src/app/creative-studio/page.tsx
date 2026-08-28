@@ -5,7 +5,7 @@ import { useSession } from 'next-auth/react';
 import {
   AlertCircle, CheckCircle2, Loader2, Sparkles, Link2, Lightbulb, Film,
   Copy, ChevronRight, Globe, Target, MessageSquare, Clapperboard,
-  Video, ArrowRight, Wand2,
+  Video, ArrowRight, Wand2, StopCircle,
 } from 'lucide-react';
 import Link from 'next/link';
 import { useI18n } from '@/i18n/provider';
@@ -178,6 +178,13 @@ export default function CreativeStudioPage() {
   const [variants, setVariants] = useState<CreativeVariant[]>([]);
   const [variantsError, setVariantsError] = useState('');
 
+  // Chain workflow state
+  const [chainMode, setChainMode] = useState(false);
+  const [chainStep, setChainStep] = useState(0); // 0=not started, 1-6=steps, 7=done
+  const [chainRunning, setChainRunning] = useState(false);
+  const [chainError, setChainError] = useState<string | null>(null);
+  const [chainPaused, setChainPaused] = useState(false); // true when waiting for user to continue
+
   // ── Actions ──
   const doBrandExtract = useCallback(async () => {
     if (!brandUrl.trim()) return;
@@ -346,6 +353,110 @@ export default function CreativeStudioPage() {
     }
   }, [brief, script]);
 
+  // ── Chain workflow ──
+  const CHAIN_TOTAL_COST = COSTS.brief + COSTS.hooks + COSTS.angles + COSTS.script + COSTS.storyboard + COSTS.score;
+
+  const runChainStep = useCallback(async (step: number) => {
+    setChainError(null);
+    setChainRunning(true);
+    setChainPaused(false);
+    try {
+      if (step === 1) {
+        // Brief
+        if (!productText.trim()) throw new Error('Product text required');
+        setBriefStep('loading'); setBriefError(''); setBrief(null);
+        setHooks([]); setAngles([]); setScript(null); setStoryboard(null); setScore(null);
+        setSelectedHook(null); setSelectedAngle(null);
+        const j = await postJson('/api/creative/brief', {
+          product: productText.trim(),
+          productName: productName.trim() || undefined,
+          platform, format,
+          brandKitId: brandKitId || undefined,
+        });
+        setBrief(j.brief as CreativeBrief);
+        setBriefStep('done');
+      } else if (step === 2) {
+        // Hooks
+        if (!brief) throw new Error('Brief required');
+        setHooksStep('loading'); setHooksError(''); setHooks([]);
+        const j = await postJson('/api/creative/hooks', { brief, count: 5 });
+        setHooks(j.hooks as HookCandidate[]);
+        // Auto-select best hook (highest retention)
+        const best = (j.hooks as HookCandidate[]).sort((a, b) => b.estimatedRetention - a.estimatedRetention)[0];
+        if (best) setSelectedHook(best);
+        setHooksStep('done');
+      } else if (step === 3) {
+        // Angles
+        if (!brief) throw new Error('Brief required');
+        setAnglesStep('loading'); setAnglesError(''); setAngles([]);
+        const j = await postJson('/api/creative/angles', { brief, count: 3 });
+        setAngles(j.angles as CreativeAngle[]);
+        // Auto-select first angle
+        const arr = j.angles as CreativeAngle[];
+        if (arr.length > 0) setSelectedAngle(arr[0]);
+        setAnglesStep('done');
+      } else if (step === 4) {
+        // Script
+        if (!brief || !selectedAngle || !selectedHook) throw new Error('Brief, angle, and hook required');
+        setScriptStep('loading'); setScriptError(''); setScript(null); setStoryboard(null);
+        const j = await postJson('/api/creative/script', {
+          brief, angle: selectedAngle, hook: selectedHook,
+        });
+        setScript(j.script as ScriptCandidate);
+        setScriptStep('done');
+      } else if (step === 5) {
+        // Storyboard
+        if (!brief || !script) throw new Error('Brief and script required');
+        setStoryboardStep('loading'); setStoryboardError(''); setStoryboard(null);
+        const j = await postJson('/api/creative/storyboard', { brief, script, ratio });
+        setStoryboard(j.storyboard as StoryboardCandidate);
+        setStoryboardStep('done');
+      } else if (step === 6) {
+        // Score
+        if (!brief || !script) throw new Error('Brief and script required');
+        setScoreStep('loading'); setScoreError(''); setScore(null);
+        const j = await postJson('/api/creative/score', { brief, script, storyboard });
+        setScore(j.score as CreativeScore);
+        setScoreStep('done');
+      }
+      setChainStep(step);
+      // Pause for user confirmation between steps (except after the last step)
+      if (step < 6) {
+        setChainPaused(true);
+      } else {
+        setChainStep(7); // done
+        setChainRunning(false);
+      }
+    } catch (e) {
+      const msg = String(e instanceof Error ? e.message : e);
+      setChainError(msg);
+      setChainRunning(false);
+      setChainPaused(false);
+    }
+  }, [productText, productName, platform, format, brandKitId, brief, selectedAngle, selectedHook, script, ratio, storyboard]);
+
+  const startChain = useCallback(() => {
+    if (!productText.trim()) return;
+    setChainError(null);
+    setChainStep(0);
+    setChainRunning(true);
+    setChainPaused(false);
+    runChainStep(1);
+  }, [productText, runChainStep]);
+
+  const continueChain = useCallback(() => {
+    if (chainStep >= 6) return;
+    setChainPaused(false);
+    runChainStep(chainStep + 1);
+  }, [chainStep, runChainStep]);
+
+  const stopChain = useCallback(() => {
+    setChainRunning(false);
+    setChainPaused(false);
+    setChainStep(0);
+    setChainError(null);
+  }, []);
+
   // ── Render ──
   if (status === 'loading') {
     return (
@@ -376,6 +487,224 @@ export default function CreativeStudioPage() {
           <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">{t('creativeStudio.title')}</h1>
           <p className="mt-2 max-w-2xl text-sm text-fg-faint">{t('creativeStudio.subtitle')}</p>
         </div>
+
+        {/* Chain Workflow */}
+        <section className="mb-6 rounded-2xl border border-line bg-surface p-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="flex h-8 w-8 items-center justify-center rounded-lg" style={{ background: 'rgba(0,178,252,0.15)', color: 'var(--color-brand-accent)' }}>
+                <Sparkles className="h-4 w-4" />
+              </span>
+              <div>
+                <h2 className="text-base font-bold text-fg">{t('creativeStudio.chainMode')}</h2>
+                <p className="text-xs text-fg-faint">{t('creativeStudio.chainModeDesc')}</p>
+              </div>
+            </div>
+            <button
+              onClick={() => { setChainMode(!chainMode); if (chainMode) stopChain(); }}
+              className={`rounded-lg px-3 py-1.5 text-xs font-bold transition ${chainMode ? 'bg-danger/10 text-danger' : 'text-white'}`}
+              style={chainMode ? {} : { background: '#0064d9' }}
+            >
+              {chainMode ? t('creativeStudio.stopChain') : t('creativeStudio.enableChain')}
+            </button>
+          </div>
+
+          {chainMode && (
+            <div className="mt-4 space-y-4">
+              {/* Step indicators */}
+              <div className="flex flex-wrap items-center gap-2">
+                {[
+                  { n: 1, label: t('creativeStudio.chainStepBrief') },
+                  { n: 2, label: t('creativeStudio.chainStepHooks') },
+                  { n: 3, label: t('creativeStudio.chainStepAngles') },
+                  { n: 4, label: t('creativeStudio.chainStepScript') },
+                  { n: 5, label: t('creativeStudio.chainStepStoryboard') },
+                  { n: 6, label: t('creativeStudio.chainStepScore') },
+                ].map((s, idx) => {
+                  const isDone = chainStep > s.n || chainStep === 7;
+                  const isRunning = chainStep === s.n && chainRunning && !chainPaused;
+                  const isError = chainError && chainStep === s.n;
+                  const isPaused = chainStep === s.n && chainPaused;
+                  return (
+                    <div key={s.n} className="flex items-center gap-2">
+                      <div className={`flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-medium ${
+                        isDone ? 'bg-success/10 text-success' :
+                        isRunning ? 'bg-[#00b2fc]/10' : isPaused ? 'bg-[#00b2fc]/10' :
+                        isError ? 'bg-danger/10 text-danger' :
+                        'bg-app text-fg-faint'
+                      }`}>
+                        {isDone ? <CheckCircle2 className="h-3.5 w-3.5" /> :
+                         isRunning ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> :
+                         isError ? <AlertCircle className="h-3.5 w-3.5" /> :
+                         <span className="flex h-3.5 w-3.5 items-center justify-center rounded-full border border-current text-[9px]">{s.n}</span>}
+                        <span>{s.label}</span>
+                      </div>
+                      {idx < 5 && <ArrowRight className="h-3 w-3 text-fg-placeholder" />}
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Start button + cost */}
+              {chainStep === 0 && !chainRunning && (
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={startChain}
+                    disabled={!productText.trim()}
+                    className="rounded-lg px-4 py-2 text-sm font-bold text-white disabled:opacity-50"
+                    style={{ background: '#0064d9' }}
+                  >
+                    {t('creativeStudio.startChain')} ({CHAIN_TOTAL_COST} {t('creativeStudio.credits')})
+                  </button>
+                  <span className="text-xs text-fg-faint">{t('creativeStudio.chainTotalCost')}: {CHAIN_TOTAL_COST} {t('creativeStudio.credits')}</span>
+                </div>
+              )}
+
+              {/* Error display */}
+              {chainError && (
+                <div role="alert" className="flex items-center gap-1.5 rounded-lg bg-danger/10 px-3 py-2 text-xs text-danger">
+                  <AlertCircle className="h-3.5 w-3.5 shrink-0" /> {t('creativeStudio.chainErrorOccurred')}: {chainError}
+                </div>
+              )}
+
+              {/* Paused: intermediate result + continue/edit/stop */}
+              {chainPaused && chainStep >= 1 && chainStep <= 5 && (
+                <div className="rounded-xl border border-line bg-app p-3 space-y-3">
+                  {/* Compact intermediate result */}
+                  {chainStep === 1 && brief && (
+                    <div className="space-y-1 text-xs">
+                      <div className="flex items-center gap-1 text-success"><CheckCircle2 className="h-3 w-3" /> {t('creativeStudio.briefGenerated')}</div>
+                      <Field label={t('cstudio.fldObjective')} value={brief.objective} />
+                      <Field label={t('cstudio.fldAudience')} value={brief.audience} />
+                      <Field label={t('cstudio.fldAngle')} value={brief.angle} />
+                      <Field label={t('cstudio.fldCta')} value={brief.cta} />
+                    </div>
+                  )}
+                  {chainStep === 2 && hooks.length > 0 && (
+                    <div className="space-y-2">
+                      <p className="text-xs font-medium text-fg-faint">{t('creativeStudio.chainSelectHook')}</p>
+                      {hooks.map((h) => (
+                        <button
+                          key={h.id}
+                          onClick={() => setSelectedHook(h)}
+                          className={`w-full rounded-lg border p-2 text-left text-xs transition ${selectedHook?.id === h.id ? 'border-[#00b2fc]/60 bg-[#00b2fc]/5' : 'border-line bg-surface hover:border-[#00b2fc]/30'}`}
+                        >
+                          <div className="flex items-center justify-between">
+                            <span className="rounded bg-[#00b2fc]/15 px-1.5 py-0.5 text-[10px] font-medium" style={{ color: 'var(--color-brand-accent)' }}>{h.type}</span>
+                            <span className="text-[10px] text-fg-faint">{t('creativeStudio.retention')}: {h.estimatedRetention}/10</span>
+                          </div>
+                          <p className="mt-1 text-fg">{h.text}</p>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                  {chainStep === 3 && angles.length > 0 && (
+                    <div className="space-y-2">
+                      <p className="text-xs font-medium text-fg-faint">{t('creativeStudio.chainSelectAngle')}</p>
+                      {angles.map((a) => (
+                        <button
+                          key={a.id}
+                          onClick={() => setSelectedAngle(a)}
+                          className={`w-full rounded-lg border p-2 text-left text-xs transition ${selectedAngle?.id === a.id ? 'border-[#00b2fc]/60 bg-[#00b2fc]/5' : 'border-line bg-surface hover:border-[#00b2fc]/30'}`}
+                        >
+                          <div className="flex items-center justify-between">
+                            <span className="font-bold text-fg">{a.name}</span>
+                            <span className="rounded bg-[#00b2fc]/15 px-1.5 py-0.5 text-[10px] font-medium" style={{ color: 'var(--color-brand-accent)' }}>{a.emotionalTrigger}</span>
+                          </div>
+                          <p className="mt-1 text-fg">{a.description}</p>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                  {chainStep === 4 && script && (
+                    <div className="space-y-1 text-xs">
+                      <div className="flex items-center gap-1 text-success"><CheckCircle2 className="h-3 w-3" /> {script.title} ({script.totalDurationSec}s)</div>
+                      <p className="text-fg-faint">{script.scenes.length} {t('creativeStudio.scene')}s · {t('cstudio.lblCta')}{script.cta}</p>
+                    </div>
+                  )}
+                  {chainStep === 5 && storyboard && (
+                    <div className="space-y-1 text-xs">
+                      <div className="flex items-center gap-1 text-success"><CheckCircle2 className="h-3 w-3" /> {storyboard.shots.length} {t('creativeStudio.shot')}s · {storyboard.totalDurationSec}s · {storyboard.ratio}</div>
+                    </div>
+                  )}
+
+                  {/* Action buttons */}
+                  <div className="flex items-center gap-2 border-t border-line pt-2">
+                    <button
+                      onClick={continueChain}
+                      className="flex items-center gap-1 rounded-lg px-3 py-1.5 text-xs font-bold text-white"
+                      style={{ background: '#0064d9' }}
+                    >
+                      <ArrowRight className="h-3.5 w-3.5" /> {t('creativeStudio.chainContinue')}
+                    </button>
+                    <span className="text-[10px] text-fg-faint">{t('creativeStudio.chainEditContinue')}: {t('creativeStudio.chainSelectHook')}/{t('creativeStudio.chainSelectAngle')}</span>
+                    <button
+                      onClick={stopChain}
+                      className="ml-auto flex items-center gap-1 rounded-lg bg-danger/10 px-3 py-1.5 text-xs font-bold text-danger"
+                    >
+                      <StopCircle className="h-3.5 w-3.5" /> {t('creativeStudio.stopChain')}
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Running indicator */}
+              {chainRunning && !chainPaused && (
+                <div className="flex items-center gap-2 text-xs text-fg-faint">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  {t('creativeStudio.chainRunning')}…
+                </div>
+              )}
+
+              {/* Summary card */}
+              {chainStep === 7 && score && (
+                <div className="rounded-xl border border-success/30 bg-success/5 p-4 space-y-3">
+                  <div className="flex items-center gap-2">
+                    <CheckCircle2 className="h-5 w-5 text-success" />
+                    <div>
+                      <h3 className="text-sm font-bold text-fg">{t('creativeStudio.chainSummary')}</h3>
+                      <p className="text-xs text-fg-faint">{t('creativeStudio.chainSummaryDesc')}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 text-lg font-bold text-success">
+                    {t('creativeStudio.chainFinalScore')}: {score.overall}/10
+                  </div>
+                  <div className="grid gap-2 sm:grid-cols-3">
+                    {brief && (
+                      <div className="rounded-lg border border-line bg-surface p-2 text-xs">
+                        <span className="font-bold text-fg">{t('creativeStudio.chainStepBrief')}</span>
+                        <p className="mt-0.5 text-fg-faint">{brief.objective} · {brief.audience}</p>
+                      </div>
+                    )}
+                    {script && (
+                      <div className="rounded-lg border border-line bg-surface p-2 text-xs">
+                        <span className="font-bold text-fg">{t('creativeStudio.chainStepScript')}</span>
+                        <p className="mt-0.5 text-fg-faint">{script.title} · {script.totalDurationSec}s</p>
+                      </div>
+                    )}
+                    {storyboard && (
+                      <div className="rounded-lg border border-line bg-surface p-2 text-xs">
+                        <span className="font-bold text-fg">{t('creativeStudio.chainStepStoryboard')}</span>
+                        <p className="mt-0.5 text-fg-faint">{storyboard.shots.length} {t('creativeStudio.shot')}s · {storyboard.ratio}</p>
+                      </div>
+                    )}
+                  </div>
+                  <button
+                    onClick={stopChain}
+                    className="flex items-center gap-1 rounded-lg bg-app px-3 py-1.5 text-xs font-medium text-fg hover:bg-hover"
+                  >
+                    <Sparkles className="h-3.5 w-3.5" /> {t('creativeStudio.startChain')}
+                  </button>
+                </div>
+              )}
+
+              {/* Cancelled message */}
+              {!chainRunning && chainStep === 0 && chainError === null && productText.trim() && (
+                <p className="text-xs text-fg-faint">{t('creativeStudio.chainCancelled')}</p>
+              )}
+            </div>
+          )}
+        </section>
 
         {/* Step 1: Brand & Product Intelligence */}
         <Section

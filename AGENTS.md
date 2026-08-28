@@ -72,7 +72,7 @@ npm run build   # Production build (Cloudflare target)
 - Next.js 16 + React 19 + TypeScript 6
 - Tailwind CSS 4
 - NextAuth (JWT session, Google + Credentials providers)
-- Prisma 7 with D1 (prod) / SQLite (local) — 19 tables total
+- Prisma 7 with D1 (prod) / SQLite (local) — 20 tables total
 - Cloudflare R2 (prod) / file-based (local) media storage
 - Atlas Cloud AI generation API (prod) / mock server (local)
 - Dodo Payments for billing
@@ -153,7 +153,7 @@ Completed across 15+ sessions:
 - `GET /api/editor/timeline` — list user's saved timelines
 - `POST /api/editor/timeline` with `save`/`load`/`delete` actions
 - All persisted operations verify user ownership
-- D1 migration applied to production (19 tables total)
+- D1 migration applied to production (20 tables total)
 
 ## Editor Multimodal
 - `POST /api/editor/transcribe` — video URL → ASR transcript (2 credits, whisper-large-v3)

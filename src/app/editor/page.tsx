@@ -9,6 +9,8 @@ import {
 } from 'lucide-react';
 import { useI18n } from '@/i18n/provider';
 import { AuthModal } from '@/components/AuthModal';
+import { VisualTimeline } from '@/components/editor/VisualTimeline';
+import type { Timeline as TimelineModel, Track as TrackModel, Clip as ClipModel } from '@/lib/editor/types';
 
 type Step = 'idle' | 'loading' | 'done' | 'error';
 
@@ -37,7 +39,7 @@ interface EditingSkill {
   description: string;
   contentTypes: string[];
   platforms: string[];
-  steps: Array<{ order: number; action: string; trigger: string; description: string }>;
+  steps: Array<{ order: number; action: string; trigger: string; description: string; params?: Record<string, unknown> }>;
   estimatedTimeMin: number;
   tags: string[];
   source: string;
@@ -97,6 +99,22 @@ export default function EditorPage() {
   const [filterType, setFilterType] = useState('');
   const [filterPlatform, setFilterPlatform] = useState('');
 
+  // Skill CRUD state
+  const [showSkillForm, setShowSkillForm] = useState(false);
+  const [editingSkill, setEditingSkill] = useState<EditingSkill | null>(null);
+  const [skillForm, setSkillForm] = useState({
+    name: '',
+    description: '',
+    contentTypes: [] as string[],
+    platforms: [] as string[],
+    estimatedTimeMin: 5,
+    tags: [] as string[],
+    steps: [] as Array<{ order: number; action: string; trigger: string; description: string; params?: Record<string, unknown> }>,
+  });
+  const [skillFormStep, setSkillFormStep] = useState<Step>('idle');
+  const [skillFormError, setSkillFormError] = useState('');
+  const [skillTagInput, setSkillTagInput] = useState('');
+
   // Timeline state
   const [tlName, setTlName] = useState('My Timeline');
   const [tlFps, setTlFps] = useState('30');
@@ -122,6 +140,9 @@ export default function EditorPage() {
   const [tlSaveStep, setTlSaveStep] = useState<Step>('idle');
   const [tlSaveError, setTlSaveError] = useState('');
 
+  // Visual timeline playhead position (seconds).
+  const [tlPlayhead, setTlPlayhead] = useState(0);
+
   const loadSkills = useCallback(async () => {
     if (!session?.user) return;
     setSkillsLoading(true);
@@ -144,6 +165,111 @@ export default function EditorPage() {
   useEffect(() => {
     if (session?.user && tab === 'skills') loadSkills();
   }, [session?.user, tab, loadSkills]);
+
+  // ── Skill CRUD helpers ──
+
+  const resetSkillForm = useCallback(() => {
+    setSkillForm({
+      name: '', description: '', contentTypes: [], platforms: [],
+      estimatedTimeMin: 5, tags: [], steps: [],
+    });
+    setEditingSkill(null);
+    setSkillFormError('');
+    setSkillFormStep('idle');
+    setSkillTagInput('');
+  }, []);
+
+  const startEditSkill = useCallback((skill: EditingSkill) => {
+    setEditingSkill(skill);
+    setSkillForm({
+      name: skill.name,
+      description: skill.description,
+      contentTypes: skill.contentTypes,
+      platforms: skill.platforms,
+      estimatedTimeMin: skill.estimatedTimeMin,
+      tags: skill.tags,
+      steps: skill.steps,
+    });
+    setShowSkillForm(true);
+    setSkillFormError('');
+    setSkillFormStep('idle');
+  }, []);
+
+  const saveSkill = useCallback(async () => {
+    if (!session?.user) { setAuthOpen(true); return; }
+    if (!skillForm.name.trim()) { setSkillFormError('Name is required'); return; }
+    setSkillFormStep('loading');
+    setSkillFormError('');
+    try {
+      const body = {
+        name: skillForm.name.trim(),
+        description: skillForm.description,
+        contentTypes: skillForm.contentTypes,
+        platforms: skillForm.platforms,
+        steps: skillForm.steps,
+        estimatedTimeMin: skillForm.estimatedTimeMin,
+        tags: skillForm.tags,
+      };
+      const res = editingSkill
+        ? await fetch(`/api/editor/skills?id=${editingSkill.id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
+        : await fetch('/api/editor/skills', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+      if (!res.ok) {
+        const j = await res.json().catch(() => ({}));
+        throw new Error(j.error || `HTTP ${res.status}`);
+      }
+      setSkillFormStep('done');
+      setShowSkillForm(false);
+      resetSkillForm();
+      loadSkills();
+    } catch (e) {
+      setSkillFormError(e instanceof Error ? e.message : String(e));
+      setSkillFormStep('error');
+    }
+  }, [session?.user, editingSkill, skillForm, resetSkillForm, loadSkills]);
+
+  const deleteSkill = useCallback(async (skill: EditingSkill) => {
+    if (skill.source === 'builtin') return;
+    if (!confirm(`Delete "${skill.name}"?`)) return;
+    try {
+      const res = await fetch(`/api/editor/skills?id=${skill.id}`, { method: 'DELETE' });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      loadSkills();
+    } catch (e) {
+      setSkillsError(e instanceof Error ? e.message : String(e));
+    }
+  }, [loadSkills]);
+
+  const addSkillStep = useCallback(() => {
+    setSkillForm(prev => ({
+      ...prev,
+      steps: [...prev.steps, { order: prev.steps.length + 1, action: 'cut', trigger: '', description: '', params: {} }],
+    }));
+  }, []);
+
+  const removeSkillStep = useCallback((idx: number) => {
+    setSkillForm(prev => ({
+      ...prev,
+      steps: prev.steps.filter((_, i) => i !== idx).map((s, i) => ({ ...s, order: i + 1 })),
+    }));
+  }, []);
+
+  const updateSkillStep = useCallback((idx: number, field: 'action' | 'trigger' | 'description', value: string) => {
+    setSkillForm(prev => ({
+      ...prev,
+      steps: prev.steps.map((s, i) => i === idx ? { ...s, [field]: value } : s),
+    }));
+  }, []);
+
+  const addSkillTag = useCallback(() => {
+    const tag = skillTagInput.trim();
+    if (!tag || skillForm.tags.includes(tag)) return;
+    setSkillForm(prev => ({ ...prev, tags: [...prev.tags, tag] }));
+    setSkillTagInput('');
+  }, [skillTagInput, skillForm.tags]);
+
+  const removeSkillTag = useCallback((tag: string) => {
+    setSkillForm(prev => ({ ...prev, tags: prev.tags.filter(t => t !== tag) }));
+  }, []);
 
   const generateRoughCut = useCallback(async () => {
     if (!session?.user) { setAuthOpen(true); return; }
@@ -342,6 +468,40 @@ export default function EditorPage() {
       // silently fail
     }
   }, [session?.user, loadSavedTimelines]);
+
+  // Update a clip's startSec in the current timeline state (visual editor drag).
+  const handleClipUpdate = useCallback((trackId: string, clipId: string, newStartSec: number) => {
+    setTimeline((prev) => {
+      if (!prev) return prev;
+      const model = prev as unknown as TimelineModel;
+      const updatedTracks: TrackModel[] = model.tracks.map((tr) => {
+        if (tr.id !== trackId) return tr;
+        const clips: ClipModel[] = tr.clips.map((cl) => {
+          if (cl.id !== clipId) return cl;
+          const durationSec = cl.durationSec;
+          return {
+            ...cl,
+            startSec: newStartSec,
+            endSec: newStartSec + durationSec,
+          };
+        });
+        return { ...tr, clips };
+      });
+      // Recompute total duration from the latest clip end.
+      let maxEnd = 0;
+      for (const tr of updatedTracks) {
+        for (const cl of tr.clips) {
+          if (cl.endSec > maxEnd) maxEnd = cl.endSec;
+        }
+      }
+      return {
+        ...prev,
+        tracks: updatedTracks as unknown as typeof prev.tracks,
+        durationSec: Math.max(model.durationSec, maxEnd),
+        updatedAt: new Date().toISOString(),
+      } as typeof prev;
+    });
+  }, []);
 
   return (
     <main id="main-content" className="min-h-screen bg-bg text-fg">
@@ -711,6 +871,215 @@ export default function EditorPage() {
               </div>
             </div>
 
+            {/* Create / Cancel skill button */}
+            <div className="flex gap-2">
+              {!showSkillForm ? (
+                <button
+                  onClick={() => { resetSkillForm(); setShowSkillForm(true); }}
+                  className="px-3 py-1.5 rounded-lg bg-brand-accent text-white text-sm font-medium hover:opacity-90"
+                >
+                  <Sparkles className="inline w-4 h-4 mr-1" aria-hidden="true" />
+                  {t('editor.skCreate')}
+                </button>
+              ) : (
+                <button
+                  onClick={() => { setShowSkillForm(false); resetSkillForm(); }}
+                  className="px-3 py-1.5 rounded-lg border border-border text-fg text-sm font-medium hover:bg-bg-card"
+                >
+                  {t('editor.skCancel')}
+                </button>
+              )}
+            </div>
+
+            {/* Skill create/edit form */}
+            {showSkillForm && (
+              <div className="rounded-lg border border-border bg-bg-card p-4 space-y-3">
+                <h3 className="font-medium text-sm">{editingSkill ? t('editor.skEdit') : t('editor.skCreate')}</h3>
+
+                {skillFormError && (
+                  <div role="alert" className="text-xs text-danger">
+                    <AlertCircle className="inline w-3 h-3 mr-1" aria-hidden="true" />
+                    {skillFormError}
+                  </div>
+                )}
+
+                {/* Name */}
+                <div>
+                  <label htmlFor="skillName" className="block text-xs font-medium mb-1">{t('editor.skName')}</label>
+                  <input
+                    id="skillName"
+                    type="text"
+                    value={skillForm.name}
+                    onChange={(e) => setSkillForm(prev => ({ ...prev, name: e.target.value }))}
+                    className="w-full rounded-lg border border-border bg-bg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
+                    aria-label={t('editor.skName')}
+                  />
+                </div>
+
+                {/* Description */}
+                <div>
+                  <label htmlFor="skillDesc" className="block text-xs font-medium mb-1">{t('editor.skDesc')}</label>
+                  <textarea
+                    id="skillDesc"
+                    value={skillForm.description}
+                    onChange={(e) => setSkillForm(prev => ({ ...prev, description: e.target.value }))}
+                    rows={2}
+                    className="w-full rounded-lg border border-border bg-bg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
+                    aria-label={t('editor.skDesc')}
+                  />
+                </div>
+
+                {/* Content types */}
+                <div>
+                  <span className="block text-xs font-medium mb-1">{t('editor.skContentTypes')}</span>
+                  <div className="flex flex-wrap gap-2">
+                    {CONTENT_TYPES.map(ct => (
+                      <label key={ct} className="flex items-center gap-1 text-xs">
+                        <input
+                          type="checkbox"
+                          checked={skillForm.contentTypes.includes(ct)}
+                          onChange={(e) => setSkillForm(prev => ({
+                            ...prev,
+                            contentTypes: e.target.checked
+                              ? [...prev.contentTypes, ct]
+                              : prev.contentTypes.filter(c => c !== ct),
+                          }))}
+                        />
+                        {ct}
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Platforms */}
+                <div>
+                  <span className="block text-xs font-medium mb-1">{t('editor.skPlatforms')}</span>
+                  <div className="flex flex-wrap gap-2">
+                    {PLATFORMS.map(p => (
+                      <label key={p} className="flex items-center gap-1 text-xs">
+                        <input
+                          type="checkbox"
+                          checked={skillForm.platforms.includes(p)}
+                          onChange={(e) => setSkillForm(prev => ({
+                            ...prev,
+                            platforms: e.target.checked
+                              ? [...prev.platforms, p]
+                              : prev.platforms.filter(x => x !== p),
+                          }))}
+                        />
+                        {p}
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Tags */}
+                <div>
+                  <span className="block text-xs font-medium mb-1">{t('editor.skTags')}</span>
+                  <div className="flex gap-2 mb-1">
+                    <input
+                      type="text"
+                      value={skillTagInput}
+                      onChange={(e) => setSkillTagInput(e.target.value)}
+                      onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addSkillTag(); } }}
+                      placeholder={t('editor.skTagPlaceholder')}
+                      className="flex-1 rounded-lg border border-border bg-bg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
+                      aria-label={t('editor.skTags')}
+                    />
+                    <button onClick={addSkillTag} className="px-3 py-1.5 rounded-lg border border-border text-sm hover:bg-bg-card">
+                      {t('editor.skAddTag')}
+                    </button>
+                  </div>
+                  <div className="flex flex-wrap gap-1">
+                    {skillForm.tags.map(tag => (
+                      <span key={tag} className="text-xs rounded-full bg-bg border border-border px-2 py-0.5 flex items-center gap-1">
+                        {tag}
+                        <button onClick={() => removeSkillTag(tag)} className="text-fg-muted hover:text-danger" aria-label={`Remove ${tag}`}>×</button>
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Estimated time */}
+                <div>
+                  <label htmlFor="skillEstTime" className="block text-xs font-medium mb-1">{t('editor.skEstTime')}</label>
+                  <input
+                    id="skillEstTime"
+                    type="number"
+                    min="1"
+                    max="120"
+                    value={skillForm.estimatedTimeMin}
+                    onChange={(e) => setSkillForm(prev => ({ ...prev, estimatedTimeMin: Number(e.target.value) || 5 }))}
+                    className="w-24 rounded-lg border border-border bg-bg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
+                    aria-label={t('editor.skEstTime')}
+                  />
+                </div>
+
+                {/* Steps */}
+                <div>
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-xs font-medium">{t('editor.skSteps')}</span>
+                    <button onClick={addSkillStep} className="text-xs text-brand-accent hover:underline">
+                      + {t('editor.skAddStep')}
+                    </button>
+                  </div>
+                  <div className="space-y-2">
+                    {skillForm.steps.map((step, idx) => (
+                      <div key={idx} className="flex gap-2 items-start">
+                        <span className="text-xs text-fg-muted mt-2 shrink-0">{idx + 1}.</span>
+                        <select
+                          value={step.action}
+                          onChange={(e) => updateSkillStep(idx, 'action', e.target.value)}
+                          className="rounded border border-border bg-bg px-2 py-1 text-xs"
+                          aria-label={`Step ${idx + 1} action`}
+                        >
+                          {['cut', 'trim', 'speed-ramp', 'zoom', 'pan', 'text-overlay', 'caption', 'transition', 'color-grade', 'audio-duck', 'audio-boost', 'b-roll', 'freeze-frame', 'split-screen'].map(a => (
+                            <option key={a} value={a}>{a}</option>
+                          ))}
+                        </select>
+                        <input
+                          type="text"
+                          value={step.trigger}
+                          onChange={(e) => updateSkillStep(idx, 'trigger', e.target.value)}
+                          placeholder={t('editor.skStepTrigger')}
+                          className="flex-1 rounded border border-border bg-bg px-2 py-1 text-xs"
+                          aria-label={`Step ${idx + 1} trigger`}
+                        />
+                        <input
+                          type="text"
+                          value={step.description}
+                          onChange={(e) => updateSkillStep(idx, 'description', e.target.value)}
+                          placeholder={t('editor.skStepDesc')}
+                          className="flex-1 rounded border border-border bg-bg px-2 py-1 text-xs"
+                          aria-label={`Step ${idx + 1} description`}
+                        />
+                        <button onClick={() => removeSkillStep(idx)} className="text-fg-muted hover:text-danger text-sm shrink-0" aria-label={`Remove step ${idx + 1}`}>×</button>
+                      </div>
+                    ))}
+                    {skillForm.steps.length === 0 && (
+                      <p className="text-xs text-fg-muted">{t('editor.skNoSteps')}</p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Save button */}
+                <button
+                  onClick={saveSkill}
+                  disabled={skillFormStep === 'loading' || !skillForm.name.trim()}
+                  className="px-4 py-2 rounded-lg bg-brand-accent text-white text-sm font-medium hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {skillFormStep === 'loading' ? (
+                    <><Loader2 className="inline w-4 h-4 mr-1.5 animate-spin" aria-hidden="true" />{t('common.saving')}</>
+                  ) : (
+                    <>{t('editor.skSave')}</>
+                  )}
+                </button>
+                {skillFormStep === 'done' && (
+                  <span className="text-xs text-success ml-2"><CheckCircle2 className="inline w-3 h-3" aria-hidden="true" /> {t('editor.skSaved')}</span>
+                )}
+              </div>
+            )}
+
             {skillsLoading && (
               <div role="status" className="flex items-center gap-2 text-fg-muted">
                 <Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" />
@@ -767,6 +1136,24 @@ export default function EditorPage() {
                         </li>
                       ))}
                     </ol>
+                  )}
+                  {skill.source === 'user' && (
+                    <div className="mt-3 flex gap-2">
+                      <button
+                        onClick={() => startEditSkill(skill)}
+                        className="text-xs px-2 py-1 rounded border border-border text-fg hover:bg-bg"
+                        aria-label={`Edit ${skill.name}`}
+                      >
+                        {t('editor.skEditBtn')}
+                      </button>
+                      <button
+                        onClick={() => deleteSkill(skill)}
+                        className="text-xs px-2 py-1 rounded border border-danger/30 text-danger hover:bg-danger/10"
+                        aria-label={`Delete ${skill.name}`}
+                      >
+                        {t('editor.skDeleteBtn')}
+                      </button>
+                    </div>
                   )}
                 </div>
               ))}
@@ -851,6 +1238,13 @@ export default function EditorPage() {
                   <CheckCircle2 className="w-5 h-5" aria-hidden="true" />
                   <span className="font-medium">{t('editor.tlCreated')}</span>
                 </div>
+                {/* Visual timeline editor */}
+                <VisualTimeline
+                  timeline={timeline as unknown as TimelineModel}
+                  onUpdateClip={handleClipUpdate}
+                  onSeek={setTlPlayhead}
+                  currentTimeSec={tlPlayhead}
+                />
                 <pre className="rounded-lg border border-border bg-bg-card p-3 text-xs font-mono overflow-x-auto" role="status">
                   {JSON.stringify(timeline, null, 2)}
                 </pre>
