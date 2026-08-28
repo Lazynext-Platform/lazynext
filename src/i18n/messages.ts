@@ -22,7 +22,7 @@ export const RTL_LOCALES: ReadonlySet<Locale> = new Set(['ar']);
  
 export const messages: Record<Locale, any> = {
   en: {
-    nav: { studio: 'Studio', podcast: 'Podcast', pricing: 'Pricing', myWork: 'My work', signIn: 'Sign in', settings: 'Settings', assets: 'Assets', dashboard: 'Dashboard', products: 'Products', avatars: 'Avatars', brandKits: 'Brand kits' },
+    nav: { studio: 'Studio', podcast: 'Podcast', pricing: 'Pricing', myWork: 'My work', signIn: 'Sign in', settings: 'Settings', assets: 'Assets', dashboard: 'Dashboard', products: 'Products', avatars: 'Avatars', brandKits: 'Brand kits', editor: 'Editor' },
     sidebar: { apps: 'AI apps', studio: 'Image studio' },
     auth: {
       signInError: 'Sign-in failed or was cancelled. Please try again.',
@@ -839,6 +839,7 @@ export const messages: Record<Locale, any> = {
       scoreEmotion: 'Emotion:',
       scoreCta: 'CTA:',
       openInStudio: 'Open in Creative Studio',
+      sendToEditor: 'Send to Editor',
       variants: 'A/B Variants',
       errFailed: 'Creative Director pipeline failed. Please try again.',
       errNoStream: 'Failed to stream pipeline progress. Please try again.',
@@ -1036,7 +1037,7 @@ export const messages: Record<Locale, any> = {
 
   },
   zh: {
-    nav: { studio: '工作台', podcast: '播客', pricing: '价格', myWork: '我的作品', signIn: '登录', settings: '设置', assets: '素材库', dashboard: '仪表盘', products: '产品', avatars: '数字人', brandKits: '品牌套件' },
+    nav: { studio: '工作台', podcast: '播客', pricing: '价格', myWork: '我的作品', signIn: '登录', settings: '设置', assets: '素材库', dashboard: '仪表盘', products: '产品', avatars: '数字人', brandKits: '品牌套件', editor: '编辑器' },
     auth: {
       signInError: '登录失败或已取消。请重试。',
       email: '邮箱',
@@ -1766,6 +1767,7 @@ export const messages: Record<Locale, any> = {
       scoreEmotion: '情感：',
       scoreCta: '行动号召：',
       openInStudio: '在创意工作室中打开',
+      sendToEditor: '发送到编辑器',
       variants: 'A/B 变体',
       errFailed: '创意总监流程失败，请重试。',
       errNoStream: '无法获取流程进度，请重试。',
@@ -1963,7 +1965,7 @@ export const messages: Record<Locale, any> = {
 
   },
   ja: {
-    nav: { studio: 'スタジオ', podcast: 'ポッドキャスト', pricing: '料金', myWork: '作品', signIn: 'ログイン', settings: '設定', assets: 'アセット', dashboard: 'ダッシュボード', products: 'プロダクト', avatars: 'アバター', brandKits: 'ブランドキット' },
+    nav: { studio: 'スタジオ', podcast: 'ポッドキャスト', pricing: '料金', myWork: '作品', signIn: 'ログイン', settings: '設定', assets: 'アセット', dashboard: 'ダッシュボード', products: 'プロダクト', avatars: 'アバター', brandKits: 'ブランドキット', editor: 'エディター' },
     auth: {
       signInError: 'ログインに失敗したか、キャンセルされました。もう一度お試しください。',
       email: 'メール',
@@ -2695,6 +2697,7 @@ export const messages: Record<Locale, any> = {
       scoreEmotion: '感情：',
       scoreCta: 'CTA：',
       openInStudio: 'クリエイティブスタジオで開く',
+      sendToEditor: 'エディターに送信',
       variants: 'A/Bバリエーション',
       errFailed: 'クリエイティブディレクターパイプラインが失敗しました。再試行してください。',
       errNoStream: 'パイプラインの進行状況をストリーミングできませんでした。再試行してください。',
@@ -2892,7 +2895,7 @@ export const messages: Record<Locale, any> = {
 
   },
   es: {
-    nav: { studio: 'Estudio', podcast: 'Podcast', pricing: 'Precios', myWork: 'Mi trabajo', signIn: 'Entrar', settings: 'Configuración', assets: 'Recursos', dashboard: 'Panel', products: 'Productos', avatars: 'Avatares', brandKits: 'Kits de marca' },
+    nav: { studio: 'Estudio', podcast: 'Podcast', pricing: 'Precios', myWork: 'Mi trabajo', signIn: 'Entrar', settings: 'Configuración', assets: 'Recursos', dashboard: 'Panel', products: 'Productos', avatars: 'Avatares', brandKits: 'Kits de marca', editor: 'Editor' },
     auth: {
       signInError: 'El inicio de sesión falló o se canceló. Inténtalo de nuevo.',
       email: 'Correo',
@@ -3624,6 +3627,7 @@ export const messages: Record<Locale, any> = {
       scoreEmotion: 'Emoción:',
       scoreCta: 'CTA:',
       openInStudio: 'Abrir en Creative Studio',
+      sendToEditor: 'Enviar al editor',
       variants: 'Variantes A/B',
       errFailed: 'El pipeline del Director Creativo falló. Inténtelo de nuevo.',
       errNoStream: 'No se pudo transmitir el progreso del pipeline. Inténtelo de nuevo.',
@@ -3821,7 +3825,7 @@ export const messages: Record<Locale, any> = {
 
   },
   ko: {
-    nav: { studio: '스튜디오', podcast: '팟캐스트', pricing: '가격', myWork: '내 작업', signIn: '로그인', settings: '설정', assets: '에셋', dashboard: '대시보드', products: '제품', avatars: '아바타', brandKits: '브랜드 키트' },
+    nav: { studio: '스튜디오', podcast: '팟캐스트', pricing: '가격', myWork: '내 작업', signIn: '로그인', settings: '설정', assets: '에셋', dashboard: '대시보드', products: '제품', avatars: '아바타', brandKits: '브랜드 키트', editor: '에디터' },
     auth: {
       signInError: '로그인에 실패했거나 취소되었습니다. 다시 시도해 주세요.',
       email: '이메일',
@@ -4551,6 +4555,7 @@ export const messages: Record<Locale, any> = {
       scoreEmotion: '감성:',
       scoreCta: 'CTA:',
       openInStudio: '크리에이티브 스튜디오에서 열기',
+      sendToEditor: '에디터로 보내기',
       variants: 'A/B 변형',
       errFailed: '크리에이티브 디렉터 파이프라인이 실패했습니다. 다시 시도해주세요.',
       errNoStream: '파이프라인 진행 상황을 스트리밍하지 못했습니다. 다시 시도해주세요.',
@@ -4748,7 +4753,7 @@ export const messages: Record<Locale, any> = {
 
   },
   pt: {
-    nav: { studio: 'Estúdio', podcast: 'Podcast', pricing: 'Preços', myWork: 'Meus trabalhos', signIn: 'Entrar', settings: 'Configurações', assets: 'Ativos', dashboard: 'Painel', products: 'Produtos', avatars: 'Avatares', brandKits: 'Kits de marca' },
+    nav: { studio: 'Estúdio', podcast: 'Podcast', pricing: 'Preços', myWork: 'Meus trabalhos', signIn: 'Entrar', settings: 'Configurações', assets: 'Ativos', dashboard: 'Painel', products: 'Produtos', avatars: 'Avatares', brandKits: 'Kits de marca', editor: 'Editor' },
     auth: {
       signInError: 'O login falhou ou foi cancelado. Tente novamente.',
       email: 'E-mail',
@@ -5478,6 +5483,7 @@ export const messages: Record<Locale, any> = {
       scoreEmotion: 'Emoção:',
       scoreCta: 'CTA:',
       openInStudio: 'Abrir no Creative Studio',
+      sendToEditor: 'Enviar para o editor',
       variants: 'Variantes A/B',
       errFailed: 'O pipeline do Diretor Criativo falhou. Tente novamente.',
       errNoStream: 'Falha ao transmitir o progresso do pipeline. Tente novamente.',
@@ -5675,7 +5681,7 @@ export const messages: Record<Locale, any> = {
 
   },
   fr: {
-    nav: { studio: 'Studio', podcast: 'Podcast', pricing: 'Tarifs', myWork: 'Mes travaux', signIn: 'Se connecter', settings: 'Paramètres', assets: 'Ressources', dashboard: 'Tableau de bord', products: 'Produits', avatars: 'Avatars', brandKits: 'Kits de marque' },
+    nav: { studio: 'Studio', podcast: 'Podcast', pricing: 'Tarifs', myWork: 'Mes travaux', signIn: 'Se connecter', settings: 'Paramètres', assets: 'Ressources', dashboard: 'Tableau de bord', products: 'Produits', avatars: 'Avatars', brandKits: 'Kits de marque', editor: 'Éditeur' },
     auth: {
       signInError: 'La connexion a échoué ou a été annulée. Veuillez réessayer.',
       email: 'E-mail',
@@ -6405,6 +6411,7 @@ export const messages: Record<Locale, any> = {
       scoreEmotion: 'Émotion :',
       scoreCta: 'CTA :',
       openInStudio: 'Ouvrir dans Creative Studio',
+      sendToEditor: 'Envoyer à l\'éditeur',
       variants: 'Variantes A/B',
       errFailed: 'Le pipeline du Directeur Créatif a échoué. Veuillez réessayer.',
       errNoStream: 'Échec de la diffusion de la progression du pipeline. Veuillez réessayer.',
@@ -6602,7 +6609,7 @@ export const messages: Record<Locale, any> = {
 
   },
   de: {
-    nav: { studio: 'Studio', podcast: 'Podcast', pricing: 'Preise', myWork: 'Meine Arbeiten', signIn: 'Anmelden', settings: 'Einstellungen', assets: 'Assets', dashboard: 'Dashboard', products: 'Produkte', avatars: 'Avatare', brandKits: 'Brand Kits' },
+    nav: { studio: 'Studio', podcast: 'Podcast', pricing: 'Preise', myWork: 'Meine Arbeiten', signIn: 'Anmelden', settings: 'Einstellungen', assets: 'Assets', dashboard: 'Dashboard', products: 'Produkte', avatars: 'Avatare', brandKits: 'Brand Kits', editor: 'Editor' },
     auth: {
       signInError: 'Die Anmeldung ist fehlgeschlagen oder wurde abgebrochen. Bitte versuchen Sie es erneut.',
       email: 'E-Mail',
@@ -7332,6 +7339,7 @@ export const messages: Record<Locale, any> = {
       scoreEmotion: 'Emotion:',
       scoreCta: 'CTA:',
       openInStudio: 'Im Creative Studio öffnen',
+      sendToEditor: 'An Editor senden',
       variants: 'A/B-Varianten',
       errFailed: 'Die Creative Director-Pipeline ist fehlgeschlagen. Bitte versuchen Sie es erneut.',
       errNoStream: 'Fehler beim Streamen des Pipeline-Fortschritts. Bitte versuchen Sie es erneut.',
@@ -7529,7 +7537,7 @@ export const messages: Record<Locale, any> = {
 
   },
   ar: {
-    nav: { studio: 'الاستوديو', podcast: 'البودكاست', pricing: 'الأسعار', myWork: 'أعمالي', signIn: 'تسجيل الدخول', settings: 'الإعدادات', assets: 'الأصول', dashboard: 'لوحة التحكم', products: 'المنتجات', avatars: 'الشخصيات', brandKits: 'هوية العلامة' },
+    nav: { studio: 'الاستوديو', podcast: 'البودكاست', pricing: 'الأسعار', myWork: 'أعمالي', signIn: 'تسجيل الدخول', settings: 'الإعدادات', assets: 'الأصول', dashboard: 'لوحة التحكم', products: 'المنتجات', avatars: 'الشخصيات', brandKits: 'هوية العلامة', editor: 'المحرر' },
     auth: {
       signInError: 'فشل تسجيل الدخول أو تم إلغاؤه. يرجى المحاولة مرة أخرى.',
       email: 'البريد',
@@ -8259,6 +8267,7 @@ export const messages: Record<Locale, any> = {
       scoreEmotion: 'العاطفة:',
       scoreCta: 'الدعوة للإجراء:',
       openInStudio: 'فتح في الاستوديو الإبداعي',
+      sendToEditor: 'إرسال إلى المحرر',
       variants: 'متغيرات A/B',
       errFailed: 'فشل خط أنابيب المخرج الإبداعي. حاول مرة أخرى.',
       errNoStream: 'فشل بث تقدم خط الأنابيب. حاول مرة أخرى.',
@@ -8456,7 +8465,7 @@ export const messages: Record<Locale, any> = {
 
   },
   hi: {
-    nav: { studio: 'स्टूडियो', podcast: 'पॉडकास्ट', pricing: 'मूल्य', myWork: 'मेरा काम', signIn: 'साइन इन', settings: 'सेटिंग्स', assets: 'संपत्तियाँ', dashboard: 'डैशबोर्ड', products: 'उत्पाद', avatars: 'अवतार', brandKits: 'ब्रांड किट' },
+    nav: { studio: 'स्टूडियो', podcast: 'पॉडकास्ट', pricing: 'मूल्य', myWork: 'मेरा काम', signIn: 'साइन इन', settings: 'सेटिंग्स', assets: 'संपत्तियाँ', dashboard: 'डैशबोर्ड', products: 'उत्पाद', avatars: 'अवतार', brandKits: 'ब्रांड किट', editor: 'संपादक' },
     auth: {
       signInError: 'साइन-इन विफल हो गया या रद्द कर दिया गया। कृपया पुनः प्रयास करें।',
       email: 'ईमेल',
@@ -9186,6 +9195,7 @@ export const messages: Record<Locale, any> = {
       scoreEmotion: 'भावना:',
       scoreCta: 'CTA:',
       openInStudio: 'क्रिएटिव स्टूडियो में खोलें',
+      sendToEditor: 'संपादक में भेजें',
       variants: 'A/B वेरिएंट',
       errFailed: 'क्रिएटिव डायरेक्टर पाइपलाइन विफल हो गया। कृपया पुनः प्रयास करें।',
       errNoStream: 'पाइपलाइन प्रगति स्ट्रीम करने में विफल। कृपया पुनः प्रयास करें।',
@@ -9383,7 +9393,7 @@ export const messages: Record<Locale, any> = {
 
   },
   vi: {
-    nav: { studio: 'Studio', podcast: 'Podcast', pricing: 'Bảng giá', myWork: 'Tác phẩm của tôi', signIn: 'Đăng nhập', settings: 'Cài đặt', assets: 'Tài sản', dashboard: 'Bảng điều khiển', products: 'Sản phẩm', avatars: 'Avatar', brandKits: 'Bộ thương hiệu' },
+    nav: { studio: 'Studio', podcast: 'Podcast', pricing: 'Bảng giá', myWork: 'Tác phẩm của tôi', signIn: 'Đăng nhập', settings: 'Cài đặt', assets: 'Tài sản', dashboard: 'Bảng điều khiển', products: 'Sản phẩm', avatars: 'Avatar', brandKits: 'Bộ thương hiệu', editor: 'Trình chỉnh sửa' },
     auth: {
       signInError: 'Đăng nhập thất bại hoặc đã bị hủy. Vui lòng thử lại.',
       email: 'Email',
@@ -10116,6 +10126,7 @@ export const messages: Record<Locale, any> = {
       scoreEmotion: 'Cảm xúc:',
       scoreCta: 'CTA:',
       openInStudio: 'Mở trong Creative Studio',
+      sendToEditor: 'Gửi đến trình chỉnh sửa',
       variants: 'Biến thể A/B',
       errFailed: 'Quy trình của Giám đốc Sáng tạo đã thất bại. Vui lòng thử lại.',
       errNoStream: 'Không thể truyền tiến trình quy trình. Vui lòng thử lại.',
@@ -10312,7 +10323,7 @@ export const messages: Record<Locale, any> = {
 
   },
   th: {
-    nav: { studio: 'Studio', podcast: 'พอดคาสต์', pricing: 'ราคา', myWork: 'ผลงานของฉัน', signIn: 'เข้าสู่ระบบ', settings: 'การตั้งค่า', assets: 'สินทรัพย์', dashboard: 'แดชบอร์ด', products: 'สินค้า', avatars: 'อวตาร', brandKits: 'ชุดแบรนด์' },
+    nav: { studio: 'Studio', podcast: 'พอดคาสต์', pricing: 'ราคา', myWork: 'ผลงานของฉัน', signIn: 'เข้าสู่ระบบ', settings: 'การตั้งค่า', assets: 'สินทรัพย์', dashboard: 'แดชบอร์ด', products: 'สินค้า', avatars: 'อวตาร', brandKits: 'ชุดแบรนด์', editor: 'ตัวแก้ไข' },
     auth: {
       signInError: 'การเข้าสู่ระบบล้มเหลวหรือถูกยกเลิก โปรดลองอีกครั้ง',
       email: 'อีเมล',
@@ -11045,6 +11056,7 @@ export const messages: Record<Locale, any> = {
       scoreEmotion: 'อารมณ์:',
       scoreCta: 'CTA:',
       openInStudio: 'เปิดใน Creative Studio',
+      sendToEditor: 'ส่งไปยังตัวแก้ไข',
       variants: 'เวอร์ชัน A/B',
       errFailed: 'ไปป์ไลน์ผู้กำกับสร้างสรรค์ล้มเหลว กรุณาลองอีกครั้ง',
       errNoStream: 'ไม่สามารถสตรีมความคืบหน้าไปป์ไลน์ กรุณาลองอีกครั้ง',
@@ -11241,7 +11253,7 @@ export const messages: Record<Locale, any> = {
 
   },
   id: {
-    nav: { studio: 'Studio', podcast: 'Podcast', pricing: 'Harga', myWork: 'Karya saya', signIn: 'Masuk', settings: 'Pengaturan', assets: 'Aset', dashboard: 'Dasbor', products: 'Produk', avatars: 'Avatar', brandKits: 'Kit merek' },
+    nav: { studio: 'Studio', podcast: 'Podcast', pricing: 'Harga', myWork: 'Karya saya', signIn: 'Masuk', settings: 'Pengaturan', assets: 'Aset', dashboard: 'Dasbor', products: 'Produk', avatars: 'Avatar', brandKits: 'Kit merek', editor: 'Editor' },
     auth: {
       signInError: 'Login gagal atau dibatalkan. Silakan coba lagi.',
       email: 'Email',
@@ -11974,6 +11986,7 @@ export const messages: Record<Locale, any> = {
       scoreEmotion: 'Emosi:',
       scoreCta: 'CTA:',
       openInStudio: 'Buka di Creative Studio',
+      sendToEditor: 'Kirim ke Editor',
       variants: 'Varian A/B',
       errFailed: 'Pipeline Direktur Kreatif gagal. Silakan coba lagi.',
       errNoStream: 'Gagal mengalirkan kemajuan pipeline. Silakan coba lagi.',

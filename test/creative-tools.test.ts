@@ -7,7 +7,14 @@ import test from 'node:test';
  * Tests the tool registry definitions only — does NOT import from
  * src/lib/creative/intelligence.ts (which has relative extensionless imports
  * that break the Node test runner). Instead imports from the self-contained
- * tools.ts which defines schemas inline.
+ * tools.ts which defines schemas inline and wires execute functions via
+ * dynamic imports (so the intelligence.ts import chain is not triggered at
+ * module load time).
+ *
+ * The execute functions are NOT invoked in these tests — doing so would
+ * trigger the dynamic import of intelligence.ts and its dependency on
+ * atlas.ts, which the Node test runner cannot resolve. We only verify that
+ * execute functions exist and are callable.
  */
 import {
   registerTool,
@@ -304,24 +311,27 @@ test('executeTool validates input before execution', async () => {
   assert.equal(result.cost, 0);
 });
 
-test('executeTool returns contract-only error when execute is not wired up', async () => {
-  // Pass valid input — tool has no execute function (contract only)
-  const result = await executeTool('creative.generateBrief', { product: 'A widget' });
-  assert.equal(result.ok, false);
-  assert.ok(result.error?.includes('no execute function') || result.error?.includes('contract'));
-  assert.equal(result.cost, 0);
+test('each registered creative tool has an execute function', () => {
+  for (const tool of listTools()) {
+    assert.ok(
+      typeof tool.execute === 'function',
+      `${tool.name} should have an execute function`,
+    );
+  }
 });
 
-test('executeTool accepts valid input for generateBrief', async () => {
-  // Should pass validation (even though execute is not wired up)
-  const result = await executeTool('creative.generateBrief', {
-    product: 'A widget',
-    productName: 'Widget',
-    platform: 'tiktok',
-  });
-  // Validation passes, but no execute function → contract-only error
-  assert.equal(result.ok, false);
-  assert.ok(!result.error?.includes('validation'), 'should not fail validation');
+test('executeTool accepts valid input for generateBrief (validation passes)', async () => {
+  // Validation should pass. We do NOT call executeTool here because that
+  // would trigger the dynamic import of intelligence.ts → atlas.ts, which
+  // the Node test runner cannot resolve. Instead, verify the input passes
+  // schema validation by checking that validateAgainstSchema returns no errors.
+  const tool = getTool('creative.generateBrief');
+  assert.ok(tool);
+  const errors = validateAgainstSchema(
+    { product: 'A widget', productName: 'Widget', platform: 'tiktok' },
+    tool!.inputSchema,
+  );
+  assert.equal(errors.length, 0, 'valid input should pass validation');
 });
 
 // ── Registry mutation tests ──

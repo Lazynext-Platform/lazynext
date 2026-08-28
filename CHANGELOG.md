@@ -1,5 +1,48 @@
 # LazyNext Changelog
 
+## 2026-08-28 — Editor API Routes, UI Page, Tool Wiring, ADRs 009-012
+
+### What Changed
+1. Editor API routes: POST /api/editor/rough-cut, GET /api/editor/skills, POST /api/editor/timeline
+2. Editor UI page at /editor with three tabs (Rough Cut, Skills, Timeline)
+3. Creative tool wiring: GET /api/creative/tools, tool validation on refine/remix routes
+4. ADRs 009-012: Timeline Data Model, Creative Tool Contracts, Transcript-Driven Editing, Editing Skill Archive
+5. 48 new i18n keys (editor namespace) × 13 locales
+6. /editor added to navigation
+
+### Verification
+- npm test — 271 unit tests passed
+- npx playwright test — 113 E2E tests passed (15 new editor)
+- npx tsc --noEmit — passed
+- npm run lint — passed
+
+## 2026-08-28 — Timeline Data Model, MCP Tool Contracts, Transcript Editing, Skill Archive
+
+### What Changed
+1. Timeline data model: types, builder, validation, Prisma model (18 tests)
+2. MCP-style creative tool contracts: 10 tools with JSON schemas (24 tests)
+3. Transcript-driven editing: generateRoughCut from ASR, EDL export (21 tests)
+4. Editing skill archive: 5 builtin skills, CRUD, recommendation
+5. 6 roadmap items marked complete
+
+### Verification
+- npm test — 271 unit tests passed (80 new)
+- npx playwright test — 98 E2E tests passed
+
+## 2026-08-28 — ASR/OCR Provider Stubs, Router Improvements, ADRs, E2E Tests
+
+### What Changed
+1. OCR provider interface and dryRunOCR stub
+2. ASR/OCR registry entries (whisper-large-v3, firered-ocr)
+3. Provider router: cost estimation for image/audio, plan-tier filtering
+4. ADR-007: Conversational Creative Refinement
+5. ADR-008: viral2viral Remix
+6. E2E tests for refine/remix UI (15 tests)
+
+### Verification
+- npm test — 191 unit tests passed (18 new provider-router)
+- npx playwright test — 98 E2E tests passed (15 new refine-remix)
+
 ## 2026-08-28 — Conversational Refinement + viral2viral Remix
 
 ### What Changed

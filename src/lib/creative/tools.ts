@@ -490,6 +490,17 @@ const CREATIVE_TOOLS: CreativeTool[] = [
       },
     },
     outputSchema: briefSchema,
+    execute: async (input: unknown) => {
+      const { generateBrief } = await import('@/lib/creative/intelligence');
+      return generateBrief(input as {
+        product: string;
+        productName?: string;
+        platform?: string;
+        format?: string;
+        audience?: string;
+        learnings?: string;
+      });
+    },
   },
   {
     name: 'creative.generateHooks',
@@ -509,6 +520,11 @@ const CREATIVE_TOOLS: CreativeTool[] = [
     outputSchema: {
       type: 'array',
       items: hookSchema,
+    },
+    execute: async (input: unknown) => {
+      const { generateHooks } = await import('@/lib/creative/intelligence');
+      const typed = input as { brief: import('@/lib/creative/types').CreativeBrief; count?: number };
+      return generateHooks(typed.brief, typed.count);
     },
   },
   {
@@ -530,6 +546,11 @@ const CREATIVE_TOOLS: CreativeTool[] = [
       type: 'array',
       items: angleSchema,
     },
+    execute: async (input: unknown) => {
+      const { generateAngles } = await import('@/lib/creative/intelligence');
+      const typed = input as { brief: import('@/lib/creative/types').CreativeBrief; count?: number };
+      return generateAngles(typed.brief, typed.count);
+    },
   },
   {
     name: 'creative.generateScript',
@@ -548,6 +569,15 @@ const CREATIVE_TOOLS: CreativeTool[] = [
       },
     },
     outputSchema: scriptSchema,
+    execute: async (input: unknown) => {
+      const { generateScript } = await import('@/lib/creative/intelligence');
+      const typed = input as {
+        brief: import('@/lib/creative/types').CreativeBrief;
+        angle: import('@/lib/creative/types').CreativeAngle;
+        hook: import('@/lib/creative/types').HookCandidate;
+      };
+      return generateScript(typed.brief, typed.angle, typed.hook);
+    },
   },
   {
     name: 'creative.generateStoryboard',
@@ -566,6 +596,15 @@ const CREATIVE_TOOLS: CreativeTool[] = [
       },
     },
     outputSchema: storyboardSchema,
+    execute: async (input: unknown) => {
+      const { generateStoryboard } = await import('@/lib/creative/intelligence');
+      const typed = input as {
+        brief: import('@/lib/creative/types').CreativeBrief;
+        script: import('@/lib/creative/types').ScriptCandidate;
+        ratio?: string;
+      };
+      return generateStoryboard(typed.brief, typed.script, typed.ratio);
+    },
   },
   {
     name: 'creative.scoreCombination',
@@ -584,6 +623,14 @@ const CREATIVE_TOOLS: CreativeTool[] = [
       },
     },
     outputSchema: scoreSchema,
+    execute: async (input: unknown) => {
+      const { scoreCreative } = await import('@/lib/creative/intelligence');
+      return scoreCreative(input as {
+        brief: import('@/lib/creative/types').CreativeBrief;
+        script: import('@/lib/creative/types').ScriptCandidate;
+        storyboard?: import('@/lib/creative/types').StoryboardCandidate | null;
+      });
+    },
   },
   {
     name: 'creative.generateVariants',
@@ -604,6 +651,15 @@ const CREATIVE_TOOLS: CreativeTool[] = [
     outputSchema: {
       type: 'array',
       items: variantSchema,
+    },
+    execute: async (input: unknown) => {
+      const { generateVariants } = await import('@/lib/creative/intelligence');
+      const typed = input as {
+        brief: import('@/lib/creative/types').CreativeBrief;
+        script: import('@/lib/creative/types').ScriptCandidate;
+        count?: number;
+      };
+      return generateVariants(typed.brief, typed.script, typed.count);
     },
   },
   {
@@ -639,6 +695,15 @@ const CREATIVE_TOOLS: CreativeTool[] = [
         refinementNote: stringSchema('What was changed and why'),
       },
     },
+    execute: async (input: unknown) => {
+      const { refineCreative } = await import('@/lib/creative/intelligence');
+      return refineCreative(input as {
+        type: 'brief' | 'hook' | 'angle' | 'script';
+        instruction: string;
+        brief: import('@/lib/creative/types').CreativeBrief;
+        element: Record<string, unknown>;
+      });
+    },
   },
   {
     name: 'creative.remix',
@@ -660,6 +725,16 @@ const CREATIVE_TOOLS: CreativeTool[] = [
       },
     },
     outputSchema: briefSchema,
+    execute: async (input: unknown) => {
+      const { remixFromReference } = await import('@/lib/creative/intelligence');
+      return remixFromReference(input as {
+        analysis: import('@/lib/creative/types').ReferenceCreativeAnalysis;
+        product: string;
+        productName?: string;
+        platform?: string;
+        format?: string;
+      });
+    },
   },
   {
     name: 'creative.analyzeReference',
@@ -677,6 +752,11 @@ const CREATIVE_TOOLS: CreativeTool[] = [
       },
     },
     outputSchema: referenceAnalysisSchema,
+    execute: async (input: unknown) => {
+      const { analyzeReferenceCreative } = await import('@/lib/creative/intelligence');
+      const typed = input as { sourceUrl: string; transcript?: string };
+      return analyzeReferenceCreative(typed.sourceUrl, typed.transcript);
+    },
   },
 ];
 

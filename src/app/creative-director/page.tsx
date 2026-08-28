@@ -6,7 +6,7 @@ import { useSession } from 'next-auth/react';
 import {
   Sparkles, Loader2, ArrowRight, CheckCircle2, AlertCircle,
   Target, Fish, FileText, Clapperboard, TrendingUp, Coins,
-  MessageSquare, Wand2, X,
+  MessageSquare, Wand2, X, Scissors,
 } from 'lucide-react';
 import { useI18n } from '@/i18n/provider';
 import { AuthModal } from '@/components/AuthModal';
@@ -394,6 +394,22 @@ export default function CreativeDirectorPage() {
             <Link href="/creative-studio" className="mt-3 flex items-center gap-1 text-xs font-medium text-brand-accent hover:underline">
               <Clapperboard className="h-3 w-3" /> {t('director.openInStudio')} <ArrowRight className="h-3 w-3" />
             </Link>
+            {result.bestCombination?.script?.scenes && result.bestCombination.script.scenes.length > 0 && (
+              <Link
+                href={`/editor?transcript=${encodeURIComponent(JSON.stringify({
+                  text: result.bestCombination.script.scenes.map(s => s.voiceover || s.beat).join(' '),
+                  duration: result.bestCombination.script.scenes.length * 3,
+                  segments: result.bestCombination.script.scenes.map((s, i) => ({
+                    start: i * 3,
+                    end: (i + 1) * 3,
+                    text: s.voiceover || s.beat,
+                  })),
+                }))}`}
+                className="mt-1.5 flex items-center gap-1 text-xs font-medium text-brand-accent hover:underline"
+              >
+                <Scissors className="h-3 w-3" /> {t('director.sendToEditor')} <ArrowRight className="h-3 w-3" />
+              </Link>
+            )}
           </section>
         )}
 

@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
+import { useSearchParams } from 'next/navigation';
 import {
   Scissors, Sparkles, Film, Loader2, AlertCircle, Clock,
   Download, CheckCircle2, Layers, Filter,
@@ -61,12 +62,25 @@ const SAMPLE_TRANSCRIPT = JSON.stringify({
 export default function EditorPage() {
   const { data: session } = useSession();
   const { t } = useI18n();
+  const searchParams = useSearchParams();
   const [authOpen, setAuthOpen] = useState(false);
 
   const [tab, setTab] = useState<'roughCut' | 'skills' | 'timeline'>('roughCut');
 
-  // Rough cut state
-  const [transcript, setTranscript] = useState(SAMPLE_TRANSCRIPT);
+  // Rough cut state — initialize from URL query param if present (e.g., from Creative Director)
+  const [transcript, setTranscript] = useState(() => {
+    const queryTranscript = searchParams.get('transcript');
+    if (queryTranscript) {
+      try {
+        // Validate it's valid JSON, then return the pretty-printed version
+        const parsed = JSON.parse(queryTranscript);
+        return JSON.stringify(parsed, null, 2);
+      } catch {
+        return SAMPLE_TRANSCRIPT;
+      }
+    }
+    return SAMPLE_TRANSCRIPT;
+  });
   const [targetDuration, setTargetDuration] = useState('');
   const [minSegment, setMinSegment] = useState('1.5');
   const [maxPause, setMaxPause] = useState('2');

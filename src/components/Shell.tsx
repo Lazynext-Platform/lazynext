@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Sparkles, Megaphone, BarChart3, LayoutDashboard, Package } from 'lucide-react';
+import { Sparkles, Megaphone, BarChart3, LayoutDashboard, Package, Scissors } from 'lucide-react';
 import { UserMenu } from '@/components/UserMenu';
 import { LangToggle } from '@/components/LangToggle';
 import { CreditBadge } from '@/components/CreditBadge';
@@ -17,6 +17,7 @@ const NAV_LINKS = [
   { href: '/ads', label: 'Ads', icon: Megaphone },
   { href: '/performance', label: 'Performance', icon: BarChart3 },
   { href: '/creative-assets', label: 'Assets', icon: Package },
+  { href: '/editor', label: 'Editor', icon: Scissors },
 ];
 
 export function Shell({ children }: { children: React.ReactNode }) {
