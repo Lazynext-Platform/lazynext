@@ -41,6 +41,7 @@ model User {
   editingSkills EditingSkill[]
   creativeTemplates CreativeTemplate[]
   sharedLinks  SharedLink[]
+  webhookEndpoints WebhookEndpoint[]
 }
 
 model Account {
@@ -223,6 +224,22 @@ model SharedLink {
   @@index([userId])
   @@index([assetId])
   @@index([token])
+}
+
+model WebhookEndpoint {
+  id          String   @id @default(cuid())
+  userId      String
+  url         String   // callback URL
+  secret      String   // signing secret for HMAC
+  events      String   // comma-separated list of events to subscribe to
+  active      Boolean  @default(true)
+  lastFiredAt DateTime?
+  lastStatus  Int?     // last HTTP response status code
+  createdAt   DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
 
 model AssetVersion {

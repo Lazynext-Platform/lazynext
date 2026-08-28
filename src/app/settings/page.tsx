@@ -7,6 +7,7 @@ import { CountrySelector } from '@/components/CountrySelector';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { ThemeSelector } from '@/components/ThemeSelector';
 import { AuthModal } from '@/components/AuthModal';
+import { WebhooksSection } from '@/components/WebhooksSection';
 
 export default function SettingsPage() {
   const { data: session, status } = useSession();
@@ -56,6 +57,9 @@ export default function SettingsPage() {
               </div>
             )}
           </div>
+
+          {/* Webhooks section */}
+          {status === 'authenticated' && session?.user && <WebhooksSection />}
         </div>
       </div>
 

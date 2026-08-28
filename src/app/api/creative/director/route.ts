@@ -4,6 +4,7 @@ import { auth } from '@/../auth';
 import { runCreativeDirector, type DirectorStep, type DirectorResult } from '@/lib/creative/director';
 import { deductCredits } from '@/lib/credits';
 import { refundSync } from '@/lib/lazynext-studio/gen-task';
+import { dispatchWebhook } from '@/lib/webhooks';
 
 export const maxDuration = 120;
 
@@ -48,6 +49,8 @@ async function __byokPOST(req: Request) {
 
       const unused = budget - result.totalCreditsSpent;
       if (unused > 0) await refundSync(uid, unused, 'creative:director:refund');
+
+      await dispatchWebhook(uid, 'creative.generated', { assetPackageId: result.assetPackageId, totalCreditsSpent: result.totalCreditsSpent }).catch(() => {});
 
       return NextResponse.json({ result });
     } catch (e) {
@@ -94,6 +97,8 @@ async function __byokPOST(req: Request) {
         // Refund unused credits
         const unused = budget - result.totalCreditsSpent;
         if (unused > 0) await refundSync(uid, unused, 'creative:director:refund');
+
+        await dispatchWebhook(uid, 'creative.generated', { assetPackageId: result.assetPackageId, totalCreditsSpent: result.totalCreditsSpent }).catch(() => {});
 
         // Send final result
         send('complete', {

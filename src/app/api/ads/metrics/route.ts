@@ -4,6 +4,7 @@ import { auth } from '@/../auth';
 import { prisma } from '@/lib/prisma';
 import { metaAds } from '@/lib/ad-platforms/meta';
 import { googleAds } from '@/lib/ad-platforms/google';
+import { dispatchWebhook } from '@/lib/webhooks';
 
 export const maxDuration = 60;
 
@@ -52,6 +53,8 @@ async function __byokPOST(req: Request) {
         }).catch(() => {}); // non-fatal
       }
     }
+
+    await dispatchWebhook(uid, 'campaign.metrics_updated', { campaignId: campaign.id, metrics }).catch(() => {});
 
     return NextResponse.json({ metrics });
   } catch (e) {

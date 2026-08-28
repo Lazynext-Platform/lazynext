@@ -2,9 +2,10 @@
 
 import { useState, useCallback, useEffect, useMemo } from 'react';
 import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import {
   FileText, Fish, Target, Sparkles, Package, Loader2, AlertCircle,
-  ChevronDown, ChevronRight, Coins, Search, X, Check,
+  ChevronDown, ChevronRight, Coins, Search, X, Check, ArrowUpDown,
 } from 'lucide-react';
 import { useI18n } from '@/i18n/provider';
 import { AuthModal } from '@/components/AuthModal';
@@ -100,6 +101,11 @@ export default function CreativeAssetsPage() {
   const [bulkStatus, setBulkStatus] = useState('');
   const [bulkDeleting, setBulkDeleting] = useState(false);
 
+  // Compare mode
+  const router = useRouter();
+  const [compareMode, setCompareMode] = useState(false);
+  const [compareSelected, setCompareSelected] = useState<string[]>([]);
+
   const load = useCallback(async () => {
     if (!session?.user) { setLoading(false); return; }
     setLoading(true); setError('');
@@ -159,6 +165,24 @@ export default function CreativeAssetsPage() {
   const exitSelectMode = () => {
     setSelectMode(false);
     setSelected(new Set());
+  };
+
+  const toggleCompare = (id: string) => {
+    setCompareSelected((prev) => {
+      if (prev.includes(id)) return prev.filter((x) => x !== id);
+      if (prev.length >= 2) return [prev[1], id];
+      return [...prev, id];
+    });
+  };
+
+  const exitCompareMode = () => {
+    setCompareMode(false);
+    setCompareSelected([]);
+  };
+
+  const goCompare = () => {
+    if (compareSelected.length !== 2) return;
+    router.push(`/creative-diff?a=${compareSelected[0]}&b=${compareSelected[1]}`);
   };
 
   const bulkDelete = async () => {
@@ -273,14 +297,23 @@ export default function CreativeAssetsPage() {
 
         {/* Selection toolbar */}
         <div className="mt-3 flex flex-wrap items-center gap-2">
-          {!selectMode ? (
-            <button
-              onClick={() => setSelectMode(true)}
-              className="rounded-lg border border-line bg-surface px-3 py-1.5 text-xs font-medium text-fg hover:bg-hover"
-            >
-              {t('cassets.gallerySelect')}
-            </button>
-          ) : (
+          {!selectMode && !compareMode ? (
+            <>
+              <button
+                onClick={() => setSelectMode(true)}
+                className="rounded-lg border border-line bg-surface px-3 py-1.5 text-xs font-medium text-fg hover:bg-hover"
+              >
+                {t('cassets.gallerySelect')}
+              </button>
+              <button
+                onClick={() => setCompareMode(true)}
+                className="rounded-lg border border-line bg-surface px-3 py-1.5 text-xs font-medium text-fg hover:bg-hover"
+              >
+                <ArrowUpDown className="mr-1 inline h-3.5 w-3.5" />
+                {t('cassets.compare')}
+              </button>
+            </>
+          ) : selectMode ? (
             <>
               <button
                 onClick={bulkDelete}
@@ -295,6 +328,25 @@ export default function CreativeAssetsPage() {
               </button>
               <button
                 onClick={exitSelectMode}
+                className="rounded-lg border border-line bg-surface px-3 py-1.5 text-xs font-medium text-fg hover:bg-hover"
+              >
+                {t('cassets.galleryCancel')}
+              </button>
+            </>
+          ) : (
+            <>
+              <span className="text-xs font-medium text-fg-faint">
+                {t('cassets.compareSelected', { '0': compareSelected.length })}
+              </span>
+              <button
+                onClick={goCompare}
+                disabled={compareSelected.length !== 2}
+                className="rounded-lg border border-[#00b2fc]/30 bg-[#00b2fc]/10 px-3 py-1.5 text-xs font-bold text-[#00b2fc] disabled:opacity-40"
+              >
+                {t('cassets.compareGo')}
+              </button>
+              <button
+                onClick={exitCompareMode}
                 className="rounded-lg border border-line bg-surface px-3 py-1.5 text-xs font-medium text-fg hover:bg-hover"
               >
                 {t('cassets.galleryCancel')}
@@ -340,11 +392,12 @@ export default function CreativeAssetsPage() {
               const children = childrenOf(pkg.id);
               const isExpanded = expandedId === pkg.id;
               const isSelected = selected.has(pkg.id);
+              const isCompareSelected = compareSelected.includes(pkg.id);
               return (
                 <div
                   key={pkg.id}
                   className={`rounded-2xl border bg-surface p-4 transition ${
-                    isSelected ? 'border-[#00b2fc]/50 ring-1 ring-[#00b2fc]/30' : 'border-line'
+                    isSelected || isCompareSelected ? 'border-[#00b2fc]/50 ring-1 ring-[#00b2fc]/30' : 'border-line'
                   }`}
                 >
                   <div className="flex w-full items-center justify-between text-left">
@@ -363,9 +416,24 @@ export default function CreativeAssetsPage() {
                           {isSelected && <Check className="h-3.5 w-3.5 text-[#00b2fc]" />}
                         </button>
                       )}
+                      {compareMode && (
+                        <button
+                          onClick={() => toggleCompare(pkg.id)}
+                          className={`flex h-5 w-5 shrink-0 items-center justify-center rounded border ${
+                            isCompareSelected
+                              ? 'border-[#00b2fc] bg-[#00b2fc]/15'
+                              : 'border-line bg-app'
+                          }`}
+                          aria-label={isCompareSelected ? `Deselect ${pkg.name}` : `Select ${pkg.name}`}
+                          aria-pressed={isCompareSelected}
+                        >
+                          {isCompareSelected && <Check className="h-3.5 w-3.5 text-[#00b2fc]" />}
+                        </button>
+                      )}
                       <button
                         onClick={() => {
                           if (selectMode) toggleSelect(pkg.id);
+                          else if (compareMode) toggleCompare(pkg.id);
                           else setExpandedId(isExpanded ? null : pkg.id);
                         }}
                         className="flex items-center gap-2 min-w-0"

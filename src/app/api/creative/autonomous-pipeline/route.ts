@@ -8,6 +8,7 @@ import type { AdCampaignInput, PublishOptions } from '@/lib/ad-platforms/types';
 import { deductCredits } from '@/lib/credits';
 import { refundSync } from '@/lib/lazynext-studio/gen-task';
 import { prisma } from '@/lib/prisma';
+import { dispatchWebhook } from '@/lib/webhooks';
 
 export const maxDuration = 120;
 
@@ -199,6 +200,8 @@ async function __byokPOST(req: Request) {
         // Refund unused credits
         const unused = budget - directorResult.totalCreditsSpent;
         if (unused > 0) await refundSync(uid, unused, 'creative:autonomous:refund');
+
+        await dispatchWebhook(uid, 'pipeline.completed', { bestScore: best.score.overall, dryRun: opts.dryRun }).catch(() => {});
 
         controller.close();
       } catch (e) {

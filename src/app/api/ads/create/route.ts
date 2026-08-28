@@ -5,6 +5,7 @@ import { prisma } from '@/lib/prisma';
 import { metaAds } from '@/lib/ad-platforms/meta';
 import { googleAds } from '@/lib/ad-platforms/google';
 import type { AdCampaignInput, PublishOptions } from '@/lib/ad-platforms/types';
+import { dispatchWebhook } from '@/lib/webhooks';
 
 export const maxDuration = 60;
 
@@ -46,6 +47,8 @@ async function __byokPOST(req: Request) {
         metrics: result.metrics ? JSON.parse(JSON.stringify(result.metrics)) : undefined,
       },
     }).catch(() => null);
+
+    await dispatchWebhook(uid, 'campaign.deployed', { campaignId: campaign?.id || result.campaignId, platform: input.platform, dryRun: opts.dryRun }).catch(() => {});
 
     return NextResponse.json({ campaign: result, dbId: campaign?.id || null });
   } catch (e) {
