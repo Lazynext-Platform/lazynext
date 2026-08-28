@@ -11,6 +11,7 @@ import { useI18n } from '@/i18n/provider';
 import { AuthModal } from '@/components/AuthModal';
 import { CommentsThread } from '@/components/CommentsThread';
 import { ExportModal } from '@/components/ExportModal';
+import { SmartAssetLibrary } from '@/components/SmartAssetLibrary';
 
 type Asset = {
   id: string;
@@ -591,6 +592,9 @@ export default function CreativeAssetsPage() {
             </div>
           </div>
         )}
+
+        {/* Smart Asset Library section */}
+        <SmartAssetLibrary />
       </div>
 
       {/* Lightbox / preview modal */}

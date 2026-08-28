@@ -6,6 +6,7 @@ import {
   AlertCircle, CheckCircle2, Loader2, Sparkles, Link2, Lightbulb, Film,
   Copy, ChevronRight, Globe, Target, MessageSquare, Clapperboard,
   Video, ArrowRight, Wand2, StopCircle, Grid, FlaskConical, RefreshCw,
+  Shield,
 } from 'lucide-react';
 import Link from 'next/link';
 import { useI18n } from '@/i18n/provider';
@@ -16,6 +17,7 @@ import { BriefAssistantModal } from '@/components/BriefAssistantModal';
 import { AutoVariantsModal } from '@/components/AutoVariantsModal';
 import { RegenerationModal } from '@/components/RegenerationModal';
 import { MultiPlatformAdapterModal } from '@/components/MultiPlatformAdapterModal';
+import { BrandVoiceCheckerModal } from '@/components/BrandVoiceCheckerModal';
 
 // ── Types matching the backend ──
 type BrandExtraction = {
@@ -153,6 +155,7 @@ export default function CreativeStudioPage() {
   const [regenType, setRegenType] = useState<'hook' | 'angle' | 'script' | 'brief'>('hook');
   const [regenElement, setRegenElement] = useState<Record<string, unknown> | null>(null);
   const [adapterOpen, setAdapterOpen] = useState(false);
+  const [brandCheckOpen, setBrandCheckOpen] = useState(false);
 
   // Hooks state
   const [hooksStep, setHooksStep] = useState<Step>('idle');
@@ -1607,6 +1610,15 @@ export default function CreativeStudioPage() {
                     <Globe className="h-3 w-3" />
                     {t('platformAdapter.button')}
                   </button>
+                  {brandKitId && (
+                    <button
+                      onClick={() => setBrandCheckOpen(true)}
+                      className="mt-2 flex items-center gap-1.5 rounded-lg border border-brand-accent/30 bg-brand-accent/10 px-3 py-1.5 text-xs font-bold text-brand-accent"
+                    >
+                      <Shield className="h-3 w-3" />
+                      {t('brandCheck.button')}
+                    </button>
+                  )}
                 </div>
               )}
             </div>
@@ -1974,6 +1986,16 @@ export default function CreativeStudioPage() {
         onClose={() => setAdapterOpen(false)}
         brief={brief}
         script={script}
+      />
+
+      <BrandVoiceCheckerModal
+        open={brandCheckOpen}
+        onClose={() => setBrandCheckOpen(false)}
+        brief={brief}
+        hook={selectedHook}
+        angle={selectedAngle}
+        script={script}
+        brandKitId={brandKitId}
       />
     </div>
   );

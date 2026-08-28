@@ -5,10 +5,12 @@ import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import {
   Trophy, FlaskConical, Loader2, AlertCircle, ArrowLeft,
-  TrendingUp, BarChart3, CheckCircle2,
+  TrendingUp, BarChart3, CheckCircle2, Beaker,
 } from 'lucide-react';
 import { useI18n } from '@/i18n/provider';
 import { AuthModal } from '@/components/AuthModal';
+import { ABTestPlannerModal } from '@/components/ABTestPlannerModal';
+import type { CreativeBrief, HookCandidate, CreativeAngle, ScriptCandidate } from '@/lib/creative/types';
 
 type Variant = {
   campaignId: string;
@@ -44,6 +46,7 @@ export default function ABTestResultsPage() {
   const [loading, setLoading] = useState(true);
   const [groups, setGroups] = useState<ABTestGroup[]>([]);
   const [error, setError] = useState('');
+  const [plannerOpen, setPlannerOpen] = useState(false);
 
   const load = useCallback(async () => {
     if (status !== 'authenticated') { setLoading(false); return; }
@@ -97,6 +100,17 @@ export default function ABTestResultsPage() {
         </div>
 
         <p className="mb-6 text-sm text-fg-faint">{t('abTestResults.description')}</p>
+
+        {/* Plan New Test button */}
+        <div className="mb-6">
+          <button
+            onClick={() => setPlannerOpen(true)}
+            className="inline-flex items-center gap-2 rounded-lg bg-brand-accent px-4 py-2 text-sm font-bold text-white transition hover:opacity-90"
+          >
+            <Beaker className="h-4 w-4" />
+            {t('abTestPlanner.button')}
+          </button>
+        </div>
 
         {/* Error */}
         {error && (
@@ -248,6 +262,14 @@ export default function ABTestResultsPage() {
       </div>
 
       <AuthModal open={authOpen} onClose={() => setAuthOpen(false)} />
+      <ABTestPlannerModal
+        open={plannerOpen}
+        onClose={() => setPlannerOpen(false)}
+        brief={null}
+        script={null}
+        hook={null}
+        angle={null}
+      />
     </div>
   );
 }
