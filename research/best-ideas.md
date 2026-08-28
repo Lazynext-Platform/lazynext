@@ -60,9 +60,9 @@
 
 | Source Repo | Original Concept | LazyNext Adaptation | Location | Priority |
 |---|---|---|---|---|
-| meta-ads-mcp (#29) | Meta Ads campaign creation/reporting/budget with safety tools | Future: AdPublishingProvider interface with dry-run/approval/spend caps | Future | P2 |
-| meta-ads-mcp (#29) | Safety: dry-run, preview, approval, audit log | Future: approval system for spend-affecting actions | Future | P2 |
-| google-meta-ads-ga4-mcp (#30) | Google/Meta/GA4 unified analytics | Future: performance feedback loop | Future | P2 |
+| meta-ads-mcp (#29) | Meta Ads campaign creation/reporting/budget with safety tools | AdPlatformProvider interface with dry-run/approval/spend caps | `src/lib/ad-platforms/meta.ts` | P2 ✅ |
+| meta-ads-mcp (#29) | Safety: dry-run, preview, approval, audit log | Dry-run mode, requireApproval flag, spend caps | `src/lib/ad-platforms/types.ts` | P2 ✅ |
+| google-meta-ads-ga4-mcp (#30) | Google/Meta/GA4 unified analytics | Performance feedback loop (CreativePerformance → learnings → briefs) | `src/lib/creative/learning.ts` | P2 ✅ |
 
 ## Video Editing
 
@@ -95,12 +95,12 @@
 
 | Source Repo | Original Concept | LazyNext Adaptation | Location | Priority |
 |---|---|---|---|---|
-| Polsia/OpenPolsia (#44-46) | Autonomous task orchestration, agent loops, persistent state | Future: "Autonomous Creative Director" (P3) | Future | P3 |
+| Polsia/OpenPolsia (#44-46) | Autonomous task orchestration, agent loops, persistent state | Autonomous Creative Director with workflow engine, budget control, asset persistence | `src/lib/creative/director.ts` | P3 ✅ |
 
 ## Observability
 
 | Source Repo | Original Concept | LazyNext Adaptation | Location | Priority |
 |---|---|---|---|---|
-| meta-ads-mcp (#29) | Tool call audit logging | Future: structured workflow events | Future | P2 |
+| meta-ads-mcp (#29) | Tool call audit logging | WorkflowRun/WorkflowStep records in D1 | `src/lib/workflow/engine.ts` | P2 ✅ |
 
 ✅ = implemented in this session
