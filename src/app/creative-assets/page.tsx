@@ -5,10 +5,12 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import {
   FileText, Fish, Target, Sparkles, Package, Loader2, AlertCircle,
-  ChevronDown, ChevronRight, Coins, Search, X, Check, ArrowUpDown,
+  ChevronDown, ChevronRight, Coins, Search, X, Check, ArrowUpDown, Download,
 } from 'lucide-react';
 import { useI18n } from '@/i18n/provider';
 import { AuthModal } from '@/components/AuthModal';
+import { CommentsThread } from '@/components/CommentsThread';
+import { ExportModal } from '@/components/ExportModal';
 
 type Asset = {
   id: string;
@@ -105,6 +107,9 @@ export default function CreativeAssetsPage() {
   const router = useRouter();
   const [compareMode, setCompareMode] = useState(false);
   const [compareSelected, setCompareSelected] = useState<string[]>([]);
+
+  // Export modal
+  const [exportOpen, setExportOpen] = useState(false);
 
   const load = useCallback(async () => {
     if (!session?.user) { setLoading(false); return; }
@@ -327,6 +332,14 @@ export default function CreativeAssetsPage() {
                 )}
               </button>
               <button
+                onClick={() => setExportOpen(true)}
+                disabled={selected.size === 0}
+                className="flex items-center gap-1 rounded-lg border border-brand-accent/30 bg-brand-accent/10 px-3 py-1.5 text-xs font-bold text-brand-accent disabled:opacity-40"
+              >
+                <Download className="h-3.5 w-3.5" />
+                {t('cassets.exportSelected')}
+              </button>
+              <button
                 onClick={exitSelectMode}
                 className="rounded-lg border border-line bg-surface px-3 py-1.5 text-xs font-medium text-fg hover:bg-hover"
               >
@@ -516,6 +529,8 @@ export default function CreativeAssetsPage() {
                       })}
                     </div>
                   )}
+
+                  {isExpanded && <CommentsThread assetId={pkg.id} />}
                 </div>
               );
             })}
@@ -644,6 +659,14 @@ export default function CreativeAssetsPage() {
           </div>
         </div>
       )}
+
+      {/* Export Modal */}
+      <ExportModal
+        open={exportOpen}
+        onClose={() => setExportOpen(false)}
+        assetIds={Array.from(selected)}
+        assetNames={packages.filter(p => selected.has(p.id)).map(p => p.name)}
+      />
     </div>
   );
 }

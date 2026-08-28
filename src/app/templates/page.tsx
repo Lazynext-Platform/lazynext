@@ -4,7 +4,7 @@ import { useState, useCallback, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import {
   Sparkles, Search, Star, Trash2, Loader2, AlertCircle,
-  FileText, MessageSquare, Lightbulb, Film, Package,
+  FileText, MessageSquare, Lightbulb, Film, Package, Plus, X,
 } from 'lucide-react';
 import { useI18n } from '@/i18n/provider';
 import { AuthModal } from '@/components/AuthModal';
@@ -42,6 +42,21 @@ export default function TemplateLibraryPage() {
   const [search, setSearch] = useState('');
   const [favoritesOnly, setFavoritesOnly] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(null);
+
+  // Brief template builder state
+  const [builderOpen, setBuilderOpen] = useState(false);
+  const [builderName, setBuilderName] = useState('');
+  const [builderDesc, setBuilderDesc] = useState('');
+  const [builderProduct, setBuilderProduct] = useState('');
+  const [builderAudience, setBuilderAudience] = useState('');
+  const [builderTone, setBuilderTone] = useState('');
+  const [builderGoals, setBuilderGoals] = useState('');
+  const [builderBenefits, setBuilderBenefits] = useState('');
+  const [builderCta, setBuilderCta] = useState('');
+  const [builderTagInput, setBuilderTagInput] = useState('');
+  const [builderTags, setBuilderTags] = useState<string[]>([]);
+  const [builderSaving, setBuilderSaving] = useState(false);
+  const [builderError, setBuilderError] = useState('');
 
   const loadTemplates = useCallback(async () => {
     if (!session?.user) return;
@@ -107,6 +122,56 @@ export default function TemplateLibraryPage() {
     }
   }, [session?.user]);
 
+  const openBuilder = useCallback(() => {
+    if (!session?.user) { setAuthOpen(true); return; }
+    setBuilderOpen(true);
+    setBuilderName(''); setBuilderDesc(''); setBuilderProduct('');
+    setBuilderAudience(''); setBuilderTone(''); setBuilderGoals('');
+    setBuilderBenefits(''); setBuilderCta(''); setBuilderTags([]);
+    setBuilderTagInput(''); setBuilderError('');
+  }, [session?.user]);
+
+  const addBuilderTag = useCallback(() => {
+    const tag = builderTagInput.trim();
+    if (tag && !builderTags.includes(tag) && builderTags.length < 10) {
+      setBuilderTags(prev => [...prev, tag]);
+      setBuilderTagInput('');
+    }
+  }, [builderTagInput, builderTags]);
+
+  const saveBuilderTemplate = useCallback(async () => {
+    if (!builderName.trim()) { setBuilderError(t('briefBuilder.nameRequired')); return; }
+    setBuilderSaving(true); setBuilderError('');
+    try {
+      const payload = {
+        product: builderProduct.trim(),
+        audience: builderAudience.trim(),
+        tone: builderTone.trim(),
+        goals: builderGoals.trim(),
+        keyBenefits: builderBenefits.trim(),
+        cta: builderCta.trim(),
+      };
+      const res = await fetch('/api/creative/templates', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          category: 'brief',
+          name: builderName.trim(),
+          description: builderDesc.trim(),
+          payload,
+          tags: builderTags,
+        }),
+      });
+      if (!res.ok) throw new Error('save_failed');
+      setBuilderOpen(false);
+      loadTemplates();
+    } catch {
+      setBuilderError(t('briefBuilder.saveFailed'));
+    } finally {
+      setBuilderSaving(false);
+    }
+  }, [builderName, builderDesc, builderProduct, builderAudience, builderTone, builderGoals, builderBenefits, builderCta, builderTags, t, loadTemplates]);
+
   return (
     <div className="min-h-screen bg-bg">
       <AuthModal open={authOpen} onClose={() => setAuthOpen(false)} />
@@ -118,6 +183,17 @@ export default function TemplateLibraryPage() {
             {t('templates.title')}
           </h1>
           <p className="text-sm text-fg-muted">{t('templates.subtitle')}</p>
+        </div>
+
+        {/* Create Brief Template button */}
+        <div className="mb-4">
+          <button
+            onClick={openBuilder}
+            className="flex items-center gap-1.5 rounded-lg bg-brand-accent px-4 py-2 text-sm font-bold text-white transition hover:opacity-90"
+          >
+            <Plus className="h-4 w-4" />
+            {t('briefBuilder.create')}
+          </button>
         </div>
 
         {/* Filters */}
@@ -298,6 +374,218 @@ export default function TemplateLibraryPage() {
                   className="px-4 py-2 rounded-lg border border-border text-fg text-sm hover:bg-bg"
                 >
                   {t('templates.close')}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Brief Template Builder Modal */}
+        {builderOpen && (
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-label={t('briefBuilder.title')}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+            onClick={() => setBuilderOpen(false)}
+          >
+            <div
+              className="rounded-lg bg-bg-card border border-border max-w-2xl w-full max-h-[85vh] overflow-auto p-6"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-start justify-between mb-4">
+                <div>
+                  <h2 className="text-lg font-bold">{t('briefBuilder.title')}</h2>
+                  <p className="text-sm text-fg-muted">{t('briefBuilder.subtitle')}</p>
+                </div>
+                <button
+                  onClick={() => setBuilderOpen(false)}
+                  className="text-fg-muted hover:text-fg"
+                  aria-label="Close"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
+
+              {builderError && (
+                <div role="alert" className="mb-4 rounded-lg border border-danger/30 bg-danger/10 p-3 text-sm text-danger">
+                  <AlertCircle className="inline w-4 h-4 mr-1.5" aria-hidden="true" />
+                  {builderError}
+                </div>
+              )}
+
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium mb-1" htmlFor="bt-name">
+                    {t('briefBuilder.name')} <span className="text-danger">*</span>
+                  </label>
+                  <input
+                    id="bt-name"
+                    type="text"
+                    value={builderName}
+                    onChange={(e) => setBuilderName(e.target.value)}
+                    placeholder={t('briefBuilder.namePlaceholder')}
+                    className="w-full rounded-lg border border-border bg-bg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
+                    maxLength={100}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-1" htmlFor="bt-desc">
+                    {t('briefBuilder.description')}
+                  </label>
+                  <input
+                    id="bt-desc"
+                    type="text"
+                    value={builderDesc}
+                    onChange={(e) => setBuilderDesc(e.target.value)}
+                    placeholder={t('briefBuilder.descPlaceholder')}
+                    className="w-full rounded-lg border border-border bg-bg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
+                    maxLength={500}
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-1" htmlFor="bt-product">
+                      {t('briefBuilder.product')}
+                    </label>
+                    <input
+                      id="bt-product"
+                      type="text"
+                      value={builderProduct}
+                      onChange={(e) => setBuilderProduct(e.target.value)}
+                      placeholder={t('briefBuilder.productPlaceholder')}
+                      className="w-full rounded-lg border border-border bg-bg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1" htmlFor="bt-audience">
+                      {t('briefBuilder.audience')}
+                    </label>
+                    <input
+                      id="bt-audience"
+                      type="text"
+                      value={builderAudience}
+                      onChange={(e) => setBuilderAudience(e.target.value)}
+                      placeholder={t('briefBuilder.audiencePlaceholder')}
+                      className="w-full rounded-lg border border-border bg-bg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-1" htmlFor="bt-tone">
+                      {t('briefBuilder.tone')}
+                    </label>
+                    <input
+                      id="bt-tone"
+                      type="text"
+                      value={builderTone}
+                      onChange={(e) => setBuilderTone(e.target.value)}
+                      placeholder={t('briefBuilder.tonePlaceholder')}
+                      className="w-full rounded-lg border border-border bg-bg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1" htmlFor="bt-cta">
+                      {t('briefBuilder.cta')}
+                    </label>
+                    <input
+                      id="bt-cta"
+                      type="text"
+                      value={builderCta}
+                      onChange={(e) => setBuilderCta(e.target.value)}
+                      placeholder={t('briefBuilder.ctaPlaceholder')}
+                      className="w-full rounded-lg border border-border bg-bg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-1" htmlFor="bt-goals">
+                    {t('briefBuilder.goals')}
+                  </label>
+                  <textarea
+                    id="bt-goals"
+                    value={builderGoals}
+                    onChange={(e) => setBuilderGoals(e.target.value)}
+                    placeholder={t('briefBuilder.goalsPlaceholder')}
+                    rows={2}
+                    className="w-full rounded-lg border border-border bg-bg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-1" htmlFor="bt-benefits">
+                    {t('briefBuilder.benefits')}
+                  </label>
+                  <textarea
+                    id="bt-benefits"
+                    value={builderBenefits}
+                    onChange={(e) => setBuilderBenefits(e.target.value)}
+                    placeholder={t('briefBuilder.benefitsPlaceholder')}
+                    rows={2}
+                    className="w-full rounded-lg border border-border bg-bg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-1" htmlFor="bt-tags">
+                    {t('briefBuilder.tags')}
+                  </label>
+                  <div className="flex gap-2">
+                    <input
+                      id="bt-tags"
+                      type="text"
+                      value={builderTagInput}
+                      onChange={(e) => setBuilderTagInput(e.target.value)}
+                      onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addBuilderTag(); } }}
+                      placeholder={t('briefBuilder.tagsPlaceholder')}
+                      className="flex-1 rounded-lg border border-border bg-bg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
+                    />
+                    <button
+                      onClick={addBuilderTag}
+                      type="button"
+                      className="rounded-lg border border-border px-3 py-2 text-sm hover:bg-bg"
+                    >
+                      <Plus className="h-4 w-4" />
+                    </button>
+                  </div>
+                  {builderTags.length > 0 && (
+                    <div className="mt-2 flex flex-wrap gap-1">
+                      {builderTags.map(tag => (
+                        <span key={tag} className="flex items-center gap-1 rounded-full bg-bg border border-border px-2 py-0.5 text-xs">
+                          {tag}
+                          <button
+                            onClick={() => setBuilderTags(prev => prev.filter(t => t !== tag))}
+                            className="text-fg-muted hover:text-danger"
+                            aria-label={`Remove ${tag}`}
+                          >
+                            <X className="h-3 w-3" />
+                          </button>
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="mt-6 flex gap-2 justify-end">
+                <button
+                  onClick={() => setBuilderOpen(false)}
+                  className="px-4 py-2 rounded-lg border border-border text-fg text-sm hover:bg-bg"
+                >
+                  {t('templates.close')}
+                </button>
+                <button
+                  onClick={saveBuilderTemplate}
+                  disabled={builderSaving || !builderName.trim()}
+                  className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-brand-accent text-white text-sm font-medium hover:opacity-90 disabled:opacity-40"
+                >
+                  {builderSaving && <Loader2 className="h-4 w-4 animate-spin" />}
+                  {t('briefBuilder.save')}
                 </button>
               </div>
             </div>
