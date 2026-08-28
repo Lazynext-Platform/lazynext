@@ -8,7 +8,7 @@
  * Future: integrate with user plan tier, latency metrics, and A/B testing.
  */
 import type { Capability, ModelInfo } from './types';
-import { modelsByCapability } from './registry';
+import { modelsByCapability, getModel } from './registry';
 
 export interface RouteOptions {
   /** User plan tier — higher tiers get access to premium models. */
@@ -44,8 +44,13 @@ export function routeModel(capability: Capability, opts: RouteOptions = {}): str
     if (resMatch.length > 0) candidates = resMatch;
   }
 
-  // Plan tier filtering (future: mark models as pro/elite only)
-  // For now, all models are available to all tiers
+  // Plan tier filtering — exclude models whose capabilities require a higher tier
+  if (opts.planTier) {
+    candidates = candidates.filter(m =>
+      m.capabilities.some(cap => tierHasAccess(opts.planTier!, cap))
+    );
+    if (candidates.length === 0) return null;
+  }
 
   // Sort by preference
   if (opts.preferCheap) {
@@ -65,13 +70,54 @@ export function routeModel(capability: Capability, opts: RouteOptions = {}): str
 }
 
 /**
- * Get estimated cost for a model + duration.
+ * Get estimated cost for a model + duration (video) or per-call (image/audio).
  */
 export function estimateCost(modelId: string, durationSec: number, resolution = '720p'): number {
-  // Look up in registry
-  const models = modelsByCapability('videoGeneration');
-  const model = models.find(m => m.id === modelId);
+  const model = getModel(modelId);
   if (!model?.costPerSecondUsd) return 0;
-  const perSec = model.costPerSecondUsd[resolution] || model.costPerSecondUsd['720p'] || 0;
-  return perSec * durationSec;
+
+  if (model.capabilities.includes('videoGeneration') || model.capabilities.includes('videoEditing')) {
+    // Per-second cost for video
+    const perSec = model.costPerSecondUsd[resolution] || model.costPerSecondUsd['720p'] || model.costPerSecondUsd['*'] || 0;
+    return perSec * durationSec;
+  }
+
+  if (model.capabilities.includes('imageGeneration') || model.capabilities.includes('imageEditing')) {
+    // Per-call cost for image (use '*' or first rate)
+    const perCall = model.costPerSecondUsd['*'] || Object.values(model.costPerSecondUsd)[0] || 0;
+    return perCall;
+  }
+
+  if (model.capabilities.includes('speechSynthesis') || model.capabilities.includes('lipsync')) {
+    // Per-second cost for audio
+    const perSec = model.costPerSecondUsd['*'] || Object.values(model.costPerSecondUsd)[0] || 0;
+    return perSec * durationSec;
+  }
+
+  return 0;
+}
+
+/** Plan tier access levels — determines which models are available. */
+const TIER_ACCESS: Record<string, string[]> = {
+  free: ['text', 'reasoning', 'imageGeneration', 'speechSynthesis'],
+  starter: ['text', 'reasoning', 'imageGeneration', 'imageEditing', 'speechSynthesis', 'videoGeneration', 'speechRecognition'],
+  pro: ['text', 'reasoning', 'imageGeneration', 'imageEditing', 'speechSynthesis', 'videoGeneration', 'videoEditing', 'speechRecognition', 'lipsync', 'music', 'soundEffects'],
+  elite: ['text', 'reasoning', 'imageGeneration', 'imageEditing', 'speechSynthesis', 'videoGeneration', 'videoEditing', 'speechRecognition', 'lipsync', 'music', 'soundEffects', 'ocr', 'embeddings', 'ranking'],
+};
+
+/**
+ * Check if a plan tier has access to a capability.
+ */
+export function tierHasAccess(tier: string, capability: Capability): boolean {
+  const allowed = TIER_ACCESS[tier];
+  return !!allowed && allowed.includes(capability);
+}
+
+/**
+ * Filter models by plan tier access.
+ */
+export function modelsForTier(models: ModelInfo[], tier: string): ModelInfo[] {
+  return models.filter(m =>
+    m.capabilities.some(cap => tierHasAccess(tier, cap))
+  );
 }
