@@ -1,0 +1,50 @@
+import { NextResponse } from 'next/server';
+import { auth } from '@/../auth';
+import { generateRoughCut, exportCutPlanAsJSON, exportCutPlanAsEDL, type RoughCutOptions } from '@/lib/editor/transcript-cut';
+import type { ASRResult } from '@/lib/providers/types';
+
+export const maxDuration = 60;
+
+/**
+ * POST /api/editor/rough-cut
+ * Body: { transcript: ASRResult, options?: RoughCutOptions, format?: 'json' | 'edl' }
+ * Returns a rough cut plan derived from the transcript.
+ * No credit cost — this is a pure computation, no AI calls.
+ */
+export async function POST(req: Request) {
+  const session = await auth();
+  if (!session?.user?.id) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+
+  const body = await req.json().catch(() => ({}));
+  const transcript = body.transcript as ASRResult | undefined;
+  if (!transcript || !transcript.text) {
+    return NextResponse.json({ error: 'transcript_required', detail: 'transcript with text field is required' }, { status: 400 });
+  }
+
+  if (!transcript.segments || !Array.isArray(transcript.segments)) {
+    return NextResponse.json({ error: 'segments_required', detail: 'transcript.segments array is required' }, { status: 400 });
+  }
+
+  const opts: RoughCutOptions = {
+    targetDurationSec: typeof body.options?.targetDurationSec === 'number' ? body.options.targetDurationSec : undefined,
+    minSegmentSec: typeof body.options?.minSegmentSec === 'number' ? body.options.minSegmentSec : 1.5,
+    maxPauseSec: typeof body.options?.maxPauseSec === 'number' ? body.options.maxPauseSec : 2.0,
+    removeFillers: body.options?.removeFillers !== false,
+  };
+
+  try {
+    const plan = generateRoughCut(transcript, opts);
+    const format = body.format === 'edl' ? 'edl' : 'json';
+
+    if (format === 'edl') {
+      const edl = exportCutPlanAsEDL(plan, body.sourceName || 'SOURCE');
+      return NextResponse.json({ plan, edl, format: 'edl' });
+    }
+
+    const json = exportCutPlanAsJSON(plan);
+    return NextResponse.json({ plan, json, format: 'json' });
+  } catch (e) {
+    console.error('[editor/rough-cut] error:', String(e));
+    return NextResponse.json({ error: 'rough_cut_failed', detail: String(e) }, { status: 500 });
+  }
+}

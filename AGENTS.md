@@ -50,6 +50,7 @@ Production uses Cloudflare R2 via `src/lib/media-storage.cloudflare.ts`.
 ```bash
 npm run lint    # ESLint
 npm test        # Node test runner (271 tests)
+# E2E: 113 tests (chromium)
 npm run build   # Production build (Cloudflare target)
 ```
 
@@ -85,7 +86,8 @@ npm run build   # Production build (Cloudflare target)
 - OCR provider interface with dry-run stub (`src/lib/providers/ocr.ts`)
 - New API routes: `/api/ads/create`, `/api/ads/metrics`, `/api/creative/director`,
   `/api/creative/performance`, `/api/creative/score`, `/api/creative/variants`,
-  `/api/creative/assets`, `/api/creative/refine`, `/api/creative/remix`
+  `/api/creative/assets`, `/api/creative/refine`, `/api/creative/remix`,
+  `/api/creative/tools`, `/api/editor/rough-cut`, `/api/editor/skills`, `/api/editor/timeline`
 - `/api/creative/director` returns an NDJSON stream of step-by-step progress updates; legacy
   non-streaming mode available via `?stream=false`
 

@@ -5,6 +5,7 @@ import { refineCreative, CREATIVE_COSTS, type RefineTargetType } from '@/lib/cre
 import type { CreativeBrief } from '@/lib/creative/types';
 import { deductCredits } from '@/lib/credits';
 import { refundSync } from '@/lib/lazynext-studio/gen-task';
+import { getTool, validateAgainstSchema } from '@/lib/creative/tools';
 
 export const maxDuration = 60;
 
@@ -14,6 +15,16 @@ async function __byokPOST(req: Request) {
   const uid = session.user.id;
 
   const body = await req.json().catch(() => ({}));
+
+  // Validate against the creative.refine tool schema
+  const refineTool = getTool('creative.refine');
+  if (refineTool) {
+    const validationErrors = validateAgainstSchema(body, refineTool.inputSchema);
+    if (validationErrors.length > 0) {
+      return NextResponse.json({ error: 'validation_failed', detail: validationErrors }, { status: 400 });
+    }
+  }
+
   const brief = body.brief as CreativeBrief | undefined;
   if (!brief || !brief.product) return NextResponse.json({ error: 'brief_required' }, { status: 400 });
 
@@ -40,7 +51,7 @@ async function __byokPOST(req: Request) {
 
   try {
     const result = await refineCreative({ type, instruction, brief, element });
-    return NextResponse.json({ result });
+    return NextResponse.json({ tool: 'creative.refine', cost: CREATIVE_COSTS.refine, result });
   } catch (e) {
     await refundSync(uid, CREATIVE_COSTS.refine, 'creative:refine');
     console.error('[creative/refine] error:', String(e));

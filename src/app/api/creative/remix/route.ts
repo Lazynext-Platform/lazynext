@@ -6,6 +6,7 @@ import type { ReferenceCreativeAnalysis } from '@/lib/creative/types';
 import type { BrandProfile, ProductExtraction } from '@/lib/brand/types';
 import { deductCredits } from '@/lib/credits';
 import { refundSync } from '@/lib/lazynext-studio/gen-task';
+import { getTool, validateAgainstSchema } from '@/lib/creative/tools';
 
 export const maxDuration = 90;
 
@@ -45,6 +46,18 @@ async function __byokPOST(req: Request) {
   const product = typeof body.product === 'string' ? body.product.trim() : '';
   if (!product) return NextResponse.json({ error: 'product_required' }, { status: 400 });
 
+  // Validate the resolved input against the creative.remix tool schema
+  const remixTool = getTool('creative.remix');
+  if (remixTool) {
+    const validationErrors = validateAgainstSchema(
+      { analysis, product, productName: body.productName, platform: body.platform, format: body.format },
+      remixTool.inputSchema,
+    );
+    if (validationErrors.length > 0) {
+      return NextResponse.json({ error: 'validation_failed', detail: validationErrors }, { status: 400 });
+    }
+  }
+
   // Charge for the remix brief generation
   try {
     await deductCredits(uid, CREATIVE_COSTS.remix, 'creative:remix');
@@ -65,7 +78,7 @@ async function __byokPOST(req: Request) {
       platform: body.platform,
       format: body.format,
     });
-    return NextResponse.json({ brief, analysis });
+    return NextResponse.json({ tool: 'creative.remix', cost: CREATIVE_COSTS.remix, brief, analysis });
   } catch (e) {
     await refundSync(uid, CREATIVE_COSTS.remix, 'creative:remix');
     console.error('[creative/remix] error:', String(e));
