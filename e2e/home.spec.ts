@@ -33,7 +33,7 @@ test.describe('Homepage', () => {
   test('has main and nav landmarks', async ({ page }) => {
     await page.goto('/');
     await expect(page.locator('main')).toBeVisible();
-    await expect(page.locator('nav')).toBeVisible();
+    await expect(page.locator('nav').first()).toBeVisible();
   });
 
   test('all images have alt text', async ({ page }) => {
