@@ -21,6 +21,7 @@ const APPS: App[] = [
   { id: 'creative-director', href: '/creative-director', icon: Sparkles },
   { id: 'ads', href: '/ads', icon: Clapperboard },
   { id: 'performance', href: '/performance', icon: Clapperboard },
+  { id: 'creative-assets', href: '/creative-assets', icon: Sparkles },
 ];
 
 type Creation = {

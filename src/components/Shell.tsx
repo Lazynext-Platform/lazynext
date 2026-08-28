@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Sparkles, Megaphone, BarChart3, LayoutDashboard } from 'lucide-react';
+import { Sparkles, Megaphone, BarChart3, LayoutDashboard, Package } from 'lucide-react';
 import { UserMenu } from '@/components/UserMenu';
 import { LangToggle } from '@/components/LangToggle';
 import { CreditBadge } from '@/components/CreditBadge';
@@ -16,6 +16,7 @@ const NAV_LINKS = [
   { href: '/creative-director', label: 'Director', icon: Sparkles },
   { href: '/ads', label: 'Ads', icon: Megaphone },
   { href: '/performance', label: 'Performance', icon: BarChart3 },
+  { href: '/creative-assets', label: 'Assets', icon: Package },
 ];
 
 export function Shell({ children }: { children: React.ReactNode }) {

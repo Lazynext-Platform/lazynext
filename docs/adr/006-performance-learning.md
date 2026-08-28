@@ -68,3 +68,11 @@ each run, creating a self-improving loop.
 - `prisma/schema.prisma` — `CreativePerformance` model
 - `src/lib/creative/intelligence.ts` — `generateBrief()` accepts `learningsContext` parameter
 - `src/lib/creative/director.ts` — calls `getLearningsContext()` before each run (ADR-005)
+
+## Update — Metrics Refresh UI (2026-08-28)
+- **Metrics refresh UI on /ads page**: the Ads page now exposes a per-campaign refresh button that
+  calls `POST /api/ads/metrics` to fetch the latest spend, impressions, clicks, and conversions for
+  an individual campaign.
+- **6 mini-metrics display**: each campaign card shows impressions, clicks, CTR, CVR, spend, and
+  ROAS inline, updated on demand via the refresh button so users can monitor performance without
+  leaving the Ads page.

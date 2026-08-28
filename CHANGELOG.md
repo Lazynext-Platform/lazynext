@@ -1,5 +1,49 @@
 # LazyNext Changelog
 
+## 2026-08-28 — Asset Persistence, Streaming Director, Metrics Refresh UI, Nav, E2E
+
+### What Changed
+1. **Asset persistence**: Creative Director outputs (brief, hooks, angles, best combination,
+   variants) are now persisted as `Asset`/`AssetVersion` records in D1 via
+   `src/lib/creative/asset-persist.ts`, enabling retrieval and reuse of generated creative packages.
+2. **New API route**: `GET /api/creative/assets` lists persisted assets for a workspace/user.
+3. **Real-time streaming**: `/api/creative/director` now returns an NDJSON stream with step-by-step
+   updates (brief, hooks, angles, scoring, variants). Legacy non-streaming mode is available via
+   `?stream=false`.
+4. **Metrics refresh UI**: per-campaign refresh button on the `/ads` page calls
+   `POST /api/ads/metrics` and displays 6 mini-metrics (impressions, clicks, CTR, CVR, spend, ROAS).
+5. **i18n expansion**: 78 new translation keys (director: 33, ads: 30, perf: 15) added to all 13
+   locale blocks (en, zh, ja, es, ko, pt, fr, de, ar, hi, vi, th, id).
+6. **Navigation**: primary nav links added to the Shell header (Dashboard, Director, Ads,
+   Performance) for quick access to the new pages.
+7. **E2E tests**: 27 new tests in `e2e/new-pages.spec.ts` covering Creative Director, Ads, and
+   Performance pages.
+8. **Workflow engine integration**: Creative Director now records runs and steps to the
+   `WorkflowRun`/`WorkflowStep` tables via `startWorkflow`/`recordStep`/`completeWorkflow`/
+   `failWorkflow`.
+9. **Markup fix**: removed duplicate `main#main-content` from the new pages (Director, Ads,
+   Performance) to ensure a single main landmark per page.
+10. **E2E fix**: `e2e/home.spec.ts` nav landmark strict-mode violation resolved.
+
+### Verification
+- `npm test` — 113 unit tests passed
+- `npx playwright test` — 27 E2E tests passed (new-pages.spec.ts)
+- `npx tsc --noEmit` — passed (0 errors)
+- All CI checks green
+
+### Files Changed
+- `src/lib/creative/asset-persist.ts` (new — persistCreativePackage)
+- `src/app/api/creative/assets/route.ts` (new — GET asset list)
+- `src/app/api/creative/director/route.ts` (NDJSON streaming + `?stream=false` legacy mode)
+- `src/lib/creative/director.ts` (workflow engine integration)
+- `src/app/ads/page.tsx` (per-campaign metrics refresh UI + 6 mini-metrics)
+- `src/app/creative-director/page.tsx` (markup fix — duplicate main removed)
+- `src/app/performance/page.tsx` (markup fix — duplicate main removed)
+- `src/components/Shell.tsx` (primary nav links in header)
+- `src/i18n/messages.ts` (78 new keys across 13 locales)
+- `e2e/new-pages.spec.ts` (new — 27 tests)
+- `e2e/home.spec.ts` (nav landmark strict-mode fix)
+
 ## 2026-08-28 — Ad Platforms, Autonomous Creative Director, Performance Learning Loop
 
 ### What Changed

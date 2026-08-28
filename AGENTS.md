@@ -79,7 +79,10 @@ npm run build   # Production build (Cloudflare target)
 - Autonomous Creative Director agent loop — see ADR-005
 - Performance learning loop (CreativePerformance model) — see ADR-006
 - New API routes: `/api/ads/create`, `/api/ads/metrics`, `/api/creative/director`,
-  `/api/creative/performance`, `/api/creative/score`, `/api/creative/variants`
+  `/api/creative/performance`, `/api/creative/score`, `/api/creative/variants`,
+  `/api/creative/assets`
+- `/api/creative/director` returns an NDJSON stream of step-by-step progress updates; legacy
+  non-streaming mode available via `?stream=false`
 
 ## Production-Only Testing (Cannot Be Verified Locally)
 

@@ -72,3 +72,14 @@ enabling the director to leverage what has historically worked (or avoid what ha
 - `src/app/api/creative/director/route.ts` — API endpoint
 - `prisma/schema.prisma` — `WorkflowRun`, `WorkflowStep` models
 - Integrates with ADR-002 (creative intelligence), ADR-004 (ad platforms), ADR-006 (learnings)
+
+## Update — Workflow Engine, Asset Persistence, Streaming (2026-08-28)
+- **Workflow engine integration**: the director loop now records execution to `WorkflowRun`/
+  `WorkflowStep` tables via `startWorkflow()`, `recordStep()`, `completeWorkflow()`, and
+  `failWorkflow()`, providing durable observability of each run and its steps.
+- **Asset persistence**: generated outputs (brief, hooks, angles, best combination, variants) are
+  persisted as `Asset`/`AssetVersion` records in D1 via `persistCreativePackage()` in
+  `src/lib/creative/asset-persist.ts`. Persisted assets are listable via `GET /api/creative/assets`.
+- **Streaming NDJSON response**: `POST /api/creative/director` now returns an NDJSON stream emitting
+  step-by-step progress updates (brief, hooks, angles, scoring, variants) for real-time UI feedback.
+  Legacy non-streaming mode is available via `?stream=false`.
