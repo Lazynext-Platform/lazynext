@@ -407,7 +407,7 @@ export default function AdReferencePage() {
               >
                 <div>
                   <div className="text-fg text-sm font-medium">{t('adRef.uploadRefVideo')}</div>
-                  <div className="text-fg-faint text-xs mt-1">mp4/mov · ≤30s · ≤60MB</div>
+                  <div className="text-fg-faint text-xs mt-1">{t('adRef.videoSpec')}</div>
                 </div>
               </button>
             )}

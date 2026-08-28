@@ -180,6 +180,7 @@ export const messages: Record<Locale, any> = {
       redeemFailed: 'Error: {error}',
     },
     assets: {
+      removeColor: 'remove color',
       title: 'Assets',
       subtitle: 'Reusable products, avatars, and brand kits — save once, use across every workflow.',
       tabProducts: 'Products',
@@ -263,6 +264,8 @@ export const messages: Record<Locale, any> = {
       signOut: 'Sign out',
     },
     myWork: {
+      downloadVideo: 'Download video',
+      altProduct: 'product',
       title: 'My work',
       subtitle: 'All your generated reels, saved permanently — replay or download anytime. Every generation shows up here instantly.',
       allApps: '← All apps',
@@ -303,6 +306,8 @@ export const messages: Record<Locale, any> = {
       sourceRemake: 'Remake',
     },
     mkStudio: {
+      done: 'Done',
+      defaultSaveTitle: 'Ad',
       allApps: '← All apps',
       heroPre: 'Turn any product',
       heroHl: 'into a video ad',
@@ -416,6 +421,7 @@ export const messages: Record<Locale, any> = {
       styleUrgent: 'Urgent hard sell',
     },
     adRef: {
+      videoSpec: 'mp4/mov · ≤30s · ≤60MB',
       errGeneric: 'Something went wrong: {code}',
       errFileTooLarge: 'File too large',
       errUploadFailed: 'Upload failed',
@@ -469,6 +475,9 @@ export const messages: Record<Locale, any> = {
       stepLipsync: '④ Lip-syncing the new voiceover…',
     },
     drama: {
+      altProduct: 'product',
+      imagePreview: 'Image preview',
+      altScene: 'scene',
       errGeneric: 'Something went wrong: {code}',
       errUploadFailed: 'Upload failed',
       errTimeout: 'Generation timed out, please try again',
@@ -1095,6 +1104,7 @@ export const messages: Record<Locale, any> = {
       redeemFailed: '兑换失败:{error}',
     },
     assets: {
+      removeColor: '移除颜色',
       title: '素材库',
       subtitle: '可复用的产品、数字人和品牌套件 — 保存一次，所有工作流通用。',
       tabProducts: '产品', tabAvatars: '数字人', tabBrandKits: '品牌套件', signInPrompt: '登录以管理你的素材。',
@@ -1134,6 +1144,8 @@ export const messages: Record<Locale, any> = {
       signOut: '退出登录',
     },
     myWork: {
+      downloadVideo: '下载视频',
+      altProduct: '产品',
       title: '我的作品',
       subtitle: '你生成的所有短视频，永久保存——随时回放或下载。每次生成都会立即显示在这里。',
       allApps: '← 全部应用',
@@ -1174,6 +1186,8 @@ export const messages: Record<Locale, any> = {
       sourceRemake: '爆款复刻',
     },
     mkStudio: {
+      done: '完成',
+      defaultSaveTitle: '广告',
       allApps: '← 全部应用',
       heroPre: '把任何产品',
       heroHl: '变成视频广告',
@@ -1287,6 +1301,7 @@ export const messages: Record<Locale, any> = {
       styleUrgent: '紧迫硬广',
     },
     adRef: {
+      videoSpec: 'mp4/mov · ≤30秒 · ≤60MB',
       errGeneric: '出错了:{code}',
       errFileTooLarge: '文件过大',
       errUploadFailed: '上传失败',
@@ -1340,6 +1355,9 @@ export const messages: Record<Locale, any> = {
       stepLipsync: '④ 正在为新配音对口型…',
     },
     drama: {
+      altProduct: '产品',
+      imagePreview: '图片预览',
+      altScene: '场景',
       errGeneric: '出错了:{code}',
       errUploadFailed: '上传失败',
       errTimeout: '生成超时,请重试',
@@ -1928,6 +1946,7 @@ export const messages: Record<Locale, any> = {
       redeemFailed: 'エラー:{error}',
     },
     assets: {
+      removeColor: '色を削除',
       title: 'アセット',
       subtitle: '再利用可能なプロダクト、アバター、ブランドキット — 一度保存すれば全ワークフローで使えます。',
       tabProducts: 'プロダクト', tabAvatars: 'アバター', tabBrandKits: 'ブランドキット', signInPrompt: 'サインインしてアセットを管理。',
@@ -1967,6 +1986,8 @@ export const messages: Record<Locale, any> = {
       signOut: 'サインアウト',
     },
     myWork: {
+      downloadVideo: '動画をダウンロード',
+      altProduct: '製品',
       title: 'マイワーク',
       subtitle: '生成したすべてのリールが永久に保存されます — いつでも再生またはダウンロード可能。すべての生成はここに即座に表示されます。',
       allApps: '← すべてのアプリ',
@@ -2007,6 +2028,8 @@ export const messages: Record<Locale, any> = {
       sourceRemake: 'リメイク',
     },
     mkStudio: {
+      done: '完了',
+      defaultSaveTitle: '広告',
       allApps: '← すべてのアプリ',
       heroPre: 'あらゆる製品を',
       heroHl: '動画広告に変える',
@@ -2120,6 +2143,7 @@ export const messages: Record<Locale, any> = {
       styleUrgent: '緊急セール',
     },
     adRef: {
+      videoSpec: 'mp4/mov · ≤30秒 · ≤60MB',
       errGeneric: 'エラーが発生しました:{code}',
       errFileTooLarge: 'ファイルが大きすぎます',
       errUploadFailed: 'アップロード失敗',
@@ -2173,6 +2197,9 @@ export const messages: Record<Locale, any> = {
       stepLipsync: '④ 新しい音声にリップシンク中…',
     },
     drama: {
+      altProduct: '製品',
+      imagePreview: '画像プレビュー',
+      altScene: 'シーン',
       errGeneric: 'エラーが発生しました:{code}',
       errUploadFailed: 'アップロード失敗',
       errTimeout: '生成がタイムアウトしました。再試行してください',
@@ -2761,6 +2788,7 @@ export const messages: Record<Locale, any> = {
       redeemFailed: 'Error: {error}',
     },
     assets: {
+      removeColor: 'quitar color',
       title: 'Recursos',
       subtitle: 'Productos, avatares y kits de marca reutilizables — guarda una vez, usa en todos los flujos.',
       tabProducts: 'Productos', tabAvatars: 'Avatares', tabBrandKits: 'Kits de marca', signInPrompt: 'Inicia sesión para gestionar tus recursos.',
@@ -2800,6 +2828,8 @@ export const messages: Record<Locale, any> = {
       signOut: 'Cerrar sesión',
     },
     myWork: {
+      downloadVideo: 'Descargar video',
+      altProduct: 'producto',
       title: 'Mi trabajo',
       subtitle: 'Todos tus reels generados, guardados permanentemente — reproduce o descarga cuando quieras. Cada generación aparece aquí al instante.',
       allApps: '← Todas las apps',
@@ -2840,6 +2870,8 @@ export const messages: Record<Locale, any> = {
       sourceRemake: 'Remake',
     },
     mkStudio: {
+      done: 'Listo',
+      defaultSaveTitle: 'Anuncio',
       allApps: '← Todas las apps',
       heroPre: 'Convierte cualquier producto',
       heroHl: 'en un anuncio en video',
@@ -2953,6 +2985,7 @@ export const messages: Record<Locale, any> = {
       styleUrgent: 'Venta dura urgente',
     },
     adRef: {
+      videoSpec: 'mp4/mov · ≤30s · ≤60MB',
       errGeneric: 'Algo salió mal: {code}',
       errFileTooLarge: 'Archivo demasiado grande',
       errUploadFailed: 'Error de subida',
@@ -3006,6 +3039,9 @@ export const messages: Record<Locale, any> = {
       stepLipsync: '④ Sincronizando labios con la nueva narración…',
     },
     drama: {
+      altProduct: 'producto',
+      imagePreview: 'Vista previa de imagen',
+      altScene: 'escena',
       errGeneric: 'Algo salió mal: {code}',
       errUploadFailed: 'Error de subida',
       errTimeout: 'Generación agotada, intente de nuevo',
@@ -3592,6 +3628,7 @@ export const messages: Record<Locale, any> = {
       redeemFailed: '오류: {error}',
     },
     assets: {
+      removeColor: '색상 제거',
       title: '에셋',
       subtitle: '재사용 가능한 제품, 아바타, 브랜드 키트 — 한 번 저장하면 모든 워크플로우에서 사용.',
       tabProducts: '제품', tabAvatars: '아바타', tabBrandKits: '브랜드 키트', signInPrompt: '에셋을 관리하려면 로그인하세요.',
@@ -3631,6 +3668,8 @@ export const messages: Record<Locale, any> = {
       signOut: '로그아웃',
     },
     myWork: {
+      downloadVideo: '동영상 다운로드',
+      altProduct: '제품',
       title: '내 작업',
       subtitle: '생성한 모든 릴이 영구적으로 저장됩니다 — 언제든 다시 재생하거나 다운로드하세요. 모든 생성 결과가 즉시 여기에 표시됩니다.',
       allApps: '← 모든 앱',
@@ -3671,6 +3710,8 @@ export const messages: Record<Locale, any> = {
       sourceRemake: '리메이크',
     },
     mkStudio: {
+      done: '완료',
+      defaultSaveTitle: '광고',
       allApps: '← 모든 앱',
       heroPre: '모든 제품을',
       heroHl: '영상 광고로',
@@ -3784,6 +3825,7 @@ export const messages: Record<Locale, any> = {
       styleUrgent: '긴급 하드셀',
     },
     adRef: {
+      videoSpec: 'mp4/mov · ≤30초 · ≤60MB',
       errGeneric: '문제가 발생했습니다: {code}',
       errFileTooLarge: '파일이 너무 큽니다',
       errUploadFailed: '업로드 실패',
@@ -3837,6 +3879,9 @@ export const messages: Record<Locale, any> = {
       stepLipsync: '④ 새 보이스오버 립싱크 중…',
     },
     drama: {
+      altProduct: '제품',
+      imagePreview: '이미지 미리보기',
+      altScene: '장면',
       errGeneric: '문제가 발생했습니다: {code}',
       errUploadFailed: '업로드 실패',
       errTimeout: '생성 시간 초과, 다시 시도하세요',
@@ -4423,6 +4468,7 @@ export const messages: Record<Locale, any> = {
       redeemFailed: 'Erro: {error}',
     },
     assets: {
+      removeColor: 'remover cor',
       title: 'Ativos',
       subtitle: 'Produtos, avatares e kits de marca reutilizáveis — salve uma vez, use em todos os fluxos.',
       tabProducts: 'Produtos', tabAvatars: 'Avatares', tabBrandKits: 'Kits de marca', signInPrompt: 'Entre para gerenciar seus ativos.',
@@ -4462,6 +4508,8 @@ export const messages: Record<Locale, any> = {
       signOut: 'Sair',
     },
     myWork: {
+      downloadVideo: 'Baixar vídeo',
+      altProduct: 'produto',
       title: 'Meu trabalho',
       subtitle: 'Todos os seus reels gerados, salvos permanentemente — reproduza ou baixe a qualquer momento. Cada geração aparece aqui instantaneamente.',
       allApps: '← Todos os apps',
@@ -4502,6 +4550,8 @@ export const messages: Record<Locale, any> = {
       sourceRemake: 'Remake',
     },
     mkStudio: {
+      done: 'Concluído',
+      defaultSaveTitle: 'Anúncio',
       allApps: '← Todos os apps',
       heroPre: 'Transforme qualquer produto',
       heroHl: 'em um anúncio em vídeo',
@@ -4615,6 +4665,7 @@ export const messages: Record<Locale, any> = {
       styleUrgent: 'Venda dura urgente',
     },
     adRef: {
+      videoSpec: 'mp4/mov · ≤30s · ≤60MB',
       errGeneric: 'Algo deu errado: {code}',
       errFileTooLarge: 'Arquivo muito grande',
       errUploadFailed: 'Falha no upload',
@@ -4668,6 +4719,9 @@ export const messages: Record<Locale, any> = {
       stepLipsync: '④ Sincronizando lábios com a nova narração…',
     },
     drama: {
+      altProduct: 'produto',
+      imagePreview: 'Pré-visualização da imagem',
+      altScene: 'cena',
       errGeneric: 'Algo deu errado: {code}',
       errUploadFailed: 'Falha no upload',
       errTimeout: 'Geração expirou, tente novamente',
@@ -5254,6 +5308,7 @@ export const messages: Record<Locale, any> = {
       redeemFailed: 'Erreur : {error}',
     },
     assets: {
+      removeColor: 'supprimer la couleur',
       title: 'Ressources',
       subtitle: 'Produits, avatars et kits de marque réutilisables — enregistrez une fois, utilisez partout.',
       tabProducts: 'Produits', tabAvatars: 'Avatars', tabBrandKits: 'Kits de marque', signInPrompt: 'Connectez-vous pour gérer vos ressources.',
@@ -5293,6 +5348,8 @@ export const messages: Record<Locale, any> = {
       signOut: 'Se déconnecter',
     },
     myWork: {
+      downloadVideo: 'Télécharger la vidéo',
+      altProduct: 'produit',
       title: 'Mon travail',
       subtitle: 'Tous vos reels générés, enregistrés définitivement — relisez ou téléchargez à tout moment. Chaque génération apparaît ici instantanément.',
       allApps: '← Toutes les apps',
@@ -5333,6 +5390,8 @@ export const messages: Record<Locale, any> = {
       sourceRemake: 'Remake',
     },
     mkStudio: {
+      done: 'Terminé',
+      defaultSaveTitle: 'Annonce',
       allApps: '← Toutes les apps',
       heroPre: 'Transformez n\'importe quel produit',
       heroHl: 'en publicité vidéo',
@@ -5446,6 +5505,7 @@ export const messages: Record<Locale, any> = {
       styleUrgent: 'Vente dure urgente',
     },
     adRef: {
+      videoSpec: 'mp4/mov · ≤30s · ≤60MB',
       errGeneric: 'Une erreur s\'est produite : {code}',
       errFileTooLarge: 'Fichier trop volumineux',
       errUploadFailed: 'Échec du téléversement',
@@ -5499,6 +5559,9 @@ export const messages: Record<Locale, any> = {
       stepLipsync: '④ Synchronisation labiale de la nouvelle voix off…',
     },
     drama: {
+      altProduct: 'produit',
+      imagePreview: 'Aperçu de l\'image',
+      altScene: 'scène',
       errGeneric: 'Une erreur s\'est produite : {code}',
       errUploadFailed: 'Échec du téléversement',
       errTimeout: 'Génération expirée, veuillez réessayer',
@@ -6085,6 +6148,7 @@ export const messages: Record<Locale, any> = {
       redeemFailed: 'Fehler: {error}',
     },
     assets: {
+      removeColor: 'Farbe entfernen',
       title: 'Assets',
       subtitle: 'Wiederverwendbare Produkte, Avatare und Brand Kits — einmal speichern, überall nutzen.',
       tabProducts: 'Produkte', tabAvatars: 'Avatare', tabBrandKits: 'Brand Kits', signInPrompt: 'Anmelden um Ihre Assets zu verwalten.',
@@ -6124,6 +6188,8 @@ export const messages: Record<Locale, any> = {
       signOut: 'Abmelden',
     },
     myWork: {
+      downloadVideo: 'Video herunterladen',
+      altProduct: 'Produkt',
       title: 'Meine Arbeiten',
       subtitle: 'Alle Ihre generierten Reels, dauerhaft gespeichert — jederzeit abspielen oder herunterladen. Jede Generierung erscheint hier sofort.',
       allApps: '← Alle Apps',
@@ -6164,6 +6230,8 @@ export const messages: Record<Locale, any> = {
       sourceRemake: 'Remake',
     },
     mkStudio: {
+      done: 'Fertig',
+      defaultSaveTitle: 'Anzeige',
       allApps: '← Alle Apps',
       heroPre: 'Verwandle jedes Produkt',
       heroHl: 'in eine Videoanzeige',
@@ -6277,6 +6345,7 @@ export const messages: Record<Locale, any> = {
       styleUrgent: 'Dringender Hard-Sell',
     },
     adRef: {
+      videoSpec: 'mp4/mov · ≤30s · ≤60MB',
       errGeneric: 'Etwas ist schiefgelaufen: {code}',
       errFileTooLarge: 'Datei zu groß',
       errUploadFailed: 'Upload fehlgeschlagen',
@@ -6330,6 +6399,9 @@ export const messages: Record<Locale, any> = {
       stepLipsync: '④ Lip-Sync der neuen Stimme…',
     },
     drama: {
+      altProduct: 'Produkt',
+      imagePreview: 'Bildvorschau',
+      altScene: 'Szene',
       errGeneric: 'Etwas ist schiefgelaufen: {code}',
       errUploadFailed: 'Upload fehlgeschlagen',
       errTimeout: 'Zeitüberschreitung bei der Generierung, bitte erneut versuchen',
@@ -6916,6 +6988,7 @@ export const messages: Record<Locale, any> = {
       redeemFailed: 'خطأ: {error}',
     },
     assets: {
+      removeColor: 'إزالة اللون',
       title: 'الأصول',
       subtitle: 'منتجات وشخصيات وهويات علامة قابلة لإعادة الاستخدام — احفظ مرة واحدة، استخدم في كل المسارات.',
       tabProducts: 'المنتجات', tabAvatars: 'الشخصيات', tabBrandKits: 'هوية العلامة', signInPrompt: 'سجل الدخول لإدارة أصولك.',
@@ -6955,6 +7028,8 @@ export const messages: Record<Locale, any> = {
       signOut: 'تسجيل الخروج',
     },
     myWork: {
+      downloadVideo: 'تنزيل الفيديو',
+      altProduct: 'منتج',
       title: 'أعمالي',
       subtitle: 'كل مقاطعك المُولَّدة، محفوظة بشكل دائم — أعد تشغيلها أو نزّلها في أي وقت. تظهر كل عملية توليد هنا فوراً.',
       allApps: '← كل التطبيقات',
@@ -6995,6 +7070,8 @@ export const messages: Record<Locale, any> = {
       sourceRemake: 'إعادة صنع',
     },
     mkStudio: {
+      done: 'تم',
+      defaultSaveTitle: 'إعلان',
       allApps: '← كل التطبيقات',
       heroPre: 'حوّل أي منتج',
       heroHl: 'إلى إعلان فيديو',
@@ -7108,6 +7185,7 @@ export const messages: Record<Locale, any> = {
       styleUrgent: 'بيع عاجل',
     },
     adRef: {
+      videoSpec: 'mp4/mov · ≤30ث · ≤60MB',
       errGeneric: 'حدث خطأ: {code}',
       errFileTooLarge: 'الملف كبير جدًا',
       errUploadFailed: 'فشل الرفع',
@@ -7161,6 +7239,9 @@ export const messages: Record<Locale, any> = {
       stepLipsync: '④ مزامنة الشفاه مع الصوت الجديد…',
     },
     drama: {
+      altProduct: 'منتج',
+      imagePreview: 'معاينة الصورة',
+      altScene: 'مشهد',
       errGeneric: 'حدث خطأ: {code}',
       errUploadFailed: 'فشل الرفع',
       errTimeout: 'انتهت مهلة التوليد، يرجى إعادة المحاولة',
@@ -7747,6 +7828,7 @@ export const messages: Record<Locale, any> = {
       redeemFailed: 'त्रुटि: {error}',
     },
     assets: {
+      removeColor: 'रंग हटाएं',
       title: 'संपत्तियाँ',
       subtitle: 'पुनः उपयोग योग्य उत्पाद, अवतार और ब्रांड किट — एक बार सहेजें, हर वर्कफ़्लो में उपयोग करें।',
       tabProducts: 'उत्पाद', tabAvatars: 'अवतार', tabBrandKits: 'ब्रांड किट', signInPrompt: 'अपनी संपत्तियाँ प्रबंधित करने के लिए साइन इन करें।',
@@ -7786,6 +7868,8 @@ export const messages: Record<Locale, any> = {
       signOut: 'साइन आउट',
     },
     myWork: {
+      downloadVideo: 'वीडियो डाउनलोड करें',
+      altProduct: 'उत्पाद',
       title: 'मेरा काम',
       subtitle: 'आपके सभी जनरेट किए गए रील, स्थायी रूप से सहेजे गए — कभी भी फिर से चलाएं या डाउनलोड करें। हर जनरेशन यहाँ तुरंत दिखाई देता है।',
       allApps: '← सभी ऐप्स',
@@ -7826,6 +7910,8 @@ export const messages: Record<Locale, any> = {
       sourceRemake: 'रीमेक',
     },
     mkStudio: {
+      done: 'पूर्ण',
+      defaultSaveTitle: 'विज्ञापन',
       allApps: '← सभी ऐप्स',
       heroPre: 'किसी भी उत्पाद को',
       heroHl: 'वीडियो विज्ञापन में बदलें',
@@ -7939,6 +8025,7 @@ export const messages: Record<Locale, any> = {
       styleUrgent: 'तत्काल हार्ड सेल',
     },
     adRef: {
+      videoSpec: 'mp4/mov · ≤30से · ≤60MB',
       errGeneric: 'कुछ गलत हुआ: {code}',
       errFileTooLarge: 'फ़ाइल बहुत बड़ी है',
       errUploadFailed: 'अपलोड विफल',
@@ -7992,6 +8079,9 @@ export const messages: Record<Locale, any> = {
       stepLipsync: '④ नए वॉयसओवर के साथ लिप-सिंक हो रहा है…',
     },
     drama: {
+      altProduct: 'उत्पाद',
+      imagePreview: 'छवि पूर्वावलोकन',
+      altScene: 'दृश्य',
       errGeneric: 'कुछ गलत हुआ: {code}',
       errUploadFailed: 'अपलोड विफल',
       errTimeout: 'जनरेशन समय समाप्त, कृपया पुनः प्रयास करें',
@@ -8581,6 +8671,7 @@ export const messages: Record<Locale, any> = {
       redeemFailed: 'Lỗi: {error}',
     },
     assets: {
+      removeColor: 'xóa màu',
       title: 'Tài sản',
       subtitle: 'Sản phẩm, avatar và bộ thương hiệu tái sử dụng — lưu một lần, dùng mọi nơi.',
       tabProducts: 'Sản phẩm', tabAvatars: 'Avatar', tabBrandKits: 'Bộ thương hiệu', signInPrompt: 'Đăng nhập để quản lý tài sản.',
@@ -8620,6 +8711,8 @@ export const messages: Record<Locale, any> = {
       signOut: 'Đăng xuất',
     },
     myWork: {
+      downloadVideo: 'Tải xuống video',
+      altProduct: 'sản phẩm',
       title: 'Tác phẩm của tôi',
       subtitle: 'Tất cả video đã tạo, lưu vĩnh viễn — phát lại hoặc tải xuống bất cứ lúc nào. Mỗi lần tạo đều xuất hiện tại đây ngay lập tức.',
       allApps: '← Tất cả ứng dụng',
@@ -8660,6 +8753,8 @@ export const messages: Record<Locale, any> = {
       sourceRemake: 'Remake',
     },
     mkStudio: {
+      done: 'Xong',
+      defaultSaveTitle: 'Quảng cáo',
       allApps: '← Tất cả ứng dụng',
       heroPre: 'Biến bất kỳ sản phẩm',
       heroHl: 'thành video quảng cáo',
@@ -8773,6 +8868,7 @@ export const messages: Record<Locale, any> = {
       styleUrgent: 'Bán gấp',
     },
     adRef: {
+      videoSpec: 'mp4/mov · ≤30giây · ≤60MB',
       errGeneric: 'Đã xảy ra lỗi: {code}',
       errFileTooLarge: 'Tệp quá lớn',
       errUploadFailed: 'Tải lên thất bại',
@@ -8826,6 +8922,9 @@ export const messages: Record<Locale, any> = {
       stepLipsync: '④ Đang đồng môi voiceover mới…',
     },
     drama: {
+      altProduct: 'sản phẩm',
+      imagePreview: 'Xem trước hình ảnh',
+      altScene: 'cảnh',
       errGeneric: 'Đã xảy ra lỗi: {code}',
       errUploadFailed: 'Tải lên thất bại',
       errTimeout: 'Hết thời gian tạo, vui lòng thử lại',
@@ -9415,6 +9514,7 @@ export const messages: Record<Locale, any> = {
       redeemFailed: 'ข้อผิดพลาด: {error}',
     },
     assets: {
+      removeColor: 'ลบสี',
       title: 'สินทรัพย์',
       subtitle: 'สินค้า อวตาร และชุดแบรนด์ที่นำกลับมาใช้ใหม่ได้ — บันทึกครั้งเดียว ใช้ในทุกเวิร์กโฟลว์',
       tabProducts: 'สินค้า', tabAvatars: 'อวตาร', tabBrandKits: 'ชุดแบรนด์', signInPrompt: 'เข้าสู่ระบบเพื่อจัดการสินทรัพย์',
@@ -9454,6 +9554,8 @@ export const messages: Record<Locale, any> = {
       signOut: 'ออกจากระบบ',
     },
     myWork: {
+      downloadVideo: 'ดาวน์โหลดวิดีโอ',
+      altProduct: 'สินค้า',
       title: 'ผลงานของฉัน',
       subtitle: 'วิดีโอที่สร้างทั้งหมด บันทึกถาวร — เล่นซ้ำหรือดาวน์โหลดได้ตลอดเวลา ทุกครั้งสร้างจะปรากฏที่นี่ทันที',
       allApps: '← ทุกแอป',
@@ -9494,6 +9596,8 @@ export const messages: Record<Locale, any> = {
       sourceRemake: 'รีเมค',
     },
     mkStudio: {
+      done: 'เสร็จสิ้น',
+      defaultSaveTitle: 'โฆษณา',
       allApps: '← ทุกแอป',
       heroPre: 'เปลี่ยนสินค้าใดก็ได้',
       heroHl: 'ให้เป็นวิดีโอโฆษณา',
@@ -9607,6 +9711,7 @@ export const messages: Record<Locale, any> = {
       styleUrgent: 'ขายด่วน',
     },
     adRef: {
+      videoSpec: 'mp4/mov · ≤30วิ · ≤60MB',
       errGeneric: 'เกิดข้อผิดพลาด: {code}',
       errFileTooLarge: 'ไฟล์ใหญ่เกินไป',
       errUploadFailed: 'อัปโหลดล้มเหลว',
@@ -9660,6 +9765,9 @@ export const messages: Record<Locale, any> = {
       stepLipsync: '④ กำลังซิงค์ริมฝีปากพากย์เสียงใหม่…',
     },
     drama: {
+      altProduct: 'สินค้า',
+      imagePreview: 'ดูตัวอย่างรูปภาพ',
+      altScene: 'ฉาก',
       errGeneric: 'เกิดข้อผิดพลาด: {code}',
       errUploadFailed: 'อัปโหลดล้มเหลว',
       errTimeout: 'หมดเวลาสร้าง โปรดลองอีกครั้ง',
@@ -10249,6 +10357,7 @@ export const messages: Record<Locale, any> = {
       redeemFailed: 'Kesalahan: {error}',
     },
     assets: {
+      removeColor: 'hapus warna',
       title: 'Aset',
       subtitle: 'Produk, avatar, dan kit merek yang dapat digunakan ulang — simpan sekali, gunakan di semua alur.',
       tabProducts: 'Produk', tabAvatars: 'Avatar', tabBrandKits: 'Kit merek', signInPrompt: 'Masuk untuk mengelola aset Anda.',
@@ -10288,6 +10397,8 @@ export const messages: Record<Locale, any> = {
       signOut: 'Keluar',
     },
     myWork: {
+      downloadVideo: 'Unduh video',
+      altProduct: 'produk',
       title: 'Karya saya',
       subtitle: 'Semua video yang dibuat, disimpan permanen — putar ulang atau unduh kapan saja. Setiap generasi muncul di sini secara instan.',
       allApps: '← Semua aplikasi',
@@ -10328,6 +10439,8 @@ export const messages: Record<Locale, any> = {
       sourceRemake: 'Remake',
     },
     mkStudio: {
+      done: 'Selesai',
+      defaultSaveTitle: 'Iklan',
       allApps: '← Semua aplikasi',
       heroPre: 'Ubah produk apa pun',
       heroHl: 'jadi video iklan',
@@ -10441,6 +10554,7 @@ export const messages: Record<Locale, any> = {
       styleUrgent: 'Jual keras',
     },
     adRef: {
+      videoSpec: 'mp4/mov · ≤30d · ≤60MB',
       errGeneric: 'Terjadi kesalahan: {code}',
       errFileTooLarge: 'File terlalu besar',
       errUploadFailed: 'Upload gagal',
@@ -10494,6 +10608,9 @@ export const messages: Record<Locale, any> = {
       stepLipsync: '④ Sinkronisasi bibir voiceover baru…',
     },
     drama: {
+      altProduct: 'produk',
+      imagePreview: 'Pratinjau gambar',
+      altScene: 'adegan',
       errGeneric: 'Terjadi kesalahan: {code}',
       errUploadFailed: 'Upload gagal',
       errTimeout: 'Generasi habis waktu, coba lagi',

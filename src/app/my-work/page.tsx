@@ -266,7 +266,7 @@ export default function MyWorkPage() {
             ) : (
               <video src={play.url} controls autoPlay className="max-h-[80vh] w-auto max-w-full rounded-xl border border-line" />
             )}
-            <a href={play.url} download aria-label="Download video" className="absolute -top-3 -right-3 grid h-9 w-9 place-items-center rounded-full bg-[#0064d9] text-white shadow-lg"><Download className="h-4 w-4" /></a>
+            <a href={play.url} download aria-label={t('myWork.downloadVideo')} className="absolute -top-3 -right-3 grid h-9 w-9 place-items-center rounded-full bg-[#0064d9] text-white shadow-lg"><Download className="h-4 w-4" /></a>
           </div>
         </div>
       )}

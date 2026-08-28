@@ -253,7 +253,7 @@ export default function MarketingStudioPage() {
         };
         setShots([restoredShot]);
         if (vidDone) {
-          setCompose({ status: 'done', frac: 1, note: 'Done', url: vidUrl });
+          setCompose({ status: 'done', frac: 1, note: t('mkStudio.done'), url: vidUrl });
         } else if (imgGetUrl || vidGetUrl) {
           setCompose({
             status: 'run',
@@ -476,13 +476,13 @@ export default function MarketingStudioPage() {
       local.vid = 'done';
       local.vidUrl = vidUrl;
       setShots([{ ...local }]);
-      setCompose({ status: 'done', frac: 1, note: 'Done', url: vidUrl });
+      setCompose({ status: 'done', frac: 1, note: t('mkStudio.done'), url: vidUrl });
 
       // Save history: final video URL → write Creation (logged-in users; failure doesn't affect page display)
       try {
         await postJson('/api/lazynext-studio/save-reel', {
           url: vidUrl,
-          title: directPlan.title || product.slice(0, 60) || 'Ad',
+          title: directPlan.title || product.slice(0, 60) || t('mkStudio.defaultSaveTitle'),
           type: 'lazynext-studio',
           thumbnail: imgUrl,
           creationId: cid,

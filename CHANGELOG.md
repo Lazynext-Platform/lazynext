@@ -1,5 +1,34 @@
 # LazyNext Changelog
 
+## 2026-08-28 — i18n for Admin, Reset-Password, Creative-Studio Pages
+
+### What Changed
+1. **Admin page i18n**: `admin` namespace (26 keys) added to all 13 locales. Admin page
+   was previously zero i18n — now fully translated (title, tabs, search, table headers,
+   empty states, buttons).
+2. **Reset-password page i18n**: `reset` namespace (15 keys) added to all 13 locales.
+   Reset-password page was previously zero i18n — now fully translated (title, form labels,
+   buttons, error messages).
+3. **Creative-studio Field labels i18n**: `cstudio` namespace (34 keys) added to all 13
+   locales. ~30 hardcoded Field labels for brand extraction, product extraction, brief,
+   and reference analysis sections now translated.
+4. **CHANGELOG**: added entry for prior i18n/streaming/E2E work, updated test counts to
+   157 unit / 75 E2E.
+
+### Verification
+- `npm test` — 157 unit tests passed
+- `npx playwright test` — 75 E2E tests passed
+- `npx tsc --noEmit` — passed (0 errors)
+- `npm run lint` — passed (0 errors, 0 warnings)
+- All CI checks green
+
+### Files Changed
+- `src/i18n/messages.ts` (admin, reset, cstudio namespaces × 13 locales)
+- `src/app/admin/page.tsx` (added useI18n, t() calls)
+- `src/app/reset-password/page.tsx` (added useI18n to both components, t() calls)
+- `src/app/creative-studio/page.tsx` (replaced ~30 Field labels with t() calls)
+- `CHANGELOG.md` (new entries, test count fixes)
+
 ## 2026-08-28 — i18n for Creative Assets, Streaming Route Tests, E2E Coverage
 
 ### What Changed

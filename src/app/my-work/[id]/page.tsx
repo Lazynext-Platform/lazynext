@@ -97,7 +97,7 @@ function DramaFolder({ c, t, finalVideo }: { c: Creation; t: (key: string, vars?
         {finalVideo ? (
           <div className="relative w-full max-w-[300px]">
             <video src={finalVideo} controls playsInline poster={scenes.find((s) => s.frameUrl)?.frameUrl || undefined} className="w-full rounded-2xl border border-line bg-black" />
-            <a href={finalVideo} download aria-label="Download video" className="absolute -right-3 -top-3 grid h-9 w-9 place-items-center rounded-full bg-[#0064d9] text-white shadow-lg"><Download className="h-4 w-4" /></a>
+            <a href={finalVideo} download aria-label={t('myWork.downloadVideo')} className="absolute -right-3 -top-3 grid h-9 w-9 place-items-center rounded-full bg-[#0064d9] text-white shadow-lg"><Download className="h-4 w-4" /></a>
           </div>
         ) : (
           <div className="grid aspect-video max-w-[300px] place-items-center rounded-2xl border border-dashed border-line bg-black/20 text-xs text-fg-faint">{t('myWork.finalPlaceholder')}</div>
@@ -131,7 +131,7 @@ function DramaFolder({ c, t, finalVideo }: { c: Creation; t: (key: string, vars?
         <section className="mb-10">
           <h2 className="mb-3 text-sm font-semibold text-fg-secondary">🛍️ {t('myWork.productReference')}</h2>
           { }
-          <img src={f.productImageUrl} alt="product" className="h-40 rounded-xl border border-line object-cover" referrerPolicy="no-referrer" loading="lazy" />
+          <img src={f.productImageUrl} alt={t('myWork.altProduct')} className="h-40 rounded-xl border border-line object-cover" referrerPolicy="no-referrer" loading="lazy" />
         </section>
       )}
 

@@ -137,12 +137,13 @@ function ImageField({
 function Modal({ title, onClose, children, saving, onSave, saveLabel, cancelLabel, savingLabel }: {
   title: string; onClose: () => void; children: React.ReactNode; saving: boolean; onSave: () => void; saveLabel: string; cancelLabel: string; savingLabel: string;
 }) {
+  const { t } = useI18n();
   return (
     <div className="fixed inset-0 z-[90] grid place-items-center bg-black/70 p-4 pt-safe" onClick={onClose}>
       <div className="w-full max-w-md max-h-[90vh] overflow-y-auto rounded-2xl border border-line bg-popover p-5 shadow-2xl" onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true" aria-label={title}>
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-lg font-bold text-fg">{title}</h2>
-          <button onClick={onClose} className="text-fg-faint hover:text-fg" aria-label="close"><X className="h-5 w-5" /></button>
+          <button onClick={onClose} className="text-fg-faint hover:text-fg" aria-label={t('common.close')}><X className="h-5 w-5" /></button>
         </div>
         <div className="space-y-4">{children}</div>
         <div className="mt-5 flex flex-col-reverse justify-end gap-2 sm:flex-row">
@@ -445,7 +446,7 @@ function BrandKitForm({ brandKit, onClose, onSaved }: { brandKit?: BrandKit; onC
             {colors.map((c) => (
               <span key={c} className="inline-flex items-center gap-1 rounded-md border border-line px-1.5 py-1 text-[11px] text-fg-secondary">
                 <span className="h-3.5 w-3.5 rounded" style={{ background: c }} /> {c}
-                <button type="button" onClick={() => setColors((p) => p.filter((x) => x !== c))} aria-label="remove color" className="p-0.5 text-fg-placeholder hover:text-danger"><X className="h-3.5 w-3.5" /></button>
+                <button type="button" onClick={() => setColors((p) => p.filter((x) => x !== c))} aria-label={t('assets.removeColor')} className="p-0.5 text-fg-placeholder hover:text-danger"><X className="h-3.5 w-3.5" /></button>
               </span>
             ))}
           </div>
