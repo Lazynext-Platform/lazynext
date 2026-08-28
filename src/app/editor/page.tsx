@@ -105,6 +105,11 @@ export default function EditorPage() {
   const [timeline, setTimeline] = useState<Record<string, unknown> | null>(null);
   const [tlError, setTlError] = useState('');
 
+  // Transcribe state
+  const [videoUrl, setVideoUrl] = useState('');
+  const [trStep, setTrStep] = useState<Step>('idle');
+  const [trError, setTrError] = useState('');
+
   const loadSkills = useCallback(async () => {
     if (!session?.user) return;
     setSkillsLoading(true);
@@ -191,6 +196,33 @@ export default function EditorPage() {
     }
   }, [session?.user, tlName, tlFps, tlRatio, t]);
 
+  const transcribeVideo = useCallback(async () => {
+    if (!session?.user) { setAuthOpen(true); return; }
+    setTrStep('loading');
+    setTrError('');
+    try {
+      const res = await fetch('/api/editor/transcribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ videoUrl }),
+      });
+      if (!res.ok) {
+        const j = await res.json().catch(() => ({}));
+        throw new Error(j.error || `HTTP ${res.status}`);
+      }
+      const j = await res.json().catch(() => ({}));
+      if (j.transcript) {
+        setTranscript(JSON.stringify(j.transcript, null, 2));
+        setTrStep('done');
+      } else {
+        throw new Error('no_transcript');
+      }
+    } catch (e) {
+      setTrError(e instanceof TypeError ? t('common.errNetwork') : t('editor.trErrFailed'));
+      setTrStep('error');
+    }
+  }, [session?.user, videoUrl, t]);
+
   return (
     <main id="main-content" className="min-h-screen bg-bg text-fg">
       <div className="max-w-5xl mx-auto px-4 pt-20 pb-12 safe-top">
@@ -242,7 +274,49 @@ export default function EditorPage() {
 
         {/* Rough Cut Tab */}
         {tab === 'roughCut' && (
-          <section aria-busy={rcStep === 'loading'} className="space-y-4">
+          <section aria-busy={rcStep === 'loading' || trStep === 'loading'} className="space-y-4">
+            {/* Transcribe from video URL */}
+            <div className="rounded-lg border border-border bg-bg-card p-3">
+              <label htmlFor="videoUrl" className="block text-sm font-medium mb-1">
+                {t('editor.trTitle')}
+              </label>
+              <p className="text-xs text-fg-muted mb-2">{t('editor.trHint')}</p>
+              <div className="flex gap-2">
+                <input
+                  id="videoUrl"
+                  type="url"
+                  value={videoUrl}
+                  onChange={(e) => setVideoUrl(e.target.value)}
+                  placeholder="https://..."
+                  className="flex-1 rounded-lg border border-border bg-bg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
+                  aria-label={t('editor.trTitle')}
+                />
+                <button
+                  onClick={transcribeVideo}
+                  disabled={trStep === 'loading' || !videoUrl.trim()}
+                  className="px-3 py-2 rounded-lg bg-fg-muted/20 text-fg text-sm font-medium hover:bg-fg-muted/30 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+                >
+                  {trStep === 'loading' ? (
+                    <><Loader2 className="inline w-4 h-4 mr-1 animate-spin" aria-hidden="true" />{t('editor.trTranscribing')}</>
+                  ) : (
+                    <>{t('editor.trTranscribe')}</>
+                  )}
+                </button>
+              </div>
+              {trError && (
+                <div role="alert" className="mt-2 text-xs text-danger">
+                  <AlertCircle className="inline w-3 h-3 mr-1" aria-hidden="true" />
+                  {trError}
+                </div>
+              )}
+              {trStep === 'done' && (
+                <div role="status" className="mt-2 text-xs text-success">
+                  <CheckCircle2 className="inline w-3 h-3 mr-1" aria-hidden="true" />
+                  {t('editor.trDone')}
+                </div>
+              )}
+            </div>
+
             <div>
               <label htmlFor="transcript" className="block text-sm font-medium mb-1">
                 {t('editor.rcTranscript')}

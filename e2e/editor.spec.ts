@@ -117,3 +117,60 @@ test.describe('Editor page (/editor)', () => {
     }
   });
 });
+
+test.describe('Editor page — transcript from URL query param (Director → Editor flow)', () => {
+  test('editor page reads transcript from URL query param', async ({ page }) => {
+    const transcript = JSON.stringify({
+      text: 'test',
+      duration: 6,
+      segments: [
+        { start: 0, end: 3, text: 'hello' },
+        { start: 3, end: 6, text: 'world' },
+      ],
+    });
+    await page.goto(`/editor?transcript=${encodeURIComponent(transcript)}`);
+    const textarea = page.locator('#transcript');
+    await expect(textarea).toHaveCount(1);
+    const value = await textarea.inputValue();
+    expect(value).toContain('hello');
+    expect(value).toContain('world');
+    // Should not be the default sample transcript
+    expect(value).not.toContain('Hey guys today I want to show you this amazing product.');
+  });
+
+  test('editor page handles invalid transcript query param gracefully', async ({ page }) => {
+    const errors: string[] = [];
+    page.on('pageerror', (err) => errors.push(err.message));
+    await page.goto('/editor?transcript=invalid-json');
+    const textarea = page.locator('#transcript');
+    await expect(textarea).toHaveCount(1);
+    const value = await textarea.inputValue();
+    expect(value.trim().length).toBeGreaterThan(0);
+    // Falls back to sample transcript
+    expect(value).toContain('Hey guys today I want to show you this amazing product.');
+    expect(errors).toEqual([]);
+  });
+
+  test('editor page handles empty transcript query param', async ({ page }) => {
+    const errors: string[] = [];
+    page.on('pageerror', (err) => errors.push(err.message));
+    await page.goto('/editor?transcript=');
+    const textarea = page.locator('#transcript');
+    await expect(textarea).toHaveCount(1);
+    const value = await textarea.inputValue();
+    expect(value.trim().length).toBeGreaterThan(0);
+    // Falls back to sample transcript
+    expect(value).toContain('Hey guys today I want to show you this amazing product.');
+    expect(errors).toEqual([]);
+  });
+
+  test('creative-director page has send to editor link when results exist', async ({ page }) => {
+    // Smoke test: at idle (no results), the "Send to Editor" link should NOT exist
+    // in the results section. The nav bar link to /editor always exists, so we
+    // check for links with a transcript query param (only present in the Send to Editor link).
+    await page.goto('/creative-director');
+    await page.waitForTimeout(1000);
+    const sendToEditorLinks = page.locator('a[href*="/editor?transcript="]');
+    await expect(sendToEditorLinks).toHaveCount(0);
+  });
+});

@@ -16,6 +16,8 @@
     "prisma:generate": "node scripts/generate-prisma-clients.mjs",
     "platform:prepare": "node scripts/prepare-platform.mjs",
     "db:push": "prisma db push",
+    "db:migrate:d1": "node scripts/apply-d1-migrations.mjs",
+    "db:migrate:d1:apply": "node scripts/apply-d1-migrations.mjs --apply",
     "db:studio": "prisma studio",
     "cf:prepare": "DEPLOY_TARGET=cloudflare npm run prisma:generate && DEPLOY_TARGET=cloudflare npm run platform:prepare && node scripts/patch-wrangler-types.mjs",
     "cf:build": "npm run cf:prepare && opennextjs-cloudflare build --dangerouslyUseUnsupportedNextVersion && node scripts/trim-prisma-wasm.mjs",

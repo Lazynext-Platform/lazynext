@@ -8,6 +8,7 @@
  * Credit costs are defined per step and exported for the workflow layer to charge.
  */
 import { atlasChat } from '@/lib/atlas';
+import { getLLMModel } from '@/lib/providers/model-helpers';
 import type { BrandProfile } from '@/lib/brand/types';
 import type { ProductExtraction } from '@/lib/brand/types';
 import type {
@@ -39,7 +40,7 @@ export const CREATIVE_COSTS = {
   remix: 4,
 } as const;
 
-const CREATIVE_MODEL = process.env.CREATIVE_MODEL || 'bytedance/doubao-seed-2.1-turbo-260628';
+const CREATIVE_MODEL = process.env.CREATIVE_MODEL || getLLMModel();
 const CREATIVE_TIMEOUT_MS = Number(process.env.CREATIVE_TIMEOUT_MS || 90_000);
 const CREATIVE_MAX_TOKENS = Number(process.env.CREATIVE_MAX_TOKENS || 6000);
 
