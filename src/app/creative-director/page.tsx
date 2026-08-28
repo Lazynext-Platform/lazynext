@@ -6,6 +6,7 @@ import { useSession } from 'next-auth/react';
 import {
   Sparkles, Loader2, ArrowRight, CheckCircle2, AlertCircle,
   Target, Fish, FileText, Clapperboard, TrendingUp, Coins,
+  MessageSquare, Wand2, X,
 } from 'lucide-react';
 import { useI18n } from '@/i18n/provider';
 import { AuthModal } from '@/components/AuthModal';
@@ -53,6 +54,13 @@ export default function CreativeDirectorPage() {
   const [error, setError] = useState('');
   const [liveSteps, setLiveSteps] = useState<DirectorStep[]>([]);
   const [liveCredits, setLiveCredits] = useState(0);
+
+  // Conversational refinement state
+  const [refineTarget, setRefineTarget] = useState<'hook' | 'angle' | 'script'>('hook');
+  const [refineInstruction, setRefineInstruction] = useState('');
+  const [refineLoading, setRefineLoading] = useState(false);
+  const [refineResult, setRefineResult] = useState<{ refined: Record<string, unknown>; refinementNote: string } | null>(null);
+  const [refineError, setRefineError] = useState('');
 
   const run = useCallback(async () => {
     if (!session?.user) { setAuthOpen(true); return; }
@@ -134,6 +142,46 @@ export default function CreativeDirectorPage() {
       setStep('error');
     }
   }, [session, productUrl, brandUrl, productText, productName, platform, budget]);
+
+  const refine = useCallback(async () => {
+    if (!session?.user) { setAuthOpen(true); return; }
+    if (!result?.brief || !refineInstruction.trim()) return;
+
+    let element: Record<string, unknown>;
+    if (refineTarget === 'hook' && result.bestCombination) {
+      element = { type: result.bestCombination.hook.type, text: result.bestCombination.hook.hook };
+    } else if (refineTarget === 'angle' && result.bestCombination) {
+      element = { name: result.bestCombination.angle.name, description: result.bestCombination.angle.description };
+    } else if (refineTarget === 'script' && result.bestCombination) {
+      element = { scenes: result.bestCombination.script.scenes, cta: result.bestCombination.script.scenes };
+    } else {
+      return;
+    }
+
+    setRefineLoading(true); setRefineError(''); setRefineResult(null);
+    try {
+      const res = await fetch('/api/creative/refine', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type: refineTarget,
+          instruction: refineInstruction.trim(),
+          brief: result.brief,
+          element,
+        }),
+      });
+      if (!res.ok) {
+        const j = await res.json().catch(() => ({}));
+        throw new Error(j.error || 'refine_failed');
+      }
+      const data = await res.json();
+      setRefineResult(data.result);
+    } catch (e) {
+      setRefineError(String(e instanceof Error ? e.message : e));
+    } finally {
+      setRefineLoading(false);
+    }
+  }, [session, result, refineTarget, refineInstruction]);
 
   const stepIcon = (status: StepStatus) => {
     switch (status) {
@@ -361,6 +409,79 @@ export default function CreativeDirectorPage() {
                   <p className="mt-1 text-fg-faint">{v.rationale}</p>
                 </div>
               ))}
+            </div>
+          </section>
+        )}
+
+        {/* Conversational Refinement */}
+        {result?.bestCombination && (
+          <section className="mt-4 rounded-2xl border border-line bg-surface p-5">
+            <h2 className="flex items-center gap-2 text-sm font-bold text-fg">
+              <MessageSquare className="h-4 w-4 text-brand-accent" /> {t('director.refineTitle')}
+            </h2>
+            <p className="mt-1 text-xs text-fg-faint">{t('director.refineSubtitle')}</p>
+
+            <div className="mt-3 space-y-3">
+              <div>
+                <label className="text-xs font-medium text-fg-faint" htmlFor="refine-target">{t('director.refineTarget')}</label>
+                <select
+                  id="refine-target"
+                  value={refineTarget}
+                  onChange={(e) => setRefineTarget(e.target.value as 'hook' | 'angle' | 'script')}
+                  className="mt-1 w-full rounded-lg border border-line bg-app px-3 py-2 text-sm text-fg outline-none focus:border-brand-accent"
+                >
+                  <option value="hook">{t('director.refineTargetHook')}</option>
+                  <option value="angle">{t('director.refineTargetAngle')}</option>
+                  <option value="script">{t('director.refineTargetScript')}</option>
+                </select>
+              </div>
+              <div>
+                <label className="text-xs font-medium text-fg-faint" htmlFor="refine-instruction">{t('director.refineInstruction')}</label>
+                <textarea
+                  id="refine-instruction"
+                  value={refineInstruction}
+                  onChange={(e) => setRefineInstruction(e.target.value)}
+                  rows={2}
+                  className="mt-1 w-full rounded-lg border border-line bg-app px-3 py-2 text-sm text-fg outline-none focus:border-brand-accent"
+                />
+              </div>
+              <button
+                onClick={refine}
+                disabled={refineLoading || !refineInstruction.trim()}
+                className="flex w-full items-center justify-center gap-2 rounded-xl bg-elevated px-4 py-2.5 text-sm font-medium text-fg disabled:opacity-50"
+              >
+                {refineLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Wand2 className="h-4 w-4" />}
+                {refineLoading ? t('director.refineRunning') : t('director.refineBtn')}
+              </button>
+
+              {refineError && (
+                <div role="alert" className="rounded-lg border border-danger/30 bg-danger/5 p-3 text-xs text-danger">
+                  <AlertCircle className="mr-1 inline h-3 w-3" /> {t('director.refineError')}: {refineError}
+                </div>
+              )}
+
+              {refineResult && (
+                <div className="rounded-xl border border-success/30 bg-success/5 p-3 text-xs">
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-fg">{t('director.refineResult')}</span>
+                    <button
+                      onClick={() => setRefineResult(null)}
+                      aria-label={t('director.refineDismiss')}
+                      className="text-fg-faint hover:text-fg"
+                    >
+                      <X className="h-3.5 w-3.5" />
+                    </button>
+                  </div>
+                  <pre className="mt-2 whitespace-pre-wrap break-words text-fg">
+                    {JSON.stringify(refineResult.refined, null, 2)}
+                  </pre>
+                  {refineResult.refinementNote && (
+                    <p className="mt-2 border-t border-line pt-2 text-fg-faint">
+                      <span className="font-medium text-fg">{t('director.refineNote')}:</span> {refineResult.refinementNote}
+                    </p>
+                  )}
+                </div>
+              )}
             </div>
           </section>
         )}

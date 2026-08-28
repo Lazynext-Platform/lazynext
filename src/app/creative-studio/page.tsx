@@ -164,6 +164,10 @@ export default function CreativeStudioPage() {
   const [refAnalysis, setRefAnalysis] = useState<ReferenceCreativeAnalysis | null>(null);
   const [refError, setRefError] = useState('');
 
+  // Remix state (viral2viral)
+  const [remixStep, setRemixStep] = useState<Step>('idle');
+  const [remixError, setRemixError] = useState('');
+
   // Score state
   const [scoreStep, setScoreStep] = useState<Step>('idle');
   const [score, setScore] = useState<CreativeScore | null>(null);
@@ -294,6 +298,27 @@ export default function CreativeStudioPage() {
       setRefStep('error');
     }
   }, [refUrl]);
+
+  // viral2viral remix: adapt reference structure for current product
+  const doRemix = useCallback(async () => {
+    if (!refAnalysis || !brief) return;
+    setRemixStep('loading'); setRemixError('');
+    try {
+      const j = await postJson('/api/creative/remix', {
+        analysis: refAnalysis,
+        product: brief.product,
+        productName: brief.productName,
+        platform: brief.platform,
+        format: brief.format,
+      });
+      // Replace the current brief with the remixed one
+      setBrief(j.brief as CreativeBrief);
+      setRemixStep('done');
+    } catch (e) {
+      setRemixError(String(e instanceof Error ? e.message : e));
+      setRemixStep('error');
+    }
+  }, [refAnalysis, brief]);
 
   const doScore = useCallback(async () => {
     if (!brief || !script) return;
@@ -838,6 +863,32 @@ export default function CreativeStudioPage() {
                         <p className="mt-1 text-fg-faint">{s.description}</p>
                       </div>
                     ))}
+                  </div>
+                )}
+                {/* viral2viral remix button */}
+                {brief && (
+                  <div className="mt-3 border-t border-line pt-3">
+                    <button
+                      onClick={doRemix}
+                      disabled={remixStep === 'loading'}
+                      aria-busy={remixStep === 'loading'}
+                      className="flex w-full items-center justify-center gap-2 rounded-lg bg-elevated px-3 py-2 text-xs font-medium text-fg disabled:opacity-50"
+                    >
+                      {remixStep === 'loading' ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Wand2 className="h-3.5 w-3.5" />}
+                      {remixStep === 'loading' ? t('director.remixRunning') : t('director.remixBtn')}
+                    </button>
+                    {remixStep === 'done' && (
+                      <p role="status" className="mt-2 text-center text-[11px] text-success">
+                        <CheckCircle2 className="mr-1 inline h-3 w-3" />
+                        {t('director.remixResult')}
+                      </p>
+                    )}
+                    {remixStep === 'error' && (
+                      <p role="alert" className="mt-2 text-center text-[11px] text-danger">
+                        <AlertCircle className="mr-1 inline h-3 w-3" />
+                        {t('director.remixError')}: {remixError}
+                      </p>
+                    )}
                   </div>
                 )}
               </div>

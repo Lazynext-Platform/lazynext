@@ -74,14 +74,24 @@ export default function CreativeAssetsPage() {
     try {
       const params = filter !== 'all' ? `?type=${filter}` : '';
       const res = await fetch(`/api/creative/assets${params}`);
-      if (!res.ok) throw new Error('fetch_failed');
-      const j = await res.json();
-      setAssets(j.assets || []);
+      if (!res.ok) {
+        if (res.status === 401) throw new Error('auth');
+        if (res.status === 402) throw new Error('credits');
+        if (res.status >= 500) throw new Error('server');
+        throw new Error('failed');
+      }
+      const j = await res.json().catch(() => ({}));
+      setAssets(j?.assets || []);
     } catch (e) {
-      setError(String(e instanceof Error ? e.message : e));
+      const code = e instanceof Error ? e.message : '';
+      if (code === 'auth') setError(t('common.errUnauthorized'));
+      else if (code === 'credits') setError(t('common.errPaymentRequired'));
+      else if (code === 'server') setError(t('common.errServer'));
+      else if (e instanceof TypeError) setError(t('common.errNetwork'));
+      else setError(t('cassets.errFailed'));
     }
     setLoading(false);
-  }, [session, filter]);
+  }, [session, filter, t]);
 
   useEffect(() => { load(); }, [load]);
 
@@ -114,7 +124,7 @@ export default function CreativeAssetsPage() {
 
   return (
     <div className="min-h-screen bg-app pb-safe">
-      <div className="mx-auto max-w-4xl px-4 py-6 sm:py-8">
+      <div className="mx-auto max-w-4xl px-4 py-6 sm:py-8" aria-busy={loading}>
         <h1 className="text-2xl font-bold text-fg sm:text-3xl">
           <Package className="mr-2 inline h-7 w-7 text-brand-accent" />
           {t('cassets.title')}
@@ -140,7 +150,7 @@ export default function CreativeAssetsPage() {
           ))}
         </div>
 
-        {loading && <Loader2 className="mt-6 h-6 w-6 animate-spin text-brand-accent" />}
+        {loading && <Loader2 className="mt-6 h-6 w-6 animate-spin text-brand-accent" role="status" aria-label={t('common.loadingDots')} />}
 
         {error && (
           <div role="alert" className="mt-4 rounded-xl border border-danger/30 bg-danger/5 p-4 text-sm text-danger">
@@ -169,11 +179,12 @@ export default function CreativeAssetsPage() {
                     onClick={() => setExpandedId(isExpanded ? null : pkg.id)}
                     className="flex w-full items-center justify-between text-left"
                     aria-expanded={isExpanded}
+                    aria-label={pkg.name}
                   >
-                    <div className="flex items-center gap-2">
-                      {isExpanded ? <ChevronDown className="h-4 w-4 text-fg-faint" /> : <ChevronRight className="h-4 w-4 text-fg-faint" />}
-                      <Package className="h-4 w-4 text-brand-accent" />
-                      <span className="text-sm font-bold text-fg">{pkg.name}</span>
+                    <div className="flex items-center gap-2 min-w-0">
+                      {isExpanded ? <ChevronDown className="h-4 w-4 shrink-0 text-fg-faint" /> : <ChevronRight className="h-4 w-4 shrink-0 text-fg-faint" />}
+                      <Package className="h-4 w-4 shrink-0 text-brand-accent" />
+                      <span className="text-sm font-bold text-fg truncate">{pkg.name}</span>
                     </div>
                     <div className="flex items-center gap-3 text-xs text-fg-faint">
                       {meta?.totalCreditsSpent !== undefined && (
@@ -197,7 +208,7 @@ export default function CreativeAssetsPage() {
                           <div key={child.id} className="rounded-xl bg-app p-3">
                             <div className="flex items-center gap-2">
                               <Icon className={`h-3.5 w-3.5 ${color}`} />
-                              <span className="text-xs font-bold text-fg">{child.name}</span>
+                              <span className="text-xs font-bold text-fg truncate">{child.name}</span>
                               <span className="rounded bg-hover px-1.5 py-0.5 text-[10px] text-fg-faint">{child.type}</span>
                               {tags.length > 0 && tags.map((tag) => (
                                 <span key={tag} className="rounded bg-[#00b2fc]/10 px-1.5 py-0.5 text-[10px]" style={{ color: 'var(--color-brand-accent)' }}>{tag}</span>
@@ -231,7 +242,7 @@ export default function CreativeAssetsPage() {
                   <div key={asset.id} className="rounded-xl border border-line bg-surface p-3">
                     <div className="flex items-center gap-2">
                       <Icon className="h-3.5 w-3.5 text-brand-accent" />
-                      <span className="text-xs font-bold text-fg">{asset.name}</span>
+                      <span className="text-xs font-bold text-fg truncate">{asset.name}</span>
                       <span className="rounded bg-hover px-1.5 py-0.5 text-[10px] text-fg-faint">{asset.type}</span>
                     </div>
                     {meta && (

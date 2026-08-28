@@ -1,5 +1,51 @@
 # LazyNext Changelog
 
+## 2026-08-28 — Conversational Refinement + viral2viral Remix
+
+### What Changed
+1. **Conversational creative refinement** (P1 from roadmap): Users can now iterate on
+   generated hooks, angles, and scripts via natural language instructions. E.g.,
+   "Make the hook more urgent" or "Rewrite for a younger audience."
+   - New `refineCreative()` function in `src/lib/creative/intelligence.ts`
+   - New `REFINE_SYS` system prompt in `src/lib/creative/prompts.ts`
+   - New API route: `POST /api/creative/refine` (2 credits per refinement)
+   - UI: Refine section on `/creative-director` page with target selector,
+     instruction textarea, and result display with refinement notes
+   - 22 new i18n keys (`refine*` and `remix*`) in `director` namespace × 13 locales
+
+2. **viral2viral remix flow** (P1 from roadmap): Full "remix this viral video for my
+   brand" flow — reference analysis → adaptation recommendations → original brief.
+   - New `remixFromReference()` function in `src/lib/creative/intelligence.ts`
+   - New `REMIX_SYS` system prompt in `src/lib/creative/prompts.ts`
+   - New API route: `POST /api/creative/remix` (4 credits, or 9 with auto-analysis)
+   - UI: "Remix" button in creative-studio reference analysis section
+   - Adapts the reference's persuasive structure without copying its content
+
+3. **Roadmap updated**: `research/best-ideas.md` updated to reflect implemented features
+   (Meta Ads, Google Ads, performance loop, autonomous director, audit logging)
+
+### New Credit Costs
+- `creative:refine` — 2 credits
+- `creative:remix` — 4 credits
+- `creative:remix:analysis` — 5 credits (when auto-analyzing a reference URL)
+
+### Verification
+- `npm test` — 173 unit tests passed (157 + 16 new refine/remix tests)
+- `npx playwright test` — 83 E2E tests passed
+- `npx tsc --noEmit` — passed (0 errors)
+- `npm run lint` — passed (0 errors)
+
+### Files Changed
+- `src/lib/creative/intelligence.ts` (refineCreative, remixFromReference, CREATIVE_COSTS)
+- `src/lib/creative/prompts.ts` (REFINE_SYS, REMIX_SYS)
+- `src/app/api/creative/refine/route.ts` (new)
+- `src/app/api/creative/remix/route.ts` (new)
+- `src/app/creative-director/page.tsx` (refine UI section)
+- `src/app/creative-studio/page.tsx` (remix button in reference analysis)
+- `src/i18n/messages.ts` (22 new keys × 13 locales)
+- `test/refine-remix.test.ts` (new — 16 tests)
+- `research/best-ideas.md` (roadmap updates)
+
 ## 2026-08-28 — Remaining i18n Gaps + Admin E2E Tests
 
 ### What Changed

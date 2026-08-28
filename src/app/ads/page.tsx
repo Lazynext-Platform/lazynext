@@ -49,8 +49,8 @@ export default function AdsPage() {
     try {
       const res = await fetch('/api/ads/list');
       if (res.ok) {
-        const j = await res.json();
-        setCampaigns(j.campaigns || []);
+        const j = await res.json().catch(() => ({}));
+        setCampaigns(j?.campaigns || []);
       }
     } catch { /* non-fatal */ }
     setLoadingList(false);
@@ -68,8 +68,8 @@ export default function AdsPage() {
         body: JSON.stringify({ campaignId, platform }),
       });
       if (res.ok) {
-        const j = await res.json();
-        setMetricsMap((prev) => ({ ...prev, [campaignId]: j.metrics }));
+        const j = await res.json().catch(() => ({}));
+        if (j?.metrics) setMetricsMap((prev) => ({ ...prev, [campaignId]: j.metrics }));
       }
     } catch { /* non-fatal */ }
     setRefreshingId(null);
@@ -95,16 +95,27 @@ export default function AdsPage() {
           requireApproval,
         }),
       });
-      const j = await res.json();
-      if (!res.ok) throw new Error(j.error || 'create_failed');
+      const j = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        if (res.status === 401) throw new Error('auth');
+        if (res.status === 402) throw new Error('credits');
+        if (res.status >= 500) throw new Error('server');
+        throw new Error('failed');
+      }
+      if (!j?.campaign) throw new Error('failed');
       setCampaign(j.campaign as Campaign);
       setStep('done');
       loadCampaigns();
     } catch (e) {
-      setError(String(e instanceof Error ? e.message : e));
+      const code = e instanceof Error ? e.message : '';
+      if (code === 'auth') setError(t('common.errUnauthorized'));
+      else if (code === 'credits') setError(t('common.errPaymentRequired'));
+      else if (code === 'server') setError(t('common.errServer'));
+      else if (e instanceof TypeError) setError(t('common.errNetwork'));
+      else setError(t('ads.errCreateFailed'));
       setStep('error');
     }
-  }, [session, platform, name, creativeIds, budgetDaily, dryRun, requireApproval, loadCampaigns]);
+  }, [session, platform, name, creativeIds, budgetDaily, dryRun, requireApproval, loadCampaigns, t]);
 
   const statusColor = (status: string) => {
     switch (status) {
@@ -128,7 +139,7 @@ export default function AdsPage() {
         </p>
 
         {/* Create form */}
-        <section className="mt-6 rounded-2xl border border-line bg-surface p-5">
+        <section className="mt-6 rounded-2xl border border-line bg-surface p-5" aria-busy={step === 'loading'}>
           <h2 className="text-sm font-bold text-fg">{t('ads.createCampaign')}</h2>
           <div className="mt-4 grid gap-4 sm:grid-cols-2">
             <div>
@@ -217,23 +228,23 @@ export default function AdsPage() {
               <div><span className="text-fg-faint">{t('ads.name')}</span> <span className="text-fg">{campaign.name}</span></div>
               <div><span className="text-fg-faint">{t('ads.platformLabel')}</span> <span className="text-fg">{campaign.platform}</span></div>
               <div><span className="text-fg-faint">{t('ads.status')}</span> <span className={statusColor(campaign.status)}>{campaign.status}</span></div>
-              <div><span className="text-fg-faint">{t('ads.budget')}</span> <span className="text-fg">${campaign.budgetDaily}/{campaign.currency}/day</span></div>
+              <div><span className="text-fg-faint">{t('ads.budget')}</span> <span className="text-fg">${campaign.budgetDaily ?? 0}/{campaign.currency}/day</span></div>
             </div>
             {campaign.metrics && (
               <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
-                <Metric icon={Eye} label={t('ads.impressions')} value={campaign.metrics.impressions.toLocaleString()} />
-                <Metric icon={MousePointerClick} label={t('ads.clicks')} value={campaign.metrics.clicks.toLocaleString()} />
-                <Metric icon={TrendingUp} label={t('ads.ctr')} value={`${campaign.metrics.ctr.toFixed(1)}%`} />
-                <Metric icon={Coins} label={t('ads.estSpend')} value={`$${(campaign.budgetDaily || 0).toFixed(2)}`} />
+                <Metric icon={Eye} label={t('ads.impressions')} value={(campaign.metrics.impressions ?? 0).toLocaleString()} />
+                <Metric icon={MousePointerClick} label={t('ads.clicks')} value={(campaign.metrics.clicks ?? 0).toLocaleString()} />
+                <Metric icon={TrendingUp} label={t('ads.ctr')} value={`${(campaign.metrics.ctr ?? 0).toFixed(1)}%`} />
+                <Metric icon={Coins} label={t('ads.estSpend')} value={`$${(campaign.budgetDaily ?? 0).toFixed(2)}`} />
               </div>
             )}
           </section>
         )}
 
         {/* Campaign list */}
-        <section className="mt-6 rounded-2xl border border-line bg-surface p-5">
+        <section className="mt-6 rounded-2xl border border-line bg-surface p-5" aria-busy={loadingList}>
           <h2 className="text-sm font-bold text-fg">{t('ads.yourCampaigns')}</h2>
-          {loadingList && <Loader2 className="mt-3 h-4 w-4 animate-spin text-fg-faint" />}
+          {loadingList && <Loader2 className="mt-3 h-4 w-4 animate-spin text-fg-faint" role="status" aria-label={t('ads.loadingCampaigns')} />}
           {!loadingList && campaigns.length === 0 && (
             <p className="mt-3 text-xs text-fg-faint">{t('ads.noCampaigns')}</p>
           )}
@@ -244,13 +255,13 @@ export default function AdsPage() {
                 return (
                   <div key={c.id} className="rounded-xl border border-line bg-app p-3 text-xs">
                     <div className="flex items-center justify-between">
-                      <span className="font-bold text-fg">{c.name}</span>
+                      <span className="font-bold text-fg truncate">{c.name}</span>
                       <div className="flex items-center gap-2">
                         <span className={statusColor(c.status)}>{c.status}</span>
                         <button
                           onClick={() => refreshMetrics(c.id, c.platform)}
                           disabled={refreshingId === c.id}
-                          aria-label={`Refresh metrics for ${c.name}`}
+                          aria-label={t('ads.refreshMetricsLabel', { name: c.name })}
                           className="rounded p-1 text-fg-faint hover:bg-hover hover:text-fg disabled:opacity-50"
                         >
                           {refreshingId === c.id ? (
@@ -268,12 +279,12 @@ export default function AdsPage() {
                     </div>
                     {m && (
                       <div className="mt-2 grid grid-cols-3 gap-2 sm:grid-cols-6">
-                        <MiniMetric label={t('ads.metricImpr')} value={m.impressions.toLocaleString()} />
-                        <MiniMetric label={t('ads.metricClicks')} value={m.clicks.toLocaleString()} />
-                        <MiniMetric label={t('ads.metricCtr')} value={`${m.ctr.toFixed(1)}%`} />
-                        <MiniMetric label={t('ads.metricCvr')} value={`${m.cvr.toFixed(1)}%`} />
-                        <MiniMetric label={t('ads.metricSpend')} value={`$${m.spend.toFixed(2)}`} />
-                        <MiniMetric label={t('ads.metricRoas')} value={`${m.roas.toFixed(2)}x`} highlight={m.roas >= 1 ? 'pos' : 'neg'} />
+                        <MiniMetric label={t('ads.metricImpr')} value={(m.impressions ?? 0).toLocaleString()} />
+                        <MiniMetric label={t('ads.metricClicks')} value={(m.clicks ?? 0).toLocaleString()} />
+                        <MiniMetric label={t('ads.metricCtr')} value={`${(m.ctr ?? 0).toFixed(1)}%`} />
+                        <MiniMetric label={t('ads.metricCvr')} value={`${(m.cvr ?? 0).toFixed(1)}%`} />
+                        <MiniMetric label={t('ads.metricSpend')} value={`$${(m.spend ?? 0).toFixed(2)}`} />
+                        <MiniMetric label={t('ads.metricRoas')} value={`${(m.roas ?? 0).toFixed(2)}x`} highlight={(m.roas ?? 0) >= 1 ? 'pos' : 'neg'} />
                       </div>
                     )}
                   </div>

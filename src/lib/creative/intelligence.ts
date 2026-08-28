@@ -22,6 +22,7 @@ import type {
 } from './types';
 import {
   BRIEF_SYS, HOOKS_SYS, ANGLES_SYS, SCRIPT_SYS, STORYBOARD_SYS, REFERENCE_ANALYSIS_SYS, SCORE_SYS,
+  REFINE_SYS, REMIX_SYS,
 } from './prompts';
 
 // ── Credit costs per creative step ──
@@ -34,6 +35,8 @@ export const CREATIVE_COSTS = {
   referenceAnalysis: 5,
   score: 2,
   variants: 3,
+  refine: 2,
+  remix: 4,
 } as const;
 
 const CREATIVE_MODEL = process.env.CREATIVE_MODEL || 'bytedance/doubao-seed-2.1-turbo-260628';
@@ -463,4 +466,136 @@ Each variant:
       rationale: asStr(o.rationale),
     };
   });
+}
+
+// ── Conversational refinement ──
+
+export type RefineTargetType = 'brief' | 'hook' | 'angle' | 'script';
+
+export interface RefineInput {
+  type: RefineTargetType;
+  instruction: string;
+  brief: CreativeBrief;
+  /** The element to refine (HookCandidate, CreativeAngle, ScriptCandidate, or CreativeBrief) */
+  element: Record<string, unknown>;
+}
+
+export interface RefineResult {
+  type: RefineTargetType;
+  refined: Record<string, unknown>;
+  refinementNote: string;
+}
+
+/**
+ * Refine a creative element via a natural language instruction.
+ * The user can say things like "make the hook more urgent" or "rewrite for a younger audience".
+ */
+export async function refineCreative(input: RefineInput): Promise<RefineResult> {
+  const userPrompt = `Refine this ${input.type} based on the user's instruction.
+
+BRIEF CONTEXT:
+Product: ${input.brief.productName} — ${input.brief.product}
+Audience: ${input.brief.audience}
+Platform: ${input.brief.platform}
+Language: ${input.brief.language}
+Compliance constraints: ${input.brief.complianceConstraints.join(', ') || 'none'}
+
+CURRENT ${input.type.toUpperCase()}:
+${JSON.stringify(input.element, null, 2)}
+
+USER INSTRUCTION:
+${input.instruction}
+
+Output the refined ${input.type} JSON now (same schema as the input, plus a "refinementNote" field).`;
+
+  const raw = await atlasChat(
+    [{ role: 'system', content: REFINE_SYS }, { role: 'user', content: userPrompt }],
+    CREATIVE_MODEL, CREATIVE_MAX_TOKENS, CREATIVE_TIMEOUT_MS,
+  );
+  const j = extractJson(raw);
+  const { refinementNote, ...rest } = j;
+  return {
+    type: input.type,
+    refined: rest as Record<string, unknown>,
+    refinementNote: asStr(refinementNote),
+  };
+}
+
+// ── Viral2viral remix ──
+
+export interface RemixInput {
+  /** Reference creative analysis from analyzeReferenceCreative() */
+  analysis: ReferenceCreativeAnalysis;
+  /** Product text or description */
+  product: string;
+  productName?: string;
+  brand?: BrandProfile | null;
+  productExtraction?: ProductExtraction | null;
+  platform?: string;
+  format?: string;
+}
+
+/**
+ * Generate an original creative brief that adapts a reference ad's persuasive
+ * structure for a different product. This is the viral2viral remix flow:
+ * reference analysis → adaptation recommendations → original brief.
+ */
+export async function remixFromReference(input: RemixInput): Promise<CreativeBrief> {
+  const parts: string[] = [
+    `REFERENCE ANALYSIS (DATA for adaptation, NOT to copy):`,
+    `Hook type: ${input.analysis.hook}`,
+    `Narrative structure: ${input.analysis.narrativeStructure}`,
+    `Pacing: ${input.analysis.pacing}`,
+    `Emotional tone: ${input.analysis.emotionalTone}`,
+    `Persuasion mechanisms: ${input.analysis.persuasionMechanisms.join(', ')}`,
+    `Adaptation recommendations: ${input.analysis.adaptationRecommendations.join('; ')}`,
+    `Originality constraints (MUST NOT copy): ${input.analysis.originalityConstraints.join('; ')}`,
+    ``,
+    `PRODUCT TO ADAPT FOR:`,
+    `Product: ${input.product}`,
+  ];
+  if (input.productName) parts.push(`Product name: ${input.productName}`);
+  if (input.platform) parts.push(`Platform: ${input.platform}`);
+  if (input.format) parts.push(`Ad format: ${input.format}`);
+  if (input.productExtraction) {
+    parts.push(`Product page extraction (DATA):`);
+    parts.push(`- Category: ${input.productExtraction.category}`);
+    parts.push(`- Price: ${input.productExtraction.price}`);
+    if (input.productExtraction.benefits.length) parts.push(`- Benefits: ${input.productExtraction.benefits.join(', ')}`);
+    if (input.productExtraction.painPoints.length) parts.push(`- Pain points: ${input.productExtraction.painPoints.join(', ')}`);
+  }
+  if (input.brand) {
+    parts.push(`Brand intelligence (DATA):`);
+    parts.push(`- Company: ${input.brand.company}`);
+    parts.push(`- Tone: ${input.brand.tone}`);
+    if (input.brand.prohibitedClaims.length) parts.push(`- Prohibited claims: ${input.brand.prohibitedClaims.join(', ')}`);
+  }
+  parts.push('Output the remixed creative brief JSON now.');
+
+  const raw = await atlasChat(
+    [{ role: 'system', content: REMIX_SYS }, { role: 'user', content: parts.join('\n') }],
+    CREATIVE_MODEL, CREATIVE_MAX_TOKENS, CREATIVE_TIMEOUT_MS,
+  );
+  const j = extractJson(raw);
+
+  return {
+    objective: asStr(j.objective, 'conversion'),
+    platform: asStr(j.platform, input.platform || 'tiktok'),
+    format: asStr(j.format, input.format || 'ugc'),
+    audience: asStr(j.audience),
+    product: asStr(j.product),
+    productName: asStr(j.productName),
+    offer: asStr(j.offer),
+    painPoint: asStr(j.painPoint),
+    benefit: asStr(j.benefit),
+    mechanism: asStr(j.mechanism),
+    proof: asStr(j.proof),
+    angle: asStr(j.angle),
+    hook: asStr(j.hook),
+    cta: asStr(j.cta),
+    visualDirection: asStr(j.visualDirection),
+    soundDirection: asStr(j.soundDirection),
+    complianceConstraints: asStrArr(j.complianceConstraints),
+    language: asStr(j.language, 'en'),
+  };
 }
