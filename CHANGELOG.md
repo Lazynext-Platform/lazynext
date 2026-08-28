@@ -1,5 +1,38 @@
 # LazyNext Changelog
 
+## 2026-08-28 — Remaining i18n Gaps + Admin E2E Tests
+
+### What Changed
+1. **i18n gap fixes**: 7 new keys across 5 existing namespaces (all 13 locales):
+   - `drama`: `altProduct`, `imagePreview`, `altScene` (alt text and aria-labels)
+   - `myWork`: `downloadVideo`, `altProduct` (aria-label and alt text)
+   - `assets`: `removeColor` (aria-label)
+   - `mkStudio`: `done`, `defaultSaveTitle` (progress label and save title)
+   - `adRef`: `videoSpec` (file spec hint)
+   - Reused existing `common.close` for "close" aria-labels
+   - 6 pages updated: drama-studio, my-work, my-work/[id], assets, lazynext-studio, ad-reference
+2. **Admin E2E tests**: 8 new tests in `e2e/admin.spec.ts` covering page load, layout,
+   auth gate, console error check, and direct URL accessibility.
+3. **CHANGELOG**: added entry for admin/reset/cstudio i18n.
+
+### Verification
+- `npm test` — 157 unit tests passed
+- `npx playwright test` — 83 E2E tests passed (75 + 8 new admin)
+- `npx tsc --noEmit` — passed (0 errors)
+- `npm run lint` — passed (0 errors, 0 warnings)
+- All CI checks green
+
+### Files Changed
+- `src/i18n/messages.ts` (7 new keys × 13 locales)
+- `src/app/drama-studio/page.tsx` (alt text and aria-labels)
+- `src/app/my-work/page.tsx` (aria-label)
+- `src/app/my-work/[id]/page.tsx` (aria-label and alt text)
+- `src/app/assets/page.tsx` (aria-labels, added useI18n to Modal)
+- `src/app/lazynext-studio/page.tsx` (progress label and save title)
+- `src/app/ad-reference/page.tsx` (file spec hint)
+- `e2e/admin.spec.ts` (new — 8 tests)
+- `CHANGELOG.md` (new entry)
+
 ## 2026-08-28 — i18n for Admin, Reset-Password, Creative-Studio Pages
 
 ### What Changed
