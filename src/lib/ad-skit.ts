@@ -13,6 +13,8 @@
 import { atlasChat, type SubmitResult } from '@/lib/atlas';
 import { atlasImage } from '@/lib/providers/atlas-image';
 import { atlasVideo } from '@/lib/providers/atlas-video';
+import { getImageModel, getVideoModel } from '@/lib/providers/model-helpers';
+import type { PlanTier } from '@/lib/plan-tier';
 
 export const AD_SKIT_TEMPLATE_ID = 'ad-skit';
 
@@ -21,9 +23,19 @@ export const PLAN_MODELS = [
   { key: 'zai-org/glm-5.2', label: 'GLM-5.2' },
 ] as const;
 export const DEFAULT_PLAN_MODEL = 'deepseek-ai/deepseek-v4-pro';
-export const IMAGE_MODEL = 'openai/gpt-image-2/text-to-image';
-export const EDIT_MODEL = 'openai/gpt-image-2/edit';
-export const VIDEO_MODEL = 'bytedance/seedance-2.0/reference-to-video';
+
+/** Resolve ad-skit image model, respecting plan-tier routing. */
+export function getAdSkitImageModel(planTier?: PlanTier): string {
+  return getImageModel(planTier);
+}
+/** Resolve ad-skit edit model, respecting plan-tier routing. */
+export function getAdSkitEditModel(planTier?: PlanTier): string {
+  return getImageModel(planTier);
+}
+/** Resolve ad-skit video model, respecting plan-tier routing. */
+export function getAdSkitVideoModel(planTier?: PlanTier): string {
+  return getVideoModel(planTier);
+}
 
 export const AD_SKIT_COSTS = { plan: 4, image: 2, video: 25 } as const;
 
@@ -131,10 +143,10 @@ export async function planSkit(input: {
 }
 
 /** Product image: edit to preserve product if uploaded, otherwise text-to-image. */
-export async function submitProductImage(prompt: string, uploadedUrl?: string): Promise<SubmitResult> {
+export async function submitProductImage(prompt: string, uploadedUrl?: string, planTier?: PlanTier): Promise<SubmitResult> {
   if (uploadedUrl) {
     return atlasImage.generate({
-      model: EDIT_MODEL,
+      model: getAdSkitEditModel(planTier),
       prompt: `Keep this EXACT product identical (shape/color/label/logo/proportions). Clean commercial e-commerce product shot on pure white background. ${prompt}`,
       referenceImages: [uploadedUrl],
       imageField: 'images',
@@ -142,16 +154,16 @@ export async function submitProductImage(prompt: string, uploadedUrl?: string): 
     });
   }
   return atlasImage.generate({
-    model: IMAGE_MODEL,
+    model: getAdSkitImageModel(planTier),
     prompt: `${prompt} sharp product photography, pure white background`,
     extra: { aspect_ratio: '1:1' },
   });
 }
 
 /** seedance-2.0/reference-to-video: multiple product images as reference to produce a 15s two-person shopping skit (with built-in audio). */
-export async function submitSkitVideo(productUrls: string[], videoPrompt: string, duration = 15): Promise<SubmitResult> {
+export async function submitSkitVideo(productUrls: string[], videoPrompt: string, duration = 15, planTier?: PlanTier): Promise<SubmitResult> {
   return atlasVideo.generate({
-    model: VIDEO_MODEL,
+    model: getAdSkitVideoModel(planTier),
     prompt: videoPrompt,
     referenceImages: productUrls.filter((u) => typeof u === 'string' && u.startsWith('http')).slice(0, 4),
     extra: {

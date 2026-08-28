@@ -38,6 +38,7 @@ model User {
   adCampaigns  AdCampaign[]
   creativePerformance CreativePerformance[]
   timelines  Timeline[]
+  editingSkills EditingSkill[]
 }
 
 model Account {
@@ -319,4 +320,22 @@ model Timeline {
 
   @@index([userId])
   @@index([creationId])
+}
+
+model EditingSkill {
+  id          String   @id @default(cuid())
+  userId      String
+  name        String
+  description String   @default("")
+  contentTypesJson String @default("[]") // serialized ContentType[]
+  platformsJson    String @default("[]") // serialized string[]
+  stepsJson        String @default("[]") // serialized EditStep[]
+  estimatedTimeMin Int      @default(5)
+  tagsJson         String   @default("[]") // serialized string[]
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }

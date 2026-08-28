@@ -72,7 +72,7 @@ npm run build   # Production build (Cloudflare target)
 - Next.js 16 + React 19 + TypeScript 6
 - Tailwind CSS 4
 - NextAuth (JWT session, Google + Credentials providers)
-- Prisma 7 with D1 (prod) / SQLite (local) — 18 tables total
+- Prisma 7 with D1 (prod) / SQLite (local) — 19 tables total
 - Cloudflare R2 (prod) / file-based (local) media storage
 - Atlas Cloud AI generation API (prod) / mock server (local)
 - Dodo Payments for billing
@@ -135,4 +135,29 @@ Completed across 15+ sessions:
 - 13 locale translations (en, zh, ja, es, ko, pt, fr, de, ar, hi, vi, th, id)
 - RTL support for Arabic (`dir="rtl"`, `lang="ar"`)
 - 0 horizontal overflow across 41 viewport combinations (375px–2560px, 200% zoom, RTL)
+
+## Plan-Tier Aware Routing
+- `src/lib/plan-tier.ts` exports `getUserPlanTier(userId)` which infers tier (free/starter/pro/elite) from the user's largest credit purchase
+- All creative API routes call `getUserPlanTier(uid)` and pass the tier to intelligence functions
+- The provider router selects models based on the user's tier
+- `CREATIVE_MODEL` env override still takes precedence
+
+## Telemetry
+- `src/lib/telemetry.ts` provides structured JSON logging for tool execution and provider routing
+- Logs are emitted via `console.log` (captured by Cloudflare Workers)
+- `logToolExecution` — logs tool name, userId, cost, duration, success
+- `logProviderRouting` — logs capability, planTier, selectedModel, fallback
+
+## Editor Persistence
+- Timelines are persisted to D1 via `prisma.timeline` model
+- `GET /api/editor/timeline` — list user's saved timelines
+- `POST /api/editor/timeline` with `save`/`load`/`delete` actions
+- All persisted operations verify user ownership
+- D1 migration applied to production (19 tables total)
+
+## Editor Multimodal
+- `POST /api/editor/transcribe` — video URL → ASR transcript (2 credits, whisper-large-v3)
+- `POST /api/editor/ocr` — image URL → text extraction (1 credit, dry-run stub)
+- Editor UI has Rough Cut, Skills, and Timeline tabs
+- Director → Editor handoff uses word-count-based duration estimates
 

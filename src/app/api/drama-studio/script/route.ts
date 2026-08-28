@@ -1,8 +1,9 @@
 import { withAtlas } from '@/lib/request-context';
 import { NextResponse } from 'next/server';
 import { auth } from '@/../auth';
-import { DRAMA_SCRIPT_MODEL, draftScript } from '@/lib/drama/prompt';
+import { getDramaScriptModel, draftScript } from '@/lib/drama/prompt';
 import { chargeSync, refundSync, chargeErrorResponse } from '@/lib/lazynext-studio/gen-task';
+import { getUserPlanTier } from '@/lib/plan-tier';
 
 export const maxDuration = 120;
 
@@ -15,6 +16,7 @@ async function __byokPOST(req: Request) {
   const session = await auth();
   if (!session?.user?.id) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
   const uid = session.user.id;
+  const planTier = await getUserPlanTier(uid);
 
   const body = await req.json().catch(() => ({}));
   const topic = typeof body.topic === 'string' ? body.topic.trim().slice(0, 2000) : '';
@@ -33,7 +35,7 @@ async function __byokPOST(req: Request) {
   const input = { topic, style, lang, targetSegments };
   try {
     const script = await draftScript(input);
-    return NextResponse.json({ script, model: DRAMA_SCRIPT_MODEL });
+    return NextResponse.json({ script, model: getDramaScriptModel(planTier) });
   } catch (e) {
     await refundSync(uid, DRAMA_SCRIPT_COST, 'drama:script');
     console.error('[drama/script] atlas error:', String(e));

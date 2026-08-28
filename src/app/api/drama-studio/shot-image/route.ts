@@ -1,8 +1,9 @@
 import { withAtlas } from '@/lib/request-context';
 import { NextResponse } from 'next/server';
 import { auth } from '@/../auth';
-import { submitShotImage, normalizeRatio, MK_IMAGE_COST, SHOT_IMAGE_MODEL, SHOT_IMAGE_EDIT_MODEL } from '@/lib/lazynext-studio/workflow';
+import { submitShotImage, normalizeRatio, MK_IMAGE_COST, getShotImageModel, getShotImageEditModel } from '@/lib/lazynext-studio/workflow';
 import { chargeAndSubmit, chargeErrorResponse } from '@/lib/lazynext-studio/gen-task';
+import { getUserPlanTier } from '@/lib/plan-tier';
 
 export const maxDuration = 60;
 
@@ -11,6 +12,7 @@ async function __byokPOST(req: Request) {
   const session = await auth();
   if (!session?.user?.id) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
   const uid = session.user.id;
+  const planTier = await getUserPlanTier(uid);
 
   const body = await req.json().catch(() => ({}));
   const prompt = typeof body.prompt === 'string' ? body.prompt.trim().slice(0, 3000) : '';
@@ -31,9 +33,9 @@ async function __byokPOST(req: Request) {
       cost: MK_IMAGE_COST,
       ref: 'drama:shot-image',
       templateId: 'drama-shot',
-      model: refImages.length ? SHOT_IMAGE_EDIT_MODEL : SHOT_IMAGE_MODEL,
+      model: refImages.length ? getShotImageEditModel(planTier) : getShotImageModel(planTier),
       prompt,
-      submit: () => submitShotImage(prompt, ratio, refImages),
+      submit: () => submitShotImage(prompt, ratio, refImages, planTier),
     });
     return NextResponse.json({ id: submit.id, getUrl: submit.getUrl });
   } catch (e) {

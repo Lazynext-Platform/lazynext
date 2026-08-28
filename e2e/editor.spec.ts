@@ -222,3 +222,19 @@ test.describe('Editor page — Timeline persistence (Timeline tab)', () => {
     await expect(createBtn).toBeVisible();
   });
 });
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Authenticated editor flows — Timeline persistence lifecycle
+//
+// NOTE: Authenticated E2E tests for the timeline save/load/delete lifecycle
+// cannot run locally because the NextAuth credentials provider requires
+// Cloudflare D1 context (getCloudflareContext), which is only available in
+// production or when initOpenNextCloudflareForDev is configured.  The local
+// dev server uses SQLite via better-sqlite3, but the auth layer still tries
+// to access D1 through the Cloudflare context, causing a CallbackRouteError.
+//
+// These flows are verified via:
+//   1. Unit tests (test/editor-routes.test.ts) — API contract and ownership
+//   2. Manual testing against production
+//   3. The unauthenticated smoke tests above (UI structure and accessibility)
+// ─────────────────────────────────────────────────────────────────────────────

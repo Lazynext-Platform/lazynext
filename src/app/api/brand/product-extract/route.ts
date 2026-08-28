@@ -5,6 +5,7 @@ import { extractProduct, SSRFError } from '@/lib/brand/extract';
 import { deductCredits } from '@/lib/credits';
 import { refundSync } from '@/lib/lazynext-studio/gen-task';
 import { prisma } from '@/lib/prisma';
+import { getUserPlanTier } from '@/lib/plan-tier';
 
 export const maxDuration = 90;
 
@@ -14,6 +15,7 @@ async function __byokPOST(req: Request) {
   const session = await auth();
   if (!session?.user?.id) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
   const uid = session.user.id;
+  const planTier = await getUserPlanTier(uid);
 
   const body = await req.json().catch(() => ({}));
   const url = typeof body.url === 'string' ? body.url.trim() : '';
@@ -31,7 +33,7 @@ async function __byokPOST(req: Request) {
   }
 
   try {
-    const extraction = await extractProduct(url);
+    const extraction = await extractProduct(url, planTier);
     // Persist to AdProduct table for reuse in workflows
     const adProduct = await prisma.adProduct.create({
       data: {

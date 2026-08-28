@@ -549,3 +549,151 @@ test('route "action_required" guard: empty action is rejected (inline)', () => {
   const action = body.action;
   assert.ok(!action, 'empty action should be falsy and trigger action_required');
 });
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 7. Editing skills: built-in skills, filtering, and CRUD logic
+// ─────────────────────────────────────────────────────────────────────────────
+
+import {
+  BUILTIN_SKILLS,
+  listSkills,
+  getSkill,
+  createSkill,
+  updateSkill,
+  deleteSkill,
+  recommendSkills,
+  type ContentType,
+} from '@/lib/editor/skills';
+
+test('BUILTIN_SKILLS has at least 3 curated skills', () => {
+  assert.ok(BUILTIN_SKILLS.length >= 3, `expected ≥3 built-in skills, got ${BUILTIN_SKILLS.length}`);
+});
+
+test('all built-in skills have source="builtin"', () => {
+  for (const s of BUILTIN_SKILLS) {
+    assert.equal(s.source, 'builtin', `skill ${s.id} should be builtin`);
+  }
+});
+
+test('all built-in skills have unique ids', () => {
+  const ids = BUILTIN_SKILLS.map(s => s.id);
+  const unique = new Set(ids);
+  assert.equal(ids.length, unique.size, 'built-in skill ids should be unique');
+});
+
+test('all built-in skills have at least one step', () => {
+  for (const s of BUILTIN_SKILLS) {
+    assert.ok(s.steps.length >= 1, `skill ${s.id} should have ≥1 step`);
+  }
+});
+
+test('getSkill returns a built-in skill by id', () => {
+  const first = BUILTIN_SKILLS[0];
+  const found = getSkill(first.id);
+  assert.ok(found, `getSkill(${first.id}) should return the skill`);
+  assert.equal(found!.id, first.id);
+});
+
+test('getSkill returns undefined for non-existent id', () => {
+  const found = getSkill('non-existent-skill-id');
+  assert.equal(found, undefined);
+});
+
+test('listSkills returns all skills when no filter', () => {
+  const all = listSkills();
+  assert.ok(all.length >= BUILTIN_SKILLS.length, 'listSkills should return at least all built-ins');
+});
+
+test('listSkills filters by contentType', () => {
+  const talkingHead = listSkills({ contentType: 'talking-head' as ContentType });
+  assert.ok(talkingHead.length >= 1, 'should find at least one talking-head skill');
+  for (const s of talkingHead) {
+    assert.ok(s.contentTypes.includes('talking-head'), 'all results should include talking-head');
+  }
+});
+
+test('listSkills filters by platform', () => {
+  const tiktok = listSkills({ platform: 'tiktok' });
+  assert.ok(tiktok.length >= 1, 'should find at least one tiktok skill');
+  for (const s of tiktok) {
+    assert.ok(s.platforms.includes('tiktok'), 'all results should include tiktok');
+  }
+});
+
+test('listSkills filters by tag', () => {
+  // Use the first tag from the first built-in skill
+  const tag = BUILTIN_SKILLS[0].tags[0];
+  const tagged = listSkills({ tag });
+  assert.ok(tagged.length >= 1, `should find at least one skill with tag "${tag}"`);
+  for (const s of tagged) {
+    assert.ok(s.tags.includes(tag), `all results should include tag "${tag}"`);
+  }
+});
+
+test('createSkill creates a user skill with source="user"', () => {
+  const skill = createSkill({
+    name: 'Test Skill',
+    description: 'A test skill',
+    contentTypes: ['talking-head' as ContentType],
+    platforms: ['tiktok'],
+    steps: [{ order: 1, action: 'cut', trigger: 'test', params: {}, description: 'test step' }],
+    estimatedTimeMin: 3,
+    tags: ['test'],
+  });
+  assert.equal(skill.source, 'user');
+  assert.ok(skill.id.startsWith('user-'));
+  assert.equal(skill.name, 'Test Skill');
+});
+
+test('updateSkill updates a user skill but not builtins', () => {
+  // Can't update built-in
+  const builtin = BUILTIN_SKILLS[0];
+  const updatedBuiltin = updateSkill(builtin.id, { name: 'Hacked' });
+  assert.equal(updatedBuiltin, undefined, 'should not update built-in skill');
+
+  // Can update user skill
+  const created = createSkill({
+    name: 'Updateable Skill',
+    description: 'Before',
+    contentTypes: ['ugc' as ContentType],
+    platforms: ['youtube'],
+    steps: [],
+    estimatedTimeMin: 5,
+    tags: [],
+  });
+  const updated = updateSkill(created.id, { description: 'After' });
+  assert.ok(updated, 'should update user skill');
+  assert.equal(updated!.description, 'After');
+  assert.equal(updated!.name, 'Updateable Skill'); // unchanged
+});
+
+test('deleteSkill deletes user skills but not builtins', () => {
+  // Can't delete built-in
+  const builtin = BUILTIN_SKILLS[0];
+  const deletedBuiltin = deleteSkill(builtin.id);
+  assert.equal(deletedBuiltin, false, 'should not delete built-in skill');
+
+  // Can delete user skill
+  const created = createSkill({
+    name: 'Deletable Skill',
+    description: '',
+    contentTypes: [],
+    platforms: [],
+    steps: [],
+    estimatedTimeMin: 1,
+    tags: [],
+  });
+  const deleted = deleteSkill(created.id);
+  assert.equal(deleted, true);
+  assert.equal(getSkill(created.id), undefined);
+});
+
+test('recommendSkills returns skills sorted by tag count', () => {
+  const recommended = recommendSkills('talking-head' as ContentType, 'tiktok');
+  assert.ok(recommended.length >= 1, 'should recommend at least one skill');
+  // Verify sort: descending by tags.length
+  for (let i = 1; i < recommended.length; i++) {
+    assert.ok(recommended[i - 1].tags.length >= recommended[i].tags.length, 'should be sorted by tag count desc');
+  }
+});
+

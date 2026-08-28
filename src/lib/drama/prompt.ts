@@ -1,4 +1,6 @@
 import { atlasChat } from '@/lib/atlas';
+import { getLLMModel } from '@/lib/providers/model-helpers';
+import type { PlanTier } from '@/lib/plan-tier';
 
 // Script quality first. 2026-07-14 testing: openai/gpt-5.5 reliably produces 3-character, full-storyboard JSON scripts;
 // doubao 2.1 turbo/pro approaches or exceeds 120s in production, flash is fast but quality doesn't meet Drama Studio's target.
@@ -7,6 +9,11 @@ import { atlasChat } from '@/lib/atlas';
 // Old 502 root cause was old prompt's verbose output causing ~53s occasional timeout on CF side; new prompt output is concise (~2.5k chars, 30s), gpt-5.5 back as primary, gemini as fallback.
 export const DRAMA_SCRIPT_MODEL = process.env.DRAMA_MODEL || 'openai/gpt-5.5';
 export const DRAMA_SCRIPT_FALLBACK_MODEL = process.env.DRAMA_FALLBACK_MODEL || 'google/gemini-2.5-flash';
+
+/** Resolve drama script model, respecting env override and plan-tier routing. */
+export function getDramaScriptModel(planTier?: PlanTier): string {
+  return process.env.DRAMA_MODEL || getLLMModel(planTier);
+}
 
 function envInt(value: string | undefined, fallback: number, min: number, max: number): number {
   const n = Math.round(Number(value));
