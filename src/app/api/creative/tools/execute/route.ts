@@ -1,7 +1,7 @@
 import { withAtlas } from '@/lib/request-context';
 import { NextResponse } from 'next/server';
 import { auth } from '@/../auth';
-import { getTool, validateAgainstSchema, executeTool, CREATIVE_TOOL_COSTS } from '@/lib/creative/tools';
+import { getTool, validateAgainstSchema, executeTool } from '@/lib/creative/tools';
 import { deductCredits } from '@/lib/credits';
 import { refundSync } from '@/lib/lazynext-studio/gen-task';
 
@@ -30,8 +30,8 @@ async function __byokPOST(req: Request) {
     return NextResponse.json({ error: 'validation_failed', detail: validationErrors }, { status: 400 });
   }
 
-  // Deduct credits based on the tool's cost
-  const cost = CREATIVE_TOOL_COSTS[toolName as keyof typeof CREATIVE_TOOL_COSTS] || 0;
+  // Deduct credits based on the tool's cost property
+  const cost = tool.cost || 0;
   if (cost > 0) {
     try {
       await deductCredits(uid, cost, `creative:tool:${toolName}`);

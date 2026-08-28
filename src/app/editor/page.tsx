@@ -110,6 +110,18 @@ export default function EditorPage() {
   const [trStep, setTrStep] = useState<Step>('idle');
   const [trError, setTrError] = useState('');
 
+  // OCR state
+  const [ocrImageUrl, setOcrImageUrl] = useState('');
+  const [ocrStep, setOcrStep] = useState<Step>('idle');
+  const [ocrError, setOcrError] = useState('');
+  const [ocrResult, setOcrResult] = useState<{ text: string; confidence?: number; dryRun?: boolean } | null>(null);
+
+  // Timeline persistence state
+  const [savedTimelines, setSavedTimelines] = useState<Array<{ id: string; name: string; updatedAt: string }>>([]);
+  const [tlListLoading, setTlListLoading] = useState(false);
+  const [tlSaveStep, setTlSaveStep] = useState<Step>('idle');
+  const [tlSaveError, setTlSaveError] = useState('');
+
   const loadSkills = useCallback(async () => {
     if (!session?.user) return;
     setSkillsLoading(true);
@@ -223,6 +235,114 @@ export default function EditorPage() {
     }
   }, [session?.user, videoUrl, t]);
 
+  const runOCR = useCallback(async () => {
+    if (!session?.user) { setAuthOpen(true); return; }
+    setOcrStep('loading');
+    setOcrError('');
+    setOcrResult(null);
+    try {
+      const res = await fetch('/api/editor/ocr', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ imageUrl: ocrImageUrl }),
+      });
+      if (!res.ok) {
+        const j = await res.json().catch(() => ({}));
+        throw new Error(j.error || `HTTP ${res.status}`);
+      }
+      const j = await res.json().catch(() => ({}));
+      setOcrResult({ text: j.text || '', confidence: j.confidence, dryRun: j.dryRun });
+      setOcrStep('done');
+    } catch (e) {
+      setOcrError(e instanceof TypeError ? t('common.errNetwork') : t('editor.ocrErrFailed'));
+      setOcrStep('error');
+    }
+  }, [session?.user, ocrImageUrl, t]);
+
+  const loadSavedTimelines = useCallback(async () => {
+    if (!session?.user) return;
+    setTlListLoading(true);
+    try {
+      const res = await fetch('/api/editor/timeline');
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const j = await res.json().catch(() => ({}));
+      setSavedTimelines(j.timelines || []);
+    } catch {
+      // silently fail — list is optional
+    } finally {
+      setTlListLoading(false);
+    }
+  }, [session?.user]);
+
+  useEffect(() => {
+    if (session?.user && tab === 'timeline') loadSavedTimelines();
+  }, [session?.user, tab, loadSavedTimelines]);
+
+  const saveTimeline = useCallback(async () => {
+    if (!session?.user) { setAuthOpen(true); return; }
+    if (!timeline) return;
+    setTlSaveStep('loading');
+    setTlSaveError('');
+    try {
+      const res = await fetch('/api/editor/timeline', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'save', timeline }),
+      });
+      if (!res.ok) {
+        const j = await res.json().catch(() => ({}));
+        throw new Error(j.error || `HTTP ${res.status}`);
+      }
+      setTlSaveStep('done');
+      loadSavedTimelines();
+    } catch (e) {
+      setTlSaveError(e instanceof TypeError ? t('common.errNetwork') : t('editor.tlSaveFailed'));
+      setTlSaveStep('error');
+    }
+  }, [session?.user, timeline, t, loadSavedTimelines]);
+
+  const loadTimeline = useCallback(async (id: string) => {
+    if (!session?.user) return;
+    setTlStep('loading');
+    setTlError('');
+    try {
+      const res = await fetch('/api/editor/timeline', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'load', id }),
+      });
+      if (!res.ok) {
+        const j = await res.json().catch(() => ({}));
+        throw new Error(j.error || `HTTP ${res.status}`);
+      }
+      const j = await res.json().catch(() => ({}));
+      if (j.timeline) {
+        setTimeline(j.timeline);
+        setTlName(j.timeline.name || 'Loaded');
+        setTlFps(String(j.timeline.fps || 30));
+        setTlRatio(j.timeline.ratio || '16:9');
+        setTlStep('done');
+      }
+    } catch (e) {
+      setTlError(e instanceof TypeError ? t('common.errNetwork') : t('editor.tlErrFailed'));
+      setTlStep('error');
+    }
+  }, [session?.user, t]);
+
+  const deleteTimeline = useCallback(async (id: string) => {
+    if (!session?.user) return;
+    try {
+      await fetch('/api/editor/timeline', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'delete', id }),
+      });
+      loadSavedTimelines();
+    } catch {
+      // silently fail
+    }
+  }, [session?.user, loadSavedTimelines]);
+
   return (
     <main id="main-content" className="min-h-screen bg-bg text-fg">
       <div className="max-w-5xl mx-auto px-4 pt-20 pb-12 safe-top">
@@ -313,6 +433,57 @@ export default function EditorPage() {
                 <div role="status" className="mt-2 text-xs text-success">
                   <CheckCircle2 className="inline w-3 h-3 mr-1" aria-hidden="true" />
                   {t('editor.trDone')}
+                </div>
+              )}
+            </div>
+
+            {/* OCR from image URL */}
+            <div className="rounded-lg border border-border bg-bg-card p-3">
+              <label htmlFor="ocrImageUrl" className="block text-sm font-medium mb-1">
+                {t('editor.ocrTitle')}
+              </label>
+              <p className="text-xs text-fg-muted mb-2">{t('editor.ocrHint')}</p>
+              <div className="flex gap-2">
+                <input
+                  id="ocrImageUrl"
+                  type="url"
+                  value={ocrImageUrl}
+                  onChange={(e) => setOcrImageUrl(e.target.value)}
+                  placeholder="https://..."
+                  className="flex-1 rounded-lg border border-border bg-bg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
+                  aria-label={t('editor.ocrTitle')}
+                />
+                <button
+                  onClick={runOCR}
+                  disabled={ocrStep === 'loading' || !ocrImageUrl.trim()}
+                  className="px-3 py-2 rounded-lg bg-fg-muted/20 text-fg text-sm font-medium hover:bg-fg-muted/30 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+                >
+                  {ocrStep === 'loading' ? (
+                    <><Loader2 className="inline w-4 h-4 mr-1 animate-spin" aria-hidden="true" />{t('editor.ocrRunning')}</>
+                  ) : (
+                    <>{t('editor.ocrRun')}</>
+                  )}
+                </button>
+              </div>
+              {ocrError && (
+                <div role="alert" className="mt-2 text-xs text-danger">
+                  <AlertCircle className="inline w-3 h-3 mr-1" aria-hidden="true" />
+                  {ocrError}
+                </div>
+              )}
+              {ocrResult && ocrStep === 'done' && (
+                <div role="status" className="mt-2 space-y-1">
+                  <div className="flex items-center gap-1 text-xs text-success">
+                    <CheckCircle2 className="w-3 h-3" aria-hidden="true" />
+                    <span>{t('editor.ocrDone')}</span>
+                    {ocrResult.dryRun && <span className="text-fg-muted">(dry-run)</span>}
+                  </div>
+                  {ocrResult.text && (
+                    <p className="text-xs text-fg bg-bg rounded p-2 border border-border">{ocrResult.text}</p>
+                  )}
+                  {ocrResult.confidence !== undefined && (
+                    <p className="text-xs text-fg-muted">Confidence: {(ocrResult.confidence * 100).toFixed(0)}%</p>
+                  )}
                 </div>
               )}
             </div>
@@ -683,8 +854,70 @@ export default function EditorPage() {
                 <pre className="rounded-lg border border-border bg-bg-card p-3 text-xs font-mono overflow-x-auto" role="status">
                   {JSON.stringify(timeline, null, 2)}
                 </pre>
+                {/* Save to D1 */}
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={saveTimeline}
+                    disabled={tlSaveStep === 'loading'}
+                    className="px-3 py-1.5 rounded-lg bg-fg-muted/20 text-fg text-sm font-medium hover:bg-fg-muted/30 disabled:opacity-50"
+                  >
+                    {tlSaveStep === 'loading' ? (
+                      <><Loader2 className="inline w-4 h-4 mr-1 animate-spin" aria-hidden="true" />{t('common.loadingDots')}</>
+                    ) : (
+                      <>{t('editor.tlSave')}</>
+                    )}
+                  </button>
+                  {tlSaveStep === 'done' && (
+                    <span className="text-xs text-success flex items-center gap-1">
+                      <CheckCircle2 className="w-3 h-3" aria-hidden="true" />
+                      {t('editor.tlSaved')}
+                    </span>
+                  )}
+                  {tlSaveError && (
+                    <span className="text-xs text-danger">{tlSaveError}</span>
+                  )}
+                </div>
               </div>
             )}
+
+            {/* Saved timelines list */}
+            <div>
+              <h3 className="text-sm font-medium mb-2">{t('editor.tlSavedList')}</h3>
+              {tlListLoading && (
+                <div role="status" className="flex items-center gap-2 text-fg-muted">
+                  <Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" />
+                  <span className="text-sm">{t('common.loadingDots')}</span>
+                </div>
+              )}
+              {!tlListLoading && savedTimelines.length === 0 && (
+                <p className="text-xs text-fg-muted">{t('editor.tlNoSaved')}</p>
+              )}
+              {savedTimelines.length > 0 && (
+                <div className="space-y-1">
+                  {savedTimelines.map(tl => (
+                    <div key={tl.id} className="flex items-center justify-between rounded-lg border border-border bg-bg-card p-2">
+                      <span className="text-sm truncate min-w-0">{tl.name}</span>
+                      <div className="flex gap-1 shrink-0 ml-2">
+                        <button
+                          onClick={() => loadTimeline(tl.id)}
+                          className="text-xs px-2 py-1 rounded text-brand-accent hover:underline"
+                          aria-label={t('editor.tlLoad')}
+                        >
+                          {t('editor.tlLoad')}
+                        </button>
+                        <button
+                          onClick={() => deleteTimeline(tl.id)}
+                          className="text-xs px-2 py-1 rounded text-danger hover:underline"
+                          aria-label={t('editor.tlDelete')}
+                        >
+                          {t('editor.tlDelete')}
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
 
             {tlStep === 'idle' && !timeline && (
               <p className="text-sm text-fg-muted">{t('editor.tlNoTimeline')}</p>

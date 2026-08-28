@@ -1,5 +1,26 @@
 # LazyNext Changelog
 
+## 2026-08-28 — Timeline Persistence, Tool Execution API, OCR Route, D1 Migration
+
+### What Changed
+1. Timeline persistence to D1: GET /api/editor/timeline (list), POST with save/load/delete actions
+2. Tool execution API: POST /api/creative/tools/execute — validate + execute any of the 10 creative tools
+3. OCR API route: POST /api/editor/ocr — image URL to text extraction (1 credit, dry-run stub)
+4. D1 migration applied to production (Timeline table, 19 tables total)
+5. Provider router integrated into creative intelligence (getLLMModel)
+6. ASR transcribe route: POST /api/editor/transcribe (video URL → transcript, 2 credits)
+7. Director → Editor workflow: "Send to Editor" link passes script as transcript
+8. /editor added to navigation
+9. Creative tool execute functions wired (dynamic imports)
+10. 4 new E2E tests for Director → Editor flow
+
+### Verification
+- npm test — 271 unit tests passed
+- npx playwright test — 117 E2E tests passed
+- npx tsc --noEmit — passed
+- npm run lint — passed
+- D1 migration applied to production
+
 ## 2026-08-28 — Editor API Routes, UI Page, Tool Wiring, ADRs 009-012
 
 ### What Changed
