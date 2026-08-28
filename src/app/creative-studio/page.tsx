@@ -12,6 +12,8 @@ import { useI18n } from '@/i18n/provider';
 import { AuthModal } from '@/components/AuthModal';
 import { CostEstimator, type CostEstimateItem } from '@/components/CostEstimator';
 import { useKeyboardShortcuts } from '@/lib/use-keyboard-shortcuts';
+import { BriefAssistantModal } from '@/components/BriefAssistantModal';
+import { AutoVariantsModal } from '@/components/AutoVariantsModal';
 
 // ── Types matching the backend ──
 type BrandExtraction = {
@@ -143,6 +145,8 @@ export default function CreativeStudioPage() {
   const [briefStep, setBriefStep] = useState<Step>('idle');
   const [brief, setBrief] = useState<CreativeBrief | null>(null);
   const [briefError, setBriefError] = useState('');
+  const [briefAssistantOpen, setBriefAssistantOpen] = useState(false);
+  const [autoVariantsOpen, setAutoVariantsOpen] = useState(false);
 
   // Hooks state
   const [hooksStep, setHooksStep] = useState<Step>('idle');
@@ -1404,14 +1408,24 @@ export default function CreativeStudioPage() {
                 className="mt-1 w-full resize-y rounded-lg border border-line bg-app px-3 py-2 text-sm text-fg placeholder:text-fg-placeholder focus:border-[#00b2fc]/40 focus:outline-none"
               />
             </div>
-            <button
-              onClick={doBrief}
-              disabled={briefStep === 'loading' || !productText.trim()}
-              className="rounded-lg px-4 py-2 text-sm font-bold text-white disabled:opacity-50"
-              style={{ background: '#0064d9' }}
-            >
-              {briefStep === 'loading' ? <Loader2 className="h-4 w-4 animate-spin" /> : `${t('creativeStudio.generateBrief')} (${COSTS.brief} ${t('creativeStudio.credits')})`}
-            </button>
+            <div className="flex flex-wrap gap-2">
+              <button
+                onClick={doBrief}
+                disabled={briefStep === 'loading' || !productText.trim()}
+                className="rounded-lg px-4 py-2 text-sm font-bold text-white disabled:opacity-50"
+                style={{ background: '#0064d9' }}
+              >
+                {briefStep === 'loading' ? <Loader2 className="h-4 w-4 animate-spin" /> : `${t('creativeStudio.generateBrief')} (${COSTS.brief} ${t('creativeStudio.credits')})`}
+              </button>
+              <button
+                onClick={() => setBriefAssistantOpen(true)}
+                disabled={!productText.trim()}
+                className="flex items-center gap-1.5 rounded-lg border border-brand-accent/30 bg-brand-accent/10 px-4 py-2 text-sm font-bold text-brand-accent disabled:opacity-50"
+              >
+                <Sparkles className="h-4 w-4" />
+                {t('briefAssistant.button')}
+              </button>
+            </div>
             {briefStep === 'error' && <ErrorNote text={briefError} />}
             {briefStep === 'done' && brief && (
               <div className="mt-2 space-y-2 rounded-xl border border-line bg-app p-3 text-xs">
@@ -1653,14 +1667,24 @@ export default function CreativeStudioPage() {
               <div className="rounded-2xl border border-line bg-surface p-4">
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-bold">{t('creativeStudio.abVariants')}</span>
-                  <button
-                    onClick={doVariants}
-                    disabled={variantsStep === 'loading'}
-                    className="rounded-lg px-3 py-1.5 text-xs font-bold text-white disabled:opacity-50"
-                    style={{ background: '#0064d9' }}
-                  >
-                    {variantsStep === 'loading' ? <Loader2 className="h-3 w-3 animate-spin" /> : `${t('creativeStudio.generate')} (${COSTS.variants})`}
-                  </button>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={doVariants}
+                      disabled={variantsStep === 'loading'}
+                      className="rounded-lg px-3 py-1.5 text-xs font-bold text-white disabled:opacity-50"
+                      style={{ background: '#0064d9' }}
+                    >
+                      {variantsStep === 'loading' ? <Loader2 className="h-3 w-3 animate-spin" /> : `${t('creativeStudio.generate')} (${COSTS.variants})`}
+                    </button>
+                    <button
+                      onClick={() => setAutoVariantsOpen(true)}
+                      disabled={!brief || !script}
+                      className="flex items-center gap-1 rounded-lg border border-brand-accent/30 bg-brand-accent/10 px-3 py-1.5 text-xs font-bold text-brand-accent disabled:opacity-50"
+                    >
+                      <Wand2 className="h-3 w-3" />
+                      {t('autoVariants.button')}
+                    </button>
+                  </div>
                 </div>
                 {variantsStep === 'error' && <ErrorNote text={variantsError} />}
                 {variants.length > 0 && (
@@ -1847,11 +1871,43 @@ export default function CreativeStudioPage() {
           </div>
         </div>
       )}
+
+      <BriefAssistantModal
+        open={briefAssistantOpen}
+        onClose={() => setBriefAssistantOpen(false)}
+        product={productText}
+        audience={brief?.audience || ''}
+        platform={platform}
+        format={format}
+        currentBrief={brief}
+        onApplyTone={(tone) => {
+          setProductText((prev) => `${prev}\n\n[Tone: ${tone}]`);
+          setBriefAssistantOpen(false);
+        }}
+        onApplyAngle={(angle) => {
+          setProductText((prev) => `${prev}\n\n[Angle: ${angle}]`);
+          setBriefAssistantOpen(false);
+        }}
+        onApplyHook={(hook) => {
+          setProductText((prev) => `${prev}\n\n[Hook: ${hook}]`);
+          setBriefAssistantOpen(false);
+        }}
+        onApplyCta={(cta) => {
+          setProductText((prev) => `${prev}\n\n[CTA: ${cta}]`);
+          setBriefAssistantOpen(false);
+        }}
+      />
+
+      <AutoVariantsModal
+        open={autoVariantsOpen}
+        onClose={() => setAutoVariantsOpen(false)}
+        brief={brief}
+        script={script}
+        existingScore={score}
+      />
     </div>
   );
 }
-
-// ── Reusable UI components ──
 
 function Section({ icon: Icon, title, subtitle, children }: {
   icon: typeof Globe; title: string; subtitle: string; children: React.ReactNode;

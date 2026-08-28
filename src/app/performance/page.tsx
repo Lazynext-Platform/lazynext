@@ -6,6 +6,7 @@ import {
   TrendingUp, Loader2, AlertCircle, BarChart3,
   Eye, MousePointerClick, ShoppingCart, DollarSign, Target, Fish,
   Clock, Trophy, Zap,
+  ArrowUp, ArrowDown, Minus, Wallet,
 } from 'lucide-react';
 import { useI18n } from '@/i18n/provider';
 import { AuthModal } from '@/components/AuthModal';
@@ -42,6 +43,15 @@ export default function PerformancePage() {
       bestPlatform: { name: string; avgRoas: number } | null;
     };
   } | null>(null);
+  const [forecast, setForecast] = useState<{
+    forecasts: {
+      roas: { value: number; slope: number; r2: number; trend: string } | null;
+      ctr: { value: number; slope: number; r2: number; trend: string } | null;
+      cvr: { value: number; slope: number; r2: number; trend: string } | null;
+    };
+    budgetRecommendations: Array<{ platform: string; avgRoas: number; avgSpend: number; avgRevenue: number; recommendedBudgetMultiplier: number; recommendation: string }>;
+    summary: { totalRecords: number; dataPoints: number; confidence: number; forecastDays: number; message?: string };
+  } | null>(null);
 
   const load = useCallback(async () => {
     if (!session?.user) { setLoading(false); return; }
@@ -62,6 +72,12 @@ export default function PerformancePage() {
       fetch('/api/creative/intelligence?days=30', { cache: 'no-store' })
         .then(r => r.json())
         .then(data => setIntel(data))
+        .catch(() => {});
+
+      // Fetch forecast data in parallel (non-blocking)
+      fetch('/api/creative/forecast?days=30', { cache: 'no-store' })
+        .then(r => r.json())
+        .then(data => setForecast(data))
         .catch(() => {});
     } catch (e) {
       const code = e instanceof Error ? e.message : '';
@@ -328,6 +344,96 @@ export default function PerformancePage() {
                 )}
               </section>
             )}
+
+            {/* Performance Forecast */}
+            {forecast && (
+              <section className="mt-6 rounded-2xl border border-line bg-surface p-5" aria-label={t('perf.forecastTitle')}>
+                <div className="mb-1 flex items-center gap-2">
+                  <TrendingUp className="h-5 w-5 text-brand-accent" />
+                  <h2 className="text-sm font-bold text-fg">{t('perf.forecastTitle')}</h2>
+                </div>
+                <p className="mb-4 text-xs text-fg-faint">{t('perf.forecastSubtitle')}</p>
+
+                {/* Insufficient data state */}
+                {forecast.summary.message === 'insufficient_data' || (!forecast.forecasts.roas && !forecast.forecasts.ctr && !forecast.forecasts.cvr) ? (
+                  <div role="status" className="rounded-xl bg-app p-4 text-center text-xs text-fg-faint">
+                    {t('perf.forecastNoData')}
+                  </div>
+                ) : (
+                  <>
+                    {/* Low confidence warning */}
+                    {forecast.summary.confidence < 30 && (
+                      <div role="alert" className="mb-4 rounded-xl border border-warning/30 bg-warning/5 p-3 text-xs text-warning">
+                        <AlertCircle className="mr-1.5 inline h-3.5 w-3.5" />
+                        {t('perf.forecastLowConfidence')}
+                      </div>
+                    )}
+
+                    {/* Forecast metric cards */}
+                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-3" role="group" aria-label={t('perf.forecastTitle')}>
+                      <ForecastMetricCard
+                        label={t('perf.forecastRoas')}
+                        value={forecast.forecasts.roas ? `${forecast.forecasts.roas.value.toFixed(2)}x` : '—'}
+                        trend={forecast.forecasts.roas?.trend ?? 'flat'}
+                        confidence={forecast.forecasts.roas?.r2 ?? 0}
+                        confidenceLabel={t('perf.forecastConfidence')}
+                        trendUpLabel={t('perf.forecastTrendUp')}
+                        trendDownLabel={t('perf.forecastTrendDown')}
+                        trendFlatLabel={t('perf.forecastTrendFlat')}
+                      />
+                      <ForecastMetricCard
+                        label={t('perf.forecastCtr')}
+                        value={forecast.forecasts.ctr ? `${(forecast.forecasts.ctr.value * 100).toFixed(2)}%` : '—'}
+                        trend={forecast.forecasts.ctr?.trend ?? 'flat'}
+                        confidence={forecast.forecasts.ctr?.r2 ?? 0}
+                        confidenceLabel={t('perf.forecastConfidence')}
+                        trendUpLabel={t('perf.forecastTrendUp')}
+                        trendDownLabel={t('perf.forecastTrendDown')}
+                        trendFlatLabel={t('perf.forecastTrendFlat')}
+                      />
+                      <ForecastMetricCard
+                        label={t('perf.forecastCvr')}
+                        value={forecast.forecasts.cvr ? `${(forecast.forecasts.cvr.value * 100).toFixed(2)}%` : '—'}
+                        trend={forecast.forecasts.cvr?.trend ?? 'flat'}
+                        confidence={forecast.forecasts.cvr?.r2 ?? 0}
+                        confidenceLabel={t('perf.forecastConfidence')}
+                        trendUpLabel={t('perf.forecastTrendUp')}
+                        trendDownLabel={t('perf.forecastTrendDown')}
+                        trendFlatLabel={t('perf.forecastTrendFlat')}
+                      />
+                    </div>
+
+                    {/* Budget recommendations */}
+                    {forecast.budgetRecommendations.length > 0 && (
+                      <div className="mt-5">
+                        <h3 className="mb-2 flex items-center gap-1.5 text-xs font-medium text-fg-faint">
+                          <Wallet className="h-3.5 w-3.5" /> {t('perf.budgetRecommendations')}
+                        </h3>
+                        <div className="space-y-2">
+                          {forecast.budgetRecommendations.map((b, i) => (
+                            <BudgetRecommendationCard
+                              key={i}
+                              platform={b.platform}
+                              avgRoas={b.avgRoas}
+                              avgSpend={b.avgSpend}
+                              avgRevenue={b.avgRevenue}
+                              recommendation={b.recommendation}
+                              multiplier={b.recommendedBudgetMultiplier}
+                              roasLabel={t('perf.budgetCurrentRoas')}
+                              spendLabel={t('perf.budgetCurrentSpend')}
+                              revenueLabel={t('perf.budgetCurrentRevenue')}
+                              increaseLabel={t('perf.budgetIncrease')}
+                              decreaseLabel={t('perf.budgetDecrease')}
+                              maintainLabel={t('perf.budgetMaintain')}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </>
+                )}
+              </section>
+            )}
           </>
         )}
       </div>
@@ -344,6 +450,84 @@ function MetricCard({
       <Icon className="h-5 w-5 text-fg-faint" />
       <div className={`mt-2 text-xl font-bold ${color}`}>{value}</div>
       <div className="text-[10px] text-fg-faint">{label}</div>
+    </div>
+  );
+}
+
+function ForecastMetricCard({
+  label, value, trend, confidence, confidenceLabel,
+  trendUpLabel, trendDownLabel, trendFlatLabel,
+}: {
+  label: string;
+  value: string;
+  trend: string;
+  confidence: number;
+  confidenceLabel: string;
+  trendUpLabel: string;
+  trendDownLabel: string;
+  trendFlatLabel: string;
+}) {
+  const TrendIcon = trend === 'up' ? ArrowUp : trend === 'down' ? ArrowDown : Minus;
+  const trendColor = trend === 'up' ? 'text-success' : trend === 'down' ? 'text-danger' : 'text-fg-faint';
+  const trendLabel = trend === 'up' ? trendUpLabel : trend === 'down' ? trendDownLabel : trendFlatLabel;
+  const confidenceColor = confidence >= 0.7 ? 'text-success' : confidence >= 0.3 ? 'text-warning' : 'text-danger';
+  return (
+    <div className="rounded-xl border border-line bg-app p-4">
+      <div className="text-[10px] text-fg-faint">{label}</div>
+      <div className="mt-1 flex items-center gap-1.5">
+        <span className="text-lg font-bold text-fg">{value}</span>
+        <span className={`inline-flex items-center gap-0.5 text-xs font-medium ${trendColor}`} aria-label={trendLabel}>
+          <TrendIcon className="h-3.5 w-3.5" aria-hidden="true" />
+          <span className="sr-only">{trendLabel}</span>
+        </span>
+      </div>
+      <div className={`mt-1 text-[10px] ${confidenceColor}`}>
+        {confidenceLabel}: {Math.round(confidence * 100)}%
+      </div>
+    </div>
+  );
+}
+
+function BudgetRecommendationCard({
+  platform, avgRoas, avgSpend, avgRevenue, recommendation, multiplier,
+  roasLabel, spendLabel, revenueLabel,
+  increaseLabel, decreaseLabel, maintainLabel,
+}: {
+  platform: string;
+  avgRoas: number;
+  avgSpend: number;
+  avgRevenue: number;
+  recommendation: string;
+  multiplier: number;
+  roasLabel: string;
+  spendLabel: string;
+  revenueLabel: string;
+  increaseLabel: string;
+  decreaseLabel: string;
+  maintainLabel: string;
+}) {
+  const recColor =
+    recommendation === 'increase' ? 'bg-success/15 text-success' :
+    recommendation === 'decrease' ? 'bg-danger/15 text-danger' :
+    'bg-warning/15 text-warning';
+  const recLabel =
+    recommendation === 'increase' ? increaseLabel :
+    recommendation === 'decrease' ? decreaseLabel :
+    maintainLabel;
+  return (
+    <div className="flex flex-col gap-2 rounded-xl bg-app p-3 text-xs sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex items-center gap-2">
+        <span className="font-bold capitalize text-fg">{platform}</span>
+        <span className={`rounded-full px-2 py-0.5 text-[10px] font-medium ${recColor}`} role="status">
+          {recLabel}
+        </span>
+      </div>
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-fg-faint">
+        <span>{roasLabel}: <span className="font-bold text-fg">{avgRoas.toFixed(2)}x</span></span>
+        <span>{spendLabel}: <span className="font-bold text-fg">${avgSpend.toFixed(2)}</span></span>
+        <span>{revenueLabel}: <span className="font-bold text-fg">${avgRevenue.toFixed(2)}</span></span>
+        <span className="text-brand-accent">×{multiplier.toFixed(1)}</span>
+      </div>
     </div>
   );
 }

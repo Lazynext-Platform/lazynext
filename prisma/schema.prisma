@@ -43,6 +43,7 @@ model User {
   sharedLinks  SharedLink[]
   webhookEndpoints WebhookEndpoint[]
   creativeComments CreativeComment[]
+  teamMembers  TeamMember[]
 }
 
 model Account {
@@ -258,6 +259,51 @@ model CreativeComment {
 
   @@index([userId])
   @@index([assetId])
+}
+
+model Team {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  ownerId     String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  members     TeamMember[]
+  invitations TeamInvitation[]
+
+  @@index([ownerId])
+}
+
+model TeamMember {
+  id        String   @id @default(cuid())
+  teamId    String
+  userId    String
+  role      String   @default("viewer") // owner | editor | viewer
+  joinedAt  DateTime @default(now())
+
+  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([teamId, userId])
+  @@index([userId])
+}
+
+model TeamInvitation {
+  id         String    @id @default(cuid())
+  teamId     String
+  email      String
+  role       String    @default("viewer") // editor | viewer
+  token      String    @unique
+  invitedBy  String
+  acceptedAt DateTime?
+  createdAt  DateTime  @default(now())
+  expiresAt  DateTime
+
+  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  @@index([teamId])
+  @@index([email])
 }
 
 model AssetVersion {

@@ -8,6 +8,7 @@ import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { ThemeSelector } from '@/components/ThemeSelector';
 import { AuthModal } from '@/components/AuthModal';
 import { WebhooksSection } from '@/components/WebhooksSection';
+import { TeamsSection } from '@/components/TeamsSection';
 
 export default function SettingsPage() {
   const { data: session, status } = useSession();
@@ -60,6 +61,9 @@ export default function SettingsPage() {
 
           {/* Webhooks section */}
           {status === 'authenticated' && session?.user && <WebhooksSection />}
+
+          {/* Teams section */}
+          {status === 'authenticated' && session?.user && <TeamsSection />}
         </div>
       </div>
 
