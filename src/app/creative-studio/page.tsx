@@ -5,7 +5,7 @@ import { useSession } from 'next-auth/react';
 import {
   AlertCircle, CheckCircle2, Loader2, Sparkles, Link2, Lightbulb, Film,
   Copy, ChevronRight, Globe, Target, MessageSquare, Clapperboard,
-  Video, ArrowRight, Wand2, StopCircle, Grid, FlaskConical,
+  Video, ArrowRight, Wand2, StopCircle, Grid, FlaskConical, RefreshCw,
 } from 'lucide-react';
 import Link from 'next/link';
 import { useI18n } from '@/i18n/provider';
@@ -14,6 +14,8 @@ import { CostEstimator, type CostEstimateItem } from '@/components/CostEstimator
 import { useKeyboardShortcuts } from '@/lib/use-keyboard-shortcuts';
 import { BriefAssistantModal } from '@/components/BriefAssistantModal';
 import { AutoVariantsModal } from '@/components/AutoVariantsModal';
+import { RegenerationModal } from '@/components/RegenerationModal';
+import { MultiPlatformAdapterModal } from '@/components/MultiPlatformAdapterModal';
 
 // ── Types matching the backend ──
 type BrandExtraction = {
@@ -147,6 +149,10 @@ export default function CreativeStudioPage() {
   const [briefError, setBriefError] = useState('');
   const [briefAssistantOpen, setBriefAssistantOpen] = useState(false);
   const [autoVariantsOpen, setAutoVariantsOpen] = useState(false);
+  const [regenOpen, setRegenOpen] = useState(false);
+  const [regenType, setRegenType] = useState<'hook' | 'angle' | 'script' | 'brief'>('hook');
+  const [regenElement, setRegenElement] = useState<Record<string, unknown> | null>(null);
+  const [adapterOpen, setAdapterOpen] = useState(false);
 
   // Hooks state
   const [hooksStep, setHooksStep] = useState<Step>('idle');
@@ -1457,14 +1463,25 @@ export default function CreativeStudioPage() {
               <div className="rounded-2xl border border-line bg-surface p-4">
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-bold">{t('creativeStudio.hooks')}</span>
-                  <button
-                    onClick={doHooks}
-                    disabled={hooksStep === 'loading'}
-                    className="rounded-lg px-3 py-1.5 text-xs font-bold text-white disabled:opacity-50"
-                    style={{ background: '#0064d9' }}
-                  >
-                    {hooksStep === 'loading' ? <Loader2 className="h-3 w-3 animate-spin" /> : `${t('creativeStudio.generate')} (${COSTS.hooks})`}
-                  </button>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={doHooks}
+                      disabled={hooksStep === 'loading'}
+                      className="rounded-lg px-3 py-1.5 text-xs font-bold text-white disabled:opacity-50"
+                      style={{ background: '#0064d9' }}
+                    >
+                      {hooksStep === 'loading' ? <Loader2 className="h-3 w-3 animate-spin" /> : `${t('creativeStudio.generate')} (${COSTS.hooks})`}
+                    </button>
+                    {selectedHook && (
+                      <button
+                        onClick={() => { setRegenType('hook'); setRegenElement(selectedHook as unknown as Record<string, unknown>); setRegenOpen(true); }}
+                        className="flex items-center gap-1 rounded-lg border border-brand-accent/30 bg-brand-accent/10 px-3 py-1.5 text-xs font-bold text-brand-accent"
+                      >
+                        <RefreshCw className="h-3 w-3" />
+                        {t('regeneration.button')}
+                      </button>
+                    )}
+                  </div>
                 </div>
                 {hooksStep === 'error' && <ErrorNote text={hooksError} />}
                 {hooks.length > 0 && (
@@ -1491,14 +1508,25 @@ export default function CreativeStudioPage() {
               <div className="rounded-2xl border border-line bg-surface p-4">
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-bold">{t('creativeStudio.angles')}</span>
-                  <button
-                    onClick={doAngles}
-                    disabled={anglesStep === 'loading'}
-                    className="rounded-lg px-3 py-1.5 text-xs font-bold text-white disabled:opacity-50"
-                    style={{ background: '#0064d9' }}
-                  >
-                    {anglesStep === 'loading' ? <Loader2 className="h-3 w-3 animate-spin" /> : `${t('creativeStudio.generate')} (${COSTS.angles})`}
-                  </button>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={doAngles}
+                      disabled={anglesStep === 'loading'}
+                      className="rounded-lg px-3 py-1.5 text-xs font-bold text-white disabled:opacity-50"
+                      style={{ background: '#0064d9' }}
+                    >
+                      {anglesStep === 'loading' ? <Loader2 className="h-3 w-3 animate-spin" /> : `${t('creativeStudio.generate')} (${COSTS.angles})`}
+                    </button>
+                    {selectedAngle && (
+                      <button
+                        onClick={() => { setRegenType('angle'); setRegenElement(selectedAngle as unknown as Record<string, unknown>); setRegenOpen(true); }}
+                        className="flex items-center gap-1 rounded-lg border border-brand-accent/30 bg-brand-accent/10 px-3 py-1.5 text-xs font-bold text-brand-accent"
+                      >
+                        <RefreshCw className="h-3 w-3" />
+                        {t('regeneration.button')}
+                      </button>
+                    )}
+                  </div>
                 </div>
                 {anglesStep === 'error' && <ErrorNote text={anglesError} />}
                 {angles.length > 0 && (
@@ -1537,14 +1565,25 @@ export default function CreativeStudioPage() {
                 <ChevronRight className="h-3 w-3" />
                 <span className="rounded bg-[#00b2fc]/15 px-2 py-0.5 font-medium" style={{ color: 'var(--color-brand-accent)' }}>{selectedHook.type}</span>
               </div>
-              <button
-                onClick={doScript}
-                disabled={scriptStep === 'loading'}
-                className="rounded-lg px-4 py-2 text-sm font-bold text-white disabled:opacity-50"
-                style={{ background: '#0064d9' }}
-              >
-                {scriptStep === 'loading' ? <Loader2 className="h-4 w-4 animate-spin" /> : `${t('creativeStudio.generateScript')} (${COSTS.script} ${t('creativeStudio.credits')})`}
-              </button>
+              <div className="flex flex-wrap gap-2">
+                <button
+                  onClick={doScript}
+                  disabled={scriptStep === 'loading'}
+                  className="rounded-lg px-4 py-2 text-sm font-bold text-white disabled:opacity-50"
+                  style={{ background: '#0064d9' }}
+                >
+                  {scriptStep === 'loading' ? <Loader2 className="h-4 w-4 animate-spin" /> : `${t('creativeStudio.generateScript')} (${COSTS.script} ${t('creativeStudio.credits')})`}
+                </button>
+                {script && (
+                  <button
+                    onClick={() => { setRegenType('script'); setRegenElement(script as unknown as Record<string, unknown>); setRegenOpen(true); }}
+                    className="flex items-center gap-1.5 rounded-lg border border-brand-accent/30 bg-brand-accent/10 px-4 py-2 text-sm font-bold text-brand-accent"
+                  >
+                    <RefreshCw className="h-4 w-4" />
+                    {t('regeneration.button')}
+                  </button>
+                )}
+              </div>
               {scriptStep === 'error' && <ErrorNote text={scriptError} />}
               {script && (
                 <div className="mt-3 space-y-2">
@@ -1561,6 +1600,13 @@ export default function CreativeStudioPage() {
                     </div>
                   ))}
                   <p className="text-xs font-medium text-fg">{t('cstudio.lblCta')}{script.cta}</p>
+                  <button
+                    onClick={() => setAdapterOpen(true)}
+                    className="mt-2 flex items-center gap-1.5 rounded-lg border border-brand-accent/30 bg-brand-accent/10 px-3 py-1.5 text-xs font-bold text-brand-accent"
+                  >
+                    <Globe className="h-3 w-3" />
+                    {t('platformAdapter.button')}
+                  </button>
                 </div>
               )}
             </div>
@@ -1904,6 +1950,30 @@ export default function CreativeStudioPage() {
         brief={brief}
         script={script}
         existingScore={score}
+      />
+
+      <RegenerationModal
+        open={regenOpen}
+        onClose={() => setRegenOpen(false)}
+        brief={brief}
+        elementType={regenType}
+        element={regenElement}
+        onApply={(regenerated) => {
+          if (regenType === 'hook' && selectedHook) {
+            setSelectedHook({ ...selectedHook, ...(regenerated as Partial<typeof selectedHook>) });
+          } else if (regenType === 'angle' && selectedAngle) {
+            setSelectedAngle({ ...selectedAngle, ...(regenerated as Partial<typeof selectedAngle>) });
+          } else if (regenType === 'script' && script) {
+            setScript({ ...script, ...(regenerated as Partial<typeof script>) });
+          }
+        }}
+      />
+
+      <MultiPlatformAdapterModal
+        open={adapterOpen}
+        onClose={() => setAdapterOpen(false)}
+        brief={brief}
+        script={script}
       />
     </div>
   );

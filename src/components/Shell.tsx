@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Sparkles, Megaphone, BarChart3, LayoutDashboard, Package, Scissors, Library } from 'lucide-react';
+import { Sparkles, Megaphone, BarChart3, LayoutDashboard, Package, Scissors, Library, Lightbulb } from 'lucide-react';
 import { UserMenu } from '@/components/UserMenu';
 import { LangToggle } from '@/components/LangToggle';
 import { CreditBadge } from '@/components/CreditBadge';
@@ -19,6 +19,7 @@ const NAV_LINKS = [
   { href: '/creative-assets', label: 'Assets', icon: Package },
   { href: '/editor', label: 'Editor', icon: Scissors },
   { href: '/templates', label: 'Templates', icon: Library, hideOnMd: true },
+  { href: '/inspiration', label: 'Inspiration', icon: Lightbulb, hideOnMd: true },
 ];
 
 export function Shell({ children }: { children: React.ReactNode }) {

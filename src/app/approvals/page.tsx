@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { useI18n } from '@/i18n/provider';
 import { AuthModal } from '@/components/AuthModal';
+import { MultiStageApproval } from '@/components/MultiStageApproval';
 
 type PendingItem = {
   id: string;
@@ -249,6 +250,11 @@ export default function ApprovalQueuePage() {
             })}
           </div>
         )}
+
+        {/* Multi-Stage Approval Workflow */}
+        <div className="mt-8">
+          <MultiStageApproval />
+        </div>
       </div>
 
       <AuthModal open={authOpen} onClose={() => setAuthOpen(false)} />
