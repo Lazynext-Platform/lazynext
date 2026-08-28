@@ -96,15 +96,15 @@ export default function CreativeAssetsPage() {
         <div className="mx-auto max-w-4xl px-4 py-6 sm:py-8">
           <h1 className="text-2xl font-bold text-fg sm:text-3xl">
             <Package className="mr-2 inline h-7 w-7 text-brand-accent" />
-            Creative Assets
+            {t('cassets.title')}
           </h1>
-          <p className="mt-2 text-sm text-fg-faint">Sign in to browse your saved creative packages.</p>
+          <p className="mt-2 text-sm text-fg-faint">{t('cassets.signInPrompt')}</p>
           <button
             onClick={() => setAuthOpen(true)}
             className="mt-4 rounded-xl px-4 py-2 text-sm font-bold text-white"
             style={{ background: '#0064d9' }}
           >
-            Sign in
+            {t('cassets.signIn')}
           </button>
           <AuthModal open={authOpen} onClose={() => setAuthOpen(false)} />
         </div>
@@ -117,10 +117,10 @@ export default function CreativeAssetsPage() {
       <div className="mx-auto max-w-4xl px-4 py-6 sm:py-8">
         <h1 className="text-2xl font-bold text-fg sm:text-3xl">
           <Package className="mr-2 inline h-7 w-7 text-brand-accent" />
-          Creative Assets
+          {t('cassets.title')}
         </h1>
         <p className="mt-2 text-sm text-fg-faint">
-          Browse creative packages saved from the Creative Director. Each package contains a brief, hooks, angles, best combination, and A/B variants.
+          {t('cassets.subtitle')}
         </p>
 
         {/* Filter */}
@@ -135,7 +135,7 @@ export default function CreativeAssetsPage() {
                   : 'text-fg-faint hover:bg-hover hover:text-fg'
               }`}
             >
-              {f === 'all' ? 'All' : f === 'creative_package' ? 'Packages' : f.charAt(0).toUpperCase() + f.slice(1)}
+              {f === 'all' ? t('cassets.filterAll') : f === 'creative_package' ? t('cassets.filterPackages') : f === 'brief' ? t('cassets.filterBrief') : f === 'hooks' ? t('cassets.filterHooks') : f === 'angles' ? t('cassets.filterAngles') : f === 'script' ? t('cassets.filterScript') : f === 'variants' ? t('cassets.filterVariants') : f.charAt(0).toUpperCase() + f.slice(1)}
             </button>
           ))}
         </div>
@@ -151,8 +151,8 @@ export default function CreativeAssetsPage() {
         {!loading && assets.length === 0 && (
           <div className="mt-6 rounded-2xl border border-dashed border-line bg-hover p-6 text-center">
             <Package className="mx-auto mb-2 h-8 w-8 text-fg-placeholder" />
-            <p className="text-sm text-fg-faint">No creative assets yet.</p>
-            <p className="mt-1 text-xs text-fg-faint">Run the Creative Director to generate and save creative packages.</p>
+            <p className="text-sm text-fg-faint">{t('cassets.noData')}</p>
+            <p className="mt-1 text-xs text-fg-faint">{t('cassets.noDataHint')}</p>
           </div>
         )}
 
@@ -186,7 +186,7 @@ export default function CreativeAssetsPage() {
                   {isExpanded && (
                     <div className="mt-3 space-y-2 border-t border-line pt-3">
                       {children.length === 0 && (
-                        <p className="text-xs text-fg-faint">No child assets recorded.</p>
+                        <p className="text-xs text-fg-faint">{t('cassets.noChildren')}</p>
                       )}
                       {children.map((child) => {
                         const childMeta = parseMetadata(child.metadata);
@@ -222,7 +222,7 @@ export default function CreativeAssetsPage() {
         {/* Standalone assets (not part of a package) */}
         {standalone.length > 0 && (
           <div className="mt-6">
-            <h2 className="text-sm font-bold text-fg">Standalone Assets</h2>
+            <h2 className="text-sm font-bold text-fg">{t('cassets.standaloneAssets')}</h2>
             <div className="mt-3 space-y-2">
               {standalone.map((asset) => {
                 const meta = parseMetadata(asset.metadata);
