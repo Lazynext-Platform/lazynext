@@ -6,6 +6,7 @@ import type { CreativeBrief } from '@/lib/creative/types';
 import { deductCredits } from '@/lib/credits';
 import { refundSync } from '@/lib/lazynext-studio/gen-task';
 import { getTool, validateAgainstSchema } from '@/lib/creative/tools';
+import { getUserPlanTier } from '@/lib/plan-tier';
 
 export const maxDuration = 60;
 
@@ -13,6 +14,7 @@ async function __byokPOST(req: Request) {
   const session = await auth();
   if (!session?.user?.id) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
   const uid = session.user.id;
+  const planTier = await getUserPlanTier(uid);
 
   const body = await req.json().catch(() => ({}));
 
@@ -50,7 +52,7 @@ async function __byokPOST(req: Request) {
   }
 
   try {
-    const result = await refineCreative({ type, instruction, brief, element });
+    const result = await refineCreative({ type, instruction, brief, element, planTier });
     return NextResponse.json({ tool: 'creative.refine', cost: CREATIVE_COSTS.refine, result });
   } catch (e) {
     await refundSync(uid, CREATIVE_COSTS.refine, 'creative:refine');

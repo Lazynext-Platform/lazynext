@@ -4,6 +4,7 @@ import { auth } from '@/../auth';
 import { getTool, validateAgainstSchema, executeTool } from '@/lib/creative/tools';
 import { deductCredits } from '@/lib/credits';
 import { refundSync } from '@/lib/lazynext-studio/gen-task';
+import { logToolExecution } from '@/lib/telemetry';
 
 export const maxDuration = 60;
 
@@ -47,18 +48,43 @@ async function __byokPOST(req: Request) {
   }
 
   try {
+    const start = Date.now();
     const result = await executeTool(toolName, input, { userId: uid });
+    const durationMs = Date.now() - start;
     if (!result.ok) {
       // executeTool swallows errors internally and returns a ToolResult with ok:false.
       // Refund any credits we charged since execution did not succeed.
       if (cost > 0) await refundSync(uid, cost, `creative:tool:${toolName}`);
+      logToolExecution({
+        tool: toolName,
+        userId: uid,
+        cost: 0,
+        durationMs,
+        success: false,
+        error: result.error,
+      });
       return NextResponse.json({ error: 'execution_failed', detail: result.error }, { status: 500 });
     }
+    logToolExecution({
+      tool: toolName,
+      userId: uid,
+      cost,
+      durationMs,
+      success: true,
+    });
     return NextResponse.json({ tool: toolName, result: result.output, cost });
   } catch (e) {
     if (cost > 0) await refundSync(uid, cost, `creative:tool:${toolName}`);
     const message = e instanceof Error ? e.message : String(e);
     console.error(`[creative/tools/execute] ${toolName} error:`, message);
+    logToolExecution({
+      tool: toolName,
+      userId: uid,
+      cost: 0,
+      durationMs: 0,
+      success: false,
+      error: message,
+    });
     return NextResponse.json({ error: 'execution_failed', detail: message }, { status: 500 });
   }
 }

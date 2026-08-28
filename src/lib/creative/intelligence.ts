@@ -9,6 +9,7 @@
  */
 import { atlasChat } from '@/lib/atlas';
 import { getLLMModel } from '@/lib/providers/model-helpers';
+import type { PlanTier } from '@/lib/plan-tier';
 import type { BrandProfile } from '@/lib/brand/types';
 import type { ProductExtraction } from '@/lib/brand/types';
 import type {
@@ -43,6 +44,15 @@ export const CREATIVE_COSTS = {
 const CREATIVE_MODEL = process.env.CREATIVE_MODEL || getLLMModel();
 const CREATIVE_TIMEOUT_MS = Number(process.env.CREATIVE_TIMEOUT_MS || 90_000);
 const CREATIVE_MAX_TOKENS = Number(process.env.CREATIVE_MAX_TOKENS || 6000);
+
+/**
+ * Resolve the creative LLM model for a given plan tier.
+ * Falls back to the module-level CREATIVE_MODEL (which respects the CREATIVE_MODEL env override).
+ */
+function resolveCreativeModel(planTier?: PlanTier): string {
+  if (process.env.CREATIVE_MODEL) return process.env.CREATIVE_MODEL;
+  return getLLMModel(planTier);
+}
 
 // ── Helpers ──
 
@@ -87,6 +97,8 @@ export interface BriefInput {
   audience?: string;
   /** Performance learnings from past campaigns (injected into prompt). */
   learnings?: string;
+  /** User's plan tier for model routing. */
+  planTier?: PlanTier;
 }
 
 export async function generateBrief(input: BriefInput): Promise<CreativeBrief> {
@@ -123,7 +135,7 @@ export async function generateBrief(input: BriefInput): Promise<CreativeBrief> {
 
   const raw = await atlasChat(
     [{ role: 'system', content: BRIEF_SYS }, { role: 'user', content: parts.join('\n') }],
-    CREATIVE_MODEL, CREATIVE_MAX_TOKENS, CREATIVE_TIMEOUT_MS,
+    resolveCreativeModel(input.planTier), CREATIVE_MAX_TOKENS, CREATIVE_TIMEOUT_MS,
   );
   const j = extractJson(raw);
 
@@ -151,7 +163,7 @@ export async function generateBrief(input: BriefInput): Promise<CreativeBrief> {
 
 // ── Hook generation ──
 
-export async function generateHooks(brief: CreativeBrief, count = 5): Promise<HookCandidate[]> {
+export async function generateHooks(brief: CreativeBrief, count = 5, planTier?: PlanTier): Promise<HookCandidate[]> {
   const userPrompt = `Generate ${count} different opening hooks for this ad brief.
 
 Product: ${brief.productName} — ${brief.product}
@@ -165,7 +177,7 @@ Output the hooks JSON array now.`;
 
   const raw = await atlasChat(
     [{ role: 'system', content: HOOKS_SYS }, { role: 'user', content: userPrompt }],
-    CREATIVE_MODEL, 3000, CREATIVE_TIMEOUT_MS,
+    resolveCreativeModel(planTier), 3000, CREATIVE_TIMEOUT_MS,
   );
   const arr = extractJsonArray(raw);
   return arr.slice(0, count).map((item, idx): HookCandidate => {
@@ -182,7 +194,7 @@ Output the hooks JSON array now.`;
 
 // ── Angle generation ──
 
-export async function generateAngles(brief: CreativeBrief, count = 3): Promise<CreativeAngle[]> {
+export async function generateAngles(brief: CreativeBrief, count = 3, planTier?: PlanTier): Promise<CreativeAngle[]> {
   const userPrompt = `Generate ${count} different creative angles for this product.
 
 Product: ${brief.productName} — ${brief.product}
@@ -195,7 +207,7 @@ Output the angles JSON array now.`;
 
   const raw = await atlasChat(
     [{ role: 'system', content: ANGLES_SYS }, { role: 'user', content: userPrompt }],
-    CREATIVE_MODEL, 3000, CREATIVE_TIMEOUT_MS,
+    resolveCreativeModel(planTier), 3000, CREATIVE_TIMEOUT_MS,
   );
   const arr = extractJsonArray(raw);
   return arr.slice(0, count).map((item, idx): CreativeAngle => {
@@ -217,6 +229,7 @@ export async function generateScript(
   brief: CreativeBrief,
   angle: CreativeAngle,
   hook: HookCandidate,
+  planTier?: PlanTier,
 ): Promise<ScriptCandidate> {
   const userPrompt = `Write a short-form video ad script using this brief, angle, and hook.
 
@@ -240,7 +253,7 @@ Output the script JSON now.`;
 
   const raw = await atlasChat(
     [{ role: 'system', content: SCRIPT_SYS }, { role: 'user', content: userPrompt }],
-    CREATIVE_MODEL, CREATIVE_MAX_TOKENS, CREATIVE_TIMEOUT_MS,
+    resolveCreativeModel(planTier), CREATIVE_MAX_TOKENS, CREATIVE_TIMEOUT_MS,
   );
   const j = extractJson(raw);
   const scenes = (Array.isArray(j.scenes) ? j.scenes : []).slice(0, 8).map((s, idx) => {
@@ -272,6 +285,7 @@ export async function generateStoryboard(
   brief: CreativeBrief,
   script: ScriptCandidate,
   ratio = '9:16',
+  planTier?: PlanTier,
 ): Promise<StoryboardCandidate> {
   const scenesText = script.scenes.map((s) =>
     `Scene ${s.i} (${s.durationSec}s): visual=${s.visual} | voiceover=${s.voiceover}`,
@@ -295,7 +309,7 @@ Output the storyboard JSON now.`;
 
   const raw = await atlasChat(
     [{ role: 'system', content: STORYBOARD_SYS }, { role: 'user', content: userPrompt }],
-    CREATIVE_MODEL, CREATIVE_MAX_TOKENS, CREATIVE_TIMEOUT_MS,
+    resolveCreativeModel(planTier), CREATIVE_MAX_TOKENS, CREATIVE_TIMEOUT_MS,
   );
   const j = extractJson(raw);
   const shots = (Array.isArray(j.shots) ? j.shots : []).slice(0, 8).map((s, idx) => {
@@ -323,6 +337,7 @@ Output the storyboard JSON now.`;
 export async function analyzeReferenceCreative(
   sourceUrl: string,
   transcript?: string,
+  planTier?: PlanTier,
 ): Promise<ReferenceCreativeAnalysis> {
   const userPrompt = `Analyze this reference ad creative and extract its marketing structure.
 
@@ -333,7 +348,7 @@ Output the reference creative analysis JSON now.`;
 
   const raw = await atlasChat(
     [{ role: 'system', content: REFERENCE_ANALYSIS_SYS }, { role: 'user', content: userPrompt }],
-    CREATIVE_MODEL, CREATIVE_MAX_TOKENS, CREATIVE_TIMEOUT_MS,
+    resolveCreativeModel(planTier), CREATIVE_MAX_TOKENS, CREATIVE_TIMEOUT_MS,
   );
   const j = extractJson(raw);
   const scenes = (Array.isArray(j.scenes) ? j.scenes : []).slice(0, 12).map((s, idx) => {
@@ -377,6 +392,7 @@ export async function scoreCreative(input: {
   brief: CreativeBrief;
   script: ScriptCandidate;
   storyboard?: StoryboardCandidate | null;
+  planTier?: PlanTier;
 }): Promise<CreativeScore> {
   const parts = [
     `Brief: objective=${input.brief.objective}, platform=${input.brief.platform}, audience=${input.brief.audience}`,
@@ -393,7 +409,7 @@ export async function scoreCreative(input: {
 
   const raw = await atlasChat(
     [{ role: 'system', content: SCORE_SYS }, { role: 'user', content: parts.join('\n') }],
-    CREATIVE_MODEL, 2000, CREATIVE_TIMEOUT_MS,
+    resolveCreativeModel(input.planTier), 2000, CREATIVE_TIMEOUT_MS,
   );
   const j = extractJson(raw);
 
@@ -427,6 +443,7 @@ export async function generateVariants(
   brief: CreativeBrief,
   script: ScriptCandidate,
   count = 3,
+  planTier?: PlanTier,
 ): Promise<CreativeVariant[]> {
   const userPrompt = `Generate ${count} A/B variations of this ad creative.
 
@@ -451,7 +468,7 @@ Each variant:
   "cta": "ENGLISH: alternative CTA",
   "rationale": "ENGLISH: why this variant might perform better"
 }` }, { role: 'user', content: userPrompt }],
-    CREATIVE_MODEL, 3000, CREATIVE_TIMEOUT_MS,
+    resolveCreativeModel(planTier), 3000, CREATIVE_TIMEOUT_MS,
   );
   const arr = extractJsonArray(raw);
   return arr.slice(0, count).map((item, idx): CreativeVariant => {
@@ -479,6 +496,8 @@ export interface RefineInput {
   brief: CreativeBrief;
   /** The element to refine (HookCandidate, CreativeAngle, ScriptCandidate, or CreativeBrief) */
   element: Record<string, unknown>;
+  /** User's plan tier for model routing. */
+  planTier?: PlanTier;
 }
 
 export interface RefineResult {
@@ -511,7 +530,7 @@ Output the refined ${input.type} JSON now (same schema as the input, plus a "ref
 
   const raw = await atlasChat(
     [{ role: 'system', content: REFINE_SYS }, { role: 'user', content: userPrompt }],
-    CREATIVE_MODEL, CREATIVE_MAX_TOKENS, CREATIVE_TIMEOUT_MS,
+    resolveCreativeModel(input.planTier), CREATIVE_MAX_TOKENS, CREATIVE_TIMEOUT_MS,
   );
   const j = extractJson(raw);
   const { refinementNote, ...rest } = j;
@@ -534,6 +553,8 @@ export interface RemixInput {
   productExtraction?: ProductExtraction | null;
   platform?: string;
   format?: string;
+  /** User's plan tier for model routing. */
+  planTier?: PlanTier;
 }
 
 /**
@@ -575,7 +596,7 @@ export async function remixFromReference(input: RemixInput): Promise<CreativeBri
 
   const raw = await atlasChat(
     [{ role: 'system', content: REMIX_SYS }, { role: 'user', content: parts.join('\n') }],
-    CREATIVE_MODEL, CREATIVE_MAX_TOKENS, CREATIVE_TIMEOUT_MS,
+    resolveCreativeModel(input.planTier), CREATIVE_MAX_TOKENS, CREATIVE_TIMEOUT_MS,
   );
   const j = extractJson(raw);
 

@@ -6,6 +6,7 @@ import { deductCredits } from '@/lib/credits';
 import { refundSync } from '@/lib/lazynext-studio/gen-task';
 import { prisma } from '@/lib/prisma';
 import { getLearningsContext } from '@/lib/creative/learning';
+import { getUserPlanTier } from '@/lib/plan-tier';
 
 export const maxDuration = 90;
 
@@ -13,6 +14,7 @@ async function __byokPOST(req: Request) {
   const session = await auth();
   if (!session?.user?.id) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
   const uid = session.user.id;
+  const planTier = await getUserPlanTier(uid);
 
   const body = await req.json().catch(() => ({}));
   const product = typeof body.product === 'string' ? body.product.trim().slice(0, 2000) : '';
@@ -45,6 +47,7 @@ async function __byokPOST(req: Request) {
     format: typeof body.format === 'string' ? body.format : undefined,
     audience: typeof body.audience === 'string' ? body.audience : undefined,
     learnings: await getLearningsContext(uid).catch(() => ''),
+    planTier,
   };
 
   try {

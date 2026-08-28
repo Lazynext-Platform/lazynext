@@ -5,6 +5,7 @@ import { generateScript, CREATIVE_COSTS } from '@/lib/creative/intelligence';
 import type { CreativeBrief, CreativeAngle, HookCandidate } from '@/lib/creative/types';
 import { deductCredits } from '@/lib/credits';
 import { refundSync } from '@/lib/lazynext-studio/gen-task';
+import { getUserPlanTier } from '@/lib/plan-tier';
 
 export const maxDuration = 90;
 
@@ -12,6 +13,7 @@ async function __byokPOST(req: Request) {
   const session = await auth();
   if (!session?.user?.id) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
   const uid = session.user.id;
+  const planTier = await getUserPlanTier(uid);
 
   const body = await req.json().catch(() => ({}));
   const brief = body.brief as CreativeBrief | undefined;
@@ -31,7 +33,7 @@ async function __byokPOST(req: Request) {
   }
 
   try {
-    const script = await generateScript(brief, angle, hook);
+    const script = await generateScript(brief, angle, hook, planTier);
     return NextResponse.json({ script });
   } catch (e) {
     await refundSync(uid, CREATIVE_COSTS.script, 'creative:script');

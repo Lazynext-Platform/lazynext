@@ -394,22 +394,32 @@ export default function CreativeDirectorPage() {
             <Link href="/creative-studio" className="mt-3 flex items-center gap-1 text-xs font-medium text-brand-accent hover:underline">
               <Clapperboard className="h-3 w-3" /> {t('director.openInStudio')} <ArrowRight className="h-3 w-3" />
             </Link>
-            {result.bestCombination?.script?.scenes && result.bestCombination.script.scenes.length > 0 && (
-              <Link
-                href={`/editor?transcript=${encodeURIComponent(JSON.stringify({
-                  text: result.bestCombination.script.scenes.map(s => s.voiceover || s.beat).join(' '),
-                  duration: result.bestCombination.script.scenes.length * 3,
-                  segments: result.bestCombination.script.scenes.map((s, i) => ({
-                    start: i * 3,
-                    end: (i + 1) * 3,
-                    text: s.voiceover || s.beat,
-                  })),
-                }))}`}
-                className="mt-1.5 flex items-center gap-1 text-xs font-medium text-brand-accent hover:underline"
-              >
-                <Scissors className="h-3 w-3" /> {t('director.sendToEditor')} <ArrowRight className="h-3 w-3" />
-              </Link>
-            )}
+            {result.bestCombination?.script?.scenes && result.bestCombination.script.scenes.length > 0 && (() => {
+              const scenes = result.bestCombination.script.scenes;
+              // Estimate duration from word count (~2.5 words/sec speech rate),
+              // falling back to 3s per scene if no voiceover text
+              const segments = scenes.reduce<{ start: number; end: number; text: string }[]>((acc, s) => {
+                const start = acc.length > 0 ? acc[acc.length - 1].end : 0;
+                const text = s.voiceover || s.beat;
+                const wordCount = text.split(/\s+/).filter(Boolean).length;
+                const dur = wordCount > 0 ? Math.max(wordCount / 2.5, 1.5) : 3;
+                acc.push({ start, end: start + dur, text });
+                return acc;
+              }, []);
+              const totalDuration = segments.length > 0 ? segments[segments.length - 1].end : scenes.length * 3;
+              return (
+                <Link
+                  href={`/editor?transcript=${encodeURIComponent(JSON.stringify({
+                    text: scenes.map(s => s.voiceover || s.beat).join(' '),
+                    duration: totalDuration,
+                    segments,
+                  }))}`}
+                  className="mt-1.5 flex items-center gap-1 text-xs font-medium text-brand-accent hover:underline"
+                >
+                  <Scissors className="h-3 w-3" /> {t('director.sendToEditor')} <ArrowRight className="h-3 w-3" />
+                </Link>
+              );
+            })()}
           </section>
         )}
 

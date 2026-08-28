@@ -7,6 +7,7 @@ import type { BrandProfile, ProductExtraction } from '@/lib/brand/types';
 import { deductCredits } from '@/lib/credits';
 import { refundSync } from '@/lib/lazynext-studio/gen-task';
 import { getTool, validateAgainstSchema } from '@/lib/creative/tools';
+import { getUserPlanTier } from '@/lib/plan-tier';
 
 export const maxDuration = 90;
 
@@ -14,6 +15,7 @@ async function __byokPOST(req: Request) {
   const session = await auth();
   if (!session?.user?.id) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
   const uid = session.user.id;
+  const planTier = await getUserPlanTier(uid);
 
   const body = await req.json().catch(() => ({}));
 
@@ -32,7 +34,7 @@ async function __byokPOST(req: Request) {
       );
     }
     try {
-      analysis = await analyzeReferenceCreative(referenceUrl);
+      analysis = await analyzeReferenceCreative(referenceUrl, undefined, planTier);
     } catch (e) {
       await refundSync(uid, CREATIVE_COSTS.referenceAnalysis, 'creative:remix:analysis');
       return NextResponse.json({ error: 'reference_analysis_failed', detail: String(e) }, { status: 500 });
@@ -77,6 +79,7 @@ async function __byokPOST(req: Request) {
       productExtraction: body.productExtraction as ProductExtraction | null | undefined,
       platform: body.platform,
       format: body.format,
+      planTier,
     });
     return NextResponse.json({ tool: 'creative.remix', cost: CREATIVE_COSTS.remix, brief, analysis });
   } catch (e) {

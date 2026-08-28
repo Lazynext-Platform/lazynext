@@ -174,3 +174,51 @@ test.describe('Editor page — transcript from URL query param (Director → Edi
     await expect(sendToEditorLinks).toHaveCount(0);
   });
 });
+
+test.describe('Editor page — OCR section (Rough Cut tab)', () => {
+  test('OCR section is visible on Rough Cut tab', async ({ page }) => {
+    await page.goto('/editor');
+    // Rough Cut is the default tab; verify the OCR input and its label are visible
+    await expect(page.locator('#ocrImageUrl')).toBeVisible();
+    await expect(page.locator('label[for="ocrImageUrl"]')).toBeVisible();
+  });
+
+  test('OCR section has image URL input and run button', async ({ page }) => {
+    await page.goto('/editor');
+    await expect(page.locator('#ocrImageUrl')).toHaveCount(1);
+    // The run button is the adjacent sibling of the OCR input
+    const ocrRunBtn = page.locator('#ocrImageUrl + button');
+    await expect(ocrRunBtn).toHaveCount(1);
+    await expect(ocrRunBtn).toBeVisible();
+  });
+});
+
+test.describe('Editor page — Timeline persistence (Timeline tab)', () => {
+  test('Timeline tab shows saved timelines section', async ({ page }) => {
+    await page.goto('/editor');
+    await page.locator('[role="tab"]').nth(2).click();
+    // The saved timelines section is identified by its h3 heading
+    const savedListHeading = page.locator('section h3');
+    await expect(savedListHeading).toHaveCount(1);
+    await expect(savedListHeading).toBeVisible();
+  });
+
+  test('Timeline tab shows no saved timelines message when empty', async ({ page }) => {
+    await page.goto('/editor');
+    await page.locator('[role="tab"]').nth(2).click();
+    // When not authenticated, the saved list is empty and a message <p> appears
+    // immediately after the saved-list h3 heading
+    const noSavedMsg = page.locator('section h3 + p');
+    await expect(noSavedMsg).toHaveCount(1);
+    await expect(noSavedMsg).toBeVisible();
+  });
+
+  test('Timeline tab has create button', async ({ page }) => {
+    await page.goto('/editor');
+    await page.locator('[role="tab"]').nth(2).click();
+    // The create button is a direct child of the timeline section
+    const createBtn = page.locator('section > button');
+    await expect(createBtn).toHaveCount(1);
+    await expect(createBtn).toBeVisible();
+  });
+});
