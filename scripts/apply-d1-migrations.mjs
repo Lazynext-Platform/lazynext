@@ -6,15 +6,17 @@
  *   node scripts/apply-d1-migrations.mjs          # dry-run (prints SQL)
  *   node scripts/apply-d1-migrations.mjs --apply   # actually apply via wrangler
  *
- * This script reads all migration.sql files from prisma/migrations/*/,
+ * This script reads all migration.sql files from prisma/migrations/ subdirs,
  * concatenates them, and applies them via `wrangler d1 execute`.
  */
-import { readdirSync, readFileSync, existsSync } from 'node:fs';
-import { join, resolve } from 'node:path';
+import { readdirSync, readFileSync, existsSync, writeFileSync, unlinkSync } from 'node:fs';
+import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
 
-const projectRoot = resolve(join(fileURLToPath(import.meta.url), '..', '..'));
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const projectRoot = join(__dirname, '..');
 const migrationsDir = join(projectRoot, 'prisma', 'migrations');
 const shouldApply = process.argv.includes('--apply');
 
@@ -56,7 +58,6 @@ if (!shouldApply) {
 
 // Write to a temp file and execute via wrangler
 const tmpPath = join(projectRoot, '.d1-migration-tmp.sql');
-import { writeFileSync, unlinkSync } from 'node:fs';
 writeFileSync(tmpPath, allSql);
 
 console.log(`\nApplying ${migrationDirs.length} migration(s) to D1 database "lazynext-db"...`);
