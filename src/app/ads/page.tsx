@@ -9,6 +9,8 @@ import {
 import { useI18n } from '@/i18n/provider';
 import { AuthModal } from '@/components/AuthModal';
 import { MetaAdsDashboard } from '@/components/MetaAdsDashboard';
+import { GoogleAdsDashboard } from '@/components/GoogleAdsDashboard';
+import { GA4AnalyticsPanel } from '@/components/GA4AnalyticsPanel';
 
 type Campaign = {
   id: string;
@@ -298,6 +300,22 @@ export default function AdsPage() {
         {session?.user && (
           <section className="mt-8">
             <MetaAdsDashboard />
+          </section>
+        )}
+
+        {session?.user && (
+          <section className="mt-8">
+            <GoogleAdsDashboard />
+          </section>
+        )}
+
+        {session?.user && (
+          <section className="mt-8 rounded-2xl border border-line bg-surface p-5">
+            <h2 className="text-sm font-bold text-fg">{t('ads.googleAnalytics')}</h2>
+            <p className="mt-1 text-xs text-fg-faint">{t('ads.googleAnalyticsSubtitle')}</p>
+            <div className="mt-4">
+              <GA4AnalyticsPanel />
+            </div>
           </section>
         )}
       </div>

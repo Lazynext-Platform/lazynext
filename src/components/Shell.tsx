@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Sparkles, Megaphone, BarChart3, LayoutDashboard, Package, Scissors, Library, Lightbulb, Calendar } from 'lucide-react';
+import { Sparkles, Megaphone, BarChart3, LayoutDashboard, Package, Scissors, Library, Lightbulb, Calendar, Video, Wand2 } from 'lucide-react';
 import { UserMenu } from '@/components/UserMenu';
 import { LangToggle } from '@/components/LangToggle';
 import { CreditBadge } from '@/components/CreditBadge';
@@ -14,10 +14,12 @@ const LOCALE_RE = /^\/(en|zh|ja|es|ko|pt|fr|de|ar|hi|vi|th|id)(?=\/|$)/;
 const NAV_LINKS = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/creative-director', label: 'Director', icon: Sparkles },
+  { href: '/ugc-studio', label: 'UGC Studio', icon: Video, hideOnMd: true },
   { href: '/ads', label: 'Ads', icon: Megaphone },
   { href: '/performance', label: 'Performance', icon: BarChart3 },
   { href: '/creative-assets', label: 'Assets', icon: Package },
   { href: '/editor', label: 'Editor', icon: Scissors },
+  { href: '/skills', label: 'Skills', icon: Wand2, hideOnMd: true },
   { href: '/templates', label: 'Templates', icon: Library, hideOnMd: true },
   { href: '/inspiration', label: 'Inspiration', icon: Lightbulb, hideOnMd: true },
   { href: '/calendar', label: 'Calendar', icon: Calendar, hideOnMd: true },

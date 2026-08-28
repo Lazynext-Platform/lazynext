@@ -139,4 +139,57 @@ export interface CampaignReport {
   creativeBreakdown: CreativeBreakdown[];
   timeSeries: TimeSeriesPoint[];
   recommendations: string[];
+  // ── Google Ads specific breakdowns (optional; populated by the Google provider) ──
+  /** Search terms that triggered the ad (Google Search campaigns). */
+  searchTerms?: SearchTermBreakdown[];
+  /** Keyword performance breakdown (Google Search/Shopping campaigns). */
+  keywords?: KeywordBreakdown[];
+  /** Ad group performance breakdown (Google Ads). */
+  adGroups?: AdGroupBreakdown[];
+  /** Performance split by device (Google Ads). */
+  deviceBreakdown?: DeviceBreakdown[];
+}
+
+/** Search term breakdown row (Google Ads). */
+export interface SearchTermBreakdown {
+  searchTerm: string;
+  keyword: string;
+  matchType: string; // 'exact' | 'phrase' | 'broad'
+  impressions: number;
+  clicks: number;
+  conversions: number;
+  spend: number;
+}
+
+/** Keyword breakdown row (Google Ads). */
+export interface KeywordBreakdown {
+  keyword: string;
+  matchType: string;
+  impressions: number;
+  clicks: number;
+  conversions: number;
+  spend: number;
+  ctr: number;
+  avgCpc: number;
+}
+
+/** Ad group breakdown row (Google Ads). */
+export interface AdGroupBreakdown {
+  adGroupId: string;
+  adGroupName: string;
+  status: string;
+  impressions: number;
+  clicks: number;
+  conversions: number;
+  spend: number;
+}
+
+/** Device breakdown row (Google Ads). */
+export interface DeviceBreakdown {
+  device: string; // 'mobile' | 'desktop' | 'tablet'
+  impressions: number;
+  clicks: number;
+  conversions: number;
+  spend: number;
+  ctr: number;
 }

@@ -11,6 +11,7 @@ import {
 import { useI18n } from '@/i18n/provider';
 import { AuthModal } from '@/components/AuthModal';
 import { DeepReferenceAnalysisModal } from '@/components/DeepReferenceAnalysisModal';
+import { ViralAnalysisModal } from '@/components/ViralAnalysisModal';
 
 type StepStatus = 'pending' | 'running' | 'completed' | 'failed' | 'awaiting_approval';
 
@@ -43,6 +44,7 @@ export default function CreativeDirectorPage() {
   const { t } = useI18n();
   const [authOpen, setAuthOpen] = useState(false);
   const [deepAnalysisOpen, setDeepAnalysisOpen] = useState(false);
+  const [viralAnalysisOpen, setViralAnalysisOpen] = useState(false);
 
   const [productUrl, setProductUrl] = useState('');
   const [brandUrl, setBrandUrl] = useState('');
@@ -741,15 +743,27 @@ export default function CreativeDirectorPage() {
         )}
       </div>
 
-      <button
-        onClick={() => setDeepAnalysisOpen(true)}
-        className="flex items-center gap-1.5 rounded-lg border border-brand-accent/30 bg-brand-accent/10 px-4 py-2 text-sm font-bold text-brand-accent"
-      >
-        {t('deepAnalysis.button')}
-      </button>
+      <div className="flex flex-wrap gap-2">
+        <button
+          onClick={() => setDeepAnalysisOpen(true)}
+          className="flex items-center gap-1.5 rounded-lg border border-brand-accent/30 bg-brand-accent/10 px-4 py-2 text-sm font-bold text-brand-accent"
+        >
+          {t('deepAnalysis.button')}
+        </button>
+        <button
+          onClick={() => setViralAnalysisOpen(true)}
+          className="flex items-center gap-1.5 rounded-lg border border-brand-accent/30 bg-brand-accent/10 px-4 py-2 text-sm font-bold text-brand-accent"
+        >
+          Viral Analysis
+        </button>
+      </div>
       <DeepReferenceAnalysisModal
         open={deepAnalysisOpen}
         onClose={() => setDeepAnalysisOpen(false)}
+      />
+      <ViralAnalysisModal
+        open={viralAnalysisOpen}
+        onClose={() => setViralAnalysisOpen(false)}
       />
 
       <AuthModal open={authOpen} onClose={() => setAuthOpen(false)} />
