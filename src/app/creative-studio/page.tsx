@@ -383,13 +383,13 @@ export default function CreativeStudioPage() {
               {brandStep === 'done' && brand && (
                 <div className="mt-3 space-y-2 text-xs">
                   <div className="flex items-center gap-1 text-success"><CheckCircle2 className="h-3 w-3" /> {t('creativeStudio.brandSaved')}</div>
-                  <Field label="Company" value={brand.company} />
-                  <Field label="Industry" value={brand.industry} />
-                  <Field label="Positioning" value={brand.positioning} />
-                  <Field label="Audience" value={brand.audience} />
-                  <Field label="Tone" value={brand.tone} />
-                  {brand.benefits.length > 0 && <Field label="Benefits" value={brand.benefits.join(', ')} />}
-                  {brand.prohibitedClaims.length > 0 && <Field label="Prohibited claims" value={brand.prohibitedClaims.join(', ')} danger />}
+                  <Field label={t('cstudio.fldCompany')} value={brand.company} />
+                  <Field label={t('cstudio.fldIndustry')} value={brand.industry} />
+                  <Field label={t('cstudio.fldPositioning')} value={brand.positioning} />
+                  <Field label={t('cstudio.fldAudience')} value={brand.audience} />
+                  <Field label={t('cstudio.fldTone')} value={brand.tone} />
+                  {brand.benefits.length > 0 && <Field label={t('cstudio.fldBenefits')} value={brand.benefits.join(', ')} />}
+                  {brand.prohibitedClaims.length > 0 && <Field label={t('cstudio.fldProhibitedClaims')} value={brand.prohibitedClaims.join(', ')} danger />}
                 </div>
               )}
             </div>
@@ -418,11 +418,11 @@ export default function CreativeStudioPage() {
               {productStep === 'done' && product && (
                 <div className="mt-3 space-y-2 text-xs">
                   <div className="flex items-center gap-1 text-success"><CheckCircle2 className="h-3 w-3" /> {t('creativeStudio.productExtracted')}</div>
-                  <Field label="Product" value={product.productName} />
-                  <Field label="Category" value={product.category} />
-                  <Field label="Price" value={product.price} />
-                  {product.benefits.length > 0 && <Field label="Benefits" value={product.benefits.join(', ')} />}
-                  {product.painPoints.length > 0 && <Field label="Pain points" value={product.painPoints.join(', ')} />}
+                  <Field label={t('cstudio.fldProduct')} value={product.productName} />
+                  <Field label={t('cstudio.fldCategory')} value={product.category} />
+                  <Field label={t('cstudio.fldPrice')} value={product.price} />
+                  {product.benefits.length > 0 && <Field label={t('cstudio.fldBenefits')} value={product.benefits.join(', ')} />}
+                  {product.painPoints.length > 0 && <Field label={t('cstudio.fldPainPoints')} value={product.painPoints.join(', ')} />}
                 </div>
               )}
             </div>
@@ -497,16 +497,16 @@ export default function CreativeStudioPage() {
             {briefStep === 'done' && brief && (
               <div className="mt-2 space-y-2 rounded-xl border border-line bg-app p-3 text-xs">
                 <div className="flex items-center gap-1 text-success"><CheckCircle2 className="h-3 w-3" /> {t('creativeStudio.briefGenerated')}</div>
-                <Field label="Objective" value={brief.objective} />
-                <Field label="Audience" value={brief.audience} />
-                <Field label="Pain point" value={brief.painPoint} />
-                <Field label="Benefit" value={brief.benefit} />
-                <Field label="Angle" value={brief.angle} />
-                <Field label="CTA" value={brief.cta} />
-                <Field label="Visual direction" value={brief.visualDirection} />
-                <Field label="Sound direction" value={brief.soundDirection} />
-                {brief.complianceConstraints.length > 0 && <Field label="Compliance" value={brief.complianceConstraints.join(', ')} danger />}
-                <Field label="Language" value={brief.language} />
+                <Field label={t('cstudio.fldObjective')} value={brief.objective} />
+                <Field label={t('cstudio.fldAudience')} value={brief.audience} />
+                <Field label={t('cstudio.fldPainPoint')} value={brief.painPoint} />
+                <Field label={t('cstudio.fldBenefits')} value={brief.benefit} />
+                <Field label={t('cstudio.fldAngle')} value={brief.angle} />
+                <Field label={t('cstudio.fldCta')} value={brief.cta} />
+                <Field label={t('cstudio.fldVisualDirection')} value={brief.visualDirection} />
+                <Field label={t('cstudio.fldSoundDirection')} value={brief.soundDirection} />
+                {brief.complianceConstraints.length > 0 && <Field label={t('cstudio.fldCompliance')} value={brief.complianceConstraints.join(', ')} danger />}
+                <Field label={t('cstudio.fldLanguage')} value={brief.language} />
               </div>
             )}
           </div>
@@ -627,7 +627,7 @@ export default function CreativeStudioPage() {
                       {s.onScreenText && <p className="mt-1 text-fg"><span className="text-fg-secondary">{t('creativeStudio.onScreen')}:</span> {s.onScreenText}</p>}
                     </div>
                   ))}
-                  <p className="text-xs font-medium text-fg">CTA: {script.cta}</p>
+                  <p className="text-xs font-medium text-fg">{t('cstudio.lblCta')}{script.cta}</p>
                 </div>
               )}
             </div>
@@ -795,21 +795,21 @@ export default function CreativeStudioPage() {
             {refStep === 'done' && refAnalysis && (
               <div className="mt-2 space-y-2 rounded-xl border border-line bg-app p-3 text-xs">
                 <div className="flex items-center gap-1 text-success"><CheckCircle2 className="h-3 w-3" /> {t('creativeStudio.analysisComplete')}</div>
-                <Field label="Duration" value={`${refAnalysis.duration}s`} />
-                <Field label="Platform" value={refAnalysis.platform} />
-                <Field label="Hook" value={refAnalysis.hook} />
-                <Field label="Hook duration" value={`${refAnalysis.hookDuration}s`} />
-                <Field label="Narrative structure" value={refAnalysis.narrativeStructure} />
-                <Field label="Pacing" value={refAnalysis.pacing} />
-                <Field label="Emotional tone" value={refAnalysis.emotionalTone} />
-                <Field label="CTA" value={refAnalysis.cta} />
-                <Field label="Talent" value={refAnalysis.talent} />
-                <Field label="Product placement" value={refAnalysis.productPlacement} />
-                <Field label="Music" value={refAnalysis.music} />
-                {refAnalysis.shotTypes.length > 0 && <Field label="Shot types" value={refAnalysis.shotTypes.join(', ')} />}
-                {refAnalysis.transitions.length > 0 && <Field label="Transitions" value={refAnalysis.transitions.join(', ')} />}
-                {refAnalysis.soundEffects.length > 0 && <Field label="Sound effects" value={refAnalysis.soundEffects.join(', ')} />}
-                {refAnalysis.persuasionMechanisms.length > 0 && <Field label="Persuasion mechanisms" value={refAnalysis.persuasionMechanisms.join(', ')} />}
+                <Field label={t('cstudio.fldDuration')} value={`${refAnalysis.duration}s`} />
+                <Field label={t('cstudio.fldPlatform')} value={refAnalysis.platform} />
+                <Field label={t('cstudio.fldHook')} value={refAnalysis.hook} />
+                <Field label={t('cstudio.fldHookDuration')} value={`${refAnalysis.hookDuration}s`} />
+                <Field label={t('cstudio.fldNarrativeStructure')} value={refAnalysis.narrativeStructure} />
+                <Field label={t('cstudio.fldPacing')} value={refAnalysis.pacing} />
+                <Field label={t('cstudio.fldEmotionalTone')} value={refAnalysis.emotionalTone} />
+                <Field label={t('cstudio.fldCta')} value={refAnalysis.cta} />
+                <Field label={t('cstudio.fldTalent')} value={refAnalysis.talent} />
+                <Field label={t('cstudio.fldProductPlacement')} value={refAnalysis.productPlacement} />
+                <Field label={t('cstudio.fldMusic')} value={refAnalysis.music} />
+                {refAnalysis.shotTypes.length > 0 && <Field label={t('cstudio.fldShotTypes')} value={refAnalysis.shotTypes.join(', ')} />}
+                {refAnalysis.transitions.length > 0 && <Field label={t('cstudio.fldTransitions')} value={refAnalysis.transitions.join(', ')} />}
+                {refAnalysis.soundEffects.length > 0 && <Field label={t('cstudio.fldSoundEffects')} value={refAnalysis.soundEffects.join(', ')} />}
+                {refAnalysis.persuasionMechanisms.length > 0 && <Field label={t('cstudio.fldPersuasionMechanisms')} value={refAnalysis.persuasionMechanisms.join(', ')} />}
                 {refAnalysis.adaptationRecommendations.length > 0 && (
                   <div className="mt-2 rounded-lg bg-[#00b2fc]/5 p-2">
                     <span className="font-bold text-fg">{t('creativeStudio.adaptationRecs')}:</span>

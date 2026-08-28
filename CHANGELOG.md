@@ -1,5 +1,35 @@
 # LazyNext Changelog
 
+## 2026-08-28 — i18n for Creative Assets, Streaming Route Tests, E2E Coverage
+
+### What Changed
+1. **i18n for `/creative-assets` page**: added `cassets` namespace (15 keys) to all 13 locale
+   blocks in `src/i18n/messages.ts`. All hardcoded English strings in the creative-assets page
+   now use `t('cassets.*')` calls. Brand name "Creative Director" translated per locale convention.
+2. **Streaming director route tests**: 27 new tests in `test/streaming-director.test.ts` covering
+   NDJSON line format, stream parsing, credit refund math, budget clamping, stream vs legacy mode
+   selection, response headers, step callback data shape, and full lifecycle simulation.
+3. **E2E coverage expansion**: 21 new E2E tests across two new spec files:
+   - `e2e/creative-assets.spec.ts` (10 tests): page load, layout, auth gate, nav link
+   - `e2e/streaming-metrics.spec.ts` (11 tests): streaming UI structure, auth modal, budget slider,
+     ads form validation, dry-run default, campaign list, refresh button aria-label
+4. **AGENTS.md**: updated test count from 113 to 157.
+
+### Verification
+- `npm test` — 157 unit tests passed (130 existing + 27 new streaming tests)
+- `npx playwright test` — 75 E2E tests passed (54 existing + 21 new)
+- `npx tsc --noEmit` — passed (0 errors)
+- `npm run lint` — passed
+- All CI checks green
+
+### Files Changed
+- `src/i18n/messages.ts` (cassets namespace × 13 locales)
+- `src/app/creative-assets/page.tsx` (t() calls replacing hardcoded English)
+- `test/streaming-director.test.ts` (new — 27 tests)
+- `e2e/creative-assets.spec.ts` (new — 10 tests)
+- `e2e/streaming-metrics.spec.ts` (new — 11 tests)
+- `AGENTS.md` (test count update)
+
 ## 2026-08-28 — Creative Assets Browsing Page, Asset-Persist Tests, Docs Update
 
 ### What Changed
@@ -13,7 +43,7 @@
    persistence, streaming director, metrics refresh UI, and i18n expansion.
 
 ### Verification
-- `npm test` — 130 unit tests passed (113 existing + 17 new asset-persist tests)
+- `npm test` — 157 unit tests passed (113 existing + 17 asset-persist + 27 streaming tests)
 - `npx tsc --noEmit` — passed (0 errors)
 - `npm run lint` — passed
 - All CI checks green
@@ -54,8 +84,8 @@
 10. **E2E fix**: `e2e/home.spec.ts` nav landmark strict-mode violation resolved.
 
 ### Verification
-- `npm test` — 130 unit tests passed (113 existing + 17 new asset-persist tests)
-- `npx playwright test` — 27 E2E tests passed (new-pages.spec.ts)
+- `npm test` — 157 unit tests passed (113 existing + 17 asset-persist + 27 streaming tests)
+- `npx playwright test` — 75 E2E tests passed (27 new-pages + 10 creative-assets + 11 streaming-metrics + 27 existing)
 - `npx tsc --noEmit` — passed (0 errors)
 - All CI checks green
 

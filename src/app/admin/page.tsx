@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { useSession } from 'next-auth/react';
 import { Loader2, Search, Users, Film, TrendingUp, AlertCircle, Plus, Minus, RefreshCw } from 'lucide-react';
 import { formatNumber, formatDateTime } from '@/lib/i18n-format';
+import { useI18n } from '@/i18n/provider';
 
 type AdminUser = {
   id: string; name: string | null; email: string | null;
@@ -21,6 +22,7 @@ type StatusCount = { status: string; _count: number };
 
 export default function AdminPage() {
   const { status } = useSession();
+  const { t } = useI18n();
   const [tab, setTab] = useState<'users' | 'creations'>('users');
   const [users, setUsers] = useState<AdminUser[] | null>(null);
   const [creations, setCreations] = useState<AdminCreation[] | null>(null);
@@ -91,17 +93,17 @@ return (
     <div className="min-h-screen text-fg bg-app">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 pb-24">
         <div className="pt-6 pb-6">
-          <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Admin Dashboard</h1>
-          <p className="mt-1 text-sm text-fg-faint">User management, credit adjustments, and creation monitoring.</p>
+          <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">{t('admin.title')}</h1>
+          <p className="mt-1 text-sm text-fg-faint">{t('admin.subtitle')}</p>
         </div>
 
         {/* Tabs */}
         <div className="mb-6 flex gap-2">
           <button onClick={() => setTab('users')} className={`inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition ${tab === 'users' ? 'bg-[#0064d9] text-white' : 'bg-hover text-fg-muted hover:bg-elevated'}`}>
-            <Users className="h-4 w-4" /> Users
+            <Users className="h-4 w-4" /> {t('admin.tabUsers')}
           </button>
           <button onClick={() => setTab('creations')} className={`inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition ${tab === 'creations' ? 'bg-[#0064d9] text-white' : 'bg-hover text-fg-muted hover:bg-elevated'}`}>
-            <Film className="h-4 w-4" /> Creations
+            <Film className="h-4 w-4" /> {t('admin.tabCreations')}
           </button>
         </div>
 
@@ -115,12 +117,12 @@ return (
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && loadUsers()}
-                  placeholder="Search by email…"
-                  aria-label="Search by email"
+                  placeholder={t('admin.searchPlaceholder')}
+                  aria-label={t('admin.searchPlaceholder')}
                   className="w-full rounded-lg border border-line bg-surface py-2 pl-10 pr-4 text-sm text-fg placeholder:text-fg-placeholder outline-none focus:border-[#00b2fc]"
                 />
               </div>
-              <button onClick={loadUsers} className="rounded-lg bg-elevated px-4 py-2 text-sm font-medium text-fg-secondary hover:bg-active">Search</button>
+              <button onClick={loadUsers} className="rounded-lg bg-elevated px-4 py-2 text-sm font-medium text-fg-secondary hover:bg-active">{t('admin.search')}</button>
             </div>
 
             {/* Stats */}
@@ -130,18 +132,18 @@ return (
             {users === null ? (
               <div className="grid place-items-center py-12"><Loader2 className="h-6 w-6 animate-spin text-fg-placeholder" /></div>
             ) : users.length === 0 ? (
-              <div className="grid place-items-center py-12 text-sm text-fg-faint">No users found.</div>
+              <div className="grid place-items-center py-12 text-sm text-fg-faint">{t('admin.noUsers')}</div>
             ) : (
               <div className="overflow-x-auto rounded-xl border border-line">
                 <table className="w-full text-sm">
-                  <caption className="sr-only">User management</caption>
+                  <caption className="sr-only">{t('admin.userManagement')}</caption>
                   <thead className="bg-surface text-xs uppercase text-fg-faint">
                     <tr>
-                      <th scope="col" className="px-4 py-3 text-left">User</th>
-                      <th scope="col" className="px-4 py-3 text-right">Credits</th>
-                      <th scope="col" className="px-4 py-3 text-right">Creations</th>
-                      <th scope="col" className="px-4 py-3 text-left">Joined</th>
-                      <th scope="col" className="px-4 py-3 text-left">Adjust</th>
+                      <th scope="col" className="px-4 py-3 text-left">{t('admin.colUser')}</th>
+                      <th scope="col" className="px-4 py-3 text-right">{t('admin.colCredits')}</th>
+                      <th scope="col" className="px-4 py-3 text-right">{t('admin.colCreations')}</th>
+                      <th scope="col" className="px-4 py-3 text-left">{t('admin.colJoined')}</th>
+                      <th scope="col" className="px-4 py-3 text-left">{t('admin.colAdjust')}</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-white/5">
@@ -161,14 +163,14 @@ return (
                               aria-label="Credit adjustment amount"
                               value={adjusting === u.id ? adjustAmount : ''}
                               onChange={(e) => { setAdjusting(u.id); setAdjustAmount(e.target.value); }}
-                              placeholder="±N"
+                              placeholder={t('admin.creditsAdjust')}
                               className="w-16 rounded border border-line bg-hover px-2 py-1 text-xs text-fg outline-none focus:border-[#00b2fc]"
                             />
                             <input
                               aria-label="Credit adjustment reason"
                               value={adjusting === u.id ? adjustReason : ''}
                               onChange={(e) => { setAdjusting(u.id); setAdjustReason(e.target.value); }}
-                              placeholder="reason"
+                              placeholder={t('admin.reason')}
                               className="w-24 rounded border border-line bg-hover px-2 py-1 text-xs text-fg outline-none focus:border-[#00b2fc]"
                             />
                             <button
@@ -176,7 +178,7 @@ return (
                               disabled={adjusting !== u.id || !adjustAmount}
                               className="rounded bg-[#00b2fc]/20 px-2 py-1 text-xs text-brand-accent hover:bg-[#00b2fc]/30 disabled:opacity-30"
                             >
-                              Apply
+                              {t('admin.apply')}
                             </button>
                           </div>
                         </td>
@@ -193,13 +195,13 @@ return (
           <div>
             {/* Status filter + counts */}
             <div className="mb-4 flex flex-wrap items-center gap-2">
-              <button onClick={() => setStatusFilter('')} className={`rounded-lg px-3 py-1.5 text-xs font-medium ${!statusFilter ? 'bg-[#0064d9] text-white' : 'bg-hover text-fg-muted'}`}>All</button>
+              <button onClick={() => setStatusFilter('')} className={`rounded-lg px-3 py-1.5 text-xs font-medium ${!statusFilter ? 'bg-[#0064d9] text-white' : 'bg-hover text-fg-muted'}`}>{t('admin.filterAll')}</button>
               {statusCounts.map((sc) => (
                 <button key={sc.status} onClick={() => setStatusFilter(sc.status)} className={`rounded-lg px-3 py-1.5 text-xs font-medium ${statusFilter === sc.status ? 'bg-[#0064d9] text-white' : 'bg-hover text-fg-muted'}`}>
                   {sc.status} ({sc._count})
                 </button>
               ))}
-              <button onClick={loadCreations} className="ml-auto rounded-lg bg-elevated px-3 py-1.5 text-xs text-fg-muted hover:bg-active"><RefreshCw className="h-3 w-3 inline" /> Refresh</button>
+              <button onClick={loadCreations} className="ml-auto rounded-lg bg-elevated px-3 py-1.5 text-xs text-fg-muted hover:bg-active"><RefreshCw className="h-3 w-3 inline" /> {t('admin.refresh')}</button>
             </div>
 
             <div className="mb-4 text-xs text-fg-faint">{total} creation{total !== 1 ? 's' : ''}</div>
@@ -207,20 +209,20 @@ return (
             {creations === null ? (
               <div className="grid place-items-center py-12"><Loader2 className="h-6 w-6 animate-spin text-fg-placeholder" /></div>
             ) : creations.length === 0 ? (
-              <div className="grid place-items-center py-12 text-sm text-fg-faint">No creations found.</div>
+              <div className="grid place-items-center py-12 text-sm text-fg-faint">{t('admin.noCreations')}</div>
             ) : (
               <div className="overflow-x-auto rounded-xl border border-line">
                 <table className="w-full text-sm">
-                  <caption className="sr-only">Creation monitoring</caption>
+                  <caption className="sr-only">{t('admin.creationMonitoring')}</caption>
                   <thead className="bg-surface text-xs uppercase text-fg-faint">
                     <tr>
-                      <th scope="col" className="px-4 py-3 text-left">Template</th>
-                      <th scope="col" className="px-4 py-3 text-left">Status</th>
-                      <th scope="col" className="px-4 py-3 text-left">Prompt</th>
-                      <th scope="col" className="px-4 py-3 text-right">Cost</th>
-                      <th scope="col" className="px-4 py-3 text-left">User</th>
-                      <th scope="col" className="px-4 py-3 text-left">Created</th>
-                      <th scope="col" className="px-4 py-3 text-left">Error</th>
+                      <th scope="col" className="px-4 py-3 text-left">{t('admin.colTemplate')}</th>
+                      <th scope="col" className="px-4 py-3 text-left">{t('admin.colStatus')}</th>
+                      <th scope="col" className="px-4 py-3 text-left">{t('admin.colPrompt')}</th>
+                      <th scope="col" className="px-4 py-3 text-right">{t('admin.colCost')}</th>
+                      <th scope="col" className="px-4 py-3 text-left">{t('admin.colUser')}</th>
+                      <th scope="col" className="px-4 py-3 text-left">{t('admin.colCreated')}</th>
+                      <th scope="col" className="px-4 py-3 text-left">{t('admin.colError')}</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-white/5">

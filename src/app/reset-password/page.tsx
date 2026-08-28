@@ -3,9 +3,11 @@
 import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
+import { useI18n } from '@/i18n/provider';
 
 function ResetPasswordContent() {
   const searchParams = useSearchParams();
+  const { t } = useI18n();
   const token = searchParams.get('token') || '';
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
@@ -14,20 +16,20 @@ function ResetPasswordContent() {
 
   useEffect(() => {
     if (!token) {
-      setError('No reset token found. Please use the link from your email.');
+      setError(t('reset.errInvalidToken'));
       setStatus('error');
     }
-  }, [token]);
+  }, [token, t]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (password !== confirm) {
-      setError('Passwords do not match');
+      setError(t('reset.errMismatch'));
       setStatus('error');
       return;
     }
     if (password.length < 8) {
-      setError('Password must be at least 8 characters');
+      setError(t('reset.errTooShort'));
       setStatus('error');
       return;
     }
@@ -41,13 +43,13 @@ function ResetPasswordContent() {
       });
       const data = await res.json();
       if (!res.ok) {
-        setError(data.error || 'Reset failed');
+        setError(data.error || t('reset.errFailed'));
         setStatus('error');
         return;
       }
       setStatus('success');
     } catch {
-      setError('Network error. Please try again.');
+      setError(t('reset.errFailed'));
       setStatus('error');
     }
   };
@@ -57,10 +59,10 @@ function ResetPasswordContent() {
       <div className="mx-auto flex min-h-screen max-w-sm flex-col items-center justify-center px-4 app-grid-bg bg-app">
         <div className="w-full rounded-2xl border border-line bg-popover p-8 text-center">
           <div className="mb-4 text-5xl">✅</div>
-          <h1 className="mb-2 text-xl font-bold text-fg">Password Reset</h1>
-          <p className="mb-6 text-sm text-fg-muted">Your password has been changed successfully. You can now sign in with your new password.</p>
+          <h1 className="mb-2 text-xl font-bold text-fg">{t('reset.title')}</h1>
+          <p className="mb-6 text-sm text-fg-muted">{t('reset.successMessage')}</p>
           <Link href="/" className="inline-block rounded-xl px-6 py-2.5 text-sm font-bold text-white" style={{ background: '#0064d9' }}>
-            Back to Sign In
+            {t('reset.backToSignIn')}
           </Link>
         </div>
       </div>
@@ -70,14 +72,14 @@ function ResetPasswordContent() {
   return (
     <div className="mx-auto flex min-h-screen max-w-sm flex-col items-center justify-center px-4 app-grid-bg bg-app">
       <div className="w-full rounded-2xl border border-line bg-popover p-8">
-        <h1 className="mb-2 text-xl font-bold text-fg">Reset Password</h1>
-        <p className="mb-6 text-sm text-fg-faint">Enter your new password below.</p>
+        <h1 className="mb-2 text-xl font-bold text-fg">{t('reset.heading')}</h1>
+        <p className="mb-6 text-sm text-fg-faint">{t('reset.subtitle')}</p>
         <form onSubmit={handleSubmit} className="space-y-4">
           <input
             type="password"
             autoComplete="new-password"
-            aria-label="New password (min 8 characters)"
-            placeholder="New password (min 8 characters)"
+            aria-label={t('reset.newPassword')}
+            placeholder={t('reset.newPassword')}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
@@ -87,8 +89,8 @@ function ResetPasswordContent() {
           <input
             type="password"
             autoComplete="new-password"
-            aria-label="Confirm new password"
-            placeholder="Confirm new password"
+            aria-label={t('reset.confirmPassword')}
+            placeholder={t('reset.confirmPassword')}
             value={confirm}
             onChange={(e) => setConfirm(e.target.value)}
             required
@@ -102,11 +104,11 @@ function ResetPasswordContent() {
             className="w-full rounded-xl px-4 py-2.5 text-sm font-bold text-white transition hover:brightness-110 disabled:opacity-50"
             style={{ background: '#0064d9' }}
           >
-            {status === 'loading' ? 'Resetting…' : 'Reset Password'}
+            {status === 'loading' ? t('reset.resetting') : t('reset.reset')}
           </button>
         </form>
         <p className="mt-4 text-center text-sm text-fg-faint">
-          <Link href="/" className="text-brand-400 hover:underline">Back to sign in</Link>
+          <Link href="/" className="text-brand-400 hover:underline">{t('reset.backToSignIn2')}</Link>
         </p>
       </div>
     </div>
@@ -114,8 +116,9 @@ function ResetPasswordContent() {
 }
 
 export default function ResetPasswordPage() {
+  const { t } = useI18n();
   return (
-    <Suspense fallback={<div className="grid min-h-screen place-items-center text-fg-faint">Loading…</div>}>
+    <Suspense fallback={<div className="grid min-h-screen place-items-center text-fg-faint">{t('reset.loading')}</div>}>
       <ResetPasswordContent />
     </Suspense>
   );
