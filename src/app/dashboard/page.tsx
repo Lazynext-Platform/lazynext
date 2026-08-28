@@ -18,6 +18,9 @@ const APPS: App[] = [
   { id: 'drama-studio', href: '/drama-studio', icon: Clapperboard },
   { id: 'ad-skit', href: '/ad-skit', icon: Clapperboard },
   { id: 'creative-studio', href: '/creative-studio', icon: Sparkles },
+  { id: 'creative-director', href: '/creative-director', icon: Sparkles },
+  { id: 'ads', href: '/ads', icon: Clapperboard },
+  { id: 'performance', href: '/performance', icon: Clapperboard },
 ];
 
 type Creation = {

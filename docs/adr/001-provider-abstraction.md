@@ -52,3 +52,19 @@ All files listed above are now implemented:
 - `router.ts` — model router (`routeModel()`) that selects models by capability, cost, speed, ratio, and resolution
 
 The model router is a simple priority-based selector. Future work: integrate user plan tiers, latency metrics, and A/B testing.
+
+## Update: atlas-research Adapter and Model Router
+
+The `atlas-research.ts` adapter and `router.ts` model router are now fully integrated into the
+provider abstraction layer:
+
+- **`atlas-research.ts`** (`src/lib/providers/atlas-research.ts`) — wraps `extractBrand` and
+  `extractProduct` behind the `ResearchProvider` interface, enabling brand/product extraction to
+  be swapped or mocked independently of the underlying LLM call.
+- **`router.ts`** (`src/lib/providers/router.ts`) — `routeModel()` selects the best model for a
+  given capability by evaluating capability match, cost, speed, output ratio, and resolution.
+  The router is consulted by the creative intelligence layer and ad platform providers when
+  choosing which LLM/model to invoke.
+
+Both components are consumed by the Autonomous Creative Director (ADR-005) and the ad platform
+integration (ADR-004) for model selection during automated pipeline runs.

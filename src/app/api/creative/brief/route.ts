@@ -5,6 +5,7 @@ import { generateBrief, CREATIVE_COSTS, type BriefInput } from '@/lib/creative/i
 import { deductCredits } from '@/lib/credits';
 import { refundSync } from '@/lib/lazynext-studio/gen-task';
 import { prisma } from '@/lib/prisma';
+import { getLearningsContext } from '@/lib/creative/learning';
 
 export const maxDuration = 90;
 
@@ -43,6 +44,7 @@ async function __byokPOST(req: Request) {
     platform: typeof body.platform === 'string' ? body.platform : undefined,
     format: typeof body.format === 'string' ? body.format : undefined,
     audience: typeof body.audience === 'string' ? body.audience : undefined,
+    learnings: await getLearningsContext(uid).catch(() => ''),
   };
 
   try {

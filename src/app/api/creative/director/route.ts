@@ -37,6 +37,7 @@ async function __byokPOST(req: Request) {
       format: body.format,
       budgetCredits: budget,
       requireStepApproval: false,
+      userId: uid,
     });
 
     // Refund unused credits

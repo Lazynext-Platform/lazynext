@@ -49,7 +49,7 @@ Production uses Cloudflare R2 via `src/lib/media-storage.cloudflare.ts`.
 ## Verification Commands
 ```bash
 npm run lint    # ESLint
-npm test        # Node test runner (34 tests)
+npm test        # Node test runner (61 tests)
 npm run build   # Production build (Cloudflare target)
 ```
 
@@ -71,10 +71,15 @@ npm run build   # Production build (Cloudflare target)
 - Next.js 16 + React 19 + TypeScript 6
 - Tailwind CSS 4
 - NextAuth (JWT session, Google + Credentials providers)
-- Prisma 7 with D1 (prod) / SQLite (local)
+- Prisma 7 with D1 (prod) / SQLite (local) — 18 tables total
 - Cloudflare R2 (prod) / file-based (local) media storage
 - Atlas Cloud AI generation API (prod) / mock server (local)
 - Dodo Payments for billing
+- Ad platform providers (Meta + Google Ads) with dry-run mode — see ADR-004
+- Autonomous Creative Director agent loop — see ADR-005
+- Performance learning loop (CreativePerformance model) — see ADR-006
+- New API routes: `/api/ads/create`, `/api/ads/metrics`, `/api/creative/director`,
+  `/api/creative/performance`, `/api/creative/score`, `/api/creative/variants`
 
 ## Production-Only Testing (Cannot Be Verified Locally)
 

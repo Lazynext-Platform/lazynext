@@ -81,6 +81,8 @@ export interface BriefInput {
   platform?: string;
   format?: string;
   audience?: string;
+  /** Performance learnings from past campaigns (injected into prompt). */
+  learnings?: string;
 }
 
 export async function generateBrief(input: BriefInput): Promise<CreativeBrief> {
@@ -108,6 +110,10 @@ export async function generateBrief(input: BriefInput): Promise<CreativeBrief> {
     if (input.brand.positioning) parts.push(`- Positioning: ${input.brand.positioning}`);
     if (input.brand.prohibitedClaims.length) parts.push(`- Prohibited claims: ${input.brand.prohibitedClaims.join(', ')}`);
     if (input.brand.brandVocabulary.length) parts.push(`- Brand vocabulary: ${input.brand.brandVocabulary.join(', ')}`);
+  }
+  if (input.learnings) {
+    parts.push(`Performance learnings from past campaigns (DATA, use to inform but not copy):`);
+    parts.push(input.learnings);
   }
   parts.push('Output the creative brief JSON now.');
 

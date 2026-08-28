@@ -21,6 +21,7 @@ import {
   generateBrief, generateHooks, generateAngles, generateScript,
   generateStoryboard, scoreCreative, generateVariants, CREATIVE_COSTS,
 } from './intelligence';
+import { getLearningsContext } from './learning';
 import type {
   CreativeBrief, HookCandidate, CreativeAngle, ScriptCandidate,
   StoryboardCandidate, CreativeScore, CreativeVariant,
@@ -38,6 +39,8 @@ export interface DirectorInput {
   budgetCredits?: number;
   /** If true, pauses after each step for human review. */
   requireStepApproval?: boolean;
+  /** User ID for loading performance learnings. */
+  userId?: string;
 }
 
 export interface DirectorStep<T> {
@@ -151,12 +154,14 @@ export async function runCreativeDirector(
     return result;
   }
 
+  const learnings = input.userId ? await getLearningsContext(input.userId).catch(() => '') : '';
   const brief = await runStep('brief', CREATIVE_COSTS.brief, () =>
     generateBrief({
       product: input.productText!,
       productName: input.productName,
       platform: input.platform || 'tiktok',
       format: input.format || 'ugc',
+      learnings: learnings || undefined,
     }),
   );
   if (!brief) return result;

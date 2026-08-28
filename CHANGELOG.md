@@ -1,5 +1,64 @@
 # LazyNext Changelog
 
+## 2026-08-28 — Ad Platforms, Autonomous Creative Director, Performance Learning Loop
+
+### What Changed
+1. **Ad-platform integrations**: Meta and Google Ads providers implemented behind a shared
+   `AdPlatformProvider` interface with dry-run mode for safe testing. New API routes:
+   - `POST /api/ads/create` — creates ad campaigns on the target platform (dry-run by default)
+   - `POST /api/ads/metrics` — fetches spend, impressions, clicks, and conversions
+   - Dry-run mode returns realistic mock responses without touching live ad accounts
+2. **Autonomous Creative Director**: `runCreativeDirector()` agent loop orchestrates the full
+   creative pipeline (brief → hooks → angles → scripts → storyboard → score → variants → publish).
+   - `POST /api/creative/director` — kicks off the autonomous loop
+   - Enforces budget constraints (max credits per run, max generations per step)
+   - Approval gates: the loop pauses for human approval before publishing to any ad platform
+   - Best-combination selection: scores all hook/angle/script combinations and selects the top variant
+3. **Performance learning loop**: `CreativePerformance` model records per-creative metrics
+   (impressions, clicks, spend, conversions, CTR, CPC, ROAS) aggregated by hook, angle, and platform.
+   - `getPerformanceSummary()` — aggregate metrics for a user/workspace
+   - `getLearningsContext()` — distills top/bottom performers into a context string
+   - `POST /api/creative/performance` — records and retrieves performance data
+   - Learnings are injected into brief generation so future creatives leverage past results
+4. **New Prisma models**: `WorkflowRun`, `WorkflowStep`, `AdCampaign`, `CreativePerformance`
+   added to `prisma/schema.prisma`. All D1 migrations applied (18 tables total).
+5. **Score and variants API routes**: `POST /api/creative/score` and `POST /api/creative/variants`
+   expose `scoreCreative()` and `generateVariants()` (previously library-only).
+6. **Observability**: structured logging wired into credit deduction and image generation paths
+   for auditability and debugging.
+7. **CI fixes**: GitHub Actions workflow updated — `prisma generate` + `db:push` run before tests,
+   dev server bound to port 3100, `NEXTAUTH_SECRET` provided in CI environment.
+8. **i18n**: score and variants keys added for all 12 non-English locales (en, zh, ja, es, ko, pt,
+   fr, de, ar, hi, vi, th, id).
+
+### Verification
+- `npm test` — 61 tests passed
+- `npx tsc --noEmit` — passed (0 errors)
+- `npx prisma generate` — passed (4 new models)
+- D1 migrations applied — 18 tables total
+
+### Files Changed
+- `src/lib/ads/types.ts` (new — AdPlatformProvider interface, ad types)
+- `src/lib/ads/meta.ts` (new — Meta Ads provider)
+- `src/lib/ads/google.ts` (new — Google Ads provider)
+- `src/lib/ads/registry.ts` (new — provider registry)
+- `src/app/api/ads/create/route.ts` (new)
+- `src/app/api/ads/metrics/route.ts` (new)
+- `src/lib/creative/director.ts` (new — runCreativeDirector agent loop)
+- `src/app/api/creative/director/route.ts` (new)
+- `src/lib/creative/performance.ts` (new — CreativePerformance helpers)
+- `src/app/api/creative/performance/route.ts` (new)
+- `src/app/api/creative/score/route.ts` (new)
+- `src/app/api/creative/variants/route.ts` (new)
+- `prisma/schema.prisma` (WorkflowRun, WorkflowStep, AdCampaign, CreativePerformance)
+- `src/lib/credits.ts` (observability logging)
+- `src/lib/providers/atlas-image.ts` (observability logging)
+- `src/i18n/messages.ts` (score/variants keys for 12 locales)
+- `.github/workflows/ci.yml` (prisma generate, db:push, port 3100, NEXTAUTH_SECRET)
+- `docs/adr/004-ad-platform-integration.md` (new)
+- `docs/adr/005-autonomous-creative-director.md` (new)
+- `docs/adr/006-performance-learning.md` (new)
+
 ## 2026-08-27 — Remaining Work Completion: Scoring, Variants, Model Router, BrandProfile, Reference Analysis UI
 
 ### What Changed
