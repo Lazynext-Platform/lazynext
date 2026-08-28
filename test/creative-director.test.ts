@@ -103,7 +103,7 @@ async function runDirector(
   if (input.brandUrl) {
     const brand = await runStep('brand_extract', CREATIVE_COSTS.brief, () =>
       (implementations.brand_extract ?? (async () => null))() as Promise<unknown>);
-    if (brand) (result as Record<string, unknown>).brandExtraction = brand;
+    if (brand) (result as unknown as Record<string, unknown>).brandExtraction = brand;
   }
 
   // Step 2: Product extraction (optional)
@@ -111,7 +111,7 @@ async function runDirector(
     const product = await runStep('product_extract', CREATIVE_COSTS.brief, () =>
       (implementations.product_extract ?? (async () => null))() as Promise<unknown>);
     if (product) {
-      (result as Record<string, unknown>).productExtraction = product;
+      (result as unknown as Record<string, unknown>).productExtraction = product;
       if (!input.productText) {
         const p = product as { productName: string; description: string; benefits: string[] };
         input.productText = `${p.productName}: ${p.description} Benefits: ${p.benefits.join(', ')}.`;
