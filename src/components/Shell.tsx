@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Sparkles, Megaphone, BarChart3, LayoutDashboard, Package, Scissors, Library, Lightbulb, Calendar, Video, Wand2, ImageIcon, Send, BookOpen, Brain, Volume2, Eye, ShieldCheck, Wallet, Users, Workflow, Grid3x3, Activity, FileSearch, TrendingUp, FlaskConical, MessageSquareQuote } from 'lucide-react';
+import { Sparkles, Megaphone, BarChart3, LayoutDashboard, Package, Scissors, Library, Lightbulb, Calendar, Video, Wand2, ImageIcon, Send, BookOpen, Brain, Volume2, Eye, ShieldCheck, Wallet, Users, Workflow, Grid3x3, Activity, FileSearch, TrendingUp, FlaskConical, MessageSquareQuote, Award, Repeat, Users2, Flame } from 'lucide-react';
 import { UserMenu } from '@/components/UserMenu';
 import { LangToggle } from '@/components/LangToggle';
 import { CreditBadge } from '@/components/CreditBadge';
@@ -36,6 +36,10 @@ const NAV_LINKS = [
   { href: '/ml-insights', label: 'ML Insights', icon: Brain, hideOnMd: true },
   { href: '/compliance', label: 'Compliance', icon: ShieldCheck, hideOnMd: true },
   { href: '/brand-voice', label: 'Brand Voice', icon: MessageSquareQuote, hideOnMd: true },
+  { href: '/quality-scoring', label: 'Quality Score', icon: Award, hideOnMd: true },
+  { href: '/repurposing', label: 'Repurpose', icon: Repeat, hideOnMd: true },
+  { href: '/audience-insights', label: 'Audience IQ', icon: Users2, hideOnMd: true },
+  { href: '/trend-intelligence', label: 'Trends', icon: Flame, hideOnMd: true },
   { href: '/templates', label: 'Templates', icon: Library, hideOnMd: true },
   { href: '/inspiration', label: 'Inspiration', icon: Lightbulb, hideOnMd: true },
   { href: '/calendar', label: 'Calendar', icon: Calendar, hideOnMd: true },
