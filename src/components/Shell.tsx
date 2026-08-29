@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Sparkles, Megaphone, BarChart3, LayoutDashboard, Package, Scissors, Library, Lightbulb, Calendar, Video, Wand2, ImageIcon, Send, BookOpen, Brain, Volume2, Eye, ShieldCheck, Wallet, Users, Workflow, Grid3x3, Activity, FileSearch, TrendingUp, FlaskConical, MessageSquareQuote, Award, Repeat, Users2, Flame, Film, Server, Clapperboard } from 'lucide-react';
+import { Sparkles, Megaphone, BarChart3, LayoutDashboard, Package, Scissors, Library, Lightbulb, Calendar, Video, Wand2, ImageIcon, Send, BookOpen, Brain, Volume2, Eye, ShieldCheck, Wallet, Users, Workflow, Grid3x3, Activity, FileSearch, TrendingUp, FlaskConical, MessageSquareQuote, Award, Repeat, Users2, Flame, Film, Server, Clapperboard, Gift, Layers, Cpu } from 'lucide-react';
 import { UserMenu } from '@/components/UserMenu';
 import { LangToggle } from '@/components/LangToggle';
 import { CreditBadge } from '@/components/CreditBadge';
@@ -44,6 +44,10 @@ const NAV_LINKS = [
   { href: '/shot-planner', label: 'Shot Plan', icon: Clapperboard, hideOnMd: true },
   { href: '/campaign-orchestrator', label: 'Campaigns', icon: Workflow, hideOnMd: true },
   { href: '/mcp-server', label: 'MCP', icon: Server, hideOnMd: true },
+  { href: '/creator-kits', label: 'Creator Kits', icon: Gift, hideOnMd: true },
+  { href: '/brand-concepts', label: 'Concepts', icon: Layers, hideOnMd: true },
+  { href: '/clip-editor', label: 'Clip Edit', icon: Scissors, hideOnMd: true },
+  { href: '/media-service-boundary', label: 'Media API', icon: Cpu, hideOnMd: true },
   { href: '/templates', label: 'Templates', icon: Library, hideOnMd: true },
   { href: '/inspiration', label: 'Inspiration', icon: Lightbulb, hideOnMd: true },
   { href: '/calendar', label: 'Calendar', icon: Calendar, hideOnMd: true },

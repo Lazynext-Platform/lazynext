@@ -1,0 +1,179 @@
+'use client';
+
+import { useState, useCallback } from 'react';
+import { Scissors, Loader2, AlertCircle, Plus, Trash2 } from 'lucide-react';
+import { useI18n } from '@/i18n/provider';
+import {
+  createClip,
+  formatTimecode,
+  calculateTotalDuration,
+  type Clip,
+  type ClipEditResult,
+} from '@/lib/creative/clip-editor';
+
+export function ClipEditor() {
+  const { t } = useI18n();
+  const [clips, setClips] = useState<Clip[]>([
+    createClip({ name: 'Intro', type: 'video', duration: 5 }),
+    createClip({ name: 'Product Demo', type: 'video', duration: 10 }),
+    createClip({ name: 'CTA', type: 'video', duration: 3 }),
+  ]);
+  const [command, setCommand] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [result, setResult] = useState<ClipEditResult | null>(null);
+
+  const executeCommand = useCallback(async () => {
+    if (!command.trim()) { setError(t('clipEditor.commandRequired')); return; }
+    setLoading(true); setError(''); setResult(null);
+    try {
+      const res = await fetch('/api/creative/clip-editor', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ command, clips }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed');
+      setResult(data.result);
+      if (data.result.clips) setClips(data.result.clips);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+    } finally {
+      setLoading(false);
+    }
+  }, [command, clips, t]);
+
+  const addClip = useCallback(() => {
+    setClips((prev) => [...prev, createClip({ name: `Clip ${prev.length + 1}`, type: 'video', duration: 5 })]);
+  }, []);
+
+  const removeClip = useCallback((id: string) => {
+    setClips((prev) => prev.filter((c) => c.id !== id));
+  }, []);
+
+  const totalDuration = calculateTotalDuration(clips);
+  const clipTypeColor = (type: string) => {
+    switch (type) {
+      case 'video': return 'text-brand-accent';
+      case 'audio': return 'text-success';
+      case 'image': return 'text-warning';
+      case 'text': return 'text-info';
+      case 'transition': return 'text-fg-muted';
+      case 'effect': return 'text-danger';
+      default: return 'text-fg';
+    }
+  };
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <h2 className="text-lg font-semibold flex items-center gap-2"><Scissors className="w-5 h-5" /> {t('clipEditor.title')}</h2>
+        <p className="text-sm text-fg-muted mt-1">{t('clipEditor.subtitle')}</p>
+      </div>
+
+      {/* Clip timeline */}
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <h3 className="text-sm font-medium">{t('clipEditor.timeline')}</h3>
+          <div className="flex items-center gap-3">
+            <span className="text-xs text-fg-muted">{t('clipEditor.totalDuration')}: {formatTimecode(totalDuration)}</span>
+            <button onClick={addClip} className="inline-flex items-center gap-1 rounded-lg bg-brand-accent px-2 py-1 text-xs font-medium text-white hover:opacity-90" aria-label={t('clipEditor.addClip')}>
+              <Plus className="w-3 h-3" /> {t('clipEditor.addClip')}
+            </button>
+          </div>
+        </div>
+        <div className="space-y-2">
+          {clips.map((clip, i) => (
+            <div key={clip.id} className="flex items-center gap-3 rounded-lg border border-border bg-bg-secondary px-3 py-2">
+              <span className="text-xs font-mono text-fg-muted w-6">{i + 1}</span>
+              <span className={`text-xs font-medium ${clipTypeColor(clip.type)} uppercase`}>{clip.type}</span>
+              <span className="text-sm flex-1 truncate">{clip.label || clip.name}</span>
+              <span className="text-xs font-mono text-fg-muted">{formatTimecode(clip.startTime)}–{formatTimecode(clip.endTime)}</span>
+              <span className="text-xs text-fg-muted">{clip.duration.toFixed(1)}s</span>
+              <button onClick={() => removeClip(clip.id)} className="text-fg-muted hover:text-danger" aria-label={`${t('clipEditor.removeClip')} ${clip.name}`}>
+                <Trash2 className="w-4 h-4" />
+              </button>
+            </div>
+          ))}
+          {clips.length === 0 && (
+            <p className="text-sm text-fg-muted text-center py-4">{t('clipEditor.noClips')}</p>
+          )}
+        </div>
+      </div>
+
+      {/* Command input */}
+      <div className="space-y-2">
+        <label htmlFor="ce-command" className="block text-sm font-medium">{t('clipEditor.commandLabel')}</label>
+        <div className="flex gap-2">
+          <input
+            id="ce-command"
+            type="text"
+            value={command}
+            onChange={(e) => setCommand(e.target.value)}
+            onKeyDown={(e) => { if (e.key === 'Enter' && !loading) executeCommand(); }}
+            placeholder={t('clipEditor.commandPlaceholder')}
+            className="flex-1 rounded-lg border border-border bg-bg-secondary px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
+            disabled={loading}
+            aria-label={t('clipEditor.commandLabel')}
+          />
+          <button
+            onClick={executeCommand}
+            disabled={loading || !command.trim()}
+            className="inline-flex items-center gap-2 rounded-lg bg-brand-accent px-4 py-2 text-sm font-medium text-white hover:opacity-90 disabled:opacity-50"
+            aria-label={t('clipEditor.execute')}
+          >
+            {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Scissors className="w-4 h-4" />}
+            {t('clipEditor.execute')}
+          </button>
+        </div>
+        <p className="text-xs text-fg-muted">{t('clipEditor.commandHint')}</p>
+      </div>
+
+      {/* Error */}
+      {error && (
+        <div role="alert" className="flex items-center gap-2 rounded-lg border border-danger/30 bg-danger/10 px-3 py-2 text-sm text-danger">
+          <AlertCircle className="w-4 h-4 flex-shrink-0" /> {error}
+        </div>
+      )}
+
+      {/* Result */}
+      {result && (
+        <div className="space-y-3 rounded-lg border border-border bg-bg-secondary p-4">
+          <div className="flex items-center gap-2">
+            {result.success ? (
+              <span className="text-success text-sm font-medium">{t('clipEditor.applied')}</span>
+            ) : (
+              <span className="text-warning text-sm font-medium">{t('clipEditor.failed')}</span>
+            )}
+          </div>
+          <p className="text-sm">{result.description}</p>
+          {result.affectedClipIds.length > 0 && (
+            <p className="text-xs text-fg-muted">{t('clipEditor.affectedClips')}: {result.affectedClipIds.length}</p>
+          )}
+        </div>
+      )}
+
+      {/* Example commands */}
+      <div className="space-y-2">
+        <h3 className="text-sm font-medium">{t('clipEditor.examples')}</h3>
+        <div className="flex flex-wrap gap-2">
+          {[
+            'trim first 2 seconds',
+            'split at 0:05',
+            'delete clip 2',
+            'merge all clips',
+            'duplicate clip 1',
+            'speed up clip 2 by 2x',
+          ].map((ex) => (
+            <button
+              key={ex}
+              onClick={() => setCommand(ex)}
+              className="rounded-full border border-border bg-bg-secondary px-3 py-1 text-xs text-fg-muted hover:border-brand-accent hover:text-brand-accent"
+            >
+              {ex}
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
