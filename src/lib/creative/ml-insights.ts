@@ -1,6 +1,7 @@
 import { atlasChat } from '@/lib/atlas';
 import { getLLMModel } from '@/lib/providers/model-helpers';
 import type { PlanTier } from '@/lib/plan-tier';
+import { prisma } from '@/lib/prisma';
 
 export const ML_INSIGHTS_COST = 7;
 
@@ -304,23 +305,68 @@ export function calculatePredictiveFactors(attributions: ElementAttribution[]): 
   return factors.sort((a, b) => b.importance - a.importance);
 }
 
-function generateMockCreatives(count: number): Array<Record<string, unknown>> {
-  const hooks = ['question', 'shock', 'story', 'statistic', 'visual', 'contrast'];
-  const angles = ['emotional', 'logical', 'social_proof', 'scarcity', 'authority'];
-  const ctas = ['buy_now', 'learn_more', 'sign_up', 'limited_time', 'free_trial'];
-  const tones = ['energetic', 'calm', 'humorous', 'professional', 'inspirational'];
-  const pacings = ['fast', 'medium', 'slow'];
+/** Fetch real creative performance data from the database.
+ *  Maps CreativePerformance rows to the record format expected by the
+ *  analysis functions (hook, angle, cta, tone, pacing, performance).
+ *  Falls back to a minimal synthetic dataset only if the database query
+ *  fails or returns zero rows, so the UI always has something to show.
+ */
+async function fetchCreativePerformanceData(
+  creativeIds?: string[],
+): Promise<Array<Record<string, unknown>>> {
+  try {
+    const where = creativeIds && creativeIds.length > 0
+      ? { creationId: { in: creativeIds } }
+      : undefined;
+
+    const records = await prisma.creativePerformance.findMany({
+      where,
+      take: 200,
+      orderBy: { recordedAt: 'desc' },
+    });
+
+    if (records.length === 0) {
+      // No performance data yet — return a minimal synthetic dataset
+      // so the ML analysis pipeline still produces a valid result.
+      return generateFallbackCreatives(creativeIds?.length || 10);
+    }
+
+    // Map CreativePerformance rows to the analysis format.
+    // Performance score is derived from ROAS (0-100 scale).
+    return records.map((r) => ({
+      id: r.creationId,
+      hook: r.hookType || 'unknown',
+      angle: r.angleName || 'unknown',
+      cta: 'unknown', // CTA not tracked in CreativePerformance
+      tone: 'neutral', // Tone not tracked in CreativePerformance
+      pacing: 'medium', // Pacing not tracked in CreativePerformance
+      platform: r.platform,
+      performance: Math.round(Math.min(100, Math.max(0, r.roas * 20))), // roas 5 → 100
+      impressions: r.impressions,
+      clicks: r.clicks,
+      conversions: r.conversions,
+      ctr: r.ctr,
+      cvr: r.cvr,
+      roas: r.roas,
+    }));
+  } catch (e) {
+    console.error('[ml-insights] fetchCreativePerformanceData error:', e instanceof Error ? e.message : String(e));
+    return generateFallbackCreatives(creativeIds?.length || 10);
+  }
+}
+
+/** Minimal synthetic dataset used only when no real performance data exists. */
+function generateFallbackCreatives(count: number): Array<Record<string, unknown>> {
   const creatives: Array<Record<string, unknown>> = [];
   for (let i = 0; i < count; i++) {
-    const perf = Math.random() * 100;
     creatives.push({
-      id: `creative_${i}`,
-      hook: hooks[Math.floor(Math.random() * hooks.length)],
-      angle: angles[Math.floor(Math.random() * angles.length)],
-      cta: ctas[Math.floor(Math.random() * ctas.length)],
-      tone: tones[Math.floor(Math.random() * tones.length)],
-      pacing: pacings[Math.floor(Math.random() * pacings.length)],
-      performance: Math.round(perf),
+      id: `fallback_${i}`,
+      hook: 'unknown',
+      angle: 'unknown',
+      cta: 'unknown',
+      tone: 'neutral',
+      pacing: 'medium',
+      performance: 50, // neutral baseline
     });
   }
   return creatives;
@@ -330,10 +376,8 @@ export async function analyzeCreativePerformance(
   creativeIds?: string[],
   planTier?: PlanTier,
 ): Promise<MLInsightsResult> {
-  // Generate or use provided creatives
-  const creatives = creativeIds && creativeIds.length > 0
-    ? generateMockCreatives(creativeIds.length) // In production, fetch from prisma
-    : generateMockCreatives(50);
+  // Fetch real creative performance data from the database
+  const creatives = await fetchCreativePerformanceData(creativeIds);
 
   const attributions = calculateElementAttribution(creatives);
   const patterns = detectPerformancePatterns(creatives);

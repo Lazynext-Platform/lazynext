@@ -23,6 +23,17 @@ import {
 
 export const maxDuration = 90;
 
+/** Map raw error strings to controlled client-safe codes for A/B automation pipeline failures. */
+function classifyAbAutomationError(raw: string): string {
+  const lower = raw.toLowerCase();
+  if (lower.includes('rate') || lower.includes('429') || lower.includes('throttl')) return 'rate_limited';
+  if (lower.includes('insufficient') || lower.includes('credits')) return 'insufficient_credits';
+  if (lower.includes('timeout') || lower.includes('timed out')) return 'timeout';
+  if (lower.includes('network') || lower.includes('fetch') || lower.includes('connection')) return 'network';
+  if (lower.includes('auth') || lower.includes('unauthorized') || lower.includes('api key')) return 'auth';
+  return 'server';
+}
+
 /**
  * GET /api/creative/ab-automation
  * List all automation jobs for the authenticated user.
@@ -300,10 +311,11 @@ Keep it concise (3-4 sentences). Return only the text.`;
                   creditsCost: PIPELINE_COSTS[stage] ?? 0,
                 }).catch(() => {});
               } catch (e) {
-                const errorMsg = String(e instanceof Error ? e.message : e);
-                state = failStage(state, stage, errorMsg);
-                await recordStep(state.pipelineId, stage, 'failed', { error: errorMsg }).catch(() => {});
-                await failWorkflow(state.pipelineId, uid, errorMsg).catch(() => {});
+                const rawError = String(e instanceof Error ? e.message : e);
+                const errorCode = classifyAbAutomationError(rawError);
+                state = failStage(state, stage, errorCode);
+                await recordStep(state.pipelineId, stage, 'failed', { error: rawError }).catch(() => {});
+                await failWorkflow(state.pipelineId, uid, errorCode).catch(() => {});
                 break;
               }
               // Advance to next stage
@@ -330,9 +342,9 @@ Keep it concise (3-4 sentences). Return only the text.`;
 
   } catch (err) {
     await refundCredits(uid, AUTOMATION_COST, `ab-automation-refund:${jobId}`);
+    console.error('[ab-automation] error:', err instanceof Error ? err.message : String(err));
     return NextResponse.json({
       error: 'automation_failed',
-      detail: err instanceof Error ? err.message : String(err),
     }, { status: 500 });
   }
 }

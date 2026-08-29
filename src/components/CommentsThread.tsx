@@ -160,7 +160,6 @@ export function CommentsThread({ assetId }: { assetId: string }) {
 
   const Avatar = ({ name, image }: { name?: string; image?: string | null }) => {
     if (image) {
-      // eslint-disable-next-line @next/next/no-img-element
       return <img src={image} alt={name || 'avatar'} className="h-7 w-7 shrink-0 rounded-full object-cover" />;
     }
     const letter = (name || '?').charAt(0).toUpperCase();

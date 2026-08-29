@@ -4,6 +4,18 @@ import { publishToPlatform } from '@/lib/publishing/platform-adapters';
 import { decryptToken } from '@/lib/publishing/token-crypto';
 import { isTokenExpired, refreshPlatformToken } from '@/lib/publishing/token-refresh';
 
+/** Map raw error strings to controlled client-safe codes for scheduled-post failures. */
+function classifyPublishError(raw: string): string {
+  const lower = raw.toLowerCase();
+  if (lower.includes('token') || lower.includes('auth') || lower.includes('unauthorized')) return 'auth_error';
+  if (lower.includes('rate') || lower.includes('429') || lower.includes('throttl')) return 'rate_limited';
+  if (lower.includes('timeout') || lower.includes('timed out')) return 'timeout';
+  if (lower.includes('network') || lower.includes('fetch') || lower.includes('connection')) return 'network';
+  if (lower.includes('no_platform_connection')) return 'no_connection';
+  if (lower.includes('token_expired_refresh_failed')) return 'token_refresh_failed';
+  return 'publish_failed';
+}
+
 /**
  * POST /api/publish/process-scheduled
  * Processes due scheduled posts. Called by a cron trigger or external scheduler.
@@ -100,19 +112,21 @@ export async function POST(req: Request) {
 
       results.push({ id: post.id, status: 'published' });
     } catch (e) {
-      const errorMsg = e instanceof Error ? e.message : String(e);
-      console.error(`[process-scheduled] post ${post.id} failed:`, errorMsg);
+      const rawError = e instanceof Error ? e.message : String(e);
+      const errorCode = classifyPublishError(rawError);
+      console.error(`[process-scheduled] post ${post.id} failed:`, rawError);
 
       // Mark as failed (only if we claimed it — if claim failed, don't touch it)
+      // Store only the sanitized error code, not the raw error message.
       await prisma.scheduledPost.updateMany({
         where: { id: post.id, status: 'publishing' },
         data: {
           status: 'failed',
-          error: errorMsg,
+          error: errorCode,
         },
       }).catch(() => {});
 
-      results.push({ id: post.id, status: 'failed', error: errorMsg });
+      results.push({ id: post.id, status: 'failed', error: errorCode });
     }
   }
 

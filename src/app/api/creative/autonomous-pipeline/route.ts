@@ -181,7 +181,9 @@ async function __byokPOST(req: Request) {
             },
           });
         } catch (deployErr) {
-          send('phase', { phase: 'deploy', status: 'failed', error: String(deployErr) });
+          const deployErrorRaw = deployErr instanceof Error ? deployErr.message : String(deployErr);
+          console.error('[autonomous-pipeline] deploy error:', deployErrorRaw);
+          send('phase', { phase: 'deploy', status: 'failed', error: 'deploy_failed' });
           send('pipeline_complete', {
             directorResult: {
               bestScore: best.score.overall,
@@ -192,7 +194,7 @@ async function __byokPOST(req: Request) {
               assetPackageId: directorResult.assetPackageId,
             },
             deployResult: null,
-            deployError: String(deployErr),
+            deployError: 'deploy_failed',
           });
         }
 
@@ -204,7 +206,9 @@ async function __byokPOST(req: Request) {
 
         controller.close();
       } catch (e) {
-        send('error', { message: String(e) });
+        const rawError = e instanceof Error ? e.message : String(e);
+        console.error('[autonomous-pipeline] error:', rawError);
+        send('error', { message: 'pipeline_failed' });
         await refundCredits(uid, budget, 'creative:autonomous:failed');
         controller.close();
       }

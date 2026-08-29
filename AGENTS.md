@@ -50,7 +50,7 @@ Production uses Cloudflare R2 via `src/lib/media-storage.cloudflare.ts`.
 ```bash
 npm run lint    # ESLint
 npm test        # Node test runner (1516 tests)
-# E2E: 445 passed, 2 skipped (chromium + mobile-chrome + chromium-auth)
+# E2E: 445 passed, 0 skipped (chromium + mobile-chrome + chromium-auth)
 npm run build   # Production build (Cloudflare target)
 npm run cf:build  # Cloudflare/OpenNext build
 npm run cf:deploy # Deploy to Cloudflare Workers
@@ -323,13 +323,27 @@ Completed across 15+ sessions:
 - OAuth callback error logging: Token exchange failures read and log the response body; maps `invalid_grant`/`invalid_client`/`redirect_uri_mismatch`/`access_denied` to specific redirect params; `PlatformConnectionsSection` shows user-friendly messages
 - Health endpoint: `GET /api/health` checks D1, token encryption, cron secret, auth secret, and platform OAuth credentials; returns 200 (healthy) or 503 (degraded); public (no auth)
 - Token-refresh tests: `test/token-refresh.test.ts` with 9 mocked-fetch tests covering all 5 platforms (request construction + error paths)
-- E2E rate limit bypass: `proxy.ts` skips rate limiting when `E2E_NO_RATE_LIMIT=1`; `playwright.config.ts` sets this for webServer env; result: 445 passed (up from 437), 2 skipped (down from 10)
+- E2E rate limit bypass: `proxy.ts` skips rate limiting when `E2E_NO_RATE_LIMIT=1`; `playwright.config.ts` sets this for webServer env; result: 445 passed (up from 437), 0 skipped (down from 10)
 
 ### FF-Series: Error Sanitization, Docs, Env Example, DB Indexes
 - API error sanitization: 4 top-level routes (`brand/extract`, `brand/product-extract`, `lazynext-studio/expand-prompt`, `ad-reference/gen-script`) no longer leak raw `e.message` to clients
 - Pipeline error classification: `src/lib/pipeline-error-classifier.ts` maps raw errors to controlled codes (`rate_limited`, `insufficient_credits`, `timeout`, `network`, `auth`, `server`, `unknown`); pipeline state stores codes instead of raw errors; `friendlyError()` updated to match codes
 - `.env.example` backfilled with all required production secrets
 - `ScheduledPost` composite indexes: `[status, scheduledAt]` for cron queries, `[userId, status]` for user list queries
+
+### GG-Series: D1 Transaction Fix, Remove Dead E2E Skip
+- D1 transaction fix: `admin/credits/reconcile` replaced `prisma.$transaction` with sequential update + ledger create + compensation (reverse balance on ledger failure)
+- Dead E2E skip removed: `e2e/workflow-builder.spec.ts` unconditional `test.skip()` removed; authenticated coverage exists in `e2e/auth-workflow-builder.spec.ts`
+- E2E result: 445 passed, 0 skipped
+
+### HH-Series: D1 Transaction Fix, Error Sanitization, Media Rate Limiting, ML Insights, Token KDF
+- D1 transaction fix: `teams/join` replaced `prisma.$transaction` with sequential writes + compensation pattern
+- Error sanitization (batch 2): 9 additional API routes no longer leak raw errors (`webhook/dodo`, `ads/google-budget`, `ads/budget`, `redeem`, `publish/process-scheduled`, `drama-studio/script`, `creative/ab-automation`, `creative/autonomous-pipeline`, `editor/chat`)
+- Media endpoint rate limiting: `/api/lazynext-studio/media/[key]` rate-limited (120 req/min per IP) to prevent key enumeration; media keys are unguessable UUIDs
+- ML insights: `generateMockCreatives()` replaced with real Prisma queries against `CreativePerformance` records
+- Token encryption KDF: Upgraded from single SHA-256 to PBKDF2 with 100,000 iterations
+- Env example: 38 missing model/timeout/LLM env vars added to `.env.example`
+- Lint cleanup: 2 stale `eslint-disable` directives removed
 
 ### Compliance Rules
 - `GET/POST/PUT/DELETE /api/creative/compliance/rules` — full CRUD for custom compliance rules

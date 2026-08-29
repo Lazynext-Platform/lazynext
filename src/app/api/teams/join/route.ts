@@ -37,16 +37,32 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: true, alreadyMember: true, teamId: invitation.teamId });
   }
 
-  // Create membership and mark invitation as accepted
-  await prisma.$transaction([
-    prisma.teamMember.create({
+  // Create membership and mark invitation as accepted.
+  // D1 does not reliably support Prisma transactions, so we use sequential
+  // writes with a compensation pattern: if the invitation update fails after
+  // the membership is created, we roll back the membership creation.
+  let membershipCreated = false;
+  try {
+    await prisma.teamMember.create({
       data: { teamId: invitation.teamId, userId: uid, role: invitation.role },
-    }),
-    prisma.teamInvitation.update({
+    });
+    membershipCreated = true;
+
+    await prisma.teamInvitation.update({
       where: { id: invitation.id },
       data: { acceptedAt: new Date() },
-    }),
-  ]);
+    });
+  } catch (e) {
+    // Compensation: if the membership was created but the invitation update
+    // failed, delete the membership so the user can retry joining.
+    if (membershipCreated) {
+      await prisma.teamMember.deleteMany({
+        where: { teamId: invitation.teamId, userId: uid },
+      }).catch(() => {});
+    }
+    console.error('[teams/join] error:', e instanceof Error ? e.message : String(e));
+    return NextResponse.json({ error: 'join_failed' }, { status: 500 });
+  }
 
   return NextResponse.json({ ok: true, teamId: invitation.teamId, role: invitation.role });
 }

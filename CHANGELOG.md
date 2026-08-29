@@ -1,5 +1,37 @@
 # LazyNext Changelog
 
+## 2026-08-30 — HH: D1 Transaction Fix, Error Sanitization, Media Rate Limiting, ML Insights, Docs
+
+### What Changed
+- **D1 transaction fix**: Replaced `prisma.$transaction` in `teams/join` with sequential writes + compensation pattern (D1 does not reliably support Prisma transactions)
+- **Error sanitization (batch 2)**: 9 additional API routes no longer leak raw `e.message`/`String(e)` to clients (`webhook/dodo`, `ads/google-budget`, `ads/budget`, `redeem`, `publish/process-scheduled`, `drama-studio/script`, `creative/ab-automation`, `creative/autonomous-pipeline`, `editor/chat`); raw errors retained for server-side logging only
+- **Media endpoint rate limiting**: `/api/lazynext-studio/media/[key]` now rate-limited (120 req/min per IP) to prevent key enumeration attacks; media keys are unguessable UUIDs (capability tokens) so auth is not required for share links to work
+- **ML insights**: Replaced `generateMockCreatives()` with real Prisma queries against `CreativePerformance` records
+- **Token encryption KDF**: Upgraded from single SHA-256 to PBKDF2 with 100,000 iterations and a fixed salt for stronger key derivation
+- **Env example**: Added 38 missing model override, timeout, and LLM env vars to `.env.example`
+- **Lint cleanup**: Removed 2 stale `eslint-disable` directives in `CommentsThread.tsx` and `TeamsSection.tsx`
+- **Docs update**: AGENTS.md E2E count corrected to "445 passed, 0 skipped"; GG and HH changelog entries added
+
+### Verification
+- Lint: 0 errors, 0 warnings
+- Unit tests: 1516 passed, 0 failed
+- Build: successful
+- E2E: 445 passed, 0 skipped, 0 failed
+
+## 2026-08-30 — GG: D1 Transaction Fix, Remove Dead E2E Skip
+
+### What Changed
+- **D1 transaction fix**: Replaced `prisma.$transaction` in `admin/credits/reconcile` with sequential update + ledger create + compensation (reverse balance on ledger failure)
+- **Dead E2E skip removed**: Removed unconditional `test.skip()` in `e2e/workflow-builder.spec.ts`; equivalent authenticated coverage exists in `e2e/auth-workflow-builder.spec.ts`
+- **E2E result**: 445 passed, 0 skipped (down from 2 skipped)
+
+### Verification
+- Lint: 0 errors, 2 known warnings
+- Unit tests: 1516 passed, 0 failed
+- Build: successful
+- E2E: 445 passed, 0 skipped, 0 failed
+- Production health: healthy
+
 ## 2026-08-30 — FF: Error Sanitization, Docs, Env Example, DB Indexes
 
 ### What Changed

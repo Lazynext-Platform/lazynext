@@ -102,8 +102,9 @@ async function __byokPOST(req: Request) {
         });
       }
     } catch (e) {
+      console.error('[editor/chat] apply command error:', e instanceof Error ? e.message : String(e));
       return NextResponse.json({
-        response: `Failed to apply command: ${String(e)}`,
+        response: `Failed to apply command. Please try a different instruction.`,
         command,
         updatedTimeline: undefined,
       });

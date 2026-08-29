@@ -333,7 +333,6 @@ export function TeamsSection() {
                                 <div key={m.id} className="flex items-center justify-between gap-3 rounded-lg border border-line bg-surface px-3 py-2">
                                   <div className="flex min-w-0 items-center gap-2">
                                     {m.image ? (
-                                      // eslint-disable-next-line @next/next/no-img-element
                                       <img src={m.image} alt="" className="h-6 w-6 shrink-0 rounded-full" />
                                     ) : (
                                       <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-line text-xs text-fg-secondary">

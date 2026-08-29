@@ -39,10 +39,10 @@ async function __byokPOST(req: Request) {
     return NextResponse.json({ script, model: getDramaScriptModel(planTier) });
   } catch (e) {
     await refundCredits(uid, DRAMA_SCRIPT_COST, 'drama:script');
-    console.error('[drama/script] atlas error:', String(e));
-    const detail = String(e);
-    const status = detail.includes('timed out') ? 504 : 502;
-    return NextResponse.json({ error: status === 504 ? 'script_timeout_refunded' : 'script_failed_refunded', refunded: true, detail }, { status });
+    const rawError = String(e);
+    console.error('[drama/script] atlas error:', rawError);
+    const status = rawError.toLowerCase().includes('timed out') ? 504 : 502;
+    return NextResponse.json({ error: status === 504 ? 'script_timeout_refunded' : 'script_failed_refunded', refunded: true }, { status });
   }
 }
 

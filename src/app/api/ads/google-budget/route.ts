@@ -100,7 +100,7 @@ async function __byokPATCH(req: Request) {
       return NextResponse.json({ error: 'budget_daily_must_be_positive' }, { status: 400 });
     }
     console.error('[ads/google-budget] error:', msg);
-    return NextResponse.json({ error: 'budget_update_failed', detail: msg }, { status: 500 });
+    return NextResponse.json({ error: 'budget_update_failed' }, { status: 500 });
   }
 }
 
