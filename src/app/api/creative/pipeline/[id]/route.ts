@@ -279,7 +279,7 @@ async function __byokPOST(req: Request, { params }: { params: Promise<{ id: stri
           await failWorkflow(state.pipelineId, uid, firstFailure.error).catch(() => {});
           await alertPipelineFailed(uid, state.pipelineId, firstFailure.error, { stage: firstFailure.stage }).catch(() => {});
           await savePipeline(state);
-          return NextResponse.json({ error: 'stage_failed', detail: firstFailure.error, stage: firstFailure.stage, state }, { status: 500 });
+          return NextResponse.json({ error: 'stage_failed', stage: firstFailure.stage }, { status: 500 });
         }
 
         // Advance the pipeline to mark all wave stages as completed and start next wave
@@ -384,7 +384,7 @@ async function __byokPOST(req: Request, { params }: { params: Promise<{ id: stri
           state = failStage(state, firstFailure.stage as PipelineState['currentStage'] & string, firstFailure.error);
           await failWorkflow(state.pipelineId, uid, firstFailure.error).catch(() => {});
           await savePipeline(state);
-          return NextResponse.json({ error: 'stage_failed', detail: firstFailure.error, stage: firstFailure.stage, state }, { status: 500 });
+          return NextResponse.json({ error: 'stage_failed', stage: firstFailure.stage }, { status: 500 });
         }
 
         // Advance to mark wave stages completed and start next wave

@@ -87,7 +87,7 @@ async function __byokPOST(req: Request) {
     if (cost > 0) await refundCredits(uid, cost, `creative:skill:${skillId}`);
     const message = e instanceof Error ? e.message : String(e);
     console.error(`[creative/skills] execute ${skillId} error:`, message);
-    return NextResponse.json({ error: 'skill_execution_failed', detail: message }, { status: 500 });
+    return NextResponse.json({ error: 'skill_execution_failed' }, { status: 500 });
   }
 }
 

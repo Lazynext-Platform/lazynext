@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { publishToPlatform } from '@/lib/publishing/platform-adapters';
 import { decryptToken } from '@/lib/publishing/token-crypto';
+import { isTokenExpired, refreshPlatformToken } from '@/lib/publishing/token-refresh';
 
 /**
  * POST /api/publish/process-scheduled
@@ -10,6 +11,7 @@ import { decryptToken } from '@/lib/publishing/token-crypto';
  * Expects a CRON_SECRET env var for authentication.
  * Queries ScheduledPost WHERE status='scheduled' AND scheduledAt <= now()
  * and attempts to publish each one using the user's stored OAuth token.
+ * If the stored token is expired, attempts to refresh it before publishing.
  */
 export async function POST(req: Request) {
   // Authenticate with CRON_SECRET
@@ -52,18 +54,25 @@ export async function POST(req: Request) {
         throw new Error('no_platform_connection');
       }
 
-      // Check token expiry
-      if (conn.tokenExpiresAt && new Date() > conn.tokenExpiresAt) {
-        throw new Error('token_expired');
+      // Get access token — refresh if expired
+      let accessToken: string;
+      if (isTokenExpired(conn.tokenExpiresAt)) {
+        const refreshed = await refreshPlatformToken(conn);
+        if (!refreshed) throw new Error('token_expired_refresh_failed');
+        accessToken = refreshed;
+      } else {
+        accessToken = await decryptToken(conn.accessToken);
       }
 
-      const accessToken = await decryptToken(conn.accessToken);
-
-      // Publish to the platform
+      // Publish to the platform using persisted metadata
+      const hashtags: string[] = (() => {
+        try { return JSON.parse(post.hashtagsJson || '[]') as string[]; } catch { return []; }
+      })();
       const result = await publishToPlatform(post.platform, accessToken, {
         mediaUrl: post.mediaUrl,
         caption: post.caption,
-        hashtags: [],
+        hashtags,
+        privacyLevel: post.privacyLevel || undefined,
       });
 
       // Mark as published

@@ -66,7 +66,7 @@ async function __byokPOST(req: Request) {
     await refundCredits(uid, OCR_COST, 'editor:ocr');
     const message = e instanceof Error ? e.message : String(e);
     console.error('[editor/ocr] error:', message);
-    return NextResponse.json({ error: 'ocr_failed', detail: message }, { status: 500 });
+    return NextResponse.json({ error: 'ocr_failed' }, { status: 500 });
   }
 }
 

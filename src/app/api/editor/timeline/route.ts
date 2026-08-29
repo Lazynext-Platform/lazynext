@@ -174,6 +174,6 @@ export async function POST(req: Request) {
   } catch (e) {
     const message = e instanceof Error ? e.message : String(e);
     console.error('[editor/timeline] error:', message);
-    return NextResponse.json({ error: 'timeline_operation_failed', detail: message }, { status: 500 });
+    return NextResponse.json({ error: 'timeline_operation_failed' }, { status: 500 });
   }
 }

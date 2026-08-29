@@ -114,9 +114,9 @@ async function __byokPOST(req: Request) {
     const message = e instanceof Error ? e.message : String(e);
     console.error('[editor/transcribe] error:', message);
     if (message === 'asr_timeout') {
-      return NextResponse.json({ error: 'transcription_timeout', detail: 'ASR did not complete within 60 seconds' }, { status: 504 });
+      return NextResponse.json({ error: 'transcription_timeout' }, { status: 504 });
     }
-    return NextResponse.json({ error: 'transcription_failed', detail: message }, { status: 500 });
+    return NextResponse.json({ error: 'transcription_failed' }, { status: 500 });
   }
 }
 

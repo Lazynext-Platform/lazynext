@@ -134,7 +134,7 @@ async function __byokPOST(req: Request) {
         name: variant.name,
         score: variant.score,
         result: null,
-        error: String(e),
+        error: 'ad_create_failed',
       });
     }
   }

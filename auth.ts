@@ -110,9 +110,15 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         token.credits = (user as { credits?: number }).credits ?? 0;
         token.creditsUpdatedAt = Date.now();
       }
-      // Refresh credits from DB if stale (older than 60 seconds) to avoid
-      // showing a stale balance after spending/refunding credits.
-      if (token.id && (!token.creditsUpdatedAt || Date.now() - (token.creditsUpdatedAt as number) > 60_000)) {
+// Refresh credits from DB if stale (older than 5 minutes) to avoid
+// showing a stale balance after spending/refunding credits. The 5-minute
+// window reduces DB reads on every auth() call (154 API routes) while
+// keeping the UI balance reasonably fresh. API routes that need
+// authoritative credit checks use deductCredits() which reads from the DB
+// directly, not the JWT value. The /api/me endpoint provides the freshest
+// balance for UI updates after purchases.
+const CREDIT_REFRESH_MS = 5 * 60_000;
+      if (token.id && (!token.creditsUpdatedAt || Date.now() - (token.creditsUpdatedAt as number) > CREDIT_REFRESH_MS)) {
         try {
           const { prisma } = await import('@/lib/prisma');
           const u = await prisma.user.findUnique({ where: { id: token.id as string }, select: { credits: true } });

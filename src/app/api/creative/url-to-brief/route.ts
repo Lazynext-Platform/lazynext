@@ -45,7 +45,7 @@ async function __byokPOST(req: Request) {
     await refundCredits(uid, URL_TO_BRIEF_COST, 'creative:url-to-brief');
     // SSRF errors are client errors (bad URL), not server failures
     if (e instanceof SSRFError) {
-      return NextResponse.json({ error: 'invalid_url', detail: e.message }, { status: 400 });
+      return NextResponse.json({ error: 'invalid_url' }, { status: 400 });
     }
     console.error('[creative/url-to-brief] error:', String(e));
     return NextResponse.json({ error: 'url_to_brief_failed' }, { status: 500 });

@@ -1,7 +1,7 @@
 'use client';
 
 import { useSession } from 'next-auth/react';
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import { useI18n } from '@/i18n/provider';
 import { CountrySelector } from '@/components/CountrySelector';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
@@ -9,6 +9,7 @@ import { ThemeSelector } from '@/components/ThemeSelector';
 import { AuthModal } from '@/components/AuthModal';
 import { WebhooksSection } from '@/components/WebhooksSection';
 import { TeamsSection } from '@/components/TeamsSection';
+import { PlatformConnectionsSection } from '@/components/PlatformConnectionsSection';
 
 export default function SettingsPage() {
   const { data: session, status } = useSession();
@@ -61,6 +62,13 @@ export default function SettingsPage() {
 
           {/* Webhooks section */}
           {status === 'authenticated' && session?.user && <WebhooksSection />}
+
+          {/* Publishing platform connections */}
+          {status === 'authenticated' && session?.user && (
+            <Suspense fallback={<div className="rounded-2xl border border-line bg-surface p-6"><p className="text-sm text-fg-faint">Loading…</p></div>}>
+              <PlatformConnectionsSection />
+            </Suspense>
+          )}
 
           {/* Teams section */}
           {status === 'authenticated' && session?.user && <TeamsSection />}

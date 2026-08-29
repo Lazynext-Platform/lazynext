@@ -36,7 +36,9 @@ function connectionPlatform(platform: PublishPlatform): string {
 
 /** Check if real platform credentials are available — either from env vars
  *  (global) or from a stored PlatformConnection (per-user OAuth).
- *  Returns the decrypted access token if available, or null. */
+ *  Returns the decrypted access token if available, or null.
+ *  If the stored token is expired, attempts to refresh it using the stored
+ *  refresh token before falling back to env vars or dry-run. */
 async function getRealAccessToken(platform: PublishPlatform, userId?: string): Promise<string | null> {
   const connPlatform = connectionPlatform(platform);
   // First check for per-user OAuth connection
@@ -47,11 +49,13 @@ async function getRealAccessToken(platform: PublishPlatform, userId?: string): P
         where: { userId_platform: { userId, platform: connPlatform } },
       });
       if (conn) {
-        // Check if token is expired
-        if (conn.tokenExpiresAt && new Date() > conn.tokenExpiresAt) {
-          // Token expired — would need refresh logic here
-          // For now, return null and fall back to env or dry-run
-          console.warn(`[publisher] ${platform} token expired for user ${userId}`);
+        const { isTokenExpired, refreshPlatformToken } = await import('./token-refresh');
+        // If token is expired (or about to expire), attempt refresh
+        if (isTokenExpired(conn.tokenExpiresAt)) {
+          const refreshed = await refreshPlatformToken(conn);
+          if (refreshed) return refreshed;
+          // Refresh failed — fall through to env check / dry-run
+          console.warn(`[publisher] ${platform} token expired and refresh failed for user ${userId}`);
           return null;
         }
         const { decryptToken } = await import('./token-crypto');
@@ -236,10 +240,10 @@ export async function publishToMultiple(
   }
 
   const results = await Promise.all(
-    expanded.map((r) => publishContent(r, planTier, userId).catch((e): PublishResult => ({
+    expanded.map((r) => publishContent(r, planTier, userId).catch((): PublishResult => ({
       platform: r.platform,
       status: 'failed',
-      error: String(e),
+      error: 'publish_error',
       metadata: {},
     }))),
   );
@@ -297,6 +301,9 @@ export async function schedulePost(
           platform: request.platform,
           mediaUrl: request.mediaUrl || '',
           caption: request.caption || '',
+          hashtagsJson: JSON.stringify(request.hashtags || []),
+          privacyLevel: request.privacyLevel || null,
+          crossPostToJson: JSON.stringify(request.crossPostTo || []),
           scheduledAt: when,
           status: 'scheduled',
         },

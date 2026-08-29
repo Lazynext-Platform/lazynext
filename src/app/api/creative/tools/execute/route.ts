@@ -84,7 +84,7 @@ async function __byokPOST(req: Request) {
       success: false,
       error: message,
     });
-    return NextResponse.json({ error: 'execution_failed', detail: message }, { status: 500 });
+    return NextResponse.json({ error: 'execution_failed' }, { status: 500 });
   }
 }
 

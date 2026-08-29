@@ -591,6 +591,9 @@ model ScheduledPost {
   platform    String    // tiktok | youtube | instagram | facebook | linkedin
   mediaUrl    String
   caption     String
+  hashtagsJson String   @default("[]") // serialized string[] of hashtags
+  privacyLevel String?  // public | private | followers (platform-specific)
+  crossPostToJson String @default("[]") // serialized string[] of cross-post target platforms
   postUrl     String?   // filled after actual publish
   postId      String?   // platform-specific post ID after publish
   scheduledAt DateTime  // when to publish
