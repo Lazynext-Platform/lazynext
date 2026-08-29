@@ -181,6 +181,8 @@ async function __byokPOST(req: Request) {
         state.stageResults[stageIdx].output = result.output;
         state.stageResults[stageIdx].artifacts = result.artifacts;
       }
+      // Advance the pipeline to mark the stage as completed and update totalCreditsUsed
+      state = useWaves ? advancePipelineWithWaves(state) : advancePipeline(state);
       await recordStep(state.pipelineId, stage, 'completed', {
         output: result.output,
         creditsCost: PIPELINE_COSTS[stage] ?? 0,
@@ -190,12 +192,18 @@ async function __byokPOST(req: Request) {
       state = failStage(state, stage, errorMsg);
       await recordStep(state.pipelineId, stage, 'failed', { error: errorMsg }).catch(() => {});
       await failWorkflow(state.pipelineId, uid, errorMsg).catch(() => {});
+      // Refund the first stage credit on failure
+      const cost = PIPELINE_COSTS[stage as keyof typeof PIPELINE_COSTS] ?? 0;
+      if (cost > 0) {
+        const { refundSync } = await import('@/lib/lazynext-studio/gen-task');
+        await refundSync(uid, cost, `pipeline-refund:${state.pipelineId}:${stage}`).catch(() => {});
+      }
     }
-    // Save updated state (with stage output)
+    // Save updated state (with stage output and advanced status)
     try {
       await prisma.workflowRun.update({
         where: { id: state.pipelineId },
-        data: { output: JSON.parse(JSON.stringify(state)) },
+        data: { status: state.status, output: JSON.parse(JSON.stringify(state)) },
       });
     } catch { /* non-fatal */ }
   }

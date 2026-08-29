@@ -2098,6 +2098,8 @@ export const jaMessages = {
     saved: 'テンプレートが保存されました',
     saveFailed: 'テンプレートの保存に失敗',
     savedTemplates: '保存済みテンプレート',
+    runAsPipeline: 'パイプラインとして実行',
+    runSuccess: 'パイプラインを開始しました！リダイレクト中…',
     noTemplates: '保存済みテンプレートがありません',
     builtIn: '組み込み',
     load: '読み込み',

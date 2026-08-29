@@ -2096,6 +2096,8 @@ export const ptMessages = {
     saved: 'Modelo salvo com sucesso',
     saveFailed: 'Falha ao salvar modelo',
     savedTemplates: 'Modelos Salvos',
+    runAsPipeline: 'Executar como Pipeline',
+    runSuccess: 'Pipeline iniciado! Redirecionando…',
     noTemplates: 'Nenhum modelo salvo ainda',
     builtIn: 'integrado',
     load: 'Carregar',

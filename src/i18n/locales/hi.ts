@@ -2096,6 +2096,8 @@ export const hiMessages = {
     saved: 'टेम्पलेट सफलतापूर्वक सहेजा गया',
     saveFailed: 'टेम्पलेट सहेजने में विफल',
     savedTemplates: 'सहेजे गए टेम्पलेट',
+    runAsPipeline: 'पाइपलाइन के रूप में चलाएं',
+    runSuccess: 'पाइपलाइन शुरू हुई! रीडायरेक्ट हो रहा है…',
     noTemplates: 'अभी तक कोई टेम्पलेट सहेजा नहीं',
     builtIn: 'अंतर्निहित',
     load: 'लोड करें',

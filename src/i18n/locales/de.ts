@@ -2096,6 +2096,8 @@ export const deMessages = {
     saved: 'Vorlage erfolgreich gespeichert',
     saveFailed: 'Speichern der Vorlage fehlgeschlagen',
     savedTemplates: 'Gespeicherte Vorlagen',
+    runAsPipeline: 'Als Pipeline ausführen',
+    runSuccess: 'Pipeline gestartet! Weiterleitung…',
     noTemplates: 'Noch keine Vorlagen gespeichert',
     builtIn: 'eingebaut',
     load: 'Laden',

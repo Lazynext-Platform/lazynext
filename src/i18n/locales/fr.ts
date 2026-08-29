@@ -2096,6 +2096,8 @@ export const frMessages = {
     saved: 'Modèle sauvegardé avec succès',
     saveFailed: 'Échec de la sauvegarde',
     savedTemplates: 'Modèles Sauvegardés',
+    runAsPipeline: 'Exécuter en tant que Pipeline',
+    runSuccess: 'Pipeline démarré ! Redirection…',
     noTemplates: 'Aucun modèle sauvegardé',
     builtIn: 'intégré',
     load: 'Charger',

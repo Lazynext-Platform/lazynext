@@ -101,24 +101,55 @@ export function ABTestPlannerModal({
     setLaunchMsg(null);
     try {
       const allVariants = [plan.controlVariant, ...plan.testVariants];
-      const res = await fetch('/api/creative/ab-test', {
+
+      // Step 1: Persist each variant as a creation to get real creationIds
+      const creationIds: string[] = [];
+      for (const v of allVariants) {
+        const createRes = await fetch('/api/creations', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            title: `${plan.testName} — Variant ${v.label}`,
+            type: 'ab_test_variant',
+            status: 'completed',
+            outputs: {
+              variantLabel: v.label,
+              variable: v.variable,
+              change: v.change,
+              hook: v.hook,
+              cta: v.cta,
+              angle: v.angle,
+              scriptSummary: v.scriptSummary,
+              hypothesis: v.hypothesis,
+              score: v.label === 'A' ? 100 : 90,
+            },
+          }),
+        });
+        if (createRes.ok) {
+          const createData = await createRes.json();
+          creationIds.push(createData.id);
+        }
+      }
+
+      if (creationIds.length < 2) {
+        throw new Error('Failed to create variant records');
+      }
+
+      // Step 2: Call ab-automation with real creationIds
+      const res = await fetch('/api/creative/ab-automation', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          variants: allVariants.map((v) => ({
-            creationId: `variant-${v.label}`,
-            name: `${plan.testName} — Variant ${v.label}`,
-            score: v.label === 'A' ? 100 : 90,
-          })),
+          creationIds,
           platform: brief.platform === 'facebook' ? 'meta' : 'meta',
-          campaignName: plan.testName,
+          testName: plan.testName,
           budgetDaily: dailyBudget,
           dryRun: true,
         }),
       });
       if (!res.ok) {
         const j = await res.json().catch(() => ({}));
-        throw new Error(j.error || 'failed');
+        throw new Error(j.error || j.detail || 'failed');
       }
       setLaunchMsg({ type: 'success', text: t('abTestPlanner.launchSuccess') });
     } catch (e) {

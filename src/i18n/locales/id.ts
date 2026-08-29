@@ -2075,6 +2075,8 @@ export const idMessages = {
     saved: 'Templat berhasil disimpan',
     saveFailed: 'Gagal menyimpan templat',
     savedTemplates: 'Templat Tersimpan',
+    runAsPipeline: 'Jalankan sebagai Pipeline',
+    runSuccess: 'Pipeline dimulai! Mengalihkan…',
     noTemplates: 'Belum ada templat tersimpan',
     builtIn: 'bawaan',
     load: 'Muat',

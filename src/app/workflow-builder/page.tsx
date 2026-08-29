@@ -6,6 +6,7 @@ import {
   Workflow, Plus, Trash2, GripVertical, Save, Loader2, AlertCircle,
   FileText, Clapperboard, Film, Image, Music, Scissors, ShieldCheck, Send,
   X, ChevronUp, ChevronDown, Check, GitBranch, Layers, Eye, Settings2, Users,
+  Play,
 } from 'lucide-react';
 import { useI18n } from '@/i18n/provider';
 import { AuthModal } from '@/components/AuthModal';
@@ -87,6 +88,8 @@ export default function WorkflowBuilderPage() {
   const [saveMsg, setSaveMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
+  const [running, setRunning] = useState(false);
+  const [runMsg, setRunMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
@@ -255,6 +258,40 @@ export default function WorkflowBuilderPage() {
       setSaveMsg({ type: 'error', text: t('workflowBuilder.saveFailed') });
     }
     setSaving(false);
+  };
+
+  // Run the workflow as a pipeline via POST /api/creative/pipeline
+  const handleRunAsPipeline = async () => {
+    if (stageConfigs.length === 0) return;
+    setRunning(true);
+    setRunMsg(null);
+    try {
+      const res = await fetch('/api/creative/pipeline', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          workflow: workflowDef,
+          context: execCtx,
+          config: { name: name || 'Workflow Builder Pipeline' },
+        }),
+      });
+      if (!res.ok) {
+        const j = await res.json().catch(() => ({}));
+        throw new Error(j.error || j.detail || `HTTP ${res.status}`);
+      }
+      const data = await res.json();
+      const pipelineId = data.state?.pipelineId;
+      if (pipelineId) {
+        setRunMsg({ type: 'success', text: t('workflowBuilder.runSuccess') });
+        // Navigate to the pipeline page to see execution
+        window.location.href = `/pipeline?id=${pipelineId}`;
+      } else {
+        setRunMsg({ type: 'success', text: t('workflowBuilder.runSuccess') });
+      }
+    } catch (e) {
+      setRunMsg({ type: 'error', text: e instanceof Error ? e.message : String(e) });
+    }
+    setRunning(false);
   };
 
   const handleDeleteTemplate = async (id: string) => {
@@ -694,6 +731,10 @@ export default function WorkflowBuilderPage() {
                   {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
                   {t('workflowBuilder.save')}
                 </button>
+                <button onClick={handleRunAsPipeline} disabled={running || stageConfigs.length === 0} aria-busy={running} className="flex items-center gap-2 rounded-md border border-accent px-4 py-2 text-sm font-medium text-accent hover:bg-accent/10 transition disabled:opacity-50">
+                  {running ? <Loader2 className="w-4 h-4 animate-spin" /> : <Play className="w-4 h-4" />}
+                  {t('workflowBuilder.runAsPipeline')}
+                </button>
                 {teams.length > 0 && (
                   <select value={shareWithTeam} onChange={(e) => setShareWithTeam(e.target.value)} aria-label={t('workflowBuilder.shareWithTeam')} className="text-xs rounded-md border border-border bg-input px-2 py-2 focus:outline-none focus:ring-2 focus:ring-accent">
                     <option value="">{t('workflowBuilder.personal')}</option>
@@ -701,6 +742,7 @@ export default function WorkflowBuilderPage() {
                   </select>
                 )}
                 {saveMsg && <p role={saveMsg.type === 'error' ? 'alert' : 'status'} className={`text-xs ${saveMsg.type === 'error' ? 'text-danger' : 'text-success'}`}>{saveMsg.text}</p>}
+                {runMsg && <p role={runMsg.type === 'error' ? 'alert' : 'status'} className={`text-xs ${runMsg.type === 'error' ? 'text-danger' : 'text-success'}`}>{runMsg.text}</p>}
               </div>
             </div>
 

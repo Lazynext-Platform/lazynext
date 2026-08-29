@@ -34,6 +34,8 @@ import {
 import { checkCompliance, type ComplianceCheckRequest, type CompliancePlatform } from '@/lib/creative/compliance';
 import { generateVoiceover, type TTSRequest } from '@/lib/creative/audio-studio';
 import { dispatchMediaService, type MediaCapability } from '@/lib/creative/media-service-boundary';
+import { publishContent } from '@/lib/publishing/publisher';
+import type { PublishRequest, PublishPlatform } from '@/lib/publishing/types';
 import type { CreativeBrief, HookCandidate, CreativeAngle, ScriptCandidate, StoryboardCandidate, CreativeScore } from '@/lib/creative/types';
 import type { PipelineConfig, PipelineStage, PipelineStageResult } from '@/lib/creative/pipeline';
 import type { PlanTier } from '@/lib/plan-tier';
@@ -259,34 +261,54 @@ async function executeAudioStage(params: ExecuteStageParams): Promise<StageExecu
 /**
  * Execute the `edit` stage: assemble media + audio into a rough cut.
  *
- * Best-effort: returns a cut plan. Real editing would call the editor API.
+ * Builds an Edit Decision List (EDL) from the storyboard shots, script scenes,
+ * generated media URLs, and voiceover audio. The EDL references the real
+ * media URLs from the media_generation stage and the audio URL from the
+ * audio stage. A future rendering service would consume this EDL to produce
+ * the final video file.
+ *
+ * If media URLs are available, the first one is used as the `finalMediaUrl`
+ * (representing the primary asset for publishing).
  */
 async function executeEditStage(params: ExecuteStageParams): Promise<StageExecutionResult> {
   const { context } = params;
   if (!context.storyboard) throw new Error('edit_stage_requires_storyboard');
 
-  // Build a simple cut plan from the storyboard shots + script scenes
   const shots = context.storyboard.shots || [];
   const scenes = context.script?.scenes || [];
+  const mediaUrls = context.mediaUrls || [];
+  const audioUrl = context.audioUrl || null;
+
+  // Build EDL with real media references
   const cutPlan = shots.map((shot, i) => ({
     shotIndex: i,
     shot: shot.shot,
     prompt: shot.prompt,
     durationSec: shot.durationSec || (scenes[i]?.durationSec ?? 3),
-    mediaUrl: context.mediaUrls?.[i] || null,
+    mediaUrl: mediaUrls[i] || null,
     voiceover: scenes[i]?.voiceover || '',
     onScreenText: scenes[i]?.onScreenText || '',
+    transition: i < shots.length - 1 ? 'cut' : 'fade_out',
   }));
+
+  const totalDurationSec = cutPlan.reduce((sum, c) => sum + c.durationSec, 0);
+
+  // Use the first real media URL as the final asset for publishing
+  const finalMediaUrl = mediaUrls.find((url) => url && !url.startsWith('placeholder://')) || mediaUrls[0] || null;
 
   const editResult = {
     cutPlan,
-    totalDurationSec: cutPlan.reduce((sum, c) => sum + c.durationSec, 0),
-    audioUrl: context.audioUrl || null,
+    totalDurationSec,
+    audioUrl,
+    finalMediaUrl,
+    format: 'vertical_9x16',
+    hasAudio: !!audioUrl,
+    hasMedia: mediaUrls.length > 0,
   };
 
   return {
     output: { editResult },
-    artifacts: [{ type: 'cut_plan', data: editResult }],
+    artifacts: [{ type: 'edit_decision_list', data: editResult, url: finalMediaUrl || undefined }],
   };
 }
 
@@ -324,26 +346,122 @@ async function executeComplianceStage(params: ExecuteStageParams): Promise<Stage
 /**
  * Execute the `publish` stage: publish the finished creative to platforms.
  *
- * Best-effort: returns a publish plan. Real publishing would call
- * /api/publish with the final media URL.
+ * Calls `publishContent` from the publishing library with `dryRun` safety.
+ * The publisher automatically returns a dry-run result when no real
+ * credentials are configured, and returns `pending_approval` in real mode
+ * without credentials — so there is no risk of accidental live publishing.
+ *
+ * The media URL is sourced from the edit stage's `finalMediaUrl` if available,
+ * falling back to the first media generation URL. If no media is available,
+ * the stage returns a `pending_review` plan without calling the publisher.
+ *
+ * The `onComplete` config field controls behavior:
+ * - 'review' (default): returns a publish plan without calling publishContent
+ * - 'publish': calls publishContent with dryRun safety
+ * - 'schedule': returns a scheduled plan (future)
  */
 async function executePublishStage(params: ExecuteStageParams): Promise<StageExecutionResult> {
-  const { config } = params;
+  const { config, context } = params;
   const platforms = config.platforms || [];
+  const onComplete = config.onComplete || 'review';
 
-  // Build a publish plan — in production this would call the publishing API
+  // Source the final media URL from the edit stage or media generation
+  const editResult = context.editResult as { finalMediaUrl?: string } | undefined;
+  const finalMediaUrl = editResult?.finalMediaUrl || context.mediaUrls?.[0] || null;
+  const caption = context_brief_to_caption(params);
+  const hashtags = context.brief?.product ? [`#${context.brief.product.replace(/\s+/g, '').toLowerCase()}`] : [];
+
+  // If onComplete is 'review' or no media URL, return a plan without publishing
+  if (onComplete === 'review' || !finalMediaUrl) {
+    const publishResult = {
+      platforms,
+      status: 'pending_review' as const,
+      onComplete,
+      mediaUrl: finalMediaUrl,
+      caption,
+      scheduledAt: null,
+    };
+    return {
+      output: { publishResult },
+      artifacts: [{ type: 'publish_plan', data: publishResult }],
+    };
+  }
+
+  // Map pipeline platforms to publish platforms
+  const publishPlatforms: PublishPlatform[] = platforms
+    .map((p) => {
+      if (p === 'tiktok') return 'tiktok' as PublishPlatform;
+      if (p === 'youtube') return 'youtube_shorts' as PublishPlatform;
+      if (p === 'meta' || p === 'instagram') return 'instagram_reels' as PublishPlatform;
+      if (p === 'facebook') return 'facebook' as PublishPlatform;
+      if (p === 'twitter') return 'twitter' as PublishPlatform;
+      if (p === 'linkedin') return 'linkedin' as PublishPlatform;
+      return null;
+    })
+    .filter((p): p is PublishPlatform => p !== null);
+
+  // If no valid publish platforms, return a plan
+  if (publishPlatforms.length === 0) {
+    const publishResult = {
+      platforms,
+      status: 'pending_review' as const,
+      onComplete,
+      mediaUrl: finalMediaUrl,
+      caption,
+      scheduledAt: null,
+    };
+    return {
+      output: { publishResult },
+      artifacts: [{ type: 'publish_plan', data: publishResult }],
+    };
+  }
+
+  // Call publishContent for each platform (dry-run safe — publisher returns
+  // dry-run results when no credentials are configured, or pending_approval
+  // in real mode without credentials)
+  const results: Array<{ platform: string; status: string; postId?: string; postUrl?: string; error?: string }> = [];
+  for (const platform of publishPlatforms) {
+    try {
+      const request: PublishRequest = {
+        platform,
+        mediaUrl: finalMediaUrl,
+        caption,
+        hashtags,
+      };
+      const result = await publishContent(request);
+      results.push({
+        platform: result.platform,
+        status: result.status,
+        postId: result.postId,
+        postUrl: result.postUrl,
+        error: result.error,
+      });
+    } catch (e) {
+      results.push({
+        platform: String(platform),
+        status: 'failed',
+        error: e instanceof Error ? e.message : String(e),
+      });
+    }
+  }
+
+  const overallStatus = results.every((r) => r.status === 'published') ? 'published'
+    : results.every((r) => r.status === 'failed') ? 'failed'
+    : 'partial';
+
   const publishResult = {
     platforms,
-    status: 'pending_review' as const,
-    onComplete: config.onComplete || 'review',
-    mediaUrl: null, // Would be the final edited media URL
-    caption: context_brief_to_caption(params),
+    status: overallStatus as 'published' | 'failed' | 'partial',
+    onComplete,
+    mediaUrl: finalMediaUrl,
+    caption,
+    results,
     scheduledAt: null,
   };
 
   return {
     output: { publishResult },
-    artifacts: [{ type: 'publish_plan', data: publishResult }],
+    artifacts: [{ type: 'publish_result', data: publishResult }],
   };
 }
 

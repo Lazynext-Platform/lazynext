@@ -2096,6 +2096,8 @@ export const koMessages = {
     saved: '템플릿이 성공적으로 저장되었습니다',
     saveFailed: '템플릿 저장 실패',
     savedTemplates: '저장된 템플릿',
+    runAsPipeline: '파이프라인으로 실행',
+    runSuccess: '파이프라인이 시작되었습니다! 리디렉션 중…',
     noTemplates: '저장된 템플릿이 없습니다',
     builtIn: '내장',
     load: '불러오기',

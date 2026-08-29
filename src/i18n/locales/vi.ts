@@ -2098,6 +2098,8 @@ export const viMessages = {
     saved: 'Đã lưu mẫu thành công',
     saveFailed: 'Lưu mẫu thất bại',
     savedTemplates: 'Mẫu đã Lưu',
+    runAsPipeline: 'Chạy như Pipeline',
+    runSuccess: 'Pipeline đã bắt đầu! Đang chuyển hướng…',
     noTemplates: 'Chưa có mẫu nào',
     builtIn: 'tích hợp',
     load: 'Tải',

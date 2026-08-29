@@ -2096,6 +2096,8 @@ export const arMessages = {
     saved: 'تم حفظ القالب بنجاح',
     saveFailed: 'فشل حفظ القالب',
     savedTemplates: 'القوالب المحفوظة',
+    runAsPipeline: 'تشغيل كخط متصل',
+    runSuccess: 'تم بدء الخط المتصل! جارٍ التحويل…',
     noTemplates: 'لا توجد قوالب محفوظة بعد',
     builtIn: 'مدمج',
     load: 'تحميل',

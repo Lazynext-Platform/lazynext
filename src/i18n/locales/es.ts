@@ -2098,6 +2098,8 @@ export const esMessages = {
     saved: 'Plantilla guardada exitosamente',
     saveFailed: 'Error al guardar plantilla',
     savedTemplates: 'Plantillas Guardadas',
+    runAsPipeline: 'Ejecutar como Pipeline',
+    runSuccess: '¡Pipeline iniciado! Redirigiendo…',
     noTemplates: 'Sin plantillas guardadas aún',
     builtIn: 'integrado',
     load: 'Cargar',

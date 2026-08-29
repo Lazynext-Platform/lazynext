@@ -163,6 +163,8 @@ async function __byokPOST(req: Request, { params }: { params: Promise<{ id: stri
             state.stageResults[stageIdx].output = result.output;
             state.stageResults[stageIdx].artifacts = result.artifacts;
           }
+          // Advance the pipeline to mark the stage as completed and update totalCreditsUsed
+          state = hasParallel ? advancePipelineWithWaves(state) : advancePipeline(state);
           await recordStep(state.pipelineId, stage, 'completed', {
             output: result.output,
             creditsCost: cost,
@@ -172,6 +174,11 @@ async function __byokPOST(req: Request, { params }: { params: Promise<{ id: stri
           state = failStage(state, stage, errorMsg);
           await recordStep(state.pipelineId, stage, 'failed', { error: errorMsg }).catch(() => {});
           await failWorkflow(state.pipelineId, uid, errorMsg).catch(() => {});
+          // Refund the stage credit on failure
+          if (cost > 0) {
+            const { refundSync } = await import('@/lib/lazynext-studio/gen-task');
+            await refundSync(uid, cost, `pipeline-refund:${state.pipelineId}:${stage}`).catch(() => {});
+          }
           await savePipeline(state);
           return NextResponse.json({ error: 'stage_failed', detail: errorMsg, state }, { status: 500 });
         }
@@ -241,6 +248,9 @@ async function __byokPOST(req: Request, { params }: { params: Promise<{ id: stri
             state.stageResults[stageIdx].output = result.output;
             state.stageResults[stageIdx].artifacts = result.artifacts;
           }
+          // Advance to mark the stage as completed and update totalCreditsUsed
+          const hasParallel = state.config.stages.some((s: any) => s.parallelWith && s.parallelWith.length > 0);
+          state = hasParallel ? advancePipelineWithWaves(state) : advancePipeline(state);
           await recordStep(state.pipelineId, stage, 'completed', {
             output: result.output,
             creditsCost: cost,
@@ -249,6 +259,11 @@ async function __byokPOST(req: Request, { params }: { params: Promise<{ id: stri
           const errorMsg = String(e instanceof Error ? e.message : e);
           state = failStage(state, stage as PipelineState['currentStage'] & string, errorMsg);
           await recordStep(state.pipelineId, stage, 'failed', { error: errorMsg }).catch(() => {});
+          // Refund the retried stage credit on failure
+          if (cost > 0) {
+            const { refundSync } = await import('@/lib/lazynext-studio/gen-task');
+            await refundSync(uid, cost, `pipeline-refund:${state.pipelineId}:${stage}:retry`).catch(() => {});
+          }
         }
       }
       break;

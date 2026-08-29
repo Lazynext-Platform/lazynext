@@ -2735,6 +2735,8 @@ export const enMessages = {
     saved: 'Template saved successfully',
     saveFailed: 'Failed to save template',
     savedTemplates: 'Saved Templates',
+    runAsPipeline: 'Run as Pipeline',
+    runSuccess: 'Pipeline started! Redirecting…',
     noTemplates: 'No saved templates yet',
     builtIn: 'built-in',
     load: 'Load',

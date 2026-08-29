@@ -2097,6 +2097,8 @@ export const thMessages = {
     saved: 'บันทึกเทมเพลตสำเร็จ',
     saveFailed: 'บันทึกเทมเพลตล้มเหลว',
     savedTemplates: 'เทมเพลตที่บันทึก',
+    runAsPipeline: 'เรียกใช้เป็นไปป์ไลน์',
+    runSuccess: 'เริ่มไปป์ไลน์แล้ว! กำลังเปลี่ยนเส้นทาง…',
     noTemplates: 'ยังไม่มีเทมเพลต',
     builtIn: 'ในตัว',
     load: 'โหลด',

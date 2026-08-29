@@ -2096,6 +2096,8 @@ export const zhMessages = {
     saved: '模板保存成功',
     saveFailed: '保存模板失败',
     savedTemplates: '已保存的模板',
+    runAsPipeline: '运行为流水线',
+    runSuccess: '流水线已启动！正在跳转…',
     noTemplates: '尚无已保存的模板',
     builtIn: '内置',
     load: '加载',
