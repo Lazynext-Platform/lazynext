@@ -8,6 +8,13 @@ import type { AdCampaignInput, PublishOptions } from '@/lib/ad-platforms/types';
 export const maxDuration = 60;
 
 /**
+ * @deprecated Use /api/creative/ab-automation instead. This route is kept
+ * for backward compatibility but will be removed in a future release.
+ * The ab-automation route provides workflow-per-variant execution,
+ * winner tagging, and production hardening (BYOK, ownership validation).
+ */
+
+/**
  * POST /api/creative/ab-test
  * Body: {
  *   variants: Array<{ creationId: string; score?: number; name: string }>,

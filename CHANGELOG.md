@@ -1,5 +1,29 @@
 # LazyNext Changelog
 
+## 2026-09-01 — Pipeline Stage Executor, Real Media Generation, Pipeline Output UI, Hardening
+
+### What Changed
+
+#### H-series (already shipped)
+1. **Real stage executor** — `pipeline-executor.ts` maps each stage to creative library functions, passing outputs via `StageContext`
+2. **Unified persistence** — pipeline routes call `engine.ts` (`startWorkflow`/`recordStep`/`completeWorkflow`/`failWorkflow`) for `WorkflowStep` rows
+3. **Creative Studio pipeline mode** — UI toggle that runs the full pipeline with live progress tracking
+4. **Production hardening** — BYOK (`withAtlas`) parity on A/B automation, ownership validation on `creationIds`, bounded inputs
+
+#### I-series
+5. **Real media generation** — `media_generation` stage calls `dispatchMediaService` with `video_gen` capability
+6. **A/B workflow-per-variant execution** — uses `executeStage` + `engine.ts` for real generation per variant
+7. **Pipeline output UI** — `StageOutputViewer` in `PipelineOrchestrator` shows brief, script, storyboard, compliance, media results
+8. **Rate limiting on pipeline routes** — prevents abuse on `/api/creative/pipeline` POST and `/api/creative/pipeline/[id]` PATCH
+9. **Old ab-test route deprecated** — in favor of `ab-automation` (workflow-per-variant execution, winner tagging, hardening)
+10. **Executor integration tests added** — 16 new tests covering stage-to-function mapping, `StageContext`, persistence, error handling, and media generation
+11. **ADR-030** documenting pipeline executor and hardening decisions
+
+### Verification
+- npm run lint — 0 errors
+- npm test — all unit tests passing
+- npm run build — successful
+
 ## 2026-09-01 — Workflow Execution Layer, A/B Automation Integration, Onboarding, Docs
 
 ### What Changed

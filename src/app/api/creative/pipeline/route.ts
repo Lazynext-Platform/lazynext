@@ -4,6 +4,7 @@ import { auth } from '@/../auth';
 import { prisma } from '@/lib/prisma';
 import { deductCredits } from '@/lib/credits';
 import { getUserPlanTier } from '@/lib/plan-tier';
+import { checkAuthRateLimit, getClientIP } from '@/lib/auth-rate-limit';
 import {
   createPipeline,
   validatePipelineConfig,
@@ -65,6 +66,14 @@ async function __byokPOST(req: Request) {
   const session = await auth();
   if (!session?.user?.id) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
   const uid = session.user.id;
+
+  // Rate limit: 10 pipeline creations per minute per IP
+  const ip = getClientIP(req);
+  const rl = checkAuthRateLimit(ip, 'pipeline-create', 10, 60_000);
+  if (rl.limited) {
+    return NextResponse.json({ error: 'rate_limited', retryAfter: rl.retryAfter }, { status: 429, headers: { 'Retry-After': String(rl.retryAfter || 60) } });
+  }
+
   await getUserPlanTier(uid); // plan-tier aware (no gating here, but recorded for routing)
 
   const body = await req.json().catch(() => ({}));

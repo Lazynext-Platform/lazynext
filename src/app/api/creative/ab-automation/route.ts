@@ -248,13 +248,17 @@ Keep it concise (3-4 sentences). Return only the text.`;
     };
 
     // ── Optional: Run a workflow per variant ──
-    // If a workflowTemplateId is provided, start a pipeline for each variant.
-    // The pipeline runs asynchronously — the A/B test monitors the campaigns
-    // while the workflows generate additional creative assets.
+    // If a workflowTemplateId is provided, create and execute a pipeline for
+    // each variant using the real stage executor. Each pipeline runs through
+    // all enabled stages (brief → script → storyboard → …) with actual
+    // creative generation, and records WorkflowStep rows via engine.ts.
     if (workflowTemplateId) {
       try {
-        const { configFromTemplate, createPipeline, advancePipeline } = await import('@/lib/creative/pipeline');
+        const { configFromTemplate, createPipeline, advancePipeline, failStage, PIPELINE_COSTS } = await import('@/lib/creative/pipeline');
+        const { executeStage, initialContext } = await import('@/lib/creative/pipeline-executor');
+        const { startWorkflow, recordStep, completeWorkflow, failWorkflow } = await import('@/lib/workflow/engine');
         for (let i = 0; i < creationIds.length; i++) {
+          const creationId = creationIds[i];
           const config = configFromTemplate(workflowTemplateId, {
             name: `${testName} — Variant ${labels[i]}`,
             productName: `Variant ${labels[i]}`,
@@ -262,7 +266,7 @@ Keep it concise (3-4 sentences). Return only the text.`;
           if (config) {
             let state = createPipeline(config);
             state = advancePipeline(state);
-            // Persist as a WorkflowRun row (best-effort)
+            // Persist as a WorkflowRun row
             try {
               await prisma.workflowRun.create({
                 data: {
@@ -270,12 +274,51 @@ Keep it concise (3-4 sentences). Return only the text.`;
                   userId: uid,
                   workflowType: 'ab-variant-workflow',
                   status: state.status,
-                  input: JSON.parse(JSON.stringify({ ...config, abJobId: jobId, variantLabel: labels[i] })),
+                  input: JSON.parse(JSON.stringify({ ...config, abJobId: jobId, variantLabel: labels[i], creationId })),
                   output: JSON.parse(JSON.stringify(state)),
                 },
               });
             } catch {
               // Non-fatal: pipeline state is returned in-memory
+            }
+            // Record workflow start via engine (for Analytics Hub)
+            await startWorkflow(uid, 'ab-variant-workflow', { pipelineId: state.pipelineId, abJobId: jobId, variantLabel: labels[i] }).catch(() => {});
+            // Execute stages sequentially
+            let ctx = initialContext(config);
+            while (state.status === 'running' && state.currentStage && state.currentStage !== 'completed') {
+              const stage = state.currentStage;
+              try {
+                await recordStep(state.pipelineId, stage, 'running').catch(() => {});
+                const result = await executeStage({ stage, config, context: ctx, planTier, userId: uid });
+                ctx = (await import('@/lib/creative/pipeline-executor')).mergeStageResultIntoContext(ctx, stage, result);
+                const stageIdx = state.stageResults.findIndex((r) => r.stage === stage);
+                if (stageIdx >= 0) {
+                  state.stageResults[stageIdx].output = result.output;
+                  state.stageResults[stageIdx].artifacts = result.artifacts;
+                }
+                await recordStep(state.pipelineId, stage, 'completed', {
+                  output: result.output,
+                  creditsCost: PIPELINE_COSTS[stage] ?? 0,
+                }).catch(() => {});
+              } catch (e) {
+                const errorMsg = String(e instanceof Error ? e.message : e);
+                state = failStage(state, stage, errorMsg);
+                await recordStep(state.pipelineId, stage, 'failed', { error: errorMsg }).catch(() => {});
+                await failWorkflow(state.pipelineId, uid, errorMsg).catch(() => {});
+                break;
+              }
+              // Advance to next stage
+              state = advancePipeline(state);
+              // Save state
+              try {
+                await prisma.workflowRun.update({
+                  where: { id: state.pipelineId },
+                  data: { status: state.status, output: JSON.parse(JSON.stringify(state)) },
+                });
+              } catch { /* non-fatal */ }
+            }
+            if (state.status === 'completed') {
+              await completeWorkflow(state.pipelineId, uid, { pipelineId: state.pipelineId }, Date.now() - Date.parse(state.createdAt)).catch(() => {});
             }
           }
         }

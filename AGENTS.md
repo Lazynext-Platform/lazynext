@@ -49,7 +49,7 @@ Production uses Cloudflare R2 via `src/lib/media-storage.cloudflare.ts`.
 ## Verification Commands
 ```bash
 npm run lint    # ESLint
-npm test        # Node test runner (1365 tests)
+npm test        # Node test runner (1397 tests)
 # E2E: 302 tests (chromium + mobile-chrome)
 npm run build   # Production build (Cloudflare target)
 ```
@@ -115,7 +115,7 @@ npm run build   # Production build (Cloudflare target)
   `/api/editor/timeline-versions`, `/api/editor/transcribe`, `/api/editor/ocr`, `/api/editor/chat`
 - `/api/creative/director` returns an NDJSON stream of step-by-step progress updates; legacy
   non-streaming mode available via `?stream=false`
-- ADRs 001-029 in `docs/adr/` document all major architecture decisions
+- ADRs 001-030 in `docs/adr/` document all major architecture decisions
 - Cross-feature handoffs: Brand Concepts → Creator Kits (query-param pre-fill),
   Brand Concepts → Shot Planner (script pre-fill), Clip Editor → Media Service Boundary (ASR/TTS)
 - Dashboard "Quick Create" grid includes all production apps and the 4 newest features

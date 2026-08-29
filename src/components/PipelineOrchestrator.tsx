@@ -24,6 +24,7 @@ import {
   Send,
   Sparkles,
   ChevronRight,
+  ChevronDown,
 } from 'lucide-react';
 import { useI18n } from '@/i18n/provider';
 import type {
@@ -820,6 +821,11 @@ function StageCard({
         </div>
       )}
 
+      {/* Stage output viewer — shows generated content */}
+      {result.status === 'completed' && hasStageOutput(stage, result.output) && (
+        <StageOutputViewer stage={stage} output={result.output} />
+      )}
+
       {(canRetry || canSkip) && (
         <div className="mt-3 flex gap-2">
           {canRetry && (
@@ -842,6 +848,229 @@ function StageCard({
           )}
         </div>
       )}
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Stage output viewer — renders generated content per stage
+// ---------------------------------------------------------------------------
+
+/** Check if a stage has meaningful output to display. */
+function hasStageOutput(stage: PipelineStage, output: Record<string, unknown>): boolean {
+  if (!output || typeof output !== 'object') return false;
+  switch (stage) {
+    case 'brief': return !!output.brief;
+    case 'script': return !!(output.script || output.hooks || output.angles);
+    case 'storyboard': return !!output.storyboard;
+    case 'media_generation': return !!(output.mediaUrls && (output.mediaUrls as string[]).length > 0);
+    case 'audio': return !!output.audioUrl;
+    case 'edit': return !!output.editResult;
+    case 'compliance': return !!output.complianceResult;
+    case 'publish': return !!output.publishResult;
+    default: return false;
+  }
+}
+
+/** Collapsible viewer for stage output content. */
+function StageOutputViewer({ stage, output }: { stage: PipelineStage; output: Record<string, unknown> }) {
+  const [expanded, setExpanded] = useState(false);
+
+  return (
+    <div className="mt-3 border-t border-line pt-2">
+      <button
+        onClick={() => setExpanded(!expanded)}
+        className="flex items-center gap-1 text-[11px] font-medium text-brand-accent hover:underline"
+        aria-expanded={expanded}
+      >
+        {expanded ? <ChevronDown className="h-3 w-3" /> : <ChevronRight className="h-3 w-3" />}
+        {expanded ? 'Hide output' : 'View output'}
+      </button>
+      {expanded && (
+        <div className="mt-2 max-h-64 overflow-y-auto rounded-lg bg-app p-3 text-[11px] text-fg-muted">
+          <StageOutputContent stage={stage} output={output} />
+        </div>
+      )}
+    </div>
+  );
+}
+
+/** Render stage-specific output content. */
+function StageOutputContent({ stage, output }: { stage: PipelineStage; output: Record<string, unknown> }) {
+  switch (stage) {
+    case 'brief': {
+      const brief = output.brief as Record<string, unknown> | undefined;
+      if (!brief) return null;
+      return (
+        <dl className="space-y-1">
+          <DetailRow label="Objective" value={brief.objective as string} />
+          <DetailRow label="Platform" value={brief.platform as string} />
+          <DetailRow label="Format" value={brief.format as string} />
+          <DetailRow label="Audience" value={brief.audience as string} />
+          <DetailRow label="Product" value={brief.product as string} />
+          <DetailRow label="Hook" value={brief.hook as string} />
+          <DetailRow label="CTA" value={brief.cta as string} />
+          <DetailRow label="Visual Direction" value={brief.visualDirection as string} />
+        </dl>
+      );
+    }
+    case 'script': {
+      const script = output.script as Record<string, unknown> | undefined;
+      const hooks = output.hooks as Array<Record<string, unknown>> | undefined;
+      const angles = output.angles as Array<Record<string, unknown>> | undefined;
+      return (
+        <div className="space-y-2">
+          {hooks && hooks.length > 0 && (
+            <div>
+              <p className="font-bold text-fg">Hooks ({hooks.length})</p>
+              {hooks.slice(0, 3).map((h, i) => (
+                <div key={i} className="ml-2">
+                  <span className="text-fg-faint">[{String(h.type)}]</span> {String(h.text)}
+                </div>
+              ))}
+            </div>
+          )}
+          {angles && angles.length > 0 && (
+            <div>
+              <p className="font-bold text-fg">Angles ({angles.length})</p>
+              {angles.slice(0, 3).map((a, i) => (
+                <div key={i} className="ml-2">
+                  <span className="text-fg-faint">{String(a.name)}:</span> {String(a.description)}
+                </div>
+              ))}
+            </div>
+          )}
+          {script && (
+            <div>
+              <p className="font-bold text-fg">Script: {script.title as string}</p>
+              <p className="text-fg-faint">Duration: {String(script.totalDurationSec)}s · CTA: {script.cta as string}</p>
+              {Array.isArray(script.scenes) && (
+                <div className="mt-1 space-y-1">
+                  {(script.scenes as Array<Record<string, unknown>>).slice(0, 5).map((s, i) => (
+                    <div key={i} className="ml-2">
+                      <span className="text-fg-faint">Scene {String(s.i)}:</span> {s.visual as string}
+                      {s.voiceover ? <span className="text-fg-faint"> — &ldquo;{s.voiceover as string}&rdquo;</span> : null}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      );
+    }
+    case 'storyboard': {
+      const storyboard = output.storyboard as Record<string, unknown> | undefined;
+      if (!storyboard) return null;
+      return (
+        <div className="space-y-1">
+          <p className="font-bold text-fg">Ratio: {storyboard.ratio as string} · Duration: {String(storyboard.totalDurationSec)}s</p>
+          {Array.isArray(storyboard.shots) && (
+            <div className="space-y-1">
+              {(storyboard.shots as Array<Record<string, unknown>>).slice(0, 6).map((shot, i) => (
+                <div key={i} className="ml-2">
+                  <span className="text-fg-faint">Shot {String(shot.i)}:</span> {shot.shot as string}
+                  <p className="ml-2 text-fg-faint">{shot.prompt as string}</p>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      );
+    }
+    case 'media_generation': {
+      const mediaUrls = output.mediaUrls as string[] | undefined;
+      const mediaResults = output.mediaResults as Array<Record<string, unknown>> | undefined;
+      if (!mediaUrls || mediaUrls.length === 0) return null;
+      return (
+        <div className="space-y-1">
+          <p className="font-bold text-fg">{mediaUrls.length} media URLs generated</p>
+          {mediaResults && mediaResults.some((r) => r.dryRun) && (
+            <p className="text-fg-faint">(some are dry-run placeholders)</p>
+          )}
+          {mediaUrls.slice(0, 6).map((url, i) => (
+            <div key={i} className="ml-2 break-all">
+              <span className="text-fg-faint">Shot {i + 1}:</span>{' '}
+              {url.startsWith('placeholder://') || url.startsWith('data:') ? (
+                <span className="text-fg-faint">{url.slice(0, 60)}…</span>
+              ) : (
+                <a href={url} target="_blank" rel="noopener noreferrer" className="text-brand-accent underline">{url.slice(0, 60)}…</a>
+              )}
+            </div>
+          ))}
+        </div>
+      );
+    }
+    case 'audio': {
+      const audioUrl = output.audioUrl as string | undefined;
+      if (!audioUrl) return <p className="text-fg-faint">No audio generated</p>;
+      return (
+        <div>
+          <p className="font-bold text-fg">Voiceover</p>
+          {audioUrl.startsWith('placeholder://') || audioUrl.startsWith('data:') ? (
+            <p className="text-fg-faint">{audioUrl.slice(0, 60)}…</p>
+          ) : (
+            <audio controls src={audioUrl} className="mt-1 w-full" />
+          )}
+        </div>
+      );
+    }
+    case 'compliance': {
+      const result = output.complianceResult as Record<string, unknown> | undefined;
+      if (!result) return null;
+      return (
+        <dl className="space-y-1">
+          <DetailRow label="Status" value={String(result.status || '')} />
+          {Array.isArray(result.violations) && (result.violations as Array<Record<string, unknown>>).length > 0 && (
+            <div>
+              <p className="font-bold text-fg">Violations ({(result.violations as Array<Record<string, unknown>>).length})</p>
+              {(result.violations as Array<Record<string, unknown>>).slice(0, 5).map((v, i) => (
+                <div key={i} className="ml-2">
+                  <span className="text-fg-faint">[{String(v.severity)}]</span> {v.message as string}
+                </div>
+              ))}
+            </div>
+          )}
+        </dl>
+      );
+    }
+    case 'edit': {
+      const editResult = output.editResult as Record<string, unknown> | undefined;
+      if (!editResult) return null;
+      return (
+        <dl className="space-y-1">
+          <DetailRow label="Total Duration" value={`${String(editResult.totalDurationSec)}s`} />
+          <DetailRow label="Audio" value={editResult.audioUrl as string || 'none'} />
+          {Array.isArray(editResult.cutPlan) && (
+            <p className="text-fg-faint">{editResult.cutPlan.length} cuts in plan</p>
+          )}
+        </dl>
+      );
+    }
+    case 'publish': {
+      const publishResult = output.publishResult as Record<string, unknown> | undefined;
+      if (!publishResult) return null;
+      return (
+        <dl className="space-y-1">
+          <DetailRow label="Status" value={String(publishResult.status || '')} />
+          <DetailRow label="On Complete" value={String(publishResult.onComplete || '')} />
+          {Array.isArray(publishResult.platforms) && (
+            <DetailRow label="Platforms" value={(publishResult.platforms as string[]).join(', ')} />
+          )}
+        </dl>
+      );
+    }
+    default:
+      return null;
+  }
+}
+
+function DetailRow({ label, value }: { label: string; value?: string }) {
+  if (!value) return null;
+  return (
+    <div>
+      <dt className="inline font-bold text-fg">{label}:</dt>{' '}
+      <dd className="inline text-fg-muted">{value}</dd>
     </div>
   );
 }

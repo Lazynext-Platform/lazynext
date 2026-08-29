@@ -4,6 +4,7 @@ import { auth } from '@/../auth';
 import { prisma } from '@/lib/prisma';
 import { deductCredits } from '@/lib/credits';
 import { getUserPlanTier } from '@/lib/plan-tier';
+import { checkAuthRateLimit, getClientIP } from '@/lib/auth-rate-limit';
 import {
   advancePipeline,
   advancePipelineWithWaves,
@@ -99,6 +100,13 @@ async function __byokPOST(req: Request, { params }: { params: Promise<{ id: stri
   if (!session?.user?.id) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
   const uid = session.user.id;
   const { id } = await params;
+
+  // Rate limit: 20 pipeline advances per minute per IP
+  const ip = getClientIP(req);
+  const rl = checkAuthRateLimit(ip, 'pipeline-advance', 20, 60_000);
+  if (rl.limited) {
+    return NextResponse.json({ error: 'rate_limited', retryAfter: rl.retryAfter }, { status: 429, headers: { 'Retry-After': String(rl.retryAfter || 60) } });
+  }
 
   let state = await loadPipeline(uid, id);
   if (!state) return NextResponse.json({ error: 'not_found' }, { status: 404 });

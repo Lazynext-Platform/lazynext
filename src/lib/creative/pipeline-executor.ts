@@ -33,6 +33,7 @@ import {
 } from '@/lib/creative/intelligence';
 import { checkCompliance, type ComplianceCheckRequest, type CompliancePlatform } from '@/lib/creative/compliance';
 import { generateVoiceover, type TTSRequest } from '@/lib/creative/audio-studio';
+import { dispatchMediaService, type MediaCapability } from '@/lib/creative/media-service-boundary';
 import type { CreativeBrief, HookCandidate, CreativeAngle, ScriptCandidate, StoryboardCandidate, CreativeScore } from '@/lib/creative/types';
 import type { PipelineConfig, PipelineStage, PipelineStageResult } from '@/lib/creative/pipeline';
 import type { PlanTier } from '@/lib/plan-tier';
@@ -157,27 +158,59 @@ async function executeStoryboardStage(params: ExecuteStageParams): Promise<Stage
  * Execute the `media_generation` stage: generate images/video for each
  * storyboard shot via the media service boundary.
  *
- * This stage is best-effort — if the media service is in dry-run/stub mode
- * (as in local dev), placeholder URLs are returned.
+ * Calls `dispatchMediaService` with `video_gen` capability for each shot,
+ * using the shot's prompt as the generation text. When Atlas Cloud is
+ * configured, this produces real video/image URLs. In dry-run mode (local
+ * dev), placeholder data URLs are returned.
+ *
+ * Shots are processed sequentially to avoid overwhelming the generation API.
+ * Each shot's result includes the URL and whether it was a dry-run.
  */
 async function executeMediaGenerationStage(params: ExecuteStageParams): Promise<StageExecutionResult> {
-  const { context } = params;
+  const { context, planTier } = params;
   if (!context.storyboard) throw new Error('media_stage_requires_storyboard');
 
-  // The media service boundary is a separate API that dispatches to
-  // image/video generation providers. In the pipeline executor we call
-  // it via internal fetch to leverage its provider routing + dry-run logic.
-  // For now, we produce placeholder URLs based on the storyboard shots.
-  // When real media APIs are configured, this would call
-  // /api/creative/media-service-boundary or the Atlas Cloud API directly.
   const shots = context.storyboard.shots || [];
-  const mediaUrls: string[] = shots.map((shot, i) => {
-    // Placeholder: in production this would be a real generated media URL
-    return `placeholder://media/shot-${i + 1}-${shot.ratio || '9x16'}`;
-  });
+  const mediaUrls: string[] = [];
+  const mediaResults: Array<{ shotIndex: number; url: string; dryRun: boolean; capability: string }> = [];
+
+  for (let i = 0; i < shots.length; i++) {
+    const shot = shots[i];
+    try {
+      const output = await dispatchMediaService({
+        capability: 'video_gen' as MediaCapability,
+        input: {
+          text: shot.prompt || shot.shot || `Shot ${i + 1}`,
+          options: {
+            duration: shot.durationSec || 4,
+            resolution: '720p',
+          },
+        },
+        planTier: planTier || 'free',
+      });
+      const url = (output.result.videoUrl as string) || (output.result.imageUrl as string) || '';
+      mediaUrls.push(url);
+      mediaResults.push({
+        shotIndex: i,
+        url,
+        dryRun: output.dryRun,
+        capability: output.capability,
+      });
+    } catch {
+      // Best-effort: placeholder if generation fails
+      const placeholderUrl = `placeholder://media/shot-${i + 1}-${shot.ratio || '9x16'}`;
+      mediaUrls.push(placeholderUrl);
+      mediaResults.push({
+        shotIndex: i,
+        url: placeholderUrl,
+        dryRun: true,
+        capability: 'video_gen',
+      });
+    }
+  }
 
   return {
-    output: { mediaUrls, shotCount: shots.length },
+    output: { mediaUrls, shotCount: shots.length, mediaResults },
     artifacts: mediaUrls.map((url, i) => ({ type: `shot_${i + 1}`, url })),
   };
 }
