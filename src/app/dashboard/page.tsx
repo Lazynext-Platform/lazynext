@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import {
   Clapperboard, Coins, Boxes, FolderOpen, ArrowRight, Loader2, Film, Play, Sparkles,
-  TrendingDown, TrendingUp, BarChart3, Trophy, Calendar, Gift, Layers, Scissors, Server, Users, Zap,
+  TrendingDown, TrendingUp, BarChart3, Trophy, Calendar, Gift, Layers, Scissors, Server, Users, Zap, Workflow,
 } from 'lucide-react';
 import { useI18n } from '@/i18n/provider';
 import { appTitle, appDesc, isFeatured } from '@/config/appCatalog';
@@ -31,6 +31,7 @@ const APPS: App[] = [
   { id: 'team-workspace', href: '/teams', icon: Users },
   { id: 'analytics-hub', href: '/analytics-hub', icon: BarChart3 },
   { id: 'ab-automation', href: '/ab-automation', icon: Zap },
+  { id: 'workflow-builder', href: '/workflow-builder', icon: Workflow },
 ];
 
 type Creation = {
