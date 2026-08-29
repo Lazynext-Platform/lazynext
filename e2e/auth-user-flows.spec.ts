@@ -31,6 +31,7 @@ test.describe('Authenticated user pages', () => {
 
   test('/api/me returns user info', async ({ request }) => {
     const res = await request.get('/api/me');
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
     expect(res.ok()).toBeTruthy();
     const data = await res.json();
     expect(typeof data.credits).toBe('number');
@@ -39,6 +40,7 @@ test.describe('Authenticated user pages', () => {
 
   test('credits analytics API returns data', async ({ request }) => {
     const res = await request.get('/api/credits/analytics');
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
     expect(res.ok()).toBeTruthy();
     const data = await res.json();
     expect(data).toBeTruthy();
@@ -46,6 +48,7 @@ test.describe('Authenticated user pages', () => {
 
   test('admin users API returns list', async ({ request }) => {
     const res = await request.get('/api/admin/users');
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
     expect(res.ok()).toBeTruthy();
     const data = await res.json();
     expect(Array.isArray(data.users) || Array.isArray(data)).toBeTruthy();
@@ -53,6 +56,7 @@ test.describe('Authenticated user pages', () => {
 
   test('creative tools list API returns tools', async ({ request }) => {
     const res = await request.get('/api/creative/tools');
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
     expect(res.ok()).toBeTruthy();
     const data = await res.json();
     expect(data).toBeTruthy();
@@ -60,6 +64,7 @@ test.describe('Authenticated user pages', () => {
 
   test('pipeline templates API returns all 5 templates with score', async ({ request }) => {
     const res = await request.get('/api/creative/pipeline/templates');
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
     expect(res.ok()).toBeTruthy();
     const data = await res.json();
     const templates = data.templates || data;

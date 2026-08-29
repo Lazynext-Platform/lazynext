@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma';
 import { createHmac } from 'crypto';
+import { isUrlSafe } from '@/lib/security';
 
 export type WebhookEvent =
   | 'creative.generated'
@@ -39,6 +40,12 @@ export async function dispatchWebhook(
 
     await Promise.allSettled(endpoints.map(async (ep) => {
       try {
+        // SSRF protection: skip unsafe URLs
+        if (!isUrlSafe(ep.url)) {
+          console.warn(`[webhooks] skipping unsafe URL for endpoint ${ep.id}`);
+          return;
+        }
+
         const signature = createHmac('sha256', ep.secret)
           .update(body)
           .digest('hex');

@@ -643,12 +643,11 @@ export async function dispatchMediaService(params: {
         dryRun: false,
       };
     } catch (err) {
-      // Fall back to dry-run on Atlas failure (graceful degradation)
-      const dryRunResult = executeDryRun(capability, input);
-      dryRunResult.metadata.warnings.push(
-        `Atlas Cloud call failed, fell back to dry-run: ${err instanceof Error ? err.message : String(err)}`,
-      );
-      return dryRunResult;
+      // Re-throw the error so the pipeline stage fails — do NOT silently
+      // fall back to dry-run, which would mark the stage as "completed"
+      // with unusable placeholder media. The caller (pipeline executor)
+      // handles stage failure, credit refunds, and user-facing errors.
+      throw err;
     }
   }
 

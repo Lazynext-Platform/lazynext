@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { verifyPassword } from '@/lib/security';
 
 /**
  * GET /api/creative/share/[token]
@@ -20,9 +21,12 @@ export async function GET(req: Request, { params }: { params: Promise<{ token: s
     return NextResponse.json({ error: 'expired' }, { status: 410 });
   }
 
-  // Check password
-  if (link.password && link.password !== password) {
-    return NextResponse.json({ error: 'password_required' }, { status: 403 });
+  // Check password (hashed with SHA-256 + salt)
+  if (link.password) {
+    const ok = await verifyPassword(password, link.password);
+    if (!ok) {
+      return NextResponse.json({ error: 'password_required' }, { status: 403 });
+    }
   }
 
   // Increment views

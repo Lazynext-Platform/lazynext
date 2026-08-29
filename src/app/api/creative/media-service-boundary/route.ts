@@ -52,7 +52,7 @@ async function __byokPOST(req: Request) {
   } catch (e) {
     await refundCredits(uid, MEDIA_SERVICE_COST, 'creative:media-service-boundary');
     console.error('[creative/media-service-boundary] error:', String(e));
-    return NextResponse.json({ error: 'service_failed', detail: String(e) }, { status: 500 });
+    return NextResponse.json({ error: 'service_failed' }, { status: 500 });
   }
 }
 

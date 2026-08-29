@@ -226,16 +226,12 @@ async function executeMediaGenerationStage(params: ExecuteStageParams): Promise<
         dryRun: output.dryRun,
         capability: output.capability,
       });
-    } catch {
-      // Best-effort: placeholder if generation fails
-      const placeholderUrl = `placeholder://media/shot-${i + 1}-${shot.ratio || '9x16'}`;
-      mediaUrls.push(placeholderUrl);
-      mediaResults.push({
-        shotIndex: i,
-        url: placeholderUrl,
-        dryRun: true,
-        capability: 'video_gen',
-      });
+    } catch (e) {
+      // Fail the stage on media generation failure — do NOT silently fall
+      // back to placeholder URLs, which would mark the stage as "completed"
+      // with unusable media. The pipeline executor handles stage failure,
+      // credit refunds, and user-facing error messages.
+      throw new PipelineStageError('media_generation', e, { shotIndex: i, shot }, context);
     }
   }
 
@@ -284,11 +280,11 @@ async function executeAudioStage(params: ExecuteStageParams): Promise<StageExecu
       artifacts: [{ type: 'voiceover', url: audioUrl }],
     };
   } catch (e) {
-    // Best-effort: return placeholder if TTS fails
-    return {
-      output: { audioUrl: `placeholder://audio/voiceover`, error: String(e) },
-      artifacts: [{ type: 'voiceover', url: 'placeholder://audio/voiceover' }],
-    };
+    // Fail the stage on TTS failure — do NOT silently fall back to
+    // placeholder audio, which would mark the stage as "completed"
+    // with unusable output. The pipeline executor handles stage failure,
+    // credit refunds, and user-facing error messages.
+    throw new PipelineStageError('audio', e, { voiceoverText: voiceoverText.slice(0, 200) }, context);
   }
 }
 

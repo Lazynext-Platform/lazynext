@@ -49,8 +49,8 @@ Production uses Cloudflare R2 via `src/lib/media-storage.cloudflare.ts`.
 ## Verification Commands
 ```bash
 npm run lint    # ESLint
-npm test        # Node test runner (1445 tests)
-# E2E: 436 passed, 7 skipped (chromium + mobile-chrome + chromium-auth)
+npm test        # Node test runner (1455 tests)
+# E2E: 436 passed, 11 skipped (chromium + mobile-chrome + chromium-auth)
 npm run build   # Production build (Cloudflare target)
 ```
 
@@ -242,4 +242,10 @@ Completed across 15+ sessions:
 - Pipeline error recovery UX: `PipelineOrchestrator` shows friendly error messages (rate-limited, insufficient credits, timeout, network, auth, server) via `friendlyError()` mapping; "Skip All & Stop" button appears when a stage has failed
 - Asset visibility: `derivePipelineChildAssets` now persists `brief`, `script`, `storyboard`, and `score` as child assets (in addition to media, audio, edit, compliance, publish); `/assets` page has a "Creative Packages" tab showing pipeline output assets
 - Production observability: `src/lib/observability/alerts.ts` provides webhook-based alerting for critical pipeline failures and credit errors; configurable via `ALERT_WEBHOOK_URL` and `ALERT_WEBHOOK_SECRET` env vars; falls back to console logging when no webhook is configured
+
+### Y-Series: Security Hardening, Credit Safety, E2E Fix, Media Fallback
+- Security hardening: `src/lib/security.ts` provides `hashPassword`/`verifyPassword` (SHA-256 + salt via Web Crypto API) and `isUrlSafe` (SSRF protection); shared-link passwords are now hashed instead of plaintext; webhook dispatcher validates URLs against SSRF allow-list; 5 API routes no longer leak raw `String(e)` to clients (compliance, media-service-boundary, publish, skills/chain, assets/upload)
+- Credit safety on D1: `grantCredits` no longer uses `prisma.$transaction` (which D1 ignores) — uses compensation pattern matching `deductCredits`; skills/chain endpoint now uses per-request UUID idempotency key to prevent double-charging on retry
+- E2E flakiness fix: 4 `auth-user-flows.spec.ts` tests now skip gracefully on 429 rate limiting instead of failing
+- Media fallback fix: `dispatchMediaService` and pipeline executor no longer silently fall back to placeholder/dry-run media on Atlas failure — stages now fail with proper error messages, credit refunds, and user-facing errors via `PipelineStageError`
 

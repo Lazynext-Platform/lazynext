@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { auth } from '@/../auth';
 import { prisma } from '@/lib/prisma';
 import { randomBytes } from 'crypto';
+import { hashPassword } from '@/lib/security';
 
 /**
  * POST /api/creative/share
@@ -27,11 +28,11 @@ export async function POST(req: Request) {
     ? new Date(Date.now() + body.expiresHours * 60 * 60 * 1000)
     : null;
 
-  // Note: password is stored as-is for simplicity (not bcrypt, since bcrypt may not work in Cloudflare Workers)
-  // In production, use a Web Crypto API hash
-  const password = typeof body.password === 'string' && body.password.trim()
+  // Hash the password using Web Crypto API (SHA-256 + salt)
+  const rawPassword = typeof body.password === 'string' && body.password.trim()
     ? body.password.trim()
     : null;
+  const password = rawPassword ? await hashPassword(rawPassword) : null;
 
   const link = await prisma.sharedLink.create({
     data: { userId: uid, assetId, token, password, expiresAt },

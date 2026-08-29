@@ -58,7 +58,7 @@ async function __byokPOST(req: Request) {
   } catch (e) {
     await refundCredits(uid, COMPLIANCE_COST, 'creative:compliance');
     console.error('[creative/compliance] error:', String(e));
-    return NextResponse.json({ error: 'compliance_check_failed', detail: String(e) }, { status: 500 });
+    return NextResponse.json({ error: 'compliance_check_failed' }, { status: 500 });
   }
 }
 

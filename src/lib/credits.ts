@@ -15,10 +15,30 @@ export async function grantCredits(
 ): Promise<void> {
   if (isByok()) return; // BYOK: user pays AtlasCloud directly — no credit movement at all.
   if (amount === 0) return; // Allow negative amounts for refund claw-backs (e.g. webhook refund.succeeded).
-  await prisma.$transaction([
-    prisma.user.update({ where: { id: userId }, data: { credits: { increment: amount } } }),
-    prisma.creditLedger.create({ data: { userId, delta: amount, reason, ref } }),
-  ]);
+  // Cloudflare D1 does not support interactive transactions, so we use
+  // compensation: increment the user's balance first, then write the ledger
+  // entry. If the ledger write fails, reverse the increment to avoid
+  // "granted without a ledger entry".
+  await prisma.user.update({
+    where: { id: userId },
+    data: { credits: { increment: amount } },
+  });
+  try {
+    await prisma.creditLedger.create({
+      data: { userId, delta: amount, reason, ref },
+    });
+  } catch (e) {
+    // Ledger write failed → compensatory reversal of the granted credits.
+    await prisma.user
+      .update({ where: { id: userId }, data: { credits: { decrement: amount } } })
+      .catch((re) => {
+        console.error(
+          `[credits] CRITICAL: grant succeeded but ledger+rollback both failed uid=${userId} amount=${amount} ref=${ref}:`,
+          String(re),
+        );
+      });
+    throw e;
+  }
 }
 
 /** Atomically spend credits. Throws INSUFFICIENT_CREDITS if balance too low.

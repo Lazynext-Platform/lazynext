@@ -42,7 +42,7 @@ async function __byokPOST(req: Request) {
     if (e instanceof Error && e.message === 'INSUFFICIENT_CREDITS') {
       return NextResponse.json({ error: 'insufficient_credits' }, { status: 402 });
     }
-    return NextResponse.json({ error: 'charge_failed', detail: String(e) }, { status: 500 });
+    return NextResponse.json({ error: 'charge_failed' }, { status: 500 });
   }
 
   const planTier = await getUserPlanTier(uid).catch(() => 'free' as const);
@@ -59,7 +59,7 @@ async function __byokPOST(req: Request) {
     // Publish failed → refund the full charge.
     await refundCredits(uid, cost, ref).catch(() => {});
     console.error('[publish] error:', String(e));
-    return NextResponse.json({ error: 'publish_failed', detail: String(e) }, { status: 500 });
+    return NextResponse.json({ error: 'publish_failed' }, { status: 500 });
   }
 
   // Refund for any per-platform failures (failed status) within the batch.

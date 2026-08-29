@@ -4,6 +4,7 @@ import { auth } from '@/../auth';
 import { getChain, executeChain, estimateChainCredits } from '@/lib/creative/skill-library';
 import { deductCredits, refundCredits } from '@/lib/credits';
 import { getUserPlanTier } from '@/lib/plan-tier';
+import { randomUUID } from 'crypto';
 
 export const maxDuration = 60;
 
@@ -21,14 +22,16 @@ async function __byokPOST(req: Request) {
 
   const chain = getChain(chainId);
   if (!chain) {
-    return NextResponse.json({ error: 'chain_not_found', detail: `Unknown chain: ${chainId}` }, { status: 404 });
+    return NextResponse.json({ error: 'chain_not_found' }, { status: 404 });
   }
 
-  // Charge the total chain credits up front (sum of step costs).
+  // Charge the total chain credits up front with an idempotency key
+  // so duplicate requests (e.g. retries) don't double-charge.
   const cost = estimateChainCredits(chain);
+  const idempotencyKey = `chain:${chainId}:${randomUUID()}`;
   if (cost > 0) {
     try {
-      await deductCredits(uid, cost, `creative:skill-chain:${chainId}`);
+      await deductCredits(uid, cost, `creative:skill-chain:${chainId}`, undefined, idempotencyKey);
     } catch (e) {
       return NextResponse.json(
         {
@@ -47,7 +50,7 @@ async function __byokPOST(req: Request) {
     if (cost > 0) await refundCredits(uid, cost, `creative:skill-chain:${chainId}`);
     const message = e instanceof Error ? e.message : String(e);
     console.error(`[creative/skills/chain] execute ${chainId} error:`, message);
-    return NextResponse.json({ error: 'chain_execution_failed', detail: message }, { status: 500 });
+    return NextResponse.json({ error: 'chain_execution_failed' }, { status: 500 });
   }
 }
 

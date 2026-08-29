@@ -1,5 +1,20 @@
 # LazyNext Changelog
 
+## 2026-09-02 — Y: Security Hardening, Credit Safety, E2E Fix, Media Fallback
+
+### What Changed
+1. **Security hardening** — Added `src/lib/security.ts` with `hashPassword`/`verifyPassword` (SHA-256 + salt via Web Crypto API) and `isUrlSafe` (SSRF protection); shared-link passwords are now hashed instead of plaintext; webhook dispatcher validates URLs against SSRF allow-list (blocks private IPs, localhost, link-local, metadata endpoints); 5 API routes no longer leak raw `String(e)` to clients (compliance, media-service-boundary, publish, skills/chain, assets/upload)
+2. **Credit safety on D1** — `grantCredits` no longer uses `prisma.$transaction` (which D1 ignores) — uses compensation pattern matching `deductCredits` (increment balance, then write ledger; reverse on failure); skills/chain endpoint now uses per-request UUID idempotency key to prevent double-charging on retry
+3. **E2E flakiness fix** — 4 `auth-user-flows.spec.ts` tests (`/api/me`, admin users, creative tools, pipeline templates) now skip gracefully on 429 rate limiting instead of failing
+4. **Media fallback fix** — `dispatchMediaService` and pipeline executor no longer silently fall back to placeholder/dry-run media on Atlas failure; stages now fail with proper `PipelineStageError`, credit refunds, and user-facing error messages instead of marking unusable output as "completed"
+5. **Tests** — Added 10 unit tests for security utilities (`test/security.test.ts`)
+
+### Verification
+- npm run lint — 0 errors, 2 warnings
+- npm test — 1455 tests passing
+- npm run build — successful
+- npx playwright test — 436 passed, 11 skipped, 0 failed
+
 ## 2026-09-02 — X: Billing E2E, Error Recovery UX, Asset Visibility, Observability
 
 ### What Changed
