@@ -27,10 +27,12 @@ import {
   ChevronDown,
   Star,
   Zap,
+  Share2,
 } from 'lucide-react';
 import { useI18n } from '@/i18n/provider';
 import {
   templatePreApprovalCredits,
+  PIPELINE_COSTS,
   type PipelineState,
   type PipelineStage,
   type PipelineStageConfig,
@@ -106,6 +108,14 @@ export function PipelineOrchestrator({ initialPipelineId }: { initialPipelineId?
       ) as Record<PipelineStage, { enabled: boolean; autoAdvance: boolean }>,
   );
   const [onComplete, setOnComplete] = useState<'publish' | 'review' | 'export'>('publish');
+
+  // Live credit cost calculation based on currently enabled stages
+  const enabledStageCost = ALL_STAGES
+    .filter((s) => stageConfigs[s].enabled)
+    .reduce((sum, s) => sum + (PIPELINE_COSTS[s] ?? 0), 0);
+  const enabledPreApprovalCost = ALL_STAGES
+    .filter((s) => stageConfigs[s].enabled && s !== 'publish')
+    .reduce((sum, s) => sum + (PIPELINE_COSTS[s] ?? 0), 0);
 
   // Execution state
   const [activePipeline, setActivePipeline] = useState<PipelineState | null>(null);
@@ -313,6 +323,7 @@ export function PipelineOrchestrator({ initialPipelineId }: { initialPipelineId?
   // explicitly when the server's auto-advance deadline is hit or when a stage
   // has autoAdvance=false (e.g. the publish stage).
 
+  // Detect when the server auto-advance deadline was hit — moved after isTerminal.
   const togglePlatform = (p: string) => {
     setPlatforms((prev) => (prev.includes(p) ? prev.filter((x) => x !== p) : [...prev, p]));
   };
@@ -326,6 +337,81 @@ export function PipelineOrchestrator({ initialPipelineId }: { initialPipelineId?
 
   const isTerminal =
     activePipeline?.status === 'completed' || activePipeline?.status === 'failed';
+
+  // Detect when the server auto-advance deadline was hit: the pipeline is
+  // still running, the current stage is in_progress, and the server returned
+  // without completing it. In this case we show a notice and auto-continue.
+  const deadlineHit = useMemo(() => {
+    if (!activePipeline || isTerminal) return false;
+    if (activePipeline.status !== 'running') return false;
+    const currentResult = activePipeline.stageResults?.find(
+      (r) => r.stage === activePipeline.currentStage,
+    );
+    return currentResult?.status === 'in_progress';
+  }, [activePipeline, isTerminal]);
+
+  // Auto-continue when the server deadline is hit and the current stage has
+  // autoAdvance enabled. This retries the advance call once after a short
+  // delay so the user doesn't have to click manually.
+  const deadlineRetryRef = useRef(false);
+  useEffect(() => {
+    if (!deadlineHit || deadlineRetryRef.current) return;
+    const currentStageConfig = activePipeline?.config.stages.find(
+      (s) => s.stage === activePipeline?.currentStage,
+    );
+    if (!currentStageConfig?.autoAdvance) return;
+    deadlineRetryRef.current = true;
+    const timer = setTimeout(() => {
+      callAction('advance');
+      deadlineRetryRef.current = false;
+    }, 1500);
+    return () => clearTimeout(timer);
+  }, [deadlineHit, activePipeline, callAction]);
+
+  // Share state
+  const [shareUrl, setShareUrl] = useState('');
+  const [shareLoading, setShareLoading] = useState(false);
+  const [shareCopied, setShareCopied] = useState(false);
+
+  const handleShare = useCallback(async () => {
+    if (!activePipeline) return;
+    setShareLoading(true);
+    setShareCopied(false);
+    try {
+      // Find the persisted creative_package asset for this pipeline.
+      // The pipelineId is stored inside the asset's metadata JSON.
+      const assetRes = await fetch(`/api/creative/assets?type=creative_package`);
+      if (!assetRes.ok) throw new Error('Failed to load assets');
+      const assetData = await assetRes.json();
+      const pkg = (assetData.assets || []).find(
+        (a: { metadata?: unknown; id: string }) => {
+          const meta = a.metadata;
+          if (!meta) return false;
+          if (typeof meta === 'string') {
+            try { return JSON.parse(meta).pipelineId === activePipeline.pipelineId; } catch { return false; }
+          }
+          return (meta as Record<string, unknown>)?.pipelineId === activePipeline.pipelineId;
+        },
+      );
+      if (!pkg) throw new Error('No creative package found for this pipeline');
+
+      const res = await fetch('/api/creative/share', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ assetId: pkg.id }),
+      });
+      if (!res.ok) throw new Error('Failed to create share link');
+      const data = await res.json();
+      const url = `${window.location.origin}${data.url}`;
+      setShareUrl(url);
+      await navigator.clipboard.writeText(url).catch(() => {});
+      setShareCopied(true);
+    } catch {
+      setShareUrl('');
+    } finally {
+      setShareLoading(false);
+    }
+  }, [activePipeline]);
 
   return (
     <div className="space-y-6">
@@ -353,6 +439,11 @@ export function PipelineOrchestrator({ initialPipelineId }: { initialPipelineId?
           actionLoading={actionLoading}
           isTerminal={isTerminal}
           onReset={() => setActivePipeline(null)}
+          onShare={handleShare}
+          shareLoading={shareLoading}
+          shareUrl={shareUrl}
+          shareCopied={shareCopied}
+          deadlineHit={deadlineHit}
         />
       ) : (
         <>
@@ -529,6 +620,14 @@ export function PipelineOrchestrator({ initialPipelineId }: { initialPipelineId?
                   );
                 })}
               </div>
+              {/* Live credit cost estimate */}
+              <div className="mt-3 flex items-center gap-2 text-[11px] text-fg-faint">
+                <Coins className="h-3 w-3" />
+                <span>
+                  {enabledPreApprovalCost}–{enabledStageCost} {t('pipeline.credits')}
+                </span>
+                <span className="text-fg-faint/60">({t('pipeline.estimatedCostLive')})</span>
+              </div>
             </div>
 
             {/* On-complete action */}
@@ -629,6 +728,11 @@ function PipelineExecutionView({
   actionLoading,
   isTerminal,
   onReset,
+  onShare,
+  shareLoading,
+  shareUrl,
+  shareCopied,
+  deadlineHit,
 }: {
   state: PipelineState;
   onAdvance: () => void;
@@ -641,6 +745,11 @@ function PipelineExecutionView({
   actionLoading: boolean;
   isTerminal: boolean;
   onReset: () => void;
+  onShare: () => void;
+  shareLoading: boolean;
+  shareUrl: string;
+  shareCopied: boolean;
+  deadlineHit: boolean;
 }) {
   const { t } = useI18n();
   const enabledStages = state.config.stages.filter((s) => s.enabled);
@@ -708,6 +817,17 @@ function PipelineExecutionView({
           />
         </div>
 
+        {/* Deadline notice — server auto-advance stopped at the 75s limit */}
+        {deadlineHit && (
+          <div
+            role="status"
+            className="mt-3 flex items-center gap-2 rounded-lg border border-warning/30 bg-warning/5 px-3 py-2 text-[11px] text-warning"
+          >
+            <Clock className="h-3.5 w-3.5" />
+            {t('pipeline.deadlineNotice')}
+          </div>
+        )}
+
         {/* Controls */}
         <div className="mt-4 flex flex-wrap gap-2">
           {!isTerminal && state.status === 'running' && (
@@ -756,6 +876,21 @@ function PipelineExecutionView({
             >
               <RotateCw className="h-3.5 w-3.5" /> {t('pipeline.newPipeline')}
             </button>
+          )}
+          {isTerminal && state.status === 'completed' && (
+            <button
+              onClick={onShare}
+              disabled={shareLoading}
+              className="flex items-center gap-1.5 rounded-lg border border-line bg-app px-3 py-2 text-xs font-medium text-fg hover:bg-hover disabled:opacity-50"
+            >
+              {shareLoading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Share2 className="h-3.5 w-3.5" />}
+              {shareCopied && shareUrl ? t('pipeline.shareCopied') : t('pipeline.share')}
+            </button>
+          )}
+          {shareUrl && shareCopied && (
+            <span role="status" className="text-[11px] text-success">
+              {t('pipeline.shareLinkCopied')}
+            </span>
           )}
         </div>
 

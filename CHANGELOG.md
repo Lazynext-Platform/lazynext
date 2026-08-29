@@ -1,5 +1,20 @@
 # LazyNext Changelog
 
+## 2026-09-02 — W: Parallel-wave E2E, Live Credit Display, Share Button, Deadline UX
+
+### What Changed
+1. **Parallel-wave E2E coverage** — Added `e2e/auth-workflow-builder.spec.ts` with 3 authenticated tests: pipeline creation with `parallelWith` stages, concurrent wave execution verification, and workflow builder page load with active session
+2. **Live credit cost display** — `PipelineOrchestrator` now shows a live-updating credit estimate that recalculates when stages are toggled on/off, using `PIPELINE_COSTS` directly; shows pre-approval to total range
+3. **Share button** — Completed pipelines now show a "Share" button that finds the persisted `creative_package` asset, calls `POST /api/creative/share` to create a shareable link, and copies the URL to clipboard
+4. **Auto-advance deadline UX** — When the server's 75s auto-advance deadline is hit (pipeline still running, current stage in_progress), a warning notice is shown and the client automatically retries the advance call after 1.5s if the current stage has `autoAdvance: true`
+5. **i18n** — Added `estimatedCostLive`, `share`, `shareCopied`, `shareLinkCopied`, and `deadlineNotice` translation keys to all 13 locales
+
+### Verification
+- npm run lint — 0 errors, 2 warnings
+- npm test — 1440 tests passing
+- npm run build — successful
+- npx playwright test — 434 passed, 2 skipped
+
 ## 2026-09-02 — V: D1 Migration, Pipeline Versioning, Idempotency Tests, Reconciliation
 
 ### What Changed

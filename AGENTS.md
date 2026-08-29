@@ -50,7 +50,7 @@ Production uses Cloudflare R2 via `src/lib/media-storage.cloudflare.ts`.
 ```bash
 npm run lint    # ESLint
 npm test        # Node test runner (1440 tests)
-# E2E: 430 passed, 3 skipped (chromium + mobile-chrome + chromium-auth)
+# E2E: 434 passed, 2 skipped (chromium + mobile-chrome + chromium-auth)
 npm run build   # Production build (Cloudflare target)
 ```
 
@@ -230,4 +230,10 @@ Completed across 15+ sessions:
 - Cancel button shows a warning that cancel takes effect after the current auto-advance chain completes
 - Dry-run TTS returns a valid silent WAV data URL (not a placeholder)
 - Template credit estimates show a pre-approval to total range (e.g. "24–27 credits")
+
+## Pipeline UX Enhancements (W-series)
+- Live credit cost display: `PipelineOrchestrator` shows a live-updating credit estimate that recalculates when stages are toggled on/off
+- Share button: completed pipelines show a "Share" button that creates a shareable link via `POST /api/creative/share` and copies it to clipboard
+- Auto-advance deadline UX: when the server's 75s auto-advance deadline is hit, a warning notice is shown and the client automatically retries the advance call after 1.5s (if the current stage has `autoAdvance: true`)
+- Parallel-wave E2E: authenticated tests verify pipeline creation with `parallelWith` stages and concurrent wave execution
 
