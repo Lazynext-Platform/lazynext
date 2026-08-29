@@ -45,6 +45,7 @@ model User {
   creativeComments CreativeComment[]
   teamMembers  TeamMember[]
   teamActivities TeamActivity[]
+  customComplianceRules CustomComplianceRule[]
 }
 
 model Account {
@@ -104,6 +105,9 @@ model Creation {
   timelines Timeline[]
 
   @@index([userId])
+  @@index([status, createdAt])
+  @@index([taskId])
+  @@index([getUrl])
 }
 
 model CreditLedger {
@@ -119,6 +123,8 @@ model CreditLedger {
 
   @@index([userId])
   @@unique([userId, idempotencyKey])
+  @@index([reason])
+  @@index([ref])
 }
 
 // Prevents the same Atlas redeem code being used twice in this app.
@@ -230,6 +236,7 @@ model SharedLink {
   @@index([userId])
   @@index([assetId])
   @@index([token])
+  @@index([expiresAt])
 }
 
 model WebhookEndpoint {
@@ -246,6 +253,7 @@ model WebhookEndpoint {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
+  @@index([active, events])
 }
 
 model CreativeComment {
@@ -309,6 +317,7 @@ model TeamInvitation {
 
   @@index([teamId])
   @@index([email])
+  @@index([expiresAt])
 }
 
 model TeamActivity {
@@ -376,6 +385,7 @@ model WorkflowRun {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
+  @@index([status])
 }
 
 model WorkflowStep {
@@ -526,4 +536,28 @@ model CreativeTemplate {
 
   @@index([userId])
   @@index([category])
+}
+
+// ── Custom compliance rules (user-defined, per-platform) ──
+
+model CustomComplianceRule {
+  id          String   @id @default(cuid())
+  userId      String   // owner
+  platform    String   // tiktok | youtube | meta | google | universal
+  enabled     Boolean  @default(true)
+  priority    Int      @default(0) // higher = checked first
+  category    String   // ComplianceCategory (prohibited_content, restricted_content, etc.)
+  title       String   // short rule title
+  description String   // what this rule checks
+  keywordsJson String  @default("[]") // serialized string[]
+  recommendation String // how to fix
+  severity    String   @default("medium") // critical | high | medium | low | info
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([platform])
+  @@index([enabled])
 }

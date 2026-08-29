@@ -49,8 +49,8 @@ Production uses Cloudflare R2 via `src/lib/media-storage.cloudflare.ts`.
 ## Verification Commands
 ```bash
 npm run lint    # ESLint
-npm test        # Node test runner (1455 tests)
-# E2E: 436 passed, 11 skipped (chromium + mobile-chrome + chromium-auth)
+npm test        # Node test runner (1459 tests)
+# E2E: 437 passed, 10 skipped (chromium + mobile-chrome + chromium-auth)
 npm run build   # Production build (Cloudflare target)
 ```
 
@@ -72,7 +72,7 @@ npm run build   # Production build (Cloudflare target)
 - Next.js 16 + React 19 + TypeScript 6
 - Tailwind CSS 4
 - NextAuth (JWT session, Google + Credentials providers)
-- Prisma 7 with D1 (prod) / SQLite (local) — 28 tables total
+- Prisma 7 with D1 (prod) / SQLite (local) — 30 tables total (including CustomComplianceRule)
 - Cloudflare R2 (prod) / file-based (local) media storage
 - Atlas Cloud AI generation API (prod) / mock server (local)
 - Dodo Payments for billing
@@ -248,4 +248,12 @@ Completed across 15+ sessions:
 - Credit safety on D1: `grantCredits` no longer uses `prisma.$transaction` (which D1 ignores) — uses compensation pattern matching `deductCredits`; skills/chain endpoint now uses per-request UUID idempotency key to prevent double-charging on retry
 - E2E flakiness fix: 4 `auth-user-flows.spec.ts` tests now skip gracefully on 429 rate limiting instead of failing
 - Media fallback fix: `dispatchMediaService` and pipeline executor no longer silently fall back to placeholder/dry-run media on Atlas failure — stages now fail with proper error messages, credit refunds, and user-facing errors via `PipelineStageError`
+
+### Z-Series: Skill-Chain Fixes, Custom Compliance Rules, UI States, DB/Auth/Upload Hardening
+- Skill-chain mapping fixes: `renderTemplate` now extracts readable text from arrays/objects (name/description/text fields) instead of raw JSON blobs; fixed reversed `inputMappings` in `full-pipeline` and `audience-first` chains; `executeChain` now warns about unresolved source keys at runtime
+- Custom compliance rules: Added `CustomComplianceRule` Prisma model with full CRUD endpoints (`GET/POST/PUT/DELETE /api/creative/compliance/rules`); `checkCompliance` now accepts `userId` and loads custom rules from DB; `detectViolations` merges built-in and custom rules; `dbRuleToComplianceRule` converter
+- UI loading/error states: Added `LoadingSpinner` component and `loading.tsx` to 10 key routes (dashboard, pipeline, assets, creative-studio, admin, analytics-hub, workflow-builder, pricing, compliance, settings, teams); added per-route `error.tsx` to 6 routes; fixed `error.tsx` to use `role="alert"` and `aria-live="assertive"`
+- DB indexes: Added composite indexes for `Creation(status, createdAt)`, `Creation(taskId)`, `Creation(getUrl)`, `CreditLedger(reason)`, `CreditLedger(ref)`, `SharedLink(expiresAt)`, `WebhookEndpoint(active, events)`, `WorkflowRun(status)`, `TeamInvitation(expiresAt)`
+- JWT credits fix: JWT `credits` field now auto-refreshes from DB if older than 60 seconds, preventing stale balance display
+- Upload magic-byte validation: Asset upload now validates decoded bytes against declared MIME type (JPEG/PNG/WebP magic bytes), rejecting SVG XSS and wrong content-type uploads
 

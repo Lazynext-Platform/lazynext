@@ -108,6 +108,21 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       if (user) {
         token.id = user.id;
         token.credits = (user as { credits?: number }).credits ?? 0;
+        token.creditsUpdatedAt = Date.now();
+      }
+      // Refresh credits from DB if stale (older than 60 seconds) to avoid
+      // showing a stale balance after spending/refunding credits.
+      if (token.id && (!token.creditsUpdatedAt || Date.now() - (token.creditsUpdatedAt as number) > 60_000)) {
+        try {
+          const { prisma } = await import('@/lib/prisma');
+          const u = await prisma.user.findUnique({ where: { id: token.id as string }, select: { credits: true } });
+          if (u) {
+            token.credits = u.credits;
+            token.creditsUpdatedAt = Date.now();
+          }
+        } catch {
+          // DB lookup failed — keep the existing token value
+        }
       }
       return token;
     },

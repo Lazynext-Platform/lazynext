@@ -22,6 +22,25 @@ async function POST(req: Request) {
     if (!match) throw new Error('invalid_data_url');
     const contentType = match[1];
     const buffer = Uint8Array.from(atob(match[2]), (c) => c.charCodeAt(0)).buffer as ArrayBuffer;
+
+    // Magic-byte validation: verify the decoded bytes match the declared image type
+    // to prevent SVG XSS or wrong content-type uploads.
+    const bytes = new Uint8Array(buffer);
+    let validMagic = false;
+    if (bytes.length >= 12) {
+      if (bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff) {
+        validMagic = contentType.includes('jpeg') || contentType.includes('jpg');
+      } else if (bytes[0] === 0x89 && bytes[1] === 0x50 && bytes[2] === 0x4e && bytes[3] === 0x47) {
+        validMagic = contentType.includes('png');
+      } else if (bytes[0] === 0x52 && bytes[1] === 0x49 && bytes[2] === 0x46 && bytes[3] === 0x46 &&
+                 bytes[8] === 0x57 && bytes[9] === 0x45 && bytes[10] === 0x42 && bytes[11] === 0x50) {
+        validMagic = contentType.includes('webp');
+      }
+    }
+    if (!validMagic) {
+      return NextResponse.json({ error: 'invalid_image_format' }, { status: 400 });
+    }
+
     const ext = contentType.split('/')[1] === 'jpeg' ? 'jpg' : (contentType.split('/')[1] || 'png');
     const key = `asset-${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
     const url = await putMedia(key, buffer, contentType);

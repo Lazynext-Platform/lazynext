@@ -1,5 +1,22 @@
 # LazyNext Changelog
 
+## 2026-09-02 — Z: Skill-Chain Fixes, Custom Compliance Rules, UI States, DB/Auth/Upload Hardening
+
+### What Changed
+1. **Skill-chain mapping fixes** — `renderTemplate` now extracts readable text from arrays/objects (name/description/text fields) instead of raw JSON blobs; fixed reversed `inputMappings` in `full-pipeline` and `audience-first` chains; `executeChain` now warns about unresolved source keys at runtime
+2. **Custom compliance rules** — Added `CustomComplianceRule` Prisma model with full CRUD endpoints (`GET/POST/PUT/DELETE /api/creative/compliance/rules`); `checkCompliance` now accepts `userId` and loads custom rules from DB; `detectViolations` merges built-in and custom rules
+3. **UI loading/error states** — Added `LoadingSpinner` component and `loading.tsx` to 10 key routes; added per-route `error.tsx` to 6 routes; fixed `error.tsx` to use `role="alert"` and `aria-live="assertive"`
+4. **DB indexes** — Added composite indexes for `Creation(status, createdAt)`, `Creation(taskId)`, `Creation(getUrl)`, `CreditLedger(reason)`, `CreditLedger(ref)`, `SharedLink(expiresAt)`, `WebhookEndpoint(active, events)`, `WorkflowRun(status)`, `TeamInvitation(expiresAt)`
+5. **JWT credits fix** — JWT `credits` field now auto-refreshes from DB if older than 60 seconds, preventing stale balance display
+6. **Upload magic-byte validation** — Asset upload now validates decoded bytes against declared MIME type (JPEG/PNG/WebP magic bytes), rejecting SVG XSS and wrong content-type uploads
+7. **Tests** — Added 4 compliance tests for custom rules and `dbRuleToComplianceRule`
+
+### Verification
+- npm run lint — 0 errors, 2 warnings
+- npm test — 1459 tests passing
+- npm run build — successful
+- npx playwright test — 437 passed, 10 skipped, 0 failed
+
 ## 2026-09-02 — Y: Security Hardening, Credit Safety, E2E Fix, Media Fallback
 
 ### What Changed

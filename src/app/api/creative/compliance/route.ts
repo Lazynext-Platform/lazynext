@@ -53,7 +53,7 @@ async function __byokPOST(req: Request) {
   }
 
   try {
-    const result = await checkCompliance(request, planTier);
+    const result = await checkCompliance(request, planTier, uid);
     return NextResponse.json({ result });
   } catch (e) {
     await refundCredits(uid, COMPLIANCE_COST, 'creative:compliance');

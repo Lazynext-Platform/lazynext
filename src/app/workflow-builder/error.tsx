@@ -1,15 +1,9 @@
 'use client';
-
 import { useEffect } from 'react';
 import { useI18n } from '@/i18n/provider';
-
-export default function Error({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
+export default function RouteError({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
   const { t } = useI18n();
-
-  useEffect(() => {
-    console.error(error);
-  }, [error]);
-
+  useEffect(() => { console.error(error); }, [error]);
   return (
     <main className="min-h-screen flex items-center justify-center text-fg bg-app" role="alert" aria-live="assertive">
       <div className="max-w-md px-6 text-center">

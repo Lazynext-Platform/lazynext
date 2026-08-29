@@ -579,6 +579,7 @@ function escapeRegex(s: string): string {
 export function detectViolations(
   content: string,
   platforms: CompliancePlatform[],
+  customRules: ComplianceRule[] = [],
 ): { violations: ComplianceViolation[]; warnings: ComplianceViolation[] } {
   const violations: ComplianceViolation[] = [];
   const warnings: ComplianceViolation[] = [];
@@ -589,7 +590,10 @@ export function detectViolations(
   const targetPlatforms = new Set<CompliancePlatform>(platforms);
   targetPlatforms.add('universal');
 
-  for (const rule of COMPLIANCE_RULES) {
+  // Merge built-in and custom rules
+  const allRules = [...COMPLIANCE_RULES, ...customRules];
+
+  for (const rule of allRules) {
     if (!targetPlatforms.has(rule.platform)) continue;
 
     for (const kw of rule.keywords) {
@@ -780,6 +784,30 @@ export function getComplianceRules(platform?: CompliancePlatform): ComplianceRul
   return COMPLIANCE_RULES.filter((r) => r.platform === platform);
 }
 
+/** Convert a CustomComplianceRule DB record to a ComplianceRule. */
+export function dbRuleToComplianceRule(db: {
+  platform: string;
+  category: string;
+  title: string;
+  description: string;
+  keywordsJson: string;
+  recommendation: string;
+  severity: string;
+  ruleId?: string;
+  id: string;
+}): ComplianceRule {
+  return {
+    ruleId: `custom:${db.id}`,
+    platform: db.platform as CompliancePlatform,
+    category: db.category as ComplianceCategory,
+    title: db.title,
+    description: db.description,
+    keywords: JSON.parse(db.keywordsJson || '[]'),
+    recommendation: db.recommendation,
+    severity: db.severity as ComplianceSeverity,
+  };
+}
+
 export function getCompliancePlatforms(): Array<{ platform: CompliancePlatform; name: string; policyUrl: string }> {
   return PLATFORM_INFO;
 }
@@ -908,15 +936,32 @@ async function semanticAnalysis(
 export async function checkCompliance(
   request: ComplianceCheckRequest,
   planTier?: PlanTier,
+  userId?: string,
 ): Promise<ComplianceResult> {
   const platforms: CompliancePlatform[] = request.platforms.includes('universal')
     ? request.platforms
     : [...request.platforms, 'universal'];
 
-  // 1. Rule-based detection.
+  // Load custom compliance rules for this user (if provided)
+  let customRules: ComplianceRule[] = [];
+  if (userId) {
+    try {
+      const { prisma } = await import('@/lib/prisma');
+      const dbRules = await prisma.customComplianceRule.findMany({
+        where: { userId, enabled: true },
+        orderBy: { priority: 'desc' },
+      });
+      customRules = dbRules.map(dbRuleToComplianceRule);
+    } catch (e) {
+      console.warn('[compliance] failed to load custom rules:', String(e));
+    }
+  }
+
+  // 1. Rule-based detection (includes custom rules).
   const { violations: ruleViolations, warnings: ruleWarnings } = detectViolations(
     request.content,
     platforms,
+    customRules,
   );
 
   // 2. Claim verification (rule-based heuristic first).

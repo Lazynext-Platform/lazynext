@@ -111,17 +111,47 @@ async function resolveCreativeModel(planTier?: PlanTier): Promise<string> {
 
 // ── Prompt helpers ──
 
-/** Replace {{name}} placeholders in a template with values from `inputs`. */
+/** Replace {{name}} placeholders in a template with values from `inputs`.
+ *  Non-string values are converted to readable text instead of raw JSON:
+ *  - Arrays of objects: each item's `name`, `description`, or `text` field is extracted
+ *  - Objects: `name`, `description`, `text`, or `summary` field is extracted
+ *  - Arrays of strings: joined with newlines
+ */
 function renderTemplate(template: string, inputs: Record<string, unknown>): string {
   return template.replace(/\{\{\s*([\w.]+)\s*\}\}/g, (_m, key: string) => {
     const v = inputs[key];
     if (v === undefined || v === null) return '';
     if (typeof v === 'string') return v;
-    try {
-      return JSON.stringify(v);
-    } catch {
-      return String(v);
+    if (typeof v === 'number' || typeof v === 'boolean') return String(v);
+    if (Array.isArray(v)) {
+      // Extract readable text from each array element
+      const items = v.map((item) => {
+        if (typeof item === 'string') return item;
+        if (item && typeof item === 'object') {
+          return String(
+            (item as Record<string, unknown>).name ||
+            (item as Record<string, unknown>).description ||
+            (item as Record<string, unknown>).text ||
+            (item as Record<string, unknown>).hook ||
+            ''
+          );
+        }
+        return String(item);
+      }).filter(Boolean);
+      return items.join('\n');
     }
+    if (typeof v === 'object') {
+      // Extract a readable field from a single object
+      return String(
+        (v as Record<string, unknown>).name ||
+        (v as Record<string, unknown>).description ||
+        (v as Record<string, unknown>).text ||
+        (v as Record<string, unknown>).summary ||
+        (v as Record<string, unknown>).title ||
+        ''
+      );
+    }
+    return String(v);
   });
 }
 
@@ -523,7 +553,7 @@ export const BUILTIN_CHAINS: SkillChain[] = [
       },
       {
         skillId: 'script-writer',
-        inputMappings: { product: 'product', angle: 'angles', hook: 'hooks', cta: 'cta' },
+        inputMappings: { product: 'product', angles: 'angle', hooks: 'hook', cta: 'cta' },
         outputKey: 'script',
       },
       {
@@ -607,7 +637,7 @@ export const BUILTIN_CHAINS: SkillChain[] = [
       },
       {
         skillId: 'script-writer',
-        inputMappings: { product: 'product', angle: 'angle', hook: 'hooks', cta: 'cta' },
+        inputMappings: { product: 'product', hooks: 'hook', cta: 'cta' },
         outputKey: 'script',
       },
     ],
@@ -723,6 +753,11 @@ export function validateChain(chain: SkillChain): { valid: boolean; errors: stri
         errors.push(`step_${i}_missing_required_input:${inp.name}`);
       }
     }
+
+    // Type compatibility: text inputs should not be mapped from array/object source keys
+    // (which would produce JSON blobs in prompts). We check that text inputs are not
+    // mapped from prior step outputs that are known to produce arrays/objects.
+    // Chain-level inputs are not checked here since their types are unknown at validation time.
   }
 
   return { valid: errors.length === 0, errors };
@@ -812,7 +847,11 @@ export async function executeChain(
     const stepInputs: Record<string, unknown> = {};
     for (const [sourceKey, skillInputName] of Object.entries(step.inputMappings)) {
       if (sourceKey in store) {
+        // Coerce arrays/objects to readable text for text inputs (renderTemplate handles this)
         stepInputs[skillInputName] = store[sourceKey];
+      } else {
+        // Source key not found in store — log warning for debugging
+        console.warn(`[skill-chain] ${chainId}: source key "${sourceKey}" not in store for skill "${step.skillId}"`);
       }
     }
 

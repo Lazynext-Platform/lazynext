@@ -1,5 +1,6 @@
 import { test, describe } from 'node:test';
 import assert from 'node:assert/strict';
+import { detectViolations, dbRuleToComplianceRule, getComplianceRules } from '../src/lib/creative/compliance.ts';
 
 describe('Creative Compliance Checker', () => {
   test('ComplianceRule structure validation', () => {
@@ -104,5 +105,54 @@ describe('Creative Compliance Checker', () => {
   test('request validation - missing platforms', () => {
     const req = { content: 'Some ad text', platforms: [] };
     assert.equal(req.platforms.length, 0);
+  });
+
+  test('detectViolations uses custom rules', () => {
+    const customRules = [
+      {
+        ruleId: 'custom:test-1',
+        platform: 'meta' as const,
+        category: 'prohibited_content' as const,
+        title: 'No competitor names',
+        description: 'Ads must not mention competitor names',
+        severity: 'critical' as const,
+        keywords: ['competitorxyz'],
+        recommendation: 'Remove competitor name',
+      },
+    ];
+    const { violations } = detectViolations('This product is better than competitorxyz', ['meta'], customRules);
+    const customViolation = violations.find((v) => v.ruleId === 'custom:test-1');
+    assert.ok(customViolation, 'should detect custom rule violation');
+    assert.equal(customViolation!.title, 'No competitor names');
+  });
+
+  test('detectViolations works without custom rules (backward compatible)', () => {
+    const { violations, warnings } = detectViolations('Some ad text', ['meta']);
+    assert.ok(Array.isArray(violations));
+    assert.ok(Array.isArray(warnings));
+  });
+
+  test('dbRuleToComplianceRule converts DB record correctly', () => {
+    const dbRule = {
+      id: 'abc123',
+      platform: 'tiktok',
+      category: 'restricted_content',
+      title: 'No dangerous activities',
+      description: 'Ads must not show dangerous activities',
+      keywordsJson: JSON.stringify(['danger', 'extreme']),
+      recommendation: 'Remove dangerous content',
+      severity: 'high',
+    };
+    const rule = dbRuleToComplianceRule(dbRule);
+    assert.equal(rule.ruleId, 'custom:abc123');
+    assert.equal(rule.platform, 'tiktok');
+    assert.equal(rule.severity, 'high');
+    assert.deepEqual(rule.keywords, ['danger', 'extreme']);
+  });
+
+  test('getComplianceRules filters by platform', () => {
+    const metaRules = getComplianceRules('meta');
+    assert.ok(metaRules.length > 0);
+    assert.ok(metaRules.every((r) => r.platform === 'meta'));
   });
 });
