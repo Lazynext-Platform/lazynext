@@ -39,9 +39,9 @@ describe('media-service-boundary', () => {
       assert.ok(registry.dryRunCount <= registry.totalCapabilities);
     });
 
-    test('availableCount is 0 (all dry-run or coming_soon)', () => {
+    test('availableCount > 0 (capabilities wired to Atlas Cloud)', () => {
       const registry = getServiceRegistry();
-      assert.equal(registry.availableCount, 0);
+      assert.ok(registry.availableCount > 0, `expected availableCount > 0, got ${registry.availableCount}`);
     });
   });
 
@@ -72,7 +72,6 @@ describe('media-service-boundary', () => {
     });
 
     test('returns false for coming_soon capabilities', () => {
-      assert.equal(isCapabilityAvailable('video_gen'), false);
       assert.equal(isCapabilityAvailable('lip_sync'), false);
     });
   });

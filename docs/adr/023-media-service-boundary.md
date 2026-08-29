@@ -15,10 +15,11 @@ The platform needed a way to define these capabilities as part of its product su
 1. Created `src/lib/creative/media-service-boundary.ts` as a domain library that defines a stable contract for 8 GPU-backed media capabilities
 2. `MediaCapability` union: `asr`, `tts`, `ocr`, `image_edit`, `audio_process`, `voice_clone`, `video_gen`, `lip_sync`
 3. `ServiceDescriptor` models each capability with: name, description, status (`available` | `dry_run` | `unavailable` | `coming_soon`), GPU requirements, min VRAM, runtime, estimated latency, input/output schema, credit cost, and supported formats
-4. All 8 capabilities currently run as dry-run stubs — they return realistic placeholder data (e.g., ASR returns a sample transcript with segments, TTS returns a placeholder audio URL with estimated duration)
-5. `dispatchMediaService()` is the single entry point — it checks service status and routes to either the dry-run handler or (future) a real GPU service HTTP call
-6. The return type `MediaServiceOutput` is identical regardless of whether the service is dry-run or real — callers need no changes when real services are connected
-7. To wire up a real service: flip the descriptor `status` to `available` and replace the handler in `dispatchMediaService` — the contract stays identical
+4. Five capabilities (asr, tts, ocr, image_edit, video_gen) are wired to Atlas Cloud AI and run as real services when `ATLASCLOUD_API_KEY` is set; they fall back to dry-run stubs when no key is configured (local development with mock server)
+5. Three capabilities (audio_process, voice_clone, lip_sync) remain as dry-run stubs — Atlas Cloud does not yet offer corresponding endpoints
+6. `dispatchMediaService()` is the single entry point — it checks service status, routes to the Atlas Cloud handler when a key is present, and falls back to dry-run otherwise; on Atlas failure it gracefully degrades to dry-run with a warning
+7. The return type `MediaServiceOutput` is identical regardless of whether the service is dry-run or real — callers need no changes when real services are connected
+8. To wire up a real service: flip the descriptor `status` to `available` and add a handler to `ATLAS_HANDLERS` — the contract stays identical
 8. `getServiceRegistry()` returns a public manifest of all capabilities, statuses, and requirements — used by the UI to show what's available
 9. Credit costs vary per capability (3-12 credits) and scale with input size (e.g., TTS costs more for long text)
 10. API route at `/api/creative/media-service-boundary` — GET returns the registry, POST dispatches a service request

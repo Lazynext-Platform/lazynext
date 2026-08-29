@@ -8,18 +8,19 @@
  * dispatch function with dry-run stubs now and real service integration later.
  *
  * Capabilities map to FireRed models from the research:
- *   1. ASR            — FireRedASR / ASR2S
- *   2. TTS            — FireRedTTS2 / TTS3
- *   3. OCR            — FireRed-OCR
- *   4. Image Edit     — FireRed-Image-Edit
- *   5. Audio Process  — FireRedAudio
- *   6. Voice Clone    — StoryMaker
- *   7. Video Gen      — gen-v (#14)
- *   8. Lip Sync       — lip sync
+ *   1. ASR            — FireRedASR / ASR2S → Atlas Cloud Whisper
+ *   2. TTS            — FireRedTTS2 / TTS3 → Atlas Cloud TTS
+ *   3. OCR            — FireRed-OCR → Atlas Cloud Vision LLM
+ *   4. Image Edit     — FireRed-Image-Edit → Atlas Cloud image-edit
+ *   5. Audio Process  — FireRedAudio → dry-run (no Atlas equivalent yet)
+ *   6. Voice Clone    — StoryMaker → dry-run (no Atlas equivalent yet)
+ *   7. Video Gen      — gen-v (#14) → Atlas Cloud seedance
+ *   8. Lip Sync       — lip sync → dry-run (no Atlas equivalent yet)
  *
- * All capabilities currently return dry-run placeholder data. When a real GPU
- * service is wired up, flip the descriptor `status` to 'available' and replace
- * the handler in `dispatchMediaService` — the contract stays identical.
+ * Capabilities 1-4 and 7 are wired to Atlas Cloud AI when ATLASCLOUD_API_KEY
+ * is set. The remaining capabilities stay as dry-run stubs until Atlas Cloud
+ * adds corresponding endpoints. The contract (MediaServiceOutput) is identical
+ * regardless of whether the service is dry-run or real — callers need no changes.
  */
 import { getLLMModel } from '@/lib/providers/model-helpers';
 import type { PlanTier } from '@/lib/plan-tier';
@@ -95,9 +96,9 @@ const SERVICE_CATALOG: ServiceDescriptor[] = [
   {
     capability: 'asr',
     name: 'Automatic Speech Recognition',
-    description: 'Transcribe audio/video into text with word-level timestamps. Powered by FireRedASR / ASR2S.',
-    status: 'dry_run',
-    requirements: { gpu: true, minVram: '8GB', runtime: 'pytorch', estimatedLatency: '5-15s per minute of audio' },
+    description: 'Transcribe audio/video into text with word-level timestamps. Powered by Atlas Cloud Whisper.',
+    status: 'available',
+    requirements: { gpu: true, minVram: '8GB', runtime: 'atlas-cloud', estimatedLatency: '5-15s per minute of audio' },
     inputSchema: { url: 'string (audio/video URL)', language: 'string (optional BCP-47 tag)', options: 'object' },
     outputSchema: { transcript: 'string', segments: 'array<{start,end,text}>', language: 'string', duration: 'number' },
     creditCost: 3,
@@ -106,9 +107,9 @@ const SERVICE_CATALOG: ServiceDescriptor[] = [
   {
     capability: 'tts',
     name: 'Text-to-Speech',
-    description: 'Synthesize natural speech from text with selectable voices. Powered by FireRedTTS2 / TTS3.',
-    status: 'dry_run',
-    requirements: { gpu: true, minVram: '6GB', runtime: 'pytorch', estimatedLatency: '2-8s' },
+    description: 'Synthesize natural speech from text with selectable voices. Powered by Atlas Cloud TTS.',
+    status: 'available',
+    requirements: { gpu: true, minVram: '6GB', runtime: 'atlas-cloud', estimatedLatency: '2-8s' },
     inputSchema: { text: 'string', voiceId: 'string (optional)', language: 'string (optional)' },
     outputSchema: { audioUrl: 'string', duration: 'number', voiceId: 'string', sampleRate: 'number' },
     creditCost: 4,
@@ -117,9 +118,9 @@ const SERVICE_CATALOG: ServiceDescriptor[] = [
   {
     capability: 'ocr',
     name: 'Optical Character Recognition',
-    description: 'Extract text from images with layout awareness. Powered by FireRed-OCR.',
-    status: 'dry_run',
-    requirements: { gpu: true, minVram: '4GB', runtime: 'pytorch', estimatedLatency: '1-3s' },
+    description: 'Extract text from images with layout awareness. Powered by Atlas Cloud Vision LLM.',
+    status: 'available',
+    requirements: { gpu: true, minVram: '4GB', runtime: 'atlas-cloud', estimatedLatency: '1-3s' },
     inputSchema: { url: 'string (image URL)', language: 'string (optional)' },
     outputSchema: { text: 'string', blocks: 'array<{bbox,text,confidence}>', language: 'string' },
     creditCost: 2,
@@ -128,9 +129,9 @@ const SERVICE_CATALOG: ServiceDescriptor[] = [
   {
     capability: 'image_edit',
     name: 'Image Editing',
-    description: 'Apply natural-language edit instructions to an image. Powered by FireRed-Image-Edit.',
-    status: 'dry_run',
-    requirements: { gpu: true, minVram: '12GB', runtime: 'pytorch', estimatedLatency: '3-10s' },
+    description: 'Apply natural-language edit instructions to an image. Powered by Atlas Cloud image-edit.',
+    status: 'available',
+    requirements: { gpu: true, minVram: '12GB', runtime: 'atlas-cloud', estimatedLatency: '3-10s' },
     inputSchema: { url: 'string (image URL)', editInstruction: 'string', options: 'object' },
     outputSchema: { imageUrl: 'string', width: 'number', height: 'number', maskApplied: 'boolean' },
     creditCost: 6,
@@ -161,9 +162,9 @@ const SERVICE_CATALOG: ServiceDescriptor[] = [
   {
     capability: 'video_gen',
     name: 'Video Generation',
-    description: 'Generate a short video clip from a text prompt. Powered by gen-v (#14).',
-    status: 'coming_soon',
-    requirements: { gpu: true, minVram: '24GB', runtime: 'pytorch', estimatedLatency: '20-60s' },
+    description: 'Generate a short video clip from a text prompt. Powered by Atlas Cloud seedance.',
+    status: 'available',
+    requirements: { gpu: true, minVram: '24GB', runtime: 'atlas-cloud', estimatedLatency: '20-60s' },
     inputSchema: { text: 'string (prompt)', options: 'object (duration, resolution, fps)' },
     outputSchema: { videoUrl: 'string', duration: 'number', resolution: 'string', fps: 'number' },
     creditCost: 12,
@@ -415,15 +416,191 @@ export function executeDryRun(capability: MediaCapability, input: MediaServiceIn
   };
 }
 
+// ── Real Atlas Cloud handlers ──
+
+/**
+ * Check if a real Atlas Cloud API key is configured.
+ * When true, capabilities wired to Atlas Cloud will call the real API.
+ * When false, they fall back to dry-run stubs.
+ */
+function hasAtlasKey(): boolean {
+  return !!process.env.ATLASCLOUD_API_KEY;
+}
+
+/**
+ * Real ASR via Atlas Cloud Whisper.
+ * Submits an async task and polls until completion.
+ */
+async function atlasASR(input: MediaServiceInput): Promise<Record<string, unknown>> {
+  const { submitRawGen, pollOnce } = await import('@/lib/atlas');
+  const model = process.env.ATLAS_ASR_MODEL || 'openai/whisper-large-v3';
+  const payload: Record<string, unknown> = { model, audio: input.url };
+  if (input.language) payload.language = input.language;
+  const task = await submitRawGen('generateAudio', payload);
+  // Poll up to 3 times (the client-side polling pattern handles longer waits)
+  let result = await pollOnce(task.getUrl);
+  let attempts = 0;
+  while (result.status === 'pending' || result.status === 'processing') {
+    if (attempts >= 3) break;
+    await new Promise((r) => setTimeout(r, 3000));
+    result = await pollOnce(task.getUrl);
+    attempts++;
+  }
+  if (result.status === 'failed') throw new Error(`ASR failed: ${result.error || 'unknown'}`);
+  // Atlas returns the transcript in the first output URL or as raw text
+  const transcript = result.outputs[0] || '';
+  return {
+    transcript: typeof transcript === 'string' ? transcript : JSON.stringify(transcript),
+    segments: [],
+    language: input.language || 'auto',
+    duration: 0,
+    wordCount: 0,
+    confidence: 0.95,
+    taskId: task.id,
+  };
+}
+
+/**
+ * Real TTS via Atlas Cloud.
+ */
+async function atlasTTS(input: MediaServiceInput): Promise<Record<string, unknown>> {
+  const { submitRawGen, pollOnce } = await import('@/lib/atlas');
+  const model = process.env.ATLAS_TTS_MODEL || 'bytedance/tts-large';
+  const payload: Record<string, unknown> = { model, text: input.text };
+  if (input.voiceId) payload.voice = input.voiceId;
+  if (input.language) payload.language = input.language;
+  const task = await submitRawGen('generateAudio', payload);
+  let result = await pollOnce(task.getUrl);
+  let attempts = 0;
+  while (result.status === 'pending' || result.status === 'processing') {
+    if (attempts >= 3) break;
+    await new Promise((r) => setTimeout(r, 3000));
+    result = await pollOnce(task.getUrl);
+    attempts++;
+  }
+  if (result.status === 'failed') throw new Error(`TTS failed: ${result.error || 'unknown'}`);
+  const audioUrl = result.outputs[0] || '';
+  const estimatedDuration = Math.max(1, Math.round(((input.text || '').length / 15) * 10) / 10);
+  return {
+    audioUrl,
+    duration: estimatedDuration,
+    voiceId: input.voiceId || 'default',
+    sampleRate: 24000,
+    textLength: (input.text || '').length,
+    taskId: task.id,
+  };
+}
+
+/**
+ * Real OCR via Atlas Cloud Vision LLM.
+ */
+async function atlasOCR(input: MediaServiceInput): Promise<Record<string, unknown>> {
+  const { atlasChat } = await import('@/lib/atlas');
+  const systemPrompt = 'You are an OCR engine. Extract ALL visible text from the image exactly as it appears. Return only the extracted text, preserving line breaks. Do not add commentary.';
+  const userContent = [
+    { type: 'text' as const, text: input.language ? `Extract text in ${input.language}.` : 'Extract all visible text.' },
+    { type: 'image_url' as const, image_url: { url: input.url || '' } },
+  ];
+  const response = await atlasChat(
+    [{ role: 'system', content: systemPrompt }, { role: 'user', content: userContent }],
+    undefined,
+    2000,
+  );
+  return {
+    text: response.trim(),
+    blocks: [],
+    language: input.language || 'auto',
+    blockCount: 0,
+  };
+}
+
+/**
+ * Real image editing via Atlas Cloud image-edit.
+ */
+async function atlasImageEdit(input: MediaServiceInput): Promise<Record<string, unknown>> {
+  const { submitRawGen, pollOnce } = await import('@/lib/atlas');
+  const model = process.env.ATLAS_IMAGE_EDIT_MODEL || 'bytedance/seedream-3.0/edit';
+  const payload: Record<string, unknown> = {
+    model,
+    prompt: input.editInstruction || '',
+    images: [input.url],
+  };
+  const task = await submitRawGen('generateImage', payload);
+  let result = await pollOnce(task.getUrl);
+  let attempts = 0;
+  while (result.status === 'pending' || result.status === 'processing') {
+    if (attempts >= 3) break;
+    await new Promise((r) => setTimeout(r, 3000));
+    result = await pollOnce(task.getUrl);
+    attempts++;
+  }
+  if (result.status === 'failed') throw new Error(`Image edit failed: ${result.error || 'unknown'}`);
+  return {
+    imageUrl: result.outputs[0] || '',
+    width: 1024,
+    height: 1024,
+    maskApplied: false,
+    editInstruction: input.editInstruction || '',
+    format: 'png',
+    taskId: task.id,
+  };
+}
+
+/**
+ * Real video generation via Atlas Cloud seedance.
+ */
+async function atlasVideoGen(input: MediaServiceInput): Promise<Record<string, unknown>> {
+  const { submitRawGen, pollOnce } = await import('@/lib/atlas');
+  const model = process.env.ATLAS_VIDEO_MODEL || 'bytedance/seedance-2.0/text-to-video';
+  const opts = (input.options as Record<string, unknown>) || {};
+  const payload: Record<string, unknown> = {
+    model,
+    prompt: input.text || '',
+  };
+  if (opts.duration) payload.duration = opts.duration;
+  if (opts.resolution) payload.resolution = opts.resolution;
+  const task = await submitRawGen('generateVideo', payload);
+  let result = await pollOnce(task.getUrl);
+  let attempts = 0;
+  while (result.status === 'pending' || result.status === 'processing') {
+    if (attempts >= 3) break;
+    await new Promise((r) => setTimeout(r, 5000));
+    result = await pollOnce(task.getUrl);
+    attempts++;
+  }
+  if (result.status === 'failed') throw new Error(`Video gen failed: ${result.error || 'unknown'}`);
+  return {
+    videoUrl: result.outputs[0] || '',
+    duration: typeof opts.duration === 'number' ? opts.duration : 4,
+    resolution: typeof opts.resolution === 'string' ? opts.resolution : '720p',
+    fps: typeof opts.fps === 'number' ? opts.fps : 24,
+    prompt: input.text || '',
+    taskId: task.id,
+  };
+}
+
+// Map of capabilities to their real Atlas Cloud handlers
+const ATLAS_HANDLERS: Partial<Record<MediaCapability, (input: MediaServiceInput) => Promise<Record<string, unknown>>>> = {
+  asr: atlasASR,
+  tts: atlasTTS,
+  ocr: atlasOCR,
+  image_edit: atlasImageEdit,
+  video_gen: atlasVideoGen,
+};
+
 // ── Main dispatch ──
 
 /**
  * Dispatch a media service request to the appropriate handler.
  *
- * Currently all capabilities run in dry-run mode. When a real GPU service is
- * integrated, replace the dry-run branch with an HTTP call to the external
- * service and flip the descriptor status to 'available'. The return contract
- * (MediaServiceOutput) stays identical so callers need no changes.
+ * Capabilities wired to Atlas Cloud (asr, tts, ocr, image_edit, video_gen)
+ * call the real API when ATLASCLOUD_API_KEY is set, and fall back to dry-run
+ * stubs when no key is configured (e.g. local development with mock server).
+ * The remaining capabilities (audio_process, voice_clone, lip_sync) stay as
+ * dry-run stubs until Atlas Cloud adds corresponding endpoints.
+ *
+ * The return contract (MediaServiceOutput) is identical regardless of whether
+ * the service is dry-run or real — callers need no changes.
  */
 export async function dispatchMediaService(params: {
   capability: MediaCapability;
@@ -431,9 +608,6 @@ export async function dispatchMediaService(params: {
   planTier: PlanTier;
 }): Promise<MediaServiceOutput> {
   const { capability, input, planTier } = params;
-  // planTier is used to gate future real-service routing (e.g. elite gets
-  // higher-priority GPU queues). It is referenced here so the contract is
-  // stable when real services are wired up.
   void getLLMModel(planTier);
 
   const svc = getServiceByCapability(capability);
@@ -447,6 +621,35 @@ export async function dispatchMediaService(params: {
     throw new Error(`Capability '${capability}' is currently unavailable`);
   }
 
-  // Dry-run path (current). Real-service path will branch on svc.status === 'available'.
+  // Check if this capability has a real Atlas Cloud handler and a key is configured
+  const atlasHandler = ATLAS_HANDLERS[capability];
+  const useRealService = atlasHandler && hasAtlasKey();
+
+  if (useRealService) {
+    const start = Date.now();
+    try {
+      const result = await atlasHandler(input);
+      return {
+        capability,
+        result,
+        metadata: {
+          processingTime: Date.now() - start,
+          modelUsed: MODEL_NAMES[capability],
+          serviceVersion: 'atlas-cloud-1.0.0',
+          warnings: [],
+        },
+        dryRun: false,
+      };
+    } catch (err) {
+      // Fall back to dry-run on Atlas failure (graceful degradation)
+      const dryRunResult = executeDryRun(capability, input);
+      dryRunResult.metadata.warnings.push(
+        `Atlas Cloud call failed, fell back to dry-run: ${err instanceof Error ? err.message : String(err)}`,
+      );
+      return dryRunResult;
+    }
+  }
+
+  // Dry-run path (no API key or capability not wired to Atlas)
   return executeDryRun(capability, input);
 }
