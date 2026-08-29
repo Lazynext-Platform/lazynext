@@ -11,6 +11,103 @@ import { prisma } from '@/lib/prisma';
 export type AssetType = 'brief' | 'hooks' | 'angles' | 'script' | 'storyboard' | 'score' | 'variants' | 'creative_package';
 
 /**
+ * A stage result as seen by the pipeline asset persistence logic.
+ */
+export interface PipelineStageResultLike {
+  stage: string;
+  status: string;
+  output?: Record<string, unknown> | null;
+}
+
+/**
+ * A pipeline state as seen by the pipeline asset persistence logic.
+ */
+export interface PipelineStateLike {
+  pipelineId: string;
+  config: { name?: string };
+  totalCreditsUsed: number;
+  stageResults: PipelineStageResultLike[];
+}
+
+/**
+ * A derived child asset specification — what to persist for a given stage.
+ */
+export interface DerivedAssetSpec {
+  type: AssetType;
+  name: string;
+  data: Record<string, unknown>;
+  tags: string[];
+}
+
+/**
+ * Derive the child asset specifications from a pipeline state.
+ * This is a pure function that can be tested without a database.
+ * It mirrors the logic in `persistPipelineAssets` in the pipeline route.
+ */
+export function derivePipelineChildAssets(
+  state: PipelineStateLike,
+): DerivedAssetSpec[] {
+  const pipelineName = state.config.name || `Pipeline ${state.pipelineId.slice(0, 8)}`;
+  const specs: DerivedAssetSpec[] = [];
+
+  for (const result of state.stageResults) {
+    if (!result.output) continue;
+    const output = result.output;
+
+    if (result.stage === 'media_generation' && output.mediaUrls) {
+      specs.push({
+        type: 'storyboard',
+        name: `${pipelineName} — Media`,
+        data: {
+          mediaUrls: output.mediaUrls,
+          shotCount: (output.mediaUrls as string[]).length,
+          pipelineId: state.pipelineId,
+        },
+        tags: ['pipeline', 'media'],
+      });
+    }
+
+    if (result.stage === 'audio' && output.audioUrl) {
+      specs.push({
+        type: 'script',
+        name: `${pipelineName} — Audio`,
+        data: { audioUrl: output.audioUrl, pipelineId: state.pipelineId },
+        tags: ['pipeline', 'audio'],
+      });
+    }
+
+    if (result.stage === 'edit' && output.editResult) {
+      specs.push({
+        type: 'script',
+        name: `${pipelineName} — Edit Decision List`,
+        data: { editResult: output.editResult, pipelineId: state.pipelineId },
+        tags: ['pipeline', 'edit', 'edl'],
+      });
+    }
+
+    if (result.stage === 'compliance' && output.complianceResult) {
+      specs.push({
+        type: 'score',
+        name: `${pipelineName} — Compliance`,
+        data: { complianceResult: output.complianceResult, pipelineId: state.pipelineId },
+        tags: ['pipeline', 'compliance'],
+      });
+    }
+
+    if (result.stage === 'publish' && output.publishResult) {
+      specs.push({
+        type: 'variants',
+        name: `${pipelineName} — Publish Result`,
+        data: { publishResult: output.publishResult, pipelineId: state.pipelineId },
+        tags: ['pipeline', 'publish'],
+      });
+    }
+  }
+
+  return specs;
+}
+
+/**
  * Persist a creative output as an Asset with an initial AssetVersion.
  * Non-fatal: if the DB is unavailable, returns null and the director continues.
  */

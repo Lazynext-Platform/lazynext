@@ -21,6 +21,7 @@ export type StageId =
   | 'audio'
   | 'edit'
   | 'compliance'
+  | 'score'
   | 'publish';
 
 export type ConditionOperator = 'equals' | 'not_equals' | 'contains' | 'not_contains' | 'exists' | 'not_exists';

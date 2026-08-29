@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useSession } from 'next-auth/react';
 import {
   Workflow, Plus, Trash2, GripVertical, Save, Loader2, AlertCircle,
-  FileText, Clapperboard, Film, Image, Music, Scissors, ShieldCheck, Send,
+  FileText, Clapperboard, Film, Image, Music, Scissors, ShieldCheck, Send, Star,
   X, ChevronUp, ChevronDown, Check, GitBranch, Layers, Eye, Settings2, Users,
   Play,
 } from 'lucide-react';
@@ -31,10 +31,11 @@ const STAGE_INFO: Record<StageId, StageInfo> = {
   audio: { id: 'audio', icon: Music, color: '#10b981' },
   edit: { id: 'edit', icon: Scissors, color: '#06b6d4' },
   compliance: { id: 'compliance', icon: ShieldCheck, color: '#ef4444' },
+  score: { id: 'score', icon: Star, color: '#f97316' },
   publish: { id: 'publish', icon: Send, color: '#6366f1' },
 };
 
-const ALL_STAGES: StageId[] = ['brief', 'script', 'storyboard', 'media_generation', 'audio', 'edit', 'compliance', 'publish'];
+const ALL_STAGES: StageId[] = ['brief', 'script', 'storyboard', 'media_generation', 'audio', 'edit', 'compliance', 'score', 'publish'];
 const MAX_STAGES = ALL_STAGES.length;
 const MAX_NAME_LEN = 100;
 const MAX_DESC_LEN = 500;
@@ -272,7 +273,12 @@ export default function WorkflowBuilderPage() {
         body: JSON.stringify({
           workflow: workflowDef,
           context: execCtx,
-          config: { name: name || 'Workflow Builder Pipeline' },
+          config: {
+            name: name || 'Workflow Builder Pipeline',
+            productName: name || 'Workflow Builder Pipeline',
+            platforms: execCtx.platform ? [execCtx.platform] : ['tiktok'],
+            onComplete: 'publish',
+          },
         }),
       });
       if (!res.ok) {

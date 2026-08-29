@@ -40,27 +40,36 @@ export function ClipEditor({ initialMediaUrl, pipelineId }: { initialMediaUrl?: 
     (async () => {
       try {
         const res = await fetch(`/api/creative/pipeline/${pipelineId}`);
-        if (!res.ok || cancelled) return;
+        if (cancelled) return;
+        if (!res.ok) {
+          if (res.status === 404) setError(t('common.errNotFound'));
+          else if (res.status === 401) setError(t('common.errUnauthorized'));
+          else if (res.status === 403) setError(t('common.errForbidden'));
+          else setError(t('common.errGeneric'));
+          return;
+        }
         const j = await res.json().catch(() => ({}));
         const state = j?.state;
         if (!state || cancelled) return;
         // Find the edit stage result
         const editResult = state.stageResults?.find(
-          (r: any) => r.stage === 'edit' && r.status === 'completed',
+          (r: { stage: string; status: string; output?: { editResult?: Record<string, unknown> } }) =>
+            r.stage === 'edit' && r.status === 'completed',
         )?.output?.editResult;
         if (!editResult || cancelled) return;
         // Load the media URL from the edit result if not already set
         if (!initialMediaUrl && editResult.finalMediaUrl) {
-          setMediaResult(editResult.finalMediaUrl);
+          setMediaResult(editResult.finalMediaUrl as string);
         }
         // Transform the cutPlan into clips
-        if (Array.isArray(editResult.cutPlan) && editResult.cutPlan.length > 0) {
-          const loadedClips = editResult.cutPlan.map((cut: any, idx: number) =>
+        const cutPlan = editResult.cutPlan;
+        if (Array.isArray(cutPlan) && cutPlan.length > 0) {
+          const loadedClips = cutPlan.map((cut: Record<string, unknown>, idx: number) =>
             createClip({
-              name: cut.label || cut.name || `Cut ${idx + 1}`,
-              type: cut.mediaType || 'video',
-              duration: cut.durationSec || cut.duration || 5,
-              source: cut.mediaUrl || editResult.finalMediaUrl || '',
+              name: (cut.label as string) || (cut.name as string) || `Cut ${idx + 1}`,
+              type: (cut.mediaType as 'video' | 'audio' | 'image' | 'text' | 'transition' | 'effect') || 'video',
+              duration: (cut.durationSec as number) || (cut.duration as number) || 5,
+              source: (cut.mediaUrl as string) || (editResult.finalMediaUrl as string) || '',
             }),
           );
           if (!cancelled && loadedClips.length > 0) {
@@ -68,11 +77,11 @@ export function ClipEditor({ initialMediaUrl, pipelineId }: { initialMediaUrl?: 
           }
         }
       } catch {
-        /* non-fatal — user can still use the editor manually */
+        if (!cancelled) setError(t('common.errNetwork'));
       }
     })();
     return () => { cancelled = true; };
-  }, [pipelineId, initialMediaUrl]);
+  }, [pipelineId, initialMediaUrl, t]);
 
   const executeCommand = useCallback(async () => {
     if (!command.trim()) { setError(t('clipEditor.commandRequired')); return; }

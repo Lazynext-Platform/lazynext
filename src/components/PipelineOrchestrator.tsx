@@ -317,9 +317,12 @@ export function PipelineOrchestrator({ initialPipelineId }: { initialPipelineId?
     if (!activePipeline || activePipeline.status !== 'running' || actionLoading) return;
     const currentStage = activePipeline.currentStage;
     if (!currentStage || currentStage === 'completed') return;
-    // Check if the current stage has autoAdvance enabled
-    const stageConfig = stageConfigs[currentStage as PipelineStage];
-    if (!stageConfig?.autoAdvance) return;
+    // Read autoAdvance from the server pipeline config, not the client form state
+    const serverStageConfig = activePipeline.config.stages.find(
+      (s) => s.stage === currentStage,
+    );
+    const autoAdvance = serverStageConfig?.autoAdvance ?? stageConfigs[currentStage as PipelineStage]?.autoAdvance;
+    if (!autoAdvance) return;
     // Check if the current stage has completed (has output) — advance to the next
     const stageResult = activePipeline.stageResults.find(
       (r) => r.stage === currentStage && r.status === 'completed',
@@ -1109,29 +1112,30 @@ function StageOutputContent({ stage, output, pipelineId }: { stage: PipelineStag
     case 'score': {
       const score = output.score as Record<string, unknown> | undefined;
       if (!score) return null;
-      const overall = typeof score.overallScore === 'number' ? score.overallScore : undefined;
+      const overall = typeof score.overall === 'number' ? score.overall : undefined;
+      const dims: Array<[string, number]> = [
+        ['Hook Strength', score.hookStrength],
+        ['Clarity', score.clarity],
+        ['Product Visibility', score.productVisibility],
+        ['Brand Consistency', score.brandConsistency],
+        ['Emotional Impact', score.emotionalImpact],
+        ['Novelty', score.novelty],
+        ['Platform Fit', score.platformFit],
+        ['CTA Strength', score.ctaStrength],
+        ['Audio Quality', score.audioQuality],
+        ['Visual Quality', score.visualQuality],
+        ['Compliance Risk', score.complianceRisk],
+      ].filter(([, v]) => typeof v === 'number') as Array<[string, number]>;
       return (
         <dl className="space-y-1">
           {overall !== undefined && (
             <DetailRow label="Overall Score" value={`${overall}/100`} />
           )}
-          {score.hookStrength != null && (
-            <DetailRow label="Hook Strength" value={String(score.hookStrength)} />
-          )}
-          {score.angleClarity != null && (
-            <DetailRow label="Angle Clarity" value={String(score.angleClarity)} />
-          )}
-          {score.scriptFlow != null && (
-            <DetailRow label="Script Flow" value={String(score.scriptFlow)} />
-          )}
-          {score.ctaEffectiveness != null && (
-            <DetailRow label="CTA Effectiveness" value={String(score.ctaEffectiveness)} />
-          )}
-          {score.audienceFit != null && (
-            <DetailRow label="Audience Fit" value={String(score.audienceFit)} />
-          )}
-          {score.feedback as string && (
-            <p className="text-fg-faint text-xs pt-1">{score.feedback as string}</p>
+          {dims.map(([label, val]) => (
+            <DetailRow key={label} label={label} value={String(val)} />
+          ))}
+          {typeof score.notes === 'string' && score.notes && (
+            <p className="text-fg-faint text-xs pt-1">{score.notes}</p>
           )}
         </dl>
       );

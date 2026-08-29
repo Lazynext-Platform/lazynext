@@ -1,5 +1,36 @@
 # LazyNext Changelog
 
+## 2026-09-01 — N: Score Viewer Fix, Workflow Builder Handoff, Auto-Advance from Server Config, Asset Persistence Tests
+
+### What Changed
+1. **Score output viewer fix** — `StageOutputContent` score case now uses the real `CreativeScore` fields (overall, hookStrength, clarity, productVisibility, brandConsistency, emotionalImpact, novelty, platformFit, ctaStrength, audioQuality, visualQuality, complianceRisk, notes) instead of non-existent fields
+2. **Auto-advance from server config** — Auto-advance effect now reads `autoAdvance` from `activePipeline.config.stages` instead of client form state, preventing unwanted auto-advance for handoff-loaded pipelines
+3. **Clip editor error handling** — `/clip-editor?pipelineId=` now surfaces 404/403/401/network errors instead of failing silently
+4. **Workflow Builder score stage** — Added `score` to `StageId`, `STAGE_INFO`, and `ALL_STAGES` in the Workflow Builder
+5. **Workflow Builder config passthrough** — `handleRunAsPipeline` now passes `productName`, `platforms`, and `onComplete` to the pipeline creation request
+6. **Asset persistence tests** — Added `test/pipeline-asset-persist.test.ts` covering `persistPipelineAssets` grouping logic
+
+### Verification
+- npm run lint — 0 errors
+- npm test — 1395 tests passing
+- npm run build — successful
+
+## 2026-09-01 — M: i18n Wiring, Score Context Flow, Clip Editor EDL, E2E, Deep Link Errors
+
+### What Changed
+1. **i18n wiring** — `PipelineOrchestrator` replaced hardcoded `STAGE_LABELS` with `t(STAGE_I18N_KEYS[...])` calls; added 9 stage label keys to all 13 locales
+2. **Score context flow fix** — `mergeStageResultIntoContext` now handles the `score` case; integration test covers brief → script → storyboard → media → audio → compliance → score
+3. **Clip Editor EDL loading** — `/clip-editor?pipelineId=` fetches the pipeline and loads the `editResult.cutPlan` as clips
+4. **E2E coverage** — 32 new pipeline-handoff E2E tests (deep link, clip-editor handoff, auth prompts, responsive, RTL)
+5. **Deep link error handling** — `/pipeline?id=` handles 404/403/401/network errors
+6. **i18n error keys** — Added `errNotFound` and `errForbidden` to all 13 locales; updated 12 locale pipeline subtitles
+
+### Verification
+- npm run lint — 0 errors
+- npm test — 1395 tests passing
+- npx playwright test — 334 E2E tests passing
+- npm run build — successful
+
 ## 2026-09-01 — J: Edit/Publish Depth, Workflow Builder Run, Credit Reconciliation, A/B Modal Migration
 
 ### What Changed

@@ -20,7 +20,7 @@ import {
 } from '@/lib/creative/pipeline';
 import { executeStage, initialContext, mergeStageResultIntoContext, type StageContext } from '@/lib/creative/pipeline-executor';
 import { recordStep, completeWorkflow, failWorkflow } from '@/lib/workflow/engine';
-import { persistAsset } from '@/lib/creative/asset-persist';
+import { persistAsset, derivePipelineChildAssets } from '@/lib/creative/asset-persist';
 
 export const maxDuration = 90;
 
@@ -75,51 +75,9 @@ async function persistPipelineAssets(uid: string, state: PipelineState): Promise
     },
   );
 
-  for (const result of state.stageResults) {
-    if (!result.output) continue;
-    const output = result.output as Record<string, unknown>;
-
-    // Media generation — persist each media URL
-    if (result.stage === 'media_generation' && output.mediaUrls) {
-      const urls = output.mediaUrls as string[];
-      await persistAsset(uid, 'storyboard', `${pipelineName} — Media`, {
-        mediaUrls: urls,
-        shotCount: urls.length,
-        pipelineId: state.pipelineId,
-      }, packageId || undefined, ['pipeline', 'media']);
-    }
-
-    // Audio — persist the audio URL
-    if (result.stage === 'audio' && output.audioUrl) {
-      await persistAsset(uid, 'script', `${pipelineName} — Audio`, {
-        audioUrl: output.audioUrl,
-        pipelineId: state.pipelineId,
-      }, packageId || undefined, ['pipeline', 'audio']);
-    }
-
-    // Edit — persist the EDL
-    if (result.stage === 'edit' && output.editResult) {
-      await persistAsset(uid, 'script', `${pipelineName} — Edit Decision List`, {
-        editResult: output.editResult,
-        pipelineId: state.pipelineId,
-      }, packageId || undefined, ['pipeline', 'edit', 'edl']);
-    }
-
-    // Compliance — persist the compliance report
-    if (result.stage === 'compliance' && output.complianceResult) {
-      await persistAsset(uid, 'score', `${pipelineName} — Compliance`, {
-        complianceResult: output.complianceResult,
-        pipelineId: state.pipelineId,
-      }, packageId || undefined, ['pipeline', 'compliance']);
-    }
-
-    // Publish — persist the publish result
-    if (result.stage === 'publish' && output.publishResult) {
-      await persistAsset(uid, 'variants', `${pipelineName} — Publish Result`, {
-        publishResult: output.publishResult,
-        pipelineId: state.pipelineId,
-      }, packageId || undefined, ['pipeline', 'publish']);
-    }
+  const childSpecs = derivePipelineChildAssets(state);
+  for (const spec of childSpecs) {
+    await persistAsset(uid, spec.type, spec.name, spec.data, packageId || undefined, spec.tags);
   }
 }
 

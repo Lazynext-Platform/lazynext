@@ -49,8 +49,8 @@ Production uses Cloudflare R2 via `src/lib/media-storage.cloudflare.ts`.
 ## Verification Commands
 ```bash
 npm run lint    # ESLint
-npm test        # Node test runner (1394 tests)
-# E2E: 302 tests (chromium + mobile-chrome)
+npm test        # Node test runner (1395 tests)
+# E2E: 334 tests (chromium + mobile-chrome)
 npm run build   # Production build (Cloudflare target)
 ```
 
