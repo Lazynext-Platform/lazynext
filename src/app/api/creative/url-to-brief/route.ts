@@ -2,8 +2,7 @@ import { withAtlas } from '@/lib/request-context';
 import { NextResponse } from 'next/server';
 import { auth } from '@/../auth';
 import { urlToBrief, URL_TO_BRIEF_COST, SSRFError } from '@/lib/creative/url-to-brief';
-import { deductCredits } from '@/lib/credits';
-import { refundSync } from '@/lib/lazynext-studio/gen-task';
+import { deductCredits, refundCredits } from '@/lib/credits';
 import { getUserPlanTier } from '@/lib/plan-tier';
 
 export const maxDuration = 60;
@@ -43,7 +42,7 @@ async function __byokPOST(req: Request) {
     const result = await urlToBrief(url, planTier);
     return NextResponse.json({ result });
   } catch (e) {
-    await refundSync(uid, URL_TO_BRIEF_COST, 'creative:url-to-brief');
+    await refundCredits(uid, URL_TO_BRIEF_COST, 'creative:url-to-brief');
     // SSRF errors are client errors (bad URL), not server failures
     if (e instanceof SSRFError) {
       return NextResponse.json({ error: 'invalid_url', detail: e.message }, { status: 400 });

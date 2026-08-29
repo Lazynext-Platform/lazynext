@@ -2,8 +2,7 @@ import { withAtlas } from '@/lib/request-context';
 import { NextResponse } from 'next/server';
 import { auth } from '@/../auth';
 import { getTool, validateAgainstSchema, executeTool } from '@/lib/creative/tools';
-import { deductCredits } from '@/lib/credits';
-import { refundSync } from '@/lib/lazynext-studio/gen-task';
+import { deductCredits, refundCredits } from '@/lib/credits';
 import { logToolExecution } from '@/lib/telemetry';
 
 export const maxDuration = 60;
@@ -54,7 +53,7 @@ async function __byokPOST(req: Request) {
     if (!result.ok) {
       // executeTool swallows errors internally and returns a ToolResult with ok:false.
       // Refund any credits we charged since execution did not succeed.
-      if (cost > 0) await refundSync(uid, cost, `creative:tool:${toolName}`);
+      if (cost > 0) await refundCredits(uid, cost, `creative:tool:${toolName}`);
       logToolExecution({
         tool: toolName,
         userId: uid,
@@ -74,7 +73,7 @@ async function __byokPOST(req: Request) {
     });
     return NextResponse.json({ tool: toolName, result: result.output, cost });
   } catch (e) {
-    if (cost > 0) await refundSync(uid, cost, `creative:tool:${toolName}`);
+    if (cost > 0) await refundCredits(uid, cost, `creative:tool:${toolName}`);
     const message = e instanceof Error ? e.message : String(e);
     console.error(`[creative/tools/execute] ${toolName} error:`, message);
     logToolExecution({

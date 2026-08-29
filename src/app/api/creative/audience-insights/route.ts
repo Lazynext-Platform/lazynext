@@ -6,8 +6,7 @@ import {
   validateAudienceInsightsRequest,
   AUDIENCE_INSIGHTS_COST,
 } from '@/lib/creative/audience-insights';
-import { deductCredits } from '@/lib/credits';
-import { refundSync } from '@/lib/lazynext-studio/gen-task';
+import { deductCredits, refundCredits } from '@/lib/credits';
 import { getUserPlanTier } from '@/lib/plan-tier';
 
 export const maxDuration = 90;
@@ -51,7 +50,7 @@ async function __byokPOST(req: Request) {
     });
     return NextResponse.json({ result });
   } catch (e) {
-    await refundSync(uid, AUDIENCE_INSIGHTS_COST, 'creative:audience-insights');
+    await refundCredits(uid, AUDIENCE_INSIGHTS_COST, 'creative:audience-insights');
     console.error('[creative/audience-insights] error:', String(e));
     return NextResponse.json({ error: 'analysis_failed', detail: String(e) }, { status: 500 });
   }

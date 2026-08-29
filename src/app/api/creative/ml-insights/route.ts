@@ -2,8 +2,7 @@ import { withAtlas } from '@/lib/request-context';
 import { NextResponse } from 'next/server';
 import { auth } from '@/../auth';
 import { analyzeCreativePerformance, ML_INSIGHTS_COST } from '@/lib/creative/ml-insights';
-import { deductCredits } from '@/lib/credits';
-import { refundSync } from '@/lib/lazynext-studio/gen-task';
+import { deductCredits, refundCredits } from '@/lib/credits';
 import { getUserPlanTier } from '@/lib/plan-tier';
 
 export const maxDuration = 120;
@@ -30,7 +29,7 @@ async function __byokPOST(req: Request) {
     const result = await analyzeCreativePerformance(creativeIds, planTier);
     return NextResponse.json({ result });
   } catch (e) {
-    await refundSync(uid, ML_INSIGHTS_COST, 'creative:ml-insights');
+    await refundCredits(uid, ML_INSIGHTS_COST, 'creative:ml-insights');
     console.error('[creative/ml-insights] error:', String(e));
     return NextResponse.json({ error: 'analysis_failed', detail: String(e) }, { status: 500 });
   }

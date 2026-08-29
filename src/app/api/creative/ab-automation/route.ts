@@ -4,8 +4,7 @@ import { prisma } from '@/lib/prisma';
 import { atlasChat } from '@/lib/atlas';
 import { getLLMModel } from '@/lib/providers/model-helpers';
 import { getUserPlanTier } from '@/lib/plan-tier';
-import { deductCredits } from '@/lib/credits';
-import { refundSync } from '@/lib/lazynext-studio/gen-task';
+import { deductCredits, refundCredits } from '@/lib/credits';
 import { withAtlas } from '@/lib/request-context';
 import { metaAds } from '@/lib/ad-platforms/meta';
 import { googleAds } from '@/lib/ad-platforms/google';
@@ -330,7 +329,7 @@ Keep it concise (3-4 sentences). Return only the text.`;
     return NextResponse.json({ job, hypothesis }, { status: 201 });
 
   } catch (err) {
-    await refundSync(uid, AUTOMATION_COST, `ab-automation-refund:${jobId}`);
+    await refundCredits(uid, AUTOMATION_COST, `ab-automation-refund:${jobId}`);
     return NextResponse.json({
       error: 'automation_failed',
       detail: err instanceof Error ? err.message : String(err),

@@ -3,8 +3,7 @@ import { NextResponse } from 'next/server';
 import { auth } from '@/../auth';
 import { extractBrand, SSRFError } from '@/lib/brand/extract';
 import { buildProfile } from '@/lib/brand/profile';
-import { deductCredits } from '@/lib/credits';
-import { refundSync } from '@/lib/lazynext-studio/gen-task';
+import { deductCredits, refundCredits } from '@/lib/credits';
 import { prisma } from '@/lib/prisma';
 import { getUserPlanTier } from '@/lib/plan-tier';
 
@@ -90,7 +89,7 @@ async function __byokPOST(req: Request) {
 
     return NextResponse.json({ extraction, brandKitId: brandKit.id });
   } catch (e) {
-    await refundSync(uid, BRAND_EXTRACT_COST, 'brand:extract');
+    await refundCredits(uid, BRAND_EXTRACT_COST, 'brand:extract');
     if (e instanceof SSRFError) {
       return NextResponse.json({ error: 'url_blocked', reason: e.message }, { status: 400 });
     }

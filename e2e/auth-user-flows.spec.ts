@@ -124,6 +124,64 @@ test.describe('Full pipeline execution flow', () => {
     }
   });
 
+  test('auto-advance chains multiple stages in a single advance request', async ({ request }) => {
+    // Create a pipeline with autoAdvance enabled (default for quick-ad template)
+    const createRes = await request.post('/api/creative/pipeline', {
+      data: {
+        templateId: 'quick-ad',
+        config: {
+          productName: 'Auto-Advance Test Product',
+          productDescription: 'Test for auto-advance chaining',
+          platforms: ['tiktok'],
+          onComplete: 'review',
+        },
+      },
+    });
+    if (!createRes.ok()) {
+      const body = await createRes.json().catch(() => ({}));
+      test.skip(body.error === 'insufficient_credits', 'Credits exhausted');
+      test.skip(createRes.status() === 429, 'Rate limited');
+      return;
+    }
+    const createData = await createRes.json();
+    const pipelineId = createData.state?.pipelineId;
+    expect(pipelineId).toBeTruthy();
+
+    // The creation request already executes the first stage and auto-advances.
+    // Count how many stages are already completed after creation.
+    const initialState = createData.state;
+    const completedAfterCreate = initialState.stageResults.filter(
+      (r: any) => r.status === 'completed',
+    ).length;
+
+    // If the pipeline already completed or paused after creation, auto-advance ran.
+    // It may have completed only 1 stage if credits were low or the deadline was hit.
+    if (initialState.status === 'completed' || initialState.status === 'paused' || initialState.status === 'failed') {
+      // At least the first stage should have completed
+      expect(completedAfterCreate).toBeGreaterThanOrEqual(1);
+      return;
+    }
+
+    // If still running, send a single advance and check if it chains
+    const advanceRes = await request.post(`/api/creative/pipeline/${pipelineId}`, {
+      data: { action: 'advance' },
+    });
+    if (!advanceRes.ok()) {
+      const errBody = await advanceRes.json().catch(() => ({}));
+      test.skip(errBody.error === 'insufficient_credits', 'Credits exhausted during advance');
+      test.skip(advanceRes.status() === 429, 'Rate limited');
+      return;
+    }
+    const advanceData = await advanceRes.json();
+    const state = advanceData.state;
+    const completedAfterAdvance = state.stageResults.filter(
+      (r: any) => r.status === 'completed',
+    ).length;
+
+    // Auto-advance should have completed at least one more stage than after creation
+    expect(completedAfterAdvance).toBeGreaterThan(completedAfterCreate);
+  });
+
   test('can fetch pipeline state by ID', async ({ request }) => {
     // Create a pipeline
     const createRes = await request.post('/api/creative/pipeline', {

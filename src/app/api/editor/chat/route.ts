@@ -1,8 +1,7 @@
 import { withAtlas } from '@/lib/request-context';
 import { NextResponse } from 'next/server';
 import { auth } from '@/../auth';
-import { deductCredits } from '@/lib/credits';
-import { refundSync } from '@/lib/lazynext-studio/gen-task';
+import { deductCredits, refundCredits } from '@/lib/credits';
 import { getUserPlanTier } from '@/lib/plan-tier';
 import { atlasChat } from '@/lib/atlas';
 import { getLLMModel } from '@/lib/providers/model-helpers';
@@ -83,7 +82,7 @@ async function __byokPOST(req: Request) {
         originalText: message,
       };
     } catch (e) {
-      await refundSync(uid, COST, 'editor:chat');
+      await refundCredits(uid, COST, 'editor:chat');
       // Fall back to direct parse even if low confidence
       command = direct;
     }

@@ -7,8 +7,7 @@ import {
   TESTING_LAB_COST,
   type TestConfig,
 } from '@/lib/creative/testing-lab';
-import { deductCredits } from '@/lib/credits';
-import { refundSync } from '@/lib/lazynext-studio/gen-task';
+import { deductCredits, refundCredits } from '@/lib/credits';
 import { getUserPlanTier } from '@/lib/plan-tier';
 
 export const maxDuration = 60;
@@ -55,7 +54,7 @@ async function __byokPOST(req: Request) {
     const result = await runTestAnalysis({ testConfig, variantMetrics, planTier });
     return NextResponse.json({ result });
   } catch (e) {
-    await refundSync(uid, TESTING_LAB_COST, 'creative:testing-lab');
+    await refundCredits(uid, TESTING_LAB_COST, 'creative:testing-lab');
     console.error('[creative/testing-lab] error:', String(e));
     return NextResponse.json({ error: 'analysis_failed', detail: String(e) }, { status: 500 });
   }

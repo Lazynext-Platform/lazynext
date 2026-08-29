@@ -661,10 +661,12 @@ export function configFromTemplate(templateId: string, overrides: Partial<Pipeli
   const tmpl = PIPELINE_TEMPLATES.find((t) => t.templateId === templateId);
   if (!tmpl) return null;
 
+  const onComplete = tmpl.defaultConfig.onComplete ?? 'publish';
   const stages: PipelineStageConfig[] = tmpl.stages.map((stage) => ({
     stage,
     enabled: true,
-    autoAdvance: true,
+    // Don't auto-advance past publish when onComplete is 'review' — user needs to approve
+    autoAdvance: stage === 'publish' && onComplete === 'review' ? false : true,
     config: {},
   }));
 
@@ -675,7 +677,7 @@ export function configFromTemplate(templateId: string, overrides: Partial<Pipeli
     brandName: undefined,
     targetAudience: undefined,
     platforms: undefined,
-    onComplete: tmpl.defaultConfig.onComplete ?? 'publish',
+    onComplete,
     stages,
   };
 
@@ -706,11 +708,11 @@ export function configFromWorkflow(
   }
 
   // Evaluate conditions to determine which stages are enabled
+  const wfOnComplete = base.onComplete || 'publish';
+
   const stages: PipelineStageConfig[] = workflow.stages.map((s) => {
     const stageId = s.stage as PipelineStage;
     let enabled = s.enabled !== false;
-
-    // Evaluate condition if present
     if (enabled && s.condition) {
       enabled = evaluateWorkflowCondition(s.condition, ctx);
     }
@@ -718,9 +720,9 @@ export function configFromWorkflow(
     return {
       stage: stageId,
       enabled,
-      autoAdvance: true,
+      // Don't auto-advance past publish when onComplete is 'review'
+      autoAdvance: stageId === 'publish' && wfOnComplete === 'review' ? false : true,
       config: {},
-      // Store parallel partners for the executor
       parallelWith: s.parallelWith as PipelineStage[] | undefined,
     } as PipelineStageConfig & { parallelWith?: PipelineStage[] };
   });
@@ -733,7 +735,7 @@ export function configFromWorkflow(
     targetAudience: base.targetAudience,
     platforms: base.platforms,
     stages,
-    onComplete: base.onComplete || 'publish',
+    onComplete: wfOnComplete,
   };
 }
 

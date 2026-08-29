@@ -8,8 +8,7 @@ import {
   getServiceRegistry,
   type MediaCapability,
 } from '@/lib/creative/media-service-boundary';
-import { deductCredits } from '@/lib/credits';
-import { refundSync } from '@/lib/lazynext-studio/gen-task';
+import { deductCredits, refundCredits } from '@/lib/credits';
 import { getUserPlanTier } from '@/lib/plan-tier';
 
 export const maxDuration = 90;
@@ -51,7 +50,7 @@ async function __byokPOST(req: Request) {
     const result = await dispatchMediaService({ capability: capabilityRaw as MediaCapability, input, planTier });
     return NextResponse.json({ result });
   } catch (e) {
-    await refundSync(uid, MEDIA_SERVICE_COST, 'creative:media-service-boundary');
+    await refundCredits(uid, MEDIA_SERVICE_COST, 'creative:media-service-boundary');
     console.error('[creative/media-service-boundary] error:', String(e));
     return NextResponse.json({ error: 'service_failed', detail: String(e) }, { status: 500 });
   }

@@ -1,8 +1,7 @@
 import { withAtlas } from '@/lib/request-context';
 import { NextResponse } from 'next/server';
 import { auth } from '@/../auth';
-import { deductCredits } from '@/lib/credits';
-import { refundSync } from '@/lib/lazynext-studio/gen-task';
+import { deductCredits, refundCredits } from '@/lib/credits';
 import { getUserPlanTier } from '@/lib/plan-tier';
 import {
   createMatrix,
@@ -102,7 +101,7 @@ async function __byokPOST(req: Request) {
     });
     return NextResponse.json({ matrix });
   } catch (e) {
-    await refundSync(uid, cost, 'creative:variant-matrix');
+    await refundCredits(uid, cost, 'creative:variant-matrix');
     console.error('[creative/variant-matrix] error:', String(e));
     return NextResponse.json({ error: 'matrix_failed', detail: String(e) }, { status: 500 });
   }

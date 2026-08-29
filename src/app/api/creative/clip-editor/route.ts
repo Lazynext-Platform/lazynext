@@ -7,8 +7,7 @@ import {
   CLIP_EDITOR_COST,
   type Clip,
 } from '@/lib/creative/clip-editor';
-import { deductCredits } from '@/lib/credits';
-import { refundSync } from '@/lib/lazynext-studio/gen-task';
+import { deductCredits, refundCredits } from '@/lib/credits';
 import { getUserPlanTier } from '@/lib/plan-tier';
 
 export const maxDuration = 90;
@@ -43,7 +42,7 @@ async function __byokPOST(req: Request) {
     const result = await processClipCommand({ command, clips, currentTimecode, planTier });
     return NextResponse.json({ result });
   } catch (e) {
-    await refundSync(uid, CLIP_EDITOR_COST, 'creative:clip-editor');
+    await refundCredits(uid, CLIP_EDITOR_COST, 'creative:clip-editor');
     console.error('[creative/clip-editor] error:', String(e));
     return NextResponse.json({ error: 'command_failed', detail: String(e) }, { status: 500 });
   }

@@ -75,6 +75,7 @@ export function MultiPlatformPublisher() {
 
   const statusIcon = (status: PublishResult['status']) => {
     if (status === 'published') return <CheckCircle2 className="w-4 h-4 text-success" />;
+    if (status === 'dry_run') return <AlertCircle className="w-4 h-4 text-warning" />;
     if (status === 'scheduled') return <Clock className="w-4 h-4 text-warning" />;
     if (status === 'failed') return <XCircle className="w-4 h-4 text-danger" />;
     return <Clock className="w-4 h-4 text-fg-muted" />;

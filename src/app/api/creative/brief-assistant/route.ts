@@ -5,8 +5,7 @@ import { atlasChat } from '@/lib/atlas';
 import { getLLMModel } from '@/lib/providers/model-helpers';
 import type { PlanTier } from '@/lib/plan-tier';
 import { getUserPlanTier } from '@/lib/plan-tier';
-import { deductCredits } from '@/lib/credits';
-import { refundSync } from '@/lib/lazynext-studio/gen-task';
+import { deductCredits, refundCredits } from '@/lib/credits';
 import { getLearningsContext } from '@/lib/creative/learning';
 
 export const maxDuration = 90;
@@ -127,7 +126,7 @@ All text should be in English (it will be localized by the UI layer).`;
 
     return NextResponse.json({ suggestion });
   } catch (e) {
-    await refundSync(uid, BRIEF_ASSISTANT_COST, 'creative:brief-assistant');
+    await refundCredits(uid, BRIEF_ASSISTANT_COST, 'creative:brief-assistant');
     console.error('[creative/brief-assistant] error:', String(e));
     return NextResponse.json({ error: 'assistant_failed', detail: String(e) }, { status: 500 });
   }

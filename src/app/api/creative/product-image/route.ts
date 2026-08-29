@@ -8,8 +8,7 @@ import {
   type ProductImageRequest,
   type ImageEnhancementType,
 } from '@/lib/creative/product-image';
-import { deductCredits } from '@/lib/credits';
-import { refundSync } from '@/lib/lazynext-studio/gen-task';
+import { deductCredits, refundCredits } from '@/lib/credits';
 import { getUserPlanTier } from '@/lib/plan-tier';
 
 export const maxDuration = 60;
@@ -83,7 +82,7 @@ async function __byokPOST(req: Request) {
     const result = await enhanceProductImage(request, planTier);
     return NextResponse.json({ result });
   } catch (e) {
-    await refundSync(uid, cost, 'creative:product-image');
+    await refundCredits(uid, cost, 'creative:product-image');
     console.error('[creative/product-image] error:', String(e));
     return NextResponse.json({ error: 'enhancement_failed', detail: String(e) }, { status: 500 });
   }

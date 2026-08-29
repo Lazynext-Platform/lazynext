@@ -4,8 +4,7 @@ import { auth } from '@/../auth';
 import { remixFromReference, analyzeReferenceCreative, CREATIVE_COSTS } from '@/lib/creative/intelligence';
 import type { ReferenceCreativeAnalysis } from '@/lib/creative/types';
 import type { BrandProfile, ProductExtraction } from '@/lib/brand/types';
-import { deductCredits } from '@/lib/credits';
-import { refundSync } from '@/lib/lazynext-studio/gen-task';
+import { deductCredits, refundCredits } from '@/lib/credits';
 import { getTool, validateAgainstSchema } from '@/lib/creative/tools';
 import { getUserPlanTier } from '@/lib/plan-tier';
 
@@ -36,7 +35,7 @@ async function __byokPOST(req: Request) {
     try {
       analysis = await analyzeReferenceCreative(referenceUrl, undefined, planTier);
     } catch (e) {
-      await refundSync(uid, CREATIVE_COSTS.referenceAnalysis, 'creative:remix:analysis');
+      await refundCredits(uid, CREATIVE_COSTS.referenceAnalysis, 'creative:remix:analysis');
       return NextResponse.json({ error: 'reference_analysis_failed', detail: String(e) }, { status: 500 });
     }
   }
@@ -83,7 +82,7 @@ async function __byokPOST(req: Request) {
     });
     return NextResponse.json({ tool: 'creative.remix', cost: CREATIVE_COSTS.remix, brief, analysis });
   } catch (e) {
-    await refundSync(uid, CREATIVE_COSTS.remix, 'creative:remix');
+    await refundCredits(uid, CREATIVE_COSTS.remix, 'creative:remix');
     console.error('[creative/remix] error:', String(e));
     return NextResponse.json({ error: 'remix_failed', detail: String(e) }, { status: 500 });
   }

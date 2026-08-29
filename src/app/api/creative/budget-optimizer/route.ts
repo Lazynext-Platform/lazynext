@@ -2,8 +2,7 @@ import { withAtlas } from '@/lib/request-context';
 import { NextResponse } from 'next/server';
 import { auth } from '@/../auth';
 import { optimizeBudget, validateOptimizationRequest, BUDGET_OPTIMIZER_COST, type OptimizationRequest } from '@/lib/creative/budget-optimizer';
-import { deductCredits } from '@/lib/credits';
-import { refundSync } from '@/lib/lazynext-studio/gen-task';
+import { deductCredits, refundCredits } from '@/lib/credits';
 import { getUserPlanTier } from '@/lib/plan-tier';
 
 export const maxDuration = 90;
@@ -33,7 +32,7 @@ async function __byokPOST(req: Request) {
     const result = await optimizeBudget({ ...(body as OptimizationRequest), planTier });
     return NextResponse.json({ result });
   } catch (e) {
-    await refundSync(uid, BUDGET_OPTIMIZER_COST, 'creative:budget-optimizer');
+    await refundCredits(uid, BUDGET_OPTIMIZER_COST, 'creative:budget-optimizer');
     console.error('[creative/budget-optimizer] error:', String(e));
     return NextResponse.json({ error: 'optimization_failed', detail: String(e) }, { status: 500 });
   }

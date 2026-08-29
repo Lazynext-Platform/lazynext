@@ -3,8 +3,7 @@ import { NextResponse } from 'next/server';
 import { auth } from '@/../auth';
 import { refineCreative, CREATIVE_COSTS, type RefineTargetType } from '@/lib/creative/intelligence';
 import type { CreativeBrief } from '@/lib/creative/types';
-import { deductCredits } from '@/lib/credits';
-import { refundSync } from '@/lib/lazynext-studio/gen-task';
+import { deductCredits, refundCredits } from '@/lib/credits';
 import { getTool, validateAgainstSchema } from '@/lib/creative/tools';
 import { getUserPlanTier } from '@/lib/plan-tier';
 
@@ -55,7 +54,7 @@ async function __byokPOST(req: Request) {
     const result = await refineCreative({ type, instruction, brief, element, planTier });
     return NextResponse.json({ tool: 'creative.refine', cost: CREATIVE_COSTS.refine, result });
   } catch (e) {
-    await refundSync(uid, CREATIVE_COSTS.refine, 'creative:refine');
+    await refundCredits(uid, CREATIVE_COSTS.refine, 'creative:refine');
     console.error('[creative/refine] error:', String(e));
     return NextResponse.json({ error: 'refine_failed', detail: String(e) }, { status: 500 });
   }

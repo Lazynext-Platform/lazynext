@@ -3,8 +3,7 @@ import { NextResponse } from 'next/server';
 import { auth } from '@/../auth';
 import { atlasASR, ATLAS_ASR_MODEL } from '@/lib/providers/atlas-audio';
 import { pollOnce } from '@/lib/atlas';
-import { deductCredits } from '@/lib/credits';
-import { refundSync } from '@/lib/lazynext-studio/gen-task';
+import { deductCredits, refundCredits } from '@/lib/credits';
 import type { ASRResult } from '@/lib/providers/types';
 
 export const maxDuration = 90;
@@ -111,7 +110,7 @@ async function __byokPOST(req: Request) {
       cost: ASR_COST,
     });
   } catch (e) {
-    await refundSync(uid, ASR_COST, 'editor:transcribe');
+    await refundCredits(uid, ASR_COST, 'editor:transcribe');
     const message = e instanceof Error ? e.message : String(e);
     console.error('[editor/transcribe] error:', message);
     if (message === 'asr_timeout') {

@@ -2,8 +2,7 @@ import { withAtlas } from '@/lib/request-context';
 import { NextResponse } from 'next/server';
 import { auth } from '@/../auth';
 import { analyzeBrandVoice, BRAND_VOICE_COST, validateBrandVoiceRequest } from '@/lib/creative/brand-voice';
-import { deductCredits } from '@/lib/credits';
-import { refundSync } from '@/lib/lazynext-studio/gen-task';
+import { deductCredits, refundCredits } from '@/lib/credits';
 import { getUserPlanTier } from '@/lib/plan-tier';
 
 export const maxDuration = 90;
@@ -40,7 +39,7 @@ async function __byokPOST(req: Request) {
     });
     return NextResponse.json({ result });
   } catch (e) {
-    await refundSync(uid, BRAND_VOICE_COST, 'creative:brand-voice');
+    await refundCredits(uid, BRAND_VOICE_COST, 'creative:brand-voice');
     console.error('[creative/brand-voice] error:', String(e));
     return NextResponse.json({ error: 'analysis_failed', detail: String(e) }, { status: 500 });
   }

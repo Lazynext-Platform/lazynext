@@ -2,8 +2,7 @@ import { withAtlas } from '@/lib/request-context';
 import { NextResponse } from 'next/server';
 import { auth } from '@/../auth';
 import { getUserPlanTier } from '@/lib/plan-tier';
-import { deductCredits } from '@/lib/credits';
-import { refundSync } from '@/lib/lazynext-studio/gen-task';
+import { deductCredits, refundCredits } from '@/lib/credits';
 import {
   publishContent,
   publishToMultiple,
@@ -58,7 +57,7 @@ async function __byokPOST(req: Request) {
     }
   } catch (e) {
     // Publish failed → refund the full charge.
-    await refundSync(uid, cost, ref).catch(() => {});
+    await refundCredits(uid, cost, ref).catch(() => {});
     console.error('[publish] error:', String(e));
     return NextResponse.json({ error: 'publish_failed', detail: String(e) }, { status: 500 });
   }
@@ -67,7 +66,7 @@ async function __byokPOST(req: Request) {
   const failedCount = results.filter((r) => r.status === 'failed').length;
   if (failedCount > 0) {
     const refundAmount = PUBLISH_CREDIT_COST * failedCount;
-    await refundSync(uid, refundAmount, `${ref}:partial_refund`).catch(() => {});
+    await refundCredits(uid, refundAmount, `${ref}:partial_refund`).catch(() => {});
   }
 
   return NextResponse.json({ results });

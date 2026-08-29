@@ -5,8 +5,7 @@ import { atlasChat } from '@/lib/atlas';
 import { getLLMModel } from '@/lib/providers/model-helpers';
 import type { PlanTier } from '@/lib/plan-tier';
 import { getUserPlanTier } from '@/lib/plan-tier';
-import { deductCredits } from '@/lib/credits';
-import { refundSync } from '@/lib/lazynext-studio/gen-task';
+import { deductCredits, refundCredits } from '@/lib/credits';
 import type { CreativeBrief, HookCandidate, CreativeAngle, ScriptCandidate } from '@/lib/creative/types';
 
 export const maxDuration = 90;
@@ -113,7 +112,7 @@ Regenerate this element now. Output the JSON object.`;
 
     return NextResponse.json({ result: result, cost: REGENERATION_COST });
   } catch (e) {
-    await refundSync(uid, REGENERATION_COST, 'creative:regenerate');
+    await refundCredits(uid, REGENERATION_COST, 'creative:regenerate');
     console.error('[creative/regenerate] error:', String(e));
     return NextResponse.json({ error: 'regeneration_failed', detail: String(e) }, { status: 500 });
   }

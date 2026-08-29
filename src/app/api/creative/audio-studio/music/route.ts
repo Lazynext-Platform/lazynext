@@ -1,8 +1,7 @@
 import { withAtlas } from '@/lib/request-context';
 import { NextResponse } from 'next/server';
 import { auth } from '@/../auth';
-import { deductCredits } from '@/lib/credits';
-import { refundSync } from '@/lib/lazynext-studio/gen-task';
+import { deductCredits, refundCredits } from '@/lib/credits';
 import { getUserPlanTier } from '@/lib/plan-tier';
 import {
   selectMusic,
@@ -53,7 +52,7 @@ async function __byokPOST(req: Request) {
     const tracks = await selectMusic(request);
     return NextResponse.json({ tracks });
   } catch (e) {
-    await refundSync(uid, MUSIC_CREDIT_COST, 'audio:music');
+    await refundCredits(uid, MUSIC_CREDIT_COST, 'audio:music');
     console.error('[audio-studio/music] error:', String(e));
     return NextResponse.json({ error: 'music_failed', detail: String(e) }, { status: 500 });
   }

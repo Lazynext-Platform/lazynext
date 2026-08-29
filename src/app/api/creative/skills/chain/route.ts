@@ -2,8 +2,7 @@ import { withAtlas } from '@/lib/request-context';
 import { NextResponse } from 'next/server';
 import { auth } from '@/../auth';
 import { getChain, executeChain, estimateChainCredits } from '@/lib/creative/skill-library';
-import { deductCredits } from '@/lib/credits';
-import { refundSync } from '@/lib/lazynext-studio/gen-task';
+import { deductCredits, refundCredits } from '@/lib/credits';
 import { getUserPlanTier } from '@/lib/plan-tier';
 
 export const maxDuration = 60;
@@ -45,7 +44,7 @@ async function __byokPOST(req: Request) {
     const { results, finalOutput } = await executeChain(chainId, inputs, planTier);
     return NextResponse.json({ results, finalOutput });
   } catch (e) {
-    if (cost > 0) await refundSync(uid, cost, `creative:skill-chain:${chainId}`);
+    if (cost > 0) await refundCredits(uid, cost, `creative:skill-chain:${chainId}`);
     const message = e instanceof Error ? e.message : String(e);
     console.error(`[creative/skills/chain] execute ${chainId} error:`, message);
     return NextResponse.json({ error: 'chain_execution_failed', detail: message }, { status: 500 });

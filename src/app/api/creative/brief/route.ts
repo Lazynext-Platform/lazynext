@@ -2,8 +2,7 @@ import { withAtlas } from '@/lib/request-context';
 import { NextResponse } from 'next/server';
 import { auth } from '@/../auth';
 import { generateBrief, CREATIVE_COSTS, type BriefInput } from '@/lib/creative/intelligence';
-import { deductCredits } from '@/lib/credits';
-import { refundSync } from '@/lib/lazynext-studio/gen-task';
+import { deductCredits, refundCredits } from '@/lib/credits';
 import { prisma } from '@/lib/prisma';
 import { getLearningsContext } from '@/lib/creative/learning';
 import { getUserPlanTier } from '@/lib/plan-tier';
@@ -54,7 +53,7 @@ async function __byokPOST(req: Request) {
     const brief = await generateBrief(input);
     return NextResponse.json({ brief });
   } catch (e) {
-    await refundSync(uid, CREATIVE_COSTS.brief, 'creative:brief');
+    await refundCredits(uid, CREATIVE_COSTS.brief, 'creative:brief');
     console.error('[creative/brief] error:', String(e));
     return NextResponse.json({ error: 'brief_failed', detail: String(e) }, { status: 500 });
   }

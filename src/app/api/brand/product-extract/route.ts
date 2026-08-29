@@ -2,8 +2,7 @@ import { withAtlas } from '@/lib/request-context';
 import { NextResponse } from 'next/server';
 import { auth } from '@/../auth';
 import { extractProduct, SSRFError } from '@/lib/brand/extract';
-import { deductCredits } from '@/lib/credits';
-import { refundSync } from '@/lib/lazynext-studio/gen-task';
+import { deductCredits, refundCredits } from '@/lib/credits';
 import { prisma } from '@/lib/prisma';
 import { getUserPlanTier } from '@/lib/plan-tier';
 
@@ -46,7 +45,7 @@ async function __byokPOST(req: Request) {
     }).catch(() => null); // non-fatal — return extraction even if DB save fails
     return NextResponse.json({ extraction, adProductId: adProduct?.id || null });
   } catch (e) {
-    await refundSync(uid, PRODUCT_EXTRACT_COST, 'brand:product-extract');
+    await refundCredits(uid, PRODUCT_EXTRACT_COST, 'brand:product-extract');
     if (e instanceof SSRFError) {
       return NextResponse.json({ error: 'url_blocked', reason: e.message }, { status: 400 });
     }

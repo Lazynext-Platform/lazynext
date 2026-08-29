@@ -2,8 +2,7 @@ import { withAtlas } from '@/lib/request-context';
 import { NextResponse } from 'next/server';
 import { auth } from '@/../auth';
 import { getUserPlanTier } from '@/lib/plan-tier';
-import { deductCredits } from '@/lib/credits';
-import { refundSync } from '@/lib/lazynext-studio/gen-task';
+import { deductCredits, refundCredits } from '@/lib/credits';
 import {
   schedulePost,
   SCHEDULE_CREDIT_COST,
@@ -62,13 +61,13 @@ async function __byokPOST(req: Request) {
   try {
     result = await schedulePost({ ...request, scheduleAt }, scheduleAt);
   } catch (e) {
-    await refundSync(uid, cost, ref).catch(() => {});
+    await refundCredits(uid, cost, ref).catch(() => {});
     console.error('[publish/schedule] error:', String(e));
     return NextResponse.json({ error: 'schedule_failed', detail: String(e) }, { status: 500 });
   }
 
   if (result.status === 'failed') {
-    await refundSync(uid, cost, ref).catch(() => {});
+    await refundCredits(uid, cost, ref).catch(() => {});
     return NextResponse.json({ error: 'schedule_failed', detail: result.error }, { status: 400 });
   }
 

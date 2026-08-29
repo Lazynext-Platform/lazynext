@@ -5,8 +5,7 @@ import { atlasChat } from '@/lib/atlas';
 import { getLLMModel } from '@/lib/providers/model-helpers';
 import type { PlanTier } from '@/lib/plan-tier';
 import { getUserPlanTier } from '@/lib/plan-tier';
-import { deductCredits } from '@/lib/credits';
-import { refundSync } from '@/lib/lazynext-studio/gen-task';
+import { deductCredits, refundCredits } from '@/lib/credits';
 import { prisma } from '@/lib/prisma';
 import type { CreativeBrief, HookCandidate, CreativeAngle, ScriptCandidate } from '@/lib/creative/types';
 
@@ -155,7 +154,7 @@ Script Summary: ${script.scenes.map(s => s.voiceover.slice(0, 100)).join(' | ')}
 
     return NextResponse.json({ result, cost: BRAND_CHECK_COST });
   } catch (e) {
-    await refundSync(uid, BRAND_CHECK_COST, 'creative:brand-check');
+    await refundCredits(uid, BRAND_CHECK_COST, 'creative:brand-check');
     console.error('[creative/brand-check] error:', String(e));
     return NextResponse.json({ error: 'brand_check_failed', detail: String(e) }, { status: 500 });
   }

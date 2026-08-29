@@ -5,8 +5,7 @@ import { atlasChat } from '@/lib/atlas';
 import { getLLMModel } from '@/lib/providers/model-helpers';
 import { getUserPlanTier } from '@/lib/plan-tier';
 import type { PlanTier } from '@/lib/plan-tier';
-import { deductCredits } from '@/lib/credits';
-import { refundSync } from '@/lib/lazynext-studio/gen-task';
+import { deductCredits, refundCredits } from '@/lib/credits';
 import type { CreativeBrief, HookCandidate, CreativeAngle, ScriptCandidate } from '@/lib/creative/types';
 
 export const maxDuration = 90;
@@ -150,7 +149,7 @@ Create a controlled A/B test plan with 2-3 variants. Output the JSON object.`;
 
     return NextResponse.json({ plan, cost: PLAN_COST });
   } catch (e) {
-    await refundSync(uid, PLAN_COST, 'creative:ab-test-plan');
+    await refundCredits(uid, PLAN_COST, 'creative:ab-test-plan');
     console.error('[creative/ab-test/plan] error:', String(e));
     return NextResponse.json({ error: 'plan_failed', detail: String(e) }, { status: 500 });
   }

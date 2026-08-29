@@ -5,8 +5,7 @@ import { runCreativeDirector } from '@/lib/creative/director';
 import { metaAds } from '@/lib/ad-platforms/meta';
 import { googleAds } from '@/lib/ad-platforms/google';
 import type { AdCampaignInput, PublishOptions } from '@/lib/ad-platforms/types';
-import { deductCredits } from '@/lib/credits';
-import { refundSync } from '@/lib/lazynext-studio/gen-task';
+import { deductCredits, refundCredits } from '@/lib/credits';
 import { prisma } from '@/lib/prisma';
 import { dispatchWebhook } from '@/lib/webhooks';
 
@@ -107,7 +106,7 @@ async function __byokPOST(req: Request) {
         if (!directorResult.bestCombination) {
           send('error', { message: 'No best combination produced by the director' });
           const unused = budget - directorResult.totalCreditsSpent;
-          if (unused > 0) await refundSync(uid, unused, 'creative:autonomous:refund');
+          if (unused > 0) await refundCredits(uid, unused, 'creative:autonomous:refund');
           controller.close();
           return;
         }
@@ -199,14 +198,14 @@ async function __byokPOST(req: Request) {
 
         // Refund unused credits
         const unused = budget - directorResult.totalCreditsSpent;
-        if (unused > 0) await refundSync(uid, unused, 'creative:autonomous:refund');
+        if (unused > 0) await refundCredits(uid, unused, 'creative:autonomous:refund');
 
         await dispatchWebhook(uid, 'pipeline.completed', { bestScore: best.score.overall, dryRun: opts.dryRun }).catch(() => {});
 
         controller.close();
       } catch (e) {
         send('error', { message: String(e) });
-        await refundSync(uid, budget, 'creative:autonomous:failed');
+        await refundCredits(uid, budget, 'creative:autonomous:failed');
         controller.close();
       }
     },

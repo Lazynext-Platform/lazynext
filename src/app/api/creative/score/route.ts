@@ -3,8 +3,7 @@ import { NextResponse } from 'next/server';
 import { auth } from '@/../auth';
 import { scoreCreative, CREATIVE_COSTS } from '@/lib/creative/intelligence';
 import type { CreativeBrief, ScriptCandidate, StoryboardCandidate } from '@/lib/creative/types';
-import { deductCredits } from '@/lib/credits';
-import { refundSync } from '@/lib/lazynext-studio/gen-task';
+import { deductCredits, refundCredits } from '@/lib/credits';
 import { getUserPlanTier } from '@/lib/plan-tier';
 
 export const maxDuration = 90;
@@ -36,7 +35,7 @@ async function __byokPOST(req: Request) {
     const score = await scoreCreative({ brief, script, storyboard: storyboard || null, planTier });
     return NextResponse.json({ score });
   } catch (e) {
-    await refundSync(uid, CREATIVE_COSTS.score, 'creative:score');
+    await refundCredits(uid, CREATIVE_COSTS.score, 'creative:score');
     console.error('[creative/score] error:', String(e));
     return NextResponse.json({ error: 'score_failed', detail: String(e) }, { status: 500 });
   }

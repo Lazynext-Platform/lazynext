@@ -2,8 +2,7 @@ import { withAtlas } from '@/lib/request-context';
 import { NextResponse } from 'next/server';
 import { auth } from '@/../auth';
 import { detectFatigue, FATIGUE_COST, type CreativeMetrics } from '@/lib/creative/fatigue-detector';
-import { deductCredits } from '@/lib/credits';
-import { refundSync } from '@/lib/lazynext-studio/gen-task';
+import { deductCredits, refundCredits } from '@/lib/credits';
 import { getUserPlanTier } from '@/lib/plan-tier';
 
 export const maxDuration = 60;
@@ -33,7 +32,7 @@ async function __byokPOST(req: Request) {
     const result = await detectFatigue(creatives, planTier);
     return NextResponse.json({ result });
   } catch (e) {
-    await refundSync(uid, FATIGUE_COST, 'creative:fatigue');
+    await refundCredits(uid, FATIGUE_COST, 'creative:fatigue');
     console.error('[creative/fatigue] error:', String(e));
     return NextResponse.json({ error: 'analysis_failed', detail: String(e) }, { status: 500 });
   }

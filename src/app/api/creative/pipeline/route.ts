@@ -170,67 +170,21 @@ async function __byokPOST(req: Request) {
   // Record workflow start via the engine (for Analytics Hub per-step tracking).
   await startWorkflow(uid, 'creative-pipeline', { pipelineId: state.pipelineId, config: JSON.parse(JSON.stringify(config)) }).catch(() => {});
 
-  // Execute the first stage if one is now in_progress.
+  // Execute the first stage(s) if any are now in_progress.
   if (state.currentStage && state.currentStage !== 'completed' && state.status === 'running') {
-    const stage = state.currentStage;
-    const ctx = initialContext(config);
-    try {
-      await recordStep(state.pipelineId, stage, 'running', { input: { productName: config.productName } }).catch(() => {});
-      const result = await executeStage({
-        stage,
-        config,
-        context: ctx,
-        planTier: await getUserPlanTier(uid).catch(() => undefined as any),
-        userId: uid,
-      });
-      // Merge result into stage state
-      const stageIdx = state.stageResults.findIndex((r) => r.stage === stage);
-      if (stageIdx >= 0) {
-        state.stageResults[stageIdx].output = result.output;
-        state.stageResults[stageIdx].artifacts = result.artifacts;
-      }
-      // Advance the pipeline to mark the stage as completed and update totalCreditsUsed
-      state = useWaves ? advancePipelineWithWaves(state) : advancePipeline(state);
-      await recordStep(state.pipelineId, stage, 'completed', {
-        output: result.output,
-        creditsCost: PIPELINE_COSTS[stage] ?? 0,
-      }).catch(() => {});
-    } catch (e) {
-      const errorMsg = String(e instanceof Error ? e.message : e);
-      const errorStage = e instanceof PipelineStageError ? e.stage : stage;
-      state = failStage(state, errorStage, errorMsg);
-      await recordStep(state.pipelineId, errorStage, 'failed', { error: errorMsg }).catch(() => {});
-      await failWorkflow(state.pipelineId, uid, errorMsg).catch(() => {});
-      // Refund the first stage credit on failure
-      const cost = PIPELINE_COSTS[errorStage as keyof typeof PIPELINE_COSTS] ?? 0;
-      if (cost > 0) {
-        await refundCredits(uid, cost, `pipeline-refund:${state.pipelineId}:${errorStage}`).catch(() => {});
-      }
-    }
-    // Save updated state (with stage output and advanced status)
-    try {
-      await prisma.workflowRun.update({
-        where: { id: state.pipelineId },
-        data: { status: state.status, output: JSON.parse(JSON.stringify(state)) },
-      });
-    } catch { /* non-fatal */ }
+    // Find all in_progress stages in the current wave (parallel partners)
+    const inProgressStages = state.stageResults
+      .filter((r) => r.status === 'in_progress')
+      .map((r) => r.stage);
 
-    // Auto-advance loop: if the next stage has autoAdvance=true, execute it
-    // immediately without waiting for a client request.
-    const autoAdvanceDeadline = Date.now() + 75_000;
-    while (state.status === 'running' && state.currentStage && state.currentStage !== 'completed') {
-      const currentStageConfig = config.stages.find((s: any) => s.stage === state.currentStage);
-      if (!currentStageConfig?.autoAdvance) break;
-      if (Date.now() > autoAdvanceDeadline) break;
-
-      const nextStage = state.currentStage;
-      const nextCost = PIPELINE_COSTS[nextStage] ?? 0;
-
-      if (nextCost > 0) {
+    // Deduct credits for all in_progress stages
+    for (const stageName of inProgressStages) {
+      const stageCost = PIPELINE_COSTS[stageName] ?? 0;
+      if (stageCost > 0) {
         try {
-          await deductCredits(uid, nextCost, `creative:pipeline:${nextStage}`, state.pipelineId);
+          await deductCredits(uid, stageCost, `creative:pipeline:${stageName}`, state.pipelineId);
         } catch (e) {
-          state = failStage(state, nextStage, 'insufficient_credits');
+          state = failStage(state, stageName, 'insufficient_credits');
           try {
             await prisma.workflowRun.update({
               where: { id: state.pipelineId },
@@ -243,44 +197,162 @@ async function __byokPOST(req: Request) {
           );
         }
       }
+    }
 
-      try {
-        await recordStep(state.pipelineId, nextStage, 'running').catch(() => {});
-        // Rebuild context from accumulated stage results
-        let ctx = initialContext(config);
-        for (const result of state.stageResults) {
-          if (result.status === 'completed' || result.status === 'skipped') {
-            ctx = mergeStageResultIntoContext(ctx, result.stage, { output: result.output, artifacts: result.artifacts });
-          }
-        }
+    // Execute all in_progress stages concurrently
+    const planTier = await getUserPlanTier(uid).catch(() => undefined as any);
+    const stageResults = await Promise.allSettled(
+      inProgressStages.map(async (stageName) => {
+        await recordStep(state.pipelineId, stageName, 'running', { input: { productName: config.productName } }).catch(() => {});
+        const ctx = initialContext(config);
         const result = await executeStage({
-          stage: nextStage,
+          stage: stageName,
           config,
           context: ctx,
-          planTier: await getUserPlanTier(uid).catch(() => undefined as any),
+          planTier,
           userId: uid,
         });
-        const stageIdx = state.stageResults.findIndex((r) => r.stage === nextStage);
+        return { stageName, result };
+      }),
+    );
+
+    // Process results
+    let firstFailure: { stage: string; error: string } | null = null;
+    for (let i = 0; i < stageResults.length; i++) {
+      const res = stageResults[i];
+      const stageName = inProgressStages[i];
+      const stageCost = PIPELINE_COSTS[stageName] ?? 0;
+      if (res.status === 'fulfilled') {
+        const { result } = res.value;
+        const stageIdx = state.stageResults.findIndex((r) => r.stage === stageName);
         if (stageIdx >= 0) {
           state.stageResults[stageIdx].output = result.output;
           state.stageResults[stageIdx].artifacts = result.artifacts;
         }
-        state = useWaves ? advancePipelineWithWaves(state) : advancePipeline(state);
-        await recordStep(state.pipelineId, nextStage, 'completed', {
+        await recordStep(state.pipelineId, stageName, 'completed', {
           output: result.output,
-          creditsCost: nextCost,
+          creditsCost: stageCost,
         }).catch(() => {});
-      } catch (e) {
-        const errorMsg = String(e instanceof Error ? e.message : e);
-        const errorStage = e instanceof PipelineStageError ? e.stage : nextStage;
-        state = failStage(state, errorStage, errorMsg);
+      } else {
+        const errorMsg = String(res.reason instanceof Error ? res.reason.message : res.reason);
+        const errorStage = res.reason instanceof PipelineStageError ? res.reason.stage : stageName;
+        if (!firstFailure) firstFailure = { stage: errorStage, error: errorMsg };
         await recordStep(state.pipelineId, errorStage, 'failed', { error: errorMsg }).catch(() => {});
-        await failWorkflow(state.pipelineId, uid, errorMsg).catch(() => {});
-        if (nextCost > 0) {
-          await refundCredits(uid, nextCost, `pipeline-refund:${state.pipelineId}:${errorStage}`).catch(() => {});
+        if (stageCost > 0) {
+          await refundCredits(uid, stageCost, `pipeline-refund:${state.pipelineId}:${errorStage}`).catch(() => {});
         }
+      }
+    }
+
+    if (firstFailure) {
+      state = failStage(state, firstFailure.stage as PipelineState['currentStage'] & string, firstFailure.error);
+      await failWorkflow(state.pipelineId, uid, firstFailure.error).catch(() => {});
+    } else {
+      // Advance the pipeline to mark all wave stages as completed
+      state = useWaves ? advancePipelineWithWaves(state) : advancePipeline(state);
+    }
+    // Save updated state (with stage output and advanced status)
+    try {
+      await prisma.workflowRun.update({
+        where: { id: state.pipelineId },
+        data: { status: state.status, output: JSON.parse(JSON.stringify(state)) },
+      });
+    } catch { /* non-fatal */ }
+
+    // Auto-advance loop: if the next stage has autoAdvance=true, execute it
+    // immediately without waiting for a client request.
+    const autoAdvanceDeadline = Date.now() + 75_000;
+    const autoAdvancePlanTier = await getUserPlanTier(uid).catch(() => undefined as any);
+    while (state.status === 'running' && state.currentStage && state.currentStage !== 'completed') {
+      const currentStageConfig = config.stages.find((s: any) => s.stage === state.currentStage);
+      if (!currentStageConfig?.autoAdvance) break;
+      if (Date.now() > autoAdvanceDeadline) break;
+
+      // Find all in_progress stages in the current wave
+      const waveInProgress = state.stageResults
+        .filter((r) => r.status === 'in_progress')
+        .map((r) => r.stage);
+
+      // Deduct credits for all in_progress stages
+      for (const waveStage of waveInProgress) {
+        const waveCost = PIPELINE_COSTS[waveStage] ?? 0;
+        if (waveCost > 0) {
+          try {
+            await deductCredits(uid, waveCost, `creative:pipeline:${waveStage}`, state.pipelineId);
+          } catch (e) {
+            state = failStage(state, waveStage, 'insufficient_credits');
+            try {
+              await prisma.workflowRun.update({
+                where: { id: state.pipelineId },
+                data: { status: state.status, output: JSON.parse(JSON.stringify(state)) },
+              });
+            } catch { /* non-fatal */ }
+            return NextResponse.json(
+              { error: e instanceof Error && e.message === 'INSUFFICIENT_CREDITS' ? 'insufficient_credits' : 'charge_failed', state },
+              { status: 402 },
+            );
+          }
+        }
+      }
+
+      // Execute all in_progress stages concurrently
+      const waveResults = await Promise.allSettled(
+        waveInProgress.map(async (waveStage) => {
+          await recordStep(state.pipelineId, waveStage, 'running').catch(() => {});
+          // Rebuild context from accumulated stage results
+          let ctx = initialContext(config);
+          for (const result of state.stageResults) {
+            if (result.status === 'completed' || result.status === 'skipped') {
+              ctx = mergeStageResultIntoContext(ctx, result.stage, { output: result.output, artifacts: result.artifacts });
+            }
+          }
+          const result = await executeStage({
+            stage: waveStage,
+            config,
+            context: ctx,
+            planTier: autoAdvancePlanTier,
+            userId: uid,
+          });
+          return { waveStage, result };
+        }),
+      );
+
+      // Process results
+      let firstFailure: { stage: string; error: string } | null = null;
+      for (let i = 0; i < waveResults.length; i++) {
+        const res = waveResults[i];
+        const waveStage = waveInProgress[i];
+        const waveCost = PIPELINE_COSTS[waveStage] ?? 0;
+        if (res.status === 'fulfilled') {
+          const { result } = res.value;
+          const stageIdx = state.stageResults.findIndex((r) => r.stage === waveStage);
+          if (stageIdx >= 0) {
+            state.stageResults[stageIdx].output = result.output;
+            state.stageResults[stageIdx].artifacts = result.artifacts;
+          }
+          await recordStep(state.pipelineId, waveStage, 'completed', {
+            output: result.output,
+            creditsCost: waveCost,
+          }).catch(() => {});
+        } else {
+          const errorMsg = String(res.reason instanceof Error ? res.reason.message : res.reason);
+          const errorStage = res.reason instanceof PipelineStageError ? res.reason.stage : waveStage;
+          if (!firstFailure) firstFailure = { stage: errorStage, error: errorMsg };
+          await recordStep(state.pipelineId, errorStage, 'failed', { error: errorMsg }).catch(() => {});
+          if (waveCost > 0) {
+            await refundCredits(uid, waveCost, `pipeline-refund:${state.pipelineId}:${errorStage}`).catch(() => {});
+          }
+        }
+      }
+
+      if (firstFailure) {
+        state = failStage(state, firstFailure.stage as PipelineState['currentStage'] & string, firstFailure.error);
+        await failWorkflow(state.pipelineId, uid, firstFailure.error).catch(() => {});
         break; // Break the auto-advance loop on failure
       }
+
+      // Advance to mark wave stages completed and start next wave
+      state = useWaves ? advancePipelineWithWaves(state) : advancePipeline(state);
 
       // Save state after each auto-advanced stage
       try {

@@ -275,3 +275,43 @@ test('score stage is in the executor registry', async () => {
     assert.ok(e.message.includes('score_stage_requires'), `Expected prerequisite error, got: ${e.message}`);
   }
 });
+
+test('PipelineStageError is thrown with correct stage and context', async () => {
+  const { executeStage, initialContext, PipelineStageError } = await import('../src/lib/creative/pipeline-executor');
+  const config = makeConfig();
+  const ctx = initialContext(config);
+  try {
+    await executeStage({
+      stage: 'score',
+      config,
+      context: ctx,
+      planTier: 'free' as any,
+      userId: 'test',
+    });
+    assert.fail('Should have thrown');
+  } catch (e: any) {
+    // The prerequisite error should be wrapped in PipelineStageError
+    assert.ok(e instanceof PipelineStageError, `Expected PipelineStageError, got: ${e.constructor.name}`);
+    assert.equal(e.stage, 'score');
+    assert.ok(e.inputSnapshot, 'inputSnapshot should be populated');
+    assert.ok(e.priorContext, 'priorContext should be populated');
+    assert.ok(e.message.includes('pipeline_stage_failed:score'), `Expected stage name in message, got: ${e.message}`);
+  }
+});
+
+test('PipelineStageError is not double-wrapped', async () => {
+  const { executeStage, initialContext, PipelineStageError } = await import('../src/lib/creative/pipeline-executor');
+  const config = makeConfig();
+  const ctx = initialContext(config);
+  // First call throws PipelineStageError
+  try {
+    await executeStage({ stage: 'score', config, context: ctx, planTier: 'free' as any, userId: 'test' });
+    assert.fail('Should have thrown');
+  } catch (e: any) {
+    assert.ok(e instanceof PipelineStageError);
+    // Verify it's not double-wrapped (cause should be the original error, not another PipelineStageError)
+    if (e.cause instanceof PipelineStageError) {
+      assert.fail('PipelineStageError should not be double-wrapped');
+    }
+  }
+});

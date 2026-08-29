@@ -9,8 +9,7 @@ import {
   type TargetFormat,
   type Platform,
 } from '@/lib/creative/repurposing';
-import { deductCredits } from '@/lib/credits';
-import { refundSync } from '@/lib/lazynext-studio/gen-task';
+import { deductCredits, refundCredits } from '@/lib/credits';
 import { getUserPlanTier } from '@/lib/plan-tier';
 
 export const maxDuration = 90;
@@ -70,7 +69,7 @@ async function __byokPOST(req: Request) {
     });
     return NextResponse.json({ result });
   } catch (e) {
-    await refundSync(uid, REPURPOSING_COST, 'creative:repurposing');
+    await refundCredits(uid, REPURPOSING_COST, 'creative:repurposing');
     console.error('[creative/repurposing] error:', String(e));
     return NextResponse.json({ error: 'repurposing_failed', detail: String(e) }, { status: 500 });
   }

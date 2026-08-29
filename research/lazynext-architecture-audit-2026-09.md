@@ -278,10 +278,10 @@ npm run build   # Production build (Cloudflare target)
 
 - **Architecture audit** — this document should be updated when major changes are made.
 - **Authenticated E2E for billing/checkout** — no test for actual checkout flow (requires Dodo Payments).
-- **Pipeline executor error context** — errors only include `err.message`; could add stage name, input snapshot.
-- **Refund helper coupling** — pipeline routes import `refundSync` from `lazynext-studio/gen-task`; a central `refundCredits` would be cleaner.
-- **Workflow Builder product name** — `handleRunAsPipeline` uses workflow name as both `name` and `productName`; a dedicated product name field would improve brief quality.
 - **Production observability** — telemetry events are emitted but not aggregated or alerted on.
+- **Creative Studio chain mode unification** — chain mode has its own step-by-step loop; could be unified with pipeline API to leverage auto-advance and PipelineStageError.
+- **Edit stage real rendering** — produces EDL only; no actual video output or clip editor integration.
+- **Publish stage real integrations** — no real ad-platform API credentials; dry-run returns `dry_run` status.
 
 ### Resolved in recent series
 
@@ -297,3 +297,14 @@ npm run build   # Production build (Cloudflare target)
 - Score scale display fix (Q)
 - Lint warning reduction (Q)
 - Dev script BUILD_TARGET fix (P)
+- Pipeline executor error context — PipelineStageError class (R)
+- Refund helper centralization — refundCredits in credits.ts (R, S)
+- Workflow Builder product name — dedicated productName/productDescription inputs (R)
+- Server-side auto-advance loop — bounded by 75s budget (R)
+- Compliance stage richer inputs — hook, angle, CTA, storyboard prompts (R)
+- Audio stage TTS via dispatchMediaService — plan-tier aware model selection (R)
+- Dry-run publish status clarity — returns 'dry_run' instead of 'published' (R, S)
+- Parallel wave execution correctness — all in_progress stages executed (S)
+- Retry auto-advance — retry chains into auto-advance loop (S)
+- autoAdvance defaults to false for publish/review — prevents silent timeouts (S)
+- Auto-advance telemetry — pipeline_auto_advance event (S)

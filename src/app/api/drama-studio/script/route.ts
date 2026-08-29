@@ -1,8 +1,9 @@
 import { withAtlas } from '@/lib/request-context';
+import { refundCredits } from '@/lib/credits';
 import { NextResponse } from 'next/server';
 import { auth } from '@/../auth';
 import { getDramaScriptModel, draftScript } from '@/lib/drama/prompt';
-import { chargeSync, refundSync, chargeErrorResponse } from '@/lib/lazynext-studio/gen-task';
+import { chargeSync, chargeErrorResponse } from '@/lib/lazynext-studio/gen-task';
 import { getUserPlanTier } from '@/lib/plan-tier';
 
 export const maxDuration = 120;
@@ -37,7 +38,7 @@ async function __byokPOST(req: Request) {
     const script = await draftScript(input);
     return NextResponse.json({ script, model: getDramaScriptModel(planTier) });
   } catch (e) {
-    await refundSync(uid, DRAMA_SCRIPT_COST, 'drama:script');
+    await refundCredits(uid, DRAMA_SCRIPT_COST, 'drama:script');
     console.error('[drama/script] atlas error:', String(e));
     const detail = String(e);
     const status = detail.includes('timed out') ? 504 : 502;

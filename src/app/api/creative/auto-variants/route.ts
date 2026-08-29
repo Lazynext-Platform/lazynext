@@ -4,8 +4,7 @@ import { auth } from '@/../auth';
 import { prisma } from '@/lib/prisma';
 import { generateVariants, scoreCreative, CREATIVE_COSTS } from '@/lib/creative/intelligence';
 import type { CreativeBrief, ScriptCandidate, CreativeVariant, CreativeScore } from '@/lib/creative/types';
-import { deductCredits } from '@/lib/credits';
-import { refundSync } from '@/lib/lazynext-studio/gen-task';
+import { deductCredits, refundCredits } from '@/lib/credits';
 import { getUserPlanTier } from '@/lib/plan-tier';
 
 export const maxDuration = 90;
@@ -55,7 +54,7 @@ async function __byokPOST(req: Request) {
     const variants = await generateVariants(brief, script, count, planTier);
 
     if (variants.length === 0) {
-      await refundSync(uid, totalCost, 'creative:auto-variants');
+      await refundCredits(uid, totalCost, 'creative:auto-variants');
       return NextResponse.json({ error: 'no_variants_generated' }, { status: 500 });
     }
 
@@ -96,7 +95,7 @@ async function __byokPOST(req: Request) {
     }
 
     if (results.length === 0) {
-      await refundSync(uid, totalCost, 'creative:auto-variants');
+      await refundCredits(uid, totalCost, 'creative:auto-variants');
       return NextResponse.json({ error: 'scoring_failed' }, { status: 500 });
     }
 
@@ -113,7 +112,7 @@ async function __byokPOST(req: Request) {
     // Refund for any variants that failed to score
     const failedCount = variants.length - results.length;
     if (failedCount > 0) {
-      await refundSync(uid, CREATIVE_COSTS.score * failedCount, 'creative:auto-variants');
+      await refundCredits(uid, CREATIVE_COSTS.score * failedCount, 'creative:auto-variants');
     }
 
     return NextResponse.json({
@@ -134,7 +133,7 @@ async function __byokPOST(req: Request) {
       failed: failedCount,
     });
   } catch (e) {
-    await refundSync(uid, totalCost, 'creative:auto-variants');
+    await refundCredits(uid, totalCost, 'creative:auto-variants');
     console.error('[creative/auto-variants] error:', String(e));
     return NextResponse.json({ error: 'auto_variants_failed', detail: String(e) }, { status: 500 });
   }

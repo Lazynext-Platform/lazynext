@@ -6,8 +6,7 @@ import {
   validateCompetitorUrl,
   COMPETITOR_INTEL_COST,
 } from '@/lib/creative/competitor-intel';
-import { deductCredits } from '@/lib/credits';
-import { refundSync } from '@/lib/lazynext-studio/gen-task';
+import { deductCredits, refundCredits } from '@/lib/credits';
 import { getUserPlanTier } from '@/lib/plan-tier';
 
 export const maxDuration = 120;
@@ -55,7 +54,7 @@ async function __byokPOST(req: Request) {
     const result = await analyzeCompetitors({ market, competitorUrls, yourMetrics, planTier });
     return NextResponse.json({ result });
   } catch (e) {
-    await refundSync(uid, COMPETITOR_INTEL_COST, 'creative:competitor-intel');
+    await refundCredits(uid, COMPETITOR_INTEL_COST, 'creative:competitor-intel');
     console.error('[creative/competitor-intel] error:', String(e));
     return NextResponse.json({ error: 'analysis_failed', detail: String(e) }, { status: 500 });
   }

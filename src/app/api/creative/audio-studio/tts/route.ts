@@ -1,8 +1,7 @@
 import { withAtlas } from '@/lib/request-context';
 import { NextResponse } from 'next/server';
 import { auth } from '@/../auth';
-import { deductCredits } from '@/lib/credits';
-import { refundSync } from '@/lib/lazynext-studio/gen-task';
+import { deductCredits, refundCredits } from '@/lib/credits';
 import { getUserPlanTier } from '@/lib/plan-tier';
 import {
   generateVoiceover,
@@ -51,7 +50,7 @@ async function __byokPOST(req: Request) {
     const result = await generateVoiceover(request, planTier);
     return NextResponse.json({ result });
   } catch (e) {
-    await refundSync(uid, TTS_CREDIT_COST, 'audio:tts');
+    await refundCredits(uid, TTS_CREDIT_COST, 'audio:tts');
     console.error('[audio-studio/tts] error:', String(e));
     return NextResponse.json({ error: 'tts_failed', detail: String(e) }, { status: 500 });
   }

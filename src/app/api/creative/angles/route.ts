@@ -3,8 +3,7 @@ import { NextResponse } from 'next/server';
 import { auth } from '@/../auth';
 import { generateAngles, CREATIVE_COSTS } from '@/lib/creative/intelligence';
 import type { CreativeBrief } from '@/lib/creative/types';
-import { deductCredits } from '@/lib/credits';
-import { refundSync } from '@/lib/lazynext-studio/gen-task';
+import { deductCredits, refundCredits } from '@/lib/credits';
 import { getUserPlanTier } from '@/lib/plan-tier';
 
 export const maxDuration = 60;
@@ -34,7 +33,7 @@ async function __byokPOST(req: Request) {
     const angles = await generateAngles(brief, count, planTier);
     return NextResponse.json({ angles });
   } catch (e) {
-    await refundSync(uid, CREATIVE_COSTS.angles, 'creative:angles');
+    await refundCredits(uid, CREATIVE_COSTS.angles, 'creative:angles');
     console.error('[creative/angles] error:', String(e));
     return NextResponse.json({ error: 'angles_failed', detail: String(e) }, { status: 500 });
   }

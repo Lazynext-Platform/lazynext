@@ -2,9 +2,7 @@ import { withAtlas } from '@/lib/request-context';
 import { NextResponse } from 'next/server';
 import { auth } from '@/../auth';
 import { getOCRProvider } from '@/lib/providers/ocr';
-import { deductCredits } from '@/lib/credits';
-import { refundSync } from '@/lib/lazynext-studio/gen-task';
-
+import { deductCredits, refundCredits } from '@/lib/credits';
 export const maxDuration = 60;
 
 const OCR_COST = 1;
@@ -65,7 +63,7 @@ async function __byokPOST(req: Request) {
       dryRun: provider.id === 'dryrun',
     });
   } catch (e) {
-    await refundSync(uid, OCR_COST, 'editor:ocr');
+    await refundCredits(uid, OCR_COST, 'editor:ocr');
     const message = e instanceof Error ? e.message : String(e);
     console.error('[editor/ocr] error:', message);
     return NextResponse.json({ error: 'ocr_failed', detail: message }, { status: 500 });

@@ -1,10 +1,11 @@
 import { withAtlas } from '@/lib/request-context';
+import { refundCredits } from '@/lib/credits';
 import { NextResponse } from 'next/server';
 import { auth } from '@/../auth';
 import { draftMarketingPlan, buildFallbackMarketingPlan, type PlanInput } from '@/lib/lazynext-studio/prompt';
 import { cleanText, normalizeRatio, normalizeShotCount, MK_PLAN_COST } from '@/lib/lazynext-studio/workflow';
 import { getFormat } from '@/lib/lazynext-studio/formats';
-import { chargeSync, refundSync, chargeErrorResponse } from '@/lib/lazynext-studio/gen-task';
+import { chargeSync, chargeErrorResponse } from '@/lib/lazynext-studio/gen-task';
 
 export const maxDuration = 60;
 
@@ -38,7 +39,7 @@ async function __byokPOST(req: Request) {
     return NextResponse.json({ plan });
   } catch (e) {
     // AI plan generation failed: refund credits, provide fallback plan, log Atlas raw text + return detail for frontend prompt.
-    await refundSync(uid, MK_PLAN_COST, 'marketing:plan');
+    await refundCredits(uid, MK_PLAN_COST, 'marketing:plan');
     console.error('[marketing/plan] atlas error:', String(e));
     return NextResponse.json({ plan: buildFallbackMarketingPlan(input), fallback: true, detail: String(e) });
   }

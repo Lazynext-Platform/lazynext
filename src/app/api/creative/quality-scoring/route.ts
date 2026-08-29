@@ -7,8 +7,7 @@ import {
   QUALITY_SCORING_COST,
   type BenchmarkType,
 } from '@/lib/creative/quality-scoring';
-import { deductCredits } from '@/lib/credits';
-import { refundSync } from '@/lib/lazynext-studio/gen-task';
+import { deductCredits, refundCredits } from '@/lib/credits';
 import { getUserPlanTier } from '@/lib/plan-tier';
 
 export const maxDuration = 90;
@@ -83,7 +82,7 @@ async function __byokPOST(req: Request) {
     });
     return NextResponse.json({ result });
   } catch (e) {
-    await refundSync(uid, QUALITY_SCORING_COST, 'creative:quality-scoring');
+    await refundCredits(uid, QUALITY_SCORING_COST, 'creative:quality-scoring');
     console.error('[creative/quality-scoring] error:', String(e));
     return NextResponse.json({ error: 'scoring_failed', detail: String(e) }, { status: 500 });
   }

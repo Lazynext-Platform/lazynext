@@ -1,5 +1,24 @@
 # LazyNext Changelog
 
+## 2026-09-02 — S: Parallel Wave Fix, Retry Auto-Advance, Dry-Run Icon, Refund Migration, Architecture Audit
+
+### What Changed
+1. **Parallel wave execution fix** — All `in_progress` stages in a parallel wave are now executed concurrently via `Promise.allSettled`, not just the primary stage; parallel partners were previously marked completed without running their executor
+2. **Retry auto-advance** — After a successful retry, the pipeline now auto-advances through subsequent stages (same loop as `advance` case), instead of stopping and requiring manual advancement
+3. **Auto-advance E2E test** — Added authenticated E2E test verifying that auto-advance chains multiple stages in a single request
+4. **Dry-run publish icon** — `MultiPlatformPublisher.tsx` now shows a warning icon (`AlertCircle`) for `dry_run` status instead of a generic clock icon
+5. **autoAdvance defaults for review** — `publish` stage defaults to `autoAdvance: false` when `onComplete === 'review'` in both `configFromTemplate` and `configFromWorkflow`, preventing silent timeouts and unexpected credit consumption
+6. **Auto-advance telemetry** — Added `pipeline_auto_advance` telemetry event logging chain count and duration
+7. **PipelineStageError unit tests** — Added 2 unit tests verifying `PipelineStageError` is thrown with correct stage/context and is not double-wrapped
+8. **RefundSync migration** — Migrated 63 creative/editor/brand/publish API routes from `refundSync` (gen-task) to centralized `refundCredits` (credits.ts); `refundSync` remains exported from gen-task for backward compatibility
+9. **Architecture audit updated** — Marked R-series gaps as resolved; added S-series features; updated remaining gaps
+
+### Verification
+- npm run lint — 0 errors, 2 warnings
+- npm test — 1414 tests passing (up from 1412)
+- npm run build — successful
+- npx playwright test — 431 passed (up from 430), 2 skipped
+
 ## 2026-09-02 — R: Workflow Builder Product Name, Pipeline Error Context, Auto-Advance, Stage Polish
 
 ### What Changed

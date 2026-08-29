@@ -5,8 +5,7 @@ import { atlasChat } from '@/lib/atlas';
 import { getLLMModel } from '@/lib/providers/model-helpers';
 import type { PlanTier } from '@/lib/plan-tier';
 import { getUserPlanTier } from '@/lib/plan-tier';
-import { deductCredits } from '@/lib/credits';
-import { refundSync } from '@/lib/lazynext-studio/gen-task';
+import { deductCredits, refundCredits } from '@/lib/credits';
 import type { CreativeBrief, ScriptCandidate } from '@/lib/creative/types';
 
 export const maxDuration = 90;
@@ -165,7 +164,7 @@ Adapt this creative for each target platform now. Output the JSON object.`;
 
     return NextResponse.json({ result: result, cost: ADAPT_COST * adaptations.length });
   } catch (e) {
-    await refundSync(uid, ADAPT_COST * platformsToAdapt.length, 'creative:adapt-platform');
+    await refundCredits(uid, ADAPT_COST * platformsToAdapt.length, 'creative:adapt-platform');
     console.error('[creative/adapt-platform] error:', String(e));
     return NextResponse.json({ error: 'adaptation_failed', detail: String(e) }, { status: 500 });
   }

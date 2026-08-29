@@ -3,8 +3,7 @@ import { NextResponse } from 'next/server';
 import { auth } from '@/../auth';
 import { generateScript, CREATIVE_COSTS } from '@/lib/creative/intelligence';
 import type { CreativeBrief, CreativeAngle, HookCandidate } from '@/lib/creative/types';
-import { deductCredits } from '@/lib/credits';
-import { refundSync } from '@/lib/lazynext-studio/gen-task';
+import { deductCredits, refundCredits } from '@/lib/credits';
 import { getUserPlanTier } from '@/lib/plan-tier';
 
 export const maxDuration = 90;
@@ -36,7 +35,7 @@ async function __byokPOST(req: Request) {
     const script = await generateScript(brief, angle, hook, planTier);
     return NextResponse.json({ script });
   } catch (e) {
-    await refundSync(uid, CREATIVE_COSTS.script, 'creative:script');
+    await refundCredits(uid, CREATIVE_COSTS.script, 'creative:script');
     console.error('[creative/script] error:', String(e));
     return NextResponse.json({ error: 'script_failed', detail: String(e) }, { status: 500 });
   }

@@ -7,8 +7,7 @@ import {
   TREND_INTELLIGENCE_COST,
   type TrendTimeframe,
 } from '@/lib/creative/trend-intelligence';
-import { deductCredits } from '@/lib/credits';
-import { refundSync } from '@/lib/lazynext-studio/gen-task';
+import { deductCredits, refundCredits } from '@/lib/credits';
 import { getUserPlanTier } from '@/lib/plan-tier';
 
 export const maxDuration = 90;
@@ -60,7 +59,7 @@ async function __byokPOST(req: Request) {
     });
     return NextResponse.json({ result });
   } catch (e) {
-    await refundSync(uid, TREND_INTELLIGENCE_COST, 'creative:trend-intelligence');
+    await refundCredits(uid, TREND_INTELLIGENCE_COST, 'creative:trend-intelligence');
     console.error('[creative/trend-intelligence] error:', String(e));
     return NextResponse.json({ error: 'trend_analysis_failed', detail: String(e) }, { status: 500 });
   }

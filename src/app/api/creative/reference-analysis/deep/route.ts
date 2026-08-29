@@ -2,8 +2,7 @@ import { withAtlas } from '@/lib/request-context';
 import { NextResponse } from 'next/server';
 import { auth } from '@/../auth';
 import { analyzeReferenceDeep, CREATIVE_COSTS } from '@/lib/creative/intelligence';
-import { deductCredits } from '@/lib/credits';
-import { refundSync } from '@/lib/lazynext-studio/gen-task';
+import { deductCredits, refundCredits } from '@/lib/credits';
 import { atlasASR, ATLAS_ASR_MODEL } from '@/lib/providers/atlas-audio';
 import { pollOnce } from '@/lib/atlas';
 import { getUserPlanTier } from '@/lib/plan-tier';
@@ -66,7 +65,7 @@ async function __byokPOST(req: Request) {
     const analysis = await analyzeReferenceDeep(sourceUrl, effectiveTranscript, planTier);
     return NextResponse.json({ analysis, transcript: effectiveTranscript || undefined });
   } catch (e) {
-    await refundSync(uid, totalCost, 'creative:deep-reference-analysis');
+    await refundCredits(uid, totalCost, 'creative:deep-reference-analysis');
     console.error('[creative/reference-analysis/deep] error:', String(e));
     return NextResponse.json({ error: 'analysis_failed', detail: String(e) }, { status: 500 });
   }

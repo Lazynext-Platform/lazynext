@@ -2,8 +2,7 @@ import { withAtlas } from '@/lib/request-context';
 import { NextResponse } from 'next/server';
 import { auth } from '@/../auth';
 import { runCreativeDirector, type DirectorStep, type DirectorResult } from '@/lib/creative/director';
-import { deductCredits } from '@/lib/credits';
-import { refundSync } from '@/lib/lazynext-studio/gen-task';
+import { deductCredits, refundCredits } from '@/lib/credits';
 import { dispatchWebhook } from '@/lib/webhooks';
 
 export const maxDuration = 120;
@@ -48,13 +47,13 @@ async function __byokPOST(req: Request) {
       });
 
       const unused = budget - result.totalCreditsSpent;
-      if (unused > 0) await refundSync(uid, unused, 'creative:director:refund');
+      if (unused > 0) await refundCredits(uid, unused, 'creative:director:refund');
 
       await dispatchWebhook(uid, 'creative.generated', { assetPackageId: result.assetPackageId, totalCreditsSpent: result.totalCreditsSpent }).catch(() => {});
 
       return NextResponse.json({ result });
     } catch (e) {
-      await refundSync(uid, budget, 'creative:director:failed');
+      await refundCredits(uid, budget, 'creative:director:failed');
       console.error('[creative/director] error:', String(e));
       return NextResponse.json({ error: 'director_failed', detail: String(e) }, { status: 500 });
     }
@@ -96,7 +95,7 @@ async function __byokPOST(req: Request) {
 
         // Refund unused credits
         const unused = budget - result.totalCreditsSpent;
-        if (unused > 0) await refundSync(uid, unused, 'creative:director:refund');
+        if (unused > 0) await refundCredits(uid, unused, 'creative:director:refund');
 
         await dispatchWebhook(uid, 'creative.generated', { assetPackageId: result.assetPackageId, totalCreditsSpent: result.totalCreditsSpent }).catch(() => {});
 
@@ -113,7 +112,7 @@ async function __byokPOST(req: Request) {
           assetPackageId: result.assetPackageId,
         });
       } catch (e) {
-        await refundSync(uid, budget, 'creative:director:failed');
+        await refundCredits(uid, budget, 'creative:director:failed');
         console.error('[creative/director] stream error:', String(e));
         send('error', { error: 'director_failed', detail: String(e) });
       } finally {

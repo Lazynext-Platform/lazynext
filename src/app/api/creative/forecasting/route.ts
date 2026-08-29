@@ -3,8 +3,7 @@ import { NextResponse } from 'next/server';
 import { auth } from '@/../auth';
 import { generateForecast, FORECAST_COST, validateForecastRequest } from '@/lib/creative/forecasting';
 import type { ForecastHorizon, ForecastMetric } from '@/lib/creative/forecasting';
-import { deductCredits } from '@/lib/credits';
-import { refundSync } from '@/lib/lazynext-studio/gen-task';
+import { deductCredits, refundCredits } from '@/lib/credits';
 import { getUserPlanTier } from '@/lib/plan-tier';
 
 export const maxDuration = 90;
@@ -44,7 +43,7 @@ async function __byokPOST(req: Request) {
     });
     return NextResponse.json({ result });
   } catch (e) {
-    await refundSync(uid, FORECAST_COST, 'creative:forecasting');
+    await refundCredits(uid, FORECAST_COST, 'creative:forecasting');
     console.error('[creative/forecasting] error:', String(e));
     return NextResponse.json({ error: 'forecast_failed', detail: String(e) }, { status: 500 });
   }

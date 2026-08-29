@@ -8,8 +8,7 @@ import {
   type PlatformFormat,
   type CreatorPersona,
 } from '@/lib/creative/ugc-formats';
-import { deductCredits } from '@/lib/credits';
-import { refundSync } from '@/lib/lazynext-studio/gen-task';
+import { deductCredits, refundCredits } from '@/lib/credits';
 import { getUserPlanTier } from '@/lib/plan-tier';
 
 export const maxDuration = 60;
@@ -112,7 +111,7 @@ async function __byokPOST(req: Request) {
     );
     return NextResponse.json({ result, cost: UGC_COST });
   } catch (e) {
-    await refundSync(uid, UGC_COST, 'creative:ugc');
+    await refundCredits(uid, UGC_COST, 'creative:ugc');
     console.error('[creative/ugc] error:', String(e));
     return NextResponse.json({ error: 'ugc_generation_failed', detail: String(e) }, { status: 500 });
   }

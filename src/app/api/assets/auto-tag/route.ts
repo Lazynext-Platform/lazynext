@@ -5,8 +5,7 @@ import { atlasChat } from '@/lib/atlas';
 import { getLLMModel } from '@/lib/providers/model-helpers';
 import type { PlanTier } from '@/lib/plan-tier';
 import { getUserPlanTier } from '@/lib/plan-tier';
-import { deductCredits } from '@/lib/credits';
-import { refundSync } from '@/lib/lazynext-studio/gen-task';
+import { deductCredits, refundCredits } from '@/lib/credits';
 import { prisma } from '@/lib/prisma';
 
 export const maxDuration = 60;
@@ -143,7 +142,7 @@ Generate intelligent tags for this asset. Output the JSON object.`;
 
     return NextResponse.json({ result: tagResult, mergedTags, cost: TAG_COST });
   } catch (e) {
-    await refundSync(uid, TAG_COST, 'assets:auto-tag');
+    await refundCredits(uid, TAG_COST, 'assets:auto-tag');
     console.error('[assets/auto-tag] error:', String(e));
     return NextResponse.json({ error: 'auto_tag_failed', detail: String(e) }, { status: 500 });
   }

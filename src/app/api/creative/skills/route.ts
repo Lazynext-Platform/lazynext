@@ -3,8 +3,7 @@ import { NextResponse } from 'next/server';
 import { auth } from '@/../auth';
 import { listSkills, getSkill, executeSkill } from '@/lib/creative/skill-library';
 import type { SkillCategory } from '@/lib/creative/skill-library';
-import { deductCredits } from '@/lib/credits';
-import { refundSync } from '@/lib/lazynext-studio/gen-task';
+import { deductCredits, refundCredits } from '@/lib/credits';
 import { getUserPlanTier } from '@/lib/plan-tier';
 
 export const maxDuration = 60;
@@ -85,7 +84,7 @@ async function __byokPOST(req: Request) {
     const result = await executeSkill(skillId, inputs, planTier);
     return NextResponse.json({ result });
   } catch (e) {
-    if (cost > 0) await refundSync(uid, cost, `creative:skill:${skillId}`);
+    if (cost > 0) await refundCredits(uid, cost, `creative:skill:${skillId}`);
     const message = e instanceof Error ? e.message : String(e);
     console.error(`[creative/skills] execute ${skillId} error:`, message);
     return NextResponse.json({ error: 'skill_execution_failed', detail: message }, { status: 500 });

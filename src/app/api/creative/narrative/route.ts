@@ -9,8 +9,7 @@ import {
   type Genre,
   type NarrativeAdRequest,
 } from '@/lib/creative/narrative';
-import { deductCredits } from '@/lib/credits';
-import { refundSync } from '@/lib/lazynext-studio/gen-task';
+import { deductCredits, refundCredits } from '@/lib/credits';
 import { getUserPlanTier } from '@/lib/plan-tier';
 
 export const maxDuration = 90;
@@ -118,7 +117,7 @@ async function __byokPOST(req: Request) {
     const result = await generateNarrativeAd(request, planTier);
     return NextResponse.json({ result, cost: NARRATIVE_COST });
   } catch (e) {
-    await refundSync(uid, NARRATIVE_COST, 'creative:narrative');
+    await refundCredits(uid, NARRATIVE_COST, 'creative:narrative');
     console.error('[creative/narrative] error:', String(e));
     return NextResponse.json({ error: 'narrative_generation_failed', detail: String(e) }, { status: 500 });
   }

@@ -3,8 +3,7 @@ import { NextResponse } from 'next/server';
 import { auth } from '@/../auth';
 import { generateStoryboard, CREATIVE_COSTS } from '@/lib/creative/intelligence';
 import type { CreativeBrief, ScriptCandidate } from '@/lib/creative/types';
-import { deductCredits } from '@/lib/credits';
-import { refundSync } from '@/lib/lazynext-studio/gen-task';
+import { deductCredits, refundCredits } from '@/lib/credits';
 import { getUserPlanTier } from '@/lib/plan-tier';
 
 export const maxDuration = 90;
@@ -36,7 +35,7 @@ async function __byokPOST(req: Request) {
     const storyboard = await generateStoryboard(brief, script, ratio, planTier);
     return NextResponse.json({ storyboard });
   } catch (e) {
-    await refundSync(uid, CREATIVE_COSTS.storyboard, 'creative:storyboard');
+    await refundCredits(uid, CREATIVE_COSTS.storyboard, 'creative:storyboard');
     console.error('[creative/storyboard] error:', String(e));
     return NextResponse.json({ error: 'storyboard_failed', detail: String(e) }, { status: 500 });
   }

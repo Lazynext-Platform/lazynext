@@ -9,8 +9,7 @@ import {
   type ProductionStyle,
   type BudgetTier,
 } from '@/lib/creative/shot-planner';
-import { deductCredits } from '@/lib/credits';
-import { refundSync } from '@/lib/lazynext-studio/gen-task';
+import { deductCredits, refundCredits } from '@/lib/credits';
 import { getUserPlanTier } from '@/lib/plan-tier';
 
 export const maxDuration = 90;
@@ -60,7 +59,7 @@ async function __byokPOST(req: Request) {
     });
     return NextResponse.json({ result });
   } catch (e) {
-    await refundSync(uid, SHOT_PLANNER_COST, 'creative:shot-planner');
+    await refundCredits(uid, SHOT_PLANNER_COST, 'creative:shot-planner');
     console.error('[creative/shot-planner] error:', String(e));
     return NextResponse.json({ error: 'planning_failed', detail: String(e) }, { status: 500 });
   }

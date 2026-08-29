@@ -1,8 +1,7 @@
 import { withAtlas } from '@/lib/request-context';
 import { NextResponse } from 'next/server';
 import { auth } from '@/../auth';
-import { deductCredits } from '@/lib/credits';
-import { refundSync } from '@/lib/lazynext-studio/gen-task';
+import { deductCredits, refundCredits } from '@/lib/credits';
 import { getUserPlanTier } from '@/lib/plan-tier';
 import {
   mixAudio,
@@ -63,7 +62,7 @@ async function __byokPOST(req: Request) {
     const result = await mixAudio(request, planTier);
     return NextResponse.json({ result });
   } catch (e) {
-    await refundSync(uid, MIX_CREDIT_COST, 'audio:mix');
+    await refundCredits(uid, MIX_CREDIT_COST, 'audio:mix');
     console.error('[audio-studio/mix] error:', String(e));
     return NextResponse.json({ error: 'mix_failed', detail: String(e) }, { status: 500 });
   }

@@ -6,8 +6,7 @@ import {
   validateSceneAnalysisRequest,
   SCENE_ANALYSIS_COST,
 } from '@/lib/creative/scene-analysis';
-import { deductCredits } from '@/lib/credits';
-import { refundSync } from '@/lib/lazynext-studio/gen-task';
+import { deductCredits, refundCredits } from '@/lib/credits';
 import { getUserPlanTier } from '@/lib/plan-tier';
 
 export const maxDuration = 90;
@@ -49,7 +48,7 @@ async function __byokPOST(req: Request) {
     });
     return NextResponse.json({ result });
   } catch (e) {
-    await refundSync(uid, SCENE_ANALYSIS_COST, 'creative:scene-analysis');
+    await refundCredits(uid, SCENE_ANALYSIS_COST, 'creative:scene-analysis');
     console.error('[creative/scene-analysis] error:', String(e));
     return NextResponse.json({ error: 'analysis_failed', detail: String(e) }, { status: 500 });
   }
