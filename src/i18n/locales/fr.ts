@@ -589,7 +589,7 @@ export const frMessages = {
       stopChain: 'Arrêter',
       pipelineMode: 'Mode Pipeline',
       pipelineModeDesc: 'Exécuter le pipeline créatif complet avec exécution automatique des étapes et transfert des sorties',
-      pipelineModeHelp: 'Exécute le pipeline complet : brief → script → storyboard → média → audio → montage → conformité → publication. Chaque étape s\'exécute automatiquement et transmet sa sortie à la suivante.',
+      pipelineModeHelp: 'Exécute le pipeline complet : brief → script → storyboard → média → audio → montage → conformité → score → publication. Chaque étape s\'exécute automatiquement et transmet sa sortie à la suivante.',
       enablePipeline: 'Activer le Mode Pipeline',
       stopPipeline: 'Arrêter',
       startPipeline: 'Démarrer le Pipeline',
@@ -766,6 +766,8 @@ export const frMessages = {
       approvePublish: 'Approuver et Publier',
       pause: 'Pause',
       resume: 'Reprendre',
+      retry: 'Réessayer',
+      skip: 'Passer',
     },
     personas: {
       title: "Personas d'Audience",

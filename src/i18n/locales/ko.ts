@@ -589,7 +589,7 @@ export const koMessages = {
       stopChain: '중지',
       pipelineMode: '파이프라인 모드',
       pipelineModeDesc: '자동 단계 실행 및 출력 전달로 전체 크리에이티브 파이프라인 실행',
-      pipelineModeHelp: '전체 파이프라인 실행: 브리프 → 스크립트 → 스토리보드 → 미디어 → 오디오 → 편집 → 컴플라이언스 → 게시. 각 단계가 자동으로 실행되고 출력이 다음 단계로 전달됩니다.',
+      pipelineModeHelp: '전체 파이프라인 실행: 브리프 → 스크립트 → 스토리보드 → 미디어 → 오디오 → 편집 → 컴플라이언스 → 점수 → 게시. 각 단계가 자동으로 실행되고 출력이 다음 단계로 전달됩니다.',
       enablePipeline: '파이프라인 모드 활성화',
       stopPipeline: '중지',
       startPipeline: '파이프라인 시작',
@@ -766,6 +766,8 @@ export const koMessages = {
       approvePublish: '승인 및 게시',
       pause: '일시정지',
       resume: '재개',
+      retry: '재시도',
+      skip: '건너뛰기',
     },
     personas: {
       title: "오디언스 페르소나",

@@ -675,7 +675,7 @@ export const enMessages = {
       stopChain: 'Stop',
       pipelineMode: 'Pipeline Mode',
       pipelineModeDesc: 'Run the full creative pipeline with automated stage execution and output handoff',
-      pipelineModeHelp: 'Runs the complete pipeline: brief → script → storyboard → media → audio → edit → compliance → publish. Each stage executes automatically and passes its output to the next.',
+      pipelineModeHelp: 'Runs the complete pipeline: brief → script → storyboard → media → audio → edit → compliance → score → publish. Each stage executes automatically and passes its output to the next.',
       enablePipeline: 'Enable Pipeline Mode',
       stopPipeline: 'Stop',
       startPipeline: 'Start Pipeline',
@@ -852,6 +852,8 @@ export const enMessages = {
       approvePublish: "Approve & Publish",
       pause: "Pause",
       resume: "Resume",
+      retry: "Retry",
+      skip: "Skip",
     },
     personas: {
       title: "Audience Personas",

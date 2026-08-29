@@ -188,13 +188,13 @@ export const PIPELINE_TEMPLATES: PipelineTemplate[] = [
     templateId: 'quick-ad',
     name: 'Quick Ad Generator',
     description:
-      'Fast path from brief to a published ad. Skips audio, edit, and compliance for maximum speed.',
-    stages: ['brief', 'script', 'storyboard', 'media_generation', 'publish'],
+      'Fast path from brief to a published ad. Skips audio, edit, and compliance for maximum speed. Includes quality scoring.',
+    stages: ['brief', 'script', 'storyboard', 'media_generation', 'score', 'publish'],
     defaultConfig: {
       name: 'Quick Ad',
       onComplete: 'publish',
     },
-    estimatedCredits: 16,
+    estimatedCredits: 18,
     estimatedDurationMin: 3,
   },
   {
@@ -236,13 +236,13 @@ export const PIPELINE_TEMPLATES: PipelineTemplate[] = [
     templateId: 'ugc',
     name: 'UGC Pipeline',
     description:
-      'User-generated-content style pipeline: brief, script, media generation, audio, and publish. Lightweight and authentic.',
-    stages: ['brief', 'script', 'media_generation', 'audio', 'publish'],
+      'User-generated-content style pipeline: brief, script, media generation, audio, scoring, and publish. Lightweight and authentic.',
+    stages: ['brief', 'script', 'media_generation', 'audio', 'score', 'publish'],
     defaultConfig: {
       name: 'UGC Ad',
       onComplete: 'publish',
     },
-    estimatedCredits: 16,
+    estimatedCredits: 18,
     estimatedDurationMin: 3,
   },
 ];
@@ -675,11 +675,12 @@ export function configFromTemplate(templateId: string, overrides: Partial<Pipeli
     brandName: undefined,
     targetAudience: undefined,
     platforms: undefined,
-    stages,
     onComplete: tmpl.defaultConfig.onComplete ?? 'publish',
+    stages,
   };
 
-  return { ...base, ...overrides, stages: overrides.stages ?? stages };
+  const { stages: _omit, ...baseWithoutStages } = base;
+  return { ...baseWithoutStages, ...overrides, stages: overrides.stages ?? stages };
 }
 
 // ---------------------------------------------------------------------------

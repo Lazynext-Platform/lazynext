@@ -592,7 +592,7 @@ export const idMessages = {
       stopChain: 'Berhenti',
       pipelineMode: 'Mode Pipeline',
       pipelineModeDesc: 'Jalankan pipeline kreatif lengkap dengan eksekusi tahap otomatis dan transfer output',
-      pipelineModeHelp: 'Menjalankan pipeline lengkap: brief → skrip → storyboard → media → audio → edit → kepatuhan → publikasi. Setiap tahap dieksekusi otomatis dan meneruskan output ke tahap berikutnya.',
+      pipelineModeHelp: 'Menjalankan pipeline lengkap: brief → skrip → storyboard → media → audio → edit → kepatuhan → skor → publikasi. Setiap tahap dieksekusi otomatis dan meneruskan output ke tahap berikutnya.',
       enablePipeline: 'Aktifkan Mode Pipeline',
       stopPipeline: 'Berhenti',
       startPipeline: 'Mulai Pipeline',
@@ -769,6 +769,8 @@ export const idMessages = {
       approvePublish: 'Setujui dan Publikasikan',
       pause: 'Jeda',
       resume: 'Lanjutkan',
+      retry: 'Coba Lagi',
+      skip: 'Lewati',
     },
     personas: {
       title: "Persona Audiens",

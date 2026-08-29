@@ -589,7 +589,7 @@ export const deMessages = {
       stopChain: 'Stopp',
       pipelineMode: 'Pipeline-Modus',
       pipelineModeDesc: 'Vollständige Creative-Pipeline mit automatischer Stufenausführung und Output-Übergabe ausführen',
-      pipelineModeHelp: 'Führt die komplette Pipeline aus: Brief → Skript → Storyboard → Medien → Audio → Schnitt → Compliance → Veröffentlichung. Jede Stufe wird automatisch ausgeführt und gibt ihre Ausgabe an die nächste weiter.',
+      pipelineModeHelp: 'Führt die komplette Pipeline aus: Brief → Skript → Storyboard → Medien → Audio → Schnitt → Compliance → Bewertung → Veröffentlichung. Jede Stufe wird automatisch ausgeführt und gibt ihre Ausgabe an die nächste weiter.',
       enablePipeline: 'Pipeline-Modus aktivieren',
       stopPipeline: 'Stopp',
       startPipeline: 'Pipeline starten',
@@ -766,6 +766,8 @@ export const deMessages = {
       approvePublish: 'Genehmigen und Veröffentlichen',
       pause: 'Pause',
       resume: 'Fortsetzen',
+      retry: 'Wiederholen',
+      skip: 'Überspringen',
     },
     personas: {
       title: "Zielgruppen-Personas",

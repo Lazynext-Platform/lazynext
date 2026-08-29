@@ -910,7 +910,7 @@ function StageCard({
               disabled={actionLoading}
               className="flex items-center gap-1 rounded-lg border border-line bg-app px-2.5 py-1.5 text-[11px] font-medium text-fg hover:bg-hover disabled:opacity-50"
             >
-              <RotateCw className="h-3 w-3" /> Retry
+              <RotateCw className="h-3 w-3" /> {t('pipeline.retry')}
             </button>
           )}
           {canSkip && (
@@ -919,7 +919,7 @@ function StageCard({
               disabled={actionLoading}
               className="flex items-center gap-1 rounded-lg border border-line bg-app px-2.5 py-1.5 text-[11px] font-medium text-fg-faint hover:text-fg disabled:opacity-50"
             >
-              <SkipForward className="h-3 w-3" /> Skip
+              <SkipForward className="h-3 w-3" /> {t('pipeline.skip')}
             </button>
           )}
         </div>
@@ -1144,15 +1144,43 @@ function StageOutputContent({ stage, output, pipelineId }: { stage: PipelineStag
     case 'compliance': {
       const result = output.complianceResult as Record<string, unknown> | undefined;
       if (!result) return null;
+      const violations = Array.isArray(result.violations) ? (result.violations as Array<Record<string, unknown>>) : [];
+      const warnings = Array.isArray(result.warnings) ? (result.warnings as Array<Record<string, unknown>>) : [];
+      const recommendations = Array.isArray(result.recommendations) ? (result.recommendations as Array<Record<string, unknown>>) : [];
       return (
         <dl className="space-y-1">
-          <DetailRow label="Status" value={String(result.status || '')} />
-          {Array.isArray(result.violations) && (result.violations as Array<Record<string, unknown>>).length > 0 && (
+          <DetailRow label={t('compliance.complianceScore')} value={typeof result.complianceScore === 'number' ? String(result.complianceScore) : ''} />
+          <DetailRow label={t('compliance.brandSafety')} value={typeof result.brandSafetyScore === 'number' ? String(result.brandSafetyScore) : ''} />
+          <DetailRow label="Status" value={String(result.overallStatus || '')} />
+          {violations.length > 0 && (
             <div>
-              <p className="font-bold text-fg">Violations ({(result.violations as Array<Record<string, unknown>>).length})</p>
-              {(result.violations as Array<Record<string, unknown>>).slice(0, 5).map((v, i) => (
+              <p className="font-bold text-fg">{t('compliance.violations')} ({violations.length})</p>
+              {violations.slice(0, 5).map((v, i) => (
                 <div key={i} className="ml-2">
-                  <span className="text-fg-faint">[{String(v.severity)}]</span> {v.message as string}
+                  <span className="text-fg-faint">[{String(v.severity)}]</span> {v.title as string}
+                  {typeof v.description === 'string' && v.description && (
+                    <p className="text-fg-faint text-xs">{v.description}</p>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+          {warnings.length > 0 && (
+            <div>
+              <p className="font-bold text-fg">{t('compliance.warnings')} ({warnings.length})</p>
+              {warnings.slice(0, 3).map((w, i) => (
+                <div key={i} className="ml-2">
+                  <span className="text-fg-faint">[{String(w.severity)}]</span> {w.title as string}
+                </div>
+              ))}
+            </div>
+          )}
+          {recommendations.length > 0 && (
+            <div>
+              <p className="font-bold text-fg">{t('compliance.recommendations')}</p>
+              {recommendations.slice(0, 3).map((r, i) => (
+                <div key={i} className="ml-2">
+                  <span className="text-fg-faint">[{String(r.priority)}]</span> {r.recommendation as string}
                 </div>
               ))}
             </div>
@@ -1188,12 +1216,29 @@ function StageOutputContent({ stage, output, pipelineId }: { stage: PipelineStag
     case 'publish': {
       const publishResult = output.publishResult as Record<string, unknown> | undefined;
       if (!publishResult) return null;
+      const results = Array.isArray(publishResult.results) ? (publishResult.results as Array<Record<string, unknown>>) : [];
       return (
         <dl className="space-y-1">
           <DetailRow label="Status" value={String(publishResult.status || '')} />
           <DetailRow label="On Complete" value={String(publishResult.onComplete || '')} />
           {Array.isArray(publishResult.platforms) && (
             <DetailRow label="Platforms" value={(publishResult.platforms as string[]).join(', ')} />
+          )}
+          {results.length > 0 && (
+            <div>
+              <p className="font-bold text-fg">Results</p>
+              {results.map((r, i) => (
+                <div key={i} className="ml-2">
+                  <span className="text-fg-faint">[{String(r.platform)}]</span> {String(r.status)}
+                  {typeof r.postUrl === 'string' && r.postUrl && (
+                    <a href={r.postUrl} target="_blank" rel="noopener noreferrer" className="ml-1 text-accent underline">link</a>
+                  )}
+                  {typeof r.error === 'string' && r.error && (
+                    <span className="text-danger text-xs"> — {r.error}</span>
+                  )}
+                </div>
+              ))}
+            </div>
           )}
         </dl>
       );

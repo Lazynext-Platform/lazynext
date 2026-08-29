@@ -592,7 +592,7 @@ export const viMessages = {
       stopChain: 'Dừng',
       pipelineMode: 'Chế độ Pipeline',
       pipelineModeDesc: 'Chạy toàn bộ pipeline sáng tạo với thực thi giai đoạn tự động và chuyển giao đầu ra',
-      pipelineModeHelp: 'Chạy pipeline hoàn chỉnh: tóm tắt → kịch bản → storyboard → media → audio → chỉnh sửa → tuân thủ → xuất bản. Mỗi giai đoạn thực thi tự động và truyền đầu ra cho giai đoạn tiếp theo.',
+      pipelineModeHelp: 'Chạy pipeline hoàn chỉnh: tóm tắt → kịch bản → storyboard → media → audio → chỉnh sửa → tuân thủ → điểm → xuất bản. Mỗi giai đoạn thực thi tự động và truyền đầu ra cho giai đoạn tiếp theo.',
       enablePipeline: 'Bật Chế độ Pipeline',
       stopPipeline: 'Dừng',
       startPipeline: 'Bắt đầu Pipeline',
@@ -769,6 +769,8 @@ export const viMessages = {
       approvePublish: 'Phê duyệt và Xuất bản',
       pause: 'Tạm dừng',
       resume: 'Tiếp tục',
+      retry: 'Thử lại',
+      skip: 'Bỏ qua',
     },
     personas: {
       title: "Chân dung Khách hàng mục tiêu",

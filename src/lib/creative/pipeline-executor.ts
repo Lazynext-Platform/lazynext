@@ -38,7 +38,9 @@ import { publishContent } from '@/lib/publishing/publisher';
 import type { PublishRequest, PublishPlatform } from '@/lib/publishing/types';
 import type { CreativeBrief, HookCandidate, CreativeAngle, ScriptCandidate, StoryboardCandidate, CreativeScore } from '@/lib/creative/types';
 import type { PipelineConfig, PipelineStage, PipelineStageResult } from '@/lib/creative/pipeline';
+import { PIPELINE_COSTS } from '@/lib/creative/pipeline';
 import type { PlanTier } from '@/lib/plan-tier';
+import { logToolExecution } from '@/lib/telemetry';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -533,7 +535,28 @@ export async function executeStage(params: ExecuteStageParams): Promise<StageExe
   if (!executor) {
     throw new Error(`no_executor_for_stage: ${params.stage}`);
   }
-  return executor(params);
+  const start = Date.now();
+  try {
+    const result = await executor(params);
+    logToolExecution({
+      tool: `pipeline_stage:${params.stage}`,
+      userId: params.userId,
+      cost: PIPELINE_COSTS[params.stage] ?? 0,
+      durationMs: Date.now() - start,
+      success: true,
+    });
+    return result;
+  } catch (err) {
+    logToolExecution({
+      tool: `pipeline_stage:${params.stage}`,
+      userId: params.userId,
+      cost: 0,
+      durationMs: Date.now() - start,
+      success: false,
+      error: err instanceof Error ? err.message : String(err),
+    });
+    throw err;
+  }
 }
 
 /**

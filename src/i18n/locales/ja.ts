@@ -591,7 +591,7 @@ export const jaMessages = {
       stopChain: '停止',
       pipelineMode: 'パイプラインモード',
       pipelineModeDesc: '完全なクリエイティブパイプラインを自動ステージ実行と出力引き継ぎで実行',
-      pipelineModeHelp: '完全なパイプラインを実行：ブリーフ → スクリプト → ストーリーボード → メディア → 音声 → 編集 → コンプライアンス → 公開。各ステージは自動実行され、出力が次のステージに渡されます。',
+      pipelineModeHelp: '完全なパイプラインを実行：ブリーフ → スクリプト → ストーリーボード → メディア → 音声 → 編集 → コンプライアンス → スコア → 公開。各ステージは自動実行され、出力が次のステージに渡されます。',
       enablePipeline: 'パイプラインモードを有効化',
       stopPipeline: '停止',
       startPipeline: 'パイプライン開始',
@@ -768,6 +768,8 @@ export const jaMessages = {
       approvePublish: '承認して公開',
       pause: '一時停止',
       resume: '再開',
+      retry: '再試行',
+      skip: 'スキップ',
     },
     personas: {
       title: "オーディエンスペルソナ",

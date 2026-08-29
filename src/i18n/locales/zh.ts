@@ -589,7 +589,7 @@ export const zhMessages = {
       stopChain: '停止',
       pipelineMode: '流水线模式',
       pipelineModeDesc: '运行完整创意流水线，自动执行各阶段并传递输出',
-      pipelineModeHelp: '运行完整流水线：简报 → 脚本 → 分镜 → 媒体 → 音频 → 剪辑 → 合规 → 发布。每个阶段自动执行并将输出传递给下一阶段。',
+      pipelineModeHelp: '运行完整流水线：简报 → 脚本 → 分镜 → 媒体 → 音频 → 剪辑 → 合规 → 评分 → 发布。每个阶段自动执行并将输出传递给下一阶段。',
       enablePipeline: '启用流水线模式',
       stopPipeline: '停止',
       startPipeline: '启动流水线',
@@ -766,6 +766,8 @@ export const zhMessages = {
       approvePublish: '批准并发布',
       pause: '暂停',
       resume: '恢复',
+      retry: '重试',
+      skip: '跳过',
     },
     personas: {
       title: "受众画像",

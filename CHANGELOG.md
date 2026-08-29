@@ -1,5 +1,41 @@
 # LazyNext Changelog
 
+## 2026-09-02 — P: Compliance Viewer, Creative Studio Score, Template Quality Gates, Stage Telemetry, Auth E2E
+
+### What Changed
+1. **Compliance viewer fix** — `StageOutputContent` compliance case now uses `result.overallStatus` (not `result.status`), renders `complianceScore`, `brandSafetyScore`, warnings, and recommendations; violation entries use `v.title` (not `v.message`)
+2. **Publish viewer enhancement** — Publish output now renders per-platform `results` array with status, post URL, and error details
+3. **Creative Studio score surfacing** — Pipeline mode completion block now extracts and displays the `score` stage result; `pipelineModeHelp` i18n updated to include `score` in all 13 locales
+4. **Score in all templates** — Added `score` stage to `quick-ad` and `ugc` templates; all 5 pipeline templates now include a quality gate before publish
+5. **Stage-level telemetry** — `executeStage` now emits `logToolExecution` with stage name, userId, cost, duration, and success/error for every stage execution
+6. **Retry/skip i18n** — Added `pipeline.retry` and `pipeline.skip` keys to all 13 locales; wired buttons to `t()` calls
+7. **Duplicate stages key fix** — `configFromTemplate` no longer emits a duplicate `stages` property (eliminates bundler warning)
+8. **Authenticated E2E infrastructure** — Added `e2e/global-setup.ts` (NextAuth credentials login), `chromium-auth` project with `storageState`, `auth-pipeline.spec.ts` with 7 authenticated tests
+9. **Dev script fix** — `npm run dev` now sets `BUILD_TARGET=local` so platform modules use SQLite/file storage instead of Cloudflare D1/R2
+10. **CHANGELOG O entry** — Added missing O-series changelog entry
+
+### Verification
+- npm run lint — 0 errors, 11 warnings
+- npm test — 1408 tests passing
+- npm run build — successful
+- npx playwright test — 417 passed, 2 skipped (410 unauthenticated + 7 authenticated)
+
+## 2026-09-02 — O: Score i18n, Templates, Telemetry, cutPlan Types, Doc Fixes
+
+### What Changed
+1. **Score dimension i18n** — Added `brandConsistency`, `audioQuality`, `visualQuality` to `creativeStudio` in all 13 locales; wired score viewer labels to `t()` calls
+2. **Workflow Builder score i18n** — Added `score` to `workflowBuilder.stage` and `workflowBuilder.stageDesc` in all 13 locales
+3. **Pause/resume i18n** — Added `pause` and `resume` keys to `pipeline` section in all 13 locales; wired buttons to `t()`
+4. **Score in templates** — Added `score` stage to `video-ad` and `compliance-first` pipeline templates
+5. **Structured telemetry** — Replaced `console.error` with `logToolExecution` in pipeline API routes; stopped silently swallowing `persistPipelineAssets` failures
+6. **cutPlan type safety** — Added `EditResult` and `EditCut` interfaces to creative types; updated `ClipEditor` to use typed cut plan
+7. **Documentation** — Updated AGENTS.md test count to 1408; marked architecture audit as superseded
+
+### Verification
+- npm run lint — 0 errors, 11 warnings
+- npm test — 1408 tests passing
+- npm run build — successful
+
 ## 2026-09-01 — N: Score Viewer Fix, Workflow Builder Handoff, Auto-Advance from Server Config, Asset Persistence Tests
 
 ### What Changed

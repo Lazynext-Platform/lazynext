@@ -591,7 +591,7 @@ export const esMessages = {
       stopChain: 'Detener',
       pipelineMode: 'Modo Pipeline',
       pipelineModeDesc: 'Ejecutar el pipeline creativo completo con ejecución automática de etapas y transferencia de salida',
-      pipelineModeHelp: 'Ejecuta el pipeline completo: brief → script → storyboard → media → audio → edición → compliance → publish. Cada etapa se ejecuta automáticamente y pasa su salida a la siguiente.',
+      pipelineModeHelp: 'Ejecuta el pipeline completo: brief → script → storyboard → media → audio → edición → compliance → puntuación → publish. Cada etapa se ejecuta automáticamente y pasa su salida a la siguiente.',
       enablePipeline: 'Habilitar Modo Pipeline',
       stopPipeline: 'Detener',
       startPipeline: 'Iniciar Pipeline',
@@ -768,6 +768,8 @@ export const esMessages = {
       approvePublish: 'Aprobar y Publicar',
       pause: 'Pausar',
       resume: 'Reanudar',
+      retry: 'Reintentar',
+      skip: 'Omitir',
     },
     personas: {
       title: "Personas de Audiencia",

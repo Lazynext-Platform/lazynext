@@ -584,6 +584,11 @@ export default function CreativeStudioPage() {
           setStoryboard(storyboardResult.output.storyboard as StoryboardCandidate);
           setStoryboardStep('done');
         }
+        const scoreResult = state.stageResults.find((r: any) => r.stage === 'score');
+        if (scoreResult?.output?.score) {
+          setScore(scoreResult.output.score as CreativeScore);
+          setScoreStep('done');
+        }
       }
     } catch (e) {
       setPipelineError(e instanceof Error ? e.message : String(e));
