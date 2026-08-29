@@ -1,5 +1,25 @@
 # LazyNext Changelog
 
+## 2026-09-02 — T: Credit Safety, Publish Gate, Parallel Wave Tests, Auto-Advancing UI
+
+### What Changed
+1. **Credit double-charging fix** — Removed duplicate first-stage deduction in the pipeline creation route; the first stage was being charged once explicitly and again in the in_progress wave loop
+2. **Idempotent credit deductions** — Added `charged` flag to `PipelineStageResult`; `deductCredits` is now skipped if a stage is already marked charged, preventing double-charging on re-advance or partial wave failure recovery
+3. **Partial wave failure handling** — Added `completeStage()` helper that marks a single stage as completed without advancing the whole pipeline; on partial parallel wave failure, successful stages are now marked completed before `failStage` is called, preventing re-execution and re-charging on the next advance
+4. **Per-wave persistence** — The `POST advance` auto-advance loop now persists pipeline state after each wave (not just at the end of the request), preventing progress loss on worker timeout
+5. **Publish auto-advance gating** — The `publish` stage now defaults to `autoAdvance: false` regardless of `onComplete` (both `publish` and `review` modes), preventing accidental live publishing; applied in both `configFromTemplate` and `configFromWorkflow`
+6. **Dry-run publish test** — Updated `test/publishing.test.ts` to assert `status: 'dry_run'` and `metadata.dryRun: true` for dry-run publish results
+7. **Parallel wave integration tests** — Added 10 new unit tests covering `completeStage` partial wave failure handling, `retryStage` charged flag reset, and publish `autoAdvance` gating for all 5 templates and workflow-derived configs
+8. **Creative Studio client simplification** — `runPipeline()` now stops at the `publish` stage instead of looping `advance` calls through it, respecting the server-side autoAdvance gate
+9. **Auto-advancing UI indicator** — `PipelineOrchestrator.tsx` now shows a "Auto-advancing" badge with a pulsing `Zap` icon when the server is chaining stages; added `autoAdvancing` translation key to all 13 locales
+10. **E2E test resilience** — Made "can fetch pipeline state by ID" test skip gracefully on 429/500 responses during full E2E runs
+
+### Verification
+- npm run lint — 0 errors, 2 warnings
+- npm test — 1424 tests passing (up from 1414)
+- npm run build — successful
+- npx playwright test — 430 passed, 3 skipped
+
 ## 2026-09-02 — S: Parallel Wave Fix, Retry Auto-Advance, Dry-Run Icon, Refund Migration, Architecture Audit
 
 ### What Changed

@@ -786,6 +786,7 @@ export const thMessages = {
       platforms: 'แพลตฟอร์ม',
       stagesLabel: 'ขั้นตอน',
       autoAdvance: 'เลื่อนอัตโนมัติ',
+      autoAdvancing: 'กำลังดำเนินต่ออัตโนมัติ',
       enabled: 'เปิดใช้งาน',
       onComplete: 'เมื่อเสร็จสิ้น',
       publish: 'เผยแพร่',

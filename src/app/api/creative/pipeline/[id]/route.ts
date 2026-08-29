@@ -14,6 +14,7 @@ import {
   skipStage,
   retryStage,
   failStage,
+  completeStage,
   PIPELINE_COSTS,
   type PipelineState,
   type PipelineStage,
@@ -167,12 +168,15 @@ async function __byokPOST(req: Request, { params }: { params: Promise<{ id: stri
           .filter((r) => r.status === 'in_progress')
           .map((r) => r.stage);
 
-        // Deduct credits for all in_progress stages
+        // Deduct credits for all in_progress stages (idempotent via charged flag)
         for (const stageName of inProgressStages) {
           const stageCost = PIPELINE_COSTS[stageName] ?? 0;
-          if (stageCost > 0) {
+          const stageIdx = state.stageResults.findIndex((r) => r.stage === stageName);
+          const alreadyCharged = stageIdx >= 0 && state.stageResults[stageIdx].charged === true;
+          if (stageCost > 0 && !alreadyCharged) {
             try {
               await deductCredits(uid, stageCost, `creative:pipeline:${stageName}`, state.pipelineId);
+              if (stageIdx >= 0) state.stageResults[stageIdx].charged = true;
             } catch (e) {
               state = failStage(state, stageName, 'insufficient_credits');
               await savePipeline(state);
@@ -205,7 +209,7 @@ async function __byokPOST(req: Request, { params }: { params: Promise<{ id: stri
           }),
         );
 
-        // Process results — merge outputs, handle failures
+        // Process results — on partial failure, mark successful stages completed
         let firstFailure: { stage: string; error: string } | null = null;
         for (let i = 0; i < stageResults.length; i++) {
           const res = stageResults[i];
@@ -235,6 +239,15 @@ async function __byokPOST(req: Request, { params }: { params: Promise<{ id: stri
         }
 
         if (firstFailure) {
+          // Mark successful parallel stages as completed before failing
+          for (let i = 0; i < stageResults.length; i++) {
+            if (stageResults[i].status === 'fulfilled') {
+              const successStage = inProgressStages[i] as PipelineState['currentStage'] & string;
+              if (successStage !== firstFailure.stage) {
+                state = completeStage(state, successStage);
+              }
+            }
+          }
           state = failStage(state, firstFailure.stage as PipelineState['currentStage'] & string, firstFailure.error);
           await failWorkflow(state.pipelineId, uid, firstFailure.error).catch(() => {});
           await savePipeline(state);
@@ -262,12 +275,15 @@ async function __byokPOST(req: Request, { params }: { params: Promise<{ id: stri
           .filter((r) => r.status === 'in_progress')
           .map((r) => r.stage);
 
-        // Deduct credits for all in_progress stages
+        // Deduct credits for all in_progress stages (idempotent via charged flag)
         for (const waveStage of waveInProgress) {
           const waveCost = PIPELINE_COSTS[waveStage] ?? 0;
-          if (waveCost > 0) {
+          const waveIdx = state.stageResults.findIndex((r) => r.stage === waveStage);
+          const alreadyCharged = waveIdx >= 0 && state.stageResults[waveIdx].charged === true;
+          if (waveCost > 0 && !alreadyCharged) {
             try {
               await deductCredits(uid, waveCost, `creative:pipeline:${waveStage}`, state.pipelineId);
+              if (waveIdx >= 0) state.stageResults[waveIdx].charged = true;
             } catch (e) {
               state = failStage(state, waveStage, 'insufficient_credits');
               await savePipeline(state);
@@ -299,7 +315,7 @@ async function __byokPOST(req: Request, { params }: { params: Promise<{ id: stri
           }),
         );
 
-        // Process results
+        // Process results — on partial failure, mark successful stages completed
         let firstFailure: { stage: string; error: string } | null = null;
         for (let i = 0; i < waveResults.length; i++) {
           const res = waveResults[i];
@@ -328,6 +344,15 @@ async function __byokPOST(req: Request, { params }: { params: Promise<{ id: stri
         }
 
         if (firstFailure) {
+          // Mark successful parallel stages as completed before failing
+          for (let i = 0; i < waveResults.length; i++) {
+            if (waveResults[i].status === 'fulfilled') {
+              const successStage = waveInProgress[i] as PipelineState['currentStage'] & string;
+              if (successStage !== firstFailure.stage) {
+                state = completeStage(state, successStage);
+              }
+            }
+          }
           state = failStage(state, firstFailure.stage as PipelineState['currentStage'] & string, firstFailure.error);
           await failWorkflow(state.pipelineId, uid, firstFailure.error).catch(() => {});
           await savePipeline(state);
@@ -337,6 +362,9 @@ async function __byokPOST(req: Request, { params }: { params: Promise<{ id: stri
         // Advance to mark wave stages completed and start next wave
         state = hasParallel ? advancePipelineWithWaves(state) : advancePipeline(state);
         autoAdvanceCount++;
+
+        // Persist state after each auto-advanced wave (T4: per-wave persistence)
+        await savePipeline(state);
       }
 
       // Log auto-advance telemetry
@@ -394,11 +422,13 @@ async function __byokPOST(req: Request, { params }: { params: Promise<{ id: stri
       const stage = String(body.stage || '');
       if (stage) {
         state = retryStage(state, stage as PipelineState['currentStage'] & string);
-        // Re-deduct credits for the retried stage.
+        // Re-deduct credits for the retried stage (retryStage resets charged=false).
         const cost = PIPELINE_COSTS[stage as keyof typeof PIPELINE_COSTS] ?? 0;
         if (cost > 0) {
           try {
             await deductCredits(uid, cost, `creative:pipeline:${stage}:retry`, state.pipelineId);
+            const retryIdx = state.stageResults.findIndex((r) => r.stage === stage);
+            if (retryIdx >= 0) state.stageResults[retryIdx].charged = true;
           } catch (e) {
             state = failStage(state, stage as PipelineState['currentStage'] & string, 'insufficient_credits');
             await savePipeline(state);
@@ -450,9 +480,12 @@ async function __byokPOST(req: Request, { params }: { params: Promise<{ id: stri
 
             for (const waveStage of waveInProgress) {
               const waveCost = PIPELINE_COSTS[waveStage] ?? 0;
-              if (waveCost > 0) {
+              const waveIdx = state.stageResults.findIndex((r) => r.stage === waveStage);
+              const alreadyCharged = waveIdx >= 0 && state.stageResults[waveIdx].charged === true;
+              if (waveCost > 0 && !alreadyCharged) {
                 try {
                   await deductCredits(uid, waveCost, `creative:pipeline:${waveStage}`, state.pipelineId);
+                  if (waveIdx >= 0) state.stageResults[waveIdx].charged = true;
                 } catch (e) {
                   state = failStage(state, waveStage, 'insufficient_credits');
                   await savePipeline(state);
@@ -507,12 +540,23 @@ async function __byokPOST(req: Request, { params }: { params: Promise<{ id: stri
             }
 
             if (retryFailure) {
+              // Mark successful parallel stages as completed before failing
+              for (let i = 0; i < waveResults.length; i++) {
+                if (waveResults[i].status === 'fulfilled') {
+                  const successStage = waveInProgress[i] as PipelineState['currentStage'] & string;
+                  if (successStage !== retryFailure.stage) {
+                    state = completeStage(state, successStage);
+                  }
+                }
+              }
               state = failStage(state, retryFailure.stage as PipelineState['currentStage'] & string, retryFailure.error);
               await failWorkflow(state.pipelineId, uid, retryFailure.error).catch(() => {});
               break;
             }
 
             state = hasParallel ? advancePipelineWithWaves(state) : advancePipeline(state);
+            // Persist state after each retry auto-advance wave
+            await savePipeline(state);
           }
         } catch (e) {
           const errorMsg = String(e instanceof Error ? e.message : e);

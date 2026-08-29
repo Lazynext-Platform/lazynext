@@ -42,6 +42,8 @@ export interface PipelineStageResult {
   output: Record<string, unknown>; // stage output data
   error?: string;
   artifacts: Array<{ type: string; url?: string; data?: unknown }>;
+  /** Whether credits have been deducted for this stage's current execution. Prevents double-charging on re-advance/retry. Reset to false by retryStage. */
+  charged?: boolean;
 }
 
 export interface PipelineConfig {
@@ -579,6 +581,7 @@ export function retryStage(state: PipelineState, stage: PipelineStage): Pipeline
             completedAt: undefined,
             duration: undefined,
             error: undefined,
+            charged: false, // Reset charged flag so retry can re-charge
             artifacts: [...res.artifacts],
             output: { ...res.output },
           }
@@ -626,6 +629,36 @@ export function failStage(state: PipelineState, stage: PipelineStage, error: str
 }
 
 /**
+ * Mark a single stage as completed without advancing the pipeline.
+ * Used when a parallel wave has partial success: successful stages are
+ * marked completed individually before failStage is called for the failed one.
+ * This prevents the next advance from re-executing and re-charging them.
+ */
+export function completeStage(state: PipelineState, stage: PipelineStage): PipelineState {
+  const next: PipelineState = {
+    ...state,
+    stageResults: state.stageResults.map((res) =>
+      res.stage === stage
+        ? {
+            ...res,
+            status: 'completed' as StageStatus,
+            completedAt: nowIso(),
+            charged: false,
+            artifacts: [...res.artifacts],
+            output: { ...res.output },
+          }
+        : { ...res, artifacts: [...res.artifacts], output: { ...res.output } },
+    ),
+    config: { ...state.config, stages: state.config.stages.map((s) => ({ ...s, config: { ...s.config } })) },
+  };
+  next.totalCreditsUsed += PIPELINE_COSTS[stage] ?? 0;
+  next.progress = calculateProgress(next);
+  next.updatedAt = nowIso();
+  next.estimatedTimeRemaining = computeTimeRemaining(next);
+  return next;
+}
+
+/**
  * Pause a running pipeline. Returns a new state with status 'paused'.
  */
 export function pausePipeline(state: PipelineState): PipelineState {
@@ -665,8 +698,10 @@ export function configFromTemplate(templateId: string, overrides: Partial<Pipeli
   const stages: PipelineStageConfig[] = tmpl.stages.map((stage) => ({
     stage,
     enabled: true,
-    // Don't auto-advance past publish when onComplete is 'review' — user needs to approve
-    autoAdvance: stage === 'publish' && onComplete === 'review' ? false : true,
+    // Never auto-advance past the publish stage — user must explicitly approve
+    // publishing to avoid accidental live posts. This applies regardless of
+    // whether onComplete is 'publish' or 'review'.
+    autoAdvance: stage === 'publish' ? false : true,
     config: {},
   }));
 
@@ -720,8 +755,10 @@ export function configFromWorkflow(
     return {
       stage: stageId,
       enabled,
-      // Don't auto-advance past publish when onComplete is 'review'
-      autoAdvance: stageId === 'publish' && wfOnComplete === 'review' ? false : true,
+      // Never auto-advance past the publish stage — user must explicitly approve
+      // publishing to avoid accidental live posts. This applies regardless of
+      // whether onComplete is 'publish' or 'review'.
+      autoAdvance: stageId === 'publish' ? false : true,
       config: {},
       parallelWith: s.parallelWith as PipelineStage[] | undefined,
     } as PipelineStageConfig & { parallelWith?: PipelineStage[] };

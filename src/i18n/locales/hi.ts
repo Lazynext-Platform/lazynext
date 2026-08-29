@@ -783,6 +783,7 @@ export const hiMessages = {
       platforms: 'प्लेटफ़ॉर्म',
       stagesLabel: 'चरण',
       autoAdvance: 'स्वतः आगे बढ़ें',
+      autoAdvancing: 'स्वतः आगे बढ़ रहा है',
       enabled: 'सक्षम',
       onComplete: 'पूर्ण होने पर',
       publish: 'प्रकाशित करें',

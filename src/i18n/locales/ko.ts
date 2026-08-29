@@ -783,6 +783,7 @@ export const koMessages = {
       platforms: '플랫폼',
       stagesLabel: '단계',
       autoAdvance: '자동 진행',
+      autoAdvancing: '자동 진행 중',
       enabled: '활성화됨',
       onComplete: '완료 시',
       publish: '게시',

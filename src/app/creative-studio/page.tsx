@@ -546,8 +546,17 @@ export default function CreativeStudioPage() {
       let state = createJson.state;
       setPipelineState(state);
 
-      // Advance through all stages automatically
+      // The server auto-advances through stages during creation (bounded by
+      // a 75s deadline). If the pipeline is still running after create, we
+      // need to either:
+      //  (a) poll if the server is still chaining (it returns between waves),
+      //  (b) call advance once if the deadline was hit mid-chain,
+      //  (c) stop if we reached the publish stage (autoAdvance=false by default).
       while (state.status === 'running' && state.currentStage && state.currentStage !== 'completed') {
+        // If we've reached the publish stage, stop — user must explicitly approve.
+        if (state.currentStage === 'publish') break;
+
+        // Call advance to continue the pipeline (server will auto-advance again).
         const advanceRes = await fetch(`/api/creative/pipeline/${state.pipelineId}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },

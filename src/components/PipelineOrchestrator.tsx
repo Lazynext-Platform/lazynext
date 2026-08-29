@@ -26,6 +26,7 @@ import {
   ChevronRight,
   ChevronDown,
   Star,
+  Zap,
 } from 'lucide-react';
 import { useI18n } from '@/i18n/provider';
 import type {
@@ -681,11 +682,23 @@ function PipelineExecutionView({
             <h2 className="truncate text-sm font-bold text-fg">{state.config.name}</h2>
             <p className="text-xs text-fg-faint">{state.config.productName}</p>
           </div>
-          <span
-            className={`shrink-0 rounded-full px-2.5 py-1 text-[11px] font-bold ${statusBadge(state.status)}`}
-          >
-            {state.status}
-          </span>
+          <div className="flex items-center gap-2">
+            {/* Auto-advancing indicator — shown when the server is chaining stages */}
+            {actionLoading && state.status === 'running' && (
+              <span
+                className="flex shrink-0 items-center gap-1 rounded-full bg-brand-accent/10 px-2.5 py-1 text-[11px] font-bold text-brand-accent"
+                role="status"
+              >
+                <Zap className="h-3 w-3 animate-pulse" />
+                {t('pipeline.autoAdvancing')}
+              </span>
+            )}
+            <span
+              className={`shrink-0 rounded-full px-2.5 py-1 text-[11px] font-bold ${statusBadge(state.status)}`}
+            >
+              {state.status}
+            </span>
+          </div>
         </div>
 
         {/* Progress bar */}

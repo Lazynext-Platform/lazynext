@@ -783,6 +783,7 @@ export const ptMessages = {
       platforms: 'Plataformas',
       stagesLabel: 'Etapas',
       autoAdvance: 'Avanço automático',
+      autoAdvancing: 'Avançando automaticamente',
       enabled: 'Ativado',
       onComplete: 'Ao concluir',
       publish: 'Publicar',

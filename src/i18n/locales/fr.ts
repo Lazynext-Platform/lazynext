@@ -783,6 +783,7 @@ export const frMessages = {
       platforms: 'Plateformes',
       stagesLabel: 'Étapes',
       autoAdvance: 'Avance automatique',
+      autoAdvancing: 'Avancement automatique',
       enabled: 'Activé',
       onComplete: 'À la fin',
       publish: 'Publier',

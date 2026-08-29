@@ -783,6 +783,7 @@ export const zhMessages = {
       platforms: '平台',
       stagesLabel: '阶段',
       autoAdvance: '自动推进',
+      autoAdvancing: '自动推进',
       enabled: '已启用',
       onComplete: '完成时',
       publish: '发布',

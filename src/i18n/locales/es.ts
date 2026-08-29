@@ -785,6 +785,7 @@ export const esMessages = {
       platforms: 'Plataformas',
       stagesLabel: 'Etapas',
       autoAdvance: 'Avance automático',
+      autoAdvancing: 'Avanzando automáticamente',
       enabled: 'Activado',
       onComplete: 'Al completar',
       publish: 'Publicar',

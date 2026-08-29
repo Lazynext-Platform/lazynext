@@ -786,6 +786,7 @@ export const idMessages = {
       platforms: 'Platform',
       stagesLabel: 'Tahap',
       autoAdvance: 'Lanjut otomatis',
+      autoAdvancing: 'Melanjutkan otomatis',
       enabled: 'Diaktifkan',
       onComplete: 'Saat selesai',
       publish: 'Publikasikan',

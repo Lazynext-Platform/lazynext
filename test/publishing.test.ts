@@ -69,7 +69,7 @@ describe('Multi-Platform Publisher', () => {
     assert.ok(request.platform);
   });
 
-  test('PublishResult structure', () => {
+  test('PublishResult structure - published', () => {
     const result = {
       platform: 'tiktok',
       status: 'published',
@@ -79,6 +79,19 @@ describe('Multi-Platform Publisher', () => {
     };
     assert.equal(result.status, 'published');
     assert.ok(result.postUrl);
+  });
+
+  test('PublishResult structure - dry_run', () => {
+    const result = {
+      platform: 'tiktok',
+      status: 'dry_run',
+      postId: undefined,
+      postUrl: undefined,
+      metadata: { dryRun: true, publishedAt: '2026-01-01T00:00:00Z' },
+    };
+    assert.equal(result.status, 'dry_run');
+    assert.ok(result.metadata.dryRun);
+    assert.equal(result.postId, undefined);
   });
 
   test('scheduling validation rejects past dates', () => {

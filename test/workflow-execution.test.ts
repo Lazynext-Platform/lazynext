@@ -4,6 +4,9 @@ import {
   configFromWorkflow,
   advancePipelineWithWaves,
   createPipeline,
+  completeStage,
+  failStage,
+  retryStage,
   type PipelineConfig,
   type PipelineState,
   type PipelineStage,
@@ -367,5 +370,170 @@ describe('advancePipelineWithWaves', () => {
     const audioResult = s.stageResults.find(r => r.stage === 'audio');
     assert.ok(mediaResult?.completedAt);
     assert.ok(audioResult?.completedAt);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// completeStage — partial wave failure handling (T3).
+// ---------------------------------------------------------------------------
+
+describe('completeStage — partial wave failure handling', () => {
+  function makeParallelState(stages: PipelineStage[]): PipelineState {
+    const config: PipelineConfig = {
+      name: 'Test',
+      productName: 'Test',
+      stages: stages.map(s => ({
+        stage: s,
+        enabled: true,
+        autoAdvance: true,
+        config: {},
+        ...(s === 'media_generation' ? { parallelWith: ['audio'] as PipelineStage[] } : {}),
+        ...(s === 'audio' ? { parallelWith: ['media_generation'] as PipelineStage[] } : {}),
+      })) as any,
+      onComplete: 'publish',
+    };
+    return createPipeline(config);
+  }
+
+  test('completeStage marks a single in_progress stage as completed', () => {
+    const state = makeParallelState(['brief', 'media_generation', 'audio', 'publish']);
+    // Advance to brief in_progress
+    let s = advancePipelineWithWaves(state);
+    // Complete brief, start parallel wave (media_generation + audio)
+    s = advancePipelineWithWaves(s);
+
+    // Both should be in_progress
+    assert.equal(s.stageResults.find(r => r.stage === 'media_generation')?.status, 'in_progress');
+    assert.equal(s.stageResults.find(r => r.stage === 'audio')?.status, 'in_progress');
+
+    // Mark only media_generation as completed (simulating partial success)
+    s = completeStage(s, 'media_generation');
+    assert.equal(s.stageResults.find(r => r.stage === 'media_generation')?.status, 'completed');
+    assert.equal(s.stageResults.find(r => r.stage === 'audio')?.status, 'in_progress');
+  });
+
+  test('completeStage then failStage — successful stage stays completed', () => {
+    const state = makeParallelState(['brief', 'media_generation', 'audio', 'publish']);
+    let s = advancePipelineWithWaves(state);
+    s = advancePipelineWithWaves(s); // Start parallel wave
+
+    // media_generation succeeds, audio fails
+    s = completeStage(s, 'media_generation');
+    s = failStage(s, 'audio', 'TTS service unavailable');
+
+    assert.equal(s.stageResults.find(r => r.stage === 'media_generation')?.status, 'completed');
+    assert.equal(s.stageResults.find(r => r.stage === 'audio')?.status, 'failed');
+    assert.equal(s.status, 'paused');
+  });
+
+  test('completeStage accumulates credits for the completed stage', () => {
+    const state = makeParallelState(['brief', 'media_generation', 'audio', 'publish']);
+    let s = advancePipelineWithWaves(state);
+    s = advancePipelineWithWaves(s); // Start parallel wave
+
+    const creditsBefore = s.totalCreditsUsed;
+    s = completeStage(s, 'media_generation');
+    // media_generation costs 5 credits
+    assert.equal(s.totalCreditsUsed, creditsBefore + 5);
+  });
+
+  test('completeStage resets charged flag on the completed stage', () => {
+    const state = makeParallelState(['brief', 'media_generation', 'audio', 'publish']);
+    let s = advancePipelineWithWaves(state);
+    s = advancePipelineWithWaves(s); // Start parallel wave
+
+    // Simulate charged flag being set
+    const idx = s.stageResults.findIndex(r => r.stage === 'media_generation');
+    s.stageResults[idx].charged = true;
+
+    s = completeStage(s, 'media_generation');
+    assert.equal(s.stageResults.find(r => r.stage === 'media_generation')?.charged, false);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// retryStage — charged flag reset (T2).
+// ---------------------------------------------------------------------------
+
+describe('retryStage — charged flag reset', () => {
+  test('retryStage resets charged flag to false', () => {
+    const config: PipelineConfig = {
+      name: 'Test',
+      productName: 'Test',
+      stages: [
+        { stage: 'brief', enabled: true, autoAdvance: true, config: {} },
+        { stage: 'script', enabled: true, autoAdvance: true, config: {} },
+      ],
+      onComplete: 'publish',
+    };
+    let s = createPipeline(config);
+    s = advancePipelineWithWaves(s); // brief in_progress
+    s = advancePipelineWithWaves(s); // brief completed, script in_progress
+    s = failStage(s, 'script', 'test error');
+
+    // Set charged flag
+    const idx = s.stageResults.findIndex(r => r.stage === 'script');
+    s.stageResults[idx].charged = true;
+
+    // Retry should reset charged
+    s = retryStage(s, 'script');
+    assert.equal(s.stageResults.find(r => r.stage === 'script')?.charged, false);
+    assert.equal(s.stageResults.find(r => r.stage === 'script')?.status, 'in_progress');
+  });
+});
+
+// ---------------------------------------------------------------------------
+// configFromTemplate / configFromWorkflow — publish autoAdvance gating (T5).
+// ---------------------------------------------------------------------------
+
+describe('publish autoAdvance gating', () => {
+  test('configFromTemplate — publish stage has autoAdvance=false for onComplete=publish', async () => {
+    const { configFromTemplate } = await import('../src/lib/creative/pipeline');
+    const config = configFromTemplate('full-creative');
+    assert.ok(config);
+    const publishStage = config!.stages.find(s => s.stage === 'publish');
+    assert.ok(publishStage);
+    assert.equal(publishStage!.autoAdvance, false, 'publish stage should not auto-advance even for onComplete=publish');
+  });
+
+  test('configFromTemplate — publish stage has autoAdvance=false for onComplete=review', async () => {
+    const { configFromTemplate } = await import('../src/lib/creative/pipeline');
+    const config = configFromTemplate('compliance-first');
+    assert.ok(config);
+    const publishStage = config!.stages.find(s => s.stage === 'publish');
+    assert.ok(publishStage);
+    assert.equal(publishStage!.autoAdvance, false, 'publish stage should not auto-advance for onComplete=review');
+  });
+
+  test('configFromWorkflow — publish stage has autoAdvance=false regardless of onComplete', () => {
+    const result = configFromWorkflow(
+      { stages: [
+        { stage: 'brief', enabled: true },
+        { stage: 'publish', enabled: true },
+      ] },
+      {},
+      { onComplete: 'publish' },
+    );
+    assert.ok(result);
+    const publishStage = result!.stages.find(s => s.stage === 'publish');
+    assert.ok(publishStage);
+    assert.equal(publishStage!.autoAdvance, false);
+  });
+
+  test('configFromWorkflow — non-publish stages still auto-advance', () => {
+    const result = configFromWorkflow(
+      { stages: [
+        { stage: 'brief', enabled: true },
+        { stage: 'script', enabled: true },
+        { stage: 'publish', enabled: true },
+      ] },
+      {},
+      { onComplete: 'publish' },
+    );
+    assert.ok(result);
+    const briefStage = result!.stages.find(s => s.stage === 'brief');
+    const scriptStage = result!.stages.find(s => s.stage === 'script');
+    assert.equal(briefStage!.autoAdvance, true);
+    assert.equal(scriptStage!.autoAdvance, true);
   });
 });

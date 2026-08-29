@@ -783,6 +783,7 @@ export const arMessages = {
       platforms: 'المنصات',
       stagesLabel: 'المراحل',
       autoAdvance: 'التقدم التلقائي',
+      autoAdvancing: 'تقدم تلقائي',
       enabled: 'مفعّل',
       onComplete: 'عند الاكتمال',
       publish: 'نشر',

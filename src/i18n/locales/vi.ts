@@ -786,6 +786,7 @@ export const viMessages = {
       platforms: 'Nền tảng',
       stagesLabel: 'Giai đoạn',
       autoAdvance: 'Tự động tiến',
+      autoAdvancing: 'Tự động tiến',
       enabled: 'Đã bật',
       onComplete: 'Khi hoàn thành',
       publish: 'Xuất bản',

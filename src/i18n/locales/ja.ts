@@ -785,6 +785,7 @@ export const jaMessages = {
       platforms: 'プラットフォーム',
       stagesLabel: 'ステージ',
       autoAdvance: '自動進行',
+      autoAdvancing: '自動進行中',
       enabled: '有効',
       onComplete: '完了時',
       publish: '公開',

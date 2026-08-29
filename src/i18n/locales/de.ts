@@ -783,6 +783,7 @@ export const deMessages = {
       platforms: 'Plattformen',
       stagesLabel: 'Phasen',
       autoAdvance: 'Automatisch fortfahren',
+      autoAdvancing: 'Automatisch fortlaufend',
       enabled: 'Aktiviert',
       onComplete: 'Beim Abschluss',
       publish: 'Veröffentlichen',

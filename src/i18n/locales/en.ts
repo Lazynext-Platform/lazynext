@@ -869,6 +869,7 @@ export const enMessages = {
       platforms: "Platforms",
       stagesLabel: "Stages",
       autoAdvance: "Auto-advance",
+      autoAdvancing: "Auto-advancing",
       enabled: "Enabled",
       onComplete: "On complete",
       publish: "Publish",
