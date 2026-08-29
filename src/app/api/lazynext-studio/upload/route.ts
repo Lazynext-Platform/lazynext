@@ -27,7 +27,7 @@ async function POST(req: Request) {
     return NextResponse.json({ url });
   } catch (e) {
     console.error('[marketing/upload] error:', String(e));
-    return NextResponse.json({ error: 'upload_failed', detail: String(e) }, { status: 502 });
+    return NextResponse.json({ error: 'upload_failed' }, { status: 502 });
   }
 }
 

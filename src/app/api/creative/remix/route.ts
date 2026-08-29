@@ -36,7 +36,8 @@ async function __byokPOST(req: Request) {
       analysis = await analyzeReferenceCreative(referenceUrl, undefined, planTier);
     } catch (e) {
       await refundCredits(uid, CREATIVE_COSTS.referenceAnalysis, 'creative:remix:analysis');
-      return NextResponse.json({ error: 'reference_analysis_failed', detail: String(e) }, { status: 500 });
+      console.error('[creative/remix] reference analysis error:', String(e));
+      return NextResponse.json({ error: 'reference_analysis_failed' }, { status: 500 });
     }
   }
 
@@ -84,7 +85,7 @@ async function __byokPOST(req: Request) {
   } catch (e) {
     await refundCredits(uid, CREATIVE_COSTS.remix, 'creative:remix');
     console.error('[creative/remix] error:', String(e));
-    return NextResponse.json({ error: 'remix_failed', detail: String(e) }, { status: 500 });
+    return NextResponse.json({ error: 'remix_failed' }, { status: 500 });
   }
 }
 

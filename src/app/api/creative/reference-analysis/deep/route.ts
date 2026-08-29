@@ -67,7 +67,7 @@ async function __byokPOST(req: Request) {
   } catch (e) {
     await refundCredits(uid, totalCost, 'creative:deep-reference-analysis');
     console.error('[creative/reference-analysis/deep] error:', String(e));
-    return NextResponse.json({ error: 'analysis_failed', detail: String(e) }, { status: 500 });
+    return NextResponse.json({ error: 'analysis_failed' }, { status: 500 });
   }
 }
 

@@ -1,5 +1,24 @@
 # LazyNext Changelog
 
+## 2026-09-02 — BB: Publishing OAuth, Security Hardening, Chain Unification, Migration Idempotency
+
+### What Changed
+1. **Schedule route uid bug fix** — `POST /api/publish/schedule` now passes `uid` to `schedulePost`, persisting `ScheduledPost` rows; ref uses UUID
+2. **Public share rate limiting** — `GET /api/creative/share/[token]` now rate-limited (30/min for views, 10/min for password attempts)
+3. **FFmpeg CSP fix** — Added `unpkg.com` to `script-src` and `connect-src`, added `blob:` to `script-src`, added `worker-src 'self' blob:`
+4. **`@eslint/eslintrc` moved to devDependencies** — No longer shipped to production
+5. **Raw exception message removal** — Removed `detail: String(e)` from 64 API routes (67 occurrences); added `safeError()` helper to `src/lib/security.ts`
+6. **D1 migration idempotency** — `scripts/apply-d1-migrations.mjs` now tracks applied migrations in `_prisma_migrations` table and only applies pending ones
+7. **Publishing tests** — Added 8 real function tests for `publishContent`, `schedulePost`, `publishToMultiple`, and `safeError`
+8. **Full publishing OAuth flow** — Added `GET /api/publish/oauth/[platform]` (initiation) and `GET /api/publish/oauth/[platform]/callback` (token exchange); token encryption at rest via AES-256-GCM (`src/lib/publishing/token-crypto.ts`); real platform API adapters for TikTok, YouTube, Instagram, Facebook, LinkedIn (`src/lib/publishing/platform-adapters.ts`); scheduled post processor `POST /api/publish/process-scheduled` (CRON_SECRET authenticated)
+9. **Chain-runtime unification** — `executeChain` now has per-step error handling with partial results and partial credit refunds; chain API returns `partialResults` on step failure
+
+### Verification
+- npm run lint — 0 errors, 2 warnings
+- npm test — 1467 tests passing
+- npm run build — successful
+- npx playwright test — 440 passed, 7 skipped, 0 failed
+
 ## 2026-09-02 — AA: Pipeline Context, Small Fixes, Chain Unification, Publishing Framework
 
 ### What Changed

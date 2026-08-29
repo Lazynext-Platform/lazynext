@@ -27,7 +27,8 @@ async function __byokPOST(req: Request) {
     return NextResponse.json({ plan });
   } catch (e) {
     await grantCredits(session.user.id, AD_SKIT_COSTS.plan, 'refund', AD_SKIT_TEMPLATE_ID + ':plan');
-    return NextResponse.json({ error: 'plan_failed', detail: String(e) }, { status: 502 });
+    console.error('[ad-skit/plan] error:', String(e));
+    return NextResponse.json({ error: 'plan_failed' }, { status: 502 });
   }
 }
 

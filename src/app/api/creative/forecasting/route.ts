@@ -45,7 +45,7 @@ async function __byokPOST(req: Request) {
   } catch (e) {
     await refundCredits(uid, FORECAST_COST, 'creative:forecasting');
     console.error('[creative/forecasting] error:', String(e));
-    return NextResponse.json({ error: 'forecast_failed', detail: String(e) }, { status: 500 });
+    return NextResponse.json({ error: 'forecast_failed' }, { status: 500 });
   }
 }
 

@@ -95,7 +95,7 @@ async function __byokPOST(req: Request) {
     return NextResponse.json({ data, planTier, dryRun, cost: 0 });
   } catch (e) {
     console.error('[analytics/ga4] error:', String(e));
-    return NextResponse.json({ error: 'ga4_request_failed', detail: String(e) }, { status: 500 });
+    return NextResponse.json({ error: 'ga4_request_failed' }, { status: 500 });
   }
 }
 

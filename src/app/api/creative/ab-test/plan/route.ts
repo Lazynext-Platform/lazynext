@@ -151,7 +151,7 @@ Create a controlled A/B test plan with 2-3 variants. Output the JSON object.`;
   } catch (e) {
     await refundCredits(uid, PLAN_COST, 'creative:ab-test-plan');
     console.error('[creative/ab-test/plan] error:', String(e));
-    return NextResponse.json({ error: 'plan_failed', detail: String(e) }, { status: 500 });
+    return NextResponse.json({ error: 'plan_failed' }, { status: 500 });
   }
 }
 

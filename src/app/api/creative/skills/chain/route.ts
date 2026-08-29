@@ -2,6 +2,7 @@ import { withAtlas } from '@/lib/request-context';
 import { NextResponse } from 'next/server';
 import { auth } from '@/../auth';
 import { getChain, executeChain, estimateChainCredits } from '@/lib/creative/skill-library';
+import type { SkillExecutionResult } from '@/lib/creative/skill-library';
 import { deductCredits, refundCredits } from '@/lib/credits';
 import { getUserPlanTier } from '@/lib/plan-tier';
 import { randomUUID } from 'crypto';
@@ -82,9 +83,25 @@ async function __byokPOST(req: Request) {
 
     return NextResponse.json({ results, finalOutput, runId });
   } catch (e) {
-    if (cost > 0) await refundCredits(uid, cost, `creative:skill-chain:${chainId}`);
+    // Partial-failure handling: refund only the credits for unexecuted steps
+    const completedResults = (e as any)?.completedResults as SkillExecutionResult[] | undefined;
+    const remainingSteps = (e as any)?.remainingSteps as number | undefined;
     const message = e instanceof Error ? e.message : String(e);
     console.error(`[creative/skills/chain] execute ${chainId} error:`, message);
+
+    if (cost > 0) {
+      if (remainingSteps !== undefined && remainingSteps > 0) {
+        // Refund only the unexecuted steps' credits
+        const stepCost = cost / chain.steps.length;
+        const refundAmount = Math.ceil(stepCost * remainingSteps);
+        if (refundAmount > 0) {
+          await refundCredits(uid, refundAmount, `creative:skill-chain:${chainId}`).catch(() => {});
+        }
+      } else {
+        // Full refund — no steps completed
+        await refundCredits(uid, cost, `creative:skill-chain:${chainId}`).catch(() => {});
+      }
+    }
 
     // Mark the WorkflowRun as failed
     try {
@@ -93,11 +110,23 @@ async function __byokPOST(req: Request) {
         data: {
           status: 'failed',
           error: message,
+          output: completedResults ? { partialResults: completedResults, chainId } as any : undefined,
           completedAt: new Date(),
         },
       });
     } catch {
       // Best-effort
+    }
+
+    // Return partial results if available
+    if (completedResults && completedResults.length > 0) {
+      return NextResponse.json({
+        error: 'chain_step_failed',
+        runId,
+        partialResults: completedResults,
+        failedAtStep: (e as any)?.stepIndex,
+        failedSkillId: (e as any)?.skillId,
+      }, { status: 500 });
     }
 
     return NextResponse.json({ error: 'chain_execution_failed', runId }, { status: 500 });

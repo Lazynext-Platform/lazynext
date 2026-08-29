@@ -32,7 +32,8 @@ async function __byokPOST(req: Request) {
       );
       return NextResponse.json({ productUrls: productUrls.filter((u) => typeof u === 'string' && u.startsWith('http')) });
     } catch (e) {
-      return NextResponse.json({ error: 'upload_failed', detail: String(e) }, { status: 502 });
+      console.error('[ad-skit/image] upload error:', String(e));
+      return NextResponse.json({ error: 'upload_failed' }, { status: 502 });
     }
   }
 
@@ -48,7 +49,8 @@ async function __byokPOST(req: Request) {
     res = await submitProductImage(imagePrompt, undefined, planTier);
   } catch (e) {
     await grantCredits(session.user.id, AD_SKIT_COSTS.image, 'refund', AD_SKIT_TEMPLATE_ID + ':image');
-    return NextResponse.json({ error: 'submit_failed', detail: String(e) }, { status: 502 });
+    console.error('[ad-skit/image] submit error:', String(e));
+    return NextResponse.json({ error: 'submit_failed' }, { status: 502 });
   }
   const imageModel = getAdSkitImageModel(planTier);
   const creation = await prisma.creation.create({

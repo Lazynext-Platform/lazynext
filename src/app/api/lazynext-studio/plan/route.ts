@@ -41,7 +41,7 @@ async function __byokPOST(req: Request) {
     // AI plan generation failed: refund credits, provide fallback plan, log Atlas raw text + return detail for frontend prompt.
     await refundCredits(uid, MK_PLAN_COST, 'marketing:plan');
     console.error('[marketing/plan] atlas error:', String(e));
-    return NextResponse.json({ plan: buildFallbackMarketingPlan(input), fallback: true, detail: String(e) });
+    return NextResponse.json({ plan: buildFallbackMarketingPlan(input), fallback: true });
   }
 }
 

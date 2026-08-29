@@ -37,6 +37,7 @@ export async function POST(req: Request) {
     });
     return NextResponse.json({ url });
   } catch (e) {
-    return NextResponse.json({ error: 'checkout_failed', detail: String(e) }, { status: 502 });
+    console.error('[checkout] error:', String(e));
+    return NextResponse.json({ error: 'checkout_failed' }, { status: 502 });
   }
 }

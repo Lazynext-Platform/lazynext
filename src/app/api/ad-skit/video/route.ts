@@ -38,7 +38,8 @@ async function __byokPOST(req: Request) {
     res = await submitSkitVideo(productUrls, videoPrompt, duration, planTier);
   } catch (e) {
     await grantCredits(session.user.id, AD_SKIT_VIDEO_COST, 'refund', AD_SKIT_TEMPLATE_ID + ':video');
-    return NextResponse.json({ error: 'submit_failed', detail: String(e) }, { status: 502 });
+    console.error('[ad-skit/video] error:', String(e));
+    return NextResponse.json({ error: 'submit_failed' }, { status: 502 });
   }
   // templateId uses formal 'ad-skit' (without ':') → final video enters "My Creations"; prompt stores friendly title (frontend passes plan.idea).
   const title = typeof body.title === 'string' && body.title.trim() ? body.title.trim().slice(0, 200) : videoPrompt.slice(0, 120);

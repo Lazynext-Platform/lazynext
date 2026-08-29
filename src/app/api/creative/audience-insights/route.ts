@@ -52,7 +52,7 @@ async function __byokPOST(req: Request) {
   } catch (e) {
     await refundCredits(uid, AUDIENCE_INSIGHTS_COST, 'creative:audience-insights');
     console.error('[creative/audience-insights] error:', String(e));
-    return NextResponse.json({ error: 'analysis_failed', detail: String(e) }, { status: 500 });
+    return NextResponse.json({ error: 'analysis_failed' }, { status: 500 });
   }
 }
 

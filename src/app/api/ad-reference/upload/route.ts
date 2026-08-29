@@ -69,7 +69,8 @@ async function POST(req: Request) {
         { status: 500 },
       );
     }
-    return NextResponse.json({ error: 'upload_failed', detail: String(e) }, { status: 502 });
+    console.error('[ad-reference/upload] error:', String(e));
+    return NextResponse.json({ error: 'upload_failed' }, { status: 502 });
   }
 }
 

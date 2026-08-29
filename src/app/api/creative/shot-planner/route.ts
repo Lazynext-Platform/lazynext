@@ -61,7 +61,7 @@ async function __byokPOST(req: Request) {
   } catch (e) {
     await refundCredits(uid, SHOT_PLANNER_COST, 'creative:shot-planner');
     console.error('[creative/shot-planner] error:', String(e));
-    return NextResponse.json({ error: 'planning_failed', detail: String(e) }, { status: 500 });
+    return NextResponse.json({ error: 'planning_failed' }, { status: 500 });
   }
 }
 

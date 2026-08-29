@@ -34,7 +34,7 @@ async function __byokPOST(req: Request) {
   } catch (e) {
     await refundCredits(uid, BUDGET_OPTIMIZER_COST, 'creative:budget-optimizer');
     console.error('[creative/budget-optimizer] error:', String(e));
-    return NextResponse.json({ error: 'optimization_failed', detail: String(e) }, { status: 500 });
+    return NextResponse.json({ error: 'optimization_failed' }, { status: 500 });
   }
 }
 

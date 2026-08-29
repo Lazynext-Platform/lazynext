@@ -65,7 +65,7 @@ async function __byokGET(req: Request) {
     return NextResponse.json({ report });
   } catch (e) {
     console.error('[ads/google-report] error:', String(e));
-    return NextResponse.json({ error: 'report_failed', detail: String(e) }, { status: 500 });
+    return NextResponse.json({ error: 'report_failed' }, { status: 500 });
   }
 }
 

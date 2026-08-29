@@ -135,7 +135,7 @@ async function __byokPOST(req: Request) {
   } catch (e) {
     await refundCredits(uid, totalCost, 'creative:auto-variants');
     console.error('[creative/auto-variants] error:', String(e));
-    return NextResponse.json({ error: 'auto_variants_failed', detail: String(e) }, { status: 500 });
+    return NextResponse.json({ error: 'auto_variants_failed' }, { status: 500 });
   }
 }
 

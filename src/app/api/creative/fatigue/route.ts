@@ -34,7 +34,7 @@ async function __byokPOST(req: Request) {
   } catch (e) {
     await refundCredits(uid, FATIGUE_COST, 'creative:fatigue');
     console.error('[creative/fatigue] error:', String(e));
-    return NextResponse.json({ error: 'analysis_failed', detail: String(e) }, { status: 500 });
+    return NextResponse.json({ error: 'analysis_failed' }, { status: 500 });
   }
 }
 

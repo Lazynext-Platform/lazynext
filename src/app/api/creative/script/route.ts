@@ -37,7 +37,7 @@ async function __byokPOST(req: Request) {
   } catch (e) {
     await refundCredits(uid, CREATIVE_COSTS.script, 'creative:script');
     console.error('[creative/script] error:', String(e));
-    return NextResponse.json({ error: 'script_failed', detail: String(e) }, { status: 500 });
+    return NextResponse.json({ error: 'script_failed' }, { status: 500 });
   }
 }
 

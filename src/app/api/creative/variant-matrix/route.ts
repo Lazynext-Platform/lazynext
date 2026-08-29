@@ -103,7 +103,7 @@ async function __byokPOST(req: Request) {
   } catch (e) {
     await refundCredits(uid, cost, 'creative:variant-matrix');
     console.error('[creative/variant-matrix] error:', String(e));
-    return NextResponse.json({ error: 'matrix_failed', detail: String(e) }, { status: 500 });
+    return NextResponse.json({ error: 'matrix_failed' }, { status: 500 });
   }
 }
 

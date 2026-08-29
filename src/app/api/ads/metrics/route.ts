@@ -59,7 +59,7 @@ async function __byokPOST(req: Request) {
     return NextResponse.json({ metrics });
   } catch (e) {
     console.error('[ads/metrics] error:', String(e));
-    return NextResponse.json({ error: 'metrics_failed', detail: String(e) }, { status: 500 });
+    return NextResponse.json({ error: 'metrics_failed' }, { status: 500 });
   }
 }
 

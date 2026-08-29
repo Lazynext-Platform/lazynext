@@ -166,7 +166,7 @@ Adapt this creative for each target platform now. Output the JSON object.`;
   } catch (e) {
     await refundCredits(uid, ADAPT_COST * platformsToAdapt.length, 'creative:adapt-platform');
     console.error('[creative/adapt-platform] error:', String(e));
-    return NextResponse.json({ error: 'adaptation_failed', detail: String(e) }, { status: 500 });
+    return NextResponse.json({ error: 'adaptation_failed' }, { status: 500 });
   }
 }
 

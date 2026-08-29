@@ -56,7 +56,7 @@ async function __byokPOST(req: Request) {
   } catch (e) {
     await refundCredits(uid, CREATIVE_COSTS.refine, 'creative:refine');
     console.error('[creative/refine] error:', String(e));
-    return NextResponse.json({ error: 'refine_failed', detail: String(e) }, { status: 500 });
+    return NextResponse.json({ error: 'refine_failed' }, { status: 500 });
   }
 }
 

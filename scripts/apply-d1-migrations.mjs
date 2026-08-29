@@ -7,7 +7,8 @@
  *   node scripts/apply-d1-migrations.mjs --apply   # actually apply via wrangler
  *
  * This script reads all migration.sql files from prisma/migrations/ subdirs,
- * concatenates them, and applies them via `wrangler d1 execute`.
+ * tracks which migrations have already been applied in the `_prisma_migrations`
+ * table, and only applies pending migrations.
  */
 import { readdirSync, readFileSync, existsSync, writeFileSync, unlinkSync } from 'node:fs';
 import { join, dirname } from 'node:path';
@@ -34,19 +35,92 @@ if (migrationDirs.length === 0) {
   process.exit(0);
 }
 
-let allSql = '';
+// Collect all migration SQL files
+const migrations = [];
 for (const dir of migrationDirs) {
   const sqlPath = join(migrationsDir, dir.name, 'migration.sql');
   if (existsSync(sqlPath)) {
     const sql = readFileSync(sqlPath, 'utf8');
+    migrations.push({ name: dir.name, sql });
     console.log(`Found migration: ${dir.name} (${sql.length} bytes)`);
-    allSql += `-- Migration: ${dir.name}\n${sql}\n\n`;
   }
 }
 
-if (!allSql.trim()) {
+if (migrations.length === 0) {
   console.log('No migration.sql files found.');
   process.exit(0);
+}
+
+// Ensure the _prisma_migrations tracking table exists and get already-applied migrations
+const MIGRATION_TABLE_SQL = `CREATE TABLE IF NOT EXISTS _prisma_migrations (
+  id TEXT PRIMARY KEY,
+  applied_at TEXT NOT NULL DEFAULT (datetime('now'))
+);`;
+
+function getAppliedMigrations() {
+  const tmpPath = join(projectRoot, '.d1-check-migrations.sql');
+  const outputPath = join(projectRoot, '.d1-migrations-applied.json');
+  writeFileSync(tmpPath, MIGRATION_TABLE_SQL + '\nSELECT id FROM _prisma_migrations;');
+
+  const result = spawnSync('npx', [
+    'wrangler', 'd1', 'execute', 'lazynext-db',
+    '--remote',
+    '--file', tmpPath,
+    '--json',
+  ], {
+    cwd: projectRoot,
+    stdio: ['pipe', 'pipe', 'pipe'],
+    encoding: 'utf8',
+  });
+
+  try { unlinkSync(tmpPath); } catch {}
+
+  if (result.error || result.status !== 0) {
+    console.warn('Warning: could not query _prisma_migrations table — will apply all migrations');
+    return new Set();
+  }
+
+  // Parse wrangler JSON output to find applied migration IDs
+  const applied = new Set();
+  try {
+    const output = result.stdout;
+    // wrangler d1 execute --json outputs an array of results
+    const parsed = JSON.parse(output);
+    if (Array.isArray(parsed)) {
+      for (const batch of parsed) {
+        if (batch.results && Array.isArray(batch.results)) {
+          for (const row of batch.results) {
+            if (row.id) applied.add(row.id);
+          }
+        }
+      }
+    }
+  } catch {
+    // If JSON parsing fails, assume no migrations applied yet
+  }
+  return applied;
+}
+
+// Determine which migrations are pending
+let pendingMigrations;
+if (shouldApply) {
+  const applied = getAppliedMigrations();
+  pendingMigrations = migrations.filter(m => !applied.has(m.name));
+  console.log(`\n${applied.size} migration(s) already applied, ${pendingMigrations.length} pending.`);
+} else {
+  pendingMigrations = migrations;
+}
+
+if (pendingMigrations.length === 0) {
+  console.log('All migrations already applied. Nothing to do.');
+  process.exit(0);
+}
+
+// Build SQL for pending migrations + tracking inserts
+let allSql = '';
+for (const m of pendingMigrations) {
+  allSql += `-- Migration: ${m.name}\n${m.sql}\n\n`;
+  allSql += `INSERT INTO _prisma_migrations (id) VALUES ('${m.name}');\n\n`;
 }
 
 if (!shouldApply) {
@@ -58,9 +132,9 @@ if (!shouldApply) {
 
 // Write to a temp file and execute via wrangler
 const tmpPath = join(projectRoot, '.d1-migration-tmp.sql');
-writeFileSync(tmpPath, allSql);
+writeFileSync(tmpPath, MIGRATION_TABLE_SQL + '\n' + allSql);
 
-console.log(`\nApplying ${migrationDirs.length} migration(s) to D1 database "lazynext-db"...`);
+console.log(`\nApplying ${pendingMigrations.length} pending migration(s) to D1 database "lazynext-db"...`);
 
 const result = spawnSync('npx', [
   'wrangler', 'd1', 'execute', 'lazynext-db',
@@ -80,4 +154,4 @@ if (result.status !== 0) {
   process.exit(1);
 }
 
-console.log('Done.');
+console.log(`Done. Applied ${pendingMigrations.length} migration(s).`);

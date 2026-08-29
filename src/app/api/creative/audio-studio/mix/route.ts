@@ -64,7 +64,7 @@ async function __byokPOST(req: Request) {
   } catch (e) {
     await refundCredits(uid, MIX_CREDIT_COST, 'audio:mix');
     console.error('[audio-studio/mix] error:', String(e));
-    return NextResponse.json({ error: 'mix_failed', detail: String(e) }, { status: 500 });
+    return NextResponse.json({ error: 'mix_failed' }, { status: 500 });
   }
 }
 

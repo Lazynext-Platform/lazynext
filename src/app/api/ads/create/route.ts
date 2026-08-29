@@ -53,7 +53,7 @@ async function __byokPOST(req: Request) {
     return NextResponse.json({ campaign: result, dbId: campaign?.id || null });
   } catch (e) {
     console.error('[ads/create] error:', String(e));
-    return NextResponse.json({ error: 'campaign_create_failed', detail: String(e) }, { status: 500 });
+    return NextResponse.json({ error: 'campaign_create_failed' }, { status: 500 });
   }
 }
 

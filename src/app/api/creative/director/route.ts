@@ -55,7 +55,7 @@ async function __byokPOST(req: Request) {
     } catch (e) {
       await refundCredits(uid, budget, 'creative:director:failed');
       console.error('[creative/director] error:', String(e));
-      return NextResponse.json({ error: 'director_failed', detail: String(e) }, { status: 500 });
+      return NextResponse.json({ error: 'director_failed' }, { status: 500 });
     }
   }
 
@@ -114,7 +114,7 @@ async function __byokPOST(req: Request) {
       } catch (e) {
         await refundCredits(uid, budget, 'creative:director:failed');
         console.error('[creative/director] stream error:', String(e));
-        send('error', { error: 'director_failed', detail: String(e) });
+        send('error', { error: 'director_failed' });
       } finally {
         controller.close();
       }

@@ -84,7 +84,7 @@ async function __byokPOST(req: Request) {
   } catch (e) {
     await refundCredits(uid, cost, 'creative:product-image');
     console.error('[creative/product-image] error:', String(e));
-    return NextResponse.json({ error: 'enhancement_failed', detail: String(e) }, { status: 500 });
+    return NextResponse.json({ error: 'enhancement_failed' }, { status: 500 });
   }
 }
 

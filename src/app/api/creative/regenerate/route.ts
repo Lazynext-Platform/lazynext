@@ -114,7 +114,7 @@ Regenerate this element now. Output the JSON object.`;
   } catch (e) {
     await refundCredits(uid, REGENERATION_COST, 'creative:regenerate');
     console.error('[creative/regenerate] error:', String(e));
-    return NextResponse.json({ error: 'regeneration_failed', detail: String(e) }, { status: 500 });
+    return NextResponse.json({ error: 'regeneration_failed' }, { status: 500 });
   }
 }
 

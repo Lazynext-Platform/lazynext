@@ -27,6 +27,7 @@ async function __byokGET() {
 
 /** POST /api/publish/connections — store or update a platform OAuth token
  *  Body: { platform, accessToken, refreshToken?, tokenExpiresAt?, platformUserId?, platformUsername? }
+ *  Tokens are encrypted at rest using AES-256-GCM.
  */
 async function __byokPOST(req: Request) {
   const session = await auth();
@@ -44,12 +45,17 @@ async function __byokPOST(req: Request) {
     return NextResponse.json({ error: 'access_token_required' }, { status: 400 });
   }
 
+  // Encrypt tokens before storing
+  const { encryptToken } = await import('@/lib/publishing/token-crypto');
+  const encryptedAccess = await encryptToken(accessToken);
+  const encryptedRefresh = body.refreshToken ? await encryptToken(String(body.refreshToken)) : null;
+
   // Upsert: update if connection exists, create if not
   const connection = await prisma.platformConnection.upsert({
     where: { userId_platform: { userId: uid, platform } },
     update: {
-      accessToken,
-      refreshToken: body.refreshToken ? String(body.refreshToken) : null,
+      accessToken: encryptedAccess,
+      refreshToken: encryptedRefresh,
       tokenExpiresAt: body.tokenExpiresAt ? new Date(body.tokenExpiresAt) : null,
       platformUserId: body.platformUserId ? String(body.platformUserId) : null,
       platformUsername: body.platformUsername ? String(body.platformUsername) : null,
@@ -57,8 +63,8 @@ async function __byokPOST(req: Request) {
     create: {
       userId: uid,
       platform,
-      accessToken,
-      refreshToken: body.refreshToken ? String(body.refreshToken) : null,
+      accessToken: encryptedAccess,
+      refreshToken: encryptedRefresh,
       tokenExpiresAt: body.tokenExpiresAt ? new Date(body.tokenExpiresAt) : null,
       platformUserId: body.platformUserId ? String(body.platformUserId) : null,
       platformUsername: body.platformUsername ? String(body.platformUsername) : null,

@@ -156,7 +156,7 @@ Script Summary: ${script.scenes.map(s => s.voiceover.slice(0, 100)).join(' | ')}
   } catch (e) {
     await refundCredits(uid, BRAND_CHECK_COST, 'creative:brand-check');
     console.error('[creative/brand-check] error:', String(e));
-    return NextResponse.json({ error: 'brand_check_failed', detail: String(e) }, { status: 500 });
+    return NextResponse.json({ error: 'brand_check_failed' }, { status: 500 });
   }
 }
 

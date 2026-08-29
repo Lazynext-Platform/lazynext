@@ -119,7 +119,7 @@ async function __byokPOST(req: Request) {
   } catch (e) {
     await refundCredits(uid, NARRATIVE_COST, 'creative:narrative');
     console.error('[creative/narrative] error:', String(e));
-    return NextResponse.json({ error: 'narrative_generation_failed', detail: String(e) }, { status: 500 });
+    return NextResponse.json({ error: 'narrative_generation_failed' }, { status: 500 });
   }
 }
 

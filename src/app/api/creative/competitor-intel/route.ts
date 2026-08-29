@@ -56,7 +56,7 @@ async function __byokPOST(req: Request) {
   } catch (e) {
     await refundCredits(uid, COMPETITOR_INTEL_COST, 'creative:competitor-intel');
     console.error('[creative/competitor-intel] error:', String(e));
-    return NextResponse.json({ error: 'analysis_failed', detail: String(e) }, { status: 500 });
+    return NextResponse.json({ error: 'analysis_failed' }, { status: 500 });
   }
 }
 

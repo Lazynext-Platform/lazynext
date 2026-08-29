@@ -58,7 +58,7 @@ async function __byokPOST(req: Request) {
   } catch (e) {
     await refundCredits(uid, CREATOR_KIT_COST, 'creative:creator-kits');
     console.error('[creative/creator-kits] error:', String(e));
-    return NextResponse.json({ error: 'kit_failed', detail: String(e) }, { status: 500 });
+    return NextResponse.json({ error: 'kit_failed' }, { status: 500 });
   }
 }
 

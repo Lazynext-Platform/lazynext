@@ -52,7 +52,7 @@ async function __byokPOST(req: Request) {
   } catch (e) {
     await refundCredits(uid, TTS_CREDIT_COST, 'audio:tts');
     console.error('[audio-studio/tts] error:', String(e));
-    return NextResponse.json({ error: 'tts_failed', detail: String(e) }, { status: 500 });
+    return NextResponse.json({ error: 'tts_failed' }, { status: 500 });
   }
 }
 

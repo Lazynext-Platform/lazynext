@@ -841,7 +841,8 @@ export async function executeChain(
   // Store of all available values: starts as chain inputs, accumulates step outputs by outputKey.
   const store: Record<string, unknown> = { ...inputs };
 
-  for (const step of chain.steps) {
+  for (let stepIndex = 0; stepIndex < chain.steps.length; stepIndex++) {
+    const step = chain.steps[stepIndex];
     // Resolve this step's inputs from the store using its inputMappings.
     // inputMappings maps { sourceKey: skillInputName } — invert to read from store.
     const stepInputs: Record<string, unknown> = {};
@@ -855,10 +856,23 @@ export async function executeChain(
       }
     }
 
-    const result = await executeSkill(step.skillId, stepInputs, planTier);
-    results.push(result);
-    // Store this step's outputs under the step's outputKey so downstream steps can read them.
-    store[step.outputKey] = result.outputs;
+    try {
+      const result = await executeSkill(step.skillId, stepInputs, planTier);
+      results.push(result);
+      // Store this step's outputs under the step's outputKey so downstream steps can read them.
+      store[step.outputKey] = result.outputs;
+    } catch (e) {
+      // Per-step error handling aligned with pipeline executor semantics:
+      // re-throw with context about which step failed, so the caller can
+      // handle partial results and refund credits for unexecuted steps.
+      const msg = e instanceof Error ? e.message : String(e);
+      const err = new Error(`chain_step_failed:${chainId}:step${stepIndex}:${step.skillId}:${msg}`);
+      (err as any).stepIndex = stepIndex;
+      (err as any).skillId = step.skillId;
+      (err as any).completedResults = results;
+      (err as any).remainingSteps = chain.steps.length - stepIndex - 1;
+      throw err;
+    }
   }
 
   // The final output is the last step's outputs, plus all intermediate outputs by key.

@@ -77,3 +77,22 @@ export function isUrlSafe(urlStr: string): boolean {
     return false;
   }
 }
+
+/**
+ * Log an error server-side and return a sanitized error code for API responses.
+ * Prevents raw exception messages from leaking to API clients.
+ *
+ * Usage in API catch blocks:
+ *   } catch (e) {
+ *     return safeError(e, 'my_route', 'operation_failed');
+ *   }
+ */
+export function safeError(
+  e: unknown,
+  route: string,
+  errorCode: string,
+): { error: string } {
+  const message = e instanceof Error ? e.message : String(e);
+  console.error(`[${route}] error:`, message);
+  return { error: errorCode };
+}

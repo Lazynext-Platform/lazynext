@@ -44,7 +44,7 @@ async function __byokPOST(req: Request) {
   } catch (e) {
     await refundCredits(uid, PERSONA_COST, 'creative:personas');
     console.error('[creative/personas] error:', String(e));
-    return NextResponse.json({ error: 'personas_failed', detail: String(e) }, { status: 500 });
+    return NextResponse.json({ error: 'personas_failed' }, { status: 500 });
   }
 }
 

@@ -55,7 +55,7 @@ async function __byokPOST(req: Request) {
   } catch (e) {
     await refundCredits(uid, CREATIVE_COSTS.brief, 'creative:brief');
     console.error('[creative/brief] error:', String(e));
-    return NextResponse.json({ error: 'brief_failed', detail: String(e) }, { status: 500 });
+    return NextResponse.json({ error: 'brief_failed' }, { status: 500 });
   }
 }
 

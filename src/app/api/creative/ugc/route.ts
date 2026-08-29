@@ -113,7 +113,7 @@ async function __byokPOST(req: Request) {
   } catch (e) {
     await refundCredits(uid, UGC_COST, 'creative:ugc');
     console.error('[creative/ugc] error:', String(e));
-    return NextResponse.json({ error: 'ugc_generation_failed', detail: String(e) }, { status: 500 });
+    return NextResponse.json({ error: 'ugc_generation_failed' }, { status: 500 });
   }
 }
 

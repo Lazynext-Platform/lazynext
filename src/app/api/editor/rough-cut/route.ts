@@ -106,6 +106,6 @@ export async function POST(req: Request) {
     return NextResponse.json({ plan, json, format: 'json' });
   } catch (e) {
     console.error('[editor/rough-cut] error:', String(e));
-    return NextResponse.json({ error: 'rough_cut_failed', detail: String(e) }, { status: 500 });
+    return NextResponse.json({ error: 'rough_cut_failed' }, { status: 500 });
   }
 }

@@ -37,7 +37,7 @@ async function __byokPOST(req: Request) {
   } catch (e) {
     await refundCredits(uid, CREATIVE_COSTS.storyboard, 'creative:storyboard');
     console.error('[creative/storyboard] error:', String(e));
-    return NextResponse.json({ error: 'storyboard_failed', detail: String(e) }, { status: 500 });
+    return NextResponse.json({ error: 'storyboard_failed' }, { status: 500 });
   }
 }
 

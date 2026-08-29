@@ -32,6 +32,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
     const updated = await prisma.user.findUnique({ where: { id }, select: { credits: true } });
     return NextResponse.json({ ok: true, credits: updated?.credits ?? 0 });
   } catch (e) {
-    return NextResponse.json({ error: 'adjust_failed', detail: String(e) }, { status: 500 });
+    console.error('[admin/users/credits] error:', String(e));
+    return NextResponse.json({ error: 'adjust_failed' }, { status: 500 });
   }
 }

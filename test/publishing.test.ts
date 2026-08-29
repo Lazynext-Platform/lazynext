@@ -112,3 +112,100 @@ describe('Multi-Platform Publisher', () => {
     assert.ok(!crossPost.includes('tiktok')); // shouldn't include primary platform
   });
 });
+
+describe('Publisher — real function tests', () => {
+  test('hasRealCredentials returns false when no env vars set', async () => {
+    // The publisher module is imported dynamically to avoid side effects
+    const { publishContent } = await import('../src/lib/publishing/publisher');
+    const result = await publishContent({
+      platform: 'tiktok',
+      mediaUrl: 'https://example.com/video.mp4',
+      caption: 'test caption',
+      hashtags: [],
+    });
+    // Without env credentials, should return dry_run
+    assert.equal(result.status, 'dry_run');
+    assert.ok(result.metadata?.dryRun);
+  });
+
+  test('publishContent validates missing caption', async () => {
+    const { publishContent } = await import('../src/lib/publishing/publisher');
+    const result = await publishContent({
+      platform: 'tiktok',
+      mediaUrl: 'https://example.com/video.mp4',
+      caption: '',
+      hashtags: [],
+    });
+    assert.equal(result.status, 'failed');
+    assert.ok(result.error);
+  });
+
+  test('schedulePost rejects past dates', async () => {
+    const { schedulePost } = await import('../src/lib/publishing/publisher');
+    const pastDate = new Date(Date.now() - 86400000).toISOString();
+    const result = await schedulePost({
+      platform: 'tiktok',
+      mediaUrl: 'https://example.com/video.mp4',
+      caption: 'test',
+      hashtags: [],
+    }, pastDate);
+    assert.equal(result.status, 'failed');
+    assert.equal(result.error, 'schedule_at_must_be_in_future');
+  });
+
+  test('schedulePost rejects invalid dates', async () => {
+    const { schedulePost } = await import('../src/lib/publishing/publisher');
+    const result = await schedulePost({
+      platform: 'tiktok',
+      mediaUrl: 'https://example.com/video.mp4',
+      caption: 'test',
+      hashtags: [],
+    }, 'not-a-date');
+    assert.equal(result.status, 'failed');
+    assert.equal(result.error, 'invalid_schedule_at');
+  });
+
+  test('schedulePost rejects platforms that do not support scheduling', async () => {
+    const { schedulePost } = await import('../src/lib/publishing/publisher');
+    const futureDate = new Date(Date.now() + 86400000).toISOString();
+    const result = await schedulePost({
+      platform: 'twitter',
+      mediaUrl: 'https://example.com/video.mp4',
+      caption: 'test',
+      hashtags: [],
+    }, futureDate);
+    assert.equal(result.status, 'failed');
+    assert.equal(result.error, 'scheduling_not_supported');
+  });
+
+  test('publishToMultiple expands cross-post targets', async () => {
+    const { publishToMultiple } = await import('../src/lib/publishing/publisher');
+    const results = await publishToMultiple([{
+      platform: 'tiktok',
+      mediaUrl: 'https://example.com/video.mp4',
+      caption: 'test',
+      hashtags: [],
+      crossPostTo: ['youtube_shorts', 'instagram_reels'],
+    }]);
+    // Should have 3 results: primary + 2 cross-post targets
+    assert.equal(results.length, 3);
+    assert.equal(results[0].platform, 'tiktok');
+    assert.equal(results[1].platform, 'youtube_shorts');
+    assert.equal(results[2].platform, 'instagram_reels');
+  });
+});
+
+describe('safeError helper', () => {
+  test('returns sanitized error code without raw message', async () => {
+    const { safeError } = await import('../src/lib/security');
+    const result = safeError(new Error('secret internal DB connection string'), 'test-route', 'operation_failed');
+    assert.equal(result.error, 'operation_failed');
+    assert.equal(JSON.stringify(result).includes('secret'), false);
+  });
+
+  test('handles non-Error thrown values', async () => {
+    const { safeError } = await import('../src/lib/security');
+    const result = safeError('some string error', 'test-route', 'failed');
+    assert.equal(result.error, 'failed');
+  });
+});

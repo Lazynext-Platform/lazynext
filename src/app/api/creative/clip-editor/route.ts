@@ -44,7 +44,7 @@ async function __byokPOST(req: Request) {
   } catch (e) {
     await refundCredits(uid, CLIP_EDITOR_COST, 'creative:clip-editor');
     console.error('[creative/clip-editor] error:', String(e));
-    return NextResponse.json({ error: 'command_failed', detail: String(e) }, { status: 500 });
+    return NextResponse.json({ error: 'command_failed' }, { status: 500 });
   }
 }
 

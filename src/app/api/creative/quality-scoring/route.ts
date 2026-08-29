@@ -84,7 +84,7 @@ async function __byokPOST(req: Request) {
   } catch (e) {
     await refundCredits(uid, QUALITY_SCORING_COST, 'creative:quality-scoring');
     console.error('[creative/quality-scoring] error:', String(e));
-    return NextResponse.json({ error: 'scoring_failed', detail: String(e) }, { status: 500 });
+    return NextResponse.json({ error: 'scoring_failed' }, { status: 500 });
   }
 }
 

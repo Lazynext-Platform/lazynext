@@ -54,7 +54,7 @@ async function __byokPOST(req: Request) {
   } catch (e) {
     await refundCredits(uid, MUSIC_CREDIT_COST, 'audio:music');
     console.error('[audio-studio/music] error:', String(e));
-    return NextResponse.json({ error: 'music_failed', detail: String(e) }, { status: 500 });
+    return NextResponse.json({ error: 'music_failed' }, { status: 500 });
   }
 }
 

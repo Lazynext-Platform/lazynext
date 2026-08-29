@@ -26,23 +26,51 @@ import {
 export const PUBLISH_CREDIT_COST = 3;
 export const SCHEDULE_CREDIT_COST = 1;
 
-/** True when real platform API credentials are configured.
- *  Checks for platform-specific env vars or DB-stored OAuth tokens. */
-function hasRealCredentials(platform: PublishPlatform): boolean {
-  switch (platform) {
-    case 'tiktok':
-      return !!(process.env.TIKTOK_ACCESS_TOKEN || process.env.TIKTOK_CLIENT_KEY);
-    case 'youtube_shorts':
-      return !!(process.env.YOUTUBE_REFRESH_TOKEN || process.env.YOUTUBE_CLIENT_ID);
-    case 'instagram_reels':
-      return !!(process.env.INSTAGRAM_ACCESS_TOKEN || process.env.META_APP_ID);
-    case 'facebook':
-      return !!(process.env.FB_PAGE_TOKEN || process.env.META_APP_ID);
-    case 'linkedin':
-      return !!(process.env.LINKEDIN_ACCESS_TOKEN || process.env.LINKEDIN_CLIENT_ID);
-    default:
-      return false;
+/** Map PublishPlatform to the platform name used in PlatformConnection.
+ *  e.g. 'youtube_shorts' → 'youtube', 'instagram_reels' → 'instagram' */
+function connectionPlatform(platform: PublishPlatform): string {
+  if (platform === 'youtube_shorts') return 'youtube';
+  if (platform === 'instagram_reels') return 'instagram';
+  return platform;
+}
+
+/** Check if real platform credentials are available — either from env vars
+ *  (global) or from a stored PlatformConnection (per-user OAuth).
+ *  Returns the decrypted access token if available, or null. */
+async function getRealAccessToken(platform: PublishPlatform, userId?: string): Promise<string | null> {
+  const connPlatform = connectionPlatform(platform);
+  // First check for per-user OAuth connection
+  if (userId) {
+    try {
+      const { prisma } = await import('@/lib/prisma');
+      const conn = await prisma.platformConnection.findUnique({
+        where: { userId_platform: { userId, platform: connPlatform } },
+      });
+      if (conn) {
+        // Check if token is expired
+        if (conn.tokenExpiresAt && new Date() > conn.tokenExpiresAt) {
+          // Token expired — would need refresh logic here
+          // For now, return null and fall back to env or dry-run
+          console.warn(`[publisher] ${platform} token expired for user ${userId}`);
+          return null;
+        }
+        const { decryptToken } = await import('./token-crypto');
+        return await decryptToken(conn.accessToken);
+      }
+    } catch {
+      // DB or decryption failed — fall through to env check
+    }
   }
+
+  // Fall back to global env vars
+  const envMap: Record<string, string | undefined> = {
+    tiktok: process.env.TIKTOK_ACCESS_TOKEN,
+    youtube_shorts: process.env.YOUTUBE_ACCESS_TOKEN,
+    instagram_reels: process.env.INSTAGRAM_ACCESS_TOKEN,
+    facebook: process.env.FB_PAGE_TOKEN,
+    linkedin: process.env.LINKEDIN_ACCESS_TOKEN,
+  };
+  return envMap[platform] || null;
 }
 
 /**
@@ -134,8 +162,11 @@ export async function publishContent(
     return schedulePost(request, request.scheduleAt, userId);
   }
 
+  // Check for real credentials (per-user OAuth token or global env var)
+  const accessToken = await getRealAccessToken(request.platform, userId);
+
   // Dry-run: simulate a publish (no real credentials configured).
-  if (!hasRealCredentials(request.platform)) {
+  if (!accessToken) {
     const postId = `${request.platform}_dryrun_${Date.now()}`;
     return {
       platform: request.platform,
@@ -151,16 +182,34 @@ export async function publishContent(
     };
   }
 
-  // Real mode without credentials → pending_approval (no real post made).
-  const pendingId = `${request.platform}_pending_${Date.now()}`;
-  return {
-    platform: request.platform,
-    status: 'pending_approval',
-    postId: pendingId,
-    metadata: {
-      platformSpecificId: pendingId,
-    },
-  };
+  // Real publishing: call the platform API adapter
+  try {
+    const { publishToPlatform } = await import('./platform-adapters');
+    const result = await publishToPlatform(request.platform, accessToken, {
+      mediaUrl: request.mediaUrl,
+      caption: adaptedCaption,
+      hashtags: adaptedHashtags,
+      privacyLevel: request.privacyLevel,
+    });
+    return {
+      platform: request.platform,
+      status: 'published',
+      postId: result.postId,
+      postUrl: result.postUrl,
+      metadata: {
+        platformSpecificId: result.postId,
+        publishedAt: new Date().toISOString(),
+      },
+    };
+  } catch (e) {
+    console.error(`[publisher] ${request.platform} real publish failed:`, String(e));
+    return {
+      platform: request.platform,
+      status: 'failed',
+      error: 'platform_publish_failed',
+      metadata: {},
+    };
+  }
 }
 
 /**

@@ -1,6 +1,7 @@
 import { withAtlas } from '@/lib/request-context';
 import { NextResponse } from 'next/server';
 import { auth } from '@/../auth';
+import { randomUUID } from 'crypto';
 import { getUserPlanTier } from '@/lib/plan-tier';
 import { deductCredits, refundCredits } from '@/lib/credits';
 import {
@@ -44,7 +45,7 @@ async function __byokPOST(req: Request) {
   }
 
   const cost = SCHEDULE_CREDIT_COST;
-  const ref = `schedule:${request.platform}:${Date.now()}`;
+  const ref = `schedule:${request.platform}:${randomUUID()}`;
 
   try {
     await deductCredits(uid, cost, 'publish_schedule', ref);
@@ -52,18 +53,19 @@ async function __byokPOST(req: Request) {
     if (e instanceof Error && e.message === 'INSUFFICIENT_CREDITS') {
       return NextResponse.json({ error: 'insufficient_credits' }, { status: 402 });
     }
-    return NextResponse.json({ error: 'charge_failed', detail: String(e) }, { status: 500 });
+    console.error('[publish/schedule] charge error:', String(e));
+    return NextResponse.json({ error: 'charge_failed' }, { status: 500 });
   }
 
-  const planTier = await getUserPlanTier(uid).catch(() => 'free' as const);
+  await getUserPlanTier(uid).catch(() => 'free' as const);
 
   let result;
   try {
-    result = await schedulePost({ ...request, scheduleAt }, scheduleAt);
+    result = await schedulePost({ ...request, scheduleAt }, scheduleAt, uid);
   } catch (e) {
     await refundCredits(uid, cost, ref).catch(() => {});
     console.error('[publish/schedule] error:', String(e));
-    return NextResponse.json({ error: 'schedule_failed', detail: String(e) }, { status: 500 });
+    return NextResponse.json({ error: 'schedule_failed' }, { status: 500 });
   }
 
   if (result.status === 'failed') {

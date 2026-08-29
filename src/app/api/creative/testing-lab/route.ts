@@ -56,7 +56,7 @@ async function __byokPOST(req: Request) {
   } catch (e) {
     await refundCredits(uid, TESTING_LAB_COST, 'creative:testing-lab');
     console.error('[creative/testing-lab] error:', String(e));
-    return NextResponse.json({ error: 'analysis_failed', detail: String(e) }, { status: 500 });
+    return NextResponse.json({ error: 'analysis_failed' }, { status: 500 });
   }
 }
 

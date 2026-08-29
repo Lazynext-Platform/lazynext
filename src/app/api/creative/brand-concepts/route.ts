@@ -52,7 +52,7 @@ async function __byokPOST(req: Request) {
   } catch (e) {
     await refundCredits(uid, BRAND_CONCEPTS_COST, 'creative:brand-concepts');
     console.error('[creative/brand-concepts] error:', String(e));
-    return NextResponse.json({ error: 'generation_failed', detail: String(e) }, { status: 500 });
+    return NextResponse.json({ error: 'generation_failed' }, { status: 500 });
   }
 }
 

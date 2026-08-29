@@ -94,7 +94,7 @@ async function __byokPOST(req: Request) {
       return NextResponse.json({ error: 'url_blocked', reason: e.message }, { status: 400 });
     }
     console.error('[brand/extract] error:', String(e));
-    return NextResponse.json({ error: 'extraction_failed', detail: String(e) }, { status: 500 });
+    return NextResponse.json({ error: 'extraction_failed' }, { status: 500 });
   }
 }
 

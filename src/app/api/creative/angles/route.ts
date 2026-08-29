@@ -35,7 +35,7 @@ async function __byokPOST(req: Request) {
   } catch (e) {
     await refundCredits(uid, CREATIVE_COSTS.angles, 'creative:angles');
     console.error('[creative/angles] error:', String(e));
-    return NextResponse.json({ error: 'angles_failed', detail: String(e) }, { status: 500 });
+    return NextResponse.json({ error: 'angles_failed' }, { status: 500 });
   }
 }
 

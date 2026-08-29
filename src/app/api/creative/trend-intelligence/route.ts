@@ -61,7 +61,7 @@ async function __byokPOST(req: Request) {
   } catch (e) {
     await refundCredits(uid, TREND_INTELLIGENCE_COST, 'creative:trend-intelligence');
     console.error('[creative/trend-intelligence] error:', String(e));
-    return NextResponse.json({ error: 'trend_analysis_failed', detail: String(e) }, { status: 500 });
+    return NextResponse.json({ error: 'trend_analysis_failed' }, { status: 500 });
   }
 }
 

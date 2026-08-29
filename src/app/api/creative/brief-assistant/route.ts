@@ -128,7 +128,7 @@ All text should be in English (it will be localized by the UI layer).`;
   } catch (e) {
     await refundCredits(uid, BRIEF_ASSISTANT_COST, 'creative:brief-assistant');
     console.error('[creative/brief-assistant] error:', String(e));
-    return NextResponse.json({ error: 'assistant_failed', detail: String(e) }, { status: 500 });
+    return NextResponse.json({ error: 'assistant_failed' }, { status: 500 });
   }
 }
 

@@ -65,7 +65,7 @@ async function __byokPOST(req: Request) {
   } catch (e) {
     await refundCredits(uid, CAMPAIGN_ORCHESTRATOR_COST, 'creative:campaign-orchestrator');
     console.error('[creative/campaign-orchestrator] error:', String(e));
-    return NextResponse.json({ error: 'orchestration_failed', detail: String(e) }, { status: 500 });
+    return NextResponse.json({ error: 'orchestration_failed' }, { status: 500 });
   }
 }
 

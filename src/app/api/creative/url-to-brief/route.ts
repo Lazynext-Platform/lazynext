@@ -48,7 +48,7 @@ async function __byokPOST(req: Request) {
       return NextResponse.json({ error: 'invalid_url', detail: e.message }, { status: 400 });
     }
     console.error('[creative/url-to-brief] error:', String(e));
-    return NextResponse.json({ error: 'url_to_brief_failed', detail: String(e) }, { status: 500 });
+    return NextResponse.json({ error: 'url_to_brief_failed' }, { status: 500 });
   }
 }
 

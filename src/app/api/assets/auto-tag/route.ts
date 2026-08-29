@@ -144,7 +144,7 @@ Generate intelligent tags for this asset. Output the JSON object.`;
   } catch (e) {
     await refundCredits(uid, TAG_COST, 'assets:auto-tag');
     console.error('[assets/auto-tag] error:', String(e));
-    return NextResponse.json({ error: 'auto_tag_failed', detail: String(e) }, { status: 500 });
+    return NextResponse.json({ error: 'auto_tag_failed' }, { status: 500 });
   }
 }
 
