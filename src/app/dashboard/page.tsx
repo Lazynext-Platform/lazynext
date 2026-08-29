@@ -29,6 +29,7 @@ const APPS: App[] = [
   { id: 'clip-editor', href: '/clip-editor', icon: Scissors },
   { id: 'media-service-boundary', href: '/media-service-boundary', icon: Server },
   { id: 'team-workspace', href: '/teams', icon: Users },
+  { id: 'analytics-hub', href: '/analytics-hub', icon: BarChart3 },
 ];
 
 type Creation = {
