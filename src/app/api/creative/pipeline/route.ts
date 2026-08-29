@@ -8,6 +8,8 @@ import {
   createPipeline,
   validatePipelineConfig,
   advancePipeline,
+  advancePipelineWithWaves,
+  configFromWorkflow,
   PIPELINE_COSTS,
   type PipelineConfig,
   type PipelineState,
@@ -64,9 +66,18 @@ async function __byokPOST(req: Request) {
 
   const body = await req.json().catch(() => ({}));
 
-  // Accept either a full PipelineConfig or { templateId, overrides }.
+  // Accept either a full PipelineConfig, { templateId, overrides }, or { workflow, context }.
   let config: PipelineConfig;
-  if (body.templateId && typeof body.templateId === 'string') {
+  let useWaves = false;
+
+  if (body.workflow && typeof body.workflow === 'object' && Array.isArray(body.workflow.stages)) {
+    // Workflow Builder v2: build config from workflow definition + execution context
+    const ctx = body.context || {};
+    const built = configFromWorkflow(body.workflow, ctx, body.config || {});
+    if (!built) return NextResponse.json({ error: 'invalid_workflow' }, { status: 400 });
+    config = built;
+    useWaves = true; // Use wave-based advancement for parallel execution
+  } else if (body.templateId && typeof body.templateId === 'string') {
     const { configFromTemplate } = await import('@/lib/creative/pipeline');
     const built = configFromTemplate(body.templateId, body.config || body.overrides || {});
     if (!built) return NextResponse.json({ error: 'invalid_template' }, { status: 400 });
@@ -116,7 +127,8 @@ async function __byokPOST(req: Request) {
   }
 
   // Start the pipeline: advance from draft to the first in_progress stage.
-  state = advancePipeline(state);
+  // Use wave-based advancement if the pipeline was built from a workflow definition.
+  state = useWaves ? advancePipelineWithWaves(state) : advancePipeline(state);
 
   // Persist as a WorkflowRun row.
   try {

@@ -672,3 +672,166 @@ export function configFromTemplate(templateId: string, overrides: Partial<Pipeli
 
   return { ...base, ...overrides, stages: overrides.stages ?? stages };
 }
+
+// ---------------------------------------------------------------------------
+// Workflow Definition Integration (v2)
+// ---------------------------------------------------------------------------
+
+/**
+ * Build a PipelineConfig from a WorkflowDefinition + execution context.
+ *
+ * This is the bridge between the Workflow Builder v2 UI (which produces
+ * conditional/parallel stage configs) and the pipeline executor (which
+ * consumes PipelineConfig). Stages whose conditions don't pass are set
+ * to enabled=false so the executor skips them. Parallel groups are
+ * preserved via the `parallelWith` field on PipelineStageConfig.
+ */
+export function configFromWorkflow(
+  workflow: { stages: Array<{ stage: string; enabled: boolean; condition?: any; parallelWith?: string[] }> },
+  ctx: { platform?: string; contentType?: string; hasVoiceover?: boolean; hasMusic?: boolean; complianceRequired?: boolean; budgetTier?: string },
+  base: Partial<PipelineConfig> = {},
+): PipelineConfig | null {
+  if (!workflow || !Array.isArray(workflow.stages) || workflow.stages.length === 0) {
+    return null;
+  }
+
+  // Evaluate conditions to determine which stages are enabled
+  const stages: PipelineStageConfig[] = workflow.stages.map((s) => {
+    const stageId = s.stage as PipelineStage;
+    let enabled = s.enabled !== false;
+
+    // Evaluate condition if present
+    if (enabled && s.condition) {
+      enabled = evaluateWorkflowCondition(s.condition, ctx);
+    }
+
+    return {
+      stage: stageId,
+      enabled,
+      autoAdvance: true,
+      config: {},
+      // Store parallel partners for the executor
+      parallelWith: s.parallelWith as PipelineStage[] | undefined,
+    } as PipelineStageConfig & { parallelWith?: PipelineStage[] };
+  });
+
+  return {
+    name: base.name || 'Workflow Pipeline',
+    productName: base.productName || '',
+    productDescription: base.productDescription,
+    brandName: base.brandName,
+    targetAudience: base.targetAudience,
+    platforms: base.platforms,
+    stages,
+    onComplete: base.onComplete || 'publish',
+  };
+}
+
+/**
+ * Evaluate a workflow condition against an execution context.
+ * Extracted here to avoid importing the full workflow-conditions module
+ * (keeps the pipeline module self-contained).
+ */
+function evaluateWorkflowCondition(
+  condition: { field: string; operator: string; value?: string },
+  ctx: { platform?: string; contentType?: string; hasVoiceover?: boolean; hasMusic?: boolean; complianceRequired?: boolean; budgetTier?: string },
+): boolean {
+  let fieldValue: string | boolean | undefined;
+  switch (condition.field) {
+    case 'platform': fieldValue = ctx.platform; break;
+    case 'contentType': fieldValue = ctx.contentType; break;
+    case 'hasVoiceover': fieldValue = ctx.hasVoiceover; break;
+    case 'hasMusic': fieldValue = ctx.hasMusic; break;
+    case 'complianceRequired': fieldValue = ctx.complianceRequired; break;
+    case 'budgetTier': fieldValue = ctx.budgetTier; break;
+  }
+
+  switch (condition.operator) {
+    case 'exists': return fieldValue !== undefined && fieldValue !== null;
+    case 'not_exists': return fieldValue === undefined || fieldValue === null;
+    case 'equals': return String(fieldValue) === String(condition.value);
+    case 'not_equals': return String(fieldValue) !== String(condition.value);
+    case 'contains': return typeof fieldValue === 'string' && fieldValue.includes(String(condition.value || ''));
+    case 'not_contains': return typeof fieldValue === 'string' && !fieldValue.includes(String(condition.value || ''));
+    default: return true;
+  }
+}
+
+/**
+ * Advance the pipeline, supporting parallel wave execution.
+ *
+ * When the current stage has `parallelWith` partners, all parallel stages
+ * in the wave are marked 'in_progress' simultaneously. The pipeline only
+ * advances to the next wave when ALL stages in the current wave complete.
+ *
+ * For non-parallel stages, behavior is identical to advancePipeline.
+ */
+export function advancePipelineWithWaves(state: PipelineState): PipelineState {
+  const next: PipelineState = {
+    ...state,
+    stageResults: state.stageResults.map((r) => ({ ...r, artifacts: [...r.artifacts], output: { ...r.output } })),
+    config: { ...state.config, stages: state.config.stages.map((s) => ({ ...s, config: { ...s.config } })) },
+  };
+
+  // Complete all in-progress stages
+  const inProgressStages = next.stageResults.filter((r) => r.status === 'in_progress');
+  for (const cur of inProgressStages) {
+    cur.status = 'completed';
+    cur.completedAt = nowIso();
+    if (cur.startedAt) {
+      cur.duration = Math.round((Date.parse(cur.completedAt) - Date.parse(cur.startedAt)) / 1000);
+    }
+    next.totalCreditsUsed += PIPELINE_COSTS[cur.stage] ?? 0;
+  }
+
+  // Check if all stages in the current wave are done
+  const allWaveDone = inProgressStages.every((r) => r.status === 'completed');
+  if (!allWaveDone) {
+    // Some parallel stages still running — don't advance yet
+    next.progress = calculateProgress(next);
+    next.updatedAt = nowIso();
+    return next;
+  }
+
+  // Find the next stage(s) to run
+  const enabledStages = next.config.stages.filter((s) => s.enabled);
+  const nextStage = enabledStages.find((s) => {
+    const r = findStageResult(next, s.stage);
+    return r?.status === 'pending';
+  });
+
+  if (nextStage) {
+    // Check for parallel partners
+    const stageConfig = next.config.stages.find((s) => s.stage === nextStage.stage);
+    const parallelPartners = (stageConfig as any)?.parallelWith as PipelineStage[] | undefined;
+
+    const wave: PipelineStage[] = [nextStage.stage];
+    if (parallelPartners && parallelPartners.length > 0) {
+      for (const partner of parallelPartners) {
+        const partnerResult = findStageResult(next, partner);
+        if (partnerResult && partnerResult.status === 'pending') {
+          wave.push(partner);
+        }
+      }
+    }
+
+    // Start all stages in the wave
+    for (const stage of wave) {
+      const r = findStageResult(next, stage);
+      if (r) {
+        r.status = 'in_progress';
+        r.startedAt = nowIso();
+      }
+    }
+    next.currentStage = wave[0]; // Primary stage for compatibility
+    next.status = 'running';
+  } else {
+    next.currentStage = 'completed' as PipelineStage;
+    next.status = 'completed';
+  }
+
+  next.progress = calculateProgress(next);
+  next.updatedAt = nowIso();
+  next.estimatedTimeRemaining = computeTimeRemaining(next);
+  return next;
+}

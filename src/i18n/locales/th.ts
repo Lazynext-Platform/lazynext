@@ -2221,6 +2221,11 @@ export const thMessages = {
     spend: 'การใช้จ่าย',
       useWorkflowTemplate: 'กรอกจากเวิร์กโฟลว์:',
     selectWorkflow: 'เลือกเทมเพลตเวิร์กโฟลว์…',
+      workflowWillRunPerVariant: 'เวิร์กโฟลว์จะทำงานสำหรับแต่ละเวอร์ชัน',
+      winningVariants: 'เวอร์ชันที่ชนะ',
+    noWinnersYet: 'ยังไม่มีเวอร์ชันที่ชนะ ผู้ชนะจะปรากฏที่นี่เมื่อการทดสอบ A/B สิ้นสุด',
+    viewWinner: 'ดูครีเอทีฟที่ชนะ',
+    view: 'ดู',
   },
   analyticsHub: {
     title: 'ศูนย์วิเคราะห์',

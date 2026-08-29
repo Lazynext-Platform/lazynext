@@ -1,5 +1,51 @@
 # LazyNext Changelog
 
+## 2026-09-01 — Workflow Execution Layer, A/B Automation Integration, Onboarding, Docs
+
+### What Changed
+
+#### F1: Workflow Builder v2 UI
+1. **Advanced mode toggle** — unlocks conditional stages, parallel groups, and execution wave preview
+2. **Conditional stages** — per-stage condition editor (field, operator, value) with live evaluation against execution context
+3. **Parallel groups** — link adjacent stages as parallel partners with visual connector and badge
+4. **Execution wave preview** — live preview of resolved execution waves with adjustable execution context (platform, contentType, budget tier, voiceover/music/compliance toggles)
+
+#### F2: Per-Stage Analytics, Winner Feedback Loop
+5. **Per-stage workflow analytics** — Analytics Hub API aggregates `WorkflowStep` rows per stage (total, completed, failed, success rate, total credits, avg duration); UI renders a per-stage performance table
+6. **Winner feedback loop** — A/B Automation tags the winning creation's `outputs.abTestWinner` metadata (best-effort, non-blocking) so downstream features can filter proven winners
+
+#### F3: Invite Acceptance Flow, Admin Feedback Dashboard, Cross-Isolate Presence
+7. **Invite acceptance flow** — `/teams/join` page + `POST /api/teams/join` route for token-based team invitation acceptance
+8. **Admin feedback dashboard** — `/admin/feedback` page (admin-only) showing individual feedback submissions and per-feature summary cards
+9. **Cross-isolate presence documentation** — detailed header comment in `/api/teams/[id]/presence` documenting the in-memory store limitation and three production fixes (Durable Objects, D1-backed, Workers KV) with best-effort activity-log persistence
+
+#### F4: Onboarding Updates, Team Template Management, Perf Verification
+10. **Onboarding updates** — `OnboardingModal` now includes the four new features (Workflow Builder, A/B Automation, Analytics Hub, Team Collaboration) as goal-selection cards
+11. **Team template management** — template filter dropdown (all/personal/team/builtin), team-shared badge with Users icon, unshare button for owned team-shared templates
+12. **Performance verification** — confirmed no regressions in FCP, TTFB, and bundle size after all integrations
+
+#### G1: Execution Layer Wiring
+13. **`configFromWorkflow`** — translates `WorkflowDefinition` (conditional stages, `parallelWith`) into `PipelineConfig`; failing conditions set `enabled=false`; parallel links preserved on `PipelineStageConfig`
+14. **`advancePipelineWithWaves`** — wave-aware pipeline advancement; parallel stages start simultaneously; pipeline waits for all stages in a wave to complete before advancing
+15. **`/api/creative/pipeline` POST** — accepts `{ workflow, context }` body, calls `configFromWorkflow`, uses `advancePipelineWithWaves` for wave-based execution
+
+#### G2: Round-Trip Loading of Workflow Definitions
+16. **Save with workflow** — Workflow Builder POST includes `workflow` field (`{ stages: ConditionalStage[], flags }`) in `payloadJson` when advanced mode is active
+17. **Load with workflow** — GET response includes `workflow` field if present; UI `loadTemplate` restores full `ConditionalStage[]` (conditions + parallel groups) and switches to advanced mode
+
+#### G3: A/B Workflow Integration, Winner Tag Filtering
+18. **A/B workflow integration** — A/B Automation page includes a workflow template selector that pre-fills the test name and indicates the workflow will run per variant
+19. **Winner tag filtering** — winning creations tagged with `outputs.abTestWinner` can be filtered by downstream features
+
+#### Documentation
+20. ADR-029 documenting the workflow execution layer, round-trip loading, per-stage analytics, winner feedback loop, team template management, onboarding, admin feedback dashboard, invite acceptance flow, and cross-isolate presence
+21. CHANGELOG updated
+
+### Verification
+- npm run lint — 0 errors
+- npm test — all unit tests passing (existing + new)
+- npx playwright test — all E2E tests passing
+
 ## 2026-09-01 — Polish, Hardening, Cross-Feature Integration, Workflow v2, Team Workflows, Feedback
 
 ### What Changed

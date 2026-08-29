@@ -2222,6 +2222,11 @@ export const jaMessages = {
     spend: '支出',
       useWorkflowTemplate: 'ワークフローから入力：',
     selectWorkflow: 'ワークフローテンプレートを選択…',
+      workflowWillRunPerVariant: '各バリアントに対してワークフローが実行されます',
+      winningVariants: '勝利バリアント',
+    noWinnersYet: 'まだ勝利バリアントがありません。A/Bテストが完了すると表示されます。',
+    viewWinner: '勝利クリエイティブを表示',
+    view: '表示',
   },
   analyticsHub: {
     title: 'アナリティクスハブ',

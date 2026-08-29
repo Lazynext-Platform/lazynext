@@ -2220,6 +2220,11 @@ export const ptMessages = {
     spend: 'Gasto',
       useWorkflowTemplate: 'Preencher do fluxo:',
     selectWorkflow: 'Selecionar modelo de fluxo…',
+      workflowWillRunPerVariant: 'Um fluxo de trabalho será executado por variante',
+      winningVariants: 'Variantes Vencedoras',
+    noWinnersYet: 'Ainda não há variantes vencedoras. Os vencedores aparecerão aqui quando os testes A/B concluírem.',
+    viewWinner: 'Ver criativo vencedor',
+    view: 'Ver',
   },
   analyticsHub: {
     title: 'Central de Análises',

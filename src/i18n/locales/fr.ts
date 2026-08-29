@@ -2220,6 +2220,11 @@ export const frMessages = {
     spend: 'Dépense',
       useWorkflowTemplate: 'Pré-remplir du flux :',
     selectWorkflow: 'Sélectionner un modèle de flux…',
+      workflowWillRunPerVariant: "Un flux de travail s'exécutera pour chaque variante",
+      winningVariants: 'Variantes Gagnantes',
+    noWinnersYet: "Aucune variante gagnante pour l'instant. Les gagnants apparaîtront ici à la fin des tests A/B.",
+    viewWinner: 'Voir la créativité gagnante',
+    view: 'Voir',
   },
   analyticsHub: {
     title: "Centre d'Analyse",

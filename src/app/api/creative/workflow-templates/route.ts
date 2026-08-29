@@ -52,10 +52,15 @@ export async function GET() {
     return NextResponse.json({
       templates: templates.map(t => {
         let stages: PipelineStage[] = [];
+        let workflow: { stages: any[]; flags: Record<string, unknown> } | undefined;
         try {
           const parsed = JSON.parse(t.payloadJson || '{}');
           if (Array.isArray(parsed.stages)) {
             stages = parsed.stages.filter((s: unknown) => typeof s === 'string' && BUILDER_STAGES.includes(s as PipelineStage));
+          }
+          // Extract workflow definition if present (v2)
+          if (parsed.workflow && Array.isArray(parsed.workflow.stages)) {
+            workflow = parsed.workflow;
           }
         } catch {
           // malformed payloadJson — return empty stages
@@ -73,6 +78,7 @@ export async function GET() {
           name: t.name,
           description: t.description,
           stages,
+          workflow,
           isBuiltIn: t.userId === null,
           isTeamShared,
           ownerId: t.userId ?? undefined,

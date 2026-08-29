@@ -14,6 +14,7 @@ import {
   summarizeJob,
   buildAutomationMetadata,
   parseAutomationMetadata,
+  applyWinnerTag,
   AUTOMATION_COST,
   type AutomationJob,
   type AutomationStatus,
@@ -27,10 +28,38 @@ export const maxDuration = 90;
  * List all automation jobs for the authenticated user.
  * Jobs are stored as AdCampaign records with __automation metadata.
  */
-export async function GET() {
+export async function GET(req: Request) {
   const session = await auth();
   if (!session?.user?.id) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
   const uid = session.user.id;
+
+  const url = new URL(req.url);
+  const winnersOnly = url.searchParams.get('winners') === 'true';
+
+  // If winners=true, return creations tagged with abTestWinner
+  if (winnersOnly) {
+    const creations = await prisma.creation.findMany({
+      where: { userId: uid, status: 'completed' },
+      select: { id: true, outputs: true, createdAt: true },
+      orderBy: { createdAt: 'desc' },
+      take: 50,
+    }).catch(() => []);
+
+    const winners: Array<{ id: string; testName?: string; winnerAt?: string }> = [];
+    for (const c of creations) {
+      try {
+        const outputs = typeof c.outputs === 'string' ? JSON.parse(c.outputs) : c.outputs;
+        if (outputs && outputs.abTestWinner) {
+          winners.push({
+            id: c.id,
+            testName: outputs.abTestJobId || undefined,
+            winnerAt: outputs.abTestWinnerAt || c.createdAt.toISOString(),
+          });
+        }
+      } catch { /* skip malformed outputs */ }
+    }
+    return NextResponse.json({ winners });
+  }
 
   // Find all campaigns that have automation metadata
   const campaigns = await prisma.adCampaign.findMany({
@@ -84,6 +113,7 @@ async function __byokPOST(req: Request) {
   const primaryMetric = String(body.primaryMetric || 'roas');
   const budgetDaily = typeof body.budgetDaily === 'number' ? body.budgetDaily : 10;
   const dryRun = body.dryRun !== false; // default dry-run for safety
+  const workflowTemplateId = typeof body.workflowTemplateId === 'string' ? body.workflowTemplateId : '';
 
   if (creationIds.length < 2) {
     return NextResponse.json({ error: 'min_2_variants' }, { status: 400 });
@@ -201,6 +231,43 @@ Keep it concise (3-4 sentences). Return only the text.`;
       confidenceLevel: 0.90,
       startedAt: new Date().toISOString(),
     };
+
+    // ── Optional: Run a workflow per variant ──
+    // If a workflowTemplateId is provided, start a pipeline for each variant.
+    // The pipeline runs asynchronously — the A/B test monitors the campaigns
+    // while the workflows generate additional creative assets.
+    if (workflowTemplateId) {
+      try {
+        const { configFromTemplate, createPipeline, advancePipeline } = await import('@/lib/creative/pipeline');
+        for (let i = 0; i < creationIds.length; i++) {
+          const config = configFromTemplate(workflowTemplateId, {
+            name: `${testName} — Variant ${labels[i]}`,
+            productName: `Variant ${labels[i]}`,
+          });
+          if (config) {
+            let state = createPipeline(config);
+            state = advancePipeline(state);
+            // Persist as a WorkflowRun row (best-effort)
+            try {
+              await prisma.workflowRun.create({
+                data: {
+                  id: state.pipelineId,
+                  userId: uid,
+                  workflowType: 'ab-variant-workflow',
+                  status: state.status,
+                  input: JSON.parse(JSON.stringify({ ...config, abJobId: jobId, variantLabel: labels[i] })),
+                  output: JSON.parse(JSON.stringify(state)),
+                },
+              });
+            } catch {
+              // Non-fatal: pipeline state is returned in-memory
+            }
+          }
+        }
+      } catch {
+        // Workflow execution is best-effort — don't fail the A/B test
+      }
+    }
 
     return NextResponse.json({ job, hypothesis }, { status: 201 });
 
@@ -340,13 +407,11 @@ export async function PATCH(req: Request) {
             outputs = winningCreation.outputs as Record<string, unknown>;
           }
         } catch { /* empty outputs */ }
-        if (!outputs.abTestWinner) {
-          outputs.abTestWinner = true;
-          outputs.abTestWinnerAt = new Date().toISOString();
-          outputs.abTestJobId = jobId;
+        const { outputs: updatedOutputs, changed } = applyWinnerTag(outputs, jobId);
+        if (changed) {
           await prisma.creation.update({
             where: { id: winnerId },
-            data: { outputs: JSON.parse(JSON.stringify(outputs)) },
+            data: { outputs: JSON.parse(JSON.stringify(updatedOutputs)) },
           });
         }
       }

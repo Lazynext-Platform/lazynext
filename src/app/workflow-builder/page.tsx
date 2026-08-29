@@ -46,6 +46,7 @@ interface SavedTemplate {
   name: string;
   description: string;
   stages: StageId[];
+  workflow?: { stages: ConditionalStage[]; flags: Record<string, unknown> };
   isBuiltIn: boolean;
   isTeamShared?: boolean;
   ownerId?: string;
@@ -272,8 +273,31 @@ export default function WorkflowBuilderPage() {
   const loadTemplate = (template: SavedTemplate) => {
     const validStages = template.stages.filter(s => ALL_STAGES.includes(s));
     const uniqueStages = [...new Set(validStages)];
-    const newConfigs: ConditionalStage[] = (uniqueStages.length > 0 ? uniqueStages : ['brief', 'publish'] as StageId[]).map(s => ({ stage: s, enabled: true }));
-    setStageConfigs(newConfigs);
+
+    // If the template has a workflow definition (v2), load it with conditions/parallel
+    if (template.workflow && Array.isArray(template.workflow.stages) && template.workflow.stages.length > 0) {
+      const wfConfigs: ConditionalStage[] = template.workflow.stages
+        .filter((s: any) => s && typeof s.stage === 'string' && ALL_STAGES.includes(s.stage as StageId))
+        .map((s: any) => ({
+          stage: s.stage as StageId,
+          enabled: s.enabled !== false,
+          condition: s.condition,
+          parallelWith: s.parallelWith,
+        }));
+      if (wfConfigs.length > 0) {
+        setStageConfigs(wfConfigs);
+        setAdvancedMode(true); // Switch to advanced mode to show loaded conditions
+      } else {
+        // Fallback to simple stages
+        const newConfigs: ConditionalStage[] = (uniqueStages.length > 0 ? uniqueStages : ['brief', 'publish'] as StageId[]).map(s => ({ stage: s, enabled: true }));
+        setStageConfigs(newConfigs);
+      }
+    } else {
+      // No workflow definition — load simple stages
+      const newConfigs: ConditionalStage[] = (uniqueStages.length > 0 ? uniqueStages : ['brief', 'publish'] as StageId[]).map(s => ({ stage: s, enabled: true }));
+      setStageConfigs(newConfigs);
+    }
+
     const baseName = template.name.replace(/\s*\(copy\)\s*$/, '');
     setName(baseName + ' (copy)');
     setDescription(template.description);

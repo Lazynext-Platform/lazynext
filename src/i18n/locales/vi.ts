@@ -2222,6 +2222,11 @@ export const viMessages = {
     spend: 'Chi tiêu',
       useWorkflowTemplate: 'Điền từ quy trình:',
     selectWorkflow: 'Chọn mẫu quy trình…',
+      workflowWillRunPerVariant: 'Một quy trình sẽ chạy cho mỗi biến thể',
+      winningVariants: 'Biến thể Chiến thắng',
+    noWinnersYet: 'Chưa có biến thể chiến thắng. Người chiến thắng sẽ xuất hiện ở đây khi các thử nghiệm A/B kết thúc.',
+    viewWinner: 'Xem sáng tạo chiến thắng',
+    view: 'Xem',
   },
   analyticsHub: {
     title: 'Trung tâm Phân tích',

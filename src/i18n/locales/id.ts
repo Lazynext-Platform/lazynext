@@ -2199,6 +2199,11 @@ export const idMessages = {
     spend: 'Pengeluaran',
       useWorkflowTemplate: 'Isi dari alur kerja:',
     selectWorkflow: 'Pilih templat alur kerja…',
+      workflowWillRunPerVariant: 'Alur kerja akan berjalan untuk setiap varian',
+      winningVariants: 'Varian Pemenang',
+    noWinnersYet: 'Belum ada varian pemenang. Pemenang akan muncul di sini saat tes A/B selesai.',
+    viewWinner: 'Lihat kreatif pemenang',
+    view: 'Lihat',
   },
   analyticsHub: {
     title: 'Pusat Analitik',

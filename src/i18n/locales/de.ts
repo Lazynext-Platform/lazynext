@@ -2220,6 +2220,11 @@ export const deMessages = {
     spend: 'Ausgaben',
       useWorkflowTemplate: 'Aus Workflow ausfüllen:',
     selectWorkflow: 'Workflow-Vorlage wählen…',
+      workflowWillRunPerVariant: 'Ein Workflow wird pro Variante ausgeführt',
+      winningVariants: 'Gewinnende Varianten',
+    noWinnersYet: 'Noch keine Gewinnenden Varianten. Gewinner erscheinen hier, wenn A/B-Tests abgeschlossen sind.',
+    viewWinner: 'Gewinner-Kreativität ansehen',
+    view: 'Ansehen',
   },
   analyticsHub: {
     title: 'Analyse-Hub',

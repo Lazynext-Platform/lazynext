@@ -2220,6 +2220,11 @@ export const zhMessages = {
     spend: '花费',
       useWorkflowTemplate: '从工作流预填：',
     selectWorkflow: '选择工作流模板…',
+      workflowWillRunPerVariant: '每个变体将运行一个工作流',
+      winningVariants: '获胜变体',
+    noWinnersYet: '尚无获胜变体。A/B测试结束后获胜者将显示在此处。',
+    viewWinner: '查看获胜创意',
+    view: '查看',
   },
   analyticsHub: {
     title: '分析中心',

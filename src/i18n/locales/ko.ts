@@ -2220,6 +2220,11 @@ export const koMessages = {
     spend: '지출',
       useWorkflowTemplate: '워크플로에서 미리 채우기:',
     selectWorkflow: '워크플로 템플릿 선택…',
+      workflowWillRunPerVariant: '각 변형에 대해 워크플로가 실행됩니다',
+      winningVariants: '승리 변형',
+    noWinnersYet: '아직 승리 변형이 없습니다. A/B 테스트가 완료되면 여기에 표시됩니다.',
+    viewWinner: '승리 크리에이티브 보기',
+    view: '보기',
   },
   analyticsHub: {
     title: '분석 허브',

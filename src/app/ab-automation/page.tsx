@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useSession } from 'next-auth/react';
 import {
   Zap, Play, RefreshCw, Trophy, Loader2, AlertCircle, TrendingUp,
-  Eye, MousePointerClick, DollarSign, Target, Workflow,
+  Eye, MousePointerClick, DollarSign, Target, Workflow, Award,
 } from 'lucide-react';
 import { useI18n } from '@/i18n/provider';
 import { AuthModal } from '@/components/AuthModal';
@@ -61,6 +61,9 @@ export default function ABAutomationPage() {
   const [createMsg, setCreateMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [checkingJobId, setCheckingJobId] = useState<string | null>(null);
   const [workflowTemplates, setWorkflowTemplates] = useState<Array<{ id: string; name: string; stages: string[] }>>([]);
+  const [selectedWorkflowId, setSelectedWorkflowId] = useState<string>('');
+  const [winners, setWinners] = useState<Array<{ id: string; testName?: string; winnerAt?: string }>>([]);
+  const [loadingWinners, setLoadingWinners] = useState(false);
 
   const loadJobs = useCallback(async () => {
     try {
@@ -88,6 +91,13 @@ export default function ABAutomationPage() {
         .then(res => res.ok ? res.json() : { templates: [] })
         .then(data => setWorkflowTemplates(data.templates || []))
         .catch(() => setWorkflowTemplates([]));
+      // Load winning variants (creations tagged with abTestWinner)
+      setLoadingWinners(true);
+      fetch('/api/creative/ab-automation?winners=true')
+        .then(res => res.ok ? res.json() : { winners: [] })
+        .then(data => setWinners(data.winners || []))
+        .catch(() => setWinners([]))
+        .finally(() => setLoadingWinners(false));
     } else {
       setLoading(false);
     }
@@ -111,6 +121,7 @@ export default function ABAutomationPage() {
           primaryMetric,
           budgetDaily: Math.max(1, Math.floor(budgetDaily)),
           dryRun,
+          workflowTemplateId: selectedWorkflowId || undefined,
         }),
       });
       const data = await res.json();
@@ -251,8 +262,9 @@ export default function ABAutomationPage() {
               <label className="text-xs text-fg-muted" htmlFor="ab-workflow-select">{t('abAutomation.useWorkflowTemplate')}</label>
               <select
                 id="ab-workflow-select"
-                defaultValue=""
+                value={selectedWorkflowId}
                 onChange={(e) => {
+                  setSelectedWorkflowId(e.target.value);
                   const tmpl = workflowTemplates.find(t => t.id === e.target.value);
                   if (tmpl) {
                     setTestName(tmpl.name + ' A/B Test');
@@ -265,6 +277,9 @@ export default function ABAutomationPage() {
                   <option key={tmpl.id} value={tmpl.id}>{tmpl.name}</option>
                 ))}
               </select>
+              {selectedWorkflowId && (
+                <span className="text-xs text-accent">{t('abAutomation.workflowWillRunPerVariant')}</span>
+              )}
             </div>
           )}
           <div className="flex items-center gap-4">
@@ -389,6 +404,42 @@ export default function ABAutomationPage() {
           </div>
         )}
       </div>
+
+      {/* Winning Variants Gallery */}
+      <section className="mt-6 rounded-lg border border-border bg-card p-4 space-y-3">
+        <h2 className="text-sm font-semibold flex items-center gap-2">
+          <Award className="w-4 h-4 text-warning" aria-hidden="true" /> {t('abAutomation.winningVariants')}
+        </h2>
+        {loadingWinners ? (
+          <div className="grid place-items-center py-4" aria-busy="true">
+            <Loader2 className="h-5 w-5 animate-spin text-fg-muted" />
+          </div>
+        ) : winners.length === 0 ? (
+          <p className="text-xs text-fg-muted">{t('abAutomation.noWinnersYet')}</p>
+        ) : (
+          <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+            {winners.map((w) => (
+              <div key={w.id} className="flex items-center gap-2 rounded-lg border border-warning/30 bg-warning/5 p-3">
+                <Trophy className="w-4 h-4 text-warning flex-shrink-0" aria-hidden="true" />
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs font-medium truncate">{w.testName || w.id}</p>
+                  {w.winnerAt && (
+                    <p className="text-xs text-fg-muted">{new Date(w.winnerAt).toLocaleDateString()}</p>
+                  )}
+                </div>
+                <a
+                  href={`/my-work/${w.id}`}
+                  className="text-xs px-2 py-1 rounded border border-border hover:bg-hover"
+                  aria-label={t('abAutomation.viewWinner')}
+                >
+                  {t('abAutomation.view')}
+                </a>
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
+
       <FeedbackWidget feature="ab-automation" />
     </div>
   );

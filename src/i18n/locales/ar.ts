@@ -2220,6 +2220,11 @@ export const arMessages = {
     spend: 'الإنفاق',
       useWorkflowTemplate: 'تعبئة من سير العمل:',
     selectWorkflow: 'اختر قالب سير العمل…',
+      workflowWillRunPerVariant: 'سيتم تشغيل سير عمل لكل متغير',
+      winningVariants: 'المتغيرات الفائزة',
+    noWinnersYet: 'لا توجد متغيرات فائزة بعد. سيظهر الفائزون هنا عند انتهاء اختبارات A/B.',
+    viewWinner: 'عرض الإبداع الفائز',
+    view: 'عرض',
   },
   analyticsHub: {
     title: 'مركز التحليلات',

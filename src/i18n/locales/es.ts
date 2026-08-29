@@ -2222,6 +2222,11 @@ export const esMessages = {
     spend: 'Gasto',
       useWorkflowTemplate: 'Rellenar desde flujo:',
     selectWorkflow: 'Seleccionar plantilla de flujo…',
+      workflowWillRunPerVariant: 'Se ejecutará un flujo de trabajo por variante',
+      winningVariants: 'Variantes Ganadoras',
+    noWinnersYet: 'Aún no hay variantes ganadoras. Los ganadores aparecerán aquí cuando concluyan las pruebas A/B.',
+    viewWinner: 'Ver creatividad ganadora',
+    view: 'Ver',
   },
   analyticsHub: {
     title: 'Centro de Analíticas',

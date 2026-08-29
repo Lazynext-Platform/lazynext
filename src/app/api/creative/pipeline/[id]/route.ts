@@ -5,6 +5,7 @@ import { prisma } from '@/lib/prisma';
 import { deductCredits } from '@/lib/credits';
 import {
   advancePipeline,
+  advancePipelineWithWaves,
   pausePipeline,
   resumePipeline,
   cancelPipeline,
@@ -93,7 +94,9 @@ async function __byokPOST(req: Request, { params }: { params: Promise<{ id: stri
         // No-op: current stage already paid for when it started.
       }
       const before = state.currentStage;
-      state = advancePipeline(state);
+      // Use wave-based advancement if any stage has parallelWith configured
+      const hasParallel = state.config.stages.some((s: any) => s.parallelWith && s.parallelWith.length > 0);
+      state = hasParallel ? advancePipelineWithWaves(state) : advancePipeline(state);
       // If we advanced to a new running stage, deduct its cost.
       if (state.currentStage && state.currentStage !== before && state.currentStage !== 'completed') {
         const cost = PIPELINE_COSTS[state.currentStage] ?? 0;

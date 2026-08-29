@@ -202,3 +202,33 @@ export function summarizeJob(job: AutomationJob): string {
   }
   return `${variantCount} variants on ${job.platform}.`;
 }
+
+/**
+ * Winner feedback loop — compute the updated `outputs` object for a winning
+ * creation. This is a pure function extracted from the PATCH route so the
+ * tagging logic can be unit-tested without mocking Prisma.
+ *
+ * If the creation is already tagged as a winner (outputs.abTestWinner === true),
+ * the outputs are returned unchanged (idempotent). Otherwise, the winner
+ * metadata fields are added:
+ *   - abTestWinner: true
+ *   - abTestWinnerAt: <ISO timestamp>
+ *   - abTestJobId: <jobId>
+ *
+ * Returns { outputs, changed } where `changed` indicates whether the outputs
+ * were modified (false if already tagged).
+ */
+export function applyWinnerTag(
+  currentOutputs: Record<string, unknown> | null | undefined,
+  jobId: string,
+  taggedAt: string = new Date().toISOString(),
+): { outputs: Record<string, unknown>; changed: boolean } {
+  const outputs: Record<string, unknown> = { ...(currentOutputs || {}) };
+  if (outputs.abTestWinner === true) {
+    return { outputs, changed: false };
+  }
+  outputs.abTestWinner = true;
+  outputs.abTestWinnerAt = taggedAt;
+  outputs.abTestJobId = jobId;
+  return { outputs, changed: true };
+}

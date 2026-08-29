@@ -2220,6 +2220,11 @@ export const hiMessages = {
     spend: 'खर्च',
       useWorkflowTemplate: 'वर्कफ़्लो से भरें:',
     selectWorkflow: 'वर्कफ़्लो टेम्पलेट चुनें…',
+      workflowWillRunPerVariant: 'प्रत्येक वेरिएंट के लिए एक वर्कफ़्लो चलेगा',
+      winningVariants: 'विजेता वेरिएंट',
+    noWinnersYet: 'अभी तक कोई विजेता वेरिएंट नहीं। A/B परीक्षण समाप्त होने पर विजेता यहां दिखाई देंगे।',
+    viewWinner: 'विजेता क्रिएटिव देखें',
+    view: 'देखें',
   },
   analyticsHub: {
     title: 'एनालिटिक्स हब',

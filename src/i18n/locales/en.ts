@@ -2859,6 +2859,11 @@ export const enMessages = {
     spend: 'Spend',
       useWorkflowTemplate: 'Pre-fill from workflow:',
     selectWorkflow: 'Select a workflow template…',
+      workflowWillRunPerVariant: 'A workflow will run for each variant',
+      winningVariants: 'Winning Variants',
+    noWinnersYet: 'No winning variants yet. Winners will appear here when A/B tests conclude.',
+    viewWinner: 'View winning creative',
+    view: 'View',
   },
   analyticsHub: {
     title: 'Analytics Hub',
