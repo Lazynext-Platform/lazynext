@@ -114,8 +114,31 @@ export async function GET(req: Request, { params }: { params: Promise<{ platform
     });
 
     if (!tokenRes.ok) {
-      console.error(`[oauth/callback] ${platform} token exchange failed:`, tokenRes.status);
-      return NextResponse.redirect(`${baseUrl}/settings?oauth_error=token_exchange_failed`);
+      // Read the error body for diagnostic purposes (server-side only)
+      let errorBody = '';
+      try {
+        errorBody = await tokenRes.text();
+      } catch {
+        // ignore body read errors
+      }
+      console.error(`[oauth/callback] ${platform} token exchange failed: status=${tokenRes.status} body=${errorBody.slice(0, 500)}`);
+
+      // Map common OAuth error codes to user-friendly redirect params
+      let errorCode = 'token_exchange_failed';
+      try {
+        const parsed = JSON.parse(errorBody) as { error?: string };
+        if (parsed.error === 'invalid_grant') errorCode = 'invalid_grant';
+        else if (parsed.error === 'invalid_client') errorCode = 'invalid_client';
+        else if (parsed.error === 'redirect_uri_mismatch') errorCode = 'redirect_uri_mismatch';
+        else if (parsed.error === 'access_denied') errorCode = 'access_denied';
+      } catch {
+        // non-JSON error body — use generic code
+      }
+
+      const errResponse = NextResponse.redirect(`${baseUrl}/settings?oauth_error=${errorCode}`);
+      errResponse.cookies.delete('oauth_state');
+      errResponse.cookies.delete('oauth_code_verifier');
+      return errResponse;
     }
 
     const tokens = await tokenRes.json() as {

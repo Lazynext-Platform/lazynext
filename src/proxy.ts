@@ -254,16 +254,21 @@ export async function proxy(req: NextRequest): Promise<NextResponse> {
   if (pathname.startsWith('/api/')) {
     const isWebhook = pathname.startsWith('/api/webhook/');
     const isAuth = pathname.startsWith('/api/auth/');
-    if (!isWebhook && !isAuth) {
-      const ip = getClientIP(req);
-      const category = getRateCategory(pathname);
-      const { limited, retryAfter } = checkRateLimit(ip, category);
-      if (limited) {
-        const res = NextResponse.json(
-          { error: 'rate_limited', retryAfter },
-          { status: 429, headers: { 'Retry-After': String(retryAfter || 60) } },
-        );
-        return applySecurityHeaders(res);
+    const isHealth = pathname === '/api/health';
+    if (!isWebhook && !isAuth && !isHealth) {
+      // Skip rate limiting in test/E2E environment to avoid flaky skips
+      const skipRateLimit = process.env.NODE_ENV === 'test' || process.env.E2E_NO_RATE_LIMIT === '1';
+      if (!skipRateLimit) {
+        const ip = getClientIP(req);
+        const category = getRateCategory(pathname);
+        const { limited, retryAfter } = checkRateLimit(ip, category);
+        if (limited) {
+          const res = NextResponse.json(
+            { error: 'rate_limited', retryAfter },
+            { status: 429, headers: { 'Retry-After': String(retryAfter || 60) } },
+          );
+          return applySecurityHeaders(res);
+        }
       }
     }
     return applySecurityHeaders(NextResponse.next());

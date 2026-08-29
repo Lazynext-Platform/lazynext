@@ -60,11 +60,15 @@ export function PlatformConnectionsSection() {
     } else if (oauthError) {
       const errorMap: Record<string, string> = {
         missing_code: 'Authorization code was missing.',
-        invalid_state: 'Invalid state parameter.',
+        invalid_state: 'Invalid state parameter. Please try connecting again.',
         invalid_platform: 'Unsupported platform.',
         not_configured: 'Platform OAuth is not configured on the server.',
-        token_exchange_failed: 'Token exchange failed.',
-        exception: 'An unexpected error occurred during OAuth.',
+        token_exchange_failed: 'Token exchange failed. Please try again.',
+        invalid_grant: 'Authorization code expired or was already used. Please try connecting again.',
+        invalid_client: 'Server OAuth credentials are invalid. Contact support.',
+        redirect_uri_mismatch: 'Redirect URI does not match the platform app configuration. Contact support.',
+        access_denied: 'You denied access to the platform. Please try again if this was a mistake.',
+        exception: 'An unexpected error occurred during OAuth. Please try again.',
       };
       setError(errorMap[oauthError] || 'OAuth connection failed.');
       setSuccessMsg('');

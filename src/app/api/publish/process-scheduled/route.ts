@@ -12,6 +12,11 @@ import { isTokenExpired, refreshPlatformToken } from '@/lib/publishing/token-ref
  * Queries ScheduledPost WHERE status='scheduled' AND scheduledAt <= now()
  * and attempts to publish each one using the user's stored OAuth token.
  * If the stored token is expired, attempts to refresh it before publishing.
+ *
+ * Concurrency safety: Posts are atomically claimed by updating
+ * status from 'scheduled' to 'publishing' with a conditional WHERE clause.
+ * Only posts that were successfully claimed are processed, preventing
+ * duplicate publishes from concurrent cron invocations.
  */
 export async function POST(req: Request) {
   // Authenticate with CRON_SECRET
@@ -22,6 +27,8 @@ export async function POST(req: Request) {
   }
 
   const now = new Date();
+
+  // Find due posts
   const due = await prisma.scheduledPost.findMany({
     where: {
       status: 'scheduled',
@@ -39,11 +46,17 @@ export async function POST(req: Request) {
 
   for (const post of due) {
     try {
-      // Mark as publishing
-      await prisma.scheduledPost.update({
-        where: { id: post.id },
+      // Atomically claim the post: only update if still 'scheduled'.
+      // This prevents concurrent cron invocations from processing the same post.
+      const claim = await prisma.scheduledPost.updateMany({
+        where: { id: post.id, status: 'scheduled' },
         data: { status: 'publishing' },
       });
+
+      // If claim count is 0, another invocation already claimed it — skip
+      if (claim.count === 0) {
+        continue;
+      }
 
       // Get the user's platform connection
       const conn = await prisma.platformConnection.findUnique({
@@ -90,14 +103,14 @@ export async function POST(req: Request) {
       const errorMsg = e instanceof Error ? e.message : String(e);
       console.error(`[process-scheduled] post ${post.id} failed:`, errorMsg);
 
-      // Mark as failed
-      await prisma.scheduledPost.update({
-        where: { id: post.id },
+      // Mark as failed (only if we claimed it — if claim failed, don't touch it)
+      await prisma.scheduledPost.updateMany({
+        where: { id: post.id, status: 'publishing' },
         data: {
           status: 'failed',
           error: errorMsg,
         },
-      });
+      }).catch(() => {});
 
       results.push({ id: post.id, status: 'failed', error: errorMsg });
     }
