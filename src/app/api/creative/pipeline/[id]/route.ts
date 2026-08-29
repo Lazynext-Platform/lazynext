@@ -2,7 +2,7 @@ import { withAtlas } from '@/lib/request-context';
 import { NextResponse } from 'next/server';
 import { auth } from '@/../auth';
 import { prisma } from '@/lib/prisma';
-import { deductCredits } from '@/lib/credits';
+import { deductCredits, refundCredits } from '@/lib/credits';
 import { getUserPlanTier } from '@/lib/plan-tier';
 import { checkAuthRateLimit, getClientIP } from '@/lib/auth-rate-limit';
 import {
@@ -18,7 +18,7 @@ import {
   type PipelineState,
   type PipelineStage,
 } from '@/lib/creative/pipeline';
-import { executeStage, initialContext, mergeStageResultIntoContext, type StageContext } from '@/lib/creative/pipeline-executor';
+import { executeStage, initialContext, mergeStageResultIntoContext, type StageContext, PipelineStageError } from '@/lib/creative/pipeline-executor';
 import { recordStep, completeWorkflow, failWorkflow } from '@/lib/workflow/engine';
 import { persistAsset, derivePipelineChildAssets } from '@/lib/creative/asset-persist';
 import { logToolExecution } from '@/lib/telemetry';
@@ -143,8 +143,9 @@ async function __byokPOST(req: Request, { params }: { params: Promise<{ id: stri
     return NextResponse.json({ error: 'rate_limited', retryAfter: rl.retryAfter }, { status: 429, headers: { 'Retry-After': String(rl.retryAfter || 60) } });
   }
 
-  let state = await loadPipeline(uid, id);
-  if (!state) return NextResponse.json({ error: 'not_found' }, { status: 404 });
+  const loaded = await loadPipeline(uid, id);
+  if (!loaded) return NextResponse.json({ error: 'not_found' }, { status: 404 });
+  let state: PipelineState = loaded;
 
   const body = await req.json().catch(() => ({}));
   const action = String(body.action || '');
@@ -206,18 +207,86 @@ async function __byokPOST(req: Request, { params }: { params: Promise<{ id: stri
           }).catch(() => {});
         } catch (e) {
           const errorMsg = String(e instanceof Error ? e.message : e);
-          state = failStage(state, stage, errorMsg);
-          await recordStep(state.pipelineId, stage, 'failed', { error: errorMsg }).catch(() => {});
+          const errorStage = e instanceof PipelineStageError ? e.stage : stage;
+          state = failStage(state, errorStage, errorMsg);
+          await recordStep(state.pipelineId, errorStage, 'failed', { error: errorMsg }).catch(() => {});
           await failWorkflow(state.pipelineId, uid, errorMsg).catch(() => {});
           // Refund the stage credit on failure
           if (cost > 0) {
-            const { refundSync } = await import('@/lib/lazynext-studio/gen-task');
-            await refundSync(uid, cost, `pipeline-refund:${state.pipelineId}:${stage}`).catch(() => {});
+            await refundCredits(uid, cost, `pipeline-refund:${state.pipelineId}:${errorStage}`).catch(() => {});
           }
           await savePipeline(state);
-          return NextResponse.json({ error: 'stage_failed', detail: errorMsg, state }, { status: 500 });
+          return NextResponse.json({ error: 'stage_failed', detail: errorMsg, stage: errorStage, state }, { status: 500 });
         }
-      } else if (state.status === 'completed') {
+      }
+
+      // Auto-advance loop: if the next stage has autoAdvance=true, execute it
+      // immediately without waiting for a client request. Bounded by time to
+      // avoid exceeding the worker maxDuration.
+      const autoAdvanceDeadline = Date.now() + 75_000; // 75s budget for auto-advance chain
+      while (state.status === 'running' && state.currentStage && state.currentStage !== 'completed') {
+        // Check if the current stage has autoAdvance enabled
+        const currentStageConfig = state.config.stages.find((s: any) => s.stage === state.currentStage);
+        if (!currentStageConfig?.autoAdvance) break;
+        if (Date.now() > autoAdvanceDeadline) break;
+
+        const nextStage = state.currentStage;
+        const nextCost = PIPELINE_COSTS[nextStage] ?? 0;
+
+        // Deduct credits for the next stage
+        if (nextCost > 0) {
+          try {
+            await deductCredits(uid, nextCost, `creative:pipeline:${nextStage}`, state.pipelineId);
+          } catch (e) {
+            state = failStage(state, nextStage, 'insufficient_credits');
+            await savePipeline(state);
+            return NextResponse.json(
+              {
+                error:
+                  e instanceof Error && e.message === 'INSUFFICIENT_CREDITS' ? 'insufficient_credits' : 'charge_failed',
+                state,
+              },
+              { status: 402 },
+            );
+          }
+        }
+
+        // Execute the auto-advanced stage
+        try {
+          await recordStep(state.pipelineId, nextStage, 'running').catch(() => {});
+          const ctx = rebuildContext(state);
+          const result = await executeStage({
+            stage: nextStage,
+            config: state.config,
+            context: ctx,
+            planTier: await getUserPlanTier(uid).catch(() => undefined as any),
+            userId: uid,
+          });
+          const stageIdx = state.stageResults.findIndex((r) => r.stage === nextStage);
+          if (stageIdx >= 0) {
+            state.stageResults[stageIdx].output = result.output;
+            state.stageResults[stageIdx].artifacts = result.artifacts;
+          }
+          state = hasParallel ? advancePipelineWithWaves(state) : advancePipeline(state);
+          await recordStep(state.pipelineId, nextStage, 'completed', {
+            output: result.output,
+            creditsCost: nextCost,
+          }).catch(() => {});
+        } catch (e) {
+          const errorMsg = String(e instanceof Error ? e.message : e);
+          const errorStage = e instanceof PipelineStageError ? e.stage : nextStage;
+          state = failStage(state, errorStage, errorMsg);
+          await recordStep(state.pipelineId, errorStage, 'failed', { error: errorMsg }).catch(() => {});
+          await failWorkflow(state.pipelineId, uid, errorMsg).catch(() => {});
+          if (nextCost > 0) {
+            await refundCredits(uid, nextCost, `pipeline-refund:${state.pipelineId}:${errorStage}`).catch(() => {});
+          }
+          await savePipeline(state);
+          return NextResponse.json({ error: 'stage_failed', detail: errorMsg, stage: errorStage, state }, { status: 500 });
+        }
+      }
+
+      if (state.status === 'completed') {
         // Pipeline completed — record workflow completion
         await completeWorkflow(
           state.pipelineId,
@@ -304,12 +373,12 @@ async function __byokPOST(req: Request, { params }: { params: Promise<{ id: stri
           }).catch(() => {});
         } catch (e) {
           const errorMsg = String(e instanceof Error ? e.message : e);
-          state = failStage(state, stage as PipelineState['currentStage'] & string, errorMsg);
-          await recordStep(state.pipelineId, stage, 'failed', { error: errorMsg }).catch(() => {});
+          const errorStage = e instanceof PipelineStageError ? e.stage : stage;
+          state = failStage(state, errorStage as PipelineState['currentStage'] & string, errorMsg);
+          await recordStep(state.pipelineId, errorStage, 'failed', { error: errorMsg }).catch(() => {});
           // Refund the retried stage credit on failure
           if (cost > 0) {
-            const { refundSync } = await import('@/lib/lazynext-studio/gen-task');
-            await refundSync(uid, cost, `pipeline-refund:${state.pipelineId}:${stage}:retry`).catch(() => {});
+            await refundCredits(uid, cost, `pipeline-refund:${state.pipelineId}:${errorStage}:retry`).catch(() => {});
           }
         }
       }

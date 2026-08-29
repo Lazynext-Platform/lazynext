@@ -122,18 +122,19 @@ export async function publishContent(
     return schedulePost(request, request.scheduleAt);
   }
 
-  // Dry-run: simulate a successful publish.
+  // Dry-run: simulate a publish (no real credentials configured).
   if (!hasRealCredentials(request.platform)) {
     const postId = `${request.platform}_dryrun_${Date.now()}`;
     return {
       platform: request.platform,
-      status: 'published',
+      status: 'dry_run',
       postId,
       postUrl: `https://example.com/${request.platform}/${postId}`,
       metadata: {
         platformSpecificId: postId,
         publishedAt: new Date().toISOString(),
         engagementMetrics: { views: 0, likes: 0, comments: 0, shares: 0 },
+        dryRun: true,
       },
     };
   }

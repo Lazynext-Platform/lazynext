@@ -87,6 +87,8 @@ export default function WorkflowBuilderPage() {
   const [templates, setTemplates] = useState<SavedTemplate[]>([]);
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
+  const [productName, setProductName] = useState('');
+  const [productDescription, setProductDescription] = useState('');
   const [saving, setSaving] = useState(false);
   const [saveMsg, setSaveMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [loading, setLoading] = useState(true);
@@ -277,7 +279,8 @@ export default function WorkflowBuilderPage() {
           context: execCtx,
           config: {
             name: name || 'Workflow Builder Pipeline',
-            productName: name || 'Workflow Builder Pipeline',
+            productName: productName || name || 'Workflow Builder Pipeline',
+            productDescription: productDescription || description || '',
             platforms: execCtx.platform ? [execCtx.platform] : ['tiktok'],
             onComplete: 'publish',
           },
@@ -732,6 +735,16 @@ export default function WorkflowBuilderPage() {
                 <div>
                   <label className="text-xs text-fg-muted" htmlFor="wf-desc">{t('workflowBuilder.description')}</label>
                   <input id="wf-desc" type="text" value={description} onChange={(e) => setDescription(e.target.value.slice(0, MAX_DESC_LEN))} placeholder={t('workflowBuilder.descPlaceholder')} maxLength={MAX_DESC_LEN} className="w-full mt-1 rounded-md border border-border bg-input px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent" />
+                </div>
+              </div>
+              <div className="grid gap-3 sm:grid-cols-2 border-t border-border pt-3">
+                <div>
+                  <label className="text-xs text-fg-muted" htmlFor="wf-product-name">{t('workflowBuilder.productNameLabel')}</label>
+                  <input id="wf-product-name" type="text" value={productName} onChange={(e) => setProductName(e.target.value.slice(0, MAX_NAME_LEN))} placeholder={t('workflowBuilder.productNamePlaceholder')} maxLength={MAX_NAME_LEN} className="w-full mt-1 rounded-md border border-border bg-input px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent" />
+                </div>
+                <div>
+                  <label className="text-xs text-fg-muted" htmlFor="wf-product-desc">{t('workflowBuilder.productDescLabel')}</label>
+                  <input id="wf-product-desc" type="text" value={productDescription} onChange={(e) => setProductDescription(e.target.value.slice(0, MAX_DESC_LEN))} placeholder={t('workflowBuilder.productDescPlaceholder')} maxLength={MAX_DESC_LEN} className="w-full mt-1 rounded-md border border-border bg-input px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent" />
                 </div>
               </div>
               <div className="flex items-center gap-3 flex-wrap">

@@ -34,7 +34,7 @@ export interface PublishRequest {
 
 export interface PublishResult {
   platform: PublishPlatform;
-  status: 'published' | 'scheduled' | 'failed' | 'pending_approval';
+  status: 'published' | 'scheduled' | 'failed' | 'pending_approval' | 'dry_run';
   postId?: string;
   postUrl?: string;
   scheduledAt?: string;
@@ -48,6 +48,7 @@ export interface PublishResult {
       comments?: number;
       shares?: number;
     };
+    dryRun?: boolean;
   };
 }
 

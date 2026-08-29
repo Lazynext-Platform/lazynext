@@ -1,5 +1,23 @@
 # LazyNext Changelog
 
+## 2026-09-02 — R: Workflow Builder Product Name, Pipeline Error Context, Auto-Advance, Stage Polish
+
+### What Changed
+1. **Workflow Builder product name** — Added `productName` and `productDescription` inputs to the Workflow Builder UI; pipeline config now uses these instead of conflating workflow name with product name, producing better briefs
+2. **Pipeline executor error context** — Added `PipelineStageError` class that captures stage name, input snapshot, and prior-stage context; API routes now return `stage` field in error responses for better debugging
+3. **Pipeline auto-advance** — Implemented server-side auto-advance loop when `autoAdvance=true` on a stage; the pipeline now chains through auto-advancing stages in a single request (bounded by 75s budget) instead of requiring manual client calls per stage
+4. **Compliance stage richer inputs** — Compliance check now includes hook, angle, CTA, and storyboard shot prompts in addition to script text
+5. **Audio stage TTS via media service boundary** — Switched audio stage from `generateVoiceover` to `dispatchMediaService({ capability: 'tts' })` for plan-tier aware model selection and consistent dry-run fallback
+6. **Dry-run publish status clarity** — Publish dry-run now returns `status: 'dry_run'` instead of misleading `status: 'published'`; added `dryRun: true` to metadata
+7. **Refund helper centralization** — Added `refundCredits` to `src/lib/credits.ts`; pipeline routes now import from credits module instead of dynamically importing `refundSync` from gen-task
+8. **Lint warning reduction** — Fixed 5 React hooks exhaustive-deps warnings (editor setTimeline/resetTimeline, share/[token] fetchAsset, ContentCalendar now); warnings reduced from 7 to 2 (remaining are unused eslint-disable directives for no-img-element)
+
+### Verification
+- npm run lint — 0 errors, 2 warnings (down from 7)
+- npm test — 1412 tests passing
+- npm run build — successful
+- npx playwright test — 430 passed, 2 skipped
+
 ## 2026-09-02 — Q: Pipeline UI i18n, Score Scale Fix, Auth E2E Expansion, Lint Polish, Architecture Audit
 
 ### What Changed

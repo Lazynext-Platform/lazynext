@@ -341,7 +341,7 @@ export default function EditorPage() {
       setTlError(e instanceof TypeError ? t('common.errNetwork') : t('editor.tlErrFailed'));
       setTlStep('error');
     }
-  }, [session?.user, tlName, tlFps, tlRatio, t]);
+  }, [session?.user, tlName, tlFps, tlRatio, t, setTimeline]);
 
   const transcribeVideo = useCallback(async () => {
     if (!session?.user) { setAuthOpen(true); return; }
@@ -462,7 +462,7 @@ export default function EditorPage() {
       setTlError(e instanceof TypeError ? t('common.errNetwork') : t('editor.tlErrFailed'));
       setTlStep('error');
     }
-  }, [session?.user, t]);
+  }, [session?.user, t, resetTimeline]);
 
   const deleteTimeline = useCallback(async (id: string) => {
     if (!session?.user) return;
@@ -510,7 +510,7 @@ export default function EditorPage() {
         updatedAt: new Date().toISOString(),
       } as typeof prev;
     });
-  }, []);
+  }, [setTimeline]);
 
   // ── Keyboard shortcuts ──
   const shortcuts = useMemo(() => [

@@ -76,7 +76,34 @@ export default function SharePage({ params }: { params: Promise<{ token: string 
     }
   };
 
-  useEffect(() => { fetchAsset(); }, []);
+  useEffect(() => {
+    const doFetch = async () => {
+      setLoading(true);
+      setError('');
+      setPasswordError(false);
+      try {
+        const url = `/api/creative/share/${token}`;
+        const res = await fetch(url);
+        const j = await res.json();
+        if (res.status === 403 && j.error === 'password_required') {
+          setNeedPassword(true);
+          setLoading(false);
+          return;
+        }
+        if (res.status === 410) { setError('This share link has expired.'); setLoading(false); return; }
+        if (res.status === 404) { setError('Share link not found.'); setLoading(false); return; }
+        if (!res.ok) { setError(j.error || 'Failed to load'); setLoading(false); return; }
+        setAsset(j.asset);
+        setViews(j.views);
+        setNeedPassword(false);
+      } catch {
+        setError('Network error');
+      } finally {
+        setLoading(false);
+      }
+    };
+    doFetch();
+  }, [token]);
 
   const handlePasswordSubmit = (e: React.FormEvent) => {
     e.preventDefault();

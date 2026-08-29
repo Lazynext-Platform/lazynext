@@ -32,7 +32,6 @@ import {
   type BriefInput,
 } from '@/lib/creative/intelligence';
 import { checkCompliance, type ComplianceCheckRequest, type CompliancePlatform } from '@/lib/creative/compliance';
-import { generateVoiceover, type TTSRequest } from '@/lib/creative/audio-studio';
 import { dispatchMediaService, type MediaCapability } from '@/lib/creative/media-service-boundary';
 import { publishContent } from '@/lib/publishing/publisher';
 import type { PublishRequest, PublishPlatform } from '@/lib/publishing/types';
@@ -45,6 +44,33 @@ import { logToolExecution } from '@/lib/telemetry';
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
+
+/**
+ * Rich error thrown when a pipeline stage fails.
+ * Captures the stage name, input snapshot, and accumulated context
+ * so the API route can return structured error details for debugging.
+ */
+export class PipelineStageError extends Error {
+  readonly stage: PipelineStage;
+  readonly cause: unknown;
+  readonly inputSnapshot: Record<string, unknown>;
+  readonly priorContext: StageContext;
+
+  constructor(
+    stage: PipelineStage,
+    cause: unknown,
+    inputSnapshot: Record<string, unknown>,
+    priorContext: StageContext,
+  ) {
+    const msg = cause instanceof Error ? cause.message : String(cause);
+    super(`pipeline_stage_failed:${stage} — ${msg}`);
+    this.name = 'PipelineStageError';
+    this.stage = stage;
+    this.cause = cause;
+    this.inputSnapshot = inputSnapshot;
+    this.priorContext = priorContext;
+  }
+}
 
 /**
  * Accumulated context passed from stage to stage.
@@ -242,14 +268,20 @@ async function executeAudioStage(params: ExecuteStageParams): Promise<StageExecu
   }
 
   try {
-    const ttsRequest: TTSRequest = {
-      text: voiceoverText.slice(0, 5000), // TTS limit
-      language: context.script.language as any,
-    };
-    const result = await generateVoiceover(ttsRequest, planTier);
+    // Use dispatchMediaService for TTS — routes through the media service boundary
+    // with plan-tier aware model selection and dry-run fallback.
+    const ttsResult = await dispatchMediaService({
+      capability: 'tts',
+      input: {
+        text: voiceoverText.slice(0, 5000),
+        language: context.script.language as string,
+      },
+      planTier: planTier || 'free',
+    });
+    const audioUrl = (ttsResult.result.audioUrl as string) || (ttsResult.result.url as string) || `placeholder://audio/voiceover`;
     return {
-      output: { audioUrl: result.audioUrl, ttsResult: result },
-      artifacts: [{ type: 'voiceover', url: result.audioUrl }],
+      output: { audioUrl, ttsResult },
+      artifacts: [{ type: 'voiceover', url: audioUrl }],
     };
   } catch (e) {
     // Best-effort: return placeholder if TTS fails
@@ -348,9 +380,17 @@ async function executeComplianceStage(params: ExecuteStageParams): Promise<Stage
   const { config, context, planTier } = params;
   if (!context.brief) throw new Error('compliance_stage_requires_brief');
 
-  // Build compliance content from the script + brief
+  // Build compliance content from brief hooks/angles + script + storyboard
   const scriptText = context.script?.scenes?.map((s) => `${s.visual} ${s.voiceover} ${s.onScreenText}`).join('\n') || '';
-  const content = `${context.brief.product}\n${scriptText}`;
+  const storyboardText = context.storyboard?.shots?.map((s) => s.prompt).join('\n') || '';
+  const content = [
+    context.brief.product,
+    context.brief.hook,
+    context.brief.angle,
+    context.brief.cta,
+    scriptText,
+    storyboardText,
+  ].filter(Boolean).join('\n---\n');
 
   const platforms = (config.platforms || ['universal']).filter((p) =>
     ['tiktok', 'youtube', 'meta', 'google', 'universal'].includes(p),
@@ -473,13 +513,13 @@ async function executePublishStage(params: ExecuteStageParams): Promise<StageExe
     }
   }
 
-  const overallStatus = results.every((r) => r.status === 'published') ? 'published'
+  const overallStatus = results.every((r) => r.status === 'published' || r.status === 'dry_run') ? 'dry_run'
     : results.every((r) => r.status === 'failed') ? 'failed'
     : 'partial';
 
   const publishResult = {
     platforms,
-    status: overallStatus as 'published' | 'failed' | 'partial',
+    status: overallStatus as 'dry_run' | 'failed' | 'partial',
     onComplete,
     mediaUrl: finalMediaUrl,
     caption,
@@ -555,7 +595,9 @@ export async function executeStage(params: ExecuteStageParams): Promise<StageExe
       success: false,
       error: err instanceof Error ? err.message : String(err),
     });
-    throw err;
+    // Wrap in PipelineStageError for richer context, unless it's already one
+    if (err instanceof PipelineStageError) throw err;
+    throw new PipelineStageError(params.stage, err, params as unknown as Record<string, unknown>, params.context);
   }
 }
 

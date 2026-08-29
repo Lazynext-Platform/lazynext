@@ -2,7 +2,7 @@ import { withAtlas } from '@/lib/request-context';
 import { NextResponse } from 'next/server';
 import { auth } from '@/../auth';
 import { prisma } from '@/lib/prisma';
-import { deductCredits } from '@/lib/credits';
+import { deductCredits, refundCredits } from '@/lib/credits';
 import { getUserPlanTier } from '@/lib/plan-tier';
 import { checkAuthRateLimit, getClientIP } from '@/lib/auth-rate-limit';
 import {
@@ -17,7 +17,7 @@ import {
   type PipelineState,
   type PipelineStage,
 } from '@/lib/creative/pipeline';
-import { executeStage, initialContext, mergeStageResultIntoContext, type StageContext } from '@/lib/creative/pipeline-executor';
+import { executeStage, initialContext, mergeStageResultIntoContext, type StageContext, PipelineStageError } from '@/lib/creative/pipeline-executor';
 import { startWorkflow, recordStep, completeWorkflow, failWorkflow } from '@/lib/workflow/engine';
 import { logToolExecution } from '@/lib/telemetry';
 
@@ -197,14 +197,14 @@ async function __byokPOST(req: Request) {
       }).catch(() => {});
     } catch (e) {
       const errorMsg = String(e instanceof Error ? e.message : e);
-      state = failStage(state, stage, errorMsg);
-      await recordStep(state.pipelineId, stage, 'failed', { error: errorMsg }).catch(() => {});
+      const errorStage = e instanceof PipelineStageError ? e.stage : stage;
+      state = failStage(state, errorStage, errorMsg);
+      await recordStep(state.pipelineId, errorStage, 'failed', { error: errorMsg }).catch(() => {});
       await failWorkflow(state.pipelineId, uid, errorMsg).catch(() => {});
       // Refund the first stage credit on failure
-      const cost = PIPELINE_COSTS[stage as keyof typeof PIPELINE_COSTS] ?? 0;
+      const cost = PIPELINE_COSTS[errorStage as keyof typeof PIPELINE_COSTS] ?? 0;
       if (cost > 0) {
-        const { refundSync } = await import('@/lib/lazynext-studio/gen-task');
-        await refundSync(uid, cost, `pipeline-refund:${state.pipelineId}:${stage}`).catch(() => {});
+        await refundCredits(uid, cost, `pipeline-refund:${state.pipelineId}:${errorStage}`).catch(() => {});
       }
     }
     // Save updated state (with stage output and advanced status)
@@ -214,6 +214,82 @@ async function __byokPOST(req: Request) {
         data: { status: state.status, output: JSON.parse(JSON.stringify(state)) },
       });
     } catch { /* non-fatal */ }
+
+    // Auto-advance loop: if the next stage has autoAdvance=true, execute it
+    // immediately without waiting for a client request.
+    const autoAdvanceDeadline = Date.now() + 75_000;
+    while (state.status === 'running' && state.currentStage && state.currentStage !== 'completed') {
+      const currentStageConfig = config.stages.find((s: any) => s.stage === state.currentStage);
+      if (!currentStageConfig?.autoAdvance) break;
+      if (Date.now() > autoAdvanceDeadline) break;
+
+      const nextStage = state.currentStage;
+      const nextCost = PIPELINE_COSTS[nextStage] ?? 0;
+
+      if (nextCost > 0) {
+        try {
+          await deductCredits(uid, nextCost, `creative:pipeline:${nextStage}`, state.pipelineId);
+        } catch (e) {
+          state = failStage(state, nextStage, 'insufficient_credits');
+          try {
+            await prisma.workflowRun.update({
+              where: { id: state.pipelineId },
+              data: { status: state.status, output: JSON.parse(JSON.stringify(state)) },
+            });
+          } catch { /* non-fatal */ }
+          return NextResponse.json(
+            { error: e instanceof Error && e.message === 'INSUFFICIENT_CREDITS' ? 'insufficient_credits' : 'charge_failed', state },
+            { status: 402 },
+          );
+        }
+      }
+
+      try {
+        await recordStep(state.pipelineId, nextStage, 'running').catch(() => {});
+        // Rebuild context from accumulated stage results
+        let ctx = initialContext(config);
+        for (const result of state.stageResults) {
+          if (result.status === 'completed' || result.status === 'skipped') {
+            ctx = mergeStageResultIntoContext(ctx, result.stage, { output: result.output, artifacts: result.artifacts });
+          }
+        }
+        const result = await executeStage({
+          stage: nextStage,
+          config,
+          context: ctx,
+          planTier: await getUserPlanTier(uid).catch(() => undefined as any),
+          userId: uid,
+        });
+        const stageIdx = state.stageResults.findIndex((r) => r.stage === nextStage);
+        if (stageIdx >= 0) {
+          state.stageResults[stageIdx].output = result.output;
+          state.stageResults[stageIdx].artifacts = result.artifacts;
+        }
+        state = useWaves ? advancePipelineWithWaves(state) : advancePipeline(state);
+        await recordStep(state.pipelineId, nextStage, 'completed', {
+          output: result.output,
+          creditsCost: nextCost,
+        }).catch(() => {});
+      } catch (e) {
+        const errorMsg = String(e instanceof Error ? e.message : e);
+        const errorStage = e instanceof PipelineStageError ? e.stage : nextStage;
+        state = failStage(state, errorStage, errorMsg);
+        await recordStep(state.pipelineId, errorStage, 'failed', { error: errorMsg }).catch(() => {});
+        await failWorkflow(state.pipelineId, uid, errorMsg).catch(() => {});
+        if (nextCost > 0) {
+          await refundCredits(uid, nextCost, `pipeline-refund:${state.pipelineId}:${errorStage}`).catch(() => {});
+        }
+        break; // Break the auto-advance loop on failure
+      }
+
+      // Save state after each auto-advanced stage
+      try {
+        await prisma.workflowRun.update({
+          where: { id: state.pipelineId },
+          data: { status: state.status, output: JSON.parse(JSON.stringify(state)) },
+        });
+      } catch { /* non-fatal */ }
+    }
   }
 
   return NextResponse.json({ state });

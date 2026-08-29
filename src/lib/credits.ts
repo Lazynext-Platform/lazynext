@@ -49,3 +49,11 @@ export async function deductCredits(
     throw e;
   }
 }
+
+/** Refund credits for a failed operation (e.g. pipeline stage failure). */
+export async function refundCredits(userId: string, amount: number, ref?: string): Promise<void> {
+  if (isByok()) return;
+  if (amount <= 0) return;
+  await grantCredits(userId, amount, 'refund', ref);
+  emitCreditsRefunded(userId, amount, ref || 'refund');
+}

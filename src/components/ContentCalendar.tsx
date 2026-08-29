@@ -92,9 +92,9 @@ function monthLabel(year: number, month: number, locale: string) {
 export function ContentCalendar() {
   const { t, locale } = useI18n();
 
-  const now = new Date();
-  const [viewYear, setViewYear] = useState(now.getFullYear());
-  const [viewMonth, setViewMonth] = useState(now.getMonth());
+  const [viewYear, setViewYear] = useState(() => new Date().getFullYear());
+  const [viewMonth, setViewMonth] = useState(() => new Date().getMonth());
+  const now = useMemo(() => new Date(), []);
 
   const [platform, setPlatform] = useState('');
   const [status, setStatus] = useState('');
