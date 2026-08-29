@@ -22,7 +22,7 @@
  * adds corresponding endpoints. The contract (MediaServiceOutput) is identical
  * regardless of whether the service is dry-run or real — callers need no changes.
  */
-import { getLLMModel } from '@/lib/providers/model-helpers';
+import { getLLMModel, getImageModel, getVideoModel } from '@/lib/providers/model-helpers';
 import type { PlanTier } from '@/lib/plan-tier';
 
 export const MEDIA_SERVICE_COST = 5;
@@ -431,7 +431,7 @@ function hasAtlasKey(): boolean {
  * Real ASR via Atlas Cloud Whisper.
  * Submits an async task and polls until completion.
  */
-async function atlasASR(input: MediaServiceInput): Promise<Record<string, unknown>> {
+async function atlasASR(input: MediaServiceInput, _planTier?: string): Promise<Record<string, unknown>> {
   const { submitRawGen, pollOnce } = await import('@/lib/atlas');
   const model = process.env.ATLAS_ASR_MODEL || 'openai/whisper-large-v3';
   const payload: Record<string, unknown> = { model, audio: input.url };
@@ -463,9 +463,10 @@ async function atlasASR(input: MediaServiceInput): Promise<Record<string, unknow
 /**
  * Real TTS via Atlas Cloud.
  */
-async function atlasTTS(input: MediaServiceInput): Promise<Record<string, unknown>> {
+async function atlasTTS(input: MediaServiceInput, planTier?: string): Promise<Record<string, unknown>> {
   const { submitRawGen, pollOnce } = await import('@/lib/atlas');
-  const model = process.env.ATLAS_TTS_MODEL || 'bytedance/tts-large';
+  const routed = getLLMModel(planTier);
+  const model = process.env.ATLAS_TTS_MODEL || routed;
   const payload: Record<string, unknown> = { model, text: input.text };
   if (input.voiceId) payload.voice = input.voiceId;
   if (input.language) payload.language = input.language;
@@ -494,7 +495,7 @@ async function atlasTTS(input: MediaServiceInput): Promise<Record<string, unknow
 /**
  * Real OCR via Atlas Cloud Vision LLM.
  */
-async function atlasOCR(input: MediaServiceInput): Promise<Record<string, unknown>> {
+async function atlasOCR(input: MediaServiceInput, _planTier?: string): Promise<Record<string, unknown>> {
   const { atlasChat } = await import('@/lib/atlas');
   const systemPrompt = 'You are an OCR engine. Extract ALL visible text from the image exactly as it appears. Return only the extracted text, preserving line breaks. Do not add commentary.';
   const userContent = [
@@ -517,9 +518,10 @@ async function atlasOCR(input: MediaServiceInput): Promise<Record<string, unknow
 /**
  * Real image editing via Atlas Cloud image-edit.
  */
-async function atlasImageEdit(input: MediaServiceInput): Promise<Record<string, unknown>> {
+async function atlasImageEdit(input: MediaServiceInput, planTier?: string): Promise<Record<string, unknown>> {
   const { submitRawGen, pollOnce } = await import('@/lib/atlas');
-  const model = process.env.ATLAS_IMAGE_EDIT_MODEL || 'bytedance/seedream-3.0/edit';
+  const routed = getImageModel(planTier);
+  const model = process.env.ATLAS_IMAGE_EDIT_MODEL || routed;
   const payload: Record<string, unknown> = {
     model,
     prompt: input.editInstruction || '',
@@ -549,10 +551,11 @@ async function atlasImageEdit(input: MediaServiceInput): Promise<Record<string, 
 /**
  * Real video generation via Atlas Cloud seedance.
  */
-async function atlasVideoGen(input: MediaServiceInput): Promise<Record<string, unknown>> {
+async function atlasVideoGen(input: MediaServiceInput, planTier?: string): Promise<Record<string, unknown>> {
   const { submitRawGen, pollOnce } = await import('@/lib/atlas');
-  const model = process.env.ATLAS_VIDEO_MODEL || 'bytedance/seedance-2.0/text-to-video';
   const opts = (input.options as Record<string, unknown>) || {};
+  const routed = getVideoModel(planTier, opts.ratio as string, opts.resolution as string);
+  const model = process.env.ATLAS_VIDEO_MODEL || routed;
   const payload: Record<string, unknown> = {
     model,
     prompt: input.text || '',
@@ -580,7 +583,7 @@ async function atlasVideoGen(input: MediaServiceInput): Promise<Record<string, u
 }
 
 // Map of capabilities to their real Atlas Cloud handlers
-const ATLAS_HANDLERS: Partial<Record<MediaCapability, (input: MediaServiceInput) => Promise<Record<string, unknown>>>> = {
+const ATLAS_HANDLERS: Partial<Record<MediaCapability, (input: MediaServiceInput, planTier?: string) => Promise<Record<string, unknown>>>> = {
   asr: atlasASR,
   tts: atlasTTS,
   ocr: atlasOCR,
@@ -608,7 +611,6 @@ export async function dispatchMediaService(params: {
   planTier: PlanTier;
 }): Promise<MediaServiceOutput> {
   const { capability, input, planTier } = params;
-  void getLLMModel(planTier);
 
   const svc = getServiceByCapability(capability);
   if (!svc) {
@@ -628,7 +630,7 @@ export async function dispatchMediaService(params: {
   if (useRealService) {
     const start = Date.now();
     try {
-      const result = await atlasHandler(input);
+      const result = await atlasHandler(input, planTier);
       return {
         capability,
         result,

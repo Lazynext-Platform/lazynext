@@ -313,6 +313,32 @@ async function executeEditStage(params: ExecuteStageParams): Promise<StageExecut
 }
 
 /**
+ * Execute the `score` stage: evaluate creative quality using the scoring
+ * library. Calls `scoreCreative` with the brief, script, and storyboard
+ * (if available) to produce a multi-dimensional quality score.
+ *
+ * The score can be used to gate bad creatives before media spend, rank A/B
+ * variants, and track quality over time.
+ */
+async function executeScoreStage(params: ExecuteStageParams): Promise<StageExecutionResult> {
+  const { context, planTier } = params;
+  if (!context.brief) throw new Error('score_stage_requires_brief');
+  if (!context.script) throw new Error('score_stage_requires_script');
+
+  const score = await scoreCreative({
+    brief: context.brief,
+    script: context.script,
+    storyboard: context.storyboard || null,
+    planTier,
+  });
+
+  return {
+    output: { score },
+    artifacts: [{ type: 'creative_score', data: score }],
+  };
+}
+
+/**
  * Execute the `compliance` stage: run brand-safety and platform compliance
  * checks on the creative content.
  */
@@ -484,6 +510,7 @@ const STAGE_EXECUTORS: Record<PipelineStage, (params: ExecuteStageParams) => Pro
   audio: executeAudioStage,
   edit: executeEditStage,
   compliance: executeComplianceStage,
+  score: executeScoreStage,
   publish: executePublishStage,
   // 'completed' is a terminal marker, not a real stage
   completed: async () => ({ output: {}, artifacts: [] }),

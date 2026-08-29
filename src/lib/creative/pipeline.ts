@@ -18,6 +18,7 @@ export type PipelineStage =
   | 'audio'
   | 'edit'
   | 'compliance'
+  | 'score'
   | 'publish'
   | 'completed';
 
@@ -104,6 +105,7 @@ export const PIPELINE_COSTS: Record<PipelineStage, number> = {
   audio: 3,
   edit: 2,
   compliance: 4,
+  score: 2,
   publish: 3,
   completed: 0,
 };
@@ -147,6 +149,11 @@ const STAGE_META: Record<PipelineStage, { name: string; description: string; est
     description: 'Run brand-safety and platform compliance checks on the creative.',
     estimatedDurationSec: 20,
   },
+  score: {
+    name: 'Score',
+    description: 'Evaluate creative quality with multi-dimensional scoring.',
+    estimatedDurationSec: 15,
+  },
   publish: {
     name: 'Publish',
     description: 'Publish the finished ad to the selected platforms.',
@@ -167,13 +174,13 @@ export const PIPELINE_TEMPLATES: PipelineTemplate[] = [
     templateId: 'full-creative',
     name: 'Full Creative Pipeline',
     description:
-      'The complete end-to-end workflow: brief, script, storyboard, media generation, audio, edit, compliance, and publish.',
-    stages: ['brief', 'script', 'storyboard', 'media_generation', 'audio', 'edit', 'compliance', 'publish'],
+      'The complete end-to-end workflow: brief, script, storyboard, media generation, audio, edit, compliance, scoring, and publish.',
+    stages: ['brief', 'script', 'storyboard', 'media_generation', 'audio', 'edit', 'compliance', 'score', 'publish'],
     defaultConfig: {
       name: 'Full Creative Pipeline',
       onComplete: 'publish',
     },
-    estimatedCredits: 25,
+    estimatedCredits: 27,
     estimatedDurationMin: 5,
   },
   {

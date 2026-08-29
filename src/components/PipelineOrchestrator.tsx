@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useEffect, useMemo } from 'react';
+import { useState, useCallback, useEffect, useMemo, useRef } from 'react';
 import { useSession } from 'next-auth/react';
 import {
   Workflow,
@@ -25,6 +25,7 @@ import {
   Sparkles,
   ChevronRight,
   ChevronDown,
+  Star,
 } from 'lucide-react';
 import { useI18n } from '@/i18n/provider';
 import type {
@@ -46,6 +47,7 @@ const STAGE_ICONS: Record<PipelineStage, typeof Workflow> = {
   audio: Volume2,
   edit: Scissors,
   compliance: ShieldCheck,
+  score: Star,
   publish: Send,
   completed: CheckCircle2,
 };
@@ -58,6 +60,7 @@ const STAGE_LABELS: Record<PipelineStage, string> = {
   audio: 'Audio',
   edit: 'Edit',
   compliance: 'Compliance',
+  score: 'Score',
   publish: 'Publish',
   completed: 'Completed',
 };
@@ -70,6 +73,7 @@ const ALL_STAGES: PipelineStage[] = [
   'audio',
   'edit',
   'compliance',
+  'score',
   'publish',
 ];
 
@@ -271,6 +275,35 @@ export function PipelineOrchestrator() {
   const cancel = useCallback(() => callAction('cancel'), [callAction]);
   const skip = useCallback((stage: PipelineStage) => callAction('skip', { stage }), [callAction]);
   const retry = useCallback((stage: PipelineStage) => callAction('retry', { stage }), [callAction]);
+
+  // Auto-advance: when the pipeline is running and the current stage has
+  // autoAdvance enabled, automatically call advance after a short delay.
+  // This lets the pipeline run end-to-end without manual clicking.
+  const autoAdvanceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => {
+    if (autoAdvanceTimer.current) {
+      clearTimeout(autoAdvanceTimer.current);
+      autoAdvanceTimer.current = null;
+    }
+    if (!activePipeline || activePipeline.status !== 'running' || actionLoading) return;
+    const currentStage = activePipeline.currentStage;
+    if (!currentStage || currentStage === 'completed') return;
+    // Check if the current stage has autoAdvance enabled
+    const stageConfig = stageConfigs[currentStage as PipelineStage];
+    if (!stageConfig?.autoAdvance) return;
+    // Check if the current stage has completed (has output) — advance to the next
+    const stageResult = activePipeline.stageResults.find(
+      (r) => r.stage === currentStage && r.status === 'completed',
+    );
+    if (!stageResult) return;
+    // Auto-advance after 1.5s delay to let the user see the output
+    autoAdvanceTimer.current = setTimeout(() => {
+      callAction('advance');
+    }, 1500);
+    return () => {
+      if (autoAdvanceTimer.current) clearTimeout(autoAdvanceTimer.current);
+    };
+  }, [activePipeline, actionLoading, stageConfigs, callAction]);
 
   const togglePlatform = (p: string) => {
     setPlatforms((prev) => (prev.includes(p) ? prev.filter((x) => x !== p) : [...prev, p]));
@@ -742,6 +775,7 @@ function PipelineExecutionView({
               key={`${s.stage}-card-${idx}`}
               stage={s.stage}
               result={result}
+              pipelineId={state.pipelineId}
               onSkip={() => onSkip(s.stage)}
               onRetry={() => onRetry(s.stage)}
               actionLoading={actionLoading}
@@ -759,12 +793,14 @@ function PipelineExecutionView({
 function StageCard({
   stage,
   result,
+  pipelineId,
   onSkip,
   onRetry,
   actionLoading,
 }: {
   stage: PipelineStage;
   result: PipelineState['stageResults'][number];
+  pipelineId: string;
   onSkip: () => void;
   onRetry: () => void;
   actionLoading: boolean;
@@ -823,7 +859,7 @@ function StageCard({
 
       {/* Stage output viewer — shows generated content */}
       {result.status === 'completed' && hasStageOutput(stage, result.output) && (
-        <StageOutputViewer stage={stage} output={result.output} />
+        <StageOutputViewer stage={stage} output={result.output} pipelineId={pipelineId} />
       )}
 
       {(canRetry || canSkip) && (
@@ -867,13 +903,14 @@ function hasStageOutput(stage: PipelineStage, output: Record<string, unknown>): 
     case 'audio': return !!output.audioUrl;
     case 'edit': return !!output.editResult;
     case 'compliance': return !!output.complianceResult;
+    case 'score': return !!output.score;
     case 'publish': return !!output.publishResult;
     default: return false;
   }
 }
 
 /** Collapsible viewer for stage output content. */
-function StageOutputViewer({ stage, output }: { stage: PipelineStage; output: Record<string, unknown> }) {
+function StageOutputViewer({ stage, output, pipelineId }: { stage: PipelineStage; output: Record<string, unknown>; pipelineId: string }) {
   const [expanded, setExpanded] = useState(false);
 
   return (
@@ -888,7 +925,7 @@ function StageOutputViewer({ stage, output }: { stage: PipelineStage; output: Re
       </button>
       {expanded && (
         <div className="mt-2 max-h-64 overflow-y-auto rounded-lg bg-app p-3 text-[11px] text-fg-muted">
-          <StageOutputContent stage={stage} output={output} />
+          <StageOutputContent stage={stage} output={output} pipelineId={pipelineId} />
         </div>
       )}
     </div>
@@ -896,7 +933,7 @@ function StageOutputViewer({ stage, output }: { stage: PipelineStage; output: Re
 }
 
 /** Render stage-specific output content. */
-function StageOutputContent({ stage, output }: { stage: PipelineStage; output: Record<string, unknown> }) {
+function StageOutputContent({ stage, output, pipelineId }: { stage: PipelineStage; output: Record<string, unknown>; pipelineId: string }) {
   switch (stage) {
     case 'brief': {
       const brief = output.brief as Record<string, unknown> | undefined;
@@ -1015,6 +1052,36 @@ function StageOutputContent({ stage, output }: { stage: PipelineStage; output: R
         </div>
       );
     }
+    case 'score': {
+      const score = output.score as Record<string, unknown> | undefined;
+      if (!score) return null;
+      const overall = typeof score.overallScore === 'number' ? score.overallScore : undefined;
+      return (
+        <dl className="space-y-1">
+          {overall !== undefined && (
+            <DetailRow label="Overall Score" value={`${overall}/100`} />
+          )}
+          {score.hookStrength != null && (
+            <DetailRow label="Hook Strength" value={String(score.hookStrength)} />
+          )}
+          {score.angleClarity != null && (
+            <DetailRow label="Angle Clarity" value={String(score.angleClarity)} />
+          )}
+          {score.scriptFlow != null && (
+            <DetailRow label="Script Flow" value={String(score.scriptFlow)} />
+          )}
+          {score.ctaEffectiveness != null && (
+            <DetailRow label="CTA Effectiveness" value={String(score.ctaEffectiveness)} />
+          )}
+          {score.audienceFit != null && (
+            <DetailRow label="Audience Fit" value={String(score.audienceFit)} />
+          )}
+          {score.feedback as string && (
+            <p className="text-fg-faint text-xs pt-1">{score.feedback as string}</p>
+          )}
+        </dl>
+      );
+    }
     case 'compliance': {
       const result = output.complianceResult as Record<string, unknown> | undefined;
       if (!result) return null;
@@ -1037,12 +1104,24 @@ function StageOutputContent({ stage, output }: { stage: PipelineStage; output: R
     case 'edit': {
       const editResult = output.editResult as Record<string, unknown> | undefined;
       if (!editResult) return null;
+      const finalMediaUrl = editResult.finalMediaUrl as string | undefined;
       return (
         <dl className="space-y-1">
           <DetailRow label="Total Duration" value={`${String(editResult.totalDurationSec)}s`} />
           <DetailRow label="Audio" value={editResult.audioUrl as string || 'none'} />
+          <DetailRow label="Format" value={String(editResult.format || 'vertical_9x16')} />
           {Array.isArray(editResult.cutPlan) && (
             <p className="text-fg-faint">{editResult.cutPlan.length} cuts in plan</p>
+          )}
+          {finalMediaUrl && (
+            <div className="pt-2">
+              <a
+                href={`/clip-editor?pipelineId=${encodeURIComponent(pipelineId)}&mediaUrl=${encodeURIComponent(finalMediaUrl)}`}
+                className="inline-flex items-center gap-1.5 rounded-md border border-accent px-3 py-1.5 text-xs font-medium text-accent hover:bg-accent/10"
+              >
+                <Scissors className="h-3 w-3" /> Open in Clip Editor
+              </a>
+            </div>
           )}
         </dl>
       );
