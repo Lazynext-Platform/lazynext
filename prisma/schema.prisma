@@ -44,6 +44,7 @@ model User {
   webhookEndpoints WebhookEndpoint[]
   creativeComments CreativeComment[]
   teamMembers  TeamMember[]
+  teamActivities TeamActivity[]
 }
 
 model Account {
@@ -272,6 +273,7 @@ model Team {
 
   members     TeamMember[]
   invitations TeamInvitation[]
+  activities  TeamActivity[]
 
   @@index([ownerId])
 }
@@ -305,6 +307,22 @@ model TeamInvitation {
 
   @@index([teamId])
   @@index([email])
+}
+
+model TeamActivity {
+  id        String   @id @default(cuid())
+  teamId    String
+  userId    String
+  type      String   // member_joined | member_left | role_changed | project_created | project_updated | comment_added | approval_requested | approval_granted
+  summary   String
+  metadataJson String @default("{}")
+  createdAt DateTime @default(now())
+
+  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([teamId, createdAt])
+  @@index([userId])
 }
 
 model ApprovalStage {
