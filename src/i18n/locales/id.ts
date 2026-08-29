@@ -790,6 +790,8 @@ export const idMessages = {
       autoAdvance: 'Lanjut otomatis',
       autoAdvancing: 'Melanjutkan otomatis',
       cancelDuringAutoAdvanceWarning: 'Pembatalan akan berlaku setelah rantai lanjut otomatis saat ini selesai.',
+      dryRunBadge: 'Simulasi',
+      dryRunAudioNote: 'Audio adalah placeholder senyap dalam mode simulasi.',
       enabled: 'Diaktifkan',
       onComplete: 'Saat selesai',
       publish: 'Publikasikan',

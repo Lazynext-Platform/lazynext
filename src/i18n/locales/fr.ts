@@ -787,6 +787,8 @@ export const frMessages = {
       autoAdvance: 'Avance automatique',
       autoAdvancing: 'Avancement automatique',
       cancelDuringAutoAdvanceWarning: "L'annulation prendra effet après la fin de la chaîne d'avancement automatique en cours.",
+      dryRunBadge: "Simulation",
+      dryRunAudioNote: "L'audio est un espace réservé silencieux en mode simulation.",
       enabled: 'Activé',
       onComplete: 'À la fin',
       publish: 'Publier',

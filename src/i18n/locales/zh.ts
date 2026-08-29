@@ -787,6 +787,8 @@ export const zhMessages = {
       autoAdvance: '自动推进',
       autoAdvancing: '自动推进',
       cancelDuringAutoAdvanceWarning: '取消将在当前自动推进链完成后生效。',
+      dryRunBadge: '模拟运行',
+      dryRunAudioNote: '音频在模拟运行模式下为静音占位符。',
       enabled: '已启用',
       onComplete: '完成时',
       publish: '发布',

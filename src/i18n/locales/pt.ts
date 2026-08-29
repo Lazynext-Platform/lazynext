@@ -787,6 +787,8 @@ export const ptMessages = {
       autoAdvance: 'Avanço automático',
       autoAdvancing: 'Avançando automaticamente',
       cancelDuringAutoAdvanceWarning: 'O cancelamento terá efeito após a conclusão da cadeia de avanço automático atual.',
+      dryRunBadge: 'Simulação',
+      dryRunAudioNote: 'O áudio é um marcador silencioso no modo de simulação.',
       enabled: 'Ativado',
       onComplete: 'Ao concluir',
       publish: 'Publicar',

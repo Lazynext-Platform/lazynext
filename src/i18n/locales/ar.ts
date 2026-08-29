@@ -787,6 +787,8 @@ export const arMessages = {
       autoAdvance: 'التقدم التلقائي',
       autoAdvancing: 'تقدم تلقائي',
       cancelDuringAutoAdvanceWarning: 'سيتم تطبيق الإلغاء بعد اكتمال سلسلة التقدم التلقائي الحالية.',
+      dryRunBadge: 'تشغيل تجريبي',
+      dryRunAudioNote: 'الصوت عنصر صامت مؤقت في وضع التشغيل التجريبي.',
       enabled: 'مفعّل',
       onComplete: 'عند الاكتمال',
       publish: 'نشر',

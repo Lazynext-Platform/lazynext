@@ -1,5 +1,23 @@
 # LazyNext Changelog
 
+## 2026-09-02 — V: D1 Migration, Pipeline Versioning, Idempotency Tests, Reconciliation
+
+### What Changed
+1. **D1 migration applied** — Applied `20260829000002_credit_ledger_idempotency` (idempotencyKey column + unique index) and `20260829000003_workflow_run_version` (version column) to production D1
+2. **Pipeline state versioning** — Added `version` field to `PipelineState` and `WorkflowRun`; `savePipeline` now uses `updateMany` with `where: { id, version: expected }` for optimistic locking, preventing concurrent advances from clobbering each other; returns 409 on version conflict
+3. **Idempotency key tests** — Added 8 unit tests for `deductCredits` idempotencyKey behavior (successful charge, duplicate reversal, P2002 handling, non-P2002 failure, insufficient balance, no-key backwards compat, zero-amount no-op)
+4. **Approve action tests** — Added 8 unit tests for pipeline approve flow (onComplete switching, publish stage completion, createPipeline version/charged initialization, failStage on publish error)
+5. **Credit ledger reconciliation endpoint** — Added `GET /api/admin/credits/reconcile` with `?userId=` filter and `?fix=true` mode that writes correcting ledger entries
+6. **Dry-run audio badge** — PipelineOrchestrator now shows a "Dry Run" badge and note on dry-run audio output; renders the audio player with reduced opacity for data: URLs
+7. **AGENTS.md updated** — Updated test counts to 1440, fixed table count inconsistency (28 tables), added Pipeline Credit Safety documentation section
+8. **E2E resilience** — Pipeline creation tests now skip gracefully on rate limiting (429) or insufficient credits (402) instead of failing
+
+### Verification
+- npm run lint — 0 errors, 2 warnings
+- npm test — 1440 tests passing
+- npm run build — successful
+- npx playwright test — 429 passed, 4 skipped
+
 ## 2026-09-02 — U: Ledger Idempotency, Cancel UX, Publish Hand-off, Cleanup
 
 ### What Changed

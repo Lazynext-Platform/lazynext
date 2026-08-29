@@ -790,6 +790,8 @@ export const thMessages = {
       autoAdvance: 'เลื่อนอัตโนมัติ',
       autoAdvancing: 'กำลังดำเนินต่ออัตโนมัติ',
       cancelDuringAutoAdvanceWarning: 'การยกเลิกจะมีผลหลังจากสายโซ่การดำเนินต่ออัตโนมัติปัจจุบันเสร็จสิ้น',
+      dryRunBadge: 'ทดลอง',
+      dryRunAudioNote: 'เสียงเป็นตัวยึดตำแหน่งเงียบในโหมดทดลอง',
       enabled: 'เปิดใช้งาน',
       onComplete: 'เมื่อเสร็จสิ้น',
       publish: 'เผยแพร่',

@@ -26,7 +26,9 @@ import { logToolExecution } from '@/lib/telemetry';
 
 export const maxDuration = 90;
 
-/** Load a persisted pipeline state (WorkflowRun row) owned by the user. */
+/** Load a persisted pipeline state (WorkflowRun row) owned by the user.
+ *  Also captures the DB-level version for optimistic locking.
+ */
 async function loadPipeline(uid: string, id: string): Promise<PipelineState | null> {
   const run = await prisma.workflowRun.findFirst({
     where: { id, userId: uid, workflowType: 'creative-pipeline' },
@@ -34,24 +36,46 @@ async function loadPipeline(uid: string, id: string): Promise<PipelineState | nu
   if (!run) return null;
   try {
     const state = typeof run.output === 'string' ? JSON.parse(run.output) : run.output;
-    if (state && typeof state === 'object' && 'pipelineId' in state) return state as PipelineState;
+    if (state && typeof state === 'object' && 'pipelineId' in state) {
+      const parsed = state as PipelineState;
+      // Sync the DB version onto the state for optimistic locking
+      parsed.version = (run as any).version ?? parsed.version ?? 0;
+      return parsed;
+    }
   } catch {
     /* ignore */
   }
   return null;
 }
 
-/** Persist the pipeline state back to its WorkflowRun row. */
-async function savePipeline(state: PipelineState): Promise<void> {
+/** Persist the pipeline state back to its WorkflowRun row.
+ *  Uses optimistic locking: the update only succeeds if the stored version
+ *  matches the expected version. If another request already wrote a newer
+ *  version, this save is rejected to prevent clobbering.
+ *  Returns true if the save succeeded, false if a version conflict occurred.
+ */
+async function savePipeline(state: PipelineState, expectedVersion?: number): Promise<boolean> {
+  const expected = expectedVersion ?? state.version;
+  const nextVersion = expected + 1;
   try {
-    await prisma.workflowRun.update({
-      where: { id: state.pipelineId },
+    // Use updateMany with a version condition for optimistic locking.
+    // If the stored version doesn't match expected, 0 rows are updated.
+    const res = await prisma.workflowRun.updateMany({
+      where: { id: state.pipelineId, version: expected },
       data: {
         status: state.status,
         output: JSON.parse(JSON.stringify(state)),
+        version: nextVersion,
         completedAt: state.status === 'completed' || state.status === 'failed' ? new Date() : undefined,
       },
     });
+    if (res.count === 0) {
+      // Version conflict — another request already wrote a newer version
+      console.warn(`[pipeline] Optimistic lock conflict for pipeline ${state.pipelineId}: expected version ${expected}, but it was already updated`);
+      return false;
+    }
+    state.version = nextVersion;
+    return true;
   } catch (e) {
     logToolExecution({
       tool: 'pipeline_workflow_run_persist',
@@ -62,6 +86,7 @@ async function savePipeline(state: PipelineState): Promise<void> {
       error: String(e),
     });
   }
+  return false;
 }
 
 /**
@@ -364,7 +389,11 @@ async function __byokPOST(req: Request, { params }: { params: Promise<{ id: stri
         autoAdvanceCount++;
 
         // Persist state after each auto-advanced wave (T4: per-wave persistence)
-        await savePipeline(state);
+        const waveSaved = await savePipeline(state);
+        if (!waveSaved) {
+          // Version conflict — stop the auto-advance chain and return the current state
+          return NextResponse.json({ error: 'version_conflict', message: 'Pipeline state was modified by another request. Please refresh and try again.', state }, { status: 409 });
+        }
       }
 
       // Log auto-advance telemetry
@@ -556,7 +585,10 @@ async function __byokPOST(req: Request, { params }: { params: Promise<{ id: stri
 
             state = hasParallel ? advancePipelineWithWaves(state) : advancePipeline(state);
             // Persist state after each retry auto-advance wave
-            await savePipeline(state);
+            const retrySaved = await savePipeline(state);
+            if (!retrySaved) {
+              return NextResponse.json({ error: 'version_conflict', message: 'Pipeline state was modified by another request. Please refresh and try again.', state }, { status: 409 });
+            }
           }
         } catch (e) {
           const errorMsg = String(e instanceof Error ? e.message : e);
@@ -616,7 +648,10 @@ async function __byokPOST(req: Request, { params }: { params: Promise<{ id: stri
       return NextResponse.json({ error: 'invalid_action' }, { status: 400 });
   }
 
-  await savePipeline(state);
+  const saved = await savePipeline(state);
+  if (!saved) {
+    return NextResponse.json({ error: 'version_conflict', message: 'Pipeline state was modified by another request. Please refresh and try again.' }, { status: 409 });
+  }
   return NextResponse.json({ state });
 }
 

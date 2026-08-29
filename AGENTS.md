@@ -49,7 +49,7 @@ Production uses Cloudflare R2 via `src/lib/media-storage.cloudflare.ts`.
 ## Verification Commands
 ```bash
 npm run lint    # ESLint
-npm test        # Node test runner (1424 tests)
+npm test        # Node test runner (1440 tests)
 # E2E: 430 passed, 3 skipped (chromium + mobile-chrome + chromium-auth)
 npm run build   # Production build (Cloudflare target)
 ```
@@ -184,7 +184,7 @@ Completed across 15+ sessions:
 - `GET /api/editor/timeline` — list user's saved timelines
 - `POST /api/editor/timeline` with `save`/`load`/`delete` actions
 - All persisted operations verify user ownership
-- D1 migration applied to production (20 tables total)
+- D1 migration applied to production (28 tables total)
 
 ## Editor Multimodal
 - `POST /api/editor/transcribe` — video URL → ASR transcript (2 credits, whisper-large-v3)
@@ -216,4 +216,18 @@ Completed across 15+ sessions:
 - FCPXML (Final Cut Pro 1.10), Premiere Pro XML, DaVinci Resolve XML, SRT subtitles
 - `POST /api/editor/rough-cut` with format=fcpxml|premiere|davinci|srt
 - All formats generated server-side, no external dependencies
+
+## Pipeline Credit Safety
+- Credit ledger idempotency: `CreditLedger.idempotencyKey` with `@@unique([userId, idempotencyKey])` prevents duplicate charges
+- `deductCredits` accepts an optional `idempotencyKey` parameter; duplicate calls with the same key are reversed and return successfully
+- Pipeline routes pass deterministic keys: `pipeline:{pipelineId}:{stage}` for initial runs, `pipeline:{pipelineId}:{stage}:retry` for retries
+- `PipelineStageResult.charged` flag provides in-memory idempotency within a single request
+- `createPipeline` initializes all stage results with `charged: false`
+- Pipeline state versioning: `PipelineState.version` + `WorkflowRun.version` provide optimistic locking via conditional `updateMany`
+- `savePipeline` in the `[id]` route uses `where: { id, version: expected }` to prevent concurrent clobbering
+- Publish stage defaults to `autoAdvance: false` regardless of `onComplete`; user must explicitly approve via the `approve` action
+- Creative Studio shows an "Approve & Publish" button when the pipeline reaches the publish stage
+- Cancel button shows a warning that cancel takes effect after the current auto-advance chain completes
+- Dry-run TTS returns a valid silent WAV data URL (not a placeholder)
+- Template credit estimates show a pre-approval to total range (e.g. "24–27 credits")
 

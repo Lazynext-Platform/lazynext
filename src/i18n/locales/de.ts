@@ -787,6 +787,8 @@ export const deMessages = {
       autoAdvance: 'Automatisch fortfahren',
       autoAdvancing: 'Automatisch fortlaufend',
       cancelDuringAutoAdvanceWarning: 'Abbrechen wird erst wirksam, nachdem die aktuelle automatische Fortlaufkette abgeschlossen ist.',
+      dryRunBadge: 'Testlauf',
+      dryRunAudioNote: 'Audio ist ein stummer Platzhalter im Testlauf-Modus.',
       enabled: 'Aktiviert',
       onComplete: 'Beim Abschluss',
       publish: 'Veröffentlichen',

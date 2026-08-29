@@ -787,6 +787,8 @@ export const hiMessages = {
       autoAdvance: 'स्वतः आगे बढ़ें',
       autoAdvancing: 'स्वतः आगे बढ़ रहा है',
       cancelDuringAutoAdvanceWarning: 'रद्द करना वर्तमान स्वतः आगे बढ़ने वाली श्रृंखला पूरी होने के बाद लागू होगा।',
+      dryRunBadge: 'ड्राई रन',
+      dryRunAudioNote: 'ड्राई रन मोड में ऑडियो एक मौन प्लेसहोल्डर है।',
       enabled: 'सक्षम',
       onComplete: 'पूर्ण होने पर',
       publish: 'प्रकाशित करें',

@@ -1096,11 +1096,22 @@ function StageOutputContent({ stage, output, pipelineId }: { stage: PipelineStag
     case 'audio': {
       const audioUrl = output.audioUrl as string | undefined;
       if (!audioUrl) return <p className="text-fg-faint">{t('pipeline.noAudio')}</p>;
+      const isDryRun = audioUrl.startsWith('placeholder://') || audioUrl.startsWith('data:');
       return (
         <div>
-          <p className="font-bold text-fg">{t('pipeline.voiceover')}</p>
-          {audioUrl.startsWith('placeholder://') || audioUrl.startsWith('data:') ? (
-            <p className="text-fg-faint">{audioUrl.slice(0, 60)}…</p>
+          <div className="flex items-center gap-2">
+            <p className="font-bold text-fg">{t('pipeline.voiceover')}</p>
+            {isDryRun && (
+              <span className="rounded bg-warning/10 px-1.5 py-0.5 text-[10px] font-medium text-warning">
+                {t('pipeline.dryRunBadge')}
+              </span>
+            )}
+          </div>
+          {isDryRun ? (
+            <div className="mt-1">
+              <audio controls src={audioUrl} className="w-full opacity-60" />
+              <p className="mt-1 text-[11px] text-fg-faint">{t('pipeline.dryRunAudioNote')}</p>
+            </div>
           ) : (
             <audio controls src={audioUrl} className="mt-1 w-full" />
           )}

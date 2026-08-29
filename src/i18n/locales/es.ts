@@ -789,6 +789,8 @@ export const esMessages = {
       autoAdvance: 'Avance automático',
       autoAdvancing: 'Avanzando automáticamente',
       cancelDuringAutoAdvanceWarning: 'La cancelización surtirá efecto después de que se complete la cadena de avance automático actual.',
+      dryRunBadge: 'Simulación',
+      dryRunAudioNote: 'El audio es un marcador de posición silencioso en modo simulación.',
       enabled: 'Activado',
       onComplete: 'Al completar',
       publish: 'Publicar',

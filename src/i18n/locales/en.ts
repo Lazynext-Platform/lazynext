@@ -873,6 +873,8 @@ export const enMessages = {
       autoAdvance: "Auto-advance",
       autoAdvancing: "Auto-advancing",
       cancelDuringAutoAdvanceWarning: "Cancel will take effect after the current auto-advance chain completes.",
+      dryRunBadge: "Dry Run",
+      dryRunAudioNote: "Audio is a silent placeholder in dry-run mode.",
       enabled: "Enabled",
       onComplete: "On complete",
       publish: "Publish",

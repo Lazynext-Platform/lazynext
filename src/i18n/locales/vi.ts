@@ -790,6 +790,8 @@ export const viMessages = {
       autoAdvance: 'Tự động tiến',
       autoAdvancing: 'Tự động tiến',
       cancelDuringAutoAdvanceWarning: 'Hủy sẽ có hiệu lực sau khi chuỗi tự động tiến hiện tại hoàn tất.',
+      dryRunBadge: 'Chạy thử',
+      dryRunAudioNote: 'Âm thanh là phần giữ chỗ im lặng trong chế độ chạy thử.',
       enabled: 'Đã bật',
       onComplete: 'Khi hoàn thành',
       publish: 'Xuất bản',

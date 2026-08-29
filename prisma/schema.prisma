@@ -369,6 +369,7 @@ model WorkflowRun {
   input        Json?
   output       Json?
   error        String?
+  version      Int      @default(0) // optimistic locking for pipeline state
   startedAt    DateTime @default(now())
   completedAt  DateTime?
 

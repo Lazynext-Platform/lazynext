@@ -250,9 +250,10 @@ async function __byokPOST(req: Request) {
     }
     // Save updated state (with stage output and advanced status)
     try {
+      state.version += 1;
       await prisma.workflowRun.update({
         where: { id: state.pipelineId },
-        data: { status: state.status, output: JSON.parse(JSON.stringify(state)) },
+        data: { status: state.status, output: JSON.parse(JSON.stringify(state)), version: state.version },
       });
     } catch { /* non-fatal */ }
 
@@ -365,9 +366,10 @@ async function __byokPOST(req: Request) {
 
       // Save state after each auto-advanced stage
       try {
+        state.version += 1;
         await prisma.workflowRun.update({
           where: { id: state.pipelineId },
-          data: { status: state.status, output: JSON.parse(JSON.stringify(state)) },
+          data: { status: state.status, output: JSON.parse(JSON.stringify(state)), version: state.version },
         });
       } catch { /* non-fatal */ }
     }

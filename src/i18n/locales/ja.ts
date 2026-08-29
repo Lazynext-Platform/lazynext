@@ -789,6 +789,8 @@ export const jaMessages = {
       autoAdvance: '自動進行',
       autoAdvancing: '自動進行中',
       cancelDuringAutoAdvanceWarning: 'キャンセルは現在の自動進行チェーンの完了後に有効になります。',
+      dryRunBadge: 'ドライラン',
+      dryRunAudioNote: 'ドライランモードでは音声は無音のプレースホルダーです。',
       enabled: '有効',
       onComplete: '完了時',
       publish: '公開',

@@ -68,6 +68,10 @@ export interface PipelineState {
   updatedAt: string;
   estimatedTimeRemaining?: number;
   totalCreditsUsed: number;
+  /** Optimistic locking version — incremented on every state mutation.
+   *  savePipeline uses this in a conditional update to prevent concurrent
+   *  requests from clobbering each other's changes. */
+  version: number;
 }
 
 export interface PipelineTemplate {
@@ -398,6 +402,7 @@ export function createPipeline(config: PipelineConfig): PipelineState {
     createdAt: ts,
     updatedAt: ts,
     totalCreditsUsed: 0,
+    version: 0,
   };
 
   state.estimatedTimeRemaining = totalEstimatedDurationSec(state);

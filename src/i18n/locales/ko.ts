@@ -787,6 +787,8 @@ export const koMessages = {
       autoAdvance: '자동 진행',
       autoAdvancing: '자동 진행 중',
       cancelDuringAutoAdvanceWarning: '취소는 현재 자동 진행 체인이 완료된 후 적용됩니다.',
+      dryRunBadge: '드라이 런',
+      dryRunAudioNote: '드라이 런 모드에서 오디오는 무음 플레이스홀더입니다.',
       enabled: '활성화됨',
       onComplete: '완료 시',
       publish: '게시',
