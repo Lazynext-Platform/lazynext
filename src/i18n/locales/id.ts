@@ -753,6 +753,8 @@ export const idMessages = {
       title: "Orkestrator Pipeline",
       subtitle: "Pipeline kreatif ujung-ke-ujung: brief → skrip → storyboard → media → audio → edit → publikasi.",
       signInPrompt: "Masuk untuk mengorkestrasi pipeline kreatif Anda.",
+      stageScore: 'Skor',
+      approvePublish: 'Setujui dan Publikasikan',
     },
     personas: {
       title: "Persona Audiens",

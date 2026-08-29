@@ -834,8 +834,10 @@ export const enMessages = {
       },
     pipeline: {
       title: "Pipeline Orchestrator",
-      subtitle: "End-to-end creative pipeline: brief → script → storyboard → media → audio → edit → publish.",
+      subtitle: "End-to-end creative pipeline: brief → script → storyboard → media → audio → edit → compliance → score → publish.",
       signInPrompt: "Sign in to orchestrate your creative pipeline.",
+      stageScore: "Score",
+      approvePublish: "Approve & Publish",
     },
     personas: {
       title: "Audience Personas",

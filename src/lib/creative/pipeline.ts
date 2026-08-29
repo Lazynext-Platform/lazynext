@@ -91,6 +91,7 @@ export const STAGE_ORDER: PipelineStage[] = [
   'audio',
   'edit',
   'compliance',
+  'score',
   'publish',
 ];
 

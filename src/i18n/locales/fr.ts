@@ -750,6 +750,8 @@ export const frMessages = {
       title: "Orchestrateur de Pipeline",
       subtitle: "Pipeline créatif de bout en bout : brief → script → storyboard → médias → audio → montage → publication.",
       signInPrompt: "Connectez-vous pour orchestrer votre pipeline créatif.",
+      stageScore: 'Score',
+      approvePublish: 'Approuver et Publier',
     },
     personas: {
       title: "Personas d'Audience",

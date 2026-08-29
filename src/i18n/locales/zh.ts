@@ -750,6 +750,8 @@ export const zhMessages = {
       title: "管道编排器",
       subtitle: "端到端创意管道：简报 → 脚本 → 分镜 → 媒体 → 音频 → 编辑 → 发布。",
       signInPrompt: "登录以编排您的创意管道。",
+      stageScore: '评分',
+      approvePublish: '批准并发布',
     },
     personas: {
       title: "受众画像",

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { Scissors, Loader2, AlertCircle, Plus, Trash2, Mic, Volume2 } from 'lucide-react';
 import { useI18n } from '@/i18n/provider';
 import {
@@ -11,7 +11,7 @@ import {
   type ClipEditResult,
 } from '@/lib/creative/clip-editor';
 
-export function ClipEditor() {
+export function ClipEditor({ initialMediaUrl, pipelineId }: { initialMediaUrl?: string; pipelineId?: string } = {}) {
   const { t } = useI18n();
   const [clips, setClips] = useState<Clip[]>([
     createClip({ name: 'Intro', type: 'video', duration: 5 }),
@@ -24,6 +24,14 @@ export function ClipEditor() {
   const [result, setResult] = useState<ClipEditResult | null>(null);
   const [mediaLoading, setMediaLoading] = useState(false);
   const [mediaResult, setMediaResult] = useState<string>('');
+
+  // Pre-load media from pipeline handoff (e.g. /clip-editor?pipelineId=...&mediaUrl=...)
+  useEffect(() => {
+    if (initialMediaUrl) {
+      setMediaResult(initialMediaUrl);
+      setMediaLoading(false);
+    }
+  }, [initialMediaUrl]);
 
   const executeCommand = useCallback(async () => {
     if (!command.trim()) { setError(t('clipEditor.commandRequired')); return; }

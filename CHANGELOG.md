@@ -1,5 +1,33 @@
 # LazyNext Changelog
 
+## 2026-09-01 — J: Edit/Publish Depth, Workflow Builder Run, Credit Reconciliation, A/B Modal Migration
+
+### What Changed
+1. **Edit stage EDL** — `executeEditStage` produces a proper Edit Decision List with real media URLs and audio, surfaces `finalMediaUrl` for publishing
+2. **Publish stage calls publishContent** — `executePublishStage` calls `publishContent` from the publishing library with dryRun safety; `onComplete: 'review'` returns a plan, `'publish'` calls the publisher
+3. **Workflow Builder "Run as Pipeline"** — New button posts the workflow definition to `/api/creative/pipeline` and navigates to the pipeline page
+4. **Credit reconciliation** — Pipeline routes now advance state after each stage execution to update `totalCreditsUsed` immediately; refunds on stage failure
+5. **ABTestPlannerModal migrated** — From deprecated `/api/creative/ab-test` to `/api/creative/ab-automation` with real creationIds
+
+### Verification
+- npm run lint — 0 errors
+- npm test — 1394 tests passing
+- npm run build — successful
+
+## 2026-09-01 — K: Asset Persistence, Model Router for Media, Score Stage, Auto-Advance
+
+### What Changed
+1. **Pipeline output persistence** — Generated outputs (media, audio, EDL, compliance, publish) persisted as Asset/AssetVersion records at pipeline completion
+2. **Model router wired to media** — Media service boundary uses getImageModel/getVideoModel/getTTSModel from the provider router for plan-tier gating
+3. **Score/quality pipeline stage** — New `score` stage calls `scoreCreative` for multi-dimensional quality scoring; added to `full-creative` template
+4. **Auto-advance** — PipelineOrchestrator auto-advances through stages when `autoAdvance` is enabled (default true)
+5. **Clip editor handoff** — "Open in Clip Editor" link from edit stage output
+
+### Verification
+- npm run lint — 0 errors
+- npm test — 1394 tests passing
+- npm run build — successful
+
 ## 2026-09-01 — Pipeline Stage Executor, Real Media Generation, Pipeline Output UI, Hardening
 
 ### What Changed

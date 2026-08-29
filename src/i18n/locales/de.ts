@@ -750,6 +750,8 @@ export const deMessages = {
       title: "Pipeline-Orchestrator",
       subtitle: "End-to-End Creative-Pipeline: Brief → Skript → Storyboard → Medien → Audio → Schnitt → Veröffentlichung.",
       signInPrompt: "Melden Sie sich an, um Ihre Creative-Pipeline zu orchestrieren.",
+      stageScore: 'Bewertung',
+      approvePublish: 'Genehmigen und Veröffentlichen',
     },
     personas: {
       title: "Zielgruppen-Personas",

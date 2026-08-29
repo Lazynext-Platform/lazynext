@@ -750,6 +750,8 @@ export const ptMessages = {
       title: "Orquestrador de Pipeline",
       subtitle: "Pipeline criativo de ponta a ponta: brief → roteiro → storyboard → mídia → áudio → edição → publicação.",
       signInPrompt: "Entre para orquestrar seu pipeline criativo.",
+      stageScore: 'Pontuação',
+      approvePublish: 'Aprovar e Publicar',
     },
     personas: {
       title: "Personas de Audiência",

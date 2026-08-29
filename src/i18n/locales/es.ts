@@ -752,6 +752,8 @@ export const esMessages = {
       title: "Orquestador de Pipeline",
       subtitle: "Pipeline creativo de extremo a extremo: brief → guion → storyboard → medios → audio → edición → publicación.",
       signInPrompt: "Inicia sesión para orquestar tu pipeline creativo.",
+      stageScore: 'Puntuación',
+      approvePublish: 'Aprobar y Publicar',
     },
     personas: {
       title: "Personas de Audiencia",

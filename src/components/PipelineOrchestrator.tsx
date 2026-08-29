@@ -82,7 +82,7 @@ const PLATFORM_OPTIONS = ['tiktok', 'instagram', 'youtube', 'meta', 'google'];
 // ---------------------------------------------------------------------------
 // Component
 // ---------------------------------------------------------------------------
-export function PipelineOrchestrator() {
+export function PipelineOrchestrator({ initialPipelineId }: { initialPipelineId?: string } = {}) {
   const { data: session } = useSession();
   const { t } = useI18n();
 
@@ -152,6 +152,25 @@ export function PipelineOrchestrator() {
   useEffect(() => {
     if (session?.user) loadHistory();
   }, [session, loadHistory]);
+
+  // Load a specific pipeline when initialPipelineId is provided (e.g. from
+  // the Workflow Builder "Run as Pipeline" redirect: /pipeline?id=pl_...)
+  useEffect(() => {
+    if (!session?.user || !initialPipelineId) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch(`/api/creative/pipeline/${initialPipelineId}`);
+        if (res.ok && !cancelled) {
+          const j = await res.json().catch(() => ({}));
+          if (j?.state) setActivePipeline(j.state as PipelineState);
+        }
+      } catch {
+        /* non-fatal — user can still create a new pipeline */
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [session, initialPipelineId]);
 
   // ---- Apply a template to the form ----
   const applyTemplate = useCallback(
@@ -236,9 +255,13 @@ export function PipelineOrchestrator() {
   }, [session, buildConfig, loadHistory, t]);
 
   // ---- Pipeline actions ----
+  const advancingRef = useRef(false);
   const callAction = useCallback(
     async (action: string, extra?: Record<string, unknown>) => {
       if (!activePipeline) return;
+      // Guard against concurrent advance calls (auto-advance + manual click race)
+      if (action === 'advance' && advancingRef.current) return;
+      if (action === 'advance') advancingRef.current = true;
       setActionLoading(true);
       setError('');
       try {
@@ -264,6 +287,7 @@ export function PipelineOrchestrator() {
         else if (e instanceof TypeError) setError(t('common.errNetwork'));
         else setError(t('common.errGeneric'));
       }
+      advancingRef.current = false;
       setActionLoading(false);
     },
     [activePipeline, loadHistory, t],
@@ -341,6 +365,7 @@ export function PipelineOrchestrator() {
           onCancel={cancel}
           onSkip={skip}
           onRetry={retry}
+          onApprove={() => callAction('approve')}
           actionLoading={actionLoading}
           isTerminal={isTerminal}
           onReset={() => setActivePipeline(null)}
@@ -616,6 +641,7 @@ function PipelineExecutionView({
   onCancel,
   onSkip,
   onRetry,
+  onApprove,
   actionLoading,
   isTerminal,
   onReset,
@@ -627,6 +653,7 @@ function PipelineExecutionView({
   onCancel: () => void;
   onSkip: (stage: PipelineStage) => void;
   onRetry: (stage: PipelineStage) => void;
+  onApprove?: () => void;
   actionLoading: boolean;
   isTerminal: boolean;
   onReset: () => void;
@@ -778,6 +805,7 @@ function PipelineExecutionView({
               pipelineId={state.pipelineId}
               onSkip={() => onSkip(s.stage)}
               onRetry={() => onRetry(s.stage)}
+              onApprove={s.stage === 'publish' ? onApprove : undefined}
               actionLoading={actionLoading}
             />
           );
@@ -796,6 +824,7 @@ function StageCard({
   pipelineId,
   onSkip,
   onRetry,
+  onApprove,
   actionLoading,
 }: {
   stage: PipelineStage;
@@ -803,6 +832,7 @@ function StageCard({
   pipelineId: string;
   onSkip: () => void;
   onRetry: () => void;
+  onApprove?: () => void;
   actionLoading: boolean;
 }) {
   const Icon = STAGE_ICONS[stage];
@@ -882,6 +912,23 @@ function StageCard({
               <SkipForward className="h-3 w-3" /> Skip
             </button>
           )}
+        </div>
+      )}
+
+      {/* Approve & Publish button for pending_review publish results */}
+      {stage === 'publish' && result.status === 'completed' && onApprove && (() => {
+        const pr = result.output?.publishResult as Record<string, unknown> | undefined;
+        return pr?.status === 'pending_review';
+      })() && (
+        <div className="mt-3">
+          <button
+            onClick={onApprove}
+            disabled={actionLoading}
+            className="flex items-center gap-1.5 rounded-lg bg-accent px-3 py-1.5 text-[11px] font-bold text-accent-fg hover:opacity-90 disabled:opacity-50"
+          >
+            {actionLoading ? <Loader2 className="h-3 w-3 animate-spin" /> : <Send className="h-3 w-3" />}
+            Approve &amp; Publish
+          </button>
         </div>
       )}
     </div>

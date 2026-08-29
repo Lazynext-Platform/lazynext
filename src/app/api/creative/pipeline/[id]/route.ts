@@ -345,6 +345,41 @@ async function __byokPOST(req: Request, { params }: { params: Promise<{ id: stri
       if (stage) state = failStage(state, stage as PipelineState['currentStage'] & string, error);
       break;
     }
+    case 'approve': {
+      // Re-run the publish stage with onComplete='publish' to actually
+      // call publishContent. This turns a 'pending_review' plan into a
+      // real publish (subject to dry-run safety in the publisher).
+      const publishResult = state.stageResults.find((r) => r.stage === 'publish');
+      if (!publishResult) {
+        return NextResponse.json({ error: 'no_publish_stage' }, { status: 400 });
+      }
+      // Update config to force publish mode
+      state.config.onComplete = 'publish';
+      try {
+        const ctx = rebuildContext(state);
+        const result = await executeStage({
+          stage: 'publish',
+          config: state.config,
+          context: ctx,
+          planTier: await getUserPlanTier(uid).catch(() => undefined as any),
+          userId: uid,
+        });
+        const stageIdx = state.stageResults.findIndex((r) => r.stage === 'publish');
+        if (stageIdx >= 0) {
+          state.stageResults[stageIdx].output = result.output;
+          state.stageResults[stageIdx].artifacts = result.artifacts;
+        }
+        await recordStep(state.pipelineId, 'publish', 'completed', {
+          output: result.output,
+          creditsCost: 0, // No additional charge for approval re-run
+        }).catch(() => {});
+      } catch (e) {
+        const errorMsg = String(e instanceof Error ? e.message : e);
+        state = failStage(state, 'publish', errorMsg);
+        await recordStep(state.pipelineId, 'publish', 'failed', { error: errorMsg }).catch(() => {});
+      }
+      break;
+    }
     default:
       return NextResponse.json({ error: 'invalid_action' }, { status: 400 });
   }

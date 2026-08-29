@@ -753,6 +753,8 @@ export const viMessages = {
       title: "Điều phối Pipeline",
       subtitle: "Pipeline sáng tạo đầu cuối: tóm tắt → kịch bản → storyboard → media → audio → chỉnh sửa → xuất bản.",
       signInPrompt: "Đăng nhập để điều phối pipeline sáng tạo của bạn.",
+      stageScore: 'Điểm',
+      approvePublish: 'Phê duyệt và Xuất bản',
     },
     personas: {
       title: "Chân dung Khách hàng mục tiêu",

@@ -34,6 +34,7 @@ function makeConfig(overrides: Partial<PipelineConfig> = {}): PipelineConfig {
       { stage: 'audio', enabled: true, autoAdvance: true, config: {} },
       { stage: 'edit', enabled: true, autoAdvance: true, config: {} },
       { stage: 'compliance', enabled: true, autoAdvance: true, config: {} },
+      { stage: 'score', enabled: true, autoAdvance: true, config: {} },
       { stage: 'publish', enabled: true, autoAdvance: true, config: {} },
     ],
     onComplete: 'publish',
@@ -246,4 +247,31 @@ test('mergeStageResultIntoContext — accumulates across multiple stages', () =>
   assert.equal(ctx.brief!.objective, 'awareness');
   assert.equal(ctx.script!.title, 'Script');
   assert.equal(ctx.storyboard!.ratio, '9:16');
+});
+
+test('STAGE_ORDER includes score stage', async () => {
+  const { STAGE_ORDER, PIPELINE_COSTS } = await import('../src/lib/creative/pipeline');
+  assert.ok(STAGE_ORDER.includes('score'), 'STAGE_ORDER should include score');
+  assert.equal(PIPELINE_COSTS.score, 2, 'score stage should cost 2 credits');
+});
+
+test('score stage is in the executor registry', async () => {
+  const { executeStage } = await import('../src/lib/creative/pipeline-executor');
+  // The executor should not throw "Unknown stage" for score — it will throw
+  // a prerequisite error instead (requires brief + script)
+  const config = makeConfig();
+  const ctx = initialContext(config);
+  try {
+    await executeStage({
+      stage: 'score',
+      config,
+      context: ctx,
+      planTier: 'free' as any,
+      userId: 'test',
+    });
+    assert.fail('Should have thrown prerequisite error');
+  } catch (e: any) {
+    // Should be a prerequisite error, not an unknown stage error
+    assert.ok(e.message.includes('score_stage_requires'), `Expected prerequisite error, got: ${e.message}`);
+  }
 });

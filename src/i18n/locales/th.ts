@@ -753,6 +753,8 @@ export const thMessages = {
       title: "ผู้ประสาน Pipeline",
       subtitle: "Pipeline สร้างสรรค์ตั้งแต่ต้นจนจบ: บรีฟ → สคริปต์ → สตอรี่บอร์ด → มีเดีย → เสียง → ตัดต่อ → เผยแพร่.",
       signInPrompt: "เข้าสู่ระบบเพื่อประสาน pipeline สร้างสรรค์ของคุณ.",
+      stageScore: 'คะแนน',
+      approvePublish: 'อนุมัติและเผยแพร่',
     },
     personas: {
       title: "บุคลิกผู้ชม",

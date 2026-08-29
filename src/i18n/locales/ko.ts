@@ -750,6 +750,8 @@ export const koMessages = {
       title: "파이프라인 오케스트레이터",
       subtitle: "엔드투엔드 크리에이티브 파이프라인: 브리프 → 스크립트 → 스토리보드 → 미디어 → 오디오 → 편집 → 게시.",
       signInPrompt: "로그인하여 크리에이티브 파이프라인을 orchestrate하세요.",
+      stageScore: '점수',
+      approvePublish: '승인 및 게시',
     },
     personas: {
       title: "오디언스 페르소나",

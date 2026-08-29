@@ -752,6 +752,8 @@ export const jaMessages = {
       title: "パイプラインオーケストレーター",
       subtitle: "エンドツーエンドのクリエイティブパイプライン：ブリーフ→スクリプト→ストーリーボード→メディア→音声→編集→公開。",
       signInPrompt: "サインインしてクリエイティブパイプラインを編成します。",
+      stageScore: 'スコア',
+      approvePublish: '承認して公開',
     },
     personas: {
       title: "オーディエンスペルソナ",

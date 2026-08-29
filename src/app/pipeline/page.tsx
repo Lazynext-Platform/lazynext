@@ -1,6 +1,7 @@
 'use client';
 
 import { useSession } from 'next-auth/react';
+import { useSearchParams } from 'next/navigation';
 import { Workflow } from 'lucide-react';
 import { useI18n } from '@/i18n/provider';
 import { AuthModal } from '@/components/AuthModal';
@@ -9,6 +10,8 @@ import { PipelineOrchestrator } from '@/components/PipelineOrchestrator';
 export default function PipelinePage() {
   const { t } = useI18n();
   const { data: session } = useSession();
+  const searchParams = useSearchParams();
+  const initialPipelineId = searchParams.get('id') || undefined;
 
   if (!session?.user) {
     return (
@@ -29,7 +32,7 @@ export default function PipelinePage() {
           <h1 className="text-2xl font-bold flex items-center gap-2"><Workflow className="w-6 h-6" /> {t('pipeline.title')}</h1>
           <p className="text-sm text-fg-muted mt-2">{t('pipeline.subtitle')}</p>
         </header>
-        <PipelineOrchestrator />
+        <PipelineOrchestrator initialPipelineId={initialPipelineId} />
       </div>
     </div>
   );
