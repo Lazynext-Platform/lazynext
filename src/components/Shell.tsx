@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Sparkles, Megaphone, BarChart3, LayoutDashboard, Package, Scissors, Library, Lightbulb, Calendar, Video, Wand2, ImageIcon, Send, BookOpen, Brain, Volume2, Eye, ShieldCheck, Wallet, Users, Workflow, Grid3x3, Activity, FileSearch, TrendingUp, FlaskConical, MessageSquareQuote, Award, Repeat, Users2, Flame } from 'lucide-react';
+import { Sparkles, Megaphone, BarChart3, LayoutDashboard, Package, Scissors, Library, Lightbulb, Calendar, Video, Wand2, ImageIcon, Send, BookOpen, Brain, Volume2, Eye, ShieldCheck, Wallet, Users, Workflow, Grid3x3, Activity, FileSearch, TrendingUp, FlaskConical, MessageSquareQuote, Award, Repeat, Users2, Flame, Film, Server, Clapperboard } from 'lucide-react';
 import { UserMenu } from '@/components/UserMenu';
 import { LangToggle } from '@/components/LangToggle';
 import { CreditBadge } from '@/components/CreditBadge';
@@ -40,6 +40,10 @@ const NAV_LINKS = [
   { href: '/repurposing', label: 'Repurpose', icon: Repeat, hideOnMd: true },
   { href: '/audience-insights', label: 'Audience IQ', icon: Users2, hideOnMd: true },
   { href: '/trend-intelligence', label: 'Trends', icon: Flame, hideOnMd: true },
+  { href: '/scene-analysis', label: 'Scenes', icon: Film, hideOnMd: true },
+  { href: '/shot-planner', label: 'Shot Plan', icon: Clapperboard, hideOnMd: true },
+  { href: '/campaign-orchestrator', label: 'Campaigns', icon: Workflow, hideOnMd: true },
+  { href: '/mcp-server', label: 'MCP', icon: Server, hideOnMd: true },
   { href: '/templates', label: 'Templates', icon: Library, hideOnMd: true },
   { href: '/inspiration', label: 'Inspiration', icon: Lightbulb, hideOnMd: true },
   { href: '/calendar', label: 'Calendar', icon: Calendar, hideOnMd: true },
