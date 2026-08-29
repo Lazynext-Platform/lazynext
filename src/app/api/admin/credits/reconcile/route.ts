@@ -84,20 +84,35 @@ export async function GET(req: Request) {
         // (negative discrepancy = ledger says more than DB → add credits to DB)
         // (positive discrepancy = DB has more than ledger → deduct credits from DB)
         const adjustment = -d.discrepancy;
-        await prisma.$transaction([
-          prisma.user.update({
-            where: { id: d.userId },
-            data: { credits: { increment: adjustment } },
-          }),
-          prisma.creditLedger.create({
+
+        // D1 doesn't support prisma.$transaction — use compensation pattern:
+        // 1. Update user balance
+        // 2. Write ledger entry
+        // 3. If ledger write fails, reverse the balance update
+        await prisma.user.update({
+          where: { id: d.userId },
+          data: { credits: { increment: adjustment } },
+        });
+
+        try {
+          await prisma.creditLedger.create({
             data: {
               userId: d.userId,
               delta: adjustment,
               reason: 'reconciliation_fix',
               ref: `admin:${session.user.id}:reconcile:${new Date().toISOString()}`,
             },
-          }),
-        ]);
+          });
+        } catch (ledgerErr) {
+          // Compensate: reverse the balance update
+          console.error(`[reconcile] ledger write failed for ${d.userId}, compensating:`, String(ledgerErr));
+          await prisma.user.update({
+            where: { id: d.userId },
+            data: { credits: { increment: -adjustment } },
+          }).catch(() => {});
+          throw ledgerErr;
+        }
+
         fixes.push({ userId: d.userId, adjustment, ok: true });
       } catch (e) {
         fixes.push({ userId: d.userId, adjustment: -d.discrepancy, ok: false });

@@ -87,29 +87,15 @@ test.describe('Workflow Builder Page', () => {
 });
 
 /**
- * Authenticated E2E tests for the Workflow Builder v2 UI.
+ * Authenticated E2E tests for the Workflow Builder v2 UI are in
+ * e2e/auth-workflow-builder.spec.ts, which runs under the chromium-auth
+ * project with an active session for test@lazynext.local.
  *
- * NOTE: These tests cannot run locally because the NextAuth credentials
- * provider requires Cloudflare D1 context (getCloudflareContext), which is
- * only available in production or when initOpenNextCloudflareForDev is
- * configured. The local dev server uses SQLite via better-sqlite3, but the
- * auth layer still tries to access D1 through the Cloudflare context,
- * causing a CallbackRouteError.
- *
- * The authenticated flow (advanced mode, conditions, execution preview,
- * save/reload round-trip) is verified via:
+ * The advanced flow (conditions, execution preview, save/reload round-trip)
+ * is verified via:
  *   1. Unit tests (test/workflow-conditions.test.ts, test/workflow-execution.test.ts)
  *      — condition evaluation, wave planning, configFromWorkflow, round-trip serialization
- *   2. Production smoke testing against the deployed worker
- *
- * See e2e/editor.spec.ts for the same pattern (authenticated tests skipped locally).
+ *   2. Authenticated E2E (e2e/auth-workflow-builder.spec.ts)
+ *      — parallel wave creation, concurrent execution, page load with auth
+ *   3. Production smoke testing against the deployed worker
  */
-test.describe('Workflow Builder Authenticated', () => {
-  test.skip('advanced mode: condition, execution preview, save, reload', async ({ page }) => {
-    // This test is skipped locally — see the comment above.
-    // It can be enabled in production by removing the .skip and running
-    // against the deployed worker URL.
-    await page.goto('/workflow-builder');
-    await expect(page.locator('h1')).toBeVisible();
-  });
-});
