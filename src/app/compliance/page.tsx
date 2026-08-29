@@ -5,6 +5,7 @@ import { ShieldCheck } from 'lucide-react';
 import { useI18n } from '@/i18n/provider';
 import { AuthModal } from '@/components/AuthModal';
 import { ComplianceChecker } from '@/components/ComplianceChecker';
+import { ComplianceRulesSection } from '@/components/ComplianceRulesSection';
 
 export default function CompliancePage() {
   const { t } = useI18n();
@@ -27,6 +28,7 @@ export default function CompliancePage() {
       <div className="mx-auto max-w-5xl px-4 py-8 space-y-6">
         <h1 className="text-2xl font-bold flex items-center gap-2"><ShieldCheck className="w-6 h-6" /> {t('compliance.title')}</h1>
         <ComplianceChecker />
+        <ComplianceRulesSection />
       </div>
     </div>
   );

@@ -49,9 +49,11 @@ Production uses Cloudflare R2 via `src/lib/media-storage.cloudflare.ts`.
 ## Verification Commands
 ```bash
 npm run lint    # ESLint
-npm test        # Node test runner (1467 tests)
-# E2E: 440 passed, 7 skipped (chromium + mobile-chrome + chromium-auth)
+npm test        # Node test runner (1505+ tests)
+# E2E: 435 passed, 12 skipped (chromium + mobile-chrome + chromium-auth)
 npm run build   # Production build (Cloudflare target)
+npm run cf:build  # Cloudflare/OpenNext build
+npm run cf:deploy # Deploy to Cloudflare Workers
 ```
 
 ## Test Account
@@ -265,4 +267,59 @@ Completed across 15+ sessions:
 - Chain mode unification: Skill-chain API (`POST /api/creative/skills/chain`) now creates a durable `WorkflowRun` record for persistence and visibility; chain runs appear in the pipeline list and can be inspected after completion/failure
 - Publishing OAuth framework: Added `PlatformConnection` model for storing per-user platform OAuth tokens; `hasRealCredentials` now checks platform-specific env vars; added `GET/POST/DELETE /api/publish/connections` for token management
 - Scheduled post persistence: Added `ScheduledPost` model; `schedulePost` now persists to DB when userId is provided; `publishContent` and `publishToMultiple` pass userId through to `schedulePost`
+
+### BB-Series: Publishing OAuth, Security Hardening, Chain Unification, Migration Idempotency
+- Schedule route uid bug fix: `POST /api/publish/schedule` now passes `uid` to `schedulePost`
+- Public share rate limiting: `GET /api/creative/share/[token]` rate-limited (30/min views, 10/min password attempts)
+- FFmpeg CSP fix: Added `unpkg.com` to `script-src`/`connect-src`, `blob:` to `script-src`, `worker-src 'self' blob:'`
+- Raw exception message removal: Removed `detail: String(e)` from 64 API routes; `safeError()` helper in `src/lib/security.ts`
+- D1 migration idempotency: `scripts/apply-d1-migrations.mjs` tracks applied migrations in `_prisma_migrations`
+- Full publishing OAuth flow: `GET /api/publish/oauth/[platform]` (initiation) + `GET /api/publish/oauth/[platform]/callback` (token exchange); token encryption at rest via AES-256-GCM (`src/lib/publishing/token-crypto.ts`); platform adapters for TikTok/YouTube/Instagram/Facebook/LinkedIn (`src/lib/publishing/platform-adapters.ts`); scheduled post processor `POST /api/publish/process-scheduled` (CRON_SECRET authenticated)
+- Chain-runtime unification: `executeChain` has per-step error handling with partial results and partial credit refunds
+
+### CC-Series: D1 Migrations, Cron Trigger, Token Refresh, FFmpeg Worker, UI Hardening
+- D1 migration applied to production: `CustomComplianceRule`, `PlatformConnection`, `ScheduledPost` (with `hashtagsJson`, `privacyLevel`, `crossPostToJson`)
+- Cloudflare Cron Trigger: `worker-entry.mjs` wraps OpenNext worker with `scheduled` handler; `wrangler.jsonc` configured `*/5 * * * *` cron; handler invokes `/api/publish/process-scheduled` internally via `openNextHandler.fetch()`
+- OAuth token refresh: `src/lib/publishing/token-refresh.ts` implements refresh for all 5 platforms; `getRealAccessToken()` refreshes expired tokens instead of falling back to dry-run
+- Settings OAuth UI: `PlatformConnectionsSection.tsx` with connect/disconnect buttons and OAuth redirect handling
+- lucide-react import optimization: `experimental.optimizePackageImports: ['lucide-react']`
+- JWT credit refresh optimization: staleness threshold increased from 60s to 5min
+- FFmpeg Web Worker: `src/lib/compose-worker.ts` moves FFmpeg loading/encoding to a Web Worker; `compose-client.ts` delegates via `postMessage`
+- ScheduledPost metadata: `hashtagsJson`, `privacyLevel`, `crossPostToJson` persisted and restored
+
+### DD-Series: Production Safety, Scheduled Post Mgmt, Compliance UI, OAuth PKCE, Platform Tests
+- Token encryption hard-fail: `token-crypto.ts` throws in production if `TOKEN_ENCRYPTION_KEY` is missing (was: silent plaintext fallback); dev mode uses a dev-only key; `isTokenEncryptionConfigured()` for health checks
+- Cron internal invocation: `worker-entry.mjs` uses `http://localhost` for internal subrequest instead of fetching public domain
+- Scheduled post management: `GET /api/publish/schedule` (list) + `DELETE /api/publish/schedule?id=xxx` (cancel + credit refund); `ScheduledPostsSection.tsx` UI on Settings page
+- Compliance rules UI: `ComplianceRulesSection.tsx` on `/compliance` page with full CRUD (create/edit/delete/enable-disable)
+- OAuth PKCE: Initiation route generates PKCE `code_verifier`/`code_challenge` (S256) for YouTube and LinkedIn; `code_verifier` stored in `oauth_code_verifier` cookie; callback validates state against `oauth_state` cookie (CSRF); YouTube adds `access_type=offline&prompt=consent`
+- Platform adapter tests: `test/platform-adapters.test.ts` with 15 mocked-fetch tests covering all 5 platforms
+
+## Publishing & Scheduling Architecture
+
+### OAuth Flow
+- `GET /api/publish/oauth/[platform]` — initiates OAuth with PKCE (YouTube/LinkedIn) and state cookie
+- `GET /api/publish/oauth/[platform]/callback` — exchanges code for tokens, encrypts and stores in `PlatformConnection`
+- `GET/POST/DELETE /api/publish/connections` — manage platform connections
+- Supported platforms: tiktok, youtube, instagram, facebook, linkedin
+- Tokens encrypted at rest via AES-256-GCM (`src/lib/publishing/token-crypto.ts`)
+- `TOKEN_ENCRYPTION_KEY` env var required in production (throws if missing)
+
+### Scheduled Posts
+- `POST /api/publish/schedule` — create scheduled post (deducts scheduling credit)
+- `GET /api/publish/schedule` — list user's scheduled posts (optional `?status=` filter)
+- `DELETE /api/publish/schedule?id=xxx` — cancel scheduled post (refunds credit if status was 'scheduled')
+- `POST /api/publish/process-scheduled` — cron-triggered processor (CRON_SECRET authenticated)
+- Cloudflare Cron Trigger runs every 5 minutes via `worker-entry.mjs`
+- Token refresh (`src/lib/publishing/token-refresh.ts`) refreshes expired tokens before publishing
+
+### Required Production Secrets
+- `TOKEN_ENCRYPTION_KEY` — AES-256-GCM key for OAuth token encryption (REQUIRED in production)
+- `CRON_SECRET` — Bearer token for scheduled post processor (REQUIRED for cron)
+- Platform OAuth credentials: `TIKTOK_CLIENT_KEY/SECRET/REDIRECT_URI`, `YOUTUBE_CLIENT_ID/SECRET/REDIRECT_URI`, `META_APP_ID/SECRET/REDIRECT_URI`, `LINKEDIN_CLIENT_ID/SECRET/REDIRECT_URI`
+
+### Compliance Rules
+- `GET/POST/PUT/DELETE /api/creative/compliance/rules` — full CRUD for custom compliance rules
+- `ComplianceRulesSection.tsx` UI on `/compliance` page
+- Rules merged with built-in rules during compliance checks
 

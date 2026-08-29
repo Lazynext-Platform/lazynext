@@ -1,11 +1,22 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
+/** Extract a cookie value from a Request's Cookie header. */
+function getCookie(req: Request, name: string): string | null {
+  const cookieHeader = req.headers.get('cookie') || '';
+  for (const part of cookieHeader.split(';')) {
+    const [k, ...v] = part.trim().split('=');
+    if (k === name) return decodeURIComponent(v.join('='));
+  }
+  return null;
+}
+
 /**
  * GET /api/publish/oauth/[platform]/callback
  * OAuth callback handler — exchanges the authorization code for access/refresh tokens.
  *
  * Query params: ?code=xxx&state=userId:randomHex
+ * Cookies expected: oauth_state (CSRF), oauth_code_verifier (PKCE, if applicable)
  * Redirects to /settings on success with a success flag, or error flag on failure.
  */
 const TOKEN_ENDPOINTS: Record<string, { url: string; clientIdEnv: string; clientSecretEnv: string; redirectUriEnv: string }> = {
@@ -53,6 +64,12 @@ export async function GET(req: Request, { params }: { params: Promise<{ platform
     return NextResponse.redirect(`${baseUrl}/settings?oauth_error=missing_code`);
   }
 
+  // Verify state matches the cookie we set during initiation (CSRF protection)
+  const cookieState = getCookie(req, 'oauth_state');
+  if (!cookieState || cookieState !== state) {
+    return NextResponse.redirect(`${baseUrl}/settings?oauth_error=invalid_state`);
+  }
+
   // Extract userId from state
   const [userId, ...rest] = state.split(':');
   if (!userId || rest.length === 0) {
@@ -72,18 +89,28 @@ export async function GET(req: Request, { params }: { params: Promise<{ platform
     return NextResponse.redirect(`${baseUrl}/settings?oauth_error=not_configured`);
   }
 
+  // Read PKCE code_verifier from cookie (set during initiation for PKCE-enabled platforms)
+  const codeVerifier = getCookie(req, 'oauth_code_verifier');
+
   // Exchange code for tokens
   try {
+    const tokenParams: Record<string, string> = {
+      grant_type: 'authorization_code',
+      code,
+      client_id: clientId,
+      client_secret: clientSecret,
+      redirect_uri: redirectUri,
+    };
+
+    // Include code_verifier if we have one (PKCE flow)
+    if (codeVerifier) {
+      tokenParams.code_verifier = codeVerifier;
+    }
+
     const tokenRes = await fetch(config.url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: new URLSearchParams({
-        grant_type: 'authorization_code',
-        code,
-        client_id: clientId,
-        client_secret: clientSecret,
-        redirect_uri: redirectUri,
-      }),
+      body: new URLSearchParams(tokenParams),
     });
 
     if (!tokenRes.ok) {
@@ -129,9 +156,16 @@ export async function GET(req: Request, { params }: { params: Promise<{ platform
       },
     });
 
-    return NextResponse.redirect(`${baseUrl}/settings?oauth_success=${platform}`);
+    // Clear OAuth cookies on success
+    const successResponse = NextResponse.redirect(`${baseUrl}/settings?oauth_success=${platform}`);
+    successResponse.cookies.delete('oauth_state');
+    successResponse.cookies.delete('oauth_code_verifier');
+    return successResponse;
   } catch (e) {
     console.error(`[oauth/callback] ${platform} error:`, String(e));
-    return NextResponse.redirect(`${baseUrl}/settings?oauth_error=exception`);
+    const errorResponse = NextResponse.redirect(`${baseUrl}/settings?oauth_error=exception`);
+    errorResponse.cookies.delete('oauth_state');
+    errorResponse.cookies.delete('oauth_code_verifier');
+    return errorResponse;
   }
 }

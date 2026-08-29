@@ -1,5 +1,48 @@
 # LazyNext Changelog
 
+## 2026-08-30 — DD: Production Safety, Scheduled Post Mgmt, Compliance UI, OAuth PKCE, Platform Tests
+
+### What Changed
+1. **Token encryption hard-fail in production** — `src/lib/publishing/token-crypto.ts` now throws if `TOKEN_ENCRYPTION_KEY` is missing in production (was: silent `console.warn` + plaintext fallback); dev mode uses a dev-only key so encryption is always exercised; added `isTokenEncryptionConfigured()` for health checks
+2. **Cron handler internal invocation** — `worker-entry.mjs` scheduled handler now uses `http://localhost` for the internal subrequest URL instead of fetching the public domain, avoiding DNS/egress issues
+3. **Scheduled post management** — Added `GET /api/publish/schedule` (list user's scheduled posts) and `DELETE /api/publish/schedule?id=xxx` (cancel + credit refund); `ScheduledPostsSection.tsx` UI component on Settings page with upcoming/history views and cancel buttons
+4. **Compliance rules UI** — `ComplianceRulesSection.tsx` component on `/compliance` page with full CRUD (create, edit, delete, enable/disable) wired to the existing `/api/creative/compliance/rules` API
+5. **OAuth PKCE** — `GET /api/publish/oauth/[platform]` now generates PKCE `code_verifier`/`code_challenge` (S256) for YouTube and LinkedIn; `code_verifier` stored in `oauth_code_verifier` cookie; callback reads cookie and includes `code_verifier` in token exchange; state validated against `oauth_state` cookie (CSRF protection); YouTube adds `access_type=offline&prompt=consent`
+6. **Platform adapter tests** — Added `test/platform-adapters.test.ts` with 15 mocked-fetch tests covering all 5 platforms (TikTok, YouTube, Instagram, Facebook, LinkedIn) including success paths, error paths, and request body verification
+7. **Token-crypto test updates** — Updated tests for new hard-fail behavior; added production throw test and `isTokenEncryptionConfigured` tests
+
+### Verification
+- npm run lint — 0 errors, 2 known warnings
+- npm test — 1505+ tests passing
+- npm run build — successful
+- npx playwright test — 435 passed, 12 skipped, 0 failed
+- D1 migration applied to production (27 tables)
+- Cloudflare deployment: cron trigger active (`*/5 * * * *`)
+
+## 2026-08-29 — CC: D1 Migrations, Cron Trigger, Token Refresh, FFmpeg Worker, UI Hardening
+
+### What Changed
+1. **D1 migration for publishing tables** — Created `prisma/migrations/20260829000004_publishing_oauth_compliance/migration.sql` for `CustomComplianceRule`, `PlatformConnection`, `ScheduledPost` (with `hashtagsJson`, `privacyLevel`, `crossPostToJson`); applied to production D1
+2. **Cloudflare Cron Trigger** — `worker-entry.mjs` wraps OpenNext worker and adds `scheduled` handler; `wrangler.jsonc` configured with `*/5 * * * *` cron; handler invokes `/api/publish/process-scheduled` with CRON_SECRET
+3. **OAuth token refresh** — `src/lib/publishing/token-refresh.ts` implements refresh for all 5 platforms; `getRealAccessToken()` refreshes expired tokens instead of falling back to dry-run; integrated into both interactive publishing and scheduled-post processing
+4. **Settings OAuth UI** — `PlatformConnectionsSection.tsx` with connect/disconnect buttons, status indicators, and OAuth redirect handling
+5. **lucide-react import optimization** — `experimental.optimizePackageImports: ['lucide-react']` in next.config.mjs
+6. **Raw error leakage cleanup** — Removed `detail: e.message` / raw `state` from 8 additional API routes
+7. **JWT credit refresh optimization** — Increased staleness threshold from 60s to 5min to reduce DB reads across 154 `auth()` calls
+8. **FFmpeg Web Worker** — `src/lib/compose-worker.ts` moves FFmpeg loading, media fetching, and encoding to a dedicated Web Worker; `compose-client.ts` delegates via `postMessage`
+9. **ScheduledPost metadata** — Added `hashtagsJson`, `privacyLevel`, `crossPostToJson` columns; `schedulePost` persists them; `process-scheduled` restores and passes to platform adapters
+10. **Tests** — Added `test/token-crypto.test.ts` (13 tests) and `test/chain-partial-failure.test.ts` (10 tests)
+11. **patch-worker.mjs fix** — Updated to detect `worker-entry.js` filename dynamically
+
+### Verification
+- npm run lint — 0 errors, 2 known warnings
+- npm test — 1490 tests passing
+- npm run build — successful
+- npm run cf:build — successful
+- npx playwright test — 435 passed, 12 skipped, 0 failed
+- D1 migration applied to production
+- Deployed: version af7e0db2-2b26-44bc-b5f6-7d91383b39da
+
 ## 2026-09-02 — BB: Publishing OAuth, Security Hardening, Chain Unification, Migration Idempotency
 
 ### What Changed

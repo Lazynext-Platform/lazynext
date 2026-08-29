@@ -2,34 +2,45 @@ import { test, describe } from 'node:test';
 import assert from 'node:assert/strict';
 
 /**
- * Tests for token-crypto.ts — encryption/decryption and plaintext fallback.
+ * Tests for token-crypto.ts — encryption/decryption and dev fallback.
  * These tests set/unset the TOKEN_ENCRYPTION_KEY env var to test both paths.
+ *
+ * Note: In production, a missing TOKEN_ENCRYPTION_KEY throws an error.
+ * In development (NODE_ENV !== 'production'), a dev-only key is used so
+ * encryption is always exercised. The plain: prefix is only for backward
+ * compatibility with tokens stored before encryption was enforced.
  */
 
+// Cast process.env to a writable record (NODE_ENV is typed as readonly)
+const env = process.env as Record<string, string | undefined>;
+
 describe('token-crypto — encryption and decryption', () => {
-  test('encryptToken returns plain: prefix when no key is set', async () => {
+  test('encryptToken produces encrypted output (not plain:) in dev without key', async () => {
     const origKey = process.env.TOKEN_ENCRYPTION_KEY;
+    const origNodeEnv = process.env.NODE_ENV;
     delete process.env.TOKEN_ENCRYPTION_KEY;
+    env.NODE_ENV = 'development';
     try {
       const { encryptToken } = await import('../src/lib/publishing/token-crypto');
       const result = await encryptToken('my-secret-token');
-      assert.ok(result.startsWith('plain:'));
-      assert.equal(result, 'plain:my-secret-token');
+      // In dev, a dev-only key is used — output should be encrypted (iv:ct format)
+      assert.ok(!result.startsWith('plain:'), 'should not be plain: in dev mode');
+      assert.ok(result.includes(':'), 'should contain iv:ct separator');
     } finally {
       if (origKey) process.env.TOKEN_ENCRYPTION_KEY = origKey;
+      env.NODE_ENV = origNodeEnv;
     }
   });
 
-  test('decryptToken returns plaintext for plain: prefix', async () => {
+  test('decryptToken returns plaintext for plain: prefix (backward compat)', async () => {
     delete process.env.TOKEN_ENCRYPTION_KEY;
+    env.NODE_ENV = 'development';
     try {
       const { decryptToken } = await import('../src/lib/publishing/token-crypto');
       const result = await decryptToken('plain:my-secret-token');
       assert.equal(result, 'my-secret-token');
     } finally {
-      if (process.env.TOKEN_ENCRYPTION_KEY === undefined) {
-        // restore nothing — was already unset
-      }
+      env.NODE_ENV = 'test';
     }
   });
 
@@ -81,6 +92,47 @@ describe('token-crypto — encryption and decryption', () => {
       assert.notEqual(enc1, enc2);
     } finally {
       delete process.env.TOKEN_ENCRYPTION_KEY;
+    }
+  });
+
+  test('encryptToken throws in production when TOKEN_ENCRYPTION_KEY is missing', async () => {
+    const origKey = process.env.TOKEN_ENCRYPTION_KEY;
+    const origNodeEnv = process.env.NODE_ENV;
+    const origBuildTarget = process.env.BUILD_TARGET;
+    delete process.env.TOKEN_ENCRYPTION_KEY;
+    env.NODE_ENV = 'production';
+    delete process.env.BUILD_TARGET;
+    try {
+      const { encryptToken } = await import('../src/lib/publishing/token-crypto');
+      await assert.rejects(
+        () => encryptToken('my-token'),
+        /TOKEN_ENCRYPTION_KEY_NOT_SET/,
+      );
+    } finally {
+      if (origKey) process.env.TOKEN_ENCRYPTION_KEY = origKey;
+      env.NODE_ENV = origNodeEnv;
+      if (origBuildTarget) process.env.BUILD_TARGET = origBuildTarget;
+    }
+  });
+
+  test('isTokenEncryptionConfigured returns true when key is set', async () => {
+    process.env.TOKEN_ENCRYPTION_KEY = 'test-key';
+    try {
+      const { isTokenEncryptionConfigured } = await import('../src/lib/publishing/token-crypto');
+      assert.equal(isTokenEncryptionConfigured(), true);
+    } finally {
+      delete process.env.TOKEN_ENCRYPTION_KEY;
+    }
+  });
+
+  test('isTokenEncryptionConfigured returns false when key is missing', async () => {
+    const origKey = process.env.TOKEN_ENCRYPTION_KEY;
+    delete process.env.TOKEN_ENCRYPTION_KEY;
+    try {
+      const { isTokenEncryptionConfigured } = await import('../src/lib/publishing/token-crypto');
+      assert.equal(isTokenEncryptionConfigured(), false);
+    } finally {
+      if (origKey) process.env.TOKEN_ENCRYPTION_KEY = origKey;
     }
   });
 });

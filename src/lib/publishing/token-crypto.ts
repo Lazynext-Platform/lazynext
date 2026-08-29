@@ -3,23 +3,37 @@
  *
  * Uses AES-256-GCM via Web Crypto API (available in both Node.js and
  * Cloudflare Workers). The encryption key is derived from the
- * TOKEN_ENCRYPTION_KEY env var using HKDF.
+ * TOKEN_ENCRYPTION_KEY env var using SHA-256 as a KDF.
  *
- * If TOKEN_ENCRYPTION_KEY is not set, tokens are stored in plaintext
- * with a warning (development only).
+ * If TOKEN_ENCRYPTION_KEY is not set:
+ *   - In production: throws an error (tokens must never be stored in plaintext)
+ *   - In development: falls back to plaintext with a "plain:" prefix
  */
 
 const ALGO = 'AES-GCM';
 const KEY_LENGTH = 256;
 const IV_LENGTH = 12;
 
-async function getKey(): Promise<CryptoKey | null> {
+function isProduction(): boolean {
+  // In the OpenNext Cloudflare build, NODE_ENV is set to 'production' at
+  // build time. In local dev (npm run dev), it's 'development'. We also
+  // check BUILD_TARGET as a secondary signal.
+  return process.env.NODE_ENV === 'production' || process.env.BUILD_TARGET === 'cloudflare';
+}
+
+async function getKey(): Promise<CryptoKey> {
   const rawKey = process.env.TOKEN_ENCRYPTION_KEY;
   if (!rawKey) {
-    if (process.env.NODE_ENV === 'production') {
-      console.warn('[token-crypto] TOKEN_ENCRYPTION_KEY not set — tokens stored in plaintext in production!');
+    if (isProduction()) {
+      throw new Error('TOKEN_ENCRYPTION_KEY_NOT_SET: OAuth tokens cannot be encrypted in production without this key. Set it via `wrangler secret put TOKEN_ENCRYPTION_KEY`.');
     }
-    return null;
+    // Development fallback — return a placeholder key derived from a
+    // fixed dev-only key. This allows local testing without configuring
+    // the env var, while still exercising the encryption code path.
+    const devKey = 'dev-only-encryption-key-not-for-production';
+    const encoder = new TextEncoder();
+    const hashBuffer = await crypto.subtle.digest('SHA-256', encoder.encode(devKey));
+    return crypto.subtle.importKey('raw', hashBuffer, { name: ALGO, length: KEY_LENGTH }, false, ['encrypt', 'decrypt']);
   }
   // Derive a key from the env var using SHA-256 as a KDF
   const encoder = new TextEncoder();
@@ -27,13 +41,18 @@ async function getKey(): Promise<CryptoKey | null> {
   return crypto.subtle.importKey('raw', hashBuffer, { name: ALGO, length: KEY_LENGTH }, false, ['encrypt', 'decrypt']);
 }
 
+/** Check if token encryption is properly configured (for health checks). */
+export function isTokenEncryptionConfigured(): boolean {
+  return !!process.env.TOKEN_ENCRYPTION_KEY;
+}
+
 /**
  * Encrypt a token string. Returns a base64 string of "iv:ciphertext".
- * If no encryption key is configured, returns the plaintext prefixed with "plain:".
+ * In development with no key configured, uses a dev-only key (still encrypted).
+ * In production with no key, throws an error.
  */
 export async function encryptToken(plaintext: string): Promise<string> {
   const key = await getKey();
-  if (!key) return `plain:${plaintext}`;
 
   const iv = crypto.getRandomValues(new Uint8Array(IV_LENGTH));
   const encoder = new TextEncoder();
@@ -46,7 +65,8 @@ export async function encryptToken(plaintext: string): Promise<string> {
 
 /**
  * Decrypt a token string. Reverses encryptToken.
- * If the value is prefixed with "plain:", returns the plaintext directly.
+ * If the value is prefixed with "plain:", returns the plaintext directly
+ * (for backward compatibility with tokens stored before encryption was enforced).
  */
 export async function decryptToken(stored: string): Promise<string> {
   if (stored.startsWith('plain:')) return stored.slice(6);
@@ -55,7 +75,6 @@ export async function decryptToken(stored: string): Promise<string> {
   if (!ivB64 || !ctB64) throw new Error('invalid_encrypted_token');
 
   const key = await getKey();
-  if (!key) throw new Error('encryption_key_not_configured');
 
   const iv = Uint8Array.from(atob(ivB64), c => c.charCodeAt(0));
   const ciphertext = Uint8Array.from(atob(ctB64), c => c.charCodeAt(0));

@@ -7,6 +7,11 @@
 // OpenNext worker at `.open-next/worker.js`. Re-run `npm run build` to
 // regenerate `.open-next/worker.js` after code changes; this wrapper is
 // stable and does not need rebuilding.
+//
+// The scheduled handler invokes openNextHandler.fetch() directly (an
+// in-isolate subrequest) rather than making an outbound HTTP fetch to the
+// public domain. This avoids DNS/egress issues and works regardless of
+// whether the custom domain is live.
 
 //@ts-expect-error: resolved by wrangler build
 import openNextHandler from "./.open-next/worker.js";
@@ -20,12 +25,10 @@ export default {
       console.warn("[scheduled] CRON_SECRET not set — skipping scheduled post processing");
       return;
     }
-    // Determine the base URL. Prefer the custom domain, fall back to the
-    // workers.dev URL, and finally to a localhost fallback for `wrangler dev`.
-    const base =
-      env.LAZYNEXT_BASE_URL ||
-      "https://lazynext.com";
-    const url = `${base}/api/publish/process-scheduled`;
+    // Use a localhost URL for the internal subrequest. The OpenNext handler
+    // routes based on the pathname, not the host, so this works correctly
+    // without any external DNS resolution or network egress.
+    const url = "http://localhost/api/publish/process-scheduled";
     const req = new Request(url, {
       method: "POST",
       headers: {

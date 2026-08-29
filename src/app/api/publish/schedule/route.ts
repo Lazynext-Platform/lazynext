@@ -10,8 +10,41 @@ import {
 } from '@/lib/publishing/publisher';
 import { getPlatformCapabilities } from '@/lib/publishing/platforms';
 import type { PublishRequest } from '@/lib/publishing/types';
+import { prisma } from '@/lib/prisma';
 
 export const maxDuration = 60;
+
+/** GET /api/publish/schedule — list the user's scheduled posts */
+async function __byokGET(req: Request) {
+  const session = await auth();
+  if (!session?.user?.id) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+  const uid = session.user.id;
+
+  const url = new URL(req.url);
+  const status = url.searchParams.get('status') || undefined;
+
+  const posts = await prisma.scheduledPost.findMany({
+    where: {
+      userId: uid,
+      ...(status ? { status } : {}),
+    },
+    select: {
+      id: true,
+      platform: true,
+      mediaUrl: true,
+      caption: true,
+      scheduledAt: true,
+      status: true,
+      postUrl: true,
+      postId: true,
+      error: true,
+      createdAt: true,
+    },
+    orderBy: { scheduledAt: 'asc' },
+  });
+
+  return NextResponse.json({ posts });
+}
 
 async function __byokPOST(req: Request) {
   const session = await auth();
@@ -76,4 +109,41 @@ async function __byokPOST(req: Request) {
   return NextResponse.json({ result });
 }
 
+/** DELETE /api/publish/schedule?id=xxx — cancel a scheduled post */
+async function __byokDELETE(req: Request) {
+  const session = await auth();
+  if (!session?.user?.id) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+  const uid = session.user.id;
+
+  const url = new URL(req.url);
+  const id = url.searchParams.get('id');
+  if (!id) {
+    return NextResponse.json({ error: 'id_required' }, { status: 400 });
+  }
+
+  // Find the scheduled post and verify ownership
+  const post = await prisma.scheduledPost.findUnique({ where: { id } });
+  if (!post || post.userId !== uid) {
+    return NextResponse.json({ error: 'not_found' }, { status: 404 });
+  }
+
+  // Only allow cancellation of posts that haven't been published yet
+  if (post.status !== 'scheduled') {
+    return NextResponse.json({ error: 'cannot_cancel_non_scheduled' }, { status: 400 });
+  }
+
+  // Mark as cancelled
+  await prisma.scheduledPost.update({
+    where: { id },
+    data: { status: 'cancelled' },
+  });
+
+  // Refund the scheduling credit
+  await refundCredits(uid, SCHEDULE_CREDIT_COST, `schedule_cancel:${id}`).catch(() => {});
+
+  return NextResponse.json({ ok: true });
+}
+
+export const GET = withAtlas(__byokGET);
 export const POST = withAtlas(__byokPOST);
+export const DELETE = withAtlas(__byokDELETE);

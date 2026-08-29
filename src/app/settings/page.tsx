@@ -10,6 +10,7 @@ import { AuthModal } from '@/components/AuthModal';
 import { WebhooksSection } from '@/components/WebhooksSection';
 import { TeamsSection } from '@/components/TeamsSection';
 import { PlatformConnectionsSection } from '@/components/PlatformConnectionsSection';
+import { ScheduledPostsSection } from '@/components/ScheduledPostsSection';
 
 export default function SettingsPage() {
   const { data: session, status } = useSession();
@@ -69,6 +70,9 @@ export default function SettingsPage() {
               <PlatformConnectionsSection />
             </Suspense>
           )}
+
+          {/* Scheduled posts management */}
+          {status === 'authenticated' && session?.user && <ScheduledPostsSection />}
 
           {/* Teams section */}
           {status === 'authenticated' && session?.user && <TeamsSection />}
