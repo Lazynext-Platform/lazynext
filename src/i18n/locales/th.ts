@@ -209,7 +209,7 @@ export const thMessages = {
       generating: 'กำลังสร้าง…',
       failed: 'ล้มเหลว (คืนเครดิตแล้ว)',
     },
-    common: { signIn: 'เข้าสู่ระบบ', signOut: 'ออกจากระบบ', credits: 'เครดิต', language: 'ภาษา', switchLanguage: 'เปลี่ยนภาษา', currency: 'สกุลเงิน', cookieConsent: 'ยินยอมคุกกี้', new: 'ใหม่', poweredBy: 'ขับเคลื่อนโดย', back: '← ย้อนกลับ', backToLazynext: '← Lazynext', close: 'ปิด', errNetwork: 'ข้อผิดพลาดเครือข่าย กรุณาตรวจสอบการเชื่อมต่อแล้วลองอีกครั้ง', errUnauthorized: 'เซสชันหมดอายุแล้ว กรุณาเข้าสู่ระบบอีกครั้ง', errPaymentRequired: 'เครดิตไม่เพียงพอ กรุณาเติมที่หน้าราคา', errServer: 'ข้อผิดพลาดเซิร์ฟเวอร์ กรุณาลองอีกครั้งในภายหลัง', errGeneric: 'เกิดข้อผิดพลาด กรุณาลองอีกครั้ง', dismissError: 'ปิด', retry: 'ลองอีกครั้ง', loadingDots: 'กำลังโหลด…' },
+    common: { signIn: 'เข้าสู่ระบบ', signOut: 'ออกจากระบบ', credits: 'เครดิต', language: 'ภาษา', switchLanguage: 'เปลี่ยนภาษา', currency: 'สกุลเงิน', cookieConsent: 'ยินยอมคุกกี้', new: 'ใหม่', poweredBy: 'ขับเคลื่อนโดย', back: '← ย้อนกลับ', backToLazynext: '← Lazynext', close: 'ปิด', errNetwork: 'ข้อผิดพลาดเครือข่าย กรุณาตรวจสอบการเชื่อมต่อแล้วลองอีกครั้ง', errUnauthorized: 'เซสชันหมดอายุแล้ว กรุณาเข้าสู่ระบบอีกครั้ง', errNotFound: 'ไม่พบทรัพยากรที่ร้องขอ', errForbidden: 'คุณไม่มีสิทธิ์เข้าถึงทรัพยากรนี้', errPaymentRequired: 'เครดิตไม่เพียงพอ กรุณาเติมที่หน้าราคา', errServer: 'ข้อผิดพลาดเซิร์ฟเวอร์ กรุณาลองอีกครั้งในภายหลัง', errGeneric: 'เกิดข้อผิดพลาด กรุณาลองอีกครั้ง', dismissError: 'ปิด', retry: 'ลองอีกครั้ง', loadingDots: 'กำลังโหลด…' },
     userMenu: {
       account: 'บัญชี',
       signOut: 'ออกจากระบบ',
@@ -751,9 +751,18 @@ export const thMessages = {
       },
     pipeline: {
       title: "ผู้ประสาน Pipeline",
-      subtitle: "Pipeline สร้างสรรค์ตั้งแต่ต้นจนจบ: บรีฟ → สคริปต์ → สตอรี่บอร์ด → มีเดีย → เสียง → ตัดต่อ → เผยแพร่.",
+      subtitle: "Pipeline สร้างสรรค์ตั้งแต่ต้นจนจบ: บรีฟ → สคริปต์ → สตอรี่บอร์ด → มีเดีย → เสียง → ตัดต่อ → การปฏิบัติตาม → คะแนน → เผยแพร่.",
       signInPrompt: "เข้าสู่ระบบเพื่อประสาน pipeline สร้างสรรค์ของคุณ.",
+      stageBrief: 'บรีฟ',
+      stageScript: 'สคริปต์',
+      stageStoryboard: 'สตอรี่บอร์ด',
+      stageMediaGeneration: 'สร้างมีเดีย',
+      stageAudio: 'เสียง',
+      stageEdit: 'ตัดต่อ',
+      stageCompliance: 'การปฏิบัติตาม',
       stageScore: 'คะแนน',
+      stagePublish: 'เผยแพร่',
+      stageCompleted: 'เสร็จสิ้น',
       approvePublish: 'อนุมัติและเผยแพร่',
     },
     personas: {

@@ -573,6 +573,9 @@ export function mergeStageResultIntoContext(
     case 'compliance':
       next.complianceResult = result.output.complianceResult as Record<string, unknown>;
       break;
+    case 'score':
+      next.score = result.output.score as CreativeScore;
+      break;
     case 'publish':
       next.publishResult = result.output.publishResult as Record<string, unknown>;
       break;

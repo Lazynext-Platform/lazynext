@@ -206,7 +206,7 @@ export const hiMessages = {
       generating: 'जनरेट हो रहा है…',
       failed: 'विफल (वापसी)',
     },
-    common: { signIn: 'साइन इन', signOut: 'साइन आउट', credits: 'क्रेडिट', language: 'भाषा', switchLanguage: 'भाषा बदलें', currency: 'मुद्रा', cookieConsent: 'कुकी सहमति', new: 'नया', poweredBy: 'द्वारा संचालित', back: '← वापस', backToLazynext: '← Lazynext', close: 'बंद करें', errNetwork: 'नेटवर्क त्रुटि। अपना कनेक्शन जांचें और पुनः प्रयास करें।', errUnauthorized: 'आपका सत्र समाप्त हो गया है। कृपया पुनः साइन इन करें।', errPaymentRequired: 'पर्याप्त क्रेडिट नहीं हैं। कृपया मूल्य पृष्ठ पर टॉप अप करें।', errServer: 'सर्वर त्रुटि। कृपया बाद में पुनः प्रयास करें।', errGeneric: 'कुछ गलत हो गया। कृपया पुनः प्रयास करें।', dismissError: 'बंद करें', retry: 'पुनः प्रयास करें', loadingDots: 'लोड हो रहा है…' },
+    common: { signIn: 'साइन इन', signOut: 'साइन आउट', credits: 'क्रेडिट', language: 'भाषा', switchLanguage: 'भाषा बदलें', currency: 'मुद्रा', cookieConsent: 'कुकी सहमति', new: 'नया', poweredBy: 'द्वारा संचालित', back: '← वापस', backToLazynext: '← Lazynext', close: 'बंद करें', errNetwork: 'नेटवर्क त्रुटि। अपना कनेक्शन जांचें और पुनः प्रयास करें।', errUnauthorized: 'आपका सत्र समाप्त हो गया है। कृपया पुनः साइन इन करें।', errNotFound: 'अनुरोधित संसाधन नहीं मिला।', errForbidden: 'आपके पास इस संसाधन तक पहुंच की अनुमति नहीं है।', errPaymentRequired: 'पर्याप्त क्रेडिट नहीं हैं। कृपया मूल्य पृष्ठ पर टॉप अप करें।', errServer: 'सर्वर त्रुटि। कृपया बाद में पुनः प्रयास करें।', errGeneric: 'कुछ गलत हो गया। कृपया पुनः प्रयास करें।', dismissError: 'बंद करें', retry: 'पुनः प्रयास करें', loadingDots: 'लोड हो रहा है…' },
     userMenu: {
       account: 'खाता',
       signOut: 'साइन आउट',
@@ -748,9 +748,18 @@ export const hiMessages = {
       },
     pipeline: {
       title: "पाइपलाइन ऑर्केस्ट्रेटर",
-      subtitle: "एंड-टू-एंड क्रिएटिव पाइपलाइन: ब्रीफ → स्क्रिप्ट → स्टोरीबोर्ड → मीडिया → ऑडियो → संपादन → प्रकाशन।",
+      subtitle: "एंड-टू-एंड क्रिएटिव पाइपलाइन: ब्रीफ → स्क्रिप्ट → स्टोरीबोर्ड → मीडिया → ऑडियो → संपादन → अनुपालन → स्कोर → प्रकाशन।",
       signInPrompt: "अपनी क्रिएटिव पाइपलाइन को ऑर्केस्ट्रेट करने के लिए साइन इन करें।",
+      stageBrief: 'ब्रीफ',
+      stageScript: 'स्क्रिप्ट',
+      stageStoryboard: 'स्टोरीबोर्ड',
+      stageMediaGeneration: 'मीडिया जनरेशन',
+      stageAudio: 'ऑडियो',
+      stageEdit: 'संपादन',
+      stageCompliance: 'अनुपालन',
       stageScore: 'स्कोर',
+      stagePublish: 'प्रकाशन',
+      stageCompleted: 'पूर्ण',
       approvePublish: 'स्वीकृत करें और प्रकाशित करें',
     },
     personas: {

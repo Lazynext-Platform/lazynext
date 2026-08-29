@@ -209,7 +209,7 @@ export const idMessages = {
       generating: 'Membuat…',
       failed: 'Gagal (dikembalikan)',
     },
-    common: { signIn: 'Masuk', signOut: 'Keluar', credits: 'Kredit', language: 'Bahasa', switchLanguage: 'Ganti bahasa', currency: 'Mata uang', cookieConsent: 'Persetujuan cookie', new: 'BARU', poweredBy: 'Didukung oleh', back: '← Kembali', backToLazynext: '← Lazynext', close: 'Tutup', errNetwork: 'Kesalahan jaringan. Periksa koneksi Anda dan coba lagi.', errUnauthorized: 'Sesi Anda telah berakhir. Silakan masuk lagi.', errPaymentRequired: 'Kredit tidak cukup. Silakan isi ulang di halaman harga.', errServer: 'Kesalahan server. Coba lagi nanti.', errGeneric: 'Terjadi kesalahan. Coba lagi.', dismissError: 'Tutup', retry: 'Coba lagi', loadingDots: 'Memuat…' },
+    common: { signIn: 'Masuk', signOut: 'Keluar', credits: 'Kredit', language: 'Bahasa', switchLanguage: 'Ganti bahasa', currency: 'Mata uang', cookieConsent: 'Persetujuan cookie', new: 'BARU', poweredBy: 'Didukung oleh', back: '← Kembali', backToLazynext: '← Lazynext', close: 'Tutup', errNetwork: 'Kesalahan jaringan. Periksa koneksi Anda dan coba lagi.', errUnauthorized: 'Sesi Anda telah berakhir. Silakan masuk lagi.', errNotFound: 'Sumber daya yang diminta tidak ditemukan.', errForbidden: 'Anda tidak memiliki akses ke sumber daya ini.', errPaymentRequired: 'Kredit tidak cukup. Silakan isi ulang di halaman harga.', errServer: 'Kesalahan server. Coba lagi nanti.', errGeneric: 'Terjadi kesalahan. Coba lagi.', dismissError: 'Tutup', retry: 'Coba lagi', loadingDots: 'Memuat…' },
     userMenu: {
       account: 'Akun',
       signOut: 'Keluar',
@@ -751,9 +751,18 @@ export const idMessages = {
       },
     pipeline: {
       title: "Orkestrator Pipeline",
-      subtitle: "Pipeline kreatif ujung-ke-ujung: brief → skrip → storyboard → media → audio → edit → publikasi.",
+      subtitle: "Pipeline kreatif ujung-ke-ujung: brief → skrip → storyboard → media → audio → edit → kepatuhan → skor → publikasi.",
       signInPrompt: "Masuk untuk mengorkestrasi pipeline kreatif Anda.",
+      stageBrief: 'Brief',
+      stageScript: 'Skrip',
+      stageStoryboard: 'Storyboard',
+      stageMediaGeneration: 'Generasi Media',
+      stageAudio: 'Audio',
+      stageEdit: 'Edit',
+      stageCompliance: 'Kepatuhan',
       stageScore: 'Skor',
+      stagePublish: 'Publikasi',
+      stageCompleted: 'Selesai',
       approvePublish: 'Setujui dan Publikasikan',
     },
     personas: {

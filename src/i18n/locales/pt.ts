@@ -206,7 +206,7 @@ export const ptMessages = {
       generating: 'Gerando…',
       failed: 'Falhou (reembolsado)',
     },
-    common: { signIn: 'Entrar', signOut: 'Sair', credits: 'Créditos', language: 'Idioma', switchLanguage: 'Mudar idioma', currency: 'Moeda', cookieConsent: 'Consentimento de cookies', new: 'NOVO', poweredBy: 'Desenvolvido por', back: '← Voltar', backToLazynext: '← Lazynext', close: 'Fechar', errNetwork: 'Erro de rede. Verifique sua conexão e tente novamente.', errUnauthorized: 'Sua sessão expirou. Entre novamente.', errPaymentRequired: 'Créditos insuficientes. Recarregue na página de preços.', errServer: 'Erro do servidor. Tente novamente mais tarde.', errGeneric: 'Algo deu errado. Tente novamente.', dismissError: 'Fechar', retry: 'Tentar novamente', loadingDots: 'Carregando…' },
+    common: { signIn: 'Entrar', signOut: 'Sair', credits: 'Créditos', language: 'Idioma', switchLanguage: 'Mudar idioma', currency: 'Moeda', cookieConsent: 'Consentimento de cookies', new: 'NOVO', poweredBy: 'Desenvolvido por', back: '← Voltar', backToLazynext: '← Lazynext', close: 'Fechar', errNetwork: 'Erro de rede. Verifique sua conexão e tente novamente.', errUnauthorized: 'Sua sessão expirou. Entre novamente.', errNotFound: 'O recurso solicitado não foi encontrado.', errForbidden: 'Você não tem acesso a este recurso.', errPaymentRequired: 'Créditos insuficientes. Recarregue na página de preços.', errServer: 'Erro do servidor. Tente novamente mais tarde.', errGeneric: 'Algo deu errado. Tente novamente.', dismissError: 'Fechar', retry: 'Tentar novamente', loadingDots: 'Carregando…' },
     userMenu: {
       account: 'Conta',
       signOut: 'Sair',
@@ -748,9 +748,18 @@ export const ptMessages = {
       },
     pipeline: {
       title: "Orquestrador de Pipeline",
-      subtitle: "Pipeline criativo de ponta a ponta: brief → roteiro → storyboard → mídia → áudio → edição → publicação.",
+      subtitle: "Pipeline criativo de ponta a ponta: brief → roteiro → storyboard → mídia → áudio → edição → conformidade → pontuação → publicação.",
       signInPrompt: "Entre para orquestrar seu pipeline criativo.",
+      stageBrief: 'Brief',
+      stageScript: 'Roteiro',
+      stageStoryboard: 'Storyboard',
+      stageMediaGeneration: 'Geração de Mídia',
+      stageAudio: 'Áudio',
+      stageEdit: 'Edição',
+      stageCompliance: 'Conformidade',
       stageScore: 'Pontuação',
+      stagePublish: 'Publicar',
+      stageCompleted: 'Concluído',
       approvePublish: 'Aprovar e Publicar',
     },
     personas: {

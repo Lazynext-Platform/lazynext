@@ -42,6 +42,7 @@ function makeConfig(overrides: Partial<PipelineConfig> = {}): PipelineConfig {
       { stage: 'audio', enabled: true, autoAdvance: true, config: {} },
       { stage: 'edit', enabled: true, autoAdvance: true, config: {} },
       { stage: 'compliance', enabled: true, autoAdvance: true, config: {} },
+      { stage: 'score', enabled: true, autoAdvance: true, config: {} },
       { stage: 'publish', enabled: true, autoAdvance: true, config: {} },
     ],
     onComplete: 'publish',
@@ -111,6 +112,21 @@ const simComplianceOutput: StageExecutionResult = {
   artifacts: [{ type: 'compliance', data: {} }],
 };
 
+const simScoreOutput: StageExecutionResult = {
+  output: {
+    score: {
+      overallScore: 78,
+      hookStrength: 8,
+      angleClarity: 7,
+      scriptFlow: 8,
+      ctaEffectiveness: 7,
+      audienceFit: 8,
+      feedback: 'Strong hook and clear angle. CTA could be more specific.',
+    },
+  },
+  artifacts: [{ type: 'creative_score', data: {} }],
+};
+
 describe('executeStage — stage mapping and error handling', () => {
 
   test('completed stage — executeStage returns empty output without error', async () => {
@@ -157,7 +173,7 @@ describe('executeStage — stage mapping and error handling', () => {
 
 describe('executeStage — context flow simulation', () => {
 
-  test('full pipeline context flow — brief → script → storyboard → media → audio → compliance', () => {
+  test('full pipeline context flow — brief → script → storyboard → media → audio → compliance → score', () => {
     const config = makeConfig();
     let ctx = initialContext(config);
 
@@ -191,6 +207,21 @@ describe('executeStage — context flow simulation', () => {
     ctx = mergeStageResultIntoContext(ctx, 'compliance', simComplianceOutput);
     assert.ok(ctx.complianceResult);
     assert.equal((ctx.complianceResult as any).status, 'compliant');
+
+    // Score (needs brief + script)
+    ctx = mergeStageResultIntoContext(ctx, 'score', simScoreOutput);
+    assert.ok(ctx.score, 'score should be in context');
+    assert.equal((ctx.score as any).overallScore, 78);
+  });
+
+  test('score stage without brief — throws clear error', async () => {
+    const { executeStage } = await import('../src/lib/creative/pipeline-executor');
+    const config = makeConfig();
+    const ctx = initialContext(config);
+    await assert.rejects(
+      () => executeStage({ stage: 'score', config, context: ctx, planTier: 'free', userId: 'test-user' }),
+      /score_stage_requires_brief|brief/,
+    );
   });
 
   test('context is immutable — merging does not mutate original', () => {

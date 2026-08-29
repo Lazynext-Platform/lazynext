@@ -209,7 +209,7 @@ export const viMessages = {
       generating: 'Đang tạo…',
       failed: 'Thất bại (đã hoàn tiền)',
     },
-    common: { signIn: 'Đăng nhập', signOut: 'Đăng xuất', credits: 'Tín dụng', language: 'Ngôn ngữ', switchLanguage: 'Chuyển ngôn ngữ', currency: 'Tiền tệ', cookieConsent: 'Đồng ý cookie', new: 'MỚI', poweredBy: 'Cung cấp bởi', back: '← Quay lại', backToLazynext: '← Lazynext', close: 'Đóng', errNetwork: 'Lỗi mạng. Vui lòng kiểm tra kết nối và thử lại.', errUnauthorized: 'Phiên của bạn đã hết hạn. Vui lòng đăng nhập lại.', errPaymentRequired: 'Không đủ tín dụng. Vui lòng nạp tại trang giá.', errServer: 'Lỗi máy chủ. Vui lòng thử lại sau.', errGeneric: 'Đã xảy ra lỗi. Vui lòng thử lại.', dismissError: 'Đóng', retry: 'Thử lại', loadingDots: 'Đang tải…' },
+    common: { signIn: 'Đăng nhập', signOut: 'Đăng xuất', credits: 'Tín dụng', language: 'Ngôn ngữ', switchLanguage: 'Chuyển ngôn ngữ', currency: 'Tiền tệ', cookieConsent: 'Đồng ý cookie', new: 'MỚI', poweredBy: 'Cung cấp bởi', back: '← Quay lại', backToLazynext: '← Lazynext', close: 'Đóng', errNetwork: 'Lỗi mạng. Vui lòng kiểm tra kết nối và thử lại.', errUnauthorized: 'Phiên của bạn đã hết hạn. Vui lòng đăng nhập lại.', errNotFound: 'Không tìm thấy tài nguyên được yêu cầu.', errForbidden: 'Bạn không có quyền truy cập tài nguyên này.', errPaymentRequired: 'Không đủ tín dụng. Vui lòng nạp tại trang giá.', errServer: 'Lỗi máy chủ. Vui lòng thử lại sau.', errGeneric: 'Đã xảy ra lỗi. Vui lòng thử lại.', dismissError: 'Đóng', retry: 'Thử lại', loadingDots: 'Đang tải…' },
     userMenu: {
       account: 'Tài khoản',
       signOut: 'Đăng xuất',
@@ -751,9 +751,18 @@ export const viMessages = {
       },
     pipeline: {
       title: "Điều phối Pipeline",
-      subtitle: "Pipeline sáng tạo đầu cuối: tóm tắt → kịch bản → storyboard → media → audio → chỉnh sửa → xuất bản.",
+      subtitle: "Pipeline sáng tạo đầu cuối: tóm tắt → kịch bản → storyboard → media → audio → chỉnh sửa → tuân thủ → điểm → xuất bản.",
       signInPrompt: "Đăng nhập để điều phối pipeline sáng tạo của bạn.",
+      stageBrief: 'Tóm tắt',
+      stageScript: 'Kịch bản',
+      stageStoryboard: 'Storyboard',
+      stageMediaGeneration: 'Tạo Media',
+      stageAudio: 'Audio',
+      stageEdit: 'Chỉnh sửa',
+      stageCompliance: 'Tuân thủ',
       stageScore: 'Điểm',
+      stagePublish: 'Xuất bản',
+      stageCompleted: 'Hoàn thành',
       approvePublish: 'Phê duyệt và Xuất bản',
     },
     personas: {

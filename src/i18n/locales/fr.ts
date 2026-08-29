@@ -206,7 +206,7 @@ export const frMessages = {
       generating: 'Génération…',
       failed: 'Échec (remboursé)',
     },
-    common: { signIn: 'Se connecter', signOut: 'Déconnexion', credits: 'Crédits', language: 'Langue', switchLanguage: 'Changer de langue', currency: 'Devise', cookieConsent: 'Consentement aux cookies', new: 'NOUVEAU', poweredBy: 'Propulsé par', back: '← Retour', backToLazynext: '← Lazynext', close: "Fermer", errNetwork: 'Erreur réseau. Vérifiez votre connexion et réessayez.', errUnauthorized: 'Votre session a expiré. Veuillez vous reconnecter.', errPaymentRequired: 'Crédits insuffisants. Rechargez sur la page des tarifs.', errServer: 'Erreur du serveur. Veuillez réessayer plus tard.', errGeneric: 'Une erreur est survenue. Veuillez réessayer.', dismissError: 'Fermer', retry: 'Réessayer', loadingDots: 'Chargement…' },
+    common: { signIn: 'Se connecter', signOut: 'Déconnexion', credits: 'Crédits', language: 'Langue', switchLanguage: 'Changer de langue', currency: 'Devise', cookieConsent: 'Consentement aux cookies', new: 'NOUVEAU', poweredBy: 'Propulsé par', back: '← Retour', backToLazynext: '← Lazynext', close: "Fermer", errNetwork: 'Erreur réseau. Vérifiez votre connexion et réessayez.', errUnauthorized: 'Votre session a expiré. Veuillez vous reconnecter.', errNotFound: 'La ressource demandée est introuvable.', errForbidden: "Vous n'avez pas accès à cette ressource.", errPaymentRequired: 'Crédits insuffisants. Rechargez sur la page des tarifs.', errServer: 'Erreur du serveur. Veuillez réessayer plus tard.', errGeneric: 'Une erreur est survenue. Veuillez réessayer.', dismissError: 'Fermer', retry: 'Réessayer', loadingDots: 'Chargement…' },
     userMenu: {
       account: 'Compte',
       signOut: 'Se déconnecter',
@@ -748,9 +748,18 @@ export const frMessages = {
       },
     pipeline: {
       title: "Orchestrateur de Pipeline",
-      subtitle: "Pipeline créatif de bout en bout : brief → script → storyboard → médias → audio → montage → publication.",
+      subtitle: "Pipeline créatif de bout en bout : brief → script → storyboard → médias → audio → montage → conformité → score → publication.",
       signInPrompt: "Connectez-vous pour orchestrer votre pipeline créatif.",
+      stageBrief: 'Brief',
+      stageScript: 'Script',
+      stageStoryboard: 'Storyboard',
+      stageMediaGeneration: 'Génération de Médias',
+      stageAudio: 'Audio',
+      stageEdit: 'Montage',
+      stageCompliance: 'Conformité',
       stageScore: 'Score',
+      stagePublish: 'Publier',
+      stageCompleted: 'Terminé',
       approvePublish: 'Approuver et Publier',
     },
     personas: {

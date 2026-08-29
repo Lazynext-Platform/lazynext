@@ -206,7 +206,7 @@ export const arMessages = {
       generating: 'جارٍ الإنشاء…',
       failed: 'فشل (تم الاسترداد)',
     },
-    common: { signIn: 'تسجيل الدخول', signOut: 'تسجيل الخروج', credits: 'الرصيد', language: 'اللغة', switchLanguage: 'تبديل اللغة', currency: 'العملة', cookieConsent: 'موافقة ملفات تعريف الارتباط', new: 'جديد', poweredBy: 'مدعوم من', back: '→ رجوع', backToLazynext: '→ Lazynext', close: 'إغلاق', errNetwork: 'خطأ في الشبكة. تحقق من اتصالك وحاول مرة أخرى.', errUnauthorized: 'انتهت صلاحية جلستك. يرجى تسجيل الدخول مرة أخرى.', errPaymentRequired: 'رصيد غير كافٍ. يرجى الشحن في صفحة الأسعار.', errServer: 'خطأ في الخادم. حاول مرة أخرى لاحقًا.', errGeneric: 'حدث خطأ ما. حاول مرة أخرى.', dismissError: 'إغلاق', retry: 'إعادة المحاولة', loadingDots: 'جارٍ التحميل…' },
+    common: { signIn: 'تسجيل الدخول', signOut: 'تسجيل الخروج', credits: 'الرصيد', language: 'اللغة', switchLanguage: 'تبديل اللغة', currency: 'العملة', cookieConsent: 'موافقة ملفات تعريف الارتباط', new: 'جديد', poweredBy: 'مدعوم من', back: '→ رجوع', backToLazynext: '→ Lazynext', close: 'إغلاق', errNetwork: 'خطأ في الشبكة. تحقق من اتصالك وحاول مرة أخرى.', errUnauthorized: 'انتهت صلاحية جلستك. يرجى تسجيل الدخول مرة أخرى.', errNotFound: 'لم يتم العثور على المورد المطلوب.', errForbidden: 'ليس لديك صلاحية الوصول إلى هذا المورد.', errPaymentRequired: 'رصيد غير كافٍ. يرجى الشحن في صفحة الأسعار.', errServer: 'خطأ في الخادم. حاول مرة أخرى لاحقًا.', errGeneric: 'حدث خطأ ما. حاول مرة أخرى.', dismissError: 'إغلاق', retry: 'إعادة المحاولة', loadingDots: 'جارٍ التحميل…' },
     userMenu: {
       account: 'الحساب',
       signOut: 'تسجيل الخروج',
@@ -748,9 +748,18 @@ export const arMessages = {
       },
     pipeline: {
       title: "منسق خط الأنابيب",
-      subtitle: "خط أنابيب إبداعي من البداية إلى النهاية: موجز ← سكريبت ← لوحة قصص ← وسائط ← صوت ← تحرير ← نشر.",
+      subtitle: "خط أنابيب إبداعي من البداية إلى النهاية: موجز ← سكريبت ← لوحة قصص ← وسائط ← صوت ← تحرير ← امتثال ← نتيجة ← نشر.",
       signInPrompt: "سجل الدخول لتنسيق خط الأنابيب الإبداعي الخاص بك.",
+      stageBrief: 'الموجز',
+      stageScript: 'السكريبت',
+      stageStoryboard: 'لوحة القصص',
+      stageMediaGeneration: 'توليد الوسائط',
+      stageAudio: 'الصوت',
+      stageEdit: 'التحرير',
+      stageCompliance: 'الامتثال',
       stageScore: 'النتيجة',
+      stagePublish: 'النشر',
+      stageCompleted: 'مكتمل',
       approvePublish: 'الموافقة والنشر',
     },
     personas: {

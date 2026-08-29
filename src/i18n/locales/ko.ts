@@ -206,7 +206,7 @@ export const koMessages = {
       generating: '생성 중…',
       failed: '실패 (환불됨)',
     },
-    common: { signIn: '로그인', signOut: '로그아웃', credits: '크레딧', language: '언어', switchLanguage: '언어 변경', currency: '통화', cookieConsent: '쿠키 동의', new: '신규', poweredBy: '제공', back: '← 돌아가기', backToLazynext: '← Lazynext', close: '닫기', errNetwork: '네트워크 오류. 연결을 확인하고 다시 시도해주세요.', errUnauthorized: '세션이 만료되었습니다. 다시 로그인해주세요.', errPaymentRequired: '크레딧이 부족합니다. 가격 페이지에서 충전해주세요.', errServer: '서버 오류. 나중에 다시 시도해주세요.', errGeneric: '문제가 발생했습니다. 다시 시도해주세요.', dismissError: '닫기', retry: '다시 시도', loadingDots: '로딩 중…' },
+    common: { signIn: '로그인', signOut: '로그아웃', credits: '크레딧', language: '언어', switchLanguage: '언어 변경', currency: '통화', cookieConsent: '쿠키 동의', new: '신규', poweredBy: '제공', back: '← 돌아가기', backToLazynext: '← Lazynext', close: '닫기', errNetwork: '네트워크 오류. 연결을 확인하고 다시 시도해주세요.', errUnauthorized: '세션이 만료되었습니다. 다시 로그인해주세요.', errNotFound: '요청한 리소스를 찾을 수 없습니다.', errForbidden: '이 리소스에 접근할 권한이 없습니다.', errPaymentRequired: '크레딧이 부족합니다. 가격 페이지에서 충전해주세요.', errServer: '서버 오류. 나중에 다시 시도해주세요.', errGeneric: '문제가 발생했습니다. 다시 시도해주세요.', dismissError: '닫기', retry: '다시 시도', loadingDots: '로딩 중…' },
     userMenu: {
       account: '계정',
       signOut: '로그아웃',
@@ -748,9 +748,18 @@ export const koMessages = {
       },
     pipeline: {
       title: "파이프라인 오케스트레이터",
-      subtitle: "엔드투엔드 크리에이티브 파이프라인: 브리프 → 스크립트 → 스토리보드 → 미디어 → 오디오 → 편집 → 게시.",
+      subtitle: "엔드투엔드 크리에이티브 파이프라인: 브리프 → 스크립트 → 스토리보드 → 미디어 → 오디오 → 편집 → 컴플라이언스 → 점수 → 게시.",
       signInPrompt: "로그인하여 크리에이티브 파이프라인을 orchestrate하세요.",
+      stageBrief: '브리프',
+      stageScript: '스크립트',
+      stageStoryboard: '스토리보드',
+      stageMediaGeneration: '미디어 생성',
+      stageAudio: '오디오',
+      stageEdit: '편집',
+      stageCompliance: '컴플라이언스',
       stageScore: '점수',
+      stagePublish: '게시',
+      stageCompleted: '완료',
       approvePublish: '승인 및 게시',
     },
     personas: {

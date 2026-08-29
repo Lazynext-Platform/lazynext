@@ -52,17 +52,17 @@ const STAGE_ICONS: Record<PipelineStage, typeof Workflow> = {
   completed: CheckCircle2,
 };
 
-const STAGE_LABELS: Record<PipelineStage, string> = {
-  brief: 'Brief',
-  script: 'Script',
-  storyboard: 'Storyboard',
-  media_generation: 'Media Generation',
-  audio: 'Audio',
-  edit: 'Edit',
-  compliance: 'Compliance',
-  score: 'Score',
-  publish: 'Publish',
-  completed: 'Completed',
+const STAGE_I18N_KEYS: Record<PipelineStage, string> = {
+  brief: 'pipeline.stageBrief',
+  script: 'pipeline.stageScript',
+  storyboard: 'pipeline.stageStoryboard',
+  media_generation: 'pipeline.stageMediaGeneration',
+  audio: 'pipeline.stageAudio',
+  edit: 'pipeline.stageEdit',
+  compliance: 'pipeline.stageCompliance',
+  score: 'pipeline.stageScore',
+  publish: 'pipeline.stagePublish',
+  completed: 'pipeline.stageCompleted',
 };
 
 const ALL_STAGES: PipelineStage[] = [
@@ -164,13 +164,18 @@ export function PipelineOrchestrator({ initialPipelineId }: { initialPipelineId?
         if (res.ok && !cancelled) {
           const j = await res.json().catch(() => ({}));
           if (j?.state) setActivePipeline(j.state as PipelineState);
+        } else if (!cancelled) {
+          if (res.status === 404) setError(t('common.errNotFound'));
+          else if (res.status === 401) setError(t('common.errUnauthorized'));
+          else if (res.status === 403) setError(t('common.errForbidden'));
+          else setError(t('common.errGeneric'));
         }
       } catch {
-        /* non-fatal — user can still create a new pipeline */
+        if (!cancelled) setError(t('common.errNetwork'));
       }
     })();
     return () => { cancelled = true; };
-  }, [session, initialPipelineId]);
+  }, [session, initialPipelineId, t]);
 
   // ---- Apply a template to the form ----
   const applyTemplate = useCallback(
@@ -518,7 +523,7 @@ export function PipelineOrchestrator({ initialPipelineId }: { initialPipelineId?
                     >
                       <div className="flex items-center gap-2">
                         <Icon className="h-4 w-4 text-fg-faint" />
-                        <span className="text-xs font-medium text-fg">{STAGE_LABELS[s]}</span>
+                        <span className="text-xs font-medium text-fg">{t(STAGE_I18N_KEYS[s])}</span>
                       </div>
                       <div className="flex items-center gap-4">
                         <label className="flex items-center gap-1.5 text-[11px] text-fg-faint">
@@ -527,7 +532,7 @@ export function PipelineOrchestrator({ initialPipelineId }: { initialPipelineId?
                             checked={cfg.autoAdvance}
                             onChange={() => toggleAutoAdvance(s)}
                             disabled={!cfg.enabled}
-                            aria-label={`Auto-advance ${STAGE_LABELS[s]}`}
+                            aria-label={`Auto-advance ${t(STAGE_I18N_KEYS[s])}`}
                           />
                           Auto-advance
                         </label>
@@ -536,7 +541,7 @@ export function PipelineOrchestrator({ initialPipelineId }: { initialPipelineId?
                             type="checkbox"
                             checked={cfg.enabled}
                             onChange={() => toggleStage(s)}
-                            aria-label={`Enable ${STAGE_LABELS[s]}`}
+                            aria-label={`Enable ${t(STAGE_I18N_KEYS[s])}`}
                           />
                           Enabled
                         </label>
@@ -658,6 +663,7 @@ function PipelineExecutionView({
   isTerminal: boolean;
   onReset: () => void;
 }) {
+  const { t } = useI18n();
   const enabledStages = state.config.stages.filter((s) => s.enabled);
   const minutesLeft = state.estimatedTimeRemaining
     ? Math.max(1, Math.round(state.estimatedTimeRemaining / 60))
@@ -707,7 +713,7 @@ function PipelineExecutionView({
           <Stat
             icon={Workflow}
             label="Current stage"
-            value={state.currentStage && state.currentStage !== 'completed' ? STAGE_LABELS[state.currentStage] : '—'}
+            value={state.currentStage && state.currentStage !== 'completed' ? t(STAGE_I18N_KEYS[state.currentStage as PipelineStage]) : '—'}
           />
         </div>
 
@@ -780,7 +786,7 @@ function PipelineExecutionView({
                     isCurrent ? 'text-brand-accent' : status === 'completed' ? 'text-fg' : 'text-fg-faint'
                   }`}
                 >
-                  {STAGE_LABELS[s.stage]}
+                  {t(STAGE_I18N_KEYS[s.stage])}
                 </span>
                 {isCurrent && <Loader2 className="h-3 w-3 animate-spin text-brand-accent" />}
                 <span className="ml-auto text-[10px] text-fg-faint">
@@ -835,6 +841,7 @@ function StageCard({
   onApprove?: () => void;
   actionLoading: boolean;
 }) {
+  const { t } = useI18n();
   const Icon = STAGE_ICONS[stage];
   const failed = result.status === 'failed';
   const canRetry = failed;
@@ -849,7 +856,7 @@ function StageCard({
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Icon className="h-4 w-4 text-fg-faint" />
-          <span className="text-sm font-bold text-fg">{STAGE_LABELS[stage]}</span>
+          <span className="text-sm font-bold text-fg">{t(STAGE_I18N_KEYS[stage])}</span>
         </div>
         <span className={`text-[11px] font-bold ${statusText(result.status)}`}>{result.status}</span>
       </div>
@@ -927,7 +934,7 @@ function StageCard({
             className="flex items-center gap-1.5 rounded-lg bg-accent px-3 py-1.5 text-[11px] font-bold text-accent-fg hover:opacity-90 disabled:opacity-50"
           >
             {actionLoading ? <Loader2 className="h-3 w-3 animate-spin" /> : <Send className="h-3 w-3" />}
-            Approve &amp; Publish
+            {t('pipeline.approvePublish')}
           </button>
         </div>
       )}

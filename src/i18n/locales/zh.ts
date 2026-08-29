@@ -206,7 +206,7 @@ export const zhMessages = {
       generating: '生成中…',
       failed: '失败(已退款)',
     },
-    common: { signIn: '登录', signOut: '退出登录', credits: '积分', language: '语言', switchLanguage: '切换语言', currency: '货币', cookieConsent: 'Cookie 同意', new: '新', poweredBy: '技术支持', back: '← 返回', backToLazynext: '← Lazynext', close: '关闭', errNetwork: '网络错误。请检查网络连接后重试。', errUnauthorized: '会话已过期，请重新登录。', errPaymentRequired: '积分不足，请在定价页面充值。', errServer: '服务器错误，请稍后重试。', errGeneric: '出现问题，请重试。', dismissError: '关闭', retry: '重试', loadingDots: '加载中…' },
+    common: { signIn: '登录', signOut: '退出登录', credits: '积分', language: '语言', switchLanguage: '切换语言', currency: '货币', cookieConsent: 'Cookie 同意', new: '新', poweredBy: '技术支持', back: '← 返回', backToLazynext: '← Lazynext', close: '关闭', errNetwork: '网络错误。请检查网络连接后重试。', errUnauthorized: '会话已过期，请重新登录。', errNotFound: '请求的资源未找到。', errForbidden: '您没有访问此资源的权限。', errPaymentRequired: '积分不足，请在定价页面充值。', errServer: '服务器错误，请稍后重试。', errGeneric: '出现问题，请重试。', dismissError: '关闭', retry: '重试', loadingDots: '加载中…' },
     userMenu: {
       account: '账户',
       signOut: '退出登录',
@@ -748,9 +748,18 @@ export const zhMessages = {
       },
     pipeline: {
       title: "管道编排器",
-      subtitle: "端到端创意管道：简报 → 脚本 → 分镜 → 媒体 → 音频 → 编辑 → 发布。",
+      subtitle: "端到端创意管道：简报 → 脚本 → 分镜 → 媒体 → 音频 → 编辑 → 合规 → 评分 → 发布。",
       signInPrompt: "登录以编排您的创意管道。",
+      stageBrief: '简报',
+      stageScript: '脚本',
+      stageStoryboard: '分镜',
+      stageMediaGeneration: '媒体生成',
+      stageAudio: '音频',
+      stageEdit: '编辑',
+      stageCompliance: '合规',
       stageScore: '评分',
+      stagePublish: '发布',
+      stageCompleted: '已完成',
       approvePublish: '批准并发布',
     },
     personas: {

@@ -206,7 +206,7 @@ export const deMessages = {
       generating: 'Generierung…',
       failed: 'Fehlgeschlagen (erstattet)',
     },
-    common: { signIn: 'Anmelden', signOut: 'Abmelden', credits: 'Guthaben', language: 'Sprache', switchLanguage: 'Sprache wechseln', currency: 'Währung', cookieConsent: 'Cookie-Einwilligung', new: 'NEU', poweredBy: 'Unterstützt von', back: '← Zurück', backToLazynext: '← Lazynext', close: 'Schließen', errNetwork: 'Netzwerkfehler. Überprüfen Sie Ihre Verbindung und versuchen Sie es erneut.', errUnauthorized: 'Ihre Sitzung ist abgelaufen. Bitte melden Sie sich erneut an.', errPaymentRequired: 'Nicht genügend Guthaben. Bitte auf der Preisseite aufladen.', errServer: 'Serverfehler. Bitte versuchen Sie es später erneut.', errGeneric: 'Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut.', dismissError: 'Schließen', retry: 'Erneut versuchen', loadingDots: 'Laden…' },
+    common: { signIn: 'Anmelden', signOut: 'Abmelden', credits: 'Guthaben', language: 'Sprache', switchLanguage: 'Sprache wechseln', currency: 'Währung', cookieConsent: 'Cookie-Einwilligung', new: 'NEU', poweredBy: 'Unterstützt von', back: '← Zurück', backToLazynext: '← Lazynext', close: 'Schließen', errNetwork: 'Netzwerkfehler. Überprüfen Sie Ihre Verbindung und versuchen Sie es erneut.', errUnauthorized: 'Ihre Sitzung ist abgelaufen. Bitte melden Sie sich erneut an.', errNotFound: 'Die angeforderte Ressource wurde nicht gefunden.', errForbidden: 'Sie haben keinen Zugriff auf diese Ressource.', errPaymentRequired: 'Nicht genügend Guthaben. Bitte auf der Preisseite aufladen.', errServer: 'Serverfehler. Bitte versuchen Sie es später erneut.', errGeneric: 'Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut.', dismissError: 'Schließen', retry: 'Erneut versuchen', loadingDots: 'Laden…' },
     userMenu: {
       account: 'Konto',
       signOut: 'Abmelden',
@@ -748,9 +748,18 @@ export const deMessages = {
       },
     pipeline: {
       title: "Pipeline-Orchestrator",
-      subtitle: "End-to-End Creative-Pipeline: Brief → Skript → Storyboard → Medien → Audio → Schnitt → Veröffentlichung.",
+      subtitle: "End-to-End Creative-Pipeline: Briefing → Skript → Storyboard → Medien → Audio → Schnitt → Compliance → Bewertung → Veröffentlichung.",
       signInPrompt: "Melden Sie sich an, um Ihre Creative-Pipeline zu orchestrieren.",
+      stageBrief: 'Briefing',
+      stageScript: 'Skript',
+      stageStoryboard: 'Storyboard',
+      stageMediaGeneration: 'Mediengenerierung',
+      stageAudio: 'Audio',
+      stageEdit: 'Schnitt',
+      stageCompliance: 'Compliance',
       stageScore: 'Bewertung',
+      stagePublish: 'Veröffentlichen',
+      stageCompleted: 'Abgeschlossen',
       approvePublish: 'Genehmigen und Veröffentlichen',
     },
     personas: {

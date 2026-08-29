@@ -33,6 +33,47 @@ export function ClipEditor({ initialMediaUrl, pipelineId }: { initialMediaUrl?: 
     }
   }, [initialMediaUrl]);
 
+  // Load the pipeline EDL/cutPlan when pipelineId is provided
+  useEffect(() => {
+    if (!pipelineId) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch(`/api/creative/pipeline/${pipelineId}`);
+        if (!res.ok || cancelled) return;
+        const j = await res.json().catch(() => ({}));
+        const state = j?.state;
+        if (!state || cancelled) return;
+        // Find the edit stage result
+        const editResult = state.stageResults?.find(
+          (r: any) => r.stage === 'edit' && r.status === 'completed',
+        )?.output?.editResult;
+        if (!editResult || cancelled) return;
+        // Load the media URL from the edit result if not already set
+        if (!initialMediaUrl && editResult.finalMediaUrl) {
+          setMediaResult(editResult.finalMediaUrl);
+        }
+        // Transform the cutPlan into clips
+        if (Array.isArray(editResult.cutPlan) && editResult.cutPlan.length > 0) {
+          const loadedClips = editResult.cutPlan.map((cut: any, idx: number) =>
+            createClip({
+              name: cut.label || cut.name || `Cut ${idx + 1}`,
+              type: cut.mediaType || 'video',
+              duration: cut.durationSec || cut.duration || 5,
+              source: cut.mediaUrl || editResult.finalMediaUrl || '',
+            }),
+          );
+          if (!cancelled && loadedClips.length > 0) {
+            setClips(loadedClips);
+          }
+        }
+      } catch {
+        /* non-fatal — user can still use the editor manually */
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [pipelineId, initialMediaUrl]);
+
   const executeCommand = useCallback(async () => {
     if (!command.trim()) { setError(t('clipEditor.commandRequired')); return; }
     setLoading(true); setError(''); setResult(null);
