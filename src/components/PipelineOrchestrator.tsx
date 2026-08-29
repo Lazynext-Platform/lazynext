@@ -382,14 +382,14 @@ export function PipelineOrchestrator({ initialPipelineId }: { initialPipelineId?
         <>
           {/* Template selector */}
           <section className="rounded-2xl border border-line bg-surface p-5" aria-busy={loadingTemplates}>
-            <h2 className="text-sm font-bold text-fg">Pipeline Templates</h2>
+            <h2 className="text-sm font-bold text-fg">{t('pipeline.templates')}</h2>
             <p className="mt-1 text-xs text-fg-faint">
-              Choose a template to pre-configure the stages, or build a custom pipeline below.
+              {t('pipeline.templatesDesc')}
             </p>
             {loadingTemplates ? (
-              <Loader2 className="mt-4 h-5 w-5 animate-spin text-fg-faint" role="status" aria-label="Loading templates" />
+              <Loader2 className="mt-4 h-5 w-5 animate-spin text-fg-faint" role="status" aria-label={t('pipeline.loadingTemplates')} />
             ) : templates.length === 0 ? (
-              <p className="mt-4 text-xs text-fg-faint">No templates available.</p>
+              <p className="mt-4 text-xs text-fg-faint">{t('pipeline.noTemplates')}</p>
             ) : (
               <div className="mt-4 grid gap-3 sm:grid-cols-2">
                 {templates.map((tmpl) => {
@@ -412,12 +412,12 @@ export function PipelineOrchestrator({ initialPipelineId }: { initialPipelineId?
                       <p className="mt-1 text-xs text-fg-faint">{tmpl.description}</p>
                       <div className="mt-3 flex items-center gap-3 text-[11px] text-fg-faint">
                         <span className="flex items-center gap-1">
-                          <Coins className="h-3 w-3" /> {tmpl.estimatedCredits} credits
+                          <Coins className="h-3 w-3" /> {tmpl.estimatedCredits} {t('pipeline.credits')}
                         </span>
                         <span className="flex items-center gap-1">
                           <Clock className="h-3 w-3" /> ~{tmpl.estimatedDurationMin} min
                         </span>
-                        <span>{tmpl.stages.length} stages</span>
+                        <span>{tmpl.stages.length} {t('pipeline.stages')}</span>
                       </div>
                     </button>
                   );
@@ -428,9 +428,9 @@ export function PipelineOrchestrator({ initialPipelineId }: { initialPipelineId?
 
           {/* Custom configuration */}
           <section className="rounded-2xl border border-line bg-surface p-5">
-            <h2 className="text-sm font-bold text-fg">Configuration</h2>
+            <h2 className="text-sm font-bold text-fg">{t('pipeline.configuration')}</h2>
             <div className="mt-4 grid gap-4 sm:grid-cols-2">
-              <Field label="Pipeline name" id="pl-name">
+              <Field label={t('pipeline.pipelineName')} id="pl-name">
                 <input
                   id="pl-name"
                   type="text"
@@ -440,7 +440,7 @@ export function PipelineOrchestrator({ initialPipelineId }: { initialPipelineId?
                   className="input-base"
                 />
               </Field>
-              <Field label="Product name" id="pl-product">
+              <Field label={t('pipeline.productName')} id="pl-product">
                 <input
                   id="pl-product"
                   type="text"
@@ -450,7 +450,7 @@ export function PipelineOrchestrator({ initialPipelineId }: { initialPipelineId?
                   className="input-base"
                 />
               </Field>
-              <Field label="Product description" id="pl-desc" full>
+              <Field label={t('pipeline.productDescription')} id="pl-desc" full>
                 <textarea
                   id="pl-desc"
                   value={productDescription}
@@ -460,7 +460,7 @@ export function PipelineOrchestrator({ initialPipelineId }: { initialPipelineId?
                   className="input-base resize-none"
                 />
               </Field>
-              <Field label="Brand name" id="pl-brand">
+              <Field label={t('pipeline.brandName')} id="pl-brand">
                 <input
                   id="pl-brand"
                   type="text"
@@ -470,7 +470,7 @@ export function PipelineOrchestrator({ initialPipelineId }: { initialPipelineId?
                   className="input-base"
                 />
               </Field>
-              <Field label="Target audience" id="pl-audience">
+              <Field label={t('pipeline.targetAudience')} id="pl-audience">
                 <input
                   id="pl-audience"
                   type="text"
@@ -485,7 +485,7 @@ export function PipelineOrchestrator({ initialPipelineId }: { initialPipelineId?
             {/* Platforms */}
             <div className="mt-4">
               <span className="text-xs font-medium text-fg-faint" id="pl-platforms-label">
-                Platforms
+                {t('pipeline.platforms')}
               </span>
               <div
                 className="mt-2 flex flex-wrap gap-2"
@@ -514,7 +514,7 @@ export function PipelineOrchestrator({ initialPipelineId }: { initialPipelineId?
 
             {/* Stage toggles */}
             <div className="mt-5">
-              <span className="text-xs font-medium text-fg-faint">Stages</span>
+              <span className="text-xs font-medium text-fg-faint">{t('pipeline.stagesLabel')}</span>
               <div className="mt-2 space-y-2">
                 {ALL_STAGES.map((s) => {
                   const Icon = STAGE_ICONS[s];
@@ -537,7 +537,7 @@ export function PipelineOrchestrator({ initialPipelineId }: { initialPipelineId?
                             disabled={!cfg.enabled}
                             aria-label={`Auto-advance ${t(STAGE_I18N_KEYS[s])}`}
                           />
-                          Auto-advance
+                          {t('pipeline.autoAdvance')}
                         </label>
                         <label className="flex items-center gap-1.5 text-[11px] text-fg-faint">
                           <input
@@ -546,7 +546,7 @@ export function PipelineOrchestrator({ initialPipelineId }: { initialPipelineId?
                             onChange={() => toggleStage(s)}
                             aria-label={`Enable ${t(STAGE_I18N_KEYS[s])}`}
                           />
-                          Enabled
+                          {t('pipeline.enabled')}
                         </label>
                       </div>
                     </div>
@@ -558,7 +558,7 @@ export function PipelineOrchestrator({ initialPipelineId }: { initialPipelineId?
             {/* On-complete action */}
             <div className="mt-4">
               <label className="text-xs font-medium text-fg-faint" htmlFor="pl-oncomplete">
-                On complete
+                {t('pipeline.onComplete')}
               </label>
               <select
                 id="pl-oncomplete"
@@ -566,9 +566,9 @@ export function PipelineOrchestrator({ initialPipelineId }: { initialPipelineId?
                 onChange={(e) => setOnComplete(e.target.value as 'publish' | 'review' | 'export')}
                 className="input-base mt-1 max-w-[200px]"
               >
-                <option value="publish">Publish</option>
-                <option value="review">Review</option>
-                <option value="export">Export</option>
+                <option value="publish">{t('pipeline.publish')}</option>
+                <option value="review">{t('pipeline.review')}</option>
+                <option value="export">{t('pipeline.export')}</option>
               </select>
             </div>
 
@@ -580,7 +580,7 @@ export function PipelineOrchestrator({ initialPipelineId }: { initialPipelineId?
               style={{ background: '#0064d9' }}
             >
               {starting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Workflow className="h-4 w-4" />}
-              Start Pipeline
+              {t('pipeline.startPipeline')}
             </button>
           </section>
         </>
@@ -589,15 +589,15 @@ export function PipelineOrchestrator({ initialPipelineId }: { initialPipelineId?
       {/* History */}
       {!activePipeline && (
         <section className="rounded-2xl border border-line bg-surface p-5" aria-busy={loadingHistory}>
-          <h2 className="text-sm font-bold text-fg">Pipeline History</h2>
+          <h2 className="text-sm font-bold text-fg">{t('pipeline.pipelineHistory')}</h2>
           {loadingHistory ? (
             <Loader2
               className="mt-3 h-4 w-4 animate-spin text-fg-faint"
               role="status"
-              aria-label="Loading history"
+              aria-label={t('pipeline.loadingHistory')}
             />
           ) : history.length === 0 ? (
-            <p className="mt-3 text-xs text-fg-faint">No pipelines yet. Start one above.</p>
+            <p className="mt-3 text-xs text-fg-faint">{t('pipeline.noPipelines')}</p>
           ) : (
             <ul className="mt-3 space-y-2">
               {history.map((p) => (
@@ -691,7 +691,7 @@ function PipelineExecutionView({
         {/* Progress bar */}
         <div className="mt-4">
           <div className="flex items-center justify-between text-xs text-fg-faint">
-            <span>Progress</span>
+            <span>{t('pipeline.progress')}</span>
             <span>{state.progress}%</span>
           </div>
           <div
@@ -700,7 +700,7 @@ function PipelineExecutionView({
             aria-valuenow={state.progress}
             aria-valuemin={0}
             aria-valuemax={100}
-            aria-label="Pipeline progress"
+            aria-label={t('pipeline.progress')}
           >
             <div
               className="h-full rounded-full transition-all"
@@ -711,11 +711,11 @@ function PipelineExecutionView({
 
         {/* Stats */}
         <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
-          <Stat icon={Coins} label="Credits used" value={String(state.totalCreditsUsed)} />
-          <Stat icon={Clock} label="Est. time left" value={isTerminal ? '0 min' : `${minutesLeft} min`} />
+          <Stat icon={Coins} label={t('pipeline.creditsUsed')} value={String(state.totalCreditsUsed)} />
+          <Stat icon={Clock} label={t('pipeline.estTimeLeft')} value={isTerminal ? '0 min' : `${minutesLeft} min`} />
           <Stat
             icon={Workflow}
-            label="Current stage"
+            label={t('pipeline.currentStage')}
             value={state.currentStage && state.currentStage !== 'completed' ? t(STAGE_I18N_KEYS[state.currentStage as PipelineStage]) : '—'}
           />
         </div>
@@ -748,7 +748,7 @@ function PipelineExecutionView({
               style={{ background: '#0064d9' }}
             >
               {actionLoading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <ChevronRight className="h-3.5 w-3.5" />}
-              Advance
+              {t('pipeline.advance')}
             </button>
           )}
           {!isTerminal && (
@@ -757,7 +757,7 @@ function PipelineExecutionView({
               disabled={actionLoading}
               className="flex items-center gap-1.5 rounded-lg border border-danger/30 bg-danger/5 px-3 py-2 text-xs font-medium text-danger hover:bg-danger/10 disabled:opacity-50"
             >
-              <XOctagon className="h-3.5 w-3.5" /> Cancel
+              <XOctagon className="h-3.5 w-3.5" /> {t('pipeline.cancel')}
             </button>
           )}
           {isTerminal && (
@@ -765,7 +765,7 @@ function PipelineExecutionView({
               onClick={onReset}
               className="flex items-center gap-1.5 rounded-lg border border-line bg-app px-3 py-2 text-xs font-medium text-fg hover:bg-hover"
             >
-              <RotateCw className="h-3.5 w-3.5" /> New Pipeline
+              <RotateCw className="h-3.5 w-3.5" /> {t('pipeline.newPipeline')}
             </button>
           )}
         </div>
@@ -773,7 +773,7 @@ function PipelineExecutionView({
 
       {/* Stage timeline */}
       <section className="rounded-2xl border border-line bg-surface p-5">
-        <h3 className="text-sm font-bold text-fg">Stage Timeline</h3>
+        <h3 className="text-sm font-bold text-fg">{t('pipeline.stageTimeline')}</h3>
         <ol className="mt-3 space-y-2">
           {enabledStages.map((s, idx) => {
             const result = state.stageResults.find((r) => r.stage === s.stage);
@@ -865,7 +865,7 @@ function StageCard({
       </div>
 
       {result.duration != null && (
-        <div className="mt-1 text-[11px] text-fg-faint">Duration: {result.duration}s</div>
+        <div className="mt-1 text-[11px] text-fg-faint">{t('pipeline.duration')}: {result.duration}s</div>
       )}
 
       {result.error && (
@@ -888,7 +888,7 @@ function StageCard({
                     rel="noopener noreferrer"
                     className="text-brand-accent underline"
                   >
-                    view
+                    {t('pipeline.view')}
                   </a>
                 </>
               )}
@@ -968,6 +968,7 @@ function hasStageOutput(stage: PipelineStage, output: Record<string, unknown>): 
 
 /** Collapsible viewer for stage output content. */
 function StageOutputViewer({ stage, output, pipelineId }: { stage: PipelineStage; output: Record<string, unknown>; pipelineId: string }) {
+  const { t } = useI18n();
   const [expanded, setExpanded] = useState(false);
 
   return (
@@ -978,7 +979,7 @@ function StageOutputViewer({ stage, output, pipelineId }: { stage: PipelineStage
         aria-expanded={expanded}
       >
         {expanded ? <ChevronDown className="h-3 w-3" /> : <ChevronRight className="h-3 w-3" />}
-        {expanded ? 'Hide output' : 'View output'}
+        {expanded ? t('pipeline.hideOutput') : t('pipeline.viewOutput')}
       </button>
       {expanded && (
         <div className="mt-2 max-h-64 overflow-y-auto rounded-lg bg-app p-3 text-[11px] text-fg-muted">
@@ -998,14 +999,14 @@ function StageOutputContent({ stage, output, pipelineId }: { stage: PipelineStag
       if (!brief) return null;
       return (
         <dl className="space-y-1">
-          <DetailRow label="Objective" value={brief.objective as string} />
-          <DetailRow label="Platform" value={brief.platform as string} />
-          <DetailRow label="Format" value={brief.format as string} />
-          <DetailRow label="Audience" value={brief.audience as string} />
-          <DetailRow label="Product" value={brief.product as string} />
-          <DetailRow label="Hook" value={brief.hook as string} />
-          <DetailRow label="CTA" value={brief.cta as string} />
-          <DetailRow label="Visual Direction" value={brief.visualDirection as string} />
+          <DetailRow label={t('pipeline.objective')} value={brief.objective as string} />
+          <DetailRow label={t('pipeline.platform')} value={brief.platform as string} />
+          <DetailRow label={t('pipeline.format')} value={brief.format as string} />
+          <DetailRow label={t('pipeline.audience')} value={brief.audience as string} />
+          <DetailRow label={t('pipeline.product')} value={brief.product as string} />
+          <DetailRow label={t('pipeline.hook')} value={brief.hook as string} />
+          <DetailRow label={t('pipeline.cta')} value={brief.cta as string} />
+          <DetailRow label={t('pipeline.visualDirection')} value={brief.visualDirection as string} />
         </dl>
       );
     }
@@ -1017,7 +1018,7 @@ function StageOutputContent({ stage, output, pipelineId }: { stage: PipelineStag
         <div className="space-y-2">
           {hooks && hooks.length > 0 && (
             <div>
-              <p className="font-bold text-fg">Hooks ({hooks.length})</p>
+              <p className="font-bold text-fg">{t('pipeline.hooks')} ({hooks.length})</p>
               {hooks.slice(0, 3).map((h, i) => (
                 <div key={i} className="ml-2">
                   <span className="text-fg-faint">[{String(h.type)}]</span> {String(h.text)}
@@ -1027,7 +1028,7 @@ function StageOutputContent({ stage, output, pipelineId }: { stage: PipelineStag
           )}
           {angles && angles.length > 0 && (
             <div>
-              <p className="font-bold text-fg">Angles ({angles.length})</p>
+              <p className="font-bold text-fg">{t('pipeline.angles')} ({angles.length})</p>
               {angles.slice(0, 3).map((a, i) => (
                 <div key={i} className="ml-2">
                   <span className="text-fg-faint">{String(a.name)}:</span> {String(a.description)}
@@ -1037,13 +1038,13 @@ function StageOutputContent({ stage, output, pipelineId }: { stage: PipelineStag
           )}
           {script && (
             <div>
-              <p className="font-bold text-fg">Script: {script.title as string}</p>
-              <p className="text-fg-faint">Duration: {String(script.totalDurationSec)}s · CTA: {script.cta as string}</p>
+              <p className="font-bold text-fg">{t('pipeline.scriptLabel')}: {script.title as string}</p>
+              <p className="text-fg-faint">{t('pipeline.duration')}: {String(script.totalDurationSec)}s · {t('pipeline.cta')}: {script.cta as string}</p>
               {Array.isArray(script.scenes) && (
                 <div className="mt-1 space-y-1">
                   {(script.scenes as Array<Record<string, unknown>>).slice(0, 5).map((s, i) => (
                     <div key={i} className="ml-2">
-                      <span className="text-fg-faint">Scene {String(s.i)}:</span> {s.visual as string}
+                      <span className="text-fg-faint">{t('pipeline.scene')} {String(s.i)}:</span> {s.visual as string}
                       {s.voiceover ? <span className="text-fg-faint"> — &ldquo;{s.voiceover as string}&rdquo;</span> : null}
                     </div>
                   ))}
@@ -1059,12 +1060,12 @@ function StageOutputContent({ stage, output, pipelineId }: { stage: PipelineStag
       if (!storyboard) return null;
       return (
         <div className="space-y-1">
-          <p className="font-bold text-fg">Ratio: {storyboard.ratio as string} · Duration: {String(storyboard.totalDurationSec)}s</p>
+          <p className="font-bold text-fg">{t('pipeline.ratio')}: {storyboard.ratio as string} · {t('pipeline.duration')}: {String(storyboard.totalDurationSec)}s</p>
           {Array.isArray(storyboard.shots) && (
             <div className="space-y-1">
               {(storyboard.shots as Array<Record<string, unknown>>).slice(0, 6).map((shot, i) => (
                 <div key={i} className="ml-2">
-                  <span className="text-fg-faint">Shot {String(shot.i)}:</span> {shot.shot as string}
+                  <span className="text-fg-faint">{t('pipeline.shot')} {String(shot.i)}:</span> {shot.shot as string}
                   <p className="ml-2 text-fg-faint">{shot.prompt as string}</p>
                 </div>
               ))}
@@ -1079,7 +1080,7 @@ function StageOutputContent({ stage, output, pipelineId }: { stage: PipelineStag
       if (!mediaUrls || mediaUrls.length === 0) return null;
       return (
         <div className="space-y-1">
-          <p className="font-bold text-fg">{mediaUrls.length} media URLs generated</p>
+          <p className="font-bold text-fg">{mediaUrls.length} {t('pipeline.mediaUrls')}</p>
           {mediaResults && mediaResults.some((r) => r.dryRun) && (
             <p className="text-fg-faint">(some are dry-run placeholders)</p>
           )}
@@ -1098,10 +1099,10 @@ function StageOutputContent({ stage, output, pipelineId }: { stage: PipelineStag
     }
     case 'audio': {
       const audioUrl = output.audioUrl as string | undefined;
-      if (!audioUrl) return <p className="text-fg-faint">No audio generated</p>;
+      if (!audioUrl) return <p className="text-fg-faint">{t('pipeline.noAudio')}</p>;
       return (
         <div>
-          <p className="font-bold text-fg">Voiceover</p>
+          <p className="font-bold text-fg">{t('pipeline.voiceover')}</p>
           {audioUrl.startsWith('placeholder://') || audioUrl.startsWith('data:') ? (
             <p className="text-fg-faint">{audioUrl.slice(0, 60)}…</p>
           ) : (
@@ -1130,7 +1131,7 @@ function StageOutputContent({ stage, output, pipelineId }: { stage: PipelineStag
       return (
         <dl className="space-y-1">
           {overall !== undefined && (
-            <DetailRow label={t('creativeStudio.overall')} value={`${overall}/100`} />
+            <DetailRow label={t('creativeStudio.overall')} value={`${overall}/10`} />
           )}
           {dims.map(([label, val]) => (
             <DetailRow key={label} label={label} value={String(val)} />
@@ -1151,7 +1152,7 @@ function StageOutputContent({ stage, output, pipelineId }: { stage: PipelineStag
         <dl className="space-y-1">
           <DetailRow label={t('compliance.complianceScore')} value={typeof result.complianceScore === 'number' ? String(result.complianceScore) : ''} />
           <DetailRow label={t('compliance.brandSafety')} value={typeof result.brandSafetyScore === 'number' ? String(result.brandSafetyScore) : ''} />
-          <DetailRow label="Status" value={String(result.overallStatus || '')} />
+          <DetailRow label={t('pipeline.status')} value={String(result.overallStatus || '')} />
           {violations.length > 0 && (
             <div>
               <p className="font-bold text-fg">{t('compliance.violations')} ({violations.length})</p>
@@ -1194,11 +1195,11 @@ function StageOutputContent({ stage, output, pipelineId }: { stage: PipelineStag
       const finalMediaUrl = editResult.finalMediaUrl as string | undefined;
       return (
         <dl className="space-y-1">
-          <DetailRow label="Total Duration" value={`${String(editResult.totalDurationSec)}s`} />
-          <DetailRow label="Audio" value={editResult.audioUrl as string || 'none'} />
-          <DetailRow label="Format" value={String(editResult.format || 'vertical_9x16')} />
+          <DetailRow label={t('pipeline.totalDuration')} value={`${String(editResult.totalDurationSec)}s`} />
+          <DetailRow label={t('pipeline.audio')} value={editResult.audioUrl as string || 'none'} />
+          <DetailRow label={t('pipeline.format')} value={String(editResult.format || 'vertical_9x16')} />
           {Array.isArray(editResult.cutPlan) && (
-            <p className="text-fg-faint">{editResult.cutPlan.length} cuts in plan</p>
+            <p className="text-fg-faint">{editResult.cutPlan.length} {t('pipeline.cutsInPlan')}</p>
           )}
           {finalMediaUrl && (
             <div className="pt-2">
@@ -1206,7 +1207,7 @@ function StageOutputContent({ stage, output, pipelineId }: { stage: PipelineStag
                 href={`/clip-editor?pipelineId=${encodeURIComponent(pipelineId)}&mediaUrl=${encodeURIComponent(finalMediaUrl)}`}
                 className="inline-flex items-center gap-1.5 rounded-md border border-accent px-3 py-1.5 text-xs font-medium text-accent hover:bg-accent/10"
               >
-                <Scissors className="h-3 w-3" /> Open in Clip Editor
+                <Scissors className="h-3 w-3" /> {t('pipeline.openInClipEditor')}
               </a>
             </div>
           )}
@@ -1219,14 +1220,14 @@ function StageOutputContent({ stage, output, pipelineId }: { stage: PipelineStag
       const results = Array.isArray(publishResult.results) ? (publishResult.results as Array<Record<string, unknown>>) : [];
       return (
         <dl className="space-y-1">
-          <DetailRow label="Status" value={String(publishResult.status || '')} />
-          <DetailRow label="On Complete" value={String(publishResult.onComplete || '')} />
+          <DetailRow label={t('pipeline.status')} value={String(publishResult.status || '')} />
+          <DetailRow label={t('pipeline.onCompleteLabel')} value={String(publishResult.onComplete || '')} />
           {Array.isArray(publishResult.platforms) && (
-            <DetailRow label="Platforms" value={(publishResult.platforms as string[]).join(', ')} />
+            <DetailRow label={t('pipeline.platforms')} value={(publishResult.platforms as string[]).join(', ')} />
           )}
           {results.length > 0 && (
             <div>
-              <p className="font-bold text-fg">Results</p>
+              <p className="font-bold text-fg">{t('pipeline.results')}</p>
               {results.map((r, i) => (
                 <div key={i} className="ml-2">
                   <span className="text-fg-faint">[{String(r.platform)}]</span> {String(r.status)}

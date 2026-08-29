@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useCallback, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import {
   Sparkles, Search, Star, Trash2, Loader2, AlertCircle,
@@ -33,6 +34,7 @@ const CATEGORIES = [
 export default function TemplateLibraryPage() {
   const { data: session } = useSession();
   const { t } = useI18n();
+  const router = useRouter();
   const [authOpen, setAuthOpen] = useState(false);
 
   const [templates, setTemplates] = useState<Template[]>([]);
@@ -116,11 +118,11 @@ export default function TemplateLibraryPage() {
     params.set('templateName', tmpl.name);
 
     if (tmpl.category === 'brief' || tmpl.category === 'angles' || tmpl.category === 'hooks' || tmpl.category === 'script') {
-      window.location.href = `/creative-studio?${params}`;
+      router.push(`/creative-studio?${params}`);
     } else if (tmpl.category === 'skill-bundle') {
-      window.location.href = `/editor?${params}`;
+      router.push(`/editor?${params}`);
     }
-  }, [session?.user]);
+  }, [session?.user, router]);
 
   const openBuilder = useCallback(() => {
     if (!session?.user) { setAuthOpen(true); return; }

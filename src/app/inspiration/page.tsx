@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useCallback, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import {
   Loader2, AlertCircle, Sparkles, TrendingUp, Eye, MousePointerClick,
@@ -49,6 +50,7 @@ const FORMAT_COLORS: Record<string, string> = {
 export default function InspirationPage() {
   const { status, data: session } = useSession();
   const { t, locale } = useI18n();
+  const router = useRouter();
   const [authOpen, setAuthOpen] = useState(false);
 
   const [creatives, setCreatives] = useState<InspirationCreative[]>([]);
@@ -95,8 +97,8 @@ export default function InspirationPage() {
     if (c.hook) params.set('hook', c.hook);
     if (c.angle) params.set('angle', c.angle);
     if (c.cta) params.set('cta', c.cta);
-    window.location.href = `/creative-studio?${params}`;
-  }, [session?.user]);
+    router.push(`/creative-studio?${params}`);
+  }, [session?.user, router]);
 
   // Show auth modal prompt for unauthenticated users
   if (status === 'unauthenticated') {

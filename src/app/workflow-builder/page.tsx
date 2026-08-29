@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import {
   Workflow, Plus, Trash2, GripVertical, Save, Loader2, AlertCircle,
@@ -61,6 +62,7 @@ interface Team {
 
 export default function WorkflowBuilderPage() {
   const { t } = useI18n();
+  const router = useRouter();
   const { data: session } = useSession();
   // v2 state: full conditional stage configs
   const [stageConfigs, setStageConfigs] = useState<ConditionalStage[]>([
@@ -290,7 +292,7 @@ export default function WorkflowBuilderPage() {
       if (pipelineId) {
         setRunMsg({ type: 'success', text: t('workflowBuilder.runSuccess') });
         // Navigate to the pipeline page to see execution
-        window.location.href = `/pipeline?id=${pipelineId}`;
+        router.push(`/pipeline?id=${pipelineId}`);
       } else {
         setRunMsg({ type: 'success', text: t('workflowBuilder.runSuccess') });
       }

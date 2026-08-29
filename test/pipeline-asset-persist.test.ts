@@ -218,4 +218,44 @@ describe('derivePipelineChildAssets', () => {
       assert.equal(spec.data.pipelineId, 'pl_test_001');
     }
   });
+
+  test('brief stage does not create child assets', () => {
+    const state = makeState({
+      stageResults: [
+        { stage: 'brief', status: 'completed', output: { brief: { objective: 'test', product: 'test' } } },
+      ],
+    });
+    const specs = derivePipelineChildAssets(state);
+    assert.equal(specs.length, 0);
+  });
+
+  test('script stage does not create child assets', () => {
+    const state = makeState({
+      stageResults: [
+        { stage: 'script', status: 'completed', output: { script: { title: 'test' }, hooks: [], angles: [] } },
+      ],
+    });
+    const specs = derivePipelineChildAssets(state);
+    assert.equal(specs.length, 0);
+  });
+
+  test('storyboard stage does not create child assets', () => {
+    const state = makeState({
+      stageResults: [
+        { stage: 'storyboard', status: 'completed', output: { storyboard: { ratio: '9:16', shots: [] } } },
+      ],
+    });
+    const specs = derivePipelineChildAssets(state);
+    assert.equal(specs.length, 0);
+  });
+
+  test('score stage does not create child assets', () => {
+    const state = makeState({
+      stageResults: [
+        { stage: 'score', status: 'completed', output: { score: { overall: 8, hookStrength: 7 } } },
+      ],
+    });
+    const specs = derivePipelineChildAssets(state);
+    assert.equal(specs.length, 0);
+  });
 });

@@ -1,10 +1,11 @@
 # LazyNext Architecture Audit (Phase 1)
 
-> **Superseded / out of date** — This audit was verified 2026-08-27, before the H–N
-> series landed (real pipeline executor, Asset/AssetVersion persistence, score stage,
+> **Superseded** — See `research/lazynext-architecture-audit-2026-09.md` for the current
+> architecture picture (post-Q series). This audit was verified 2026-08-27, before the
+> H–Q series landed (real pipeline executor, Asset/AssetVersion persistence, score stage,
 > Workflow Builder v2, model router for media, i18n wiring, clip editor EDL handoff,
-> E2E coverage, deep link error handling, etc.). Use `docs/adr/` and `CHANGELOG.md`
-> for the current architecture picture.
+> E2E coverage, deep link error handling, authenticated E2E, pipeline UI i18n, etc.).
+> Use `docs/adr/` and `CHANGELOG.md` for detailed decision records.
 
 > Source of truth: actual source code at `/Users/avaspatel/Downloads/Lazynext/atlas-marketing-studio`
 > (local clone of `https://github.com/Lazynext-Platform/lazynext`, branch `main`, clean tree).

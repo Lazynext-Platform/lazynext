@@ -1,5 +1,21 @@
 # LazyNext Changelog
 
+## 2026-09-02 — Q: Pipeline UI i18n, Score Scale Fix, Auth E2E Expansion, Lint Polish, Architecture Audit
+
+### What Changed
+1. **Score scale fix** — PipelineOrchestrator score viewer now displays `/10` (correct for `CreativeScore.overall`, which is a weighted average of 1-10 dimensions) instead of `/100`
+2. **Pipeline UI i18n** — Replaced ~30 hardcoded English strings in `PipelineOrchestrator.tsx` with `t()` calls; added 60 new i18n keys to all 13 locales covering form labels, configuration, execution controls, stage timeline, and all stage output viewer labels
+3. **Authenticated E2E expansion** — Added `e2e/auth-user-flows.spec.ts` with 12 authenticated tests covering dashboard, my-work, settings, admin, `/api/me`, credits analytics, admin users API, creative tools, pipeline templates, full pipeline execution flow, pipeline fetch-by-ID, and A/B automation
+4. **Lint warning reduction** — Replaced `window.location.href` with `router.push()` in `workflow-builder`, `inspiration`, and `templates` pages; added `router` to dependency arrays; reduced warnings from 11 to 7
+5. **No-asset persistence tests** — Added 4 unit tests verifying that `brief`, `script`, `storyboard`, and `score` stages do not create child assets
+6. **Architecture audit** — Wrote `research/lazynext-architecture-audit-2026-09.md` reflecting the current post-Q state (pipeline, assets, workflow builder, E2E, i18n, score, telemetry); updated old audit header to point to the new document
+
+### Verification
+- npm run lint — 0 errors, 7 warnings (down from 11)
+- npm test — 1412 tests passing (up from 1408)
+- npm run build — successful
+- npx playwright test — 430 passed, 2 skipped (410 unauthenticated + 20 authenticated)
+
 ## 2026-09-02 — P: Compliance Viewer, Creative Studio Score, Template Quality Gates, Stage Telemetry, Auth E2E
 
 ### What Changed
