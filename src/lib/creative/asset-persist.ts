@@ -54,6 +54,33 @@ export function derivePipelineChildAssets(
     if (!result.output) continue;
     const output = result.output;
 
+    if (result.stage === 'brief' && output.brief) {
+      specs.push({
+        type: 'brief',
+        name: `${pipelineName} — Brief`,
+        data: { brief: output.brief, pipelineId: state.pipelineId },
+        tags: ['pipeline', 'brief'],
+      });
+    }
+
+    if (result.stage === 'script' && (output.script || output.hooks || output.angles)) {
+      specs.push({
+        type: 'script',
+        name: `${pipelineName} — Script`,
+        data: { script: output.script, hooks: output.hooks, angles: output.angles, pipelineId: state.pipelineId },
+        tags: ['pipeline', 'script'],
+      });
+    }
+
+    if (result.stage === 'storyboard' && output.storyboard) {
+      specs.push({
+        type: 'storyboard',
+        name: `${pipelineName} — Storyboard`,
+        data: { storyboard: output.storyboard, pipelineId: state.pipelineId },
+        tags: ['pipeline', 'storyboard'],
+      });
+    }
+
     if (result.stage === 'media_generation' && output.mediaUrls) {
       specs.push({
         type: 'storyboard',
@@ -100,6 +127,15 @@ export function derivePipelineChildAssets(
         name: `${pipelineName} — Publish Result`,
         data: { publishResult: output.publishResult, pipelineId: state.pipelineId },
         tags: ['pipeline', 'publish'],
+      });
+    }
+
+    if (result.stage === 'score' && output.score != null) {
+      specs.push({
+        type: 'score',
+        name: `${pipelineName} — Score`,
+        data: { score: output.score, pipelineId: state.pipelineId },
+        tags: ['pipeline', 'score'],
       });
     }
   }

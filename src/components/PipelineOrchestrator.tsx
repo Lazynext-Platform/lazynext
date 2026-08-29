@@ -756,6 +756,7 @@ function PipelineExecutionView({
   const minutesLeft = state.estimatedTimeRemaining
     ? Math.max(1, Math.round(state.estimatedTimeRemaining / 60))
     : 0;
+  const hasFailedStage = state.stageResults.some((r) => r.status === 'failed');
 
   return (
     <div className="space-y-5">
@@ -869,6 +870,16 @@ function PipelineExecutionView({
               <XOctagon className="h-3.5 w-3.5" /> {t('pipeline.cancel')}
             </button>
           )}
+          {!isTerminal && hasFailedStage && (
+            <button
+              onClick={onCancel}
+              disabled={actionLoading}
+              className="flex items-center gap-1.5 rounded-lg border border-warning/30 bg-warning/5 px-3 py-2 text-xs font-medium text-warning hover:bg-warning/10 disabled:opacity-50"
+              title={t('pipeline.skipAllDescription')}
+            >
+              <SkipForward className="h-3.5 w-3.5" /> {t('pipeline.skipAll')}
+            </button>
+          )}
           {isTerminal && (
             <button
               onClick={onReset}
@@ -958,6 +969,32 @@ function PipelineExecutionView({
 // ---------------------------------------------------------------------------
 // Stage card
 // ---------------------------------------------------------------------------
+
+/** Map raw error strings to user-friendly messages. */
+function friendlyError(rawError: string, t: (key: string) => string): string {
+  const e = rawError.toLowerCase();
+  if (e.includes('rate_limited') || e.includes('rate limit') || e.includes('429')) {
+    return t('pipeline.errorRateLimited');
+  }
+  if (e.includes('insufficient') && e.includes('credit')) {
+    return t('pipeline.errorInsufficientCredits');
+  }
+  if (e.includes('timeout') || e.includes('timed out')) {
+    return t('pipeline.errorTimeout');
+  }
+  if (e.includes('network') || e.includes('fetch') || e.includes('econnrefused')) {
+    return t('pipeline.errorNetwork');
+  }
+  if (e.includes('auth') || e.includes('unauthorized') || e.includes('401')) {
+    return t('pipeline.errorAuth');
+  }
+  if (e.includes('server') || e.includes('500') || e.includes('502') || e.includes('503')) {
+    return t('pipeline.errorServer');
+  }
+  // Default: show the raw error but truncated
+  return rawError.length > 200 ? rawError.slice(0, 200) + '…' : rawError;
+}
+
 function StageCard({
   stage,
   result,
@@ -1001,7 +1038,7 @@ function StageCard({
 
       {result.error && (
         <div role="alert" className="mt-2 rounded-lg bg-danger/10 p-2 text-xs text-danger">
-          <AlertCircle className="mr-1 inline h-3 w-3" /> {result.error}
+          <AlertCircle className="mr-1 inline h-3 w-3" /> {friendlyError(result.error, t)}
         </div>
       )}
 

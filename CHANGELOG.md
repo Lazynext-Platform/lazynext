@@ -1,5 +1,21 @@
 # LazyNext Changelog
 
+## 2026-09-02 — X: Billing E2E, Error Recovery UX, Asset Visibility, Observability
+
+### What Changed
+1. **Billing/checkout E2E** — Added `e2e/auth-billing.spec.ts` with 11 tests covering pricing page UI (pack rendering, currency selector, credit amounts, mobile overflow), checkout API contract (unknown pack, missing pack, valid pack, unauthenticated), and webhook security (missing/invalid signature)
+2. **Pipeline error recovery UX** — `PipelineOrchestrator` now maps raw error strings to friendly user-facing messages via `friendlyError()` (rate-limited, insufficient credits, timeout, network, auth, server); added "Skip All & Stop" button that appears when a stage has failed
+3. **Asset visibility** — `derivePipelineChildAssets` now persists `brief`, `script`, `storyboard`, and `score` as child assets (previously only media, audio, edit, compliance, publish); added "Creative Packages" tab to `/assets` page showing pipeline output assets with metadata
+4. **Production observability** — Added `src/lib/observability/alerts.ts` with webhook-based alerting for critical pipeline failures and credit errors; configurable via `ALERT_WEBHOOK_URL` and `ALERT_WEBHOOK_SECRET` env vars; wired into pipeline route failure paths; falls back to console logging when no webhook is configured
+5. **i18n** — Added `skipAll`, `skipAllDescription`, `errorRateLimited`, `errorInsufficientCredits`, `errorTimeout`, `errorNetwork`, `errorAuth`, `errorServer`, `tabCreativePackages`, `creativePackagesEmpty`, `creativePackagesEmptyHint` translation keys to all 13 locales
+6. **Tests** — Added 5 unit tests for alerts module (`test/alerts.test.ts`); updated `pipeline-asset-persist.test.ts` to reflect new child asset types
+
+### Verification
+- npm run lint — 0 errors, 2 warnings
+- npm test — 1445 tests passing
+- npm run build — successful
+- npx playwright test — 436 passed, 7 skipped (4 rate-limit flakes in pre-existing auth-user-flows tests)
+
 ## 2026-09-02 — W: Parallel-wave E2E, Live Credit Display, Share Button, Deadline UX
 
 ### What Changed

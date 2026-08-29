@@ -23,6 +23,7 @@ import { executeStage, initialContext, mergeStageResultIntoContext, type StageCo
 import { recordStep, completeWorkflow, failWorkflow } from '@/lib/workflow/engine';
 import { persistAsset, derivePipelineChildAssets } from '@/lib/creative/asset-persist';
 import { logToolExecution } from '@/lib/telemetry';
+import { alertPipelineFailed, alertCreditError } from '@/lib/observability/alerts';
 
 export const maxDuration = 90;
 
@@ -205,6 +206,7 @@ async function __byokPOST(req: Request, { params }: { params: Promise<{ id: stri
             } catch (e) {
               state = failStage(state, stageName, 'insufficient_credits');
               await savePipeline(state);
+              await alertCreditError(uid, 'insufficient_credits', { pipelineId: state.pipelineId, stage: stageName }).catch(() => {});
               return NextResponse.json(
                 {
                   error:
@@ -275,6 +277,7 @@ async function __byokPOST(req: Request, { params }: { params: Promise<{ id: stri
           }
           state = failStage(state, firstFailure.stage as PipelineState['currentStage'] & string, firstFailure.error);
           await failWorkflow(state.pipelineId, uid, firstFailure.error).catch(() => {});
+          await alertPipelineFailed(uid, state.pipelineId, firstFailure.error, { stage: firstFailure.stage }).catch(() => {});
           await savePipeline(state);
           return NextResponse.json({ error: 'stage_failed', detail: firstFailure.error, stage: firstFailure.stage, state }, { status: 500 });
         }

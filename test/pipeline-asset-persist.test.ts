@@ -146,12 +146,13 @@ describe('derivePipelineChildAssets', () => {
       ],
     });
     const specs = derivePipelineChildAssets(state);
-    // brief, script, storyboard, score stages don't produce child assets
-    // media_generation, audio, edit, compliance, publish do
-    assert.equal(specs.length, 5);
+    // All 9 stages now produce child assets: brief, script, storyboard,
+    // media_generation, audio, edit, compliance, score, publish
+    assert.equal(specs.length, 9);
     const types = specs.map((s) => s.type);
-    assert.ok(types.includes('storyboard'));
+    assert.ok(types.includes('brief'));
     assert.ok(types.includes('script'));
+    assert.ok(types.includes('storyboard'));
     assert.ok(types.includes('score'));
     assert.ok(types.includes('variants'));
   });
@@ -219,43 +220,51 @@ describe('derivePipelineChildAssets', () => {
     }
   });
 
-  test('brief stage does not create child assets', () => {
+  test('brief stage creates a brief child asset', () => {
     const state = makeState({
       stageResults: [
         { stage: 'brief', status: 'completed', output: { brief: { objective: 'test', product: 'test' } } },
       ],
     });
     const specs = derivePipelineChildAssets(state);
-    assert.equal(specs.length, 0);
+    assert.equal(specs.length, 1);
+    assert.equal(specs[0].type, 'brief');
+    assert.equal(specs[0].tags.includes('pipeline'), true);
   });
 
-  test('script stage does not create child assets', () => {
+  test('script stage creates a script child asset', () => {
     const state = makeState({
       stageResults: [
         { stage: 'script', status: 'completed', output: { script: { title: 'test' }, hooks: [], angles: [] } },
       ],
     });
     const specs = derivePipelineChildAssets(state);
-    assert.equal(specs.length, 0);
+    assert.equal(specs.length, 1);
+    assert.equal(specs[0].type, 'script');
+    assert.equal(specs[0].tags.includes('pipeline'), true);
   });
 
-  test('storyboard stage does not create child assets', () => {
+  test('storyboard stage creates a storyboard child asset', () => {
     const state = makeState({
       stageResults: [
         { stage: 'storyboard', status: 'completed', output: { storyboard: { ratio: '9:16', shots: [] } } },
       ],
     });
     const specs = derivePipelineChildAssets(state);
-    assert.equal(specs.length, 0);
+    assert.equal(specs.length, 1);
+    assert.equal(specs[0].type, 'storyboard');
+    assert.equal(specs[0].tags.includes('pipeline'), true);
   });
 
-  test('score stage does not create child assets', () => {
+  test('score stage creates a score child asset', () => {
     const state = makeState({
       stageResults: [
         { stage: 'score', status: 'completed', output: { score: { overall: 8, hookStrength: 7 } } },
       ],
     });
     const specs = derivePipelineChildAssets(state);
-    assert.equal(specs.length, 0);
+    assert.equal(specs.length, 1);
+    assert.equal(specs[0].type, 'score');
+    assert.equal(specs[0].tags.includes('pipeline'), true);
   });
 });

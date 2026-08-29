@@ -49,8 +49,8 @@ Production uses Cloudflare R2 via `src/lib/media-storage.cloudflare.ts`.
 ## Verification Commands
 ```bash
 npm run lint    # ESLint
-npm test        # Node test runner (1440 tests)
-# E2E: 434 passed, 2 skipped (chromium + mobile-chrome + chromium-auth)
+npm test        # Node test runner (1445 tests)
+# E2E: 436 passed, 7 skipped (chromium + mobile-chrome + chromium-auth)
 npm run build   # Production build (Cloudflare target)
 ```
 
@@ -236,4 +236,10 @@ Completed across 15+ sessions:
 - Share button: completed pipelines show a "Share" button that creates a shareable link via `POST /api/creative/share` and copies it to clipboard
 - Auto-advance deadline UX: when the server's 75s auto-advance deadline is hit, a warning notice is shown and the client automatically retries the advance call after 1.5s (if the current stage has `autoAdvance: true`)
 - Parallel-wave E2E: authenticated tests verify pipeline creation with `parallelWith` stages and concurrent wave execution
+
+### X-Series: Billing E2E, Error Recovery, Asset Visibility, Observability
+- Billing/checkout E2E: `e2e/auth-billing.spec.ts` covers pricing page UI, checkout API contract (unknown pack, missing pack, valid pack, unauthenticated), and webhook security (missing/invalid signature)
+- Pipeline error recovery UX: `PipelineOrchestrator` shows friendly error messages (rate-limited, insufficient credits, timeout, network, auth, server) via `friendlyError()` mapping; "Skip All & Stop" button appears when a stage has failed
+- Asset visibility: `derivePipelineChildAssets` now persists `brief`, `script`, `storyboard`, and `score` as child assets (in addition to media, audio, edit, compliance, publish); `/assets` page has a "Creative Packages" tab showing pipeline output assets
+- Production observability: `src/lib/observability/alerts.ts` provides webhook-based alerting for critical pipeline failures and credit errors; configurable via `ALERT_WEBHOOK_URL` and `ALERT_WEBHOOK_SECRET` env vars; falls back to console logging when no webhook is configured
 
