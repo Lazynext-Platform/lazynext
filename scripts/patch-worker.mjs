@@ -21,13 +21,21 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const projectRoot = join(__dirname, '..');
 const distDir = join(projectRoot, '.open-next', 'dist');
 
-if (!existsSync(join(distDir, 'worker.js'))) {
-  console.error('worker.js not found in .open-next/dist/. Run wrangler deploy --dry-run first.');
+// The wrangler dry-run outputs the bundled worker using the basename of
+// the `main` entry from wrangler.jsonc. This is "worker-entry.js" when
+// using the custom worker-entry.mjs wrapper, or "worker.js" otherwise.
+// Find the actual bundled worker file dynamically.
+const workerName = existsSync(join(distDir, 'worker-entry.js'))
+  ? 'worker-entry.js'
+  : 'worker.js';
+
+if (!existsSync(join(distDir, workerName))) {
+  console.error(`${workerName} not found in .open-next/dist/. Run wrangler deploy --dry-run first.`);
   process.exit(1);
 }
 
 // Patch all __require functions
-const workerPath = join(distDir, 'worker.js');
+const workerPath = join(distDir, workerName);
 let content = readFileSync(workerPath, 'utf8');
 
 const patches = [
@@ -53,12 +61,12 @@ for (const [old, neu] of patches) {
 }
 
 writeFileSync(workerPath, content);
-console.log(`Patched ${patchCount} __require function(s) in worker.js`);
+console.log(`Patched ${patchCount} __require function(s) in ${workerName}`);
 
 // Create wrangler.jsonc in the dist directory
 const projectWrangler = readFileSync(join(projectRoot, 'wrangler.jsonc'), 'utf8');
 const distWrangler = projectWrangler
-  .replace(/"main":\s*"[^"]*"/, `"main": "worker.js"`)
+  .replace(/"main":\s*"[^"]*"/, `"main": "${workerName}"`)
   .replace(/"directory":\s*"[^"]*"/g, (match) => {
     if (match.includes('assets')) {
       return `"directory": "${join(projectRoot, '.open-next', 'assets').replace(/\\/g, '/')}"`;
