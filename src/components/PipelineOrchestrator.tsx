@@ -728,7 +728,7 @@ function PipelineExecutionView({
               disabled={actionLoading}
               className="flex items-center gap-1.5 rounded-lg border border-line bg-app px-3 py-2 text-xs font-medium text-fg hover:bg-hover disabled:opacity-50"
             >
-              <Pause className="h-3.5 w-3.5" /> Pause
+              <Pause className="h-3.5 w-3.5" /> {t('pipeline.pause')}
             </button>
           )}
           {!isTerminal && state.status === 'paused' && (
@@ -737,7 +737,7 @@ function PipelineExecutionView({
               disabled={actionLoading}
               className="flex items-center gap-1.5 rounded-lg border border-line bg-app px-3 py-2 text-xs font-medium text-fg hover:bg-hover disabled:opacity-50"
             >
-              <Play className="h-3.5 w-3.5" /> Resume
+              <Play className="h-3.5 w-3.5" /> {t('pipeline.resume')}
             </button>
           )}
           {!isTerminal && (
@@ -991,6 +991,7 @@ function StageOutputViewer({ stage, output, pipelineId }: { stage: PipelineStage
 
 /** Render stage-specific output content. */
 function StageOutputContent({ stage, output, pipelineId }: { stage: PipelineStage; output: Record<string, unknown>; pipelineId: string }) {
+  const { t } = useI18n();
   switch (stage) {
     case 'brief': {
       const brief = output.brief as Record<string, unknown> | undefined;
@@ -1114,22 +1115,22 @@ function StageOutputContent({ stage, output, pipelineId }: { stage: PipelineStag
       if (!score) return null;
       const overall = typeof score.overall === 'number' ? score.overall : undefined;
       const dims: Array<[string, number]> = [
-        ['Hook Strength', score.hookStrength],
-        ['Clarity', score.clarity],
-        ['Product Visibility', score.productVisibility],
-        ['Brand Consistency', score.brandConsistency],
-        ['Emotional Impact', score.emotionalImpact],
-        ['Novelty', score.novelty],
-        ['Platform Fit', score.platformFit],
-        ['CTA Strength', score.ctaStrength],
-        ['Audio Quality', score.audioQuality],
-        ['Visual Quality', score.visualQuality],
-        ['Compliance Risk', score.complianceRisk],
+        [t('creativeStudio.hookStrength'), score.hookStrength],
+        [t('creativeStudio.clarity'), score.clarity],
+        [t('creativeStudio.productVisibility'), score.productVisibility],
+        [t('creativeStudio.brandConsistency'), score.brandConsistency],
+        [t('creativeStudio.emotionalImpact'), score.emotionalImpact],
+        [t('creativeStudio.novelty'), score.novelty],
+        [t('creativeStudio.platformFit'), score.platformFit],
+        [t('creativeStudio.ctaStrength'), score.ctaStrength],
+        [t('creativeStudio.audioQuality'), score.audioQuality],
+        [t('creativeStudio.visualQuality'), score.visualQuality],
+        [t('creativeStudio.complianceRisk'), score.complianceRisk],
       ].filter(([, v]) => typeof v === 'number') as Array<[string, number]>;
       return (
         <dl className="space-y-1">
           {overall !== undefined && (
-            <DetailRow label="Overall Score" value={`${overall}/100`} />
+            <DetailRow label={t('creativeStudio.overall')} value={`${overall}/100`} />
           )}
           {dims.map(([label, val]) => (
             <DetailRow key={label} label={label} value={String(val)} />

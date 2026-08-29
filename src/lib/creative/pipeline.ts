@@ -202,12 +202,12 @@ export const PIPELINE_TEMPLATES: PipelineTemplate[] = [
     name: 'Video Ad Pipeline',
     description:
       'Full video production: brief, script, storyboard, media, audio, edit, and publish. Ideal for short-form video ads.',
-    stages: ['brief', 'script', 'storyboard', 'media_generation', 'audio', 'edit', 'publish'],
+    stages: ['brief', 'script', 'storyboard', 'media_generation', 'audio', 'edit', 'score', 'publish'],
     defaultConfig: {
       name: 'Video Ad',
       onComplete: 'publish',
     },
-    estimatedCredits: 21,
+    estimatedCredits: 23,
     estimatedDurationMin: 4,
   },
   {
@@ -222,13 +222,14 @@ export const PIPELINE_TEMPLATES: PipelineTemplate[] = [
       'storyboard',
       'media_generation',
       'compliance',
+      'score',
       'publish',
     ],
     defaultConfig: {
       name: 'Compliance-First Ad',
       onComplete: 'review',
     },
-    estimatedCredits: 24,
+    estimatedCredits: 26,
     estimatedDurationMin: 5,
   },
   {

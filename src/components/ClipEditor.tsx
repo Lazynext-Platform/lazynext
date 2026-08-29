@@ -3,6 +3,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import { Scissors, Loader2, AlertCircle, Plus, Trash2, Mic, Volume2 } from 'lucide-react';
 import { useI18n } from '@/i18n/provider';
+import type { EditResult, EditCut } from '@/lib/creative/types';
 import {
   createClip,
   formatTimecode,
@@ -53,23 +54,23 @@ export function ClipEditor({ initialMediaUrl, pipelineId }: { initialMediaUrl?: 
         if (!state || cancelled) return;
         // Find the edit stage result
         const editResult = state.stageResults?.find(
-          (r: { stage: string; status: string; output?: { editResult?: Record<string, unknown> } }) =>
+          (r: { stage: string; status: string; output?: { editResult?: EditResult } }) =>
             r.stage === 'edit' && r.status === 'completed',
         )?.output?.editResult;
         if (!editResult || cancelled) return;
         // Load the media URL from the edit result if not already set
         if (!initialMediaUrl && editResult.finalMediaUrl) {
-          setMediaResult(editResult.finalMediaUrl as string);
+          setMediaResult(editResult.finalMediaUrl);
         }
         // Transform the cutPlan into clips
         const cutPlan = editResult.cutPlan;
         if (Array.isArray(cutPlan) && cutPlan.length > 0) {
-          const loadedClips = cutPlan.map((cut: Record<string, unknown>, idx: number) =>
+          const loadedClips = cutPlan.map((cut: EditCut, idx: number) =>
             createClip({
-              name: (cut.label as string) || (cut.name as string) || `Cut ${idx + 1}`,
+              name: cut.label || cut.name || `Cut ${idx + 1}`,
               type: (cut.mediaType as 'video' | 'audio' | 'image' | 'text' | 'transition' | 'effect') || 'video',
-              duration: (cut.durationSec as number) || (cut.duration as number) || 5,
-              source: (cut.mediaUrl as string) || (editResult.finalMediaUrl as string) || '',
+              duration: cut.durationSec || cut.duration || 5,
+              source: cut.mediaUrl || editResult.finalMediaUrl || '',
             }),
           );
           if (!cancelled && loadedClips.length > 0) {

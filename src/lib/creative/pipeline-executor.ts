@@ -60,7 +60,7 @@ export interface StageContext {
   score?: CreativeScore;
   mediaUrls?: string[];
   audioUrl?: string;
-  editResult?: Record<string, unknown>;
+  editResult?: import('./types').EditResult;
   complianceResult?: Record<string, unknown>;
   publishResult?: Record<string, unknown>;
   // Allow arbitrary extra data
@@ -568,7 +568,7 @@ export function mergeStageResultIntoContext(
       next.audioUrl = result.output.audioUrl as string | undefined;
       break;
     case 'edit':
-      next.editResult = result.output.editResult as Record<string, unknown>;
+      next.editResult = result.output.editResult as import('./types').EditResult;
       break;
     case 'compliance':
       next.complianceResult = result.output.complianceResult as Record<string, unknown>;

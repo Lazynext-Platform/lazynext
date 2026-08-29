@@ -21,6 +21,7 @@ import {
 import { executeStage, initialContext, mergeStageResultIntoContext, type StageContext } from '@/lib/creative/pipeline-executor';
 import { recordStep, completeWorkflow, failWorkflow } from '@/lib/workflow/engine';
 import { persistAsset, derivePipelineChildAssets } from '@/lib/creative/asset-persist';
+import { logToolExecution } from '@/lib/telemetry';
 
 export const maxDuration = 90;
 
@@ -51,7 +52,14 @@ async function savePipeline(state: PipelineState): Promise<void> {
       },
     });
   } catch (e) {
-    console.error('[creative/pipeline/[id]] persist failed:', String(e));
+    logToolExecution({
+      tool: 'pipeline_workflow_run_persist',
+      userId: 'system',
+      cost: 0,
+      durationMs: 0,
+      success: false,
+      error: String(e),
+    });
   }
 }
 
@@ -218,7 +226,17 @@ async function __byokPOST(req: Request, { params }: { params: Promise<{ id: stri
           Date.now() - Date.parse(state.createdAt),
         ).catch(() => {});
         // Persist generated outputs as assets for the asset library
-        await persistPipelineAssets(uid, state).catch(() => {});
+        // Log failures to telemetry but don't block the pipeline completion
+        await persistPipelineAssets(uid, state).catch((e) => {
+          logToolExecution({
+            tool: 'persist_pipeline_assets',
+            userId: uid,
+            cost: 0,
+            durationMs: 0,
+            success: false,
+            error: String(e),
+          });
+        });
       }
       break;
     }

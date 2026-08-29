@@ -115,6 +115,30 @@ export interface CreativeScore {
   notes: string;
 }
 
+/** A single cut in an Edit Decision List (EDL) produced by the edit stage. */
+export interface EditCut {
+  shotIndex: number;
+  shot: string;
+  prompt: string;
+  mediaUrl?: string;
+  mediaType?: string;
+  label?: string;
+  name?: string;
+  durationSec?: number;
+  duration?: number;
+  startSec?: number;
+  endSec?: number;
+  transition?: string;
+}
+
+/** The result of the edit stage — an Edit Decision List and final media URL. */
+export interface EditResult {
+  cutPlan: EditCut[];
+  finalMediaUrl?: string;
+  totalDurationSec?: number;
+  format?: string;
+}
+
 /** A reference creative analysis — structured analysis of a reference ad. */
 export interface ReferenceCreativeAnalysis {
   source: string; // source URL or description

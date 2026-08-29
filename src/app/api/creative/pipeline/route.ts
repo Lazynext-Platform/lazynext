@@ -19,6 +19,7 @@ import {
 } from '@/lib/creative/pipeline';
 import { executeStage, initialContext, mergeStageResultIntoContext, type StageContext } from '@/lib/creative/pipeline-executor';
 import { startWorkflow, recordStep, completeWorkflow, failWorkflow } from '@/lib/workflow/engine';
+import { logToolExecution } from '@/lib/telemetry';
 
 export const maxDuration = 90;
 
@@ -155,7 +156,14 @@ async function __byokPOST(req: Request) {
       },
     });
   } catch (e) {
-    console.error('[creative/pipeline] persist failed:', String(e));
+    logToolExecution({
+      tool: 'pipeline_create_persist',
+      userId: uid,
+      cost: 0,
+      durationMs: 0,
+      success: false,
+      error: String(e),
+    });
     // Non-fatal: return the in-memory state so the client can still drive it.
   }
 
