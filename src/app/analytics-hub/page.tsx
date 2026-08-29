@@ -44,6 +44,7 @@ interface HubData {
     runningRuns: number;
     byType: Array<{ type: string; count: number }>;
     avgDurationSec: number;
+    perStage: Array<{ stage: string; total: number; completed: number; failed: number; successRate: number; totalCredits: number; avgDurationSec: number }>;
   };
 }
 
@@ -341,6 +342,40 @@ export default function AnalyticsHubPage() {
                       max={Math.max(...data.workflows.byType.map(r => r.count), 1)}
                       color="var(--color-brand-accent)"
                     />
+                  </div>
+                )}
+                {data.workflows.perStage && data.workflows.perStage.length > 0 && (
+                  <div>
+                    <p className="text-xs text-fg-muted mb-2">{t('analyticsHub.perStageBreakdown')}</p>
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-xs">
+                        <caption className="sr-only">{t('analyticsHub.perStageBreakdown')}</caption>
+                        <thead>
+                          <tr className="border-b border-border text-left text-fg-muted">
+                            <th scope="col" className="py-1 pr-3">{t('analyticsHub.stage')}</th>
+                            <th scope="col" className="py-1 pr-3 text-right">{t('analyticsHub.total')}</th>
+                            <th scope="col" className="py-1 pr-3 text-right">{t('analyticsHub.successRate')}</th>
+                            <th scope="col" className="py-1 pr-3 text-right">{t('analyticsHub.credits')}</th>
+                            <th scope="col" className="py-1 text-right">{t('analyticsHub.avgDuration')}</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {data.workflows.perStage.map(s => (
+                            <tr key={s.stage} className="border-b border-border last:border-0">
+                              <td className="py-1 pr-3 font-medium">{s.stage}</td>
+                              <td className="py-1 pr-3 text-right">{s.total}</td>
+                              <td className="py-1 pr-3 text-right">
+                                <span className={s.successRate >= 80 ? 'text-success' : s.successRate >= 50 ? 'text-warning' : 'text-danger'}>
+                                  {s.successRate}%
+                                </span>
+                              </td>
+                              <td className="py-1 pr-3 text-right">{s.totalCredits}</td>
+                              <td className="py-1 text-right">{s.avgDurationSec > 0 ? `${s.avgDurationSec}s` : '—'}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
                 )}
               </section>

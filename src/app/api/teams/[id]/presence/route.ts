@@ -13,6 +13,50 @@ import { NextResponse } from 'next/server';
  * single-isolate deployment, this is sufficient.
  */
 
+/*
+ * ────────────────────────────────────────────────────────────────────────────
+ * PRODUCTION LIMITATION — Cross-isolate presence (documented)
+ * ────────────────────────────────────────────────────────────────────────────
+ *
+ * The in-memory `presenceStore` below is scoped to a single Worker isolate.
+ * Cloudflare Workers run many isolates in parallel, so a heartbeat sent to
+ * isolate A is invisible to a GET request handled by isolate B. This means
+ * online members may appear offline to teammates whose requests land on a
+ * different isolate.
+ *
+ * Recommended production fixes (in order of preference):
+ *
+ *   1. Durable Objects (BEST): A per-team Durable Object holds the canonical
+ *      presence map. All presence requests for a team are routed to the same
+ *      DO instance via the team id, giving a single source of truth with
+ *      sub-second fan-out via WebSocket Hibernation API. This is the
+ *      Cloudflare-recommended pattern for real-time presence.
+ *
+ *   2. D1-backed presence: Add a `lastSeenAt` column to the TeamMember model
+ *      (or a dedicated `TeamPresence` table) and update it on every heartbeat.
+ *      GET queries rows where `lastSeenAt > now() - 30s`. This is durable and
+ *      cross-isolate but adds a DB write per heartbeat (~1 write/10s/user),
+ *      which increases D1 write load. A TTL index or periodic cleanup job is
+ *      needed to prune stale rows.
+ *
+ *   3. Workers KV: Store presence with a short TTL (e.g. 30s) keyed by
+ *      `presence:{teamId}:{userId}`. KV is eventually consistent (~60s) so it
+ *      is not ideal for real-time presence but works for "who's roughly
+ *      online" semantics.
+ *
+ * Best-effort improvement implemented here:
+ *   The TeamMember model has no `lastSeenAt` field, and adding one requires a
+ *   schema migration (see prisma/schema.prisma). As a lightweight best-effort
+ *   persistence that does NOT require a migration, we write a `member_online`
+ *   entry to the TeamActivity log (D1-backed) the first time a user becomes
+ *   present in a session (i.e. when they were not already in the in-memory
+ *   store). This records presence events durably across isolates without
+ *   spamming the activity feed on every 10s heartbeat. When a proper
+ *   `lastSeenAt` field or Durable Object is introduced, this activity-log
+ *   write can be removed.
+ * ────────────────────────────────────────────────────────────────────────────
+ */
+
 // ── In-memory presence store ──
 
 interface PresenceEntry {
@@ -114,6 +158,10 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
     const page = typeof body.page === 'string' ? body.page.slice(0, 200) : '/dashboard';
 
     const team = getTeamPresence(id);
+    // Detect first presence in this isolate (user was not online here before).
+    // This is used for the best-effort D1 activity-log write (see header comment).
+    const wasOnline = team.has(user.id);
+
     team.set(user.id, {
       userId: user.id,
       userName: user.name || user.email || 'Unknown',
@@ -121,6 +169,31 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
       page,
       lastSeen: Date.now(),
     });
+
+    // Best-effort D1 persistence: log a `member_online` activity the first time
+    // a user becomes present in this isolate. This is fire-and-forget and
+    // intentionally NOT awaited so a slow DB write never blocks the heartbeat.
+    // It records presence events durably across isolates without spamming the
+    // activity feed on every 10s heartbeat. See the header comment for the
+    // full production recommendation (Durable Objects / lastSeenAt column).
+    if (!wasOnline) {
+      try {
+        const { prisma } = await import('@/lib/prisma');
+        // Fire-and-forget: attach a .catch() so rejections never surface as
+        // unhandled promise rejections. The heartbeat response is not delayed.
+        prisma.teamActivity.create({
+          data: {
+            teamId: id,
+            userId: user.id,
+            type: 'member_online',
+            summary: `${user.name || user.email || 'A member'} came online`,
+            metadataJson: JSON.stringify({ page }),
+          },
+        }).catch(() => { /* best-effort: ignore DB errors */ });
+      } catch {
+        /* best-effort: ignore import/DB errors */
+      }
+    }
 
     // Also return current presence for convenience
     cleanStaleEntries(id);

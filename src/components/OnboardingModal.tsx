@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import {
   X, ArrowRight, ArrowLeft, Sparkles, Clapperboard, Gift, Scissors,
-  BarChart3, Megaphone, Target, Check, Rocket,
+  BarChart3, Megaphone, Target, Check, Rocket, Users, FlaskConical, Workflow,
 } from 'lucide-react';
 import { useI18n } from '@/i18n/provider';
 
@@ -94,6 +94,32 @@ export function OnboardingModal() {
                 <Megaphone className="w-4 h-4 text-brand-accent mb-1" />
                 <p className="font-medium">{t('onboarding.feature4Title')}</p>
                 <p className="text-fg-faint mt-0.5">{t('onboarding.feature4Desc')}</p>
+              </div>
+            </div>
+            {/* New growth & UX features */}
+            <div className="rounded-lg border border-accent/30 bg-accent/5 p-3 space-y-2">
+              <p className="text-xs font-semibold">{t('onboarding.newFeaturesTitle')}</p>
+              <div className="grid grid-cols-2 gap-2 text-xs">
+                <div className="rounded-lg border border-border bg-bg-secondary p-2.5">
+                  <Users className="w-4 h-4 text-brand-accent mb-1" />
+                  <p className="font-medium">{t('onboarding.featureTeamTitle')}</p>
+                  <p className="text-fg-faint mt-0.5">{t('onboarding.featureTeamDesc')}</p>
+                </div>
+                <div className="rounded-lg border border-border bg-bg-secondary p-2.5">
+                  <BarChart3 className="w-4 h-4 text-brand-accent mb-1" />
+                  <p className="font-medium">{t('onboarding.featureAnalyticsTitle')}</p>
+                  <p className="text-fg-faint mt-0.5">{t('onboarding.featureAnalyticsDesc')}</p>
+                </div>
+                <div className="rounded-lg border border-border bg-bg-secondary p-2.5">
+                  <FlaskConical className="w-4 h-4 text-brand-accent mb-1" />
+                  <p className="font-medium">{t('onboarding.featureAbTitle')}</p>
+                  <p className="text-fg-faint mt-0.5">{t('onboarding.featureAbDesc')}</p>
+                </div>
+                <div className="rounded-lg border border-border bg-bg-secondary p-2.5">
+                  <Workflow className="w-4 h-4 text-brand-accent mb-1" />
+                  <p className="font-medium">{t('onboarding.featureWorkflowTitle')}</p>
+                  <p className="text-fg-faint mt-0.5">{t('onboarding.featureWorkflowDesc')}</p>
+                </div>
               </div>
             </div>
             <button

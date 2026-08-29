@@ -175,6 +175,31 @@ export async function GET() {
     ? Math.round(completedDurations.reduce((s, d) => s + d, 0) / completedDurations.length)
     : 0;
 
+  // ── Per-stage workflow step stats ──
+  const workflowRunIds = workflowRuns.map(r => r.id);
+  const workflowSteps = workflowRunIds.length > 0
+    ? await prisma.workflowStep.findMany({
+        where: { runId: { in: workflowRunIds } },
+        select: { stepName: true, status: true, creditsCost: true, startedAt: true, completedAt: true },
+      }).catch(() => [])
+    : [];
+
+  const stagesByType: Record<string, { total: number; completed: number; failed: number; totalCredits: number; avgDurationSec: number }> = {};
+  for (const step of workflowSteps) {
+    const stageName = step.stepName || 'unknown';
+    if (!stagesByType[stageName]) stagesByType[stageName] = { total: 0, completed: 0, failed: 0, totalCredits: 0, avgDurationSec: 0 };
+    stagesByType[stageName].total++;
+    if (step.status === 'completed') stagesByType[stageName].completed++;
+    if (step.status === 'failed') stagesByType[stageName].failed++;
+    stagesByType[stageName].totalCredits += (step.creditsCost || 0);
+    if (step.completedAt && step.startedAt) {
+      const dur = (step.completedAt.getTime() - step.startedAt.getTime()) / 1000;
+      if (Number.isFinite(dur) && dur >= 0) {
+        stagesByType[stageName].avgDurationSec = (stagesByType[stageName].avgDurationSec + dur) / 2;
+      }
+    }
+  }
+
   return NextResponse.json({
     // Overview
     overview: {
@@ -235,6 +260,17 @@ export async function GET() {
         .map(([type, count]) => ({ type, count }))
         .sort((a, b) => b.count - a.count),
       avgDurationSec: avgWorkflowDurationSec,
+      perStage: Object.entries(stagesByType)
+        .map(([stage, v]) => ({
+          stage,
+          total: v.total,
+          completed: v.completed,
+          failed: v.failed,
+          successRate: v.total > 0 ? Math.round((v.completed / v.total) * 10000) / 100 : 0,
+          totalCredits: v.totalCredits,
+          avgDurationSec: Math.round(v.avgDurationSec),
+        }))
+        .sort((a, b) => b.total - a.total),
     },
   });
 }

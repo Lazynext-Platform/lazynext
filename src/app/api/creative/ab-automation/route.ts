@@ -326,6 +326,33 @@ export async function PATCH(req: Request) {
         // Continue even if update fails
       }
     }
+
+    // ── Winner feedback loop: tag the winning creation in outputs JSON ──
+    try {
+      const winningCreation = await prisma.creation.findUnique({
+        where: { id: winnerId },
+        select: { id: true, outputs: true },
+      });
+      if (winningCreation) {
+        let outputs: Record<string, unknown> = {};
+        try {
+          if (winningCreation.outputs && typeof winningCreation.outputs === 'object') {
+            outputs = winningCreation.outputs as Record<string, unknown>;
+          }
+        } catch { /* empty outputs */ }
+        if (!outputs.abTestWinner) {
+          outputs.abTestWinner = true;
+          outputs.abTestWinnerAt = new Date().toISOString();
+          outputs.abTestJobId = jobId;
+          await prisma.creation.update({
+            where: { id: winnerId },
+            data: { outputs: JSON.parse(JSON.stringify(outputs)) },
+          });
+        }
+      }
+    } catch {
+      // Tagging is best-effort — don't fail the job check
+    }
   }
 
   return NextResponse.json({

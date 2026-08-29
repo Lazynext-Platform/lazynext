@@ -60,12 +60,22 @@ export async function GET() {
         } catch {
           // malformed payloadJson — return empty stages
         }
+        // Parse tags to detect team-shared templates
+        let isTeamShared = false;
+        try {
+          const tags: string[] = JSON.parse(t.tagsJson || '[]');
+          isTeamShared = tags.some(tag => typeof tag === 'string' && tag.startsWith('team:'));
+        } catch {
+          // malformed tagsJson — treat as not team-shared
+        }
         return {
           id: t.id,
           name: t.name,
           description: t.description,
           stages,
           isBuiltIn: t.userId === null,
+          isTeamShared,
+          ownerId: t.userId ?? undefined,
           isFavorite: t.isFavorite,
           createdAt: t.createdAt.toISOString(),
         };
@@ -93,7 +103,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'invalid_json' }, { status: 400 });
   }
 
-  const { name, description, stages, teamId } = body as { name?: string; description?: string; stages?: PipelineStage[]; teamId?: string };
+  const { name, description, stages, teamId, workflow } = body as { name?: string; description?: string; stages?: PipelineStage[]; teamId?: string; workflow?: { stages: any[]; flags: Record<string, unknown> } };
 
   // Validate name
   const trimmedName = typeof name === 'string' ? name.trim() : '';
@@ -131,6 +141,18 @@ export async function POST(req: Request) {
     tags = ['workflow', 'custom', `team:${teamId}`];
   }
 
+  // Build payload — include both simple stages and optional workflow definition
+  const payload: { stages: PipelineStage[]; workflow?: { stages: any[]; flags: Record<string, unknown> } } = { stages: filteredStages };
+  if (workflow && Array.isArray(workflow.stages) && workflow.stages.length > 0) {
+    // Validate workflow stages
+    const validWfStages = workflow.stages.filter((s: any) =>
+      s && typeof s.stage === 'string' && BUILDER_STAGES.includes(s.stage as PipelineStage)
+    );
+    if (validWfStages.length > 0) {
+      payload.workflow = { stages: validWfStages, flags: workflow.flags || {} };
+    }
+  }
+
   try {
     const template = await prisma.creativeTemplate.create({
       data: {
@@ -138,7 +160,7 @@ export async function POST(req: Request) {
         category: 'workflow',
         name: trimmedName,
         description: trimmedDesc,
-        payloadJson: JSON.stringify({ stages: filteredStages }),
+        payloadJson: JSON.stringify(payload),
         tagsJson: JSON.stringify(tags),
       },
     });
@@ -152,6 +174,57 @@ export async function POST(req: Request) {
     }, { status: 201 });
   } catch {
     return NextResponse.json({ error: 'failed_to_save_template' }, { status: 500 });
+  }
+}
+
+/**
+ * PATCH /api/creative/workflow-templates?id=xxx
+ * Update a custom workflow template (e.g. unshare from a team).
+ * Body: { action: 'unshare' }
+ */
+export async function PATCH(req: Request) {
+  const session = await auth();
+  if (!session?.user?.id) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+  const uid = session.user.id;
+
+  const url = new URL(req.url);
+  const id = url.searchParams.get('id');
+  if (!id) return NextResponse.json({ error: 'id_required' }, { status: 400 });
+
+  let body: any;
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: 'invalid_json' }, { status: 400 });
+  }
+
+  const action = body?.action;
+  if (action !== 'unshare') {
+    return NextResponse.json({ error: 'unknown_action' }, { status: 400 });
+  }
+
+  try {
+    // Only the owner can unshare a template
+    const template = await prisma.creativeTemplate.findFirst({
+      where: { id, userId: uid, category: 'workflow' },
+    });
+    if (!template) return NextResponse.json({ error: 'not_found' }, { status: 404 });
+
+    // Remove all "team:*" tags from tagsJson
+    let tags: string[] = [];
+    try {
+      tags = JSON.parse(template.tagsJson || '[]');
+    } catch {
+      tags = [];
+    }
+    const filteredTags = tags.filter(tag => !(typeof tag === 'string' && tag.startsWith('team:')));
+    await prisma.creativeTemplate.update({
+      where: { id },
+      data: { tagsJson: JSON.stringify(filteredTags) },
+    });
+    return NextResponse.json({ ok: true });
+  } catch {
+    return NextResponse.json({ error: 'failed_to_update_template' }, { status: 500 });
   }
 }
 

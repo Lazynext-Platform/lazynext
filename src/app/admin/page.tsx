@@ -2,7 +2,8 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { useSession } from 'next-auth/react';
-import { Loader2, Search, Users, Film, TrendingUp, AlertCircle, Plus, Minus, RefreshCw } from 'lucide-react';
+import Link from 'next/link';
+import { Loader2, Search, Users, Film, TrendingUp, AlertCircle, Plus, Minus, RefreshCw, MessageSquare } from 'lucide-react';
 import { formatNumber, formatDateTime } from '@/lib/i18n-format';
 import { useI18n } from '@/i18n/provider';
 
@@ -105,6 +106,9 @@ return (
           <button onClick={() => setTab('creations')} className={`inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition ${tab === 'creations' ? 'bg-[#0064d9] text-white' : 'bg-hover text-fg-muted hover:bg-elevated'}`}>
             <Film className="h-4 w-4" /> {t('admin.tabCreations')}
           </button>
+          <Link href="/admin/feedback" className="inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition bg-hover text-fg-muted hover:bg-elevated">
+            <MessageSquare className="h-4 w-4" /> {t('adminFeedback.tabFeedback')}
+          </Link>
         </div>
 
         {tab === 'users' && (
