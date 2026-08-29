@@ -612,6 +612,32 @@ export default function CreativeStudioPage() {
     setPipelineState(null);
   }, []);
 
+  // Approve & Publish — called when the pipeline has reached the publish stage
+  // and the user wants to proceed with publishing (subject to dry-run safety).
+  const [publishApproving, setPublishApproving] = useState(false);
+  const approvePublish = useCallback(async () => {
+    if (!pipelineState?.pipelineId) return;
+    setPublishApproving(true);
+    setPipelineError(null);
+    try {
+      const res = await fetch(`/api/creative/pipeline/${pipelineState.pipelineId}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'approve' }),
+      });
+      if (!res.ok) {
+        const j = await res.json().catch(() => ({}));
+        throw new Error(j.error || j.detail || `HTTP ${res.status}`);
+      }
+      const data = await res.json();
+      setPipelineState(data.state);
+    } catch (e) {
+      setPipelineError(e instanceof Error ? e.message : String(e));
+    } finally {
+      setPublishApproving(false);
+    }
+  }, [pipelineState]);
+
   // ── Batch generation ──
   const runBatch = useCallback(async () => {
     if (!brief) return;
@@ -1143,6 +1169,24 @@ export default function CreativeStudioPage() {
               {pipelineError && (
                 <div role="alert" className="rounded-lg bg-danger/10 p-3 text-sm text-danger">
                   {pipelineError}
+                </div>
+              )}
+
+              {/* Waiting for publish approval */}
+              {pipelineState?.status === 'running' && pipelineState?.currentStage === 'publish' && !pipelineRunning && (
+                <div className="space-y-3">
+                  <div role="status" className="rounded-lg bg-warning/10 p-3 text-sm text-warning">
+                    {t('creativeStudio.pipelineWaitingForPublish')}
+                  </div>
+                  <button
+                    onClick={approvePublish}
+                    disabled={publishApproving}
+                    className="flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-bold text-white disabled:opacity-50"
+                    style={{ background: '#0064d9' }}
+                  >
+                    {publishApproving && <Loader2 className="h-4 w-4 animate-spin" />}
+                    {t('creativeStudio.approvePublish')}
+                  </button>
                 </div>
               )}
 

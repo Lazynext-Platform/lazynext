@@ -29,12 +29,13 @@ import {
   Zap,
 } from 'lucide-react';
 import { useI18n } from '@/i18n/provider';
-import type {
-  PipelineState,
-  PipelineStage,
-  PipelineStageConfig,
-  PipelineTemplate,
-  StageStatus,
+import {
+  templatePreApprovalCredits,
+  type PipelineState,
+  type PipelineStage,
+  type PipelineStageConfig,
+  type PipelineTemplate,
+  type StageStatus,
 } from '@/lib/creative/pipeline';
 
 // ---------------------------------------------------------------------------
@@ -306,37 +307,11 @@ export function PipelineOrchestrator({ initialPipelineId }: { initialPipelineId?
   const skip = useCallback((stage: PipelineStage) => callAction('skip', { stage }), [callAction]);
   const retry = useCallback((stage: PipelineStage) => callAction('retry', { stage }), [callAction]);
 
-  // Auto-advance: when the pipeline is running and the current stage has
-  // autoAdvance enabled, automatically call advance after a short delay.
-  // This lets the pipeline run end-to-end without manual clicking.
-  const autoAdvanceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  useEffect(() => {
-    if (autoAdvanceTimer.current) {
-      clearTimeout(autoAdvanceTimer.current);
-      autoAdvanceTimer.current = null;
-    }
-    if (!activePipeline || activePipeline.status !== 'running' || actionLoading) return;
-    const currentStage = activePipeline.currentStage;
-    if (!currentStage || currentStage === 'completed') return;
-    // Read autoAdvance from the server pipeline config, not the client form state
-    const serverStageConfig = activePipeline.config.stages.find(
-      (s) => s.stage === currentStage,
-    );
-    const autoAdvance = serverStageConfig?.autoAdvance ?? stageConfigs[currentStage as PipelineStage]?.autoAdvance;
-    if (!autoAdvance) return;
-    // Check if the current stage has completed (has output) — advance to the next
-    const stageResult = activePipeline.stageResults.find(
-      (r) => r.stage === currentStage && r.status === 'completed',
-    );
-    if (!stageResult) return;
-    // Auto-advance after 1.5s delay to let the user see the output
-    autoAdvanceTimer.current = setTimeout(() => {
-      callAction('advance');
-    }, 1500);
-    return () => {
-      if (autoAdvanceTimer.current) clearTimeout(autoAdvanceTimer.current);
-    };
-  }, [activePipeline, actionLoading, stageConfigs, callAction]);
+  // NOTE: Client-side auto-advance timer was removed in U4.
+  // The server now handles auto-advancing through stages in a single request
+  // (bounded by a 75s deadline). The client only needs to call 'advance'
+  // explicitly when the server's auto-advance deadline is hit or when a stage
+  // has autoAdvance=false (e.g. the publish stage).
 
   const togglePlatform = (p: string) => {
     setPlatforms((prev) => (prev.includes(p) ? prev.filter((x) => x !== p) : [...prev, p]));
@@ -413,7 +388,7 @@ export function PipelineOrchestrator({ initialPipelineId }: { initialPipelineId?
                       <p className="mt-1 text-xs text-fg-faint">{tmpl.description}</p>
                       <div className="mt-3 flex items-center gap-3 text-[11px] text-fg-faint">
                         <span className="flex items-center gap-1">
-                          <Coins className="h-3 w-3" /> {tmpl.estimatedCredits} {t('pipeline.credits')}
+                          <Coins className="h-3 w-3" /> {templatePreApprovalCredits(tmpl.templateId)}–{tmpl.estimatedCredits} {t('pipeline.credits')}
                         </span>
                         <span className="flex items-center gap-1">
                           <Clock className="h-3 w-3" /> ~{tmpl.estimatedDurationMin} min
@@ -769,6 +744,7 @@ function PipelineExecutionView({
               onClick={onCancel}
               disabled={actionLoading}
               className="flex items-center gap-1.5 rounded-lg border border-danger/30 bg-danger/5 px-3 py-2 text-xs font-medium text-danger hover:bg-danger/10 disabled:opacity-50"
+              title={actionLoading ? t('pipeline.cancelDuringAutoAdvanceWarning') : undefined}
             >
               <XOctagon className="h-3.5 w-3.5" /> {t('pipeline.cancel')}
             </button>
@@ -782,6 +758,13 @@ function PipelineExecutionView({
             </button>
           )}
         </div>
+
+        {/* Auto-advance warning — shown when the server is chaining stages */}
+        {actionLoading && state.status === 'running' && (
+          <p className="mt-3 text-[11px] text-fg-faint" role="note">
+            {t('pipeline.cancelDuringAutoAdvanceWarning')}
+          </p>
+        )}
       </section>
 
       {/* Stage timeline */}

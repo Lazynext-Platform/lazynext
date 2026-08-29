@@ -168,7 +168,7 @@ async function __byokPOST(req: Request) {
       const alreadyCharged = stageIdx >= 0 && state.stageResults[stageIdx].charged === true;
       if (stageCost > 0 && !alreadyCharged) {
         try {
-          await deductCredits(uid, stageCost, `creative:pipeline:${stageName}`, state.pipelineId);
+          await deductCredits(uid, stageCost, `creative:pipeline:${stageName}`, state.pipelineId, `pipeline:${state.pipelineId}:${stageName}`);
           if (stageIdx >= 0) state.stageResults[stageIdx].charged = true;
         } catch (e) {
           state = failStage(state, stageName, 'insufficient_credits');
@@ -277,7 +277,7 @@ async function __byokPOST(req: Request) {
         const alreadyCharged = waveIdx >= 0 && state.stageResults[waveIdx].charged === true;
         if (waveCost > 0 && !alreadyCharged) {
           try {
-            await deductCredits(uid, waveCost, `creative:pipeline:${waveStage}`, state.pipelineId);
+            await deductCredits(uid, waveCost, `creative:pipeline:${waveStage}`, state.pipelineId, `pipeline:${state.pipelineId}:${waveStage}`);
             if (waveIdx >= 0) state.stageResults[waveIdx].charged = true;
           } catch (e) {
             state = failStage(state, waveStage, 'insufficient_credits');

@@ -382,7 +382,7 @@ async function executeComplianceStage(params: ExecuteStageParams): Promise<Stage
 
   // Build compliance content from brief hooks/angles + script + storyboard
   const scriptText = context.script?.scenes?.map((s) => `${s.visual} ${s.voiceover} ${s.onScreenText}`).join('\n') || '';
-  const storyboardText = context.storyboard?.shots?.map((s) => s.prompt).join('\n') || '';
+  const storyboardText = context.storyboard?.shots?.map((s) => s.prompt || s.shot || '').join('\n') || '';
   const content = [
     context.brief.product,
     context.brief.hook,

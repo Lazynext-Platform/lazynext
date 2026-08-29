@@ -286,7 +286,7 @@ function dryRunTTS(input: MediaServiceInput): Record<string, unknown> {
   const voiceId = (input.voiceId || 'default-female').slice(0, 100);
   const estimatedDuration = Math.max(1, Math.round((text.length / 15) * 10) / 10);
   return {
-    audioUrl: 'data:audio/wav;base64,DRY_RUN_PLACEHOLDER',
+    audioUrl: 'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=',
     duration: estimatedDuration,
     voiceId,
     sampleRate: 24000,
@@ -328,7 +328,7 @@ function dryRunAudioProcess(input: MediaServiceInput): Record<string, unknown> {
   if (opts.enhance) applied.push('enhance');
   if (applied.length === 0) applied.push('denoise', 'normalize');
   return {
-    audioUrl: 'data:audio/wav;base64,DRY_RUN_PLACEHOLDER',
+    audioUrl: 'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=',
     duration: 10.0,
     sampleRate: 48000,
     processingApplied: applied,
@@ -340,7 +340,7 @@ function dryRunVoiceClone(input: MediaServiceInput): Record<string, unknown> {
   const text = (input.text || '').slice(0, 8000);
   const estimatedDuration = Math.max(1, Math.round((text.length / 15) * 10) / 10);
   return {
-    audioUrl: 'data:audio/wav;base64,DRY_RUN_PLACEHOLDER',
+    audioUrl: 'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=',
     duration: estimatedDuration,
     voiceId: 'cloned-voice-dry-run',
     similarity: 0.0,
@@ -370,7 +370,7 @@ function dryRunLipSync(input: MediaServiceInput): Record<string, unknown> {
     duration: 6.0,
     resolution: '720p',
     syncScore: 0.0,
-    audioUrl: typeof opts.audioUrl === 'string' ? String(opts.audioUrl).slice(0, 2048) : 'data:audio/wav;base64,DRY_RUN_PLACEHOLDER',
+    audioUrl: typeof opts.audioUrl === 'string' ? String(opts.audioUrl).slice(0, 2048) : 'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=',
   };
 }
 

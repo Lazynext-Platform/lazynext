@@ -107,16 +107,18 @@ model Creation {
 }
 
 model CreditLedger {
-  id        String   @id @default(cuid())
-  userId    String
-  delta     Int // +grant / -spend
-  reason    String // signup | purchase | redeem | generate | refund
-  ref       String? // stripe session id / cdkey / creation id
-  createdAt DateTime @default(now())
+  id             String   @id @default(cuid())
+  userId         String
+  delta          Int // +grant / -spend
+  reason         String // signup | purchase | redeem | generate | refund
+  ref            String? // stripe session id / cdkey / creation id
+  idempotencyKey String? // unique key for pipeline stage charges to prevent double-charging
+  createdAt      DateTime @default(now())
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
+  @@unique([userId, idempotencyKey])
 }
 
 // Prevents the same Atlas redeem code being used twice in this app.

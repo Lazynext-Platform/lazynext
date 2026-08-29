@@ -1,6 +1,6 @@
 # LazyNext Architecture Audit — 2026-09
 
-> **Status:** Current as of 2026-09-02 (post-Q series).
+> **Status:** Current as of 2026-09-02 (post-T series).
 > The previous audit (`research/lazynext-architecture-audit.md`) is superseded.
 
 ## 1. Stack
@@ -75,8 +75,10 @@ All 5 templates include the `score` quality gate before publish.
 
 Credit handling:
 - Credits are deducted before stage execution.
-- Failed stages refund credits via `refundSync`.
+- Failed stages refund credits via `refundCredits` (centralized in `src/lib/credits.ts`).
 - `approve` re-run of publish does not charge additional credits.
+- Pipeline stage charges use an idempotency key (`pipeline:{pipelineId}:{stage}`) stored in `CreditLedger.idempotencyKey` with a unique constraint, preventing double-charging on retry or partial wave failure.
+- A `charged` flag on `PipelineStageResult` provides in-memory idempotency within a single request.
 
 ### Asset persistence (`src/lib/creative/asset-persist.ts`)
 
@@ -308,3 +310,15 @@ npm run build   # Production build (Cloudflare target)
 - Retry auto-advance — retry chains into auto-advance loop (S)
 - autoAdvance defaults to false for publish/review — prevents silent timeouts (S)
 - Auto-advance telemetry — pipeline_auto_advance event (S)
+- Credit double-charging fix — removed duplicate first-stage deduction in creation route (T)
+- Idempotent credit deductions — charged flag on PipelineStageResult + idempotencyKey in CreditLedger with @@unique (T, U)
+- Partial wave failure handling — completeStage() marks successful stages completed before failStage (T)
+- Per-wave persistence — POST advance saves state after each wave, not just at end (T)
+- Publish autoAdvance gating — publish stage defaults to autoAdvance=false regardless of onComplete (T)
+- Parallel wave integration tests — 10 new tests for completeStage, retryStage charged reset, publish gating (T)
+- Creative Studio publish hand-off — Approve & Publish button when pipeline reaches publish stage (U)
+- Cancel UX warning — tooltip and note explaining cancel limitation during auto-advance (U)
+- Client auto-advance timer removed — server handles auto-advance; client timer was redundant (U)
+- Dry-run TTS placeholder fixed — valid silent WAV data URL instead of invalid base64 (U)
+- Estimated credits transparency — templates show pre-approval to total range (U)
+- refundSync dead code removed from gen-task.ts (U)

@@ -21,12 +21,17 @@ export async function grantCredits(
   ]);
 }
 
-/** Atomically spend credits. Throws INSUFFICIENT_CREDITS if balance too low. */
+/** Atomically spend credits. Throws INSUFFICIENT_CREDITS if balance too low.
+ *  If `idempotencyKey` is provided and a ledger entry with that key already exists,
+ *  the charge is treated as already applied — the deduction is reversed and the
+ *  function returns without error (idempotent retry).
+ */
 export async function deductCredits(
   userId: string,
   amount: number,
   reason: string,
   ref?: string,
+  idempotencyKey?: string,
 ): Promise<void> {
   if (isByok()) return; // BYOK: user pays AtlasCloud directly — skip billing entirely.
   if (amount <= 0) return;
@@ -39,8 +44,28 @@ export async function deductCredits(
   emitCreditsCharged(userId, amount, reason);
   // Cloudflare D1 does not support interactive transactions, so we use compensation: if ledger write fails, add back the deducted credits to avoid "charged without a ledger entry".
   try {
-    await prisma.creditLedger.create({ data: { userId, delta: -amount, reason, ref } });
-  } catch (e) {
+    await prisma.creditLedger.create({
+      data: { userId, delta: -amount, reason, ref, idempotencyKey },
+    });
+  } catch (e: any) {
+    // If the unique constraint on (userId, idempotencyKey) was violated, this
+    // charge already happened in a previous request. Reverse the duplicate
+    // deduction and return successfully (idempotent retry).
+    const isUniqueViolation =
+      e?.code === 'P2002' ||
+      String(e?.message || '').includes('UNIQUE constraint') ||
+      String(e?.message || '').includes('unique');
+    if (isUniqueViolation && idempotencyKey) {
+      await prisma.user
+        .update({ where: { id: userId }, data: { credits: { increment: amount } } })
+        .catch((re) => {
+          console.error(
+            `[credits] CRITICAL: idempotent reversal failed uid=${userId} amount=${amount} key=${idempotencyKey}:`,
+            String(re),
+          );
+        });
+      return; // Idempotent — charge already exists, no error
+    }
     // Ledger write failed → compensatory add-back of deducted credits. If compensation also fails (two DB failures), log for manual reconciliation.
     await prisma.user.update({ where: { id: userId }, data: { credits: { increment: amount } } }).catch((re) => {
       console.error(`[credits] CRITICAL: deduct succeeded but ledger+rollback both failed uid=${userId} amount=${amount} ref=${ref}:`, String(re));

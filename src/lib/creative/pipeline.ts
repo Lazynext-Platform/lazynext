@@ -295,6 +295,25 @@ export function totalEstimatedCredits(state: PipelineState): number {
   return enabledStages(state).reduce((sum, s) => sum + PIPELINE_COSTS[s], 0);
 }
 
+/** Sum of costs for all enabled stages excluding the publish stage.
+ *  Since publish defaults to autoAdvance=false (user must approve), this
+ *  represents the credits consumed before the user is asked to approve publishing.
+ */
+export function preApprovalEstimatedCredits(state: PipelineState): number {
+  return enabledStages(state)
+    .filter((s) => s !== 'publish')
+    .reduce((sum, s) => sum + PIPELINE_COSTS[s], 0);
+}
+
+/** Pre-approval credits for a template (excludes publish cost). */
+export function templatePreApprovalCredits(templateId: string): number {
+  const tmpl = PIPELINE_TEMPLATES.find((t) => t.templateId === templateId);
+  if (!tmpl) return 0;
+  return tmpl.stages
+    .filter((s) => s !== 'publish')
+    .reduce((sum, s) => sum + (PIPELINE_COSTS[s as PipelineStage] ?? 0), 0);
+}
+
 /** Sum of estimated durations (seconds) for all enabled stages. */
 function totalEstimatedDurationSec(state: PipelineState): number {
   return enabledStages(state).reduce((sum, s) => sum + STAGE_META[s].estimatedDurationSec, 0);
@@ -366,6 +385,7 @@ export function createPipeline(config: PipelineConfig): PipelineState {
     status: 'pending',
     output: {},
     artifacts: [],
+    charged: false,
   }));
 
   const state: PipelineState = {

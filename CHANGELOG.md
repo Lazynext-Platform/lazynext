@@ -1,5 +1,25 @@
 # LazyNext Changelog
 
+## 2026-09-02 — U: Ledger Idempotency, Cancel UX, Publish Hand-off, Cleanup
+
+### What Changed
+1. **Credit ledger idempotency** — Added `idempotencyKey` field to `CreditLedger` with `@@unique([userId, idempotencyKey])` constraint; `deductCredits` now accepts an optional idempotency key and handles unique constraint violations by reversing the duplicate deduction (idempotent retry); pipeline routes pass deterministic keys (`pipeline:{pipelineId}:{stage}`)
+2. **Cancel UX warning** — Added tooltip and warning text on the cancel button explaining that cancel takes effect after the current auto-advance chain completes; added `cancelDuringAutoAdvanceWarning` translation key to all 13 locales
+3. **Creative Studio publish hand-off** — Added "Approve & Publish" button that appears when the pipeline reaches the publish stage; calls the `approve` action to proceed with publishing; updated `pipelineModeHelp` text in all 13 locales to reflect that the pipeline stops at publish for review
+4. **Client auto-advance timer removed** — Removed the redundant client-side `autoAdvanceTimer` from `PipelineOrchestrator` that caused race conditions with server-side auto-advance
+5. **Dry-run TTS placeholder fixed** — Replaced invalid `data:audio/wav;base64,DRY_RUN_PLACEHOLDER` with a valid minimal silent WAV data URL that browsers can actually decode
+6. **Estimated credits transparency** — Templates now show a pre-approval to total credit range (e.g. "24–27 credits") instead of just the total; added `templatePreApprovalCredits` and `preApprovalEstimatedCredits` helpers
+7. **Architecture audit updated** — Updated to post-T series status; documented charged flag, completeStage, publish gating, per-wave persistence, idempotency key, and all T/U-series changes
+8. **refundSync dead code removed** — Removed the unused `refundSync` export from `gen-task.ts` (all 63 callers were migrated to `refundCredits` in the S-series)
+9. **Compliance storyboard guard** — `executeComplianceStage` now falls back to `s.shot` when `s.prompt` is undefined, preventing incomplete compliance input
+10. **charged field initialization** — `createPipeline` now explicitly initializes `charged: false` on all stage results
+
+### Verification
+- npm run lint — 0 errors, 2 warnings
+- npm test — 1424 tests passing
+- npm run build — successful
+- npx playwright test — 430 passed, 3 skipped
+
 ## 2026-09-02 — T: Credit Safety, Publish Gate, Parallel Wave Tests, Auto-Advancing UI
 
 ### What Changed
