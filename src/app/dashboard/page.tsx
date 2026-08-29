@@ -11,6 +11,7 @@ import { useI18n } from '@/i18n/provider';
 import { appTitle, appDesc, isFeatured } from '@/config/appCatalog';
 import { formatNumber, formatDateTime } from '@/lib/i18n-format';
 import { AuthModal } from '@/components/AuthModal';
+import { OnboardingModal } from '@/components/OnboardingModal';
 
 type App = { id: string; href: string; icon: typeof Clapperboard };
 const APPS: App[] = [
@@ -122,6 +123,7 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen text-fg app-grid-bg bg-app">
+      <OnboardingModal />
       <div className="mx-auto max-w-6xl px-4 sm:px-6 pb-24">
         {/* Welcome + credits */}
         <div className="pt-6 pb-8">
