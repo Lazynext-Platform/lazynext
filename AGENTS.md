@@ -49,8 +49,8 @@ Production uses Cloudflare R2 via `src/lib/media-storage.cloudflare.ts`.
 ## Verification Commands
 ```bash
 npm run lint    # ESLint
-npm test        # Node test runner (271 tests)
-# E2E: 113 tests (chromium)
+npm test        # Node test runner (1267 tests)
+# E2E: 302 tests (chromium + mobile-chrome)
 npm run build   # Production build (Cloudflare target)
 ```
 
@@ -72,7 +72,7 @@ npm run build   # Production build (Cloudflare target)
 - Next.js 16 + React 19 + TypeScript 6
 - Tailwind CSS 4
 - NextAuth (JWT session, Google + Credentials providers)
-- Prisma 7 with D1 (prod) / SQLite (local) — 22 tables total
+- Prisma 7 with D1 (prod) / SQLite (local) — 28 tables total
 - Cloudflare R2 (prod) / file-based (local) media storage
 - Atlas Cloud AI generation API (prod) / mock server (local)
 - Dodo Payments for billing
@@ -84,13 +84,42 @@ npm run build   # Production build (Cloudflare target)
 - Provider registry + model router with plan-tier filtering (`src/lib/providers/registry.ts`,
   `src/lib/providers/router.ts`)
 - OCR provider interface with dry-run stub (`src/lib/providers/ocr.ts`)
-- New API routes: `/api/ads/create`, `/api/ads/metrics`, `/api/creative/director`,
-  `/api/creative/performance`, `/api/creative/score`, `/api/creative/variants`,
-  `/api/creative/assets`, `/api/creative/refine`, `/api/creative/remix`,
-  `/api/creative/tools`, `/api/creative/templates`, `/api/editor/rough-cut`,
-  `/api/editor/skills`, `/api/editor/timeline`, `/api/editor/timeline-versions`
+- Creative intelligence API routes: `/api/creative/director`, `/api/creative/performance`,
+  `/api/creative/score`, `/api/creative/variants`, `/api/creative/assets`, `/api/creative/refine`,
+  `/api/creative/remix`, `/api/creative/tools`, `/api/creative/templates`, `/api/creative/hooks`,
+  `/api/creative/angles`, `/api/creative/script`, `/api/creative/storyboard`, `/api/creative/brief`,
+  `/api/creative/brief-assistant`, `/api/creative/brief-intelligence`, `/api/creative/forecast`,
+  `/api/creative/forecasting`, `/api/creative/testing-lab`, `/api/creative/ab-test`,
+  `/api/creative/ab-test/plan`, `/api/creative/ab-test/results`, `/api/creative/brand-voice`,
+  `/api/creative/brand-check`, `/api/creative/brand-concepts`, `/api/creative/creator-kits`,
+  `/api/creative/clip-editor`, `/api/creative/media-service-boundary`, `/api/creative/quality-scoring`,
+  `/api/creative/repurposing`, `/api/creative/audience-insights`, `/api/creative/trend-intelligence`,
+  `/api/creative/personas`, `/api/creative/variant-matrix`, `/api/creative/fatigue`,
+  `/api/creative/competitor-intel`, `/api/creative/compliance`, `/api/creative/budget-optimizer`,
+  `/api/creative/scene-analysis`, `/api/creative/shot-planner`, `/api/creative/campaign-orchestrator`,
+  `/api/creative/pipeline`, `/api/creative/pipeline/[id]`, `/api/creative/pipeline/templates`,
+  `/api/creative/mcp-server`, `/api/creative/ml-insights`, `/api/creative/narrative`,
+  `/api/creative/product-image`, `/api/creative/audio-studio/tts`, `/api/creative/audio-studio/voices`,
+  `/api/creative/audio-studio/music`, `/api/creative/audio-studio/mix`, `/api/creative/viral-analysis`,
+  `/api/creative/reference-analysis`, `/api/creative/reference-analysis/deep`,
+  `/api/creative/inspiration`, `/api/creative/leaderboard`, `/api/creative/intelligence`,
+  `/api/creative/skills`, `/api/creative/skills/list`, `/api/creative/skills/chain`,
+  `/api/creative/url-to-brief`, `/api/creative/auto-variants`, `/api/creative/adapt-platform`,
+  `/api/creative/calendar`, `/api/creative/schedule`, `/api/creative/optimal-times`,
+  `/api/creative/approvals`, `/api/creative/approvals/stages`, `/api/creative/comments`,
+  `/api/creative/comments/stream`, `/api/creative/share`, `/api/creative/share/[token]`,
+  `/api/creative/diff`, `/api/creative/export`, `/api/creative/regenerate`
+- Ad platform API routes: `/api/ads/create`, `/api/ads/metrics`, `/api/ads/list`, `/api/ads/report`,
+  `/api/ads/budget`, `/api/ads/google-budget`, `/api/ads/google-report`, `/api/analytics/ga4`
+- Editor API routes: `/api/editor/rough-cut`, `/api/editor/skills`, `/api/editor/timeline`,
+  `/api/editor/timeline-versions`, `/api/editor/transcribe`, `/api/editor/ocr`, `/api/editor/chat`
 - `/api/creative/director` returns an NDJSON stream of step-by-step progress updates; legacy
   non-streaming mode available via `?stream=false`
+- ADRs 001-023 in `docs/adr/` document all major architecture decisions
+- Cross-feature handoffs: Brand Concepts → Creator Kits (query-param pre-fill),
+  Brand Concepts → Shot Planner (script pre-fill), Clip Editor → Media Service Boundary (ASR/TTS)
+- Dashboard "Quick Create" grid includes all production apps and the 4 newest features
+  (Creator Kits, Brand Concepts, Clip Editor, Media Services)
 
 ## Production-Only Testing (Cannot Be Verified Locally)
 

@@ -1,5 +1,141 @@
 # LazyNext Changelog
 
+## 2026-08-29 — Dashboard Integration, Cross-Feature Handoffs, E2E + ADRs
+
+### What Changed
+1. Dashboard "Quick Create" grid now includes Creator Kits, Brand Concepts, Clip Editor, and Media Services with localized titles/descriptions across 13 locales
+2. Cross-feature handoffs: Brand Concepts → Creator Kits (query-param pre-fill), Brand Concepts → Shot Planner (script pre-fill), Clip Editor → Media Service Boundary (ASR/TTS buttons)
+3. 58 new E2E smoke tests for the 4 new pages (302 total)
+4. ADRs 020-023 documenting architecture decisions for Creator Campaign Kits, Brand-to-Multi-Concept, Conversational Clip Editor, and Media Service Boundary
+5. appMessages entries for 4 new features × 13 locales
+
+### Verification
+- npm test — 1267 unit tests passed
+- npx playwright test — 302 E2E tests passed (58 new)
+- npx tsc --noEmit — passed
+- npm run lint — 0 errors, 10 pre-existing warnings
+- npm run build — 201 routes, clean
+- Cloudflare deploy — Version `426e13d8-9b72-4190-aa9b-0490d872f9a4`
+- GitHub Actions CI — success
+
+## 2026-08-29 — Creator Campaign Kits, Brand-to-Multi-Concept, Clip Editor, Media Service Boundary
+
+### What Changed
+1. **Creator Campaign Kits** (`/creator-kits`) — packages briefs, talking points, product info, dos/don'ts, delivery specs, hook suggestions, CTA options, visual guidelines, and compliance notes into a shareable kit for human UGC creator partnerships (6 credits)
+2. **Brand-to-Multi-Concept Flow** (`/brand-concepts`) — orchestrated pipeline: URL or description → brand extraction → 2-5 divergent ad concepts with angles, scripts, storyboards, platform fit, diversity scoring, and best-concept recommendation (10 credits). Inspired by AdsTurbo/product-page-to-ad-brief (#40, MIT)
+3. **Conversational Clip Editor** (`/clip-editor`) — clip-centric editing with natural language commands (trim, split, delete, reorder, add, speed, volume, merge, duplicate, label). Deterministic parser for known patterns with AI-enhanced fallback (3 credits for AI parse). Inspired by OpenChatCut (#48, AGPL) architecture — fully original implementation
+4. **Media Service Boundary Abstraction** (`/media-service-boundary`) — clean contract for 8 GPU-backed media capabilities (ASR, TTS, OCR, image editing, audio processing, voice cloning, video generation, lip sync) with dry-run stubs. Maps to FireRed models (#65-84). Production-ready for when GPU services are wired up
+5. 4 domain libraries, 4 API routes, 4 components, 4 pages, 4 test files (145 new unit tests)
+6. i18n: 4 new namespaces × 13 locales
+7. Navigation: 4 entries in Shell.tsx
+
+### Verification
+- npm test — 1267 unit tests passed (145 new)
+- npx playwright test — 244 E2E tests passed
+- npx tsc --noEmit — passed
+- npm run lint — 0 errors, 10 pre-existing warnings
+- npm run build — 201 routes, clean
+- Cloudflare deploy — Version `94db7c36-389c-459f-9a37-f5dfe00ef368`
+- GitHub Actions CI — success
+
+## 2026-08-28 — Scene Analysis, Creative MCP Server, Video Shot Planner, Campaign Orchestrator
+
+### What Changed
+1. **Scene Analysis** (`/scene-analysis`) — analyze video scenes for composition, pacing, emotional tone, and creative effectiveness
+2. **Creative MCP Server** (`/mcp-server`) — Model Context Protocol server exposing creative tools to external AI agents
+3. **Video Shot Planner** (`/shot-planner`) — generate detailed shot-by-shot production plans from scripts or briefs
+4. **Campaign Orchestrator** (`/campaign-orchestrator`) — multi-phase campaign workflow with state machine, phase transitions, and asset persistence
+
+### Verification
+- npm test — 1122 unit tests passed
+- npx playwright test — 244 E2E tests passed
+- Cloudflare deploy — successful
+- GitHub Actions CI — success
+
+## 2026-08-28 — Creative Quality Scoring, Repurposing Engine, Audience Insights, Trend Intelligence
+
+### What Changed
+1. **Creative Quality Scoring** (`/quality-scoring`) — score creative assets on dimensions: hook strength, visual quality, brand alignment, emotional resonance, CTA clarity
+2. **Repurposing Engine** (`/repurposing`) — adapt existing creative assets for different platforms, formats, and audiences
+3. **Audience Insights** (`/audience-insights`) — analyze audience demographics, interests, and behavior patterns
+4. **Trend Intelligence** (`/trend-intelligence`) — detect and track trending topics, formats, and creative patterns
+
+### Verification
+- npm test — unit tests passed
+- npx playwright test — E2E tests passed
+- Cloudflare deploy — successful
+- GitHub Actions CI — success
+
+## 2026-08-28 — Brief Intelligence, Performance Forecasting, Testing Lab, Brand Voice Engine
+
+### What Changed
+1. **Creative Brief Intelligence** (`/brief-intelligence`) — analyze and score creative briefs for completeness, clarity, and actionability
+2. **Creative Performance Forecasting** (`/forecasting`) — predict ad performance before launch using historical data and creative analysis
+3. **Ad Creative Testing Lab** (`/testing-lab`) — design and manage A/B tests for creative variants
+4. **Brand Voice & Style Engine** (`/brand-voice`) — define and enforce brand voice, tone, and style guidelines across all creative output
+
+### Verification
+- npm test — unit tests passed
+- npx playwright test — E2E tests passed
+- Cloudflare deploy — successful
+- GitHub Actions CI — success
+
+## 2026-08-28 — Creative Pipeline Orchestrator, Audience Personas, Variant Matrix, Ad Fatigue Detector
+
+### What Changed
+1. **Creative Pipeline Orchestrator** (`/pipeline`) — visual pipeline for multi-step creative workflows with templates
+2. **Audience Personas** (`/personas`) — generate and manage detailed audience personas for targeting
+3. **Variant Matrix** (`/variant-matrix`) — generate and compare creative variants across dimensions
+4. **Ad Fatigue Detector** (`/fatigue`) — detect when ads are losing effectiveness and recommend refreshes
+
+### Verification
+- npm test — unit tests passed
+- npx playwright test — E2E tests passed
+- Cloudflare deploy — successful
+- GitHub Actions CI — success
+
+## 2026-08-28 — Voice & Audio Studio, Competitor Intelligence, Compliance Checker, Budget Optimizer
+
+### What Changed
+1. **Voice & Audio Studio** (`/audio-studio`) — TTS voice generation, audio mixing, and music selection
+2. **Competitor Intelligence** (`/competitor-intel`) — analyze competitor ads, strategies, and positioning
+3. **Compliance Checker** (`/compliance`) — check creative content against platform policies and regulatory requirements
+4. **Budget Optimizer** (`/budget-optimizer`) — optimize ad spend allocation across campaigns and platforms
+
+### Verification
+- npm test — unit tests passed
+- npx playwright test — E2E tests passed
+- Cloudflare deploy — successful
+- GitHub Actions CI — success
+
+## 2026-08-28 — Product Image Studio, Multi-Platform Publisher, Narrative Ad Builder, ML Insights
+
+### What Changed
+1. **Product Image Studio** (`/image-studio`) — AI-powered product photography with background removal, scene composition, and style transfer
+2. **Multi-Platform Publisher** (`/publish`) — publish creative content to Meta, Google, TikTok, and YouTube with platform-specific formatting
+3. **Narrative Ad Builder** (`/narrative-studio`) — build story-driven ads with multi-scene narratives
+4. **ML Insights** (`/ml-insights`) — machine learning insights from creative performance data
+
+### Verification
+- npm test — unit tests passed
+- npx playwright test — E2E tests passed
+- Cloudflare deploy — successful
+- GitHub Actions CI — success
+
+## 2026-08-28 — Google Ads + GA4, UGC Ad Formats, Creative Skill Library, Viral Analysis
+
+### What Changed
+1. Google Ads integration + GA4 analytics feedback loop
+2. UGC ad formats (16 formats across UGC/commercial/tiktok categories)
+3. Creative skill library — composable agent skills for creative workflows
+4. Viral analysis — analyze why content goes viral and apply patterns to new creative
+
+### Verification
+- npm test — unit tests passed
+- npx playwright test — E2E tests passed
+- Cloudflare deploy — successful
+- GitHub Actions CI — success
+
 ## 2026-08-28 — Timeline Persistence, Tool Execution API, OCR Route, D1 Migration
 
 ### What Changed
