@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useCallback } from 'react';
+import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import {
@@ -10,8 +11,10 @@ import {
 } from 'lucide-react';
 import { useI18n } from '@/i18n/provider';
 import { AuthModal } from '@/components/AuthModal';
-import { DeepReferenceAnalysisModal } from '@/components/DeepReferenceAnalysisModal';
-import { ViralAnalysisModal } from '@/components/ViralAnalysisModal';
+
+// Code-split modals — only loaded when opened
+const DeepReferenceAnalysisModal = dynamic(() => import('@/components/DeepReferenceAnalysisModal').then(m => ({ default: m.DeepReferenceAnalysisModal })), { ssr: false });
+const ViralAnalysisModal = dynamic(() => import('@/components/ViralAnalysisModal').then(m => ({ default: m.ViralAnalysisModal })), { ssr: false });
 
 type StepStatus = 'pending' | 'running' | 'completed' | 'failed' | 'awaiting_approval';
 

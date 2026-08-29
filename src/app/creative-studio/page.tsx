@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import dynamic from 'next/dynamic';
 import { useSession } from 'next-auth/react';
 import {
   AlertCircle, CheckCircle2, Loader2, Sparkles, Link2, Lightbulb, Film,
@@ -13,12 +14,14 @@ import { useI18n } from '@/i18n/provider';
 import { AuthModal } from '@/components/AuthModal';
 import { CostEstimator, type CostEstimateItem } from '@/components/CostEstimator';
 import { useKeyboardShortcuts } from '@/lib/use-keyboard-shortcuts';
-import { BriefAssistantModal } from '@/components/BriefAssistantModal';
-import { AutoVariantsModal } from '@/components/AutoVariantsModal';
-import { RegenerationModal } from '@/components/RegenerationModal';
-import { MultiPlatformAdapterModal } from '@/components/MultiPlatformAdapterModal';
-import { BrandVoiceCheckerModal } from '@/components/BrandVoiceCheckerModal';
-import { UrlToBriefModal } from '@/components/UrlToBriefModal';
+
+// Code-split modals — only loaded when opened (reduces initial bundle by ~200KB)
+const BriefAssistantModal = dynamic(() => import('@/components/BriefAssistantModal').then(m => ({ default: m.BriefAssistantModal })), { ssr: false });
+const AutoVariantsModal = dynamic(() => import('@/components/AutoVariantsModal').then(m => ({ default: m.AutoVariantsModal })), { ssr: false });
+const RegenerationModal = dynamic(() => import('@/components/RegenerationModal').then(m => ({ default: m.RegenerationModal })), { ssr: false });
+const MultiPlatformAdapterModal = dynamic(() => import('@/components/MultiPlatformAdapterModal').then(m => ({ default: m.MultiPlatformAdapterModal })), { ssr: false });
+const BrandVoiceCheckerModal = dynamic(() => import('@/components/BrandVoiceCheckerModal').then(m => ({ default: m.BrandVoiceCheckerModal })), { ssr: false });
+const UrlToBriefModal = dynamic(() => import('@/components/UrlToBriefModal').then(m => ({ default: m.UrlToBriefModal })), { ssr: false });
 
 // ── Types matching the backend ──
 type BrandExtraction = {

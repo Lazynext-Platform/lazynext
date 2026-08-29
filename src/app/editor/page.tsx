@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useCallback, useEffect, useMemo } from 'react';
+import dynamic from 'next/dynamic';
 import { useSession } from 'next-auth/react';
 import { useSearchParams } from 'next/navigation';
 import {
@@ -9,11 +10,16 @@ import {
 } from 'lucide-react';
 import { useI18n } from '@/i18n/provider';
 import { AuthModal } from '@/components/AuthModal';
-import { VisualTimeline } from '@/components/editor/VisualTimeline';
 import { ConversationalEditor } from '@/components/ConversationalEditor';
 import { useKeyboardShortcuts } from '@/lib/use-keyboard-shortcuts';
 import { useUndoRedo } from '@/lib/editor/use-undo-redo';
 import type { Timeline as TimelineModel, Track as TrackModel, Clip as ClipModel } from '@/lib/editor/types';
+
+// Code-split VisualTimeline — heavy drag-and-drop component, only needed when timeline tab is active
+const VisualTimeline = dynamic(() => import('@/components/editor/VisualTimeline').then(m => ({ default: m.VisualTimeline })), {
+  ssr: false,
+  loading: () => <div className="flex items-center justify-center h-32 text-fg-muted text-sm">Loading timeline…</div>,
+});
 
 type Step = 'idle' | 'loading' | 'done' | 'error';
 

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useCallback, useEffect } from 'react';
+import dynamic from 'next/dynamic';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import {
@@ -9,7 +10,9 @@ import {
 } from 'lucide-react';
 import { useI18n } from '@/i18n/provider';
 import { AuthModal } from '@/components/AuthModal';
-import { ABTestPlannerModal } from '@/components/ABTestPlannerModal';
+
+// Code-split modal — only loaded when opened
+const ABTestPlannerModal = dynamic(() => import('@/components/ABTestPlannerModal').then(m => ({ default: m.ABTestPlannerModal })), { ssr: false });
 import type { CreativeBrief, HookCandidate, CreativeAngle, ScriptCandidate } from '@/lib/creative/types';
 
 type Variant = {
