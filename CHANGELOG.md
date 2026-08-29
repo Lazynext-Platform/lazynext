@@ -1,5 +1,22 @@
 # LazyNext Changelog
 
+## 2026-09-02 — AA: Pipeline Context, Small Fixes, Chain Unification, Publishing Framework
+
+### What Changed
+1. **Pipeline context enrichment** — Media generation stage now passes full brief (product, audience), script CTA, selected angle, and aspect ratio to `dispatchMediaService`; audio stage passes script CTA and emotional trigger as TTS options
+2. **Pipeline list summary** — `GET /api/creative/pipeline?summary=true` returns lightweight summaries without parsing large state JSON
+3. **Publish ref uniqueness** — `ref` now uses `crypto.randomUUID()` instead of `Date.now()` to prevent same-ms collisions
+4. **Removed unused `replicate` dependency** — Dead dependency removed from `package.json`
+5. **Chain mode unification** — Skill-chain API now creates a durable `WorkflowRun` record for persistence and visibility; chain runs appear in the pipeline list and can be inspected after completion/failure
+6. **Publishing OAuth framework** — Added `PlatformConnection` model for storing per-user platform OAuth tokens; `hasRealCredentials` now checks platform-specific env vars; added `GET/POST/DELETE /api/publish/connections` for token management
+7. **Scheduled post persistence** — Added `ScheduledPost` model; `schedulePost` now persists to DB when userId is provided
+
+### Verification
+- npm run lint — 0 errors, 2 warnings
+- npm test — 1459 tests passing
+- npm run build — successful
+- npx playwright test — 436 passed, 11 skipped, 0 failed
+
 ## 2026-09-02 — Z: Skill-Chain Fixes, Custom Compliance Rules, UI States, DB/Auth/Upload Hardening
 
 ### What Changed

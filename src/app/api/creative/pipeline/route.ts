@@ -35,12 +35,29 @@ async function __byokGET(req: Request) {
 
   const url = new URL(req.url);
   const limit = Math.min(Number(url.searchParams.get('limit') || 20), 100);
+  const summary = url.searchParams.get('summary') === 'true';
 
   const runs = await prisma.workflowRun.findMany({
     where: { userId: uid, workflowType: 'creative-pipeline' },
     orderBy: { startedAt: 'desc' },
     take: limit,
+    // When summary=true, exclude the large output JSON to reduce response size
+    select: summary
+      ? { id: true, userId: true, workflowType: true, status: true, startedAt: true, completedAt: true, version: true, error: true }
+      : undefined,
   });
+
+  if (summary) {
+    // Return lightweight summaries without parsing large state JSON
+    const summaries = runs.map((r) => ({
+      id: r.id,
+      status: r.status,
+      startedAt: r.startedAt.toISOString(),
+      completedAt: r.completedAt?.toISOString() || null,
+      error: r.error || null,
+    }));
+    return NextResponse.json({ pipelines: summaries, summary: true });
+  }
 
   const pipelines: PipelineState[] = runs
     .map((r) => {

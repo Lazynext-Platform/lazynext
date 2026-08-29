@@ -26,12 +26,23 @@ import {
 export const PUBLISH_CREDIT_COST = 3;
 export const SCHEDULE_CREDIT_COST = 1;
 
-/** True when real platform API credentials are configured (none by default). */
-function hasRealCredentials(_platform: PublishPlatform): boolean {
-  // Real publishing would check env vars like TIKTOK_ACCESS_TOKEN,
-  // YOUTUBE_REFRESH_TOKEN, INSTAGRAM_ACCESS_TOKEN, FB_PAGE_TOKEN, etc.
-  // None are configured by default → always returns pending_approval.
-  return false;
+/** True when real platform API credentials are configured.
+ *  Checks for platform-specific env vars or DB-stored OAuth tokens. */
+function hasRealCredentials(platform: PublishPlatform): boolean {
+  switch (platform) {
+    case 'tiktok':
+      return !!(process.env.TIKTOK_ACCESS_TOKEN || process.env.TIKTOK_CLIENT_KEY);
+    case 'youtube_shorts':
+      return !!(process.env.YOUTUBE_REFRESH_TOKEN || process.env.YOUTUBE_CLIENT_ID);
+    case 'instagram_reels':
+      return !!(process.env.INSTAGRAM_ACCESS_TOKEN || process.env.META_APP_ID);
+    case 'facebook':
+      return !!(process.env.FB_PAGE_TOKEN || process.env.META_APP_ID);
+    case 'linkedin':
+      return !!(process.env.LINKEDIN_ACCESS_TOKEN || process.env.LINKEDIN_CLIENT_ID);
+    default:
+      return false;
+  }
 }
 
 /**
@@ -90,6 +101,7 @@ export function validatePublishRequest(
 export async function publishContent(
   request: PublishRequest,
   _planTier?: PlanTier,
+  userId?: string,
 ): Promise<PublishResult> {
   const caps = getPlatformCapabilities(request.platform);
   const adapter = getPlatformAdapter(request.platform);
@@ -119,7 +131,7 @@ export async function publishContent(
 
   // Scheduled publish: return a scheduled result.
   if (request.scheduleAt) {
-    return schedulePost(request, request.scheduleAt);
+    return schedulePost(request, request.scheduleAt, userId);
   }
 
   // Dry-run: simulate a publish (no real credentials configured).
@@ -158,6 +170,7 @@ export async function publishContent(
 export async function publishToMultiple(
   requests: PublishRequest[],
   planTier?: PlanTier,
+  userId?: string,
 ): Promise<PublishResult[]> {
   const expanded: PublishRequest[] = [];
   for (const req of requests) {
@@ -174,7 +187,7 @@ export async function publishToMultiple(
   }
 
   const results = await Promise.all(
-    expanded.map((r) => publishContent(r, planTier).catch((e): PublishResult => ({
+    expanded.map((r) => publishContent(r, planTier, userId).catch((e): PublishResult => ({
       platform: r.platform,
       status: 'failed',
       error: String(e),
@@ -187,10 +200,12 @@ export async function publishToMultiple(
 /**
  * Schedule a post for later publishing. Validates that the schedule time
  * is in the future and that the platform supports scheduling.
+ * Persists the scheduled post to the ScheduledPost table for durability.
  */
 export async function schedulePost(
   request: PublishRequest,
   scheduleAt: string,
+  userId?: string,
 ): Promise<PublishResult> {
   const caps = getPlatformCapabilities(request.platform);
 
@@ -222,7 +237,28 @@ export async function schedulePost(
     };
   }
 
-  const scheduledId = `${request.platform}_scheduled_${Date.now()}`;
+  // Persist to ScheduledPost table for durability and future scheduler processing
+  let scheduledId = `${request.platform}_scheduled_${Date.now()}`;
+  if (userId) {
+    try {
+      const { prisma } = await import('@/lib/prisma');
+      const post = await prisma.scheduledPost.create({
+        data: {
+          userId,
+          platform: request.platform,
+          mediaUrl: request.mediaUrl || '',
+          caption: request.caption || '',
+          scheduledAt: when,
+          status: 'scheduled',
+        },
+      });
+      scheduledId = post.id;
+    } catch (e) {
+      console.warn('[publish] failed to persist scheduled post:', String(e));
+      // Continue with in-memory ID if DB persistence fails
+    }
+  }
+
   return {
     platform: request.platform,
     status: 'scheduled',

@@ -1,6 +1,7 @@
 import { withAtlas } from '@/lib/request-context';
 import { NextResponse } from 'next/server';
 import { auth } from '@/../auth';
+import { randomUUID } from 'crypto';
 import { getUserPlanTier } from '@/lib/plan-tier';
 import { deductCredits, refundCredits } from '@/lib/credits';
 import {
@@ -34,7 +35,7 @@ async function __byokPOST(req: Request) {
   // Determine total platform count for credit cost (primary + cross-post targets).
   const platformCount = 1 + (request.crossPostTo?.length ?? 0);
   const cost = PUBLISH_CREDIT_COST * platformCount;
-  const ref = `publish:${request.platform}:${Date.now()}`;
+  const ref = `publish:${request.platform}:${randomUUID()}`;
 
   try {
     await deductCredits(uid, cost, 'publish', ref);
@@ -50,9 +51,9 @@ async function __byokPOST(req: Request) {
   let results: PublishResult[];
   try {
     if (request.crossPostTo && request.crossPostTo.length > 0) {
-      results = await publishToMultiple([request], planTier);
+      results = await publishToMultiple([request], planTier, uid);
     } else {
-      const single = await publishContent(request, planTier);
+      const single = await publishContent(request, planTier, uid);
       results = [single];
     }
   } catch (e) {

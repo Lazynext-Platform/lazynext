@@ -5,6 +5,7 @@ import { getChain, executeChain, estimateChainCredits } from '@/lib/creative/ski
 import { deductCredits, refundCredits } from '@/lib/credits';
 import { getUserPlanTier } from '@/lib/plan-tier';
 import { randomUUID } from 'crypto';
+import { prisma } from '@/lib/prisma';
 
 export const maxDuration = 60;
 
@@ -43,14 +44,63 @@ async function __byokPOST(req: Request) {
     }
   }
 
+  // Create a durable WorkflowRun record for persistence and visibility.
+  // This unifies chain execution with the pipeline engine's durability model:
+  // chain runs now appear in the pipeline list and can be inspected after completion.
+  const runId = randomUUID();
+  try {
+    await prisma.workflowRun.create({
+      data: {
+        id: runId,
+        userId: uid,
+        workflowType: 'skill-chain',
+        status: 'running',
+        input: { chainId, inputs, chainName: chain.name } as any,
+      },
+    });
+  } catch (e) {
+    console.warn('[creative/skills/chain] failed to create WorkflowRun:', String(e));
+    // Continue execution even if persistence fails — the chain still works
+  }
+
   try {
     const { results, finalOutput } = await executeChain(chainId, inputs, planTier);
-    return NextResponse.json({ results, finalOutput });
+
+    // Update the WorkflowRun with the results
+    try {
+      await prisma.workflowRun.update({
+        where: { id: runId },
+        data: {
+          status: 'completed',
+          output: { results, finalOutput, chainId } as any,
+          completedAt: new Date(),
+        },
+      });
+    } catch (e) {
+      console.warn('[creative/skills/chain] failed to update WorkflowRun:', String(e));
+    }
+
+    return NextResponse.json({ results, finalOutput, runId });
   } catch (e) {
     if (cost > 0) await refundCredits(uid, cost, `creative:skill-chain:${chainId}`);
     const message = e instanceof Error ? e.message : String(e);
     console.error(`[creative/skills/chain] execute ${chainId} error:`, message);
-    return NextResponse.json({ error: 'chain_execution_failed' }, { status: 500 });
+
+    // Mark the WorkflowRun as failed
+    try {
+      await prisma.workflowRun.update({
+        where: { id: runId },
+        data: {
+          status: 'failed',
+          error: message,
+          completedAt: new Date(),
+        },
+      });
+    } catch {
+      // Best-effort
+    }
+
+    return NextResponse.json({ error: 'chain_execution_failed', runId }, { status: 500 });
   }
 }
 

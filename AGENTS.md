@@ -72,7 +72,7 @@ npm run build   # Production build (Cloudflare target)
 - Next.js 16 + React 19 + TypeScript 6
 - Tailwind CSS 4
 - NextAuth (JWT session, Google + Credentials providers)
-- Prisma 7 with D1 (prod) / SQLite (local) — 30 tables total (including CustomComplianceRule)
+- Prisma 7 with D1 (prod) / SQLite (local) — 32 tables total (including CustomComplianceRule, PlatformConnection, ScheduledPost)
 - Cloudflare R2 (prod) / file-based (local) media storage
 - Atlas Cloud AI generation API (prod) / mock server (local)
 - Dodo Payments for billing
@@ -256,4 +256,13 @@ Completed across 15+ sessions:
 - DB indexes: Added composite indexes for `Creation(status, createdAt)`, `Creation(taskId)`, `Creation(getUrl)`, `CreditLedger(reason)`, `CreditLedger(ref)`, `SharedLink(expiresAt)`, `WebhookEndpoint(active, events)`, `WorkflowRun(status)`, `TeamInvitation(expiresAt)`
 - JWT credits fix: JWT `credits` field now auto-refreshes from DB if older than 60 seconds, preventing stale balance display
 - Upload magic-byte validation: Asset upload now validates decoded bytes against declared MIME type (JPEG/PNG/WebP magic bytes), rejecting SVG XSS and wrong content-type uploads
+
+### AA-Series: Pipeline Context, Small Fixes, Chain Unification, Publishing Framework
+- Pipeline context enrichment: Media generation stage now passes full brief (product, audience), script CTA, selected angle, and aspect ratio to `dispatchMediaService`; audio stage passes script CTA and emotional trigger as TTS options
+- Pipeline list summary: `GET /api/creative/pipeline?summary=true` returns lightweight summaries without parsing large state JSON
+- Publish ref uniqueness: `ref` now uses `crypto.randomUUID()` instead of `Date.now()` to prevent same-ms collisions
+- Removed unused `replicate` npm dependency
+- Chain mode unification: Skill-chain API (`POST /api/creative/skills/chain`) now creates a durable `WorkflowRun` record for persistence and visibility; chain runs appear in the pipeline list and can be inspected after completion/failure
+- Publishing OAuth framework: Added `PlatformConnection` model for storing per-user platform OAuth tokens; `hasRealCredentials` now checks platform-specific env vars; added `GET/POST/DELETE /api/publish/connections` for token management
+- Scheduled post persistence: Added `ScheduledPost` model; `schedulePost` now persists to DB when userId is provided; `publishContent` and `publishToMultiple` pass userId through to `schedulePost`
 

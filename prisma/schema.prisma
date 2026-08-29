@@ -46,6 +46,8 @@ model User {
   teamMembers  TeamMember[]
   teamActivities TeamActivity[]
   customComplianceRules CustomComplianceRule[]
+  platformConnections PlatformConnection[]
+  scheduledPosts ScheduledPost[]
 }
 
 model Account {
@@ -560,4 +562,46 @@ model CustomComplianceRule {
   @@index([userId])
   @@index([platform])
   @@index([enabled])
+}
+
+// ── Publishing: OAuth tokens & scheduled posts ──
+
+model PlatformConnection {
+  id           String   @id @default(cuid())
+  userId       String
+  platform     String   // tiktok | youtube | instagram | facebook | linkedin
+  accessToken  String
+  refreshToken String?
+  tokenExpiresAt DateTime?
+  platformUserId String? // platform-specific user/page ID
+  platformUsername String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, platform])
+  @@index([userId])
+  @@index([platform])
+}
+
+model ScheduledPost {
+  id          String    @id @default(cuid())
+  userId      String
+  platform    String    // tiktok | youtube | instagram | facebook | linkedin
+  mediaUrl    String
+  caption     String
+  postUrl     String?   // filled after actual publish
+  postId      String?   // platform-specific post ID after publish
+  scheduledAt DateTime  // when to publish
+  status      String    @default("scheduled") // scheduled | publishing | published | failed | cancelled
+  error       String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([status])
+  @@index([scheduledAt])
 }

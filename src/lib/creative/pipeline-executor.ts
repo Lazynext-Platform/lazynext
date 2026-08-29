@@ -207,13 +207,26 @@ async function executeMediaGenerationStage(params: ExecuteStageParams): Promise<
   for (let i = 0; i < shots.length; i++) {
     const shot = shots[i];
     try {
+      // Enrich the shot prompt with full creative context (brief, script,
+      // visual direction) so generated media aligns with the creative direction.
+      // This implements ADR-030's requirement that media stages "pass the
+      // storyboard and script outputs as context."
+      const enrichedPrompt = [
+        shot.prompt || shot.shot || `Shot ${i + 1}`,
+        context.brief ? `\n\nProduct: ${context.brief.productName || ''}` : '',
+        context.brief ? `\nAudience: ${context.brief.audience || ''}` : '',
+        context.script ? `\nCTA: ${context.script.cta || ''}` : '',
+        context.selectedAngle ? `\nCreative angle: ${context.selectedAngle.name || ''}` : '',
+        context.storyboard.ratio ? `\nAspect ratio: ${context.storyboard.ratio}` : '',
+      ].join('');
       const output = await dispatchMediaService({
         capability: 'video_gen' as MediaCapability,
         input: {
-          text: shot.prompt || shot.shot || `Shot ${i + 1}`,
+          text: enrichedPrompt,
           options: {
             duration: shot.durationSec || 4,
             resolution: '720p',
+            aspectRatio: context.storyboard.ratio || '9x16',
           },
         },
         planTier: planTier || 'free',
@@ -266,11 +279,17 @@ async function executeAudioStage(params: ExecuteStageParams): Promise<StageExecu
   try {
     // Use dispatchMediaService for TTS — routes through the media service boundary
     // with plan-tier aware model selection and dry-run fallback.
+    // Enrich the TTS input with script tone and scene context so the
+    // voiceover matches the creative direction (ADR-030).
     const ttsResult = await dispatchMediaService({
       capability: 'tts',
       input: {
         text: voiceoverText.slice(0, 5000),
         language: context.script.language as string,
+        options: {
+          tone: context.script.cta || 'professional',
+          style: context.selectedAngle?.emotionalTrigger || '',
+        },
       },
       planTier: planTier || 'free',
     });
