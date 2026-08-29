@@ -605,6 +605,6 @@ model ScheduledPost {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
-  @@index([status])
-  @@index([scheduledAt])
+  @@index([userId, status])
+  @@index([status, scheduledAt])
 }

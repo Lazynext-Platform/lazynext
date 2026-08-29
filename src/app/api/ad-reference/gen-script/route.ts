@@ -39,7 +39,8 @@ async function __byokPOST(req: Request) {
     if (!script) return NextResponse.json({ error: 'empty_output' }, { status: 502 });
     return NextResponse.json({ script });
   } catch (e) {
-    return NextResponse.json({ error: 'gen_script_failed', detail: String((e as Error).message || e).slice(0, 300) }, { status: 502 });
+    console.error('[gen-script] error:', String(e));
+    return NextResponse.json({ error: 'gen_script_failed' }, { status: 502 });
   }
 }
 

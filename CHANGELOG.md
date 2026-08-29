@@ -1,5 +1,36 @@
 # LazyNext Changelog
 
+## 2026-08-30 — FF: Error Sanitization, Docs, Env Example, DB Indexes
+
+### What Changed
+- **Error sanitization**: 4 top-level API routes no longer leak raw `e.message` to clients (`brand/extract`, `brand/product-extract`, `lazynext-studio/expand-prompt`, `ad-reference/gen-script`)
+- **Pipeline error classification**: New `src/lib/pipeline-error-classifier.ts` maps raw errors to controlled codes (`rate_limited`, `insufficient_credits`, `timeout`, `network`, `auth`, `server`, `unknown`); pipeline state stores codes instead of raw errors; client `friendlyError()` updated to match codes and no longer shows raw error text as fallback
+- **Docs update**: AGENTS.md and CHANGELOG.md updated with EE-series and FF-series entries; test counts corrected to 1516 unit tests, 445 E2E passed, 2 skipped
+- **`.env.example`**: Backfilled with `CRON_SECRET`, `TOKEN_ENCRYPTION_KEY`, `ALERT_WEBHOOK_URL/SECRET`, and platform OAuth credentials
+- **DB indexes**: Added composite indexes on `ScheduledPost`: `[status, scheduledAt]` for cron query performance, `[userId, status]` for user list queries
+
+### Verification
+- Lint: 0 errors, 2 known warnings
+- Unit tests: 1516 passed, 0 failed
+- Build: successful
+- E2E: 445 passed, 2 skipped, 0 failed
+
+## 2026-08-30 — EE: Cron Race Condition, OAuth Errors, Health Endpoint, Token-Refresh Tests, E2E Rate Limit Bypass
+
+### What Changed
+- **Cron atomic claim**: `process-scheduled/route.ts` uses `updateMany` with `WHERE status='scheduled'` to atomically claim posts before processing, preventing duplicate publishes from concurrent cron invocations
+- **OAuth callback error logging**: Token exchange failures now read and log the response body; maps `invalid_grant`/`invalid_client`/`redirect_uri_mismatch`/`access_denied` to specific redirect params; `PlatformConnectionsSection` shows user-friendly messages for each code
+- **Health endpoint**: `GET /api/health` checks D1 connectivity, token encryption, cron secret, auth secret, and platform OAuth credentials; returns 200 (healthy) or 503 (degraded); public (no auth)
+- **Token-refresh tests**: `test/token-refresh.test.ts` with 9 mocked-fetch tests covering all 5 platforms (request construction + error paths)
+- **E2E rate limit bypass**: `proxy.ts` skips rate limiting when `E2E_NO_RATE_LIMIT=1`; `playwright.config.ts` sets this for webServer env; result: 445 passed (up from 437), 2 skipped (down from 10)
+- **Production secrets set**: `TOKEN_ENCRYPTION_KEY` and `CRON_SECRET` uploaded to Cloudflare Workers
+
+### Verification
+- Lint: 0 errors, 2 known warnings
+- Unit tests: 1516 passed, 0 failed
+- Build: successful
+- E2E: 445 passed, 2 skipped, 0 failed
+
 ## 2026-08-30 — DD: Production Safety, Scheduled Post Mgmt, Compliance UI, OAuth PKCE, Platform Tests
 
 ### What Changed

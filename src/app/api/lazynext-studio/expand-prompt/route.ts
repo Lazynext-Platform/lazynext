@@ -58,7 +58,8 @@ async function __byokPOST(req: Request) {
     if (!prompt) return NextResponse.json({ error: 'empty_output' }, { status: 502 });
     return NextResponse.json({ prompt });
   } catch (e) {
-    return NextResponse.json({ error: 'expand_failed', detail: String((e as Error).message || e).slice(0, 300) }, { status: 502 });
+    console.error('[expand-prompt] error:', String(e));
+    return NextResponse.json({ error: 'expand_failed' }, { status: 502 });
   }
 }
 

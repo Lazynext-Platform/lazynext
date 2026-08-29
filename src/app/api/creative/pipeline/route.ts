@@ -21,6 +21,7 @@ import {
 import { executeStage, initialContext, mergeStageResultIntoContext, type StageContext, PipelineStageError } from '@/lib/creative/pipeline-executor';
 import { startWorkflow, recordStep, completeWorkflow, failWorkflow } from '@/lib/workflow/engine';
 import { logToolExecution } from '@/lib/telemetry';
+import { classifyPipelineError } from '@/lib/pipeline-error-classifier';
 
 export const maxDuration = 90;
 
@@ -238,10 +239,11 @@ async function __byokPOST(req: Request) {
           creditsCost: stageCost,
         }).catch(() => {});
       } else {
-        const errorMsg = String(res.reason instanceof Error ? res.reason.message : res.reason);
+        const rawError = String(res.reason instanceof Error ? res.reason.message : res.reason);
+        const errorCode = classifyPipelineError(rawError);
         const errorStage = res.reason instanceof PipelineStageError ? res.reason.stage : stageName;
-        if (!firstFailure) firstFailure = { stage: errorStage, error: errorMsg };
-        await recordStep(state.pipelineId, errorStage, 'failed', { error: errorMsg }).catch(() => {});
+        if (!firstFailure) firstFailure = { stage: errorStage, error: errorCode };
+        await recordStep(state.pipelineId, errorStage, 'failed', { error: rawError }).catch(() => {});
         if (stageCost > 0) {
           await refundCredits(uid, stageCost, `pipeline-refund:${state.pipelineId}:${errorStage}`).catch(() => {});
         }
@@ -353,10 +355,11 @@ async function __byokPOST(req: Request) {
             creditsCost: waveCost,
           }).catch(() => {});
         } else {
-          const errorMsg = String(res.reason instanceof Error ? res.reason.message : res.reason);
+          const rawError = String(res.reason instanceof Error ? res.reason.message : res.reason);
+          const errorCode = classifyPipelineError(rawError);
           const errorStage = res.reason instanceof PipelineStageError ? res.reason.stage : waveStage;
-          if (!firstFailure) firstFailure = { stage: errorStage, error: errorMsg };
-          await recordStep(state.pipelineId, errorStage, 'failed', { error: errorMsg }).catch(() => {});
+          if (!firstFailure) firstFailure = { stage: errorStage, error: errorCode };
+          await recordStep(state.pipelineId, errorStage, 'failed', { error: rawError }).catch(() => {});
           if (waveCost > 0) {
             await refundCredits(uid, waveCost, `pipeline-refund:${state.pipelineId}:${errorStage}`).catch(() => {});
           }

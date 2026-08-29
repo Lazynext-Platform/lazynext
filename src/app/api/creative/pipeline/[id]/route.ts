@@ -23,6 +23,7 @@ import { executeStage, initialContext, mergeStageResultIntoContext, type StageCo
 import { recordStep, completeWorkflow, failWorkflow } from '@/lib/workflow/engine';
 import { persistAsset, derivePipelineChildAssets } from '@/lib/creative/asset-persist';
 import { logToolExecution } from '@/lib/telemetry';
+import { classifyPipelineError } from '@/lib/pipeline-error-classifier';
 import { alertPipelineFailed, alertCreditError } from '@/lib/observability/alerts';
 
 export const maxDuration = 90;
@@ -254,10 +255,11 @@ async function __byokPOST(req: Request, { params }: { params: Promise<{ id: stri
               creditsCost: stageCost,
             }).catch(() => {});
           } else {
-            const errorMsg = String(res.reason instanceof Error ? res.reason.message : res.reason);
+            const rawError = String(res.reason instanceof Error ? res.reason.message : res.reason);
+            const errorCode = classifyPipelineError(rawError);
             const errorStage = res.reason instanceof PipelineStageError ? res.reason.stage : stageName;
-            if (!firstFailure) firstFailure = { stage: errorStage, error: errorMsg };
-            await recordStep(state.pipelineId, errorStage, 'failed', { error: errorMsg }).catch(() => {});
+            if (!firstFailure) firstFailure = { stage: errorStage, error: errorCode };
+            await recordStep(state.pipelineId, errorStage, 'failed', { error: rawError }).catch(() => {});
             // Refund the failed stage credit
             if (stageCost > 0) {
               await refundCredits(uid, stageCost, `pipeline-refund:${state.pipelineId}:${errorStage}`).catch(() => {});
@@ -361,10 +363,11 @@ async function __byokPOST(req: Request, { params }: { params: Promise<{ id: stri
               creditsCost: waveCost,
             }).catch(() => {});
           } else {
-            const errorMsg = String(res.reason instanceof Error ? res.reason.message : res.reason);
+            const rawError = String(res.reason instanceof Error ? res.reason.message : res.reason);
+            const errorCode = classifyPipelineError(rawError);
             const errorStage = res.reason instanceof PipelineStageError ? res.reason.stage : waveStage;
-            if (!firstFailure) firstFailure = { stage: errorStage, error: errorMsg };
-            await recordStep(state.pipelineId, errorStage, 'failed', { error: errorMsg }).catch(() => {});
+            if (!firstFailure) firstFailure = { stage: errorStage, error: errorCode };
+            await recordStep(state.pipelineId, errorStage, 'failed', { error: rawError }).catch(() => {});
             if (waveCost > 0) {
               await refundCredits(uid, waveCost, `pipeline-refund:${state.pipelineId}:${errorStage}`).catch(() => {});
             }
@@ -561,10 +564,11 @@ async function __byokPOST(req: Request, { params }: { params: Promise<{ id: stri
                   creditsCost: waveCost,
                 }).catch(() => {});
               } else {
-                const errorMsg = String(res.reason instanceof Error ? res.reason.message : res.reason);
+                const rawError = String(res.reason instanceof Error ? res.reason.message : res.reason);
+                const errorCode = classifyPipelineError(rawError);
                 const errorStage = res.reason instanceof PipelineStageError ? res.reason.stage : waveStage;
-                if (!retryFailure) retryFailure = { stage: errorStage, error: errorMsg };
-                await recordStep(state.pipelineId, errorStage, 'failed', { error: errorMsg }).catch(() => {});
+                if (!retryFailure) retryFailure = { stage: errorStage, error: errorCode };
+                await recordStep(state.pipelineId, errorStage, 'failed', { error: rawError }).catch(() => {});
                 if (waveCost > 0) {
                   await refundCredits(uid, waveCost, `pipeline-refund:${state.pipelineId}:${errorStage}`).catch(() => {});
                 }
@@ -594,10 +598,11 @@ async function __byokPOST(req: Request, { params }: { params: Promise<{ id: stri
             }
           }
         } catch (e) {
-          const errorMsg = String(e instanceof Error ? e.message : e);
+          const rawError = String(e instanceof Error ? e.message : e);
+          const errorCode = classifyPipelineError(rawError);
           const errorStage = e instanceof PipelineStageError ? e.stage : stage;
-          state = failStage(state, errorStage as PipelineState['currentStage'] & string, errorMsg);
-          await recordStep(state.pipelineId, errorStage, 'failed', { error: errorMsg }).catch(() => {});
+          state = failStage(state, errorStage as PipelineState['currentStage'] & string, errorCode);
+          await recordStep(state.pipelineId, errorStage, 'failed', { error: rawError }).catch(() => {});
           // Refund the retried stage credit on failure
           if (cost > 0) {
             await refundCredits(uid, cost, `pipeline-refund:${state.pipelineId}:${errorStage}:retry`).catch(() => {});
@@ -641,9 +646,10 @@ async function __byokPOST(req: Request, { params }: { params: Promise<{ id: stri
           creditsCost: 0, // No additional charge for approval re-run
         }).catch(() => {});
       } catch (e) {
-        const errorMsg = String(e instanceof Error ? e.message : e);
-        state = failStage(state, 'publish', errorMsg);
-        await recordStep(state.pipelineId, 'publish', 'failed', { error: errorMsg }).catch(() => {});
+        const rawError = String(e instanceof Error ? e.message : e);
+        const errorCode = classifyPipelineError(rawError);
+        state = failStage(state, 'publish', errorCode);
+        await recordStep(state.pipelineId, 'publish', 'failed', { error: rawError }).catch(() => {});
       }
       break;
     }

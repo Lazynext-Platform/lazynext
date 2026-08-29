@@ -49,8 +49,8 @@ Production uses Cloudflare R2 via `src/lib/media-storage.cloudflare.ts`.
 ## Verification Commands
 ```bash
 npm run lint    # ESLint
-npm test        # Node test runner (1505+ tests)
-# E2E: 435 passed, 12 skipped (chromium + mobile-chrome + chromium-auth)
+npm test        # Node test runner (1516 tests)
+# E2E: 445 passed, 2 skipped (chromium + mobile-chrome + chromium-auth)
 npm run build   # Production build (Cloudflare target)
 npm run cf:build  # Cloudflare/OpenNext build
 npm run cf:deploy # Deploy to Cloudflare Workers
@@ -317,6 +317,19 @@ Completed across 15+ sessions:
 - `TOKEN_ENCRYPTION_KEY` — AES-256-GCM key for OAuth token encryption (REQUIRED in production)
 - `CRON_SECRET` — Bearer token for scheduled post processor (REQUIRED for cron)
 - Platform OAuth credentials: `TIKTOK_CLIENT_KEY/SECRET/REDIRECT_URI`, `YOUTUBE_CLIENT_ID/SECRET/REDIRECT_URI`, `META_APP_ID/SECRET/REDIRECT_URI`, `LINKEDIN_CLIENT_ID/SECRET/REDIRECT_URI`
+
+### EE-Series: Cron Race Condition, OAuth Errors, Health Endpoint, Token-Refresh Tests, E2E Rate Limit Bypass
+- Cron atomic claim: `process-scheduled/route.ts` uses `updateMany` with `WHERE status='scheduled'` to atomically claim posts before processing, preventing duplicate publishes from concurrent cron invocations
+- OAuth callback error logging: Token exchange failures read and log the response body; maps `invalid_grant`/`invalid_client`/`redirect_uri_mismatch`/`access_denied` to specific redirect params; `PlatformConnectionsSection` shows user-friendly messages
+- Health endpoint: `GET /api/health` checks D1, token encryption, cron secret, auth secret, and platform OAuth credentials; returns 200 (healthy) or 503 (degraded); public (no auth)
+- Token-refresh tests: `test/token-refresh.test.ts` with 9 mocked-fetch tests covering all 5 platforms (request construction + error paths)
+- E2E rate limit bypass: `proxy.ts` skips rate limiting when `E2E_NO_RATE_LIMIT=1`; `playwright.config.ts` sets this for webServer env; result: 445 passed (up from 437), 2 skipped (down from 10)
+
+### FF-Series: Error Sanitization, Docs, Env Example, DB Indexes
+- API error sanitization: 4 top-level routes (`brand/extract`, `brand/product-extract`, `lazynext-studio/expand-prompt`, `ad-reference/gen-script`) no longer leak raw `e.message` to clients
+- Pipeline error classification: `src/lib/pipeline-error-classifier.ts` maps raw errors to controlled codes (`rate_limited`, `insufficient_credits`, `timeout`, `network`, `auth`, `server`, `unknown`); pipeline state stores codes instead of raw errors; `friendlyError()` updated to match codes
+- `.env.example` backfilled with all required production secrets
+- `ScheduledPost` composite indexes: `[status, scheduledAt]` for cron queries, `[userId, status]` for user list queries
 
 ### Compliance Rules
 - `GET/POST/PUT/DELETE /api/creative/compliance/rules` — full CRUD for custom compliance rules

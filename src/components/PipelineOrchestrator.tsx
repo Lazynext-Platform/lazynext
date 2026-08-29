@@ -972,27 +972,29 @@ function PipelineExecutionView({
 
 /** Map raw error strings to user-friendly messages. */
 function friendlyError(rawError: string, t: (key: string) => string): string {
+  // Error codes are now classified server-side (see pipeline-error-classifier.ts)
+  // but we still check raw patterns for backwards compatibility with older states.
   const e = rawError.toLowerCase();
-  if (e.includes('rate_limited') || e.includes('rate limit') || e.includes('429')) {
+  if (e === 'rate_limited' || e.includes('rate_limited') || e.includes('rate limit') || e.includes('429')) {
     return t('pipeline.errorRateLimited');
   }
-  if (e.includes('insufficient') && e.includes('credit')) {
+  if (e === 'insufficient_credits' || (e.includes('insufficient') && e.includes('credit'))) {
     return t('pipeline.errorInsufficientCredits');
   }
-  if (e.includes('timeout') || e.includes('timed out')) {
+  if (e === 'timeout' || e.includes('timeout') || e.includes('timed out')) {
     return t('pipeline.errorTimeout');
   }
-  if (e.includes('network') || e.includes('fetch') || e.includes('econnrefused')) {
+  if (e === 'network' || e.includes('network') || e.includes('fetch') || e.includes('econnrefused')) {
     return t('pipeline.errorNetwork');
   }
-  if (e.includes('auth') || e.includes('unauthorized') || e.includes('401')) {
+  if (e === 'auth' || e.includes('auth') || e.includes('unauthorized') || e.includes('401')) {
     return t('pipeline.errorAuth');
   }
-  if (e.includes('server') || e.includes('500') || e.includes('502') || e.includes('503')) {
+  if (e === 'server' || e.includes('server') || e.includes('500') || e.includes('502') || e.includes('503')) {
     return t('pipeline.errorServer');
   }
-  // Default: show the raw error but truncated
-  return rawError.length > 200 ? rawError.slice(0, 200) + '…' : rawError;
+  // 'unknown' or unrecognized — show generic message instead of raw error
+  return t('pipeline.errorServer');
 }
 
 function StageCard({

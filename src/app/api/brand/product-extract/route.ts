@@ -47,7 +47,7 @@ async function __byokPOST(req: Request) {
   } catch (e) {
     await refundCredits(uid, PRODUCT_EXTRACT_COST, 'brand:product-extract');
     if (e instanceof SSRFError) {
-      return NextResponse.json({ error: 'url_blocked', reason: e.message }, { status: 400 });
+      return NextResponse.json({ error: 'url_blocked' }, { status: 400 });
     }
     console.error('[brand/product-extract] error:', String(e));
     return NextResponse.json({ error: 'extraction_failed' }, { status: 500 });
