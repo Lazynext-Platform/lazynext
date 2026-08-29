@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import {
   Clapperboard, Coins, Boxes, FolderOpen, ArrowRight, Loader2, Film, Play, Sparkles,
-  TrendingDown, TrendingUp, BarChart3, Trophy, Calendar,
+  TrendingDown, TrendingUp, BarChart3, Trophy, Calendar, Gift, Layers, Scissors, Server,
 } from 'lucide-react';
 import { useI18n } from '@/i18n/provider';
 import { appTitle, appDesc, isFeatured } from '@/config/appCatalog';
@@ -23,6 +23,10 @@ const APPS: App[] = [
   { id: 'ads', href: '/ads', icon: Clapperboard },
   { id: 'performance', href: '/performance', icon: Clapperboard },
   { id: 'creative-assets', href: '/creative-assets', icon: Sparkles },
+  { id: 'creator-kits', href: '/creator-kits', icon: Gift },
+  { id: 'brand-concepts', href: '/brand-concepts', icon: Layers },
+  { id: 'clip-editor', href: '/clip-editor', icon: Scissors },
+  { id: 'media-service-boundary', href: '/media-service-boundary', icon: Server },
 ];
 
 type Creation = {
