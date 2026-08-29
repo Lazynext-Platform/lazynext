@@ -10,13 +10,16 @@ import {
   advancePipeline,
   advancePipelineWithWaves,
   configFromWorkflow,
+  failStage,
   PIPELINE_COSTS,
   type PipelineConfig,
   type PipelineState,
   type PipelineStage,
 } from '@/lib/creative/pipeline';
+import { executeStage, initialContext, mergeStageResultIntoContext, type StageContext } from '@/lib/creative/pipeline-executor';
+import { startWorkflow, recordStep, completeWorkflow, failWorkflow } from '@/lib/workflow/engine';
 
-export const maxDuration = 60;
+export const maxDuration = 90;
 
 /**
  * GET /api/creative/pipeline
@@ -145,6 +148,47 @@ async function __byokPOST(req: Request) {
   } catch (e) {
     console.error('[creative/pipeline] persist failed:', String(e));
     // Non-fatal: return the in-memory state so the client can still drive it.
+  }
+
+  // Record workflow start via the engine (for Analytics Hub per-step tracking).
+  await startWorkflow(uid, 'creative-pipeline', { pipelineId: state.pipelineId, config: JSON.parse(JSON.stringify(config)) }).catch(() => {});
+
+  // Execute the first stage if one is now in_progress.
+  if (state.currentStage && state.currentStage !== 'completed' && state.status === 'running') {
+    const stage = state.currentStage;
+    const ctx = initialContext(config);
+    try {
+      await recordStep(state.pipelineId, stage, 'running', { input: { productName: config.productName } }).catch(() => {});
+      const result = await executeStage({
+        stage,
+        config,
+        context: ctx,
+        planTier: await getUserPlanTier(uid).catch(() => undefined as any),
+        userId: uid,
+      });
+      // Merge result into stage state
+      const stageIdx = state.stageResults.findIndex((r) => r.stage === stage);
+      if (stageIdx >= 0) {
+        state.stageResults[stageIdx].output = result.output;
+        state.stageResults[stageIdx].artifacts = result.artifacts;
+      }
+      await recordStep(state.pipelineId, stage, 'completed', {
+        output: result.output,
+        creditsCost: PIPELINE_COSTS[stage] ?? 0,
+      }).catch(() => {});
+    } catch (e) {
+      const errorMsg = String(e instanceof Error ? e.message : e);
+      state = failStage(state, stage, errorMsg);
+      await recordStep(state.pipelineId, stage, 'failed', { error: errorMsg }).catch(() => {});
+      await failWorkflow(state.pipelineId, uid, errorMsg).catch(() => {});
+    }
+    // Save updated state (with stage output)
+    try {
+      await prisma.workflowRun.update({
+        where: { id: state.pipelineId },
+        data: { output: JSON.parse(JSON.stringify(state)) },
+      });
+    } catch { /* non-fatal */ }
   }
 
   return NextResponse.json({ state });

@@ -7,7 +7,7 @@ import {
   AlertCircle, CheckCircle2, Loader2, Sparkles, Link2, Lightbulb, Film,
   Copy, ChevronRight, Globe, Target, MessageSquare, Clapperboard,
   Video, ArrowRight, Wand2, StopCircle, Grid, FlaskConical, RefreshCw,
-  Shield,
+  Shield, Workflow,
 } from 'lucide-react';
 import Link from 'next/link';
 import { useI18n } from '@/i18n/provider';
@@ -211,6 +211,12 @@ export default function CreativeStudioPage() {
   const [chainRunning, setChainRunning] = useState(false);
   const [chainError, setChainError] = useState<string | null>(null);
   const [chainPaused, setChainPaused] = useState(false); // true when waiting for user to continue
+
+  // Pipeline mode state — runs the full creative pipeline via /api/creative/pipeline
+  const [pipelineMode, setPipelineMode] = useState(false);
+  const [pipelineRunning, setPipelineRunning] = useState(false);
+  const [pipelineError, setPipelineError] = useState<string | null>(null);
+  const [pipelineState, setPipelineState] = useState<any>(null);
 
   // Batch generation state
   const [batchMode, setBatchMode] = useState(false);
@@ -509,6 +515,89 @@ export default function CreativeStudioPage() {
     setChainError(null);
   }, []);
 
+  // ── Pipeline mode (full creative pipeline via /api/creative/pipeline) ──
+  const runPipeline = useCallback(async () => {
+    if (status !== 'authenticated') { setAuthOpen(true); return; }
+    if (!productText.trim()) { setPipelineError('Product text required'); return; }
+    setPipelineRunning(true);
+    setPipelineError(null);
+    setPipelineState(null);
+    try {
+      // Create the pipeline with a full-creative template
+      const createRes = await fetch('/api/creative/pipeline', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          templateId: 'full-creative',
+          config: {
+            productName: productName.trim() || productText.trim().slice(0, 100),
+            productDescription: productText.trim(),
+            brandName: brand?.company || undefined,
+            targetAudience: brief?.audience || undefined,
+            platforms: [platform],
+          },
+        }),
+      });
+      if (!createRes.ok) {
+        const j = await createRes.json().catch(() => ({}));
+        throw new Error(j.error || j.detail || `HTTP ${createRes.status}`);
+      }
+      const createJson = await createRes.json();
+      let state = createJson.state;
+      setPipelineState(state);
+
+      // Advance through all stages automatically
+      while (state.status === 'running' && state.currentStage && state.currentStage !== 'completed') {
+        const advanceRes = await fetch(`/api/creative/pipeline/${state.pipelineId}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'advance' }),
+        });
+        if (!advanceRes.ok) {
+          const j = await advanceRes.json().catch(() => ({}));
+          throw new Error(j.error || j.detail || `HTTP ${advanceRes.status}`);
+        }
+        const advanceJson = await advanceRes.json();
+        state = advanceJson.state;
+        setPipelineState(state);
+        if (state.status === 'failed' || state.status === 'paused') break;
+      }
+
+      // If pipeline completed, populate the UI with stage outputs
+      if (state.status === 'completed') {
+        const briefResult = state.stageResults.find((r: any) => r.stage === 'brief');
+        if (briefResult?.output?.brief) {
+          setBrief(briefResult.output.brief as CreativeBrief);
+          setBriefStep('done');
+        }
+        const scriptResult = state.stageResults.find((r: any) => r.stage === 'script');
+        if (scriptResult?.output?.script) {
+          setHooks(scriptResult.output.hooks as HookCandidate[] || []);
+          setAngles(scriptResult.output.angles as CreativeAngle[] || []);
+          setSelectedHook(scriptResult.output.selectedHook as HookCandidate || null);
+          setSelectedAngle(scriptResult.output.selectedAngle as CreativeAngle || null);
+          setScript(scriptResult.output.script as ScriptCandidate);
+          setScriptStep('done');
+        }
+        const storyboardResult = state.stageResults.find((r: any) => r.stage === 'storyboard');
+        if (storyboardResult?.output?.storyboard) {
+          setStoryboard(storyboardResult.output.storyboard as StoryboardCandidate);
+          setStoryboardStep('done');
+        }
+      }
+    } catch (e) {
+      setPipelineError(e instanceof Error ? e.message : String(e));
+    } finally {
+      setPipelineRunning(false);
+    }
+  }, [status, productText, productName, platform, brand, brief]);
+
+  const stopPipeline = useCallback(() => {
+    setPipelineRunning(false);
+    setPipelineError(null);
+    setPipelineState(null);
+  }, []);
+
   // ── Batch generation ──
   const runBatch = useCallback(async () => {
     if (!brief) return;
@@ -632,13 +721,13 @@ export default function CreativeStudioPage() {
               : (r.data as ScriptCandidate)?.title || `Variant ${i + 1}`,
         score: batchScores[i] || undefined,
       }));
-      const res = await fetch('/api/creative/ab-test', {
+      const res = await fetch('/api/creative/ab-automation', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          variants,
+          creationIds: batchResults.map((r) => r.data?.id).filter(Boolean),
           platform: abPlatform,
-          campaignName: abCampaignName.trim(),
+          testName: abCampaignName.trim(),
           budgetDaily: abBudgetDaily ? Number(abBudgetDaily) : undefined,
           dryRun: abDryRun,
         }),
@@ -955,6 +1044,99 @@ export default function CreativeStudioPage() {
               {/* Cancelled message */}
               {!chainRunning && chainStep === 0 && chainError === null && productText.trim() && (
                 <p className="text-xs text-fg-faint">{t('creativeStudio.chainCancelled')}</p>
+              )}
+            </div>
+          )}
+        </section>
+
+        {/* Pipeline Mode (full creative pipeline) */}
+        <section className="mb-6 rounded-2xl border border-line bg-surface p-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="flex h-8 w-8 items-center justify-center rounded-lg" style={{ background: 'rgba(0,178,252,0.15)', color: 'var(--color-brand-accent)' }}>
+                <Workflow className="h-4 w-4" />
+              </span>
+              <div>
+                <h2 className="text-base font-bold text-fg">{t('creativeStudio.pipelineMode')}</h2>
+                <p className="text-xs text-fg-faint">{t('creativeStudio.pipelineModeDesc')}</p>
+              </div>
+            </div>
+            <button
+              onClick={() => { setPipelineMode(!pipelineMode); if (pipelineMode) stopPipeline(); }}
+              className={`rounded-lg px-3 py-1.5 text-xs font-bold transition ${pipelineMode ? 'bg-danger/10 text-danger' : 'text-white'}`}
+              style={pipelineMode ? {} : { background: '#0064d9' }}
+              aria-pressed={pipelineMode}
+            >
+              {pipelineMode ? t('creativeStudio.stopPipeline') : t('creativeStudio.enablePipeline')}
+            </button>
+          </div>
+
+          {pipelineMode && (
+            <div className="mt-4 space-y-4">
+              <p className="text-xs text-fg-muted">
+                {t('creativeStudio.pipelineModeHelp')}
+              </p>
+
+              {/* Pipeline progress */}
+              {pipelineState && (
+                <div className="rounded-lg border border-line bg-app p-3 space-y-2" role="status">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-fg">
+                      {t('creativeStudio.pipelineStatus')}: {pipelineState.status}
+                    </span>
+                    <span className="text-xs text-fg-muted">{pipelineState.progress}%</span>
+                  </div>
+                  <div className="h-2 rounded-full bg-line overflow-hidden">
+                    <div
+                      className="h-full rounded-full transition-all"
+                      style={{ width: `${pipelineState.progress}%`, background: '#0064d9' }}
+                    />
+                  </div>
+                  {pipelineState.currentStage && pipelineState.currentStage !== 'completed' && (
+                    <p className="text-xs text-fg-muted">
+                      {t('creativeStudio.pipelineCurrentStage')}: {pipelineState.currentStage}
+                    </p>
+                  )}
+                  {pipelineState.totalCreditsUsed !== undefined && (
+                    <p className="text-xs text-fg-faint">
+                      {t('creativeStudio.pipelineCreditsUsed')}: {pipelineState.totalCreditsUsed}
+                    </p>
+                  )}
+                </div>
+              )}
+
+              {/* Start button */}
+              {!pipelineRunning && (
+                <button
+                  onClick={runPipeline}
+                  disabled={!productText.trim()}
+                  className="rounded-lg px-4 py-2 text-sm font-bold text-white disabled:opacity-50"
+                  style={{ background: '#0064d9' }}
+                >
+                  {t('creativeStudio.startPipeline')}
+                </button>
+              )}
+
+              {/* Running indicator */}
+              {pipelineRunning && (
+                <div className="flex items-center gap-2 text-sm text-fg-muted">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  {t('creativeStudio.pipelineRunning')}
+                </div>
+              )}
+
+              {/* Error */}
+              {pipelineError && (
+                <div role="alert" className="rounded-lg bg-danger/10 p-3 text-sm text-danger">
+                  {pipelineError}
+                </div>
+              )}
+
+              {/* Completion */}
+              {pipelineState?.status === 'completed' && !pipelineRunning && (
+                <div role="status" className="rounded-lg bg-success/10 p-3 text-sm text-success">
+                  {t('creativeStudio.pipelineCompleted')}
+                </div>
               )}
             </div>
           )}

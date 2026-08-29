@@ -6,6 +6,7 @@ import { getLLMModel } from '@/lib/providers/model-helpers';
 import { getUserPlanTier } from '@/lib/plan-tier';
 import { deductCredits } from '@/lib/credits';
 import { refundSync } from '@/lib/lazynext-studio/gen-task';
+import { withAtlas } from '@/lib/request-context';
 import { metaAds } from '@/lib/ad-platforms/meta';
 import { googleAds } from '@/lib/ad-platforms/google';
 import {
@@ -109,20 +110,34 @@ async function __byokPOST(req: Request) {
   const body = await req.json().catch(() => ({}));
   const creationIds = Array.isArray(body.creationIds) ? body.creationIds.filter((id: unknown) => typeof id === 'string') : [];
   const platform = String(body.platform || '');
-  const testName = String(body.testName || '');
+  const testName = String(body.testName || '').slice(0, 200); // bound length
   const primaryMetric = String(body.primaryMetric || 'roas');
-  const budgetDaily = typeof body.budgetDaily === 'number' ? body.budgetDaily : 10;
+  const budgetDaily = typeof body.budgetDaily === 'number' ? Math.min(Math.max(body.budgetDaily, 1), 10000) : 10; // bound 1–10000
   const dryRun = body.dryRun !== false; // default dry-run for safety
   const workflowTemplateId = typeof body.workflowTemplateId === 'string' ? body.workflowTemplateId : '';
 
   if (creationIds.length < 2) {
     return NextResponse.json({ error: 'min_2_variants' }, { status: 400 });
   }
+  if (creationIds.length > 10) {
+    return NextResponse.json({ error: 'max_10_variants' }, { status: 400 });
+  }
   if (!platform || !['meta', 'google'].includes(platform)) {
     return NextResponse.json({ error: 'invalid_platform' }, { status: 400 });
   }
   if (!testName) {
     return NextResponse.json({ error: 'test_name_required' }, { status: 400 });
+  }
+
+  // Validate that all creationIds belong to the user
+  const ownedCreations = await prisma.creation.findMany({
+    where: { id: { in: creationIds }, userId: uid },
+    select: { id: true },
+  }).catch(() => []);
+  const ownedIds = new Set(ownedCreations.map((c) => c.id));
+  const unowned = creationIds.filter((id: string) => !ownedIds.has(id));
+  if (unowned.length > 0) {
+    return NextResponse.json({ error: 'creation_ownership_error', detail: 'One or more creations do not belong to the user' }, { status: 403 });
   }
 
   // Deduct credits
@@ -280,14 +295,14 @@ Keep it concise (3-4 sentences). Return only the text.`;
   }
 }
 
-export const POST = __byokPOST;
+export const POST = withAtlas(__byokPOST);
 
 /**
  * PATCH /api/creative/ab-automation
  * Check and update automation jobs — fetches latest metrics, checks for winner.
  * Body: { jobId: string }
  */
-export async function PATCH(req: Request) {
+async function __byokPATCH(req: Request) {
   const session = await auth();
   if (!session?.user?.id) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
   const uid = session.user.id;
@@ -425,3 +440,5 @@ export async function PATCH(req: Request) {
     summary: summarizeJob(job),
   });
 }
+
+export const PATCH = withAtlas(__byokPATCH);

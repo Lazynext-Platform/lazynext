@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server';
 import { auth } from '@/../auth';
 import { prisma } from '@/lib/prisma';
 import { deductCredits } from '@/lib/credits';
+import { getUserPlanTier } from '@/lib/plan-tier';
 import {
   advancePipeline,
   advancePipelineWithWaves,
@@ -14,9 +15,12 @@ import {
   failStage,
   PIPELINE_COSTS,
   type PipelineState,
+  type PipelineStage,
 } from '@/lib/creative/pipeline';
+import { executeStage, initialContext, mergeStageResultIntoContext, type StageContext } from '@/lib/creative/pipeline-executor';
+import { recordStep, completeWorkflow, failWorkflow } from '@/lib/workflow/engine';
 
-export const maxDuration = 60;
+export const maxDuration = 90;
 
 /** Load a persisted pipeline state (WorkflowRun row) owned by the user. */
 async function loadPipeline(uid: string, id: string): Promise<PipelineState | null> {
@@ -47,6 +51,21 @@ async function savePipeline(state: PipelineState): Promise<void> {
   } catch (e) {
     console.error('[creative/pipeline/[id]] persist failed:', String(e));
   }
+}
+
+/**
+ * Rebuild a StageContext from the pipeline's accumulated stage results.
+ * This allows the executor to access prior stage outputs when running a
+ * new stage (e.g. the script stage needs the brief from the brief stage).
+ */
+function rebuildContext(state: PipelineState): StageContext {
+  let ctx: StageContext = initialContext(state.config);
+  for (const result of state.stageResults) {
+    if (result.status === 'completed' || result.status === 'skipped') {
+      ctx = mergeStageResultIntoContext(ctx, result.stage, { output: result.output, artifacts: result.artifacts });
+    }
+  }
+  return ctx;
 }
 
 /**
@@ -97,7 +116,7 @@ async function __byokPOST(req: Request, { params }: { params: Promise<{ id: stri
       // Use wave-based advancement if any stage has parallelWith configured
       const hasParallel = state.config.stages.some((s: any) => s.parallelWith && s.parallelWith.length > 0);
       state = hasParallel ? advancePipelineWithWaves(state) : advancePipeline(state);
-      // If we advanced to a new running stage, deduct its cost.
+      // If we advanced to a new running stage, deduct its cost and execute it.
       if (state.currentStage && state.currentStage !== before && state.currentStage !== 'completed') {
         const cost = PIPELINE_COSTS[state.currentStage] ?? 0;
         if (cost > 0) {
@@ -117,6 +136,45 @@ async function __byokPOST(req: Request, { params }: { params: Promise<{ id: stri
             );
           }
         }
+        // Execute the stage (real generation work)
+        const stage = state.currentStage;
+        try {
+          await recordStep(state.pipelineId, stage, 'running').catch(() => {});
+          // Rebuild context from prior stage results
+          const ctx = rebuildContext(state);
+          const result = await executeStage({
+            stage,
+            config: state.config,
+            context: ctx,
+            planTier: await getUserPlanTier(uid).catch(() => undefined as any),
+            userId: uid,
+          });
+          // Merge result into stage state
+          const stageIdx = state.stageResults.findIndex((r) => r.stage === stage);
+          if (stageIdx >= 0) {
+            state.stageResults[stageIdx].output = result.output;
+            state.stageResults[stageIdx].artifacts = result.artifacts;
+          }
+          await recordStep(state.pipelineId, stage, 'completed', {
+            output: result.output,
+            creditsCost: cost,
+          }).catch(() => {});
+        } catch (e) {
+          const errorMsg = String(e instanceof Error ? e.message : e);
+          state = failStage(state, stage, errorMsg);
+          await recordStep(state.pipelineId, stage, 'failed', { error: errorMsg }).catch(() => {});
+          await failWorkflow(state.pipelineId, uid, errorMsg).catch(() => {});
+          await savePipeline(state);
+          return NextResponse.json({ error: 'stage_failed', detail: errorMsg, state }, { status: 500 });
+        }
+      } else if (state.status === 'completed') {
+        // Pipeline completed — record workflow completion
+        await completeWorkflow(
+          state.pipelineId,
+          uid,
+          { pipelineId: state.pipelineId, totalCreditsUsed: state.totalCreditsUsed },
+          Date.now() - Date.parse(state.createdAt),
+        ).catch(() => {});
       }
       break;
     }
@@ -158,6 +216,31 @@ async function __byokPOST(req: Request, { params }: { params: Promise<{ id: stri
               { status: 402 },
             );
           }
+        }
+        // Re-execute the stage
+        try {
+          await recordStep(state.pipelineId, stage, 'running').catch(() => {});
+          const ctx = rebuildContext(state);
+          const result = await executeStage({
+            stage: stage as PipelineStage,
+            config: state.config,
+            context: ctx,
+            planTier: await getUserPlanTier(uid).catch(() => undefined as any),
+            userId: uid,
+          });
+          const stageIdx = state.stageResults.findIndex((r) => r.stage === stage);
+          if (stageIdx >= 0) {
+            state.stageResults[stageIdx].output = result.output;
+            state.stageResults[stageIdx].artifacts = result.artifacts;
+          }
+          await recordStep(state.pipelineId, stage, 'completed', {
+            output: result.output,
+            creditsCost: cost,
+          }).catch(() => {});
+        } catch (e) {
+          const errorMsg = String(e instanceof Error ? e.message : e);
+          state = failStage(state, stage as PipelineState['currentStage'] & string, errorMsg);
+          await recordStep(state.pipelineId, stage, 'failed', { error: errorMsg }).catch(() => {});
         }
       }
       break;
