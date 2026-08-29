@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useSession } from 'next-auth/react';
 import { Users, Activity, UserPlus, Crown, Edit3, Eye, Trash2, Clock, Circle } from 'lucide-react';
 import { useI18n } from '@/i18n/provider';
@@ -68,7 +68,8 @@ export function TeamWorkspace({ teamId }: { teamId: string }) {
   const [inviteEmail, setInviteEmail] = useState('');
   const [inviteRole, setInviteRole] = useState('viewer');
   const [inviteMsg, setInviteMsg] = useState<string | null>(null);
-  const heartbeatRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const [sending, setSending] = useState(false);
+  const [notice, setNotice] = useState<string | null>(null);
 
   // Load team data
   const loadTeam = useCallback(async () => {
@@ -86,25 +87,31 @@ export function TeamWorkspace({ teamId }: { teamId: string }) {
   const loadActivity = useCallback(async () => {
     try {
       const res = await fetch(`/api/teams/${teamId}/activity?limit=30`);
-      if (!res.ok) return;
+      if (!res.ok) {
+        setNotice(t('team.activityError'));
+        return;
+      }
       const data = await res.json();
       setActivities(data.activities || []);
     } catch {
-      // silent
+      setNotice(t('team.activityError'));
     }
-  }, [teamId]);
+  }, [teamId, t]);
 
   // Load presence
   const loadPresence = useCallback(async () => {
     try {
       const res = await fetch(`/api/teams/${teamId}/presence`);
-      if (!res.ok) return;
+      if (!res.ok) {
+        setNotice(t('team.presenceError'));
+        return;
+      }
       const data = await res.json();
       setPresence(data.members || []);
     } catch {
-      // silent
+      setNotice(t('team.presenceError'));
     }
-  }, [teamId]);
+  }, [teamId, t]);
 
   // Send heartbeat
   const sendHeartbeat = useCallback(async () => {
@@ -125,6 +132,10 @@ export function TeamWorkspace({ teamId }: { teamId: string }) {
 
   // Initial load + heartbeat setup
   useEffect(() => {
+    let heartbeatInterval: ReturnType<typeof setInterval> | null = null;
+    let presenceInterval: ReturnType<typeof setInterval> | null = null;
+    let activityInterval: ReturnType<typeof setInterval> | null = null;
+
     (async () => {
       setLoading(true);
       await Promise.all([loadTeam(), loadActivity(), loadPresence()]);
@@ -132,31 +143,45 @@ export function TeamWorkspace({ teamId }: { teamId: string }) {
       // Send initial heartbeat
       sendHeartbeat();
       // Set up heartbeat interval (every 15s)
-      heartbeatRef.current = setInterval(sendHeartbeat, 15000);
+      heartbeatInterval = setInterval(() => {
+        if (document.visibilityState === 'visible') sendHeartbeat();
+      }, 15000);
       // Set up presence polling (every 20s)
-      const presenceInterval = setInterval(loadPresence, 20000);
+      presenceInterval = setInterval(() => {
+        if (document.visibilityState === 'visible') loadPresence();
+      }, 20000);
       // Set up activity polling (every 30s)
-      const activityInterval = setInterval(loadActivity, 30000);
-      // Cleanup on unload
-      const handleUnload = () => {
-        fetch(`/api/teams/${teamId}/presence`, { method: 'DELETE' }).catch(() => {});
-      };
-      window.addEventListener('beforeunload', handleUnload);
-      return () => {
-        if (heartbeatRef.current) clearInterval(heartbeatRef.current);
-        clearInterval(presenceInterval);
-        clearInterval(activityInterval);
-        window.removeEventListener('beforeunload', handleUnload);
-        handleUnload();
-      };
+      activityInterval = setInterval(() => {
+        if (document.visibilityState === 'visible') loadActivity();
+      }, 30000);
     })();
+
+    // Cleanup on unload
+    const handleUnload = () => {
+      fetch(`/api/teams/${teamId}/presence`, { method: 'DELETE' }).catch(() => {});
+    };
+    window.addEventListener('beforeunload', handleUnload);
+    return () => {
+      if (heartbeatInterval) clearInterval(heartbeatInterval);
+      if (presenceInterval) clearInterval(presenceInterval);
+      if (activityInterval) clearInterval(activityInterval);
+      window.removeEventListener('beforeunload', handleUnload);
+      handleUnload();
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [teamId]);
 
   // Send invite
   const handleInvite = async () => {
     if (!inviteEmail.trim()) return;
+    // Basic email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(inviteEmail.trim())) {
+      setInviteMsg(t('team.invalidEmail'));
+      return;
+    }
     setInviteMsg(null);
+    setSending(true);
     try {
       const res = await fetch(`/api/teams/${teamId}/invite`, {
         method: 'POST',
@@ -172,7 +197,7 @@ export function TeamWorkspace({ teamId }: { teamId: string }) {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            type: 'custom',
+            type: 'invite_sent',
             summary: `Invited ${inviteEmail} as ${inviteRole}`,
           }),
         });
@@ -182,6 +207,8 @@ export function TeamWorkspace({ teamId }: { teamId: string }) {
       }
     } catch {
       setInviteMsg(t('team.inviteFailed'));
+    } finally {
+      setSending(false);
     }
   };
 
@@ -197,7 +224,7 @@ export function TeamWorkspace({ teamId }: { teamId: string }) {
         await fetch(`/api/teams/${teamId}/activity`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ type: 'role_changed', summary: `Changed member role to ${newRole}` }),
+          body: JSON.stringify({ type: 'message', summary: `Changed member role to ${newRole}` }),
         });
         loadTeam();
         loadActivity();
@@ -229,7 +256,7 @@ export function TeamWorkspace({ teamId }: { teamId: string }) {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-accent" />
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-accent" aria-hidden="true" />
       </div>
     );
   }
@@ -251,7 +278,7 @@ export function TeamWorkspace({ teamId }: { teamId: string }) {
       <header className="flex items-center justify-between flex-wrap gap-4">
         <div>
           <h1 className="text-2xl font-bold flex items-center gap-2">
-            <Users className="w-6 h-6" />
+            <Users className="w-6 h-6" aria-hidden="true" />
             {team.name}
           </h1>
           <p className="text-sm text-fg-muted mt-1">
@@ -260,7 +287,7 @@ export function TeamWorkspace({ teamId }: { teamId: string }) {
         </div>
         <div className="flex items-center gap-2">
           <span className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full bg-success/10 text-success">
-            <Circle className="w-2 h-2 fill-current" />
+            <Circle className="w-2 h-2 fill-current" aria-label={t('team.onlineLabel')} role="img" />
             {presence.length} {t('team.online')}
           </span>
         </div>
@@ -273,7 +300,7 @@ export function TeamWorkspace({ teamId }: { teamId: string }) {
           {isOwner && (
             <section className="rounded-lg border border-border bg-card p-4 space-y-3">
               <h2 className="text-sm font-semibold flex items-center gap-2">
-                <UserPlus className="w-4 h-4" /> {t('team.inviteMember')}
+                <UserPlus className="w-4 h-4" aria-hidden="true" /> {t('team.inviteMember')}
               </h2>
               <div className="space-y-2">
                 <input
@@ -295,12 +322,13 @@ export function TeamWorkspace({ teamId }: { teamId: string }) {
                 </select>
                 <button
                   onClick={handleInvite}
-                  className="w-full rounded-md bg-accent px-3 py-2 text-sm font-medium text-accent-fg hover:opacity-90 transition"
+                  disabled={sending || !inviteEmail.trim()}
+                  className="w-full rounded-md bg-accent px-3 py-2 text-sm font-medium text-accent-fg hover:opacity-90 transition disabled:opacity-50"
                 >
-                  {t('team.sendInvite')}
+                  {sending ? t('team.sending') : t('team.sendInvite')}
                 </button>
                 {inviteMsg && (
-                  <p role="status" className="text-xs text-fg-muted">{inviteMsg}</p>
+                  <p role="alert" className="text-xs text-fg-muted">{inviteMsg}</p>
                 )}
               </div>
             </section>
@@ -309,35 +337,39 @@ export function TeamWorkspace({ teamId }: { teamId: string }) {
           {/* Members list */}
           <section className="rounded-lg border border-border bg-card p-4 space-y-3">
             <h2 className="text-sm font-semibold flex items-center gap-2">
-              <Users className="w-4 h-4" /> {t('team.members')}
+              <Users className="w-4 h-4" aria-hidden="true" /> {t('team.members')}
             </h2>
+            {team.members.length === 0 ? (
+              <p className="text-sm text-fg-muted">{t('team.noMembers')}</p>
+            ) : (
             <ul className="space-y-2">
               {team.members.map((m) => {
                 const RoleIcon = ROLE_ICONS[m.role] || Eye;
                 const isOnline = onlineUserIds.has(m.user.id);
                 const presenceInfo = presence.find(p => p.userId === m.user.id);
+                const displayName = m.user.name || m.user.email || '?';
                 return (
                   <li key={m.id} className="flex items-center gap-3 py-2 border-b border-border last:border-0">
                     <div className="relative">
                       {m.user.image ? (
-                        <img src={m.user.image} alt="" className="w-8 h-8 rounded-full" />
+                        <img src={m.user.image} alt={displayName} className="w-8 h-8 rounded-full" />
                       ) : (
-                        <div className="w-8 h-8 rounded-full bg-accent/20 flex items-center justify-center text-xs font-medium">
-                          {(m.user.name || m.user.email)[0].toUpperCase()}
+                        <div className="w-8 h-8 rounded-full bg-accent/20 flex items-center justify-center text-xs font-medium" aria-hidden="true">
+                          {(m.user.name || m.user.email || '?')[0]?.toUpperCase()}
                         </div>
                       )}
                       {isOnline && (
-                        <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-success border-2 border-card" />
+                        <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-success border-2 border-card" aria-label={t('team.onlineLabel')} role="img" />
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium truncate">{m.user.name || m.user.email}</p>
+                      <p className="text-sm font-medium truncate">{displayName}</p>
                       <p className="text-xs text-fg-muted truncate">
                         {isOnline && presenceInfo ? presenceInfo.page : m.user.email}
                       </p>
                     </div>
                     <div className="flex items-center gap-1">
-                      <RoleIcon className="w-3.5 h-3.5 text-fg-muted" />
+                      <RoleIcon className="w-3.5 h-3.5 text-fg-muted" aria-hidden="true" />
                       <span className="text-xs text-fg-muted">{t(`team.role.${m.role}`)}</span>
                       {isOwner && m.role !== 'owner' && (
                         <>
@@ -355,7 +387,7 @@ export function TeamWorkspace({ teamId }: { teamId: string }) {
                             aria-label={t('team.removeMember')}
                             className="p-1 text-danger hover:bg-danger/10 rounded"
                           >
-                            <Trash2 className="w-3.5 h-3.5" />
+                            <Trash2 className="w-3.5 h-3.5" aria-hidden="true" />
                           </button>
                         </>
                       )}
@@ -364,15 +396,19 @@ export function TeamWorkspace({ teamId }: { teamId: string }) {
                 );
               })}
             </ul>
+            )}
           </section>
         </div>
 
         {/* Right column: Activity feed + Presence */}
         <div className="lg:col-span-2 space-y-4">
+          {notice && (
+            <p role="alert" className="text-xs text-danger">{notice}</p>
+          )}
           {/* Online presence */}
           <section className="rounded-lg border border-border bg-card p-4 space-y-3">
             <h2 className="text-sm font-semibold flex items-center gap-2">
-              <Circle className="w-4 h-4 text-success fill-current" /> {t('team.onlineNow')}
+              <Circle className="w-4 h-4 text-success fill-current" aria-hidden="true" /> {t('team.onlineNow')}
             </h2>
             {presence.length === 0 ? (
               <p className="text-sm text-fg-muted">{t('team.noOneOnline')}</p>
@@ -380,12 +416,12 @@ export function TeamWorkspace({ teamId }: { teamId: string }) {
               <ul className="space-y-2">
                 {presence.map((p) => (
                   <li key={p.userId} className="flex items-center gap-3 text-sm">
-                    <div className="w-2 h-2 rounded-full bg-success animate-pulse" />
+                    <div className="w-2 h-2 rounded-full bg-success animate-pulse" aria-label={t('team.onlineLabel')} role="img" />
                     <span className="font-medium">{p.userName}</span>
-                    <span className="text-fg-muted">·</span>
+                    <span className="text-fg-muted" aria-hidden="true">·</span>
                     <span className="text-fg-muted truncate">{p.page}</span>
                     <span className="text-xs text-fg-muted ml-auto">
-                      <Clock className="w-3 h-3 inline mr-1" />
+                      <Clock className="w-3 h-3 inline mr-1" aria-hidden="true" />
                       {p.onlineFor}s
                     </span>
                   </li>
@@ -397,7 +433,7 @@ export function TeamWorkspace({ teamId }: { teamId: string }) {
           {/* Activity feed */}
           <section className="rounded-lg border border-border bg-card p-4 space-y-3">
             <h2 className="text-sm font-semibold flex items-center gap-2">
-              <Activity className="w-4 h-4" /> {t('team.activityFeed')}
+              <Activity className="w-4 h-4" aria-hidden="true" /> {t('team.activityFeed')}
             </h2>
             {activities.length === 0 ? (
               <p className="text-sm text-fg-muted">{t('team.noActivity')}</p>

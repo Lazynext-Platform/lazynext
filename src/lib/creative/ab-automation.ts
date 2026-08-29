@@ -65,7 +65,9 @@ export function generateJobId(): string {
 export function parseAutomationMetadata(metrics: unknown): Record<string, unknown> | null {
   if (!metrics || typeof metrics !== 'object') return null;
   const m = metrics as Record<string, unknown>;
-  return (m.__automation as Record<string, unknown>) || null;
+  const auto = m.__automation;
+  if (!auto || typeof auto !== 'object') return null;
+  return auto as Record<string, unknown>;
 }
 
 /**
@@ -86,12 +88,23 @@ export function calculateSignificance(
   variantA: { impressions: number; conversions: number },
   variantB: { impressions: number; conversions: number },
 ): number {
-  const crA = variantA.impressions > 0 ? variantA.conversions / variantA.impressions : 0;
-  const crB = variantB.impressions > 0 ? variantB.conversions / variantB.impressions : 0;
-  const pooledCR = (variantA.conversions + variantB.conversions) / (variantA.impressions + variantB.impressions);
-  const se = Math.sqrt(pooledCR * (1 - pooledCR) * (1 / variantA.impressions + 1 / variantB.impressions));
-  if (se === 0) return 0;
+  // Guard against invalid inputs
+  const impA = Math.max(0, variantA.impressions || 0);
+  const impB = Math.max(0, variantB.impressions || 0);
+  const convA = Math.max(0, variantA.conversions || 0);
+  const convB = Math.max(0, variantB.conversions || 0);
+
+  // If either variant has zero impressions, no significance can be calculated
+  if (impA === 0 || impB === 0) return 0;
+
+  const crA = convA / impA;
+  const crB = convB / impB;
+  const totalImp = impA + impB;
+  const pooledCR = (convA + convB) / totalImp;
+  const se = Math.sqrt(pooledCR * (1 - pooledCR) * (1 / impA + 1 / impB));
+  if (se === 0 || !Number.isFinite(se)) return 0;
   const z = Math.abs(crA - crB) / se;
+  if (!Number.isFinite(z)) return 0;
   // Two-tailed confidence that there IS a difference: 2 * CDF(|z|) - 1
   // When z=0 (no difference), confidence=0. When z is large, confidence→1.
   const confidence = 2 * normalCDF(z) - 1;
@@ -124,17 +137,23 @@ export function determineWinner(
   minConfidence = 0.90,
 ): string | null {
   if (variants.length < 2) return null;
+  if (!Number.isFinite(minImpressions) || minImpressions <= 0) return null;
+  if (!Number.isFinite(minConfidence) || minConfidence <= 0 || minConfidence > 1) return null;
+
+  // Validate primaryMetric
+  const validMetrics = ['roas', 'ctr', 'cvr'];
+  const metric = validMetrics.includes(primaryMetric) ? primaryMetric : 'roas';
 
   // Check minimum impressions
   if (variants.some(v => v.impressions < minImpressions)) return null;
 
   // Sort by primary metric
   const sorted = [...variants].sort((a, b) => {
-    switch (primaryMetric) {
-      case 'roas': return b.roas - a.roas;
-      case 'ctr': return b.ctr - a.ctr;
-      case 'cvr': return b.cvr - a.cvr;
-      default: return b.roas - a.roas;
+    switch (metric) {
+      case 'roas': return (b.roas || 0) - (a.roas || 0);
+      case 'ctr': return (b.ctr || 0) - (a.ctr || 0);
+      case 'cvr': return (b.cvr || 0) - (a.cvr || 0);
+      default: return (b.roas || 0) - (a.roas || 0);
     }
   });
 
@@ -159,13 +178,15 @@ export function determineWinner(
  */
 export function summarizeJob(job: AutomationJob): string {
   const variantCount = job.variants.length;
-  const totalImpressions = job.variants.reduce((s, v) => s + v.impressions, 0);
-  const totalSpend = job.variants.reduce((s, v) => s + v.spend, 0);
-  const totalRevenue = job.variants.reduce((s, v) => s + v.revenue, 0);
+  const totalImpressions = job.variants.reduce((s, v) => s + (v.impressions || 0), 0);
+  const totalSpend = job.variants.reduce((s, v) => s + (v.spend || 0), 0);
+  const totalRevenue = job.variants.reduce((s, v) => s + (v.revenue || 0), 0);
+  const safeSpend = Number.isFinite(totalSpend) ? totalSpend : 0;
+  const safeRevenue = Number.isFinite(totalRevenue) ? totalRevenue : 0;
 
   if (job.status === 'completed' && job.winner) {
     const winner = job.variants.find(v => v.creationId === job.winner);
-    return `Winner: Variant ${winner?.label || '?'}. ${variantCount} variants tested, ${totalImpressions.toLocaleString()} impressions, $${totalSpend.toFixed(2)} spend, $${totalRevenue.toFixed(2)} revenue.`;
+    return `Winner: Variant ${winner?.label || '?'}. ${variantCount} variants tested, ${totalImpressions.toLocaleString()} impressions, $${safeSpend.toFixed(2)} spend, $${safeRevenue.toFixed(2)} revenue.`;
   }
   if (job.status === 'monitoring') {
     return `Testing ${variantCount} variants. ${totalImpressions.toLocaleString()} impressions so far. Waiting for statistical significance.`;

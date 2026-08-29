@@ -52,17 +52,22 @@ function getTeamPresence(teamId: string): Map<string, PresenceEntry> {
 // ── Auth helper ──
 
 async function checkMembership(teamId: string) {
-  const { auth } = await import('@/../auth');
-  const { prisma } = await import('@/lib/prisma');
-  const session = await auth();
-  if (!session?.user?.id) return { error: NextResponse.json({ error: 'unauthorized' }, { status: 401 }), user: null };
-  const uid = session.user.id;
-  const membership = await prisma.teamMember.findFirst({
-    where: { teamId, userId: uid },
-    include: { user: { select: { id: true, name: true, email: true, image: true } } },
-  });
-  if (!membership) return { error: NextResponse.json({ error: 'not_found' }, { status: 404 }), user: null };
-  return { error: null, user: membership.user };
+  try {
+    const { auth } = await import('@/../auth');
+    const { prisma } = await import('@/lib/prisma');
+    const session = await auth();
+    if (!session?.user?.id) return { error: NextResponse.json({ error: 'unauthorized' }, { status: 401 }), user: null };
+    const uid = session.user.id;
+    const membership = await prisma.teamMember.findFirst({
+      where: { teamId, userId: uid },
+      include: { user: { select: { id: true, name: true, email: true, image: true } } },
+    });
+    if (!membership) return { error: NextResponse.json({ error: 'not_found' }, { status: 404 }), user: null };
+    return { error: null, user: membership.user };
+  } catch (err) {
+    console.error(`checkMembership error for team ${teamId}:`, err);
+    return { error: NextResponse.json({ error: 'internal_error' }, { status: 500 }), user: null };
+  }
 }
 
 /**
@@ -71,22 +76,27 @@ async function checkMembership(teamId: string) {
  */
 export async function GET(_req: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const { error } = await checkMembership(id);
-  if (error) return error;
+  try {
+    const { error } = await checkMembership(id);
+    if (error) return error;
 
-  cleanStaleEntries(id);
-  const team = getTeamPresence(id);
-  const now = Date.now();
+    cleanStaleEntries(id);
+    const team = getTeamPresence(id);
+    const now = Date.now();
 
-  const members = Array.from(team.values()).map(e => ({
-    userId: e.userId,
-    userName: e.userName,
-    userImage: e.userImage,
-    page: e.page,
-    onlineFor: Math.round((now - e.lastSeen) / 1000), // seconds since last heartbeat
-  }));
+    const members = Array.from(team.values()).map(e => ({
+      userId: e.userId,
+      userName: e.userName,
+      userImage: e.userImage,
+      page: e.page,
+      onlineFor: Math.round((now - e.lastSeen) / 1000), // seconds since last heartbeat
+    }));
 
-  return NextResponse.json({ members, count: members.length });
+    return NextResponse.json({ members, count: members.length });
+  } catch (err) {
+    console.error(`GET /api/teams/${id}/presence error:`, err);
+    return NextResponse.json({ error: 'internal_error' }, { status: 500 });
+  }
 }
 
 /**
@@ -96,33 +106,38 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
  */
 export async function POST(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const { error, user } = await checkMembership(id);
-  if (error || !user) return error;
+  try {
+    const { error, user } = await checkMembership(id);
+    if (error || !user) return error;
 
-  const body = await req.json().catch(() => ({}));
-  const page = typeof body.page === 'string' ? body.page.slice(0, 200) : '/dashboard';
+    const body = await req.json().catch(() => ({}));
+    const page = typeof body.page === 'string' ? body.page.slice(0, 200) : '/dashboard';
 
-  const team = getTeamPresence(id);
-  team.set(user.id, {
-    userId: user.id,
-    userName: user.name || user.email || 'Unknown',
-    userImage: user.image || null,
-    page,
-    lastSeen: Date.now(),
-  });
+    const team = getTeamPresence(id);
+    team.set(user.id, {
+      userId: user.id,
+      userName: user.name || user.email || 'Unknown',
+      userImage: user.image || null,
+      page,
+      lastSeen: Date.now(),
+    });
 
-  // Also return current presence for convenience
-  cleanStaleEntries(id);
-  const now = Date.now();
-  const members = Array.from(team.values()).map(e => ({
-    userId: e.userId,
-    userName: e.userName,
-    userImage: e.userImage,
-    page: e.page,
-    onlineFor: Math.round((now - e.lastSeen) / 1000),
-  }));
+    // Also return current presence for convenience
+    cleanStaleEntries(id);
+    const now = Date.now();
+    const members = Array.from(team.values()).map(e => ({
+      userId: e.userId,
+      userName: e.userName,
+      userImage: e.userImage,
+      page: e.page,
+      onlineFor: Math.round((now - e.lastSeen) / 1000),
+    }));
 
-  return NextResponse.json({ ok: true, members, count: members.length });
+    return NextResponse.json({ ok: true, members, count: members.length });
+  } catch (err) {
+    console.error(`POST /api/teams/${id}/presence error:`, err);
+    return NextResponse.json({ error: 'internal_error' }, { status: 500 });
+  }
 }
 
 /**
@@ -131,11 +146,16 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
  */
 export async function DELETE(_req: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const { error, user } = await checkMembership(id);
-  if (error || !user) return error;
+  try {
+    const { error, user } = await checkMembership(id);
+    if (error || !user) return error;
 
-  const team = presenceStore.get(id);
-  if (team) team.delete(user.id);
+    const team = presenceStore.get(id);
+    if (team) team.delete(user.id);
 
-  return NextResponse.json({ ok: true });
+    return NextResponse.json({ ok: true });
+  } catch (err) {
+    console.error(`DELETE /api/teams/${id}/presence error:`, err);
+    return NextResponse.json({ error: 'internal_error' }, { status: 500 });
+  }
 }

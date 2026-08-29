@@ -3,12 +3,13 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useSession } from 'next-auth/react';
 import {
-  Workflow, Plus, Trash2, GripVertical, Play, Save, Loader2,
+  Workflow, Plus, Trash2, GripVertical, Save, Loader2, AlertCircle,
   FileText, Clapperboard, Film, Image, Music, Scissors, ShieldCheck, Send,
-  ArrowRight, X,
+  X, ChevronUp, ChevronDown, Check,
 } from 'lucide-react';
 import { useI18n } from '@/i18n/provider';
 import { AuthModal } from '@/components/AuthModal';
+import { FeedbackWidget } from '@/components/FeedbackWidget';
 
 type StageId = 'brief' | 'script' | 'storyboard' | 'media_generation' | 'audio' | 'edit' | 'compliance' | 'publish';
 
@@ -30,6 +31,9 @@ const STAGE_INFO: Record<StageId, StageInfo> = {
 };
 
 const ALL_STAGES: StageId[] = ['brief', 'script', 'storyboard', 'media_generation', 'audio', 'edit', 'compliance', 'publish'];
+const MAX_STAGES = ALL_STAGES.length;
+const MAX_NAME_LEN = 100;
+const MAX_DESC_LEN = 500;
 
 interface SavedTemplate {
   id: string;
@@ -37,6 +41,12 @@ interface SavedTemplate {
   description: string;
   stages: StageId[];
   isBuiltIn: boolean;
+  isTeamShared?: boolean;
+}
+
+interface Team {
+  id: string;
+  name: string;
 }
 
 export default function WorkflowBuilderPage() {
@@ -47,31 +57,49 @@ export default function WorkflowBuilderPage() {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [saving, setSaving] = useState(false);
-  const [saveMsg, setSaveMsg] = useState<string | null>(null);
+  const [saveMsg, setSaveMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
-  const dragCounter = useRef(0);
+  const [teams, setTeams] = useState<Team[]>([]);
+  const [shareWithTeam, setShareWithTeam] = useState<string>('');
 
   const loadTemplates = useCallback(async () => {
+    setLoadError(null);
     try {
       const res = await fetch('/api/creative/workflow-templates');
-      if (!res.ok) return;
-      const data = await res.json();
-      setTemplates(data.templates || []);
+      if (!res.ok) {
+        setLoadError(t('workflowBuilder.loadFailed'));
+        setTemplates([]);
+      } else {
+        const data = await res.json();
+        setTemplates(data.templates || []);
+      }
     } catch {
+      setLoadError(t('workflowBuilder.loadFailed'));
       setTemplates([]);
     }
     setLoading(false);
-  }, []);
+  }, [t]);
 
   useEffect(() => {
-    if (session?.user) loadTemplates();
-    else setLoading(false);
+    if (session?.user) {
+      loadTemplates();
+      // Load user's teams for the sharing selector
+      fetch('/api/teams')
+        .then(res => res.ok ? res.json() : { teams: [] })
+        .then(data => setTeams(data.teams || []))
+        .catch(() => setTeams([]));
+    } else {
+      setLoading(false);
+    }
   }, [session, loadTemplates]);
 
   const addStage = (stage: StageId) => {
-    if (!stages.includes(stage)) {
+    if (!stages.includes(stage) && stages.length < MAX_STAGES) {
       setStages([...stages, stage]);
     }
   };
@@ -81,7 +109,7 @@ export default function WorkflowBuilderPage() {
   };
 
   const moveStage = (from: number, to: number) => {
-    if (from === to) return;
+    if (from === to || from < 0 || to < 0 || from >= stages.length || to >= stages.length) return;
     const newStages = [...stages];
     const [moved] = newStages.splice(from, 1);
     newStages.splice(to, 0, moved);
@@ -112,43 +140,67 @@ export default function WorkflowBuilderPage() {
     setDragOverIndex(null);
   };
 
+  // Keyboard reordering
+  const handleKeyDown = (e: React.KeyboardEvent, index: number) => {
+    if (e.key === 'ArrowUp' && index > 0) {
+      e.preventDefault();
+      moveStage(index, index - 1);
+    } else if (e.key === 'ArrowDown' && index < stages.length - 1) {
+      e.preventDefault();
+      moveStage(index, index + 1);
+    }
+  };
+
   const handleSave = async () => {
-    if (!name.trim() || stages.length === 0) return;
+    const trimmedName = name.trim();
+    if (!trimmedName || stages.length === 0) return;
     setSaving(true);
     setSaveMsg(null);
     try {
       const res = await fetch('/api/creative/workflow-templates', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, description, stages }),
+        body: JSON.stringify({ name: trimmedName, description: description.trim(), stages, teamId: shareWithTeam || undefined }),
       });
       const data = await res.json();
       if (res.ok) {
-        setSaveMsg(t('workflowBuilder.saved'));
+        setSaveMsg({ type: 'success', text: t('workflowBuilder.saved') });
         setName('');
         setDescription('');
         loadTemplates();
       } else {
-        setSaveMsg(data.error || t('workflowBuilder.saveFailed'));
+        setSaveMsg({ type: 'error', text: data.error || t('workflowBuilder.saveFailed') });
       }
     } catch {
-      setSaveMsg(t('workflowBuilder.saveFailed'));
+      setSaveMsg({ type: 'error', text: t('workflowBuilder.saveFailed') });
     }
     setSaving(false);
   };
 
   const handleDeleteTemplate = async (id: string) => {
+    setDeletingId(id);
     try {
-      await fetch(`/api/creative/workflow-templates?id=${id}`, { method: 'DELETE' });
-      loadTemplates();
+      const res = await fetch(`/api/creative/workflow-templates?id=${id}`, { method: 'DELETE' });
+      if (res.ok) {
+        loadTemplates();
+      } else {
+        setSaveMsg({ type: 'error', text: t('workflowBuilder.deleteFailed') });
+      }
     } catch {
-      // silent
+      setSaveMsg({ type: 'error', text: t('workflowBuilder.deleteFailed') });
     }
+    setDeletingId(null);
+    setConfirmDeleteId(null);
   };
 
   const loadTemplate = (template: SavedTemplate) => {
-    setStages(template.stages);
-    setName(template.name + ' (copy)');
+    // De-duplicate stages and filter to valid builder stages only
+    const validStages = template.stages.filter(s => ALL_STAGES.includes(s));
+    const uniqueStages = [...new Set(validStages)];
+    setStages(uniqueStages.length > 0 ? uniqueStages : ['brief', 'publish']);
+    // Strip existing " (copy)" suffix before adding a new one
+    const baseName = template.name.replace(/\s*\(copy\)\s*$/, '');
+    setName(baseName + ' (copy)');
     setDescription(template.description);
   };
 
@@ -157,7 +209,7 @@ export default function WorkflowBuilderPage() {
       <div className="min-h-screen text-fg app-grid-bg bg-app">
         <div className="mx-auto max-w-5xl px-4 py-8">
           <h1 className="text-2xl font-bold flex items-center gap-2">
-            <Workflow className="w-6 h-6" /> {t('workflowBuilder.title')}
+            <Workflow className="w-6 h-6" aria-hidden="true" /> {t('workflowBuilder.title')}
           </h1>
           <p className="text-sm text-fg-muted mt-2">{t('workflowBuilder.signInPrompt')}</p>
         </div>
@@ -171,10 +223,21 @@ export default function WorkflowBuilderPage() {
       <div className="mx-auto max-w-5xl px-4 py-8 space-y-6">
         <header>
           <h1 className="text-2xl font-bold flex items-center gap-2">
-            <Workflow className="w-6 h-6" /> {t('workflowBuilder.title')}
+            <Workflow className="w-6 h-6" aria-hidden="true" /> {t('workflowBuilder.title')}
           </h1>
           <p className="text-sm text-fg-muted mt-2">{t('workflowBuilder.subtitle')}</p>
         </header>
+
+        {/* Error banner */}
+        {loadError && (
+          <div role="alert" className="rounded-lg border border-danger/30 bg-danger/10 p-4 flex items-center gap-2 text-danger">
+            <AlertCircle className="w-5 h-5" />
+            <p className="text-sm">{loadError}</p>
+            <button onClick={() => loadTemplates()} className="ml-auto text-xs underline">
+              {t('workflowBuilder.retry')}
+            </button>
+          </div>
+        )}
 
         <div className="grid gap-6 lg:grid-cols-3">
           {/* Left: Available stages */}
@@ -185,24 +248,26 @@ export default function WorkflowBuilderPage() {
                 const info = STAGE_INFO[stageId];
                 const Icon = info.icon;
                 const inUse = stages.includes(stageId);
+                const allUsed = stages.length >= MAX_STAGES;
                 return (
                   <button
                     key={stageId}
                     onClick={() => addStage(stageId)}
-                    disabled={inUse}
+                    disabled={inUse || allUsed}
+                    aria-label={t(`workflowBuilder.stage.${stageId}`)}
                     className="w-full flex items-center gap-3 rounded-lg border border-border bg-card p-3 text-left transition hover:border-accent/40 disabled:opacity-40 disabled:cursor-not-allowed"
                   >
                     <span className="flex h-8 w-8 items-center justify-center rounded-lg" style={{ background: info.color + '20', color: info.color }}>
-                      <Icon className="w-4 h-4" />
+                      <Icon className="w-4 h-4" aria-hidden="true" />
                     </span>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium">{t(`workflowBuilder.stage.${stageId}`)}</p>
                       <p className="text-xs text-fg-muted truncate">{t(`workflowBuilder.stageDesc.${stageId}`)}</p>
                     </div>
                     {inUse ? (
-                      <X className="w-4 h-4 text-fg-muted" />
+                      <Check className="w-4 h-4 text-success" aria-hidden="true" />
                     ) : (
-                      <Plus className="w-4 h-4 text-accent" />
+                      <Plus className="w-4 h-4 text-accent" aria-hidden="true" />
                     )}
                   </button>
                 );
@@ -215,9 +280,12 @@ export default function WorkflowBuilderPage() {
             <h2 className="text-sm font-semibold">{t('workflowBuilder.yourPipeline')}</h2>
 
             {/* Pipeline flow */}
-            <div className="rounded-lg border border-border bg-card p-4 min-h-48">
+            <div className="rounded-lg border border-border bg-card p-4 min-h-48" role="list" aria-label={t('workflowBuilder.yourPipeline')}>
               {stages.length === 0 ? (
-                <p className="text-sm text-fg-muted text-center py-8">{t('workflowBuilder.emptyPipeline')}</p>
+                <div className="text-center py-8">
+                  <Workflow className="w-8 h-8 mx-auto text-fg-muted mb-2" aria-hidden="true" />
+                  <p className="text-sm text-fg-muted">{t('workflowBuilder.emptyPipeline')}</p>
+                </div>
               ) : (
                 <div className="space-y-2">
                   {stages.map((stageId, index) => {
@@ -228,25 +296,49 @@ export default function WorkflowBuilderPage() {
                     return (
                       <div
                         key={`${stageId}-${index}`}
+                        role="listitem"
                         draggable
                         onDragStart={() => handleDragStart(index)}
                         onDragOver={(e) => handleDragOver(e, index)}
                         onDrop={(e) => handleDrop(e, index)}
                         onDragEnd={handleDragEnd}
-                        className={`flex items-center gap-3 rounded-lg border p-3 transition ${
+                        onKeyDown={(e) => handleKeyDown(e, index)}
+                        tabIndex={0}
+                        aria-grabbed={isDragging}
+                        aria-label={`${t(`workflowBuilder.stage.${stageId}`)}, #${index + 1}. ${t('workflowBuilder.keyboardHint')}`}
+                        className={`flex items-center gap-3 rounded-lg border p-3 transition outline-none focus:ring-2 focus:ring-accent ${
                           isDragging ? 'opacity-50 border-accent' :
                           isDragOver ? 'border-accent bg-accent/5' :
                           'border-border bg-input'
                         }`}
                       >
-                        <GripVertical className="w-4 h-4 text-fg-muted cursor-grab active:cursor-grabbing" />
+                        <GripVertical className="w-4 h-4 text-fg-muted cursor-grab active:cursor-grabbing" aria-hidden="true" />
                         <span className="flex h-8 w-8 items-center justify-center rounded-lg" style={{ background: info.color + '20', color: info.color }}>
-                          <Icon className="w-4 h-4" />
+                          <Icon className="w-4 h-4" aria-hidden="true" />
                         </span>
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-medium">{t(`workflowBuilder.stage.${stageId}`)}</p>
                         </div>
                         <span className="text-xs text-fg-muted">#{index + 1}</span>
+                        {/* Keyboard reordering buttons */}
+                        <div className="flex flex-col">
+                          <button
+                            onClick={() => moveStage(index, index - 1)}
+                            disabled={index === 0}
+                            aria-label={t('workflowBuilder.moveUp')}
+                            className="p-0.5 text-fg-muted hover:text-fg disabled:opacity-30"
+                          >
+                            <ChevronUp className="w-3 h-3" />
+                          </button>
+                          <button
+                            onClick={() => moveStage(index, index + 1)}
+                            disabled={index === stages.length - 1}
+                            aria-label={t('workflowBuilder.moveDown')}
+                            className="p-0.5 text-fg-muted hover:text-fg disabled:opacity-30"
+                          >
+                            <ChevronDown className="w-3 h-3" />
+                          </button>
+                        </div>
                         <button
                           onClick={() => removeStage(index)}
                           aria-label={t('workflowBuilder.removeStage')}
@@ -271,8 +363,9 @@ export default function WorkflowBuilderPage() {
                     id="wf-name"
                     type="text"
                     value={name}
-                    onChange={(e) => setName(e.target.value)}
+                    onChange={(e) => setName(e.target.value.slice(0, MAX_NAME_LEN))}
                     placeholder={t('workflowBuilder.namePlaceholder')}
+                    maxLength={MAX_NAME_LEN}
                     className="w-full mt-1 rounded-md border border-border bg-input px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent"
                   />
                 </div>
@@ -282,8 +375,9 @@ export default function WorkflowBuilderPage() {
                     id="wf-desc"
                     type="text"
                     value={description}
-                    onChange={(e) => setDescription(e.target.value)}
+                    onChange={(e) => setDescription(e.target.value.slice(0, MAX_DESC_LEN))}
                     placeholder={t('workflowBuilder.descPlaceholder')}
+                    maxLength={MAX_DESC_LEN}
                     className="w-full mt-1 rounded-md border border-border bg-input px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent"
                   />
                 </div>
@@ -292,12 +386,33 @@ export default function WorkflowBuilderPage() {
                 <button
                   onClick={handleSave}
                   disabled={saving || !name.trim() || stages.length === 0}
+                  aria-busy={saving}
                   className="flex items-center gap-2 rounded-md bg-accent px-4 py-2 text-sm font-medium text-accent-fg hover:opacity-90 transition disabled:opacity-50"
                 >
                   {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
                   {t('workflowBuilder.save')}
                 </button>
-                {saveMsg && <p role="status" className="text-xs text-fg-muted">{saveMsg}</p>}
+                {teams.length > 0 && (
+                  <select
+                    value={shareWithTeam}
+                    onChange={(e) => setShareWithTeam(e.target.value)}
+                    aria-label={t('workflowBuilder.shareWithTeam')}
+                    className="text-xs rounded-md border border-border bg-input px-2 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
+                  >
+                    <option value="">{t('workflowBuilder.personal')}</option>
+                    {teams.map(team => (
+                      <option key={team.id} value={team.id}>{t('workflowBuilder.shareWith')} {team.name}</option>
+                    ))}
+                  </select>
+                )}
+                {saveMsg && (
+                  <p
+                    role={saveMsg.type === 'error' ? 'alert' : 'status'}
+                    className={`text-xs ${saveMsg.type === 'error' ? 'text-danger' : 'text-success'}`}
+                  >
+                    {saveMsg.text}
+                  </p>
+                )}
               </div>
             </div>
 
@@ -305,11 +420,14 @@ export default function WorkflowBuilderPage() {
             <div className="space-y-3">
               <h3 className="text-sm font-semibold">{t('workflowBuilder.savedTemplates')}</h3>
               {loading ? (
-                <div className="grid place-items-center py-8">
+                <div className="grid place-items-center py-8" aria-busy="true" aria-label={t('workflowBuilder.loading')}>
                   <Loader2 className="h-6 w-6 animate-spin text-fg-muted" />
                 </div>
               ) : templates.length === 0 ? (
-                <p className="text-sm text-fg-muted py-4">{t('workflowBuilder.noTemplates')}</p>
+                <div className="rounded-lg border border-dashed border-border p-8 text-center">
+                  <Workflow className="w-8 h-8 mx-auto text-fg-muted mb-2" aria-hidden="true" />
+                  <p className="text-sm text-fg-muted">{t('workflowBuilder.noTemplates')}</p>
+                </div>
               ) : (
                 <div className="space-y-2">
                   {templates.map((tmpl) => (
@@ -328,13 +446,31 @@ export default function WorkflowBuilderPage() {
                         {t('workflowBuilder.load')}
                       </button>
                       {!tmpl.isBuiltIn && (
-                        <button
-                          onClick={() => handleDeleteTemplate(tmpl.id)}
-                          aria-label={t('workflowBuilder.delete')}
-                          className="p-1 text-danger hover:bg-danger/10 rounded"
-                        >
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </button>
+                        confirmDeleteId === tmpl.id ? (
+                          <div className="flex items-center gap-1">
+                            <button
+                              onClick={() => handleDeleteTemplate(tmpl.id)}
+                              disabled={deletingId === tmpl.id}
+                              className="text-xs px-2 py-1 rounded bg-danger text-white hover:opacity-90"
+                            >
+                              {deletingId === tmpl.id ? <Loader2 className="w-3 h-3 animate-spin" /> : t('workflowBuilder.confirm')}
+                            </button>
+                            <button
+                              onClick={() => setConfirmDeleteId(null)}
+                              className="text-xs px-2 py-1 rounded border border-border hover:bg-hover"
+                            >
+                              {t('workflowBuilder.cancel')}
+                            </button>
+                          </div>
+                        ) : (
+                          <button
+                            onClick={() => setConfirmDeleteId(tmpl.id)}
+                            aria-label={t('workflowBuilder.delete')}
+                            className="p-1 text-danger hover:bg-danger/10 rounded"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        )
                       )}
                     </div>
                   ))}
@@ -344,6 +480,7 @@ export default function WorkflowBuilderPage() {
           </section>
         </div>
       </div>
+      <FeedbackWidget feature="workflow-builder" />
     </div>
   );
 }

@@ -4,10 +4,11 @@ import { useState, useEffect, useCallback } from 'react';
 import { useSession } from 'next-auth/react';
 import {
   Zap, Play, RefreshCw, Trophy, Loader2, AlertCircle, TrendingUp,
-  Eye, MousePointerClick, DollarSign, Target,
+  Eye, MousePointerClick, DollarSign, Target, Workflow,
 } from 'lucide-react';
 import { useI18n } from '@/i18n/provider';
 import { AuthModal } from '@/components/AuthModal';
+import { FeedbackWidget } from '@/components/FeedbackWidget';
 
 interface AutomationVariant {
   creationId: string;
@@ -57,28 +58,46 @@ export default function ABAutomationPage() {
   const [primaryMetric, setPrimaryMetric] = useState('roas');
   const [budgetDaily, setBudgetDaily] = useState(10);
   const [dryRun, setDryRun] = useState(true);
-  const [createMsg, setCreateMsg] = useState<string | null>(null);
+  const [createMsg, setCreateMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const [checkingJobId, setCheckingJobId] = useState<string | null>(null);
+  const [workflowTemplates, setWorkflowTemplates] = useState<Array<{ id: string; name: string; stages: string[] }>>([]);
 
   const loadJobs = useCallback(async () => {
     try {
       const res = await fetch('/api/creative/ab-automation');
-      if (!res.ok) return;
-      const data = await res.json();
-      setJobs(data.jobs || []);
+      if (!res.ok) {
+        setError(t('abAutomation.error'));
+        setJobs([]);
+      } else {
+        const data = await res.json();
+        setJobs(data.jobs || []);
+        setError(null);
+      }
     } catch {
+      setError(t('abAutomation.error'));
       setJobs([]);
     }
     setLoading(false);
-  }, []);
+  }, [t]);
 
   useEffect(() => {
-    if (session?.user) loadJobs();
-    else setLoading(false);
+    if (session?.user) {
+      loadJobs();
+      // Load workflow templates for the selector
+      fetch('/api/creative/workflow-templates')
+        .then(res => res.ok ? res.json() : { templates: [] })
+        .then(data => setWorkflowTemplates(data.templates || []))
+        .catch(() => setWorkflowTemplates([]));
+    } else {
+      setLoading(false);
+    }
   }, [session, loadJobs]);
 
   const handleCreate = async () => {
-    const ids = creationIds.split(/[,\n\s]+/).filter(Boolean);
-    if (ids.length < 2 || !testName) return;
+    const ids = [...new Set(creationIds.split(/[,\n\s]+/).filter(Boolean))];
+    const trimmedName = testName.trim();
+    if (ids.length < 2 || !trimmedName) return;
+    if (!Number.isFinite(budgetDaily) || budgetDaily < 1) return;
     setCreating(true);
     setCreateMsg(null);
     try {
@@ -88,28 +107,29 @@ export default function ABAutomationPage() {
         body: JSON.stringify({
           creationIds: ids,
           platform,
-          testName,
+          testName: trimmedName,
           primaryMetric,
-          budgetDaily,
+          budgetDaily: Math.max(1, Math.floor(budgetDaily)),
           dryRun,
         }),
       });
       const data = await res.json();
       if (res.ok) {
-        setCreateMsg(t('abAutomation.jobCreated'));
+        setCreateMsg({ type: 'success', text: t('abAutomation.jobCreated') });
         setCreationIds('');
         setTestName('');
         loadJobs();
       } else {
-        setCreateMsg(data.error || t('abAutomation.createFailed'));
+        setCreateMsg({ type: 'error', text: data.error || t('abAutomation.createFailed') });
       }
     } catch {
-      setCreateMsg(t('abAutomation.createFailed'));
+      setCreateMsg({ type: 'error', text: t('abAutomation.createFailed') });
     }
     setCreating(false);
   };
 
   const handleCheckJob = async (jobId: string) => {
+    setCheckingJobId(jobId);
     try {
       const res = await fetch('/api/creative/ab-automation', {
         method: 'PATCH',
@@ -118,8 +138,9 @@ export default function ABAutomationPage() {
       });
       if (res.ok) loadJobs();
     } catch {
-      // silent
+      // silent — UI will show stale data
     }
+    setCheckingJobId(null);
   };
 
   if (!session?.user) {
@@ -127,7 +148,7 @@ export default function ABAutomationPage() {
       <div className="min-h-screen text-fg app-grid-bg bg-app">
         <div className="mx-auto max-w-5xl px-4 py-8">
           <h1 className="text-2xl font-bold flex items-center gap-2">
-            <Zap className="w-6 h-6" /> {t('abAutomation.title')}
+            <Zap className="w-6 h-6" aria-hidden="true" /> {t('abAutomation.title')}
           </h1>
           <p className="text-sm text-fg-muted mt-2">{t('abAutomation.signInPrompt')}</p>
         </div>
@@ -136,15 +157,28 @@ export default function ABAutomationPage() {
     );
   }
 
+  const parsedIds = [...new Set(creationIds.split(/[,\n\s]+/).filter(Boolean))];
+  const canSubmit = testName.trim().length > 0 && parsedIds.length >= 2 && Number.isFinite(budgetDaily) && budgetDaily >= 1;
+
   return (
     <div className="min-h-screen text-fg app-grid-bg bg-app">
       <div className="mx-auto max-w-5xl px-4 py-8 space-y-6">
         <header>
           <h1 className="text-2xl font-bold flex items-center gap-2">
-            <Zap className="w-6 h-6" /> {t('abAutomation.title')}
+            <Zap className="w-6 h-6" aria-hidden="true" /> {t('abAutomation.title')}
           </h1>
           <p className="text-sm text-fg-muted mt-2">{t('abAutomation.subtitle')}</p>
         </header>
+
+        {error && (
+          <div role="alert" className="rounded-lg border border-danger/30 bg-danger/10 p-4 flex items-center gap-2 text-danger">
+            <AlertCircle className="w-5 h-5" />
+            <p className="text-sm">{error}</p>
+            <button onClick={() => loadJobs()} className="ml-auto text-xs underline">
+              {t('abAutomation.retry')}
+            </button>
+          </div>
+        )}
 
         {/* Create new automation */}
         <section className="rounded-lg border border-border bg-card p-4 space-y-3">
@@ -211,6 +245,28 @@ export default function ABAutomationPage() {
               className="w-full mt-1 rounded-md border border-border bg-input px-3 py-2 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-accent"
             />
           </div>
+          {workflowTemplates.length > 0 && (
+            <div className="flex items-center gap-2">
+              <Workflow className="w-4 h-4 text-fg-muted" aria-hidden="true" />
+              <label className="text-xs text-fg-muted" htmlFor="ab-workflow-select">{t('abAutomation.useWorkflowTemplate')}</label>
+              <select
+                id="ab-workflow-select"
+                defaultValue=""
+                onChange={(e) => {
+                  const tmpl = workflowTemplates.find(t => t.id === e.target.value);
+                  if (tmpl) {
+                    setTestName(tmpl.name + ' A/B Test');
+                  }
+                }}
+                className="text-xs rounded-md border border-border bg-input px-2 py-1 focus:outline-none focus:ring-2 focus:ring-accent"
+              >
+                <option value="">{t('abAutomation.selectWorkflow')}</option>
+                {workflowTemplates.map(tmpl => (
+                  <option key={tmpl.id} value={tmpl.id}>{tmpl.name}</option>
+                ))}
+              </select>
+            </div>
+          )}
           <div className="flex items-center gap-4">
             <label className="flex items-center gap-2 text-sm">
               <input
@@ -223,13 +279,24 @@ export default function ABAutomationPage() {
             </label>
             <button
               onClick={handleCreate}
-              disabled={creating || !testName || creationIds.split(/[,\n\s]+/).filter(Boolean).length < 2}
+              disabled={creating || !canSubmit}
+              aria-busy={creating}
               className="ml-auto rounded-md bg-accent px-4 py-2 text-sm font-medium text-accent-fg hover:opacity-90 transition disabled:opacity-50"
             >
               {creating ? <Loader2 className="w-4 h-4 animate-spin" /> : t('abAutomation.start')}
             </button>
           </div>
-          {createMsg && <p role="status" className="text-xs text-fg-muted">{createMsg}</p>}
+          {parsedIds.length > 0 && parsedIds.length < 2 && (
+            <p role="status" className="text-xs text-warning">{t('abAutomation.needTwoVariants')}</p>
+          )}
+          {createMsg && (
+            <p
+              role={createMsg.type === 'error' ? 'alert' : 'status'}
+              className={`text-xs ${createMsg.type === 'error' ? 'text-danger' : 'text-success'}`}
+            >
+              {createMsg.text}
+            </p>
+          )}
         </section>
 
         {/* Jobs list */}
@@ -260,9 +327,11 @@ export default function ABAutomationPage() {
                     {job.status === 'monitoring' && (
                       <button
                         onClick={() => handleCheckJob(job.jobId)}
-                        className="flex items-center gap-1 text-xs px-2 py-1 rounded border border-border hover:bg-hover"
+                        disabled={checkingJobId === job.jobId}
+                        aria-busy={checkingJobId === job.jobId}
+                        className="flex items-center gap-1 text-xs px-2 py-1 rounded border border-border hover:bg-hover disabled:opacity-50"
                       >
-                        <RefreshCw className="w-3 h-3" /> {t('abAutomation.check')}
+                        {checkingJobId === job.jobId ? <Loader2 className="w-3 h-3 animate-spin" /> : <RefreshCw className="w-3 h-3" />} {t('abAutomation.check')}
                       </button>
                     )}
                   </div>
@@ -278,7 +347,7 @@ export default function ABAutomationPage() {
                 )}
 
                 {job.error && (
-                  <div className="flex items-center gap-2 rounded-md bg-danger/10 p-2 text-danger">
+                  <div role="alert" className="flex items-center gap-2 rounded-md bg-danger/10 p-2 text-danger">
                     <AlertCircle className="w-4 h-4" />
                     <span className="text-sm">{job.error}</span>
                   </div>
@@ -291,11 +360,11 @@ export default function ABAutomationPage() {
                     <thead>
                       <tr className="border-b border-border text-left text-xs text-fg-muted">
                         <th scope="col" className="py-2 pr-3">Variant</th>
-                        <th scope="col" className="py-2 pr-3 text-right"><Eye className="w-3 h-3 inline" /></th>
-                        <th scope="col" className="py-2 pr-3 text-right"><MousePointerClick className="w-3 h-3 inline" /></th>
-                        <th scope="col" className="py-2 pr-3 text-right"><Target className="w-3 h-3 inline" /></th>
-                        <th scope="col" className="py-2 pr-3 text-right"><DollarSign className="w-3 h-3 inline" /></th>
-                        <th scope="col" className="py-2 text-right"><TrendingUp className="w-3 h-3 inline" /></th>
+                        <th scope="col" className="py-2 pr-3 text-right"><span className="flex items-center justify-end gap-1"><Eye className="w-3 h-3" aria-hidden="true" /> <span className="sr-only">{t('abAutomation.impressions')}</span></span></th>
+                        <th scope="col" className="py-2 pr-3 text-right"><span className="flex items-center justify-end gap-1"><MousePointerClick className="w-3 h-3" aria-hidden="true" /> <span className="sr-only">{t('abAutomation.clicks')}</span></span></th>
+                        <th scope="col" className="py-2 pr-3 text-right"><span className="flex items-center justify-end gap-1"><Target className="w-3 h-3" aria-hidden="true" /> <span className="sr-only">{t('abAutomation.conversions')}</span></span></th>
+                        <th scope="col" className="py-2 pr-3 text-right"><span className="flex items-center justify-end gap-1"><DollarSign className="w-3 h-3" aria-hidden="true" /> <span className="sr-only">{t('abAutomation.spend')}</span></span></th>
+                        <th scope="col" className="py-2 text-right"><span className="flex items-center justify-end gap-1"><TrendingUp className="w-3 h-3" aria-hidden="true" /> <span className="sr-only">ROAS</span></span></th>
                       </tr>
                     </thead>
                     <tbody>
@@ -320,6 +389,7 @@ export default function ABAutomationPage() {
           </div>
         )}
       </div>
+      <FeedbackWidget feature="ab-automation" />
     </div>
   );
 }

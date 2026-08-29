@@ -1,5 +1,42 @@
 # LazyNext Changelog
 
+## 2026-09-01 — Polish, Hardening, Cross-Feature Integration, Workflow v2, Team Workflows, Feedback
+
+### What Changed
+
+#### Polish & Hardening (all 4 new features)
+1. **Workflow Builder** — error banner with retry, delete confirmation dialog, keyboard reordering (arrow keys + up/down buttons), input validation (maxLength, trimming, duplicate prevention), drag-and-drop accessibility (aria-grabbed, role=listitem), fixed infinite loading on API error
+2. **A/B Automation** — NaN guards in calculateSignificance/determineWinner/summarizeJob, type-guard in parseAutomationMetadata, error banner with retry, per-job loading state, role=alert on errors, accessible table headers, creative ID de-duplication, input validation
+3. **Analytics Hub** — empty state for new users, error banner with retry, aria-busy on spinner, NaN guards on all metrics, negative projection clamping, short ID guard, aria-hidden on decorative icons, API route NaN guards
+4. **Team Collaboration** — fixed infinite spinner, error banners with retry, empty state for zero members, avatar edge case fix, alt text on avatars, aria-label on status dots, email validation, button disable during invite, visibility-aware polling, try/catch on all API routes, restricted activity types, limit validation
+
+#### Cross-Feature Integration
+5. **Workflow Builder → A/B Automation** — workflow template selector in A/B Automation page pre-fills test name
+6. **Workflow Runs → Analytics Hub** — workflow run metrics (total/completed/failed/running, avg duration, by type) in Analytics Hub
+
+#### Workflow Builder v2
+7. **Conditional stages** — `src/lib/creative/workflow-conditions.ts` with condition evaluation (platform, contentType, hasVoiceover, etc.), stage filtering, parallel execution waves, serialization, validation
+8. 20 unit tests for conditional workflow logic
+
+#### Team Workflows
+9. **Team-shared workflow templates** — templates can be shared with teams via `team:<teamId>` tags, visible to all team members
+10. Team selector in Workflow Builder UI
+
+#### In-App Feedback
+11. **FeedbackWidget** — floating button → star rating + comment dialog on all 4 new feature pages
+12. `POST /api/feedback` — stores feedback (reuses CreativeTemplate with category 'feedback')
+13. `GET /api/feedback` — admin-only feedback retrieval
+
+#### Documentation
+14. ADR-028 documenting all architecture decisions
+15. CHANGELOG updated
+
+### Verification
+- npm run lint — 0 errors, 10 pre-existing warnings
+- npm test — all unit tests passing
+- npx playwright test — all E2E tests passing
+- npm run build — successful
+
 ## 2026-08-29 — Dashboard Integration, Cross-Feature Handoffs, E2E + ADRs
 
 ### What Changed

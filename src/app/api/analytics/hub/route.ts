@@ -83,18 +83,19 @@ export async function GET() {
     orderBy: { createdAt: 'desc' },
   }).catch(() => []);
 
-  const creditSpent30d = ledger.filter(e => e.delta < 0).reduce((s, e) => s + Math.abs(e.delta), 0);
-  const creditGranted30d = ledger.filter(e => e.delta > 0).reduce((s, e) => s + e.delta, 0);
+  const creditSpent30d = ledger.filter(e => (e.delta || 0) < 0).reduce((s, e) => s + Math.abs(e.delta || 0), 0);
+  const creditGranted30d = ledger.filter(e => (e.delta || 0) > 0).reduce((s, e) => s + (e.delta || 0), 0);
   const creditByReason: Record<string, { count: number; totalDelta: number }> = {};
   for (const e of ledger) {
-    if (!creditByReason[e.reason]) creditByReason[e.reason] = { count: 0, totalDelta: 0 };
-    creditByReason[e.reason].count++;
-    creditByReason[e.reason].totalDelta += e.delta;
+    const reason = e.reason || 'unknown';
+    if (!creditByReason[reason]) creditByReason[reason] = { count: 0, totalDelta: 0 };
+    creditByReason[reason].count++;
+    creditByReason[reason].totalDelta += (e.delta || 0);
   }
 
   // 7-day average spend for projection
-  const recentLedger = ledger.filter(e => e.createdAt >= sevenDaysAgo && e.delta < 0);
-  const sevenDaySpend = recentLedger.reduce((s, e) => s + Math.abs(e.delta), 0);
+  const recentLedger = ledger.filter(e => e.createdAt && e.createdAt >= sevenDaysAgo && (e.delta || 0) < 0);
+  const sevenDaySpend = recentLedger.reduce((s, e) => s + Math.abs(e.delta || 0), 0);
   const dailyAvgSpend = sevenDaySpend / 7;
 
   // ── Creation Stats ──
@@ -108,14 +109,15 @@ export async function GET() {
   const completedCreations = creations.filter(c => c.status === 'completed').length;
   const failedCreations = creations.filter(c => c.status === 'failed').length;
   const processingCreations = creations.filter(c => c.status === 'processing' || c.status === 'pending').length;
-  const totalCreditsUsed = creations.reduce((s, c) => s + c.cost, 0);
+  const totalCreditsUsed = creations.reduce((s, c) => s + (c.cost || 0), 0);
 
   // By template
   const byTemplate: Record<string, { count: number; credits: number }> = {};
   for (const c of creations) {
-    if (!byTemplate[c.templateId]) byTemplate[c.templateId] = { count: 0, credits: 0 };
-    byTemplate[c.templateId].count++;
-    byTemplate[c.templateId].credits += c.cost;
+    const tid = c.templateId || 'unknown';
+    if (!byTemplate[tid]) byTemplate[tid] = { count: 0, credits: 0 };
+    byTemplate[tid].count++;
+    byTemplate[tid].credits += (c.cost || 0);
   }
 
   // Creations by day (last 30 days)
@@ -146,7 +148,32 @@ export async function GET() {
   }).catch(() => null);
 
   const currentBalance = user?.credits || 0;
-  const projectionDays = dailyAvgSpend > 0 ? Math.floor(currentBalance / dailyAvgSpend) : null;
+  const projectionDays = dailyAvgSpend > 0 && currentBalance >= 0 ? Math.floor(currentBalance / dailyAvgSpend) : null;
+
+  // ── Workflow Run Stats ──
+  const workflowRuns = await prisma.workflowRun.findMany({
+    where: { userId: uid },
+    select: { id: true, workflowType: true, status: true, startedAt: true, completedAt: true },
+    orderBy: { startedAt: 'desc' },
+    take: 100,
+  }).catch(() => []);
+
+  const totalWorkflowRuns = workflowRuns.length;
+  const completedWorkflowRuns = workflowRuns.filter(r => r.status === 'completed').length;
+  const failedWorkflowRuns = workflowRuns.filter(r => r.status === 'failed').length;
+  const runningWorkflowRuns = workflowRuns.filter(r => r.status === 'running').length;
+  const workflowRunsByType: Record<string, number> = {};
+  for (const r of workflowRuns) {
+    const wt = r.workflowType || 'unknown';
+    workflowRunsByType[wt] = (workflowRunsByType[wt] || 0) + 1;
+  }
+  // Average workflow duration (completed runs only)
+  const completedDurations = workflowRuns
+    .filter(r => r.status === 'completed' && r.completedAt)
+    .map(r => (r.completedAt!.getTime() - r.startedAt.getTime()) / 1000);
+  const avgWorkflowDurationSec = completedDurations.length > 0
+    ? Math.round(completedDurations.reduce((s, d) => s + d, 0) / completedDurations.length)
+    : 0;
 
   return NextResponse.json({
     // Overview
@@ -197,6 +224,17 @@ export async function GET() {
       granted30d: creditGranted30d,
       dailyAvgSpend: Math.round(dailyAvgSpend * 100) / 100,
       projectionDays,
+    },
+    // Workflow stats
+    workflows: {
+      totalRuns: totalWorkflowRuns,
+      completedRuns: completedWorkflowRuns,
+      failedRuns: failedWorkflowRuns,
+      runningRuns: runningWorkflowRuns,
+      byType: Object.entries(workflowRunsByType)
+        .map(([type, count]) => ({ type, count }))
+        .sort((a, b) => b.count - a.count),
+      avgDurationSec: avgWorkflowDurationSec,
     },
   });
 }
