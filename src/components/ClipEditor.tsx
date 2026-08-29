@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import { Scissors, Loader2, AlertCircle, Plus, Trash2 } from 'lucide-react';
+import { Scissors, Loader2, AlertCircle, Plus, Trash2, Mic, Volume2 } from 'lucide-react';
 import { useI18n } from '@/i18n/provider';
 import {
   createClip,
@@ -22,6 +22,8 @@ export function ClipEditor() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [result, setResult] = useState<ClipEditResult | null>(null);
+  const [mediaLoading, setMediaLoading] = useState(false);
+  const [mediaResult, setMediaResult] = useState<string>('');
 
   const executeCommand = useCallback(async () => {
     if (!command.trim()) { setError(t('clipEditor.commandRequired')); return; }
@@ -49,6 +51,42 @@ export function ClipEditor() {
   const removeClip = useCallback((id: string) => {
     setClips((prev) => prev.filter((c) => c.id !== id));
   }, []);
+
+  // Cross-feature integration: clip-editor → media-service-boundary (ASR/TTS)
+  const transcribeClips = useCallback(async () => {
+    setMediaLoading(true); setMediaResult(''); setError('');
+    try {
+      const res = await fetch('/api/creative/media-service-boundary', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ capability: 'asr', input: { text: clips.map((c) => c.label || c.name).join(' ') } }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed');
+      setMediaResult(`ASR: ${data.result?.result?.transcript || 'No transcript'}`);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+    } finally {
+      setMediaLoading(false);
+    }
+  }, [clips]);
+
+  const generateVoiceover = useCallback(async () => {
+    setMediaLoading(true); setMediaResult(''); setError('');
+    try {
+      const text = clips.map((c) => c.label || c.name).join('. ');
+      const res = await fetch('/api/creative/media-service-boundary', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ capability: 'tts', input: { text } }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed');
+      setMediaResult(`TTS: ${data.result?.result?.duration || 0}s audio generated (dry-run)`);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+    } finally {
+      setMediaLoading(false);
+    }
+  }, [clips]);
 
   const totalDuration = calculateTotalDuration(clips);
   const clipTypeColor = (type: string) => {
@@ -173,6 +211,37 @@ export function ClipEditor() {
             </button>
           ))}
         </div>
+      </div>
+
+      {/* Cross-feature integration: media service boundary (ASR/TTS) */}
+      <div className="space-y-3 rounded-lg border border-border bg-bg-secondary p-4">
+        <h3 className="text-sm font-medium">{t('clipEditor.mediaServices')}</h3>
+        <p className="text-xs text-fg-muted">{t('clipEditor.mediaServicesHint')}</p>
+        <div className="flex gap-2">
+          <button
+            onClick={transcribeClips}
+            disabled={mediaLoading || clips.length === 0}
+            className="inline-flex items-center gap-2 rounded-lg border border-border bg-bg px-3 py-2 text-xs font-medium hover:border-brand-accent disabled:opacity-50"
+            aria-label={t('clipEditor.transcribe')}
+          >
+            {mediaLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Mic className="w-3.5 h-3.5" />}
+            {t('clipEditor.transcribe')}
+          </button>
+          <button
+            onClick={generateVoiceover}
+            disabled={mediaLoading || clips.length === 0}
+            className="inline-flex items-center gap-2 rounded-lg border border-border bg-bg px-3 py-2 text-xs font-medium hover:border-brand-accent disabled:opacity-50"
+            aria-label={t('clipEditor.voiceover')}
+          >
+            {mediaLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Volume2 className="w-3.5 h-3.5" />}
+            {t('clipEditor.voiceover')}
+          </button>
+        </div>
+        {mediaResult && (
+          <div role="status" className="text-xs text-success rounded bg-success/10 px-2 py-1.5">
+            {mediaResult}
+          </div>
+        )}
       </div>
     </div>
   );

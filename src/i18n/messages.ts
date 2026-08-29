@@ -2667,6 +2667,8 @@ export const messages: Record<Locale, any> = {
       duration: "Duration",
       cta: "CTA",
       platformFit: "Platform Fit",
+      sendToCreatorKits: "Send to Creator Kits",
+      sendToShotPlanner: "Send to Shot Planner",
     },
     clipEditor: {
       title: "Conversational Clip Editor",
@@ -2686,6 +2688,10 @@ export const messages: Record<Locale, any> = {
       failed: "Operation failed",
       affectedClips: "Affected clips",
       examples: "Example commands",
+      mediaServices: "Media Services",
+      mediaServicesHint: "Transcribe clips with ASR or generate a voiceover with TTS (dry-run).",
+      transcribe: "Transcribe (ASR)",
+      voiceover: "Voiceover (TTS)",
     },
     mediaService: {
       title: "Media Service Boundary",
@@ -4717,6 +4723,8 @@ export const messages: Record<Locale, any> = {
       duration: "时长",
       cta: "CTA",
       platformFit: "平台适配",
+      sendToCreatorKits: "发送到创作者套件",
+      sendToShotPlanner: "发送到镜头规划",
     },
     clipEditor: {
       title: "对话式剪辑编辑器",
@@ -4736,6 +4744,10 @@ export const messages: Record<Locale, any> = {
       failed: "操作失败",
       affectedClips: "受影响剪辑",
       examples: "示例命令",
+      mediaServices: "媒体服务",
+      mediaServicesHint: "用ASR转录剪辑或用TTS生成配音（试运行）。",
+      transcribe: "转录 (ASR)",
+      voiceover: "配音 (TTS)",
     },
     mediaService: {
       title: "媒体服务边界",
@@ -6769,6 +6781,8 @@ export const messages: Record<Locale, any> = {
       duration: "再生時間",
       cta: "CTA",
       platformFit: "プラットフォーム適合度",
+      sendToCreatorKits: "クリエイターキットへ送信",
+      sendToShotPlanner: "ショットプランナーへ送信",
     },
     clipEditor: {
       title: "会話型クリップエディタ",
@@ -6788,6 +6802,10 @@ export const messages: Record<Locale, any> = {
       failed: "操作に失敗しました",
       affectedClips: "影響を受けたクリップ",
       examples: "コマンド例",
+      mediaServices: "メディアサービス",
+      mediaServicesHint: "ASRでクリップを文字起こし、またはTTSでナレーションを生成（ドライラン）。",
+      transcribe: "文字起こし (ASR)",
+      voiceover: "ナレーション (TTS)",
     },
     mediaService: {
       title: "メディアサービス境界",
@@ -8821,6 +8839,8 @@ export const messages: Record<Locale, any> = {
       duration: "Duración",
       cta: "CTA",
       platformFit: "Ajuste de Plataforma",
+      sendToCreatorKits: "Enviar a Kits de Creadores",
+      sendToShotPlanner: "Enviar a Planificador",
     },
     clipEditor: {
       title: "Editor de Clips Conversacional",
@@ -8840,6 +8860,10 @@ export const messages: Record<Locale, any> = {
       failed: "Operación fallida",
       affectedClips: "Clips afectados",
       examples: "Comandos de ejemplo",
+      mediaServices: "Servicios de Medios",
+      mediaServicesHint: "Transcribe clips con ASR o genera voz con TTS (simulación).",
+      transcribe: "Transcribir (ASR)",
+      voiceover: "Voz (TTS)",
     },
     mediaService: {
       title: "Frontera de Servicios de Medios",
@@ -10871,6 +10895,8 @@ export const messages: Record<Locale, any> = {
       duration: "길이",
       cta: "CTA",
       platformFit: "플랫폼 적합도",
+      sendToCreatorKits: "크리에이터 키트로 보내기",
+      sendToShotPlanner: "샷 플래너로 보내기",
     },
     clipEditor: {
       title: "대화형 클립 에디터",
@@ -10890,6 +10916,10 @@ export const messages: Record<Locale, any> = {
       failed: "작업 실패",
       affectedClips: "영향받은 클립",
       examples: "예제 명령",
+      mediaServices: "미디어 서비스",
+      mediaServicesHint: "ASR로 클립을 전사하거나 TTS로 보이스오버 생성(드라이런).",
+      transcribe: "전사 (ASR)",
+      voiceover: "보이스오버 (TTS)",
     },
     mediaService: {
       title: "미디어 서비스 경계",
@@ -12921,6 +12951,8 @@ export const messages: Record<Locale, any> = {
       duration: "Duração",
       cta: "CTA",
       platformFit: "Ajuste de Plataforma",
+      sendToCreatorKits: "Enviar para Kits de Criadores",
+      sendToShotPlanner: "Enviar para Planejador",
     },
     clipEditor: {
       title: "Editor de Clips Conversacional",
@@ -12940,6 +12972,10 @@ export const messages: Record<Locale, any> = {
       failed: "Operação falhou",
       affectedClips: "Clips afetados",
       examples: "Comandos de exemplo",
+      mediaServices: "Serviços de Mídia",
+      mediaServicesHint: "Transcreva clips com ASR ou gere voz com TTS (simulação).",
+      transcribe: "Transcrever (ASR)",
+      voiceover: "Voz (TTS)",
     },
     mediaService: {
       title: "Fronteira de Serviços de Mídia",
@@ -14971,6 +15007,8 @@ export const messages: Record<Locale, any> = {
       duration: "Durée",
       cta: "CTA",
       platformFit: "Adéquation Plateforme",
+      sendToCreatorKits: "Envoyer aux Kits Créateur",
+      sendToShotPlanner: "Envoyer au Planificateur",
     },
     clipEditor: {
       title: "Éditeur de Clips Conversationnel",
@@ -14990,6 +15028,10 @@ export const messages: Record<Locale, any> = {
       failed: "Opération échouée",
       affectedClips: "Clips affectés",
       examples: "Commandes d'exemple",
+      mediaServices: "Services Médias",
+      mediaServicesHint: "Transcrivez les clips avec ASR ou générez une voix avec TTS (simulation).",
+      transcribe: "Transcrire (ASR)",
+      voiceover: "Voix (TTS)",
     },
     mediaService: {
       title: "Frontière de Services Médias",
@@ -17021,6 +17063,8 @@ export const messages: Record<Locale, any> = {
       duration: "Dauer",
       cta: "CTA",
       platformFit: "Plattform-Fit",
+      sendToCreatorKits: "An Creator-Kits senden",
+      sendToShotPlanner: "An Shot-Planer senden",
     },
     clipEditor: {
       title: "Konversationeller Clip-Editor",
@@ -17040,6 +17084,10 @@ export const messages: Record<Locale, any> = {
       failed: "Operation fehlgeschlagen",
       affectedClips: "Betroffene Clips",
       examples: "Beispielbefehle",
+      mediaServices: "Mediendienste",
+      mediaServicesHint: "Clips mit ASR transkribieren oder Voiceover mit TTS generieren (Dry-Run).",
+      transcribe: "Transkribieren (ASR)",
+      voiceover: "Voiceover (TTS)",
     },
     mediaService: {
       title: "Mediendienst-Grenze",
@@ -19071,6 +19119,8 @@ export const messages: Record<Locale, any> = {
       duration: "المدة",
       cta: "CTA",
       platformFit: "ملاءمة المنصة",
+      sendToCreatorKits: "إرسال إلى أدوات المبدعين",
+      sendToShotPlanner: "إرسال إلى مخطط اللقطات",
     },
     clipEditor: {
       title: "محرر المقاطع التفاعلي",
@@ -19090,6 +19140,10 @@ export const messages: Record<Locale, any> = {
       failed: "فشلت العملية",
       affectedClips: "المقاطع المتأثرة",
       examples: "أمثلة أوامر",
+      mediaServices: "خدمات الوسائط",
+      mediaServicesHint: "انسخ المقاطع مع ASR أو أنشئ صوتاً مع TTS (تجريبي).",
+      transcribe: "نسخ (ASR)",
+      voiceover: "صوت (TTS)",
     },
     mediaService: {
       title: "حدود خدمات الوسائط",
@@ -21121,6 +21175,8 @@ export const messages: Record<Locale, any> = {
       duration: "अवधि",
       cta: "CTA",
       platformFit: "प्लेटफ़ॉर्म फिट",
+      sendToCreatorKits: "क्रिएटर किट में भेजें",
+      sendToShotPlanner: "शॉट प्लानर में भेजें",
     },
     clipEditor: {
       title: "संवादात्मक क्लिप संपादक",
@@ -21140,6 +21196,10 @@ export const messages: Record<Locale, any> = {
       failed: "ऑपरेशन विफल",
       affectedClips: "प्रभावित क्लिप",
       examples: "उदाहरण कमांड",
+      mediaServices: "मीडिया सेवाएं",
+      mediaServicesHint: "ASR से क्लिप ट्रांसक्राइब करें या TTS से वॉइसओवर बनाएं (ड्राई-रन).",
+      transcribe: "ट्रांसक्राइब (ASR)",
+      voiceover: "वॉइसओवर (TTS)",
     },
     mediaService: {
       title: "मीडिया सेवा सीमा",
@@ -23173,6 +23233,8 @@ export const messages: Record<Locale, any> = {
       duration: "Thời lượng",
       cta: "CTA",
       platformFit: "Phù hợp Nền tảng",
+      sendToCreatorKits: "Gửi đến Kit Creator",
+      sendToShotPlanner: "Gửi đến Trình lập kế hoạch",
     },
     clipEditor: {
       title: "Trình chỉnh sửa Clip đàm thoại",
@@ -23192,6 +23254,10 @@ export const messages: Record<Locale, any> = {
       failed: "Thao tác thất bại",
       affectedClips: "Clip bị ảnh hưởng",
       examples: "Lệnh mẫu",
+      mediaServices: "Dịch vụ Media",
+      mediaServicesHint: "Chuyển đổi clip với ASR hoặc tạo voiceover với TTS (mô phỏng).",
+      transcribe: "Chuyển đổi (ASR)",
+      voiceover: "Voiceover (TTS)",
     },
     mediaService: {
       title: "Ranh giới Dịch vụ Media",
@@ -25224,6 +25290,8 @@ export const messages: Record<Locale, any> = {
       duration: "ระยะเวลา",
       cta: "CTA",
       platformFit: "ความเหมาะกับแพลตฟอร์ม",
+      sendToCreatorKits: "ส่งไปยังชุดครีเอเตอร์",
+      sendToShotPlanner: "ส่งไปยังตัววางแผน",
     },
     clipEditor: {
       title: "โปรแกรมตัดต่อคลิปแบบสนทนา",
@@ -25243,6 +25311,10 @@ export const messages: Record<Locale, any> = {
       failed: "ดำเนินการล้มเหลว",
       affectedClips: "คลิปที่ได้รับผลกระทบ",
       examples: "คำสั่งตัวอย่าง",
+      mediaServices: "บริการสื่อ",
+      mediaServicesHint: "ถอดเสียงคลิปด้วย ASR หรือสร้างเสียงบรรยายด้วย TTS (จำลอง).",
+      transcribe: "ถอดเสียง (ASR)",
+      voiceover: "เสียงบรรยาย (TTS)",
     },
     mediaService: {
       title: "ขอบเขตบริการสื่อ",
@@ -27253,6 +27325,8 @@ export const messages: Record<Locale, any> = {
       duration: "Durasi",
       cta: "CTA",
       platformFit: "Kecocokan Platform",
+      sendToCreatorKits: "Kirim ke Kit Creator",
+      sendToShotPlanner: "Kirim ke Perencana Shot",
     },
     clipEditor: {
       title: "Editor Klip Konversasional",
@@ -27272,6 +27346,10 @@ export const messages: Record<Locale, any> = {
       failed: "Operasi gagal",
       affectedClips: "Klip terdampak",
       examples: "Contoh perintah",
+      mediaServices: "Layanan Media",
+      mediaServicesHint: "Transkripsi klip dengan ASR atau hasilkan voiceover dengan TTS (simulasi).",
+      transcribe: "Transkripsi (ASR)",
+      voiceover: "Voiceover (TTS)",
     },
     mediaService: {
       title: "Batas Layanan Media",

@@ -1,12 +1,14 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { Clapperboard, Loader2, AlertCircle } from 'lucide-react';
 import { useI18n } from '@/i18n/provider';
 import type { VideoShotPlanResult } from '@/lib/creative/shot-planner';
 
 export function ShotPlanner() {
   const { t } = useI18n();
+  const searchParams = useSearchParams();
   const [sourceContent, setSourceContent] = useState('');
   const [sourceType, setSourceType] = useState('script');
   const [format, setFormat] = useState('vertical_9_16');
@@ -16,6 +18,15 @@ export function ShotPlanner() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [result, setResult] = useState<VideoShotPlanResult | null>(null);
+
+  // Pre-fill from query params (cross-feature handoff from brand-concepts)
+  useEffect(() => {
+    const script = searchParams.get('script');
+    if (script) {
+      setSourceContent(script);
+      setSourceType('script');
+    }
+  }, [searchParams]);
 
   const analyze = useCallback(async () => {
     if (!sourceContent.trim()) { setError(t('shotPlanner.contentRequired')); return; }

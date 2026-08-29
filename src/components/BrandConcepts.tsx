@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import { Sparkles, Loader2, AlertCircle, Lightbulb, Target, Award, TrendingUp } from 'lucide-react';
+import Link from 'next/link';
+import { Sparkles, Loader2, AlertCircle, Lightbulb, Target, Award, TrendingUp, Gift, Clapperboard, ArrowRight } from 'lucide-react';
 import { useI18n } from '@/i18n/provider';
 import type { BrandConceptsResult, AdConcept } from '@/lib/creative/brand-concepts';
 
@@ -133,6 +134,15 @@ export function BrandConcepts() {
                 </div>
               </div>
             )}
+            {/* Cross-feature handoff: brand → creator kits */}
+            <div className="mt-3 pt-3 border-t border-border">
+              <Link
+                href={`/creator-kits?productName=${encodeURIComponent(result.brand.brandName)}&productDescription=${encodeURIComponent(sourceContent.slice(0, 500))}&audience=${encodeURIComponent(result.brand.targetAudience)}`}
+                className="inline-flex items-center gap-1.5 text-xs font-medium text-brand-accent hover:underline"
+              >
+                <Gift className="w-3.5 h-3.5" /> {t('brandConcepts.sendToCreatorKits')} <ArrowRight className="w-3 h-3" />
+              </Link>
+            </div>
           </div>
 
           {/* Summary Stats */}
@@ -274,6 +284,16 @@ function ConceptCard({
                 </span>
               ))}
             </div>
+          </div>
+
+          {/* Cross-feature handoff: concept → shot planner */}
+          <div className="pt-2 border-t border-border">
+            <Link
+              href={`/shot-planner?script=${encodeURIComponent(concept.script)}&concept=${encodeURIComponent(concept.name)}`}
+              className="inline-flex items-center gap-1.5 text-xs font-medium text-brand-accent hover:underline"
+            >
+              <Clapperboard className="w-3.5 h-3.5" /> {t('brandConcepts.sendToShotPlanner')} <ArrowRight className="w-3 h-3" />
+            </Link>
           </div>
         </div>
       )}

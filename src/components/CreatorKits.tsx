@@ -1,12 +1,14 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { Package, Loader2, AlertCircle } from 'lucide-react';
 import { useI18n } from '@/i18n/provider';
 import type { CreatorKitResult } from '@/lib/creative/creator-kits';
 
 export function CreatorKits() {
   const { t } = useI18n();
+  const searchParams = useSearchParams();
   const [productName, setProductName] = useState('');
   const [productDescription, setProductDescription] = useState('');
   const [platform, setPlatform] = useState('tiktok');
@@ -17,6 +19,16 @@ export function CreatorKits() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [result, setResult] = useState<CreatorKitResult | null>(null);
+
+  // Pre-fill from query params (cross-feature handoff from brand-concepts)
+  useEffect(() => {
+    const name = searchParams.get('productName');
+    const desc = searchParams.get('productDescription');
+    const audience = searchParams.get('audience');
+    if (name) setProductName(name);
+    if (desc) setProductDescription(desc);
+    if (audience) setTargetAudience(audience);
+  }, [searchParams]);
 
   const generate = useCallback(async () => {
     if (!productName.trim() || !productDescription.trim()) {
