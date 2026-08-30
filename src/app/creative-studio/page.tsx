@@ -929,6 +929,7 @@ export default function CreativeStudioPage() {
       <div className="min-h-screen text-fg app-grid-bg bg-app">
         <div className="grid place-items-center gap-4 py-32 text-center">
           <div className="text-5xl">🔐</div>
+          <h1 className="text-2xl font-bold text-fg">{t('creativeStudio.title')}</h1>
           <p className="text-fg-faint">{t('creativeStudio.signInPrompt')}</p>
           <button onClick={() => setAuthOpen(true)} className="rounded-xl px-5 py-2.5 text-sm font-bold text-white" style={{ background: '#0064d9' }}>{t('common.signIn')}</button>
         </div>

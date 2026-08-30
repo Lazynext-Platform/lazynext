@@ -49,8 +49,8 @@ Production uses Cloudflare R2 via `src/lib/media-storage.cloudflare.ts`.
 ## Verification Commands
 ```bash
 npm run lint    # ESLint
-npm test        # Node test runner (1786 tests)
-# E2E: 511 passed, 0 skipped (chromium + mobile-chrome + chromium-auth)
+npm test        # Node test runner (1871 tests)
+# E2E: 512 passed, 0 skipped (chromium + mobile-chrome + chromium-auth)
 npm run build   # Production build (Cloudflare target)
 npm run cf:build  # Cloudflare/OpenNext build
 npm run cf:deploy # Deploy to Cloudflare Workers
@@ -112,7 +112,9 @@ npm run cf:deploy # Deploy to Cloudflare Workers
   `/api/creative/comments/stream`, `/api/creative/share`, `/api/creative/share/[token]`,
   `/api/creative/diff`, `/api/creative/export`, `/api/creative/regenerate`,
   `/api/creative/product-brief`, `/api/creative/reference-remix`, `/api/creative/multi-concept`,
-  `/api/creative/performance-loop`, `/api/creative/skill-chain-builder`
+  `/api/creative/performance-loop`, `/api/creative/skill-chain-builder`,
+  `/api/creative/brand-guardrails`, `/api/creative/smart-calendar`,
+  `/api/creative/competitor-watch`
 - Ad platform API routes: `/api/ads/create`, `/api/ads/metrics`, `/api/ads/list`, `/api/ads/report`,
   `/api/ads/budget`, `/api/ads/google-budget`, `/api/ads/google-report`, `/api/analytics/ga4`,
   `/api/ads/meta-safety`, `/api/ads/meta-approve`, `/api/ads/google-safety`, `/api/ads/google-approve`
@@ -121,7 +123,7 @@ npm run cf:deploy # Deploy to Cloudflare Workers
 - `/api/creative/director` returns an NDJSON stream of step-by-step progress updates; legacy
   non-streaming mode available via `?stream=false`
 - Pipeline stages: brief, script, storyboard, media_generation, audio, edit, compliance, score, publish
-- ADRs 001-042 in `docs/adr/` document all major architecture decisions
+- ADRs 001-046 in `docs/adr/` document all major architecture decisions
 - Cross-feature handoffs: Brand Concepts → Creator Kits (query-param pre-fill),
   Brand Concepts → Shot Planner (script pre-fill), Clip Editor → Media Service Boundary (ASR/TTS)
 - Dashboard "Quick Create" grid includes all production apps and the 12 newest features
@@ -170,6 +172,27 @@ npm run cf:deploy # Deploy to Cloudflare Workers
 - All 4 features have dry-run/fallback behavior when Atlas is local or API key is missing
 - All 4 features use existing auth, credit deduction/refund, `withAtlas`, and `safeError` conventions
 - Unit tests: 35 (google-safety) + 18 (performance-loop) + 39 (skill-chain-builder) = 92 new tests
+
+### RR-Series: Production Audit + Three New Features
+- Brand Guardrails (`/brand-guardrails`): AI-powered brand consistency checker.
+  Analyzes creatives against brand guidelines (voice, visual, messaging).
+  Returns score (0-100), grade (F-A+), violations with severity, recommendations.
+  4 credits. API: `POST /api/creative/brand-guardrails`. See ADR-044.
+- Smart Calendar (`/smart-calendar`): Multi-platform content calendar with
+  AI-suggested optimal posting times. Considers platform best practices,
+  audience timezone, content type, and historical performance. 3 credits.
+  API: `POST /api/creative/smart-calendar`. See ADR-045.
+- Competitor Watch (`/competitor-watch`): Competitor ad monitoring with
+  automatic creative analysis and alerts. Extracts hooks, angles, CTAs,
+  visual style, emotional triggers, pricing strategy. Generates competitive
+  gaps and counter-strategies. 5 credits.
+  API: `POST /api/creative/competitor-watch`. See ADR-046.
+- All 3 features have dry-run/fallback behavior when Atlas is local or API key is missing
+- All 3 features use existing auth, credit deduction/refund, `withAtlas`, and `safeError` conventions
+- Unit tests: 26 (brand-guardrails) + 36 (smart-calendar) + 23 (competitor-watch) = 85 new tests
+- Production audit fixes: pipeline.title translation fix (was nested in `legal` object),
+  missing h1 on /dashboard, /creative-studio, /ugc-studio, /observability unauthenticated views
+- Video rendering research: RendoBar recommended for EDL rendering (see research/video-rendering-services.md)
 
 ## Production-Only Testing (Cannot Be Verified Locally)
 

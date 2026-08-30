@@ -57,7 +57,10 @@ export default function ObservabilityPage() {
   if (!session) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <p className="text-fg-faint">Please sign in to view observability metrics.</p>
+        <div className="text-center space-y-2">
+          <h1 className="text-2xl font-bold text-fg">Observability</h1>
+          <p className="text-fg-faint">Please sign in to view observability metrics.</p>
+        </div>
       </div>
     );
   }

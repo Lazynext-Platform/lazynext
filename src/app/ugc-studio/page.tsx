@@ -27,6 +27,7 @@ export default function UgcStudioPage() {
       <div className="min-h-screen text-fg app-grid-bg bg-app">
         <div className="grid place-items-center gap-4 py-32 text-center">
           <div className="text-5xl">🔐</div>
+          <h1 className="text-2xl font-bold text-fg">{t('ugcStudio.title') || 'UGC Studio'}</h1>
           <p className="text-fg-faint">
             {t('ugcStudio.signInPrompt') || 'Sign in to start creating UGC ads.'}
           </p>

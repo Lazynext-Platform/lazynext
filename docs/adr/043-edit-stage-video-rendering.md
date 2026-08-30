@@ -43,10 +43,21 @@ service and poll for completion:
 3. Worker polls or receives a webhook when rendering completes.
 4. The rendered video URL is stored as the pipeline's edit-stage output.
 
-Existing services that provide this:
-- **RendoBar** — FFmpeg API with SDK, webhooks, and Cloudflare Worker integration
-- **Cloudflare Stream** — serverless video pipeline (encoding, storage, delivery)
-- **Custom GPU worker** — a separate container/VM running FFmpeg
+### Research findings (see `research/video-rendering-services.md`)
+
+Three services were evaluated:
+
+1. **RendoBar** — FFmpeg API with native EDL/JSON timeline support (`compose`
+   job type), Cloudflare Workers SDK, signed webhooks. ~$0.05/min compute.
+   **Recommended.**
+2. **Cloudflare Stream** — serverless video pipeline, but cannot compose
+   multi-clip EDLs (single-clip trim only). Not suitable for this use case.
+3. **Custom GPU worker** (Modal/RunPod) — most flexible, highest operational
+   burden. Fly.io GPUs deprecated (shut down July 31, 2026).
+
+**RendoBar is recommended** because it natively accepts a declarative JSON
+timeline (similar to LazyNext's EDL), has a Workers-compatible SDK, and
+requires zero infrastructure management.
 
 ## Decision
 
