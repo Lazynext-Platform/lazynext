@@ -1,6 +1,6 @@
 # LazyNext Architecture Audit — 2026-09
 
-> **Status:** Current as of 2026-09-02 (post-LL series).
+> **Status:** Current as of 2026-09-02 (post-SS series).
 > The previous audit (`research/lazynext-architecture-audit.md`) is superseded.
 
 ## 1. Stack
@@ -26,7 +26,7 @@
 
 ## 2. Database Schema
 
-28 Prisma models. Key models for the creative pipeline:
+28→36 Prisma models. Key models for the creative pipeline:
 
 - **User** — id, email, name, credits, password (bcrypt), image
 - **WorkflowRun** — persists pipeline state as JSON (`state` column)
@@ -82,6 +82,9 @@ All 5 templates include the `score` quality gate before publish.
 - `POST /api/creative/skill-chain-builder` — multi-step skill chains with conditional branching
 - `GET/POST /api/ads/meta-safety` / `GET/POST /api/ads/meta-approve` — Meta Ads safety layer (dry-run, approvals, spend caps, audit log)
 - `GET/POST /api/ads/google-safety` / `GET/POST /api/ads/google-approve` — Google Ads safety layer (dry-run, approvals, spend caps, audit log)
+- `POST /api/creative/brand-guardrails` — AI brand consistency checker (4 credits, ADR-044)
+- `POST /api/creative/smart-calendar` — AI-suggested optimal posting times (3 credits, ADR-045)
+- `POST /api/creative/competitor-watch` — competitor ad monitoring with alerts (5 credits, ADR-046)
 
 Credit handling:
 - Credits are deducted before stage execution.
@@ -185,7 +188,7 @@ The `overall` score is on a **1-10 scale** (weighted average of 1-10 dimensions)
 
 ### Coverage
 
-- 13 locales: en, zh, ja, es, ko, pt, fr, de, ar, hi, vi, th, id. All 13 locales now have complete feature translations (including the JJ- and LL-series features).
+- 13 locales: en, zh, ja, es, ko, pt, fr, de, ar, hi, vi, th, id. All 13 locales now have complete feature translations (including the JJ-, LL-, RR-, and SS-series features).
 - RTL support for Arabic (`dir="rtl"`, `lang="ar"`).
 - Cookie-based locale switching.
 
@@ -238,10 +241,11 @@ The `pipeline` namespace includes:
 
 ### Test coverage
 
-- **410 unauthenticated tests** — smoke tests, page loads, auth prompts, responsive, RTL.
-- **7+ authenticated pipeline tests** — session, pipeline creation, templates, page loads.
+- **440+ unauthenticated tests** — smoke tests, page loads, auth prompts, responsive, RTL (including 30 new page tests for brand-guardrails, smart-calendar, competitor-watch).
+- **9 authenticated API tests** for RR-series features (brand-guardrails, smart-calendar, competitor-watch).
+- **12+ authenticated pipeline tests** — session, pipeline creation, templates, page loads.
 - **12+ authenticated user flow tests** — dashboard, my-work, settings, admin, credits, full pipeline execution, A/B.
-- Total: 429+ tests (417 unauthenticated + 12+ authenticated).
+- Total: 581 tests (440+ unauthenticated + 141 authenticated), 0 skipped, 0 failed.
 
 ### Test account
 
@@ -281,8 +285,8 @@ The `pipeline` namespace includes:
 
 ```bash
 npm run lint    # ESLint — 0 errors, 0 warnings
-npm test        # Node test runner — 1786 tests
-npx playwright test  # E2E — 511 tests, 0 skipped
+npm test        # Node test runner — 1871 tests
+npx playwright test  # E2E — 581 tests, 0 skipped
 npm run build   # Production build (Cloudflare target)
 ```
 
@@ -301,10 +305,10 @@ npm run build   # Production build (Cloudflare target)
 
 - **Architecture audit** — this document should be updated when major changes are made.
 - **Authenticated E2E for billing/checkout** — no test for actual checkout flow (requires Dodo Payments).
-- **Production observability** — telemetry events are emitted but not aggregated or alerted on.
-- **Edit stage real rendering** — produces EDL only; no actual video output or clip editor integration.
+- **Edit stage real rendering** — RendoBar integration is wired (ADR-043) but not activated (needs API key).
 - **Publish stage real integrations** — no real ad-platform API credentials; dry-run returns `dry_run` status.
 - **External credentials** — all 12 external integrations (Atlas Cloud, 4 OAuth platforms, Google Ads, Meta Ads, GA4, Dodo Payments, Resend email, alert webhook) are code-complete but require credentials.
+- **Video rendering** — RendoBar provider is integrated in `src/lib/providers/video-render.ts` with webhook endpoint at `/api/webhooks/rendobar`, but needs `VIDEO_RENDER_API_URL` and `VIDEO_RENDER_API_KEY` secrets to activate.
 
 ### Resolved in recent series
 
@@ -355,10 +359,19 @@ npm run build   # Production build (Cloudflare target)
 - Viral Content Analyzer UI — renders virality score/grade/factors (LL, ADR-038)
 - Agent Skill Chain Builder — conditional branching + A/B forking (LL, ADR-039)
 - App catalog metadata — 8 new feature titles/descriptions in `appCatalog.ts` (LL)
+- Pipeline i18n fix — `pipeline.title` was incorrectly nested inside `legal` object in en.ts (RR)
+- Missing h1 on /dashboard, /creative-studio, /ugc-studio, /observability unauthenticated views (RR)
+- Production observability aggregation — admin-only metrics API + dashboard (QQ, ADR-042)
+- Creative Studio chain mode unification — uses pipeline API for durable state (QQ, ADR-041)
+- Video rendering provider boundary — external service interface with dry-run (QQ, ADR-043)
+- RendoBar integration — compose API, EDL-to-timeline mapper, webhook endpoint (SS)
+- i18n for 3 new RR features across 12 non-English locales (SS)
+- E2E coverage for 3 new features — 30 page tests + 9 authenticated API tests (SS)
+- App catalog + dashboard Quick Create for 3 new features (SS)
 
 ## 15. LL-Series Features
 
-The LL series extended the creative platform with four new capabilities, documented in ADRs 036-039. ADR-040 (OO series) documents D1 persistence for safety audit logs. ADRs 001-040 now total 40 architecture decision records in `docs/adr/`.
+The LL series extended the creative platform with four new capabilities, documented in ADRs 036-039. ADR-040 (OO series) documents D1 persistence for safety audit logs. ADRs 041-043 (QQ series) document chain mode unification, observability aggregation, and video rendering. ADRs 044-046 (RR series) document Brand Guardrails, Smart Calendar, and Competitor Watch. ADRs 001-046 now total 46 architecture decision records in `docs/adr/`.
 
 ### Google Ads Safety Layer (`/google-safety`)
 
@@ -398,4 +411,50 @@ All four features have dry-run/fallback behavior when Atlas is local or the API 
 
 ### Dashboard Quick Create
 
-The dashboard "Quick Create" grid now includes all production apps plus the 12 newest features (Creator Kits, Brand Concepts, Clip Editor, Media Services, Product Brief, Reference Remix, Multi-Concept, Meta Safety, Google Safety, Performance Loop, Viral Analyzer, Skill Chains). The 8 newest features (Product Brief, Reference Remix, Multi-Concept, Meta Safety, Google Safety, Performance Loop, Viral Analyzer, Skill Chains) are in the nav overflow menu.
+The dashboard "Quick Create" grid now includes all production apps plus the 15 newest features (Creator Kits, Brand Concepts, Clip Editor, Media Services, Product Brief, Reference Remix, Multi-Concept, Meta Safety, Google Safety, Performance Loop, Viral Analyzer, Skill Chains, Brand Guardrails, Smart Calendar, Competitor Watch). The 11 newest features (Product Brief through Competitor Watch) are in the nav overflow menu.
+
+## 16. RR-Series Features
+
+The RR series added three new creative capabilities, documented in ADRs 044-046. All three features have dry-run/fallback behavior, use existing auth/credit/withAtlas conventions, and include i18n translations across all 13 locales.
+
+### Brand Guardrails (`/brand-guardrails`)
+
+- AI-powered brand consistency checker — analyzes creatives against brand kit for voice, visual, and messaging compliance.
+- Returns score (0-100), grade (F-A+), violations with severity (critical/warning/info), and recommendations.
+- 4 credits. API: `POST /api/creative/brand-guardrails`. See ADR-044.
+- Unit tests: 26.
+
+### Smart Calendar (`/smart-calendar`)
+
+- Multi-platform content calendar with AI-suggested optimal posting times.
+- Considers platform best practices, audience timezone, content type, and historical performance.
+- 3 credits. API: `POST /api/creative/smart-calendar`. See ADR-045.
+- Unit tests: 36.
+
+### Competitor Watch (`/competitor-watch`)
+
+- Competitor ad monitoring with automatic creative analysis and alerts.
+- Extracts hooks, angles, CTAs, visual style, emotional triggers, pricing strategy.
+- Generates competitive gaps, counter-strategies, and alerts (new_strategy, pricing_change, new_ad).
+- 5 credits. API: `POST /api/creative/competitor-watch`. See ADR-046.
+- Unit tests: 23.
+
+### Production audit fixes (RR)
+
+- `pipeline.title` translation was incorrectly nested inside the `legal` object in `en.ts` — moved `pipeline`, `personas`, `variantMatrix`, and `fatigue` to top-level keys.
+- Added missing `<h1>` elements to `/dashboard`, `/creative-studio`, `/ugc-studio`, and `/observability` unauthenticated views.
+
+### Video rendering research (RR)
+
+- Researched RendoBar, Cloudflare Stream, and custom GPU workers via Firecrawl.
+- RendoBar recommended: native EDL/JSON timeline support, Cloudflare Workers SDK, signed webhooks.
+- See `research/video-rendering-services.md` and ADR-043.
+
+### SS-Series: i18n, E2E, App Catalog, RendoBar Integration
+
+- Added i18n translations for all 3 RR features across 12 non-English locales.
+- Added 39 new E2E tests (30 page tests + 9 authenticated API tests).
+- Added all 3 features to app catalog and dashboard Quick Create grid.
+- Wired RendoBar compose API into `src/lib/providers/video-render.ts` with EDL-to-timeline mapper.
+- Added webhook endpoint at `/api/webhooks/rendobar` for signed HMAC completion callbacks.
+- Total unit tests: 1871 (up from 1786). Total E2E tests: 581 (up from 512).

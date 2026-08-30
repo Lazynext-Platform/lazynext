@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Sparkles, Megaphone, BarChart3, LayoutDashboard, Package, Scissors, Library, Lightbulb, Calendar, CalendarClock, Video, Wand2, ImageIcon, Send, BookOpen, Brain, Volume2, Eye, ShieldCheck, Wallet, Users, Workflow, Grid3x3, Activity, FileSearch, TrendingUp, FlaskConical, MessageSquareQuote, Award, Repeat, Users2, Flame, Film, Server, Clapperboard, Gift, Layers, Cpu, FileText, RefreshCw, Shield, GitBranch, Radar } from 'lucide-react';
+import { Sparkles, Megaphone, BarChart3, LayoutDashboard, Package, Scissors, Library, Lightbulb, Calendar, CalendarClock, Video, Wand2, ImageIcon, Send, BookOpen, Brain, Volume2, Eye, ShieldCheck, Wallet, Users, Workflow, Grid3x3, Activity, FileSearch, TrendingUp, FlaskConical, MessageSquareQuote, Award, Repeat, Users2, Flame, Film, Server, Clapperboard, Gift, Layers, Cpu, FileText, RefreshCw, Shield, GitBranch, Radar, PenLine, Anchor, FileSpreadsheet } from 'lucide-react';
 import { UserMenu } from '@/components/UserMenu';
 import { LangToggle } from '@/components/LangToggle';
 import { CreditBadge } from '@/components/CreditBadge';
@@ -59,8 +59,11 @@ const NAV_LINKS = [
   { href: '/viral-analyzer', label: 'Viral', icon: Flame, hideOnMd: true },
   { href: '/skill-chains', label: 'Skill Chains', icon: GitBranch, hideOnMd: true },
   { href: '/competitor-watch', label: 'Competitor Watch', icon: Radar, hideOnMd: true },
+  { href: '/hook-library', label: 'Hook Library', icon: Anchor, hideOnMd: true },
+  { href: '/ad-copy-generator', label: 'Ad Copy', icon: PenLine, hideOnMd: true },
   { href: '/brand-guardrails', label: 'Guardrails', icon: Shield, hideOnMd: true },
   { href: '/smart-calendar', label: 'Smart Calendar', icon: CalendarClock, hideOnMd: true },
+  { href: '/brief-template-builder', label: 'Brief Builder', icon: FileSpreadsheet, hideOnMd: true },
   { href: '/observability', label: 'Observability', icon: Activity, hideOnMd: true },
   { href: '/calendar', label: 'Calendar', icon: Calendar, hideOnMd: true },
 ];

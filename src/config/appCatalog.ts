@@ -48,6 +48,9 @@ const CUSTOM_TITLES: Record<string, Bi> = {
   'brand-guardrails': { en: 'Brand Guardrails', zh: '品牌护栏' },
   'smart-calendar': { en: 'Smart Calendar', zh: '智能日历' },
   'competitor-watch': { en: 'Competitor Watch', zh: '竞品监控' },
+  'ad-copy-generator': { en: 'Ad Copy Generator', zh: '广告文案生成器' },
+  'hook-library': { en: 'Hook Library', zh: '钩子库' },
+  'brief-template-builder': { en: 'Brief Template Builder', zh: '简报模板构建器' },
 };
 const CUSTOM_DESCS: Record<string, Bi> = {
   'lazynext-studio': { en: 'Product + presenter photos → AI expands the prompt from your images → lip-synced UGC ad; one-click viral formats', zh: '产品图+人物图 → AI 看图扩写提示词 → 合成首帧 → 对口型真人口播广告;爆款玩法一键复刻' },
@@ -66,6 +69,9 @@ const CUSTOM_DESCS: Record<string, Bi> = {
   'brand-guardrails': { en: 'AI-powered brand consistency checker — analyze creatives against your brand kit for voice, visual, and messaging compliance', zh: 'AI驱动的品牌一致性检查器 — 根据品牌套件分析创意的语音、视觉和信息合规性' },
   'smart-calendar': { en: 'Multi-platform content calendar with AI-suggested optimal posting times', zh: '多平台内容日历，AI推荐最佳发布时间' },
   'competitor-watch': { en: 'Monitor competitor ads with automatic creative analysis and strategic alerts', zh: '监控竞品广告，自动创意分析和战略提醒' },
+  'ad-copy-generator': { en: 'AI-powered platform-specific ad copy — generate TikTok, Instagram, and YouTube copy from a product URL or brief', zh: 'AI驱动的平台专属广告文案 — 从产品URL或简报生成TikTok、Instagram和YouTube文案' },
+  'hook-library': { en: 'AI-powered hook library — generate, categorize, and store reusable hooks by emotional trigger and platform', zh: 'AI驱动的钩子库 — 按情感触发器和平台生成、分类和存储可复用钩子' },
+  'brief-template-builder': { en: 'AI-powered creative brief templates with industry-specific presets and smart suggestions', zh: 'AI驱动的创意简报模板，行业专属预设和智能建议' },
 };
 export function appTitle(id: string, fallbackTitle: string, locale: string = 'en'): string {
   const c = CUSTOM_TITLES[id];
