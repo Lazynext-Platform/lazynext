@@ -411,79 +411,115 @@ export default function CreativeStudioPage() {
     }
   }, [brief, script]);
 
-  // ── Chain workflow ──
+  // ── Chain workflow (unified with pipeline API) ──
+  // Chain mode now creates a durable WorkflowRun via the pipeline API using
+  // the 'creative-studio-chain' template (brief → script → storyboard → score).
+  // This gives us persistence, credit safety, auto-advance, and PipelineStageError
+  // handling instead of a fragile client-side loop.
   const CHAIN_TOTAL_COST = COSTS.brief + COSTS.hooks + COSTS.angles + COSTS.script + COSTS.storyboard + COSTS.score;
+  const [chainPipelineId, setChainPipelineId] = useState<string | null>(null);
 
-  const runChainStep = useCallback(async (step: number) => {
+  const startChain = useCallback(async () => {
+    if (status !== 'authenticated') { setAuthOpen(true); return; }
+    if (!productText.trim()) return;
     setChainError(null);
+    setChainStep(0);
     setChainRunning(true);
     setChainPaused(false);
+    setChainPipelineId(null);
+    // Clear downstream state
+    setBrief(null); setBriefStep('idle'); setBriefError('');
+    setHooks([]); setHooksStep('idle'); setHooksError('');
+    setAngles([]); setAnglesStep('idle'); setAnglesError('');
+    setScript(null); setScriptStep('idle'); setScriptError('');
+    setStoryboard(null); setStoryboardStep('idle'); setStoryboardError('');
+    setScore(null); setScoreStep('idle'); setScoreError('');
+    setSelectedHook(null); setSelectedAngle(null);
+
     try {
-      if (step === 1) {
-        // Brief
-        if (!productText.trim()) throw new Error('Product text required');
-        setBriefStep('loading'); setBriefError(''); setBrief(null);
-        setHooks([]); setAngles([]); setScript(null); setStoryboard(null); setScore(null);
-        setSelectedHook(null); setSelectedAngle(null);
-        const j = await postJson('/api/creative/brief', {
-          product: productText.trim(),
-          productName: productName.trim() || undefined,
-          platform, format,
-          brandKitId: brandKitId || undefined,
-        });
-        setBrief(j.brief as CreativeBrief);
-        setBriefStep('done');
-      } else if (step === 2) {
-        // Hooks
-        if (!brief) throw new Error('Brief required');
-        setHooksStep('loading'); setHooksError(''); setHooks([]);
-        const j = await postJson('/api/creative/hooks', { brief, count: 5 });
-        setHooks(j.hooks as HookCandidate[]);
-        // Auto-select best hook (highest retention)
-        const best = (j.hooks as HookCandidate[]).sort((a, b) => b.estimatedRetention - a.estimatedRetention)[0];
-        if (best) setSelectedHook(best);
-        setHooksStep('done');
-      } else if (step === 3) {
-        // Angles
-        if (!brief) throw new Error('Brief required');
-        setAnglesStep('loading'); setAnglesError(''); setAngles([]);
-        const j = await postJson('/api/creative/angles', { brief, count: 3 });
-        setAngles(j.angles as CreativeAngle[]);
-        // Auto-select first angle
-        const arr = j.angles as CreativeAngle[];
-        if (arr.length > 0) setSelectedAngle(arr[0]);
-        setAnglesStep('done');
-      } else if (step === 4) {
-        // Script
-        if (!brief || !selectedAngle || !selectedHook) throw new Error('Brief, angle, and hook required');
-        setScriptStep('loading'); setScriptError(''); setScript(null); setStoryboard(null);
-        const j = await postJson('/api/creative/script', {
-          brief, angle: selectedAngle, hook: selectedHook,
-        });
-        setScript(j.script as ScriptCandidate);
-        setScriptStep('done');
-      } else if (step === 5) {
-        // Storyboard
-        if (!brief || !script) throw new Error('Brief and script required');
-        setStoryboardStep('loading'); setStoryboardError(''); setStoryboard(null);
-        const j = await postJson('/api/creative/storyboard', { brief, script, ratio });
-        setStoryboard(j.storyboard as StoryboardCandidate);
-        setStoryboardStep('done');
-      } else if (step === 6) {
-        // Score
-        if (!brief || !script) throw new Error('Brief and script required');
-        setScoreStep('loading'); setScoreError(''); setScore(null);
-        const j = await postJson('/api/creative/score', { brief, script, storyboard });
-        setScore(j.score as CreativeScore);
-        setScoreStep('done');
+      // Create pipeline with the creative-studio-chain template
+      const createRes = await fetch('/api/creative/pipeline', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          templateId: 'creative-studio-chain',
+          config: {
+            productName: productName.trim() || productText.trim().slice(0, 100),
+            productDescription: productText.trim(),
+            brandName: brand?.company || undefined,
+            targetAudience: brief?.audience || undefined,
+            platforms: [platform],
+          },
+        }),
+      });
+      if (!createRes.ok) {
+        const j = await createRes.json().catch(() => ({}));
+        throw new Error(j.error || j.detail || `HTTP ${createRes.status}`);
       }
-      setChainStep(step);
-      // Pause for user confirmation between steps (except after the last step)
-      if (step < 6) {
-        setChainPaused(true);
-      } else {
-        setChainStep(7); // done
+      const createJson = await createRes.json();
+      let state = createJson.state;
+      setChainPipelineId(state.pipelineId);
+
+      // Auto-advance through stages (server does this within 75s deadline;
+      // we continue if the deadline was hit mid-chain)
+      while (state.status === 'running' && state.currentStage && state.currentStage !== 'completed') {
+        const advanceRes = await fetch(`/api/creative/pipeline/${state.pipelineId}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'advance' }),
+        });
+        if (!advanceRes.ok) {
+          const j = await advanceRes.json().catch(() => ({}));
+          throw new Error(j.error || j.detail || `HTTP ${advanceRes.status}`);
+        }
+        const advanceJson = await advanceRes.json();
+        state = advanceJson.state;
+        if (state.status === 'failed' || state.status === 'paused') break;
+      }
+
+      // Map pipeline stage results to UI state
+      if (state.status === 'completed' || state.status === 'paused' || state.status === 'failed') {
+        const briefResult = state.stageResults.find((r: any) => r.stage === 'brief');
+        if (briefResult?.output?.brief) {
+          setBrief(briefResult.output.brief as CreativeBrief);
+          setBriefStep('done');
+          setChainStep(1);
+        }
+        const scriptResult = state.stageResults.find((r: any) => r.stage === 'script');
+        if (scriptResult?.output?.script) {
+          setHooks(scriptResult.output.hooks as HookCandidate[] || []);
+          setAngles(scriptResult.output.angles as CreativeAngle[] || []);
+          setSelectedHook(scriptResult.output.selectedHook as HookCandidate || null);
+          setSelectedAngle(scriptResult.output.selectedAngle as CreativeAngle || null);
+          setScript(scriptResult.output.script as ScriptCandidate);
+          setScriptStep('done');
+          setHooksStep('done');
+          setAnglesStep('done');
+          setChainStep(Math.max(chainStep, 4));
+        }
+        const storyboardResult = state.stageResults.find((r: any) => r.stage === 'storyboard');
+        if (storyboardResult?.output?.storyboard) {
+          setStoryboard(storyboardResult.output.storyboard as StoryboardCandidate);
+          setStoryboardStep('done');
+          setChainStep(5);
+        }
+        const scoreResult = state.stageResults.find((r: any) => r.stage === 'score');
+        if (scoreResult?.output?.score) {
+          setScore(scoreResult.output.score as CreativeScore);
+          setScoreStep('done');
+          setChainStep(7);
+        }
+      }
+
+      if (state.status === 'failed') {
+        const failedStage = state.stageResults.find((r: any) => r.status === 'failed');
+        throw new Error(failedStage?.error || 'Pipeline failed');
+      }
+      if (state.status === 'completed') {
+        setChainStep(7);
         setChainRunning(false);
+      } else {
+        setChainPaused(true);
       }
     } catch (e) {
       const msg = String(e instanceof Error ? e.message : e);
@@ -491,29 +527,87 @@ export default function CreativeStudioPage() {
       setChainRunning(false);
       setChainPaused(false);
     }
-  }, [productText, productName, platform, format, brandKitId, brief, selectedAngle, selectedHook, script, ratio, storyboard]);
+  }, [status, productText, productName, platform, brand, brief, chainStep]);
 
-  const startChain = useCallback(() => {
-    if (!productText.trim()) return;
-    setChainError(null);
-    setChainStep(0);
+  const continueChain = useCallback(async () => {
+    if (!chainPipelineId) return;
+    setChainPaused(false);
     setChainRunning(true);
-    setChainPaused(false);
-    runChainStep(1);
-  }, [productText, runChainStep]);
+    setChainError(null);
+    try {
+      const res = await fetch(`/api/creative/pipeline/${chainPipelineId}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'advance' }),
+      });
+      if (!res.ok) {
+        const j = await res.json().catch(() => ({}));
+        throw new Error(j.error || j.detail || `HTTP ${res.status}`);
+      }
+      const json = await res.json();
+      const state = json.state;
 
-  const continueChain = useCallback(() => {
-    if (chainStep >= 6) return;
-    setChainPaused(false);
-    runChainStep(chainStep + 1);
-  }, [chainStep, runChainStep]);
+      // Map updated stage results to UI
+      const briefResult = state.stageResults.find((r: any) => r.stage === 'brief');
+      if (briefResult?.output?.brief && !brief) {
+        setBrief(briefResult.output.brief as CreativeBrief);
+        setBriefStep('done');
+      }
+      const scriptResult = state.stageResults.find((r: any) => r.stage === 'script');
+      if (scriptResult?.output?.script && !script) {
+        setHooks(scriptResult.output.hooks as HookCandidate[] || []);
+        setAngles(scriptResult.output.angles as CreativeAngle[] || []);
+        setSelectedHook(scriptResult.output.selectedHook as HookCandidate || null);
+        setSelectedAngle(scriptResult.output.selectedAngle as CreativeAngle || null);
+        setScript(scriptResult.output.script as ScriptCandidate);
+        setScriptStep('done');
+        setHooksStep('done');
+        setAnglesStep('done');
+      }
+      const storyboardResult = state.stageResults.find((r: any) => r.stage === 'storyboard');
+      if (storyboardResult?.output?.storyboard && !storyboard) {
+        setStoryboard(storyboardResult.output.storyboard as StoryboardCandidate);
+        setStoryboardStep('done');
+      }
+      const scoreResult = state.stageResults.find((r: any) => r.stage === 'score');
+      if (scoreResult?.output?.score && !score) {
+        setScore(scoreResult.output.score as CreativeScore);
+        setScoreStep('done');
+      }
 
-  const stopChain = useCallback(() => {
+      if (state.status === 'completed') {
+        setChainStep(7);
+        setChainRunning(false);
+      } else if (state.status === 'failed') {
+        const failedStage = state.stageResults.find((r: any) => r.status === 'failed');
+        throw new Error(failedStage?.error || 'Pipeline failed');
+      } else {
+        setChainPaused(true);
+      }
+    } catch (e) {
+      setChainError(String(e instanceof Error ? e.message : e));
+      setChainRunning(false);
+      setChainPaused(false);
+    }
+  }, [chainPipelineId, brief, script, storyboard, score]);
+
+  const stopChain = useCallback(async () => {
+    // Cancel the pipeline on the server if we have one
+    if (chainPipelineId) {
+      try {
+        await fetch(`/api/creative/pipeline/${chainPipelineId}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'cancel' }),
+        }).catch(() => {});
+      } catch { /* best-effort */ }
+    }
     setChainRunning(false);
     setChainPaused(false);
     setChainStep(0);
     setChainError(null);
-  }, []);
+    setChainPipelineId(null);
+  }, [chainPipelineId]);
 
   // ── Pipeline mode (full creative pipeline via /api/creative/pipeline) ──
   const runPipeline = useCallback(async () => {

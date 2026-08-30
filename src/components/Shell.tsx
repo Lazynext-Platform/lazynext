@@ -58,6 +58,7 @@ const NAV_LINKS = [
   { href: '/performance-loop', label: 'Perf Loop', icon: TrendingUp, hideOnMd: true },
   { href: '/viral-analyzer', label: 'Viral', icon: Flame, hideOnMd: true },
   { href: '/skill-chains', label: 'Skill Chains', icon: GitBranch, hideOnMd: true },
+  { href: '/observability', label: 'Observability', icon: Activity, hideOnMd: true },
   { href: '/calendar', label: 'Calendar', icon: Calendar, hideOnMd: true },
 ];
 

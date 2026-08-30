@@ -251,6 +251,21 @@ export const PIPELINE_TEMPLATES: PipelineTemplate[] = [
     estimatedCredits: 18,
     estimatedDurationMin: 3,
   },
+  {
+    templateId: 'creative-studio-chain',
+    name: 'Creative Studio Chain',
+    description:
+      'Step-by-step creative chain: brief, script (hooks + angles + script), storyboard, and quality scoring. ' +
+      'No media generation or publishing — ideal for ideation and creative strategy. ' +
+      'Used by the Creative Studio chain mode for durable persistence and auto-advance.',
+    stages: ['brief', 'script', 'storyboard', 'score'],
+    defaultConfig: {
+      name: 'Creative Studio Chain',
+      onComplete: 'review',
+    },
+    estimatedCredits: 10,
+    estimatedDurationMin: 2,
+  },
 ];
 
 // ---------------------------------------------------------------------------

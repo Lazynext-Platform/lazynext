@@ -280,9 +280,9 @@ The `pipeline` namespace includes:
 ### Verification
 
 ```bash
-npm run lint    # ESLint — 0 errors, ~8 warnings (Q series reduced from 11)
+npm run lint    # ESLint — 0 errors, 0 warnings
 npm test        # Node test runner — 1786 tests
-npx playwright test  # E2E — 429+ tests
+npx playwright test  # E2E — 511 tests, 0 skipped
 npm run build   # Production build (Cloudflare target)
 ```
 
@@ -302,12 +302,19 @@ npm run build   # Production build (Cloudflare target)
 - **Architecture audit** — this document should be updated when major changes are made.
 - **Authenticated E2E for billing/checkout** — no test for actual checkout flow (requires Dodo Payments).
 - **Production observability** — telemetry events are emitted but not aggregated or alerted on.
-- **Creative Studio chain mode unification** — chain mode has its own step-by-step loop; could be unified with pipeline API to leverage auto-advance and PipelineStageError.
 - **Edit stage real rendering** — produces EDL only; no actual video output or clip editor integration.
 - **Publish stage real integrations** — no real ad-platform API credentials; dry-run returns `dry_run` status.
+- **External credentials** — all 12 external integrations (Atlas Cloud, 4 OAuth platforms, Google Ads, Meta Ads, GA4, Dodo Payments, Resend email, alert webhook) are code-complete but require credentials.
 
 ### Resolved in recent series
 
+- D1 persistence for safety audit logs and approval state (OO, ADR-040)
+- Authenticated E2E for LL-series features (OO)
+- Credit top-up in global-setup for authenticated E2E (NN)
+- Navigation horizontal overflow at 1920px (NN)
+- Cookie consent dialog selector conflict (NN)
+- i18n for 12 non-English locales — 8 new feature namespaces (MM)
+- App catalog metadata for 8 new features (MM)
 - Score viewer field mapping (N)
 - Compliance viewer field mapping (P)
 - Auto-advance from server config (N)
@@ -351,7 +358,7 @@ npm run build   # Production build (Cloudflare target)
 
 ## 15. LL-Series Features
 
-The LL series extended the creative platform with four new capabilities, documented in ADRs 036-039 (ADRs 001-039 now total 39 architecture decision records in `docs/adr/`).
+The LL series extended the creative platform with four new capabilities, documented in ADRs 036-039. ADR-040 (OO series) documents D1 persistence for safety audit logs. ADRs 001-040 now total 40 architecture decision records in `docs/adr/`.
 
 ### Google Ads Safety Layer (`/google-safety`)
 

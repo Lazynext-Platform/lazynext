@@ -50,7 +50,7 @@ Production uses Cloudflare R2 via `src/lib/media-storage.cloudflare.ts`.
 ```bash
 npm run lint    # ESLint
 npm test        # Node test runner (1786 tests)
-# E2E: 511 passed, 1 skipped (chromium + mobile-chrome + chromium-auth)
+# E2E: 511 passed, 0 skipped (chromium + mobile-chrome + chromium-auth)
 npm run build   # Production build (Cloudflare target)
 npm run cf:build  # Cloudflare/OpenNext build
 npm run cf:deploy # Deploy to Cloudflare Workers
@@ -121,7 +121,7 @@ npm run cf:deploy # Deploy to Cloudflare Workers
 - `/api/creative/director` returns an NDJSON stream of step-by-step progress updates; legacy
   non-streaming mode available via `?stream=false`
 - Pipeline stages: brief, script, storyboard, media_generation, audio, edit, compliance, score, publish
-- ADRs 001-040 in `docs/adr/` document all major architecture decisions
+- ADRs 001-042 in `docs/adr/` document all major architecture decisions
 - Cross-feature handoffs: Brand Concepts → Creator Kits (query-param pre-fill),
   Brand Concepts → Shot Planner (script pre-fill), Clip Editor → Media Service Boundary (ASR/TTS)
 - Dashboard "Quick Create" grid includes all production apps and the 12 newest features
@@ -233,7 +233,7 @@ Completed across 15+ sessions:
 - `GET /api/editor/timeline` — list user's saved timelines
 - `POST /api/editor/timeline` with `save`/`load`/`delete` actions
 - All persisted operations verify user ownership
-- D1 migration applied to production (28 tables total)
+- D1 migration applied to production (36 tables total)
 
 ## Editor Multimodal
 - `POST /api/editor/transcribe` — video URL → ASR transcript (2 credits, whisper-large-v3)
