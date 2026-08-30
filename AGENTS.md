@@ -50,7 +50,7 @@ Production uses Cloudflare R2 via `src/lib/media-storage.cloudflare.ts`.
 ```bash
 npm run lint    # ESLint
 npm test        # Node test runner (1871 tests)
-# E2E: 512 passed, 0 skipped (chromium + mobile-chrome + chromium-auth)
+# E2E: 581 passed, 0 skipped (chromium + mobile-chrome + chromium-auth)
 npm run build   # Production build (Cloudflare target)
 npm run cf:build  # Cloudflare/OpenNext build
 npm run cf:deploy # Deploy to Cloudflare Workers
@@ -126,12 +126,13 @@ npm run cf:deploy # Deploy to Cloudflare Workers
 - ADRs 001-046 in `docs/adr/` document all major architecture decisions
 - Cross-feature handoffs: Brand Concepts → Creator Kits (query-param pre-fill),
   Brand Concepts → Shot Planner (script pre-fill), Clip Editor → Media Service Boundary (ASR/TTS)
-- Dashboard "Quick Create" grid includes all production apps and the 12 newest features
+- Dashboard "Quick Create" grid includes all production apps and the 15 newest features
   (Creator Kits, Brand Concepts, Clip Editor, Media Services, Product Brief, Reference Remix,
-  Multi-Concept, Meta Safety, Google Safety, Performance Loop, Viral Analyzer, Skill Chains)
-- Nav header includes links to all feature pages (visible lg+); the 8 newest features
+  Multi-Concept, Meta Safety, Google Safety, Performance Loop, Viral Analyzer, Skill Chains,
+  Brand Guardrails, Smart Calendar, Competitor Watch)
+- Nav header includes links to all feature pages (visible lg+); the 11 newest features
   (Product Brief, Reference Remix, Multi-Concept, Meta Safety, Google Safety, Performance Loop,
-  Viral Analyzer, Skill Chains) are in the overflow nav
+  Viral Analyzer, Skill Chains, Brand Guardrails, Smart Calendar, Competitor Watch) are in the overflow nav
 
 ### JJ-Series: Research-Derived Creative Capabilities
 - Product Page → Ad Brief (`/product-brief`): URL/product extraction → brand/product brief →
