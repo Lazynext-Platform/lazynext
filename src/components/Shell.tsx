@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Sparkles, Megaphone, BarChart3, LayoutDashboard, Package, Scissors, Library, Lightbulb, Calendar, Video, Wand2, ImageIcon, Send, BookOpen, Brain, Volume2, Eye, ShieldCheck, Wallet, Users, Workflow, Grid3x3, Activity, FileSearch, TrendingUp, FlaskConical, MessageSquareQuote, Award, Repeat, Users2, Flame, Film, Server, Clapperboard, Gift, Layers, Cpu } from 'lucide-react';
+import { Sparkles, Megaphone, BarChart3, LayoutDashboard, Package, Scissors, Library, Lightbulb, Calendar, Video, Wand2, ImageIcon, Send, BookOpen, Brain, Volume2, Eye, ShieldCheck, Wallet, Users, Workflow, Grid3x3, Activity, FileSearch, TrendingUp, FlaskConical, MessageSquareQuote, Award, Repeat, Users2, Flame, Film, Server, Clapperboard, Gift, Layers, Cpu, FileText, RefreshCw, Shield } from 'lucide-react';
 import { UserMenu } from '@/components/UserMenu';
 import { LangToggle } from '@/components/LangToggle';
 import { CreditBadge } from '@/components/CreditBadge';
@@ -50,6 +50,10 @@ const NAV_LINKS = [
   { href: '/media-service-boundary', label: 'Media API', icon: Cpu, hideOnMd: true },
   { href: '/templates', label: 'Templates', icon: Library, hideOnMd: true },
   { href: '/inspiration', label: 'Inspiration', icon: Lightbulb, hideOnMd: true },
+  { href: '/product-brief', label: 'Brief', icon: FileText, hideOnMd: true },
+  { href: '/reference-remix', label: 'Remix', icon: RefreshCw, hideOnMd: true },
+  { href: '/multi-concept', label: 'Concepts', icon: Lightbulb, hideOnMd: true },
+  { href: '/meta-safety', label: 'Meta Safety', icon: Shield, hideOnMd: true },
   { href: '/calendar', label: 'Calendar', icon: Calendar, hideOnMd: true },
 ];
 

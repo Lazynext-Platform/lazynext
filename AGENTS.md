@@ -110,19 +110,43 @@ npm run cf:deploy # Deploy to Cloudflare Workers
   `/api/creative/calendar`, `/api/creative/schedule`, `/api/creative/optimal-times`,
   `/api/creative/approvals`, `/api/creative/approvals/stages`, `/api/creative/comments`,
   `/api/creative/comments/stream`, `/api/creative/share`, `/api/creative/share/[token]`,
-  `/api/creative/diff`, `/api/creative/export`, `/api/creative/regenerate`
+  `/api/creative/diff`, `/api/creative/export`, `/api/creative/regenerate`,
+  `/api/creative/product-brief`, `/api/creative/reference-remix`, `/api/creative/multi-concept`
 - Ad platform API routes: `/api/ads/create`, `/api/ads/metrics`, `/api/ads/list`, `/api/ads/report`,
-  `/api/ads/budget`, `/api/ads/google-budget`, `/api/ads/google-report`, `/api/analytics/ga4`
+  `/api/ads/budget`, `/api/ads/google-budget`, `/api/ads/google-report`, `/api/analytics/ga4`,
+  `/api/ads/meta-safety`, `/api/ads/meta-approve`
 - Editor API routes: `/api/editor/rough-cut`, `/api/editor/skills`, `/api/editor/timeline`,
   `/api/editor/timeline-versions`, `/api/editor/transcribe`, `/api/editor/ocr`, `/api/editor/chat`
 - `/api/creative/director` returns an NDJSON stream of step-by-step progress updates; legacy
   non-streaming mode available via `?stream=false`
 - Pipeline stages: brief, script, storyboard, media_generation, audio, edit, compliance, score, publish
-- ADRs 001-031 in `docs/adr/` document all major architecture decisions
+- ADRs 001-035 in `docs/adr/` document all major architecture decisions
 - Cross-feature handoffs: Brand Concepts → Creator Kits (query-param pre-fill),
   Brand Concepts → Shot Planner (script pre-fill), Clip Editor → Media Service Boundary (ASR/TTS)
-- Dashboard "Quick Create" grid includes all production apps and the 4 newest features
-  (Creator Kits, Brand Concepts, Clip Editor, Media Services)
+- Dashboard "Quick Create" grid includes all production apps and the 8 newest features
+  (Creator Kits, Brand Concepts, Clip Editor, Media Services, Product Brief, Reference Remix,
+  Multi-Concept, Meta Safety)
+- Nav header includes links to all feature pages (visible lg+); the 4 newest features
+  (Product Brief, Reference Remix, Multi-Concept, Meta Safety) are in the overflow nav
+
+### JJ-Series: Research-Derived Creative Capabilities
+- Product Page → Ad Brief (`/product-brief`): URL/product extraction → brand/product brief →
+  3 ad angles → 3 UGC scripts → 5-scene storyboard → Atlas-ready generation prompt.
+  5 credits. API: `POST /api/creative/product-brief`. See ADR-032.
+- Reference Remix Pipeline (`/reference-remix`): reference video/image/ad copy → evidence
+  extraction (hooks, angles, pacing, visual style, emotional beats, CTA) → creative analysis →
+  remix brief with self-contained generation prompt. 4 credits.
+  API: `POST /api/creative/reference-remix`. See ADR-033.
+- Multi-Concept Hook Engine (`/multi-concept`): generates 6 concepts using distinct emotional
+  triggers (fear, aspiration, humor, urgency, curiosity, social_proof) with heuristic
+  recommendation and A/B fork support. 6 credits.
+  API: `POST /api/creative/multi-concept`. See ADR-034.
+- Meta Ads Safety Layer (`/meta-safety`): dry-run mode, admin approval workflow, daily/campaign
+  spend caps, mutation caps, blocked/allowed actions, threshold warnings, 24h-TTL audit log.
+  API: `GET/POST /api/ads/meta-safety`, `GET/POST /api/ads/meta-approve`. See ADR-035.
+- All 4 features have dry-run/fallback behavior when Atlas is local or API key is missing
+- All 4 features use existing auth, credit deduction/refund, `withAtlas`, and `safeError` conventions
+- E2E coverage: `e2e/new-features.spec.ts` (16 tests covering API contracts + page smoke tests)
 
 ## Production-Only Testing (Cannot Be Verified Locally)
 
