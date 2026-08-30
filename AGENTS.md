@@ -49,8 +49,8 @@ Production uses Cloudflare R2 via `src/lib/media-storage.cloudflare.ts`.
 ## Verification Commands
 ```bash
 npm run lint    # ESLint
-npm test        # Node test runner (1516 tests)
-# E2E: 445 passed, 0 skipped (chromium + mobile-chrome + chromium-auth)
+npm test        # Node test runner (1786 tests)
+# E2E: 511 passed, 1 skipped (chromium + mobile-chrome + chromium-auth)
 npm run build   # Production build (Cloudflare target)
 npm run cf:build  # Cloudflare/OpenNext build
 npm run cf:deploy # Deploy to Cloudflare Workers
@@ -74,7 +74,7 @@ npm run cf:deploy # Deploy to Cloudflare Workers
 - Next.js 16 + React 19 + TypeScript 6
 - Tailwind CSS 4
 - NextAuth (JWT session, Google + Credentials providers)
-- Prisma 7 with D1 (prod) / SQLite (local) — 32 tables total (including CustomComplianceRule, PlatformConnection, ScheduledPost)
+- Prisma 7 with D1 (prod) / SQLite (local) — 36 tables total (including MetaSafetyAudit, MetaSafetyApproval, GoogleSafetyAudit, GoogleSafetyApproval)
 - Cloudflare R2 (prod) / file-based (local) media storage
 - Atlas Cloud AI generation API (prod) / mock server (local)
 - Dodo Payments for billing
@@ -121,7 +121,7 @@ npm run cf:deploy # Deploy to Cloudflare Workers
 - `/api/creative/director` returns an NDJSON stream of step-by-step progress updates; legacy
   non-streaming mode available via `?stream=false`
 - Pipeline stages: brief, script, storyboard, media_generation, audio, edit, compliance, score, publish
-- ADRs 001-039 in `docs/adr/` document all major architecture decisions
+- ADRs 001-040 in `docs/adr/` document all major architecture decisions
 - Cross-feature handoffs: Brand Concepts → Creator Kits (query-param pre-fill),
   Brand Concepts → Shot Planner (script pre-fill), Clip Editor → Media Service Boundary (ASR/TTS)
 - Dashboard "Quick Create" grid includes all production apps and the 12 newest features
@@ -370,7 +370,7 @@ Completed across 15+ sessions:
 - OAuth callback error logging: Token exchange failures read and log the response body; maps `invalid_grant`/`invalid_client`/`redirect_uri_mismatch`/`access_denied` to specific redirect params; `PlatformConnectionsSection` shows user-friendly messages
 - Health endpoint: `GET /api/health` checks D1, token encryption, cron secret, auth secret, and platform OAuth credentials; returns 200 (healthy) or 503 (degraded); public (no auth)
 - Token-refresh tests: `test/token-refresh.test.ts` with 9 mocked-fetch tests covering all 5 platforms (request construction + error paths)
-- E2E rate limit bypass: `proxy.ts` skips rate limiting when `E2E_NO_RATE_LIMIT=1`; `playwright.config.ts` sets this for webServer env; result: 445 passed (up from 437), 0 skipped (down from 10)
+- E2E rate limit bypass: `proxy.ts` skips rate limiting when `E2E_NO_RATE_LIMIT=1`; `playwright.config.ts` sets this for webServer env; result: 511 passed (up from 445), 1 skipped
 
 ### FF-Series: Error Sanitization, Docs, Env Example, DB Indexes
 - API error sanitization: 4 top-level routes (`brand/extract`, `brand/product-extract`, `lazynext-studio/expand-prompt`, `ad-reference/gen-script`) no longer leak raw `e.message` to clients
@@ -381,7 +381,7 @@ Completed across 15+ sessions:
 ### GG-Series: D1 Transaction Fix, Remove Dead E2E Skip
 - D1 transaction fix: `admin/credits/reconcile` replaced `prisma.$transaction` with sequential update + ledger create + compensation (reverse balance on ledger failure)
 - Dead E2E skip removed: `e2e/workflow-builder.spec.ts` unconditional `test.skip()` removed; authenticated coverage exists in `e2e/auth-workflow-builder.spec.ts`
-- E2E result: 445 passed, 0 skipped
+- E2E result: 511 passed, 1 skipped
 
 ### HH-Series: D1 Transaction Fix, Error Sanitization, Media Rate Limiting, ML Insights, Token KDF
 - D1 transaction fix: `teams/join` replaced `prisma.$transaction` with sequential writes + compensation pattern
