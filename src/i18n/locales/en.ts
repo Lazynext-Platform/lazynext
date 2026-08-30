@@ -3491,4 +3491,7 @@ export const enAppMessages = {
     'analytics-hub': { title: 'Analytics Hub', description: 'Unified analytics dashboard — creative performance, credit usage, campaigns, and trends in one view' },
     'ab-automation': { title: 'AI A/B Automation', description: 'Closed-loop A/B testing — AI generates variants, launches tests, monitors results, and promotes the winner automatically' },
     'workflow-builder': { title: 'Workflow Builder', description: 'Visual drag-and-drop pipeline builder — design custom creative workflows with reusable stage templates' },
+    'brand-guardrails': { title: 'Brand Guardrails', description: 'AI-powered brand consistency checker — analyze creatives against your brand kit for voice, visual, and messaging compliance' },
+    'smart-calendar': { title: 'Smart Calendar', description: 'Multi-platform content calendar with AI-suggested optimal posting times' },
+    'competitor-watch': { title: 'Competitor Watch', description: 'Monitor competitor ads with automatic creative analysis and strategic alerts' },
 };

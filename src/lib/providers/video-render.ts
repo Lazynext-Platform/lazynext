@@ -65,25 +65,74 @@ export const dryRunRender: VideoRenderProvider = {
   },
 };
 
-// ── External rendering implementation ──
+// ── External rendering implementation (RendoBar) ──
+//
+// RendoBar (https://rendobar.com) is the recommended rendering service.
+// It accepts a declarative JSON timeline via the `compose` job type and
+// delivers async completion via signed webhooks. See ADR-043 and
+// research/video-rendering-services.md.
+//
+// Configuration:
+//   VIDEO_RENDER_API_URL  — e.g. https://api.rendobar.com
+//   VIDEO_RENDER_API_KEY  — rb_... (Pro required for GPU/concurrency)
+//   VIDEO_RENDER_TIMEOUT_MS — polling timeout (default 120s)
+
+/** Map LazyNext's EDL to RendoBar's compose timeline schema. */
+function edlToRendoBarCompose(edl: EditDecisionList) {
+  const tracks: any[] = [{
+    clips: edl.shots.map((shot, i) => {
+      const clip: any = {
+        asset: { type: 'video', src: shot.mediaUrl || '' },
+        start: edl.shots.slice(0, i).reduce((sum, s) => sum + s.durationSec, 0),
+        length: shot.durationSec,
+      };
+      if (shot.onScreenText) {
+        clip.text = { content: shot.onScreenText, position: 'bottom' };
+      }
+      if (i > 0 && shot.transition) {
+        // RendoBar expects transitions as separate clip entries
+        return { ...clip, transitionIn: shot.transition };
+      }
+      return clip;
+    }),
+  }];
+  if (edl.audioUrl) {
+    tracks.push({
+      clips: [{ asset: { type: 'audio', src: edl.audioUrl }, start: 0, length: edl.totalDurationSec }],
+    });
+  }
+  return {
+    type: 'compose' as const,
+    params: {
+      schemaVersion: 1,
+      output: {
+        format: edl.format,
+        resolution: { width: edl.resolution.width, height: edl.resolution.height },
+        fps: 30,
+      },
+      timeline: { tracks },
+    },
+  };
+}
 
 export const externalRender: VideoRenderProvider = {
-  id: 'external',
+  id: 'rendobar',
 
   async render(edl: EditDecisionList): Promise<RenderResult> {
     const baseUrl = process.env.VIDEO_RENDER_API_URL;
     if (!baseUrl) throw new Error('VIDEO_RENDER_API_URL is not set');
     const apiKey = process.env.VIDEO_RENDER_API_KEY;
     const timeoutMs = Number(process.env.VIDEO_RENDER_TIMEOUT_MS || 120_000);
+    const pollIntervalMs = Number(process.env.VIDEO_RENDER_POLL_MS || 3000);
 
-    // Submit the render job
-    const submitRes = await fetch(`${baseUrl}/render`, {
+    // Submit the render job using RendoBar's compose API
+    const submitRes = await fetch(`${baseUrl}/jobs`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         ...(apiKey ? { Authorization: `Bearer ${apiKey}` } : {}),
       },
-      body: JSON.stringify(edl),
+      body: JSON.stringify(edlToRendoBarCompose(edl)),
       signal: AbortSignal.timeout(30_000),
     });
 
@@ -92,38 +141,41 @@ export const externalRender: VideoRenderProvider = {
       throw new Error(`render_submit_failed: HTTP ${submitRes.status}: ${err}`);
     }
 
-    const job = await submitRes.json() as { jobId: string };
+    const job = await submitRes.json() as { id: string };
     const startTime = Date.now();
 
-    // Poll for completion
+    // Poll for completion (webhook can be used as an alternative to polling)
     while (Date.now() - startTime < timeoutMs) {
-      await new Promise((r) => setTimeout(r, 3000));
-      const pollRes = await fetch(`${baseUrl}/render/${job.jobId}`, {
-        headers: apiKey ? { Authorization: `Bearer ${apiKey}` } : undefined,
+      await new Promise((r) => setTimeout(r, pollIntervalMs));
+      const pollRes = await fetch(`${baseUrl}/jobs/${job.id}`, {
+        headers: {
+          ...(apiKey ? { Authorization: `Bearer ${apiKey}` } : {}),
+        },
         signal: AbortSignal.timeout(10_000),
       }).catch(() => null);
 
       if (!pollRes || !pollRes.ok) continue;
       const status = await pollRes.json() as {
-        status: 'pending' | 'processing' | 'completed' | 'failed';
-        videoUrl?: string;
-        thumbnailUrl?: string;
-        durationSec?: number;
+        status: 'queued' | 'started' | 'completed' | 'failed' | 'cancelled';
+        output?: { url?: string; thumbnailUrl?: string; duration?: number };
         error?: string;
       };
 
-      if (status.status === 'completed' && status.videoUrl) {
+      if (status.status === 'completed' && status.output?.url) {
         return {
-          videoUrl: status.videoUrl,
-          durationSec: status.durationSec || edl.totalDurationSec,
+          videoUrl: status.output.url,
+          durationSec: status.output.duration || edl.totalDurationSec,
           format: edl.format,
-          thumbnailUrl: status.thumbnailUrl,
+          thumbnailUrl: status.output.thumbnailUrl,
           renderTimeMs: Date.now() - startTime,
           dryRun: false,
         };
       }
       if (status.status === 'failed') {
         throw new Error(`render_failed: ${status.error || 'unknown'}`);
+      }
+      if (status.status === 'cancelled') {
+        throw new Error('render_cancelled');
       }
     }
 

@@ -45,6 +45,9 @@ const CUSTOM_TITLES: Record<string, Bi> = {
   'performance-loop': { en: 'Performance Loop', zh: '表现闭环' },
   'viral-analyzer': { en: 'Viral Analyzer', zh: '病毒分析器' },
   'skill-chains': { en: 'Skill Chains', zh: '技能链' },
+  'brand-guardrails': { en: 'Brand Guardrails', zh: '品牌护栏' },
+  'smart-calendar': { en: 'Smart Calendar', zh: '智能日历' },
+  'competitor-watch': { en: 'Competitor Watch', zh: '竞品监控' },
 };
 const CUSTOM_DESCS: Record<string, Bi> = {
   'lazynext-studio': { en: 'Product + presenter photos → AI expands the prompt from your images → lip-synced UGC ad; one-click viral formats', zh: '产品图+人物图 → AI 看图扩写提示词 → 合成首帧 → 对口型真人口播广告;爆款玩法一键复刻' },
@@ -60,6 +63,9 @@ const CUSTOM_DESCS: Record<string, Bi> = {
   'performance-loop': { en: 'Turn past campaign performance into improved creative briefs with an Atlas-ready prompt', zh: '将过往广告表现转化为改进的创意简报和Atlas就绪的提示词' },
   'viral-analyzer': { en: 'Dissect what makes content viral — hooks, pacing, emotional triggers, shareability', zh: '剖析内容病毒式传播的要素 — 钩子、节奏、情感触发、分享性' },
   'skill-chains': { en: 'Multi-step creative skill chains with conditional branching and A/B forking', zh: '带条件分支和A/B分叉的多步骤创意技能链' },
+  'brand-guardrails': { en: 'AI-powered brand consistency checker — analyze creatives against your brand kit for voice, visual, and messaging compliance', zh: 'AI驱动的品牌一致性检查器 — 根据品牌套件分析创意的语音、视觉和信息合规性' },
+  'smart-calendar': { en: 'Multi-platform content calendar with AI-suggested optimal posting times', zh: '多平台内容日历，AI推荐最佳发布时间' },
+  'competitor-watch': { en: 'Monitor competitor ads with automatic creative analysis and strategic alerts', zh: '监控竞品广告，自动创意分析和战略提醒' },
 };
 export function appTitle(id: string, fallbackTitle: string, locale: string = 'en'): string {
   const c = CUSTOM_TITLES[id];

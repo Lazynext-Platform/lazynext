@@ -9,6 +9,9 @@
  * 1. GET /api/ads/google-safety and GET /api/ads/google-approve
  * 2. GET/POST /api/creative/performance-loop
  * 3. GET/POST /api/creative/skill-chain-builder
+ * 4. GET/POST /api/creative/brand-guardrails
+ * 5. GET/POST /api/creative/smart-calendar
+ * 6. GET/POST /api/creative/competitor-watch
  *
  * Rate-limited (429) responses skip the test gracefully.
  */
@@ -107,5 +110,136 @@ test.describe('Skill Chain Builder API', () => {
     expect(data.result).toBeTruthy();
     expect(data.result.chainId).toBe('adaptive-hook-chain');
     expect(Array.isArray(data.result.steps)).toBeTruthy();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Brand Guardrails API
+// ---------------------------------------------------------------------------
+
+test.describe('Brand Guardrails API', () => {
+  test('GET returns credit cost and schema info', async ({ request }) => {
+    const res = await request.get('/api/creative/brand-guardrails');
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.creditCost).toBe(4);
+    expect(data.schema).toBeTruthy();
+  });
+
+  test('POST with valid input returns brand guardrails result', async ({ request }) => {
+    const res = await request.post('/api/creative/brand-guardrails', {
+      data: {
+        brief: 'A short TikTok ad for our eco-friendly water bottle.',
+        brandKit: {
+          brandName: 'EcoSip',
+          tone: ['playful', 'sustainable'],
+          keywords: ['eco-friendly', 'reusable'],
+          forbiddenWords: ['cheap'],
+        },
+        dryRun: true,
+      },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.result).toBeTruthy();
+    expect(typeof data.result.score).toBe('number');
+    expect(typeof data.result.grade).toBe('string');
+    expect(Array.isArray(data.result.violations)).toBeTruthy();
+    expect(Array.isArray(data.result.recommendations)).toBeTruthy();
+  });
+
+  test('POST with missing brief returns 400', async ({ request }) => {
+    const res = await request.post('/api/creative/brand-guardrails', {
+      data: { brandKit: { brandName: 'EcoSip' } },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.status()).toBe(400);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Smart Calendar API
+// ---------------------------------------------------------------------------
+
+test.describe('Smart Calendar API', () => {
+  test('GET returns credit cost and schema info', async ({ request }) => {
+    const res = await request.get('/api/creative/smart-calendar');
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.creditCost).toBe(3);
+    expect(data.schema).toBeTruthy();
+  });
+
+  test('POST with valid input returns smart calendar schedule', async ({ request }) => {
+    const res = await request.post('/api/creative/smart-calendar', {
+      data: {
+        creatives: [
+          { id: 'c1', platform: 'tiktok', format: 'video', title: 'Launch teaser' },
+          { id: 'c2', platform: 'instagram', format: 'image', title: 'Carousel post' },
+        ],
+        startDate: '2025-01-01',
+        endDate: '2025-01-07',
+        dryRun: true,
+      },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.result).toBeTruthy();
+    expect(Array.isArray(data.result.schedule)).toBeTruthy();
+    expect(typeof data.result.totalPosts).toBe('number');
+  });
+
+  test('POST with missing creatives returns 400', async ({ request }) => {
+    const res = await request.post('/api/creative/smart-calendar', {
+      data: { startDate: '2025-01-01', endDate: '2025-01-07' },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.status()).toBe(400);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Competitor Watch API
+// ---------------------------------------------------------------------------
+
+test.describe('Competitor Watch API', () => {
+  test('GET returns credit cost and schema info', async ({ request }) => {
+    const res = await request.get('/api/creative/competitor-watch');
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.creditCost).toBe(5);
+    expect(data.schema).toBeTruthy();
+  });
+
+  test('POST with valid input returns competitor watch result', async ({ request }) => {
+    const res = await request.post('/api/creative/competitor-watch', {
+      data: {
+        competitorUrl: 'https://example-competitor.com',
+        productCategory: 'skincare',
+        platform: 'tiktok',
+      },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.result).toBeTruthy();
+    expect(typeof data.result.analysisReport).toBe('string');
+    expect(data.result.creativeExtraction).toBeTruthy();
+    expect(Array.isArray(data.result.competitiveGaps)).toBeTruthy();
+    expect(Array.isArray(data.result.counterStrategies)).toBeTruthy();
+    expect(Array.isArray(data.result.alerts)).toBeTruthy();
+  });
+
+  test('POST with missing competitorUrl returns 400', async ({ request }) => {
+    const res = await request.post('/api/creative/competitor-watch', {
+      data: { productCategory: 'skincare' },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.status()).toBe(400);
   });
 });
