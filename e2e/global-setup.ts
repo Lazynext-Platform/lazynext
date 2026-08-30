@@ -39,12 +39,27 @@ async function globalSetup(config: FullConfig) {
 
     // 3. Verify the session is active by hitting the session endpoint
     const sessionRes = await context.request.get('/api/auth/session');
-    const session = await sessionRes.json() as { user?: { email?: string } };
+    const session = await sessionRes.json() as { user?: { email?: string; id?: string } };
     if (!session?.user?.email) {
       throw new Error('global-setup: session not established after login');
     }
 
-    // 4. Save storage state for authenticated projects
+    // 4. Top up credits to ensure the test account has enough for the full
+    //    E2E suite. The test account starts with 150 credits, but the full
+    //    suite runs many authenticated POST tests that deduct credits.
+    //    We grant 500 credits via the admin endpoint to prevent exhaustion.
+    if (session.user.id) {
+      try {
+        await context.request.post(`/api/admin/users/${session.user.id}/credits`, {
+          data: { amount: 500, reason: 'e2e-global-setup-topup' },
+        });
+      } catch {
+        // Non-fatal — if the top-up fails, tests will still run with whatever
+        // credits the account already has.
+      }
+    }
+
+    // 5. Save storage state for authenticated projects
     await context.storageState({ path: 'e2e/.auth/user.json' });
   } finally {
     await browser.close();

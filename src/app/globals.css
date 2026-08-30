@@ -202,6 +202,15 @@
   outline-offset: 2px;
 }
 
+/* Hide scrollbar for nav overflow container — keeps visual clean while allowing horizontal scroll */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
 html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;

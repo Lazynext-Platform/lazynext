@@ -79,8 +79,12 @@ export function Shell({ children }: { children: React.ReactNode }) {
               <img src="/lazynext-mark.png" alt="Lazynext" className="h-7 w-7 shrink-0 rounded-lg sm:h-8 sm:w-8" />
               <span className="hidden text-base font-bold tracking-tight sm:inline">Lazynext</span>
             </Link>
-            {/* Primary nav links — hidden on very narrow screens, visible sm+ */}
-            <nav aria-label="Primary" className="hidden items-center gap-0.5 md:flex">
+            {/* Primary nav links — hidden on very narrow screens, visible sm+.
+                The nav uses overflow-x-auto with a flex-nowrap inner container so
+                that the growing number of links never causes page-level horizontal
+                overflow. The scrollbar is hidden for visual cleanliness. */}
+            <nav aria-label="Primary" className="hidden md:block max-w-[calc(100vw-3rem)] overflow-x-auto scrollbar-hide">
+              <div className="flex items-center gap-0.5 flex-nowrap">
               {NAV_LINKS.map((link) => {
                 const Icon = link.icon;
                 const isActive = p === link.href || p.startsWith(link.href + '/');
@@ -102,6 +106,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
                   </Link>
                 );
               })}
+              </div>
             </nav>
           </div>
           {/* Right group: toolbar items — nav is min-w-0 so it can shrink; items

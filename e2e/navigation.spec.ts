@@ -41,7 +41,7 @@ test.describe('Auth', () => {
     if (await signInBtn.isVisible()) {
       await signInBtn.click();
       await page.waitForTimeout(500);
-      const dialog = page.locator('[role="dialog"]');
+      const dialog = page.locator('[role="dialog"][aria-modal="true"]');
       await expect(dialog).toBeVisible();
       await expect(dialog).toHaveAttribute('aria-modal', 'true');
       // Should have email and password inputs
