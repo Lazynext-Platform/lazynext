@@ -111,23 +111,25 @@ npm run cf:deploy # Deploy to Cloudflare Workers
   `/api/creative/approvals`, `/api/creative/approvals/stages`, `/api/creative/comments`,
   `/api/creative/comments/stream`, `/api/creative/share`, `/api/creative/share/[token]`,
   `/api/creative/diff`, `/api/creative/export`, `/api/creative/regenerate`,
-  `/api/creative/product-brief`, `/api/creative/reference-remix`, `/api/creative/multi-concept`
+  `/api/creative/product-brief`, `/api/creative/reference-remix`, `/api/creative/multi-concept`,
+  `/api/creative/performance-loop`, `/api/creative/skill-chain-builder`
 - Ad platform API routes: `/api/ads/create`, `/api/ads/metrics`, `/api/ads/list`, `/api/ads/report`,
   `/api/ads/budget`, `/api/ads/google-budget`, `/api/ads/google-report`, `/api/analytics/ga4`,
-  `/api/ads/meta-safety`, `/api/ads/meta-approve`
+  `/api/ads/meta-safety`, `/api/ads/meta-approve`, `/api/ads/google-safety`, `/api/ads/google-approve`
 - Editor API routes: `/api/editor/rough-cut`, `/api/editor/skills`, `/api/editor/timeline`,
   `/api/editor/timeline-versions`, `/api/editor/transcribe`, `/api/editor/ocr`, `/api/editor/chat`
 - `/api/creative/director` returns an NDJSON stream of step-by-step progress updates; legacy
   non-streaming mode available via `?stream=false`
 - Pipeline stages: brief, script, storyboard, media_generation, audio, edit, compliance, score, publish
-- ADRs 001-035 in `docs/adr/` document all major architecture decisions
+- ADRs 001-039 in `docs/adr/` document all major architecture decisions
 - Cross-feature handoffs: Brand Concepts → Creator Kits (query-param pre-fill),
   Brand Concepts → Shot Planner (script pre-fill), Clip Editor → Media Service Boundary (ASR/TTS)
-- Dashboard "Quick Create" grid includes all production apps and the 8 newest features
+- Dashboard "Quick Create" grid includes all production apps and the 12 newest features
   (Creator Kits, Brand Concepts, Clip Editor, Media Services, Product Brief, Reference Remix,
-  Multi-Concept, Meta Safety)
-- Nav header includes links to all feature pages (visible lg+); the 4 newest features
-  (Product Brief, Reference Remix, Multi-Concept, Meta Safety) are in the overflow nav
+  Multi-Concept, Meta Safety, Google Safety, Performance Loop, Viral Analyzer, Skill Chains)
+- Nav header includes links to all feature pages (visible lg+); the 8 newest features
+  (Product Brief, Reference Remix, Multi-Concept, Meta Safety, Google Safety, Performance Loop,
+  Viral Analyzer, Skill Chains) are in the overflow nav
 
 ### JJ-Series: Research-Derived Creative Capabilities
 - Product Page → Ad Brief (`/product-brief`): URL/product extraction → brand/product brief →
@@ -147,6 +149,27 @@ npm run cf:deploy # Deploy to Cloudflare Workers
 - All 4 features have dry-run/fallback behavior when Atlas is local or API key is missing
 - All 4 features use existing auth, credit deduction/refund, `withAtlas`, and `safeError` conventions
 - E2E coverage: `e2e/new-features.spec.ts` (16 tests covering API contracts + page smoke tests)
+
+### LL-Series: Extended Creative Capabilities
+- Google Ads Safety Layer (`/google-safety`): mirrors Meta Safety for Google Ads — dry-run,
+  approval workflow, spend caps ($200 daily/$100 campaign), mutation caps, blocked delete actions,
+  24h-TTL audit log. API: `GET/POST /api/ads/google-safety`, `GET/POST /api/ads/google-approve`.
+  See ADR-036.
+- Creative Performance Loop (`/performance-loop`): closes the loop between past campaign
+  performance and future briefs — queries CreativePerformance records, feeds insights to Atlas LLM,
+  generates improved briefs with expected lift. 5 credits.
+  API: `POST /api/creative/performance-loop`. See ADR-037.
+- Viral Content Analyzer (`/viral-analyzer`): UI page for existing viral-analysis API — renders
+  virality score (0-100), grade (F-A+), factors, shareability, hook analysis, emotional journey,
+  pacing, trend alignment, viral mechanics, audience psychology, improvement recommendations.
+  6 credits. API: `POST /api/creative/viral-analysis` (existing). See ADR-038.
+- Agent Skill Chain Builder (`/skill-chains`): enhanced skill chaining with conditional branching
+  (5 condition types: output_contains, output_gt, output_lt, output_equals, platform_is).
+  3 built-in enhanced chains (adaptive-hook, platform-optimized, performance-driven).
+  8 credits. API: `POST /api/creative/skill-chain-builder`. See ADR-039.
+- All 4 features have dry-run/fallback behavior when Atlas is local or API key is missing
+- All 4 features use existing auth, credit deduction/refund, `withAtlas`, and `safeError` conventions
+- Unit tests: 35 (google-safety) + 18 (performance-loop) + 39 (skill-chain-builder) = 92 new tests
 
 ## Production-Only Testing (Cannot Be Verified Locally)
 

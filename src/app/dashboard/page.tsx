@@ -6,7 +6,7 @@ import { useSession } from 'next-auth/react';
 import {
   Clapperboard, Coins, Boxes, FolderOpen, ArrowRight, Loader2, Film, Play, Sparkles,
   TrendingDown, TrendingUp, BarChart3, Trophy, Calendar, Gift, Layers, Scissors, Server, Users, Zap, Workflow,
-  FileText, RefreshCw, Lightbulb, Shield,
+  FileText, RefreshCw, Lightbulb, Shield, Flame, GitBranch,
 } from 'lucide-react';
 import { useI18n } from '@/i18n/provider';
 import { appTitle, appDesc, isFeatured } from '@/config/appCatalog';
@@ -37,6 +37,10 @@ const APPS: App[] = [
   { id: 'reference-remix', href: '/reference-remix', icon: RefreshCw },
   { id: 'multi-concept', href: '/multi-concept', icon: Lightbulb },
   { id: 'meta-safety', href: '/meta-safety', icon: Shield },
+  { id: 'google-safety', href: '/google-safety', icon: Shield },
+  { id: 'performance-loop', href: '/performance-loop', icon: TrendingUp },
+  { id: 'viral-analyzer', href: '/viral-analyzer', icon: Flame },
+  { id: 'skill-chains', href: '/skill-chains', icon: GitBranch },
 ];
 
 type Creation = {

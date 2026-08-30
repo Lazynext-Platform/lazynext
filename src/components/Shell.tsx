@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Sparkles, Megaphone, BarChart3, LayoutDashboard, Package, Scissors, Library, Lightbulb, Calendar, Video, Wand2, ImageIcon, Send, BookOpen, Brain, Volume2, Eye, ShieldCheck, Wallet, Users, Workflow, Grid3x3, Activity, FileSearch, TrendingUp, FlaskConical, MessageSquareQuote, Award, Repeat, Users2, Flame, Film, Server, Clapperboard, Gift, Layers, Cpu, FileText, RefreshCw, Shield } from 'lucide-react';
+import { Sparkles, Megaphone, BarChart3, LayoutDashboard, Package, Scissors, Library, Lightbulb, Calendar, Video, Wand2, ImageIcon, Send, BookOpen, Brain, Volume2, Eye, ShieldCheck, Wallet, Users, Workflow, Grid3x3, Activity, FileSearch, TrendingUp, FlaskConical, MessageSquareQuote, Award, Repeat, Users2, Flame, Film, Server, Clapperboard, Gift, Layers, Cpu, FileText, RefreshCw, Shield, GitBranch } from 'lucide-react';
 import { UserMenu } from '@/components/UserMenu';
 import { LangToggle } from '@/components/LangToggle';
 import { CreditBadge } from '@/components/CreditBadge';
@@ -54,6 +54,10 @@ const NAV_LINKS = [
   { href: '/reference-remix', label: 'Remix', icon: RefreshCw, hideOnMd: true },
   { href: '/multi-concept', label: 'Concepts', icon: Lightbulb, hideOnMd: true },
   { href: '/meta-safety', label: 'Meta Safety', icon: Shield, hideOnMd: true },
+  { href: '/google-safety', label: 'Google Safety', icon: Shield, hideOnMd: true },
+  { href: '/performance-loop', label: 'Perf Loop', icon: TrendingUp, hideOnMd: true },
+  { href: '/viral-analyzer', label: 'Viral', icon: Flame, hideOnMd: true },
+  { href: '/skill-chains', label: 'Skill Chains', icon: GitBranch, hideOnMd: true },
   { href: '/calendar', label: 'Calendar', icon: Calendar, hideOnMd: true },
 ];
 
