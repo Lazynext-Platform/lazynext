@@ -1,6 +1,6 @@
 # LazyNext Architecture Audit — 2026-09
 
-> **Status:** Current as of 2026-09-02 (post-T series).
+> **Status:** Current as of 2026-09-02 (post-LL series).
 > The previous audit (`research/lazynext-architecture-audit.md`) is superseded.
 
 ## 1. Stack
@@ -73,6 +73,16 @@ All 5 templates include the `score` quality gate before publish.
 - `GET/POST /api/creative/pipeline/[id]` — fetch state, advance/pause/resume/cancel/skip/retry/approve
 - `GET /api/creative/pipeline/templates` — list available templates
 
+### LL-series creative API routes
+
+- `POST /api/creative/product-brief` — URL → product intelligence → ad angles → scripts → storyboard → generation prompt
+- `POST /api/creative/reference-remix` — reference ad analysis → remix brief with self-contained generation prompt
+- `POST /api/creative/multi-concept` — 6 divergent ad concepts across psychological triggers
+- `POST /api/creative/performance-loop` — past campaign performance → improved creative briefs
+- `POST /api/creative/skill-chain-builder` — multi-step skill chains with conditional branching
+- `GET/POST /api/ads/meta-safety` / `GET/POST /api/ads/meta-approve` — Meta Ads safety layer (dry-run, approvals, spend caps, audit log)
+- `GET/POST /api/ads/google-safety` / `GET/POST /api/ads/google-approve` — Google Ads safety layer (dry-run, approvals, spend caps, audit log)
+
 Credit handling:
 - Credits are deducted before stage execution.
 - Failed stages refund credits via `refundCredits` (centralized in `src/lib/credits.ts`).
@@ -88,6 +98,17 @@ Credit handling:
 - Child assets are created for: media_generation (storyboard), audio (script), edit (script), compliance (score), publish (variants).
 - Brief, script, storyboard, and score stages do NOT create child assets.
 - Persistence failures are logged via `logToolExecution` telemetry (not silently swallowed).
+
+### LL-series pipeline extensions
+
+The LL series added four new creative capabilities that plug into the pipeline architecture:
+
+- **Product Brief** (`/product-brief`) — URL → product intelligence → ad angles → scripts → storyboard → Atlas-ready generation prompt. 5 credits. See ADR-032.
+- **Reference Remix** (`/reference-remix`) — reference ad analysis (hooks, angles, pacing, visual style, emotional beats, CTA) → remix brief with self-contained generation prompt. 4 credits. See ADR-033.
+- **Multi-Concept** (`/multi-concept`) — 6 divergent ad concepts across psychological triggers (fear, aspiration, humor, urgency, curiosity, social_proof) with heuristic recommendation and A/B fork support. 6 credits. See ADR-034.
+- **Performance Loop** (`/performance-loop`) — queries `CreativePerformance` records, feeds insights to Atlas LLM, generates improved briefs with expected lift. 5 credits. See ADR-037.
+
+All four features use existing auth, credit deduction/refund, `withAtlas`, and `safeError` conventions, with dry-run/fallback behavior when Atlas is local or the API key is missing.
 
 ## 4. Workflow Builder
 
@@ -164,7 +185,7 @@ The `overall` score is on a **1-10 scale** (weighted average of 1-10 dimensions)
 
 ### Coverage
 
-- 13 locales: en, zh, ja, es, ko, pt, fr, de, ar, hi, vi, th, id.
+- 13 locales: en, zh, ja, es, ko, pt, fr, de, ar, hi, vi, th, id. All 13 locales now have complete feature translations (including the JJ- and LL-series features).
 - RTL support for Arabic (`dir="rtl"`, `lang="ar"`).
 - Cookie-based locale switching.
 
@@ -260,7 +281,7 @@ The `pipeline` namespace includes:
 
 ```bash
 npm run lint    # ESLint — 0 errors, ~8 warnings (Q series reduced from 11)
-npm test        # Node test runner — 1412+ tests
+npm test        # Node test runner — 1786 tests
 npx playwright test  # E2E — 429+ tests
 npm run build   # Production build (Cloudflare target)
 ```
@@ -322,3 +343,52 @@ npm run build   # Production build (Cloudflare target)
 - Dry-run TTS placeholder fixed — valid silent WAV data URL instead of invalid base64 (U)
 - Estimated credits transparency — templates show pre-approval to total range (U)
 - refundSync dead code removed from gen-task.ts (U)
+- Google Ads Safety Layer — mirrors Meta Safety for Google Ads (LL, ADR-036)
+- Creative Performance Loop — past performance → improved briefs (LL, ADR-037)
+- Viral Content Analyzer UI — renders virality score/grade/factors (LL, ADR-038)
+- Agent Skill Chain Builder — conditional branching + A/B forking (LL, ADR-039)
+- App catalog metadata — 8 new feature titles/descriptions in `appCatalog.ts` (LL)
+
+## 15. LL-Series Features
+
+The LL series extended the creative platform with four new capabilities, documented in ADRs 036-039 (ADRs 001-039 now total 39 architecture decision records in `docs/adr/`).
+
+### Google Ads Safety Layer (`/google-safety`)
+
+- Mirrors the Meta Ads Safety Layer (ADR-035) for Google Ads.
+- Dry-run mode, admin approval workflow, spend caps ($200 daily / $100 campaign), mutation caps, blocked delete actions, 24h-TTL audit log.
+- API: `GET/POST /api/ads/google-safety`, `GET/POST /api/ads/google-approve`. See ADR-036.
+- Unit tests: 35.
+
+### Creative Performance Loop (`/performance-loop`)
+
+- Closes the loop between past campaign performance and future briefs.
+- Queries `CreativePerformance` records, feeds insights to Atlas LLM, generates improved briefs with expected lift.
+- 5 credits. API: `POST /api/creative/performance-loop`. See ADR-037.
+- Unit tests: 18.
+
+### Viral Content Analyzer (`/viral-analyzer`)
+
+- UI page for the existing viral-analysis API.
+- Renders virality score (0-100), grade (F-A+), factors, shareability, hook analysis, emotional journey, pacing, trend alignment, viral mechanics, audience psychology, and improvement recommendations.
+- 6 credits. API: `POST /api/creative/viral-analysis` (existing). See ADR-038.
+
+### Agent Skill Chain Builder (`/skill-chains`)
+
+- Enhanced skill chaining with conditional branching (5 condition types: `output_contains`, `output_gt`, `output_lt`, `output_equals`, `platform_is`).
+- 3 built-in enhanced chains (adaptive-hook, platform-optimized, performance-driven).
+- 8 credits. API: `POST /api/creative/skill-chain-builder`. See ADR-039.
+- Unit tests: 39.
+
+### New UI pages
+
+- `/google-safety` — Google Ads safety dashboard
+- `/performance-loop` — performance-to-brief loop
+- `/viral-analyzer` — viral content analysis
+- `/skill-chains` — skill chain builder
+
+All four features have dry-run/fallback behavior when Atlas is local or the API key is missing, and use existing auth, credit deduction/refund, `withAtlas`, and `safeError` conventions. Unit tests added: 35 + 18 + 39 = 92 new tests (total unit tests now 1786, up from 1412+).
+
+### Dashboard Quick Create
+
+The dashboard "Quick Create" grid now includes all production apps plus the 12 newest features (Creator Kits, Brand Concepts, Clip Editor, Media Services, Product Brief, Reference Remix, Multi-Concept, Meta Safety, Google Safety, Performance Loop, Viral Analyzer, Skill Chains). The 8 newest features (Product Brief, Reference Remix, Multi-Concept, Meta Safety, Google Safety, Performance Loop, Viral Analyzer, Skill Chains) are in the nav overflow menu.
