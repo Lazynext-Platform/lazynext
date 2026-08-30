@@ -1,6 +1,6 @@
 # LazyNext Architecture Audit — 2026-09
 
-> **Status:** Current as of 2026-09-02 (post-TT series).
+> **Status:** Current as of 2026-09-02 (post-TT3 series).
 > The previous audit (`research/lazynext-architecture-audit.md`) is superseded.
 
 ## 1. Stack
@@ -92,6 +92,9 @@ All 5 templates include the `score` quality gate before publish.
 - `POST /api/creative/ad-script-writer` — multi-scene ad scripts with visual cues/voiceover/B-roll (5 credits, ADR-050)
 - `POST /api/creative/audience-persona-generator` — audience personas with demographics/psychographics (4 credits, ADR-051)
 - `POST /api/creative/variant-matrix-generator` — creative variant matrix for A/B testing (5 credits, ADR-052)
+- `POST /api/creative/ad-concept-merger` — AI-powered concept merger combining hooks/angles/scripts into one unified ad concept with flow score (5 credits, ADR-053)
+- `POST /api/creative/brief-analyzer` — AI-powered brief analyzer auditing briefs for strengths/gaps with score (0-100) and grade (F-A+) (4 credits, ADR-054)
+- `POST /api/creative/ad-format-optimizer` — AI-powered format optimizer recommending best ad format based on product/audience/platform/budget/goals (4 credits, ADR-055)
 
 Credit handling:
 - Credits are deducted before stage execution.
@@ -195,7 +198,7 @@ The `overall` score is on a **1-10 scale** (weighted average of 1-10 dimensions)
 
 ### Coverage
 
-- 13 locales: en, zh, ja, es, ko, pt, fr, de, ar, hi, vi, th, id. All 13 locales now have complete feature translations (including the JJ-, LL-, RR-, SS-, and TT-series features).
+- 13 locales: en, zh, ja, es, ko, pt, fr, de, ar, hi, vi, th, id. All 13 locales now have complete feature translations (including the JJ-, LL-, RR-, SS-, TT-, and TT3-series features).
 - RTL support for Arabic (`dir="rtl"`, `lang="ar"`).
 - Cookie-based locale switching.
 
@@ -248,11 +251,11 @@ The `pipeline` namespace includes:
 
 ### Test coverage
 
-- **440+ unauthenticated tests** — smoke tests, page loads, auth prompts, responsive, RTL (including 30 new page tests for brand-guardrails, smart-calendar, competitor-watch, plus page tests for the 6 TT-series features).
+- **440+ unauthenticated tests** — smoke tests, page loads, auth prompts, responsive, RTL (including 30 new page tests for brand-guardrails, smart-calendar, competitor-watch, plus page tests for the 6 TT-series features and 3 TT3-series features).
 - **9 authenticated API tests** for RR-series features (brand-guardrails, smart-calendar, competitor-watch).
 - **12+ authenticated pipeline tests** — session, pipeline creation, templates, page loads.
 - **12+ authenticated user flow tests** — dashboard, my-work, settings, admin, credits, full pipeline execution, A/B.
-- Total: 600+ tests (440+ unauthenticated + 160+ authenticated), 0 skipped, 0 failed.
+- Total: 776+ tests (440+ unauthenticated + 160+ authenticated), 0 skipped, 0 failed.
 
 ### Test account
 
@@ -292,8 +295,8 @@ The `pipeline` namespace includes:
 
 ```bash
 npm run lint    # ESLint — 0 errors, 0 warnings
-npm test        # Node test runner — 1976+ tests
-npx playwright test  # E2E — 600+ tests, 0 skipped
+npm test        # Node test runner — 2058+ tests
+npx playwright test  # E2E — 776+ tests, 0 skipped
 npm run build   # Production build (Cloudflare target)
 ```
 
@@ -383,10 +386,14 @@ npm run build   # Production build (Cloudflare target)
 - Creative Variant Matrix — variant matrix across hooks/angles/formats/platforms (TT, ADR-052)
 - D1 persistence for hooks — new Hook Prisma model with per-user ownership (TT)
 - App catalog + dashboard Quick Create for 6 new TT features (TT)
+- Ad Concept Merger — AI-powered concept merger with flow score (TT3, ADR-053)
+- Creative Brief Analyzer — AI-powered brief analyzer with score/grade (TT3, ADR-054)
+- Ad Format Optimizer — AI-powered format optimizer (TT3, ADR-055)
+- /calendar production audit fix — page no longer makes API calls during loading state (TT3)
 
 ## 15. LL-Series Features
 
-The LL series extended the creative platform with four new capabilities, documented in ADRs 036-039. ADR-040 (OO series) documents D1 persistence for safety audit logs. ADRs 041-043 (QQ series) document chain mode unification, observability aggregation, and video rendering. ADRs 044-046 (RR series) document Brand Guardrails, Smart Calendar, and Competitor Watch. ADRs 047-052 (TT series) document Ad Copy Generator, Hook Library, Brief Template Builder, Ad Script Writer, Audience Persona Generator, and Creative Variant Matrix. ADRs 001-052 now total 52 architecture decision records in `docs/adr/`.
+The LL series extended the creative platform with four new capabilities, documented in ADRs 036-039. ADR-040 (OO series) documents D1 persistence for safety audit logs. ADRs 041-043 (QQ series) document chain mode unification, observability aggregation, and video rendering. ADRs 044-046 (RR series) document Brand Guardrails, Smart Calendar, and Competitor Watch. ADRs 047-052 (TT series) document Ad Copy Generator, Hook Library, Brief Template Builder, Ad Script Writer, Audience Persona Generator, and Creative Variant Matrix. ADRs 053-055 (TT3 series) document Ad Concept Merger, Creative Brief Analyzer, and Ad Format Optimizer. ADRs 001-055 now total 55 architecture decision records in `docs/adr/`.
 
 ### Google Ads Safety Layer (`/google-safety`)
 
@@ -426,7 +433,7 @@ All four features have dry-run/fallback behavior when Atlas is local or the API 
 
 ### Dashboard Quick Create
 
-The dashboard "Quick Create" grid now includes all production apps plus the 21 newest features (Creator Kits, Brand Concepts, Clip Editor, Media Services, Product Brief, Reference Remix, Multi-Concept, Meta Safety, Google Safety, Performance Loop, Viral Analyzer, Skill Chains, Brand Guardrails, Smart Calendar, Competitor Watch, Ad Copy Generator, Hook Library, Brief Template Builder, Ad Script Writer, Audience Persona Generator, Creative Variant Matrix). The 17 newest features (Product Brief through Creative Variant Matrix) are in the nav overflow menu.
+The dashboard "Quick Create" grid now includes all production apps plus the 24 newest features (Creator Kits, Brand Concepts, Clip Editor, Media Services, Product Brief, Reference Remix, Multi-Concept, Meta Safety, Google Safety, Performance Loop, Viral Analyzer, Skill Chains, Brand Guardrails, Smart Calendar, Competitor Watch, Ad Copy Generator, Hook Library, Brief Template Builder, Ad Script Writer, Audience Persona Generator, Creative Variant Matrix, Ad Concept Merger, Brief Analyzer, Ad Format Optimizer). The 20 newest features (Product Brief through Ad Format Optimizer) are in the nav overflow menu.
 
 ## 16. RR-Series Features
 
@@ -526,3 +533,39 @@ The TT series added six new AI creative tools, documented in ADRs 047-052. All s
 - `/variant-matrix-generator` — creative variant matrix for A/B testing
 
 All six features have dry-run/fallback behavior when Atlas is local or the API key is missing, and use existing auth, credit deduction/refund, `withAtlas`, and `safeError` conventions. Unit tests added: 25 + 19 + 16 + 29 + 12 + 11 = 112 new tests (total unit tests now 1976+, up from 1871). Total E2E tests: 600+ (up from 581).
+
+## 18. TT3-Series Features
+
+The TT3 series added three more AI creative tools, documented in ADRs 053-055. All three features have dry-run/fallback behavior when Atlas is local or the API key is missing, and use existing auth, credit deduction/refund, `withAtlas`, and `safeError` conventions. This brings the total feature route count to 33 and the total ADR count to 55.
+
+### Ad Concept Merger (`/ad-concept-merger`)
+
+- AI-powered concept merger — combines multiple hooks, angles, and scripts into one unified ad concept.
+- AI-resolved conflicts and flow score.
+- 5 credits. API: `POST /api/creative/ad-concept-merger`. See ADR-053.
+- Unit tests: 23.
+
+### Creative Brief Analyzer (`/brief-analyzer`)
+
+- AI-powered brief analyzer — audits creative briefs for strengths, gaps, missing elements, and improvement suggestions.
+- Returns overall score (0-100), grade (F-A+), section analysis, and recommendations.
+- 4 credits. API: `POST /api/creative/brief-analyzer`. See ADR-054.
+- Unit tests: 30.
+
+### Ad Format Optimizer (`/ad-format-optimizer`)
+
+- AI-powered format optimizer — recommends best ad format (single image, carousel, video, story, reel, collection) based on product, audience, platform, budget, and goals.
+- 4 credits. API: `POST /api/creative/ad-format-optimizer`. See ADR-055.
+- Unit tests: 29.
+
+### New UI pages
+
+- `/ad-concept-merger` — AI-powered concept merger
+- `/brief-analyzer` — creative brief analyzer with score/grade
+- `/ad-format-optimizer` — ad format optimizer
+
+### Production audit fix (TT3)
+
+- `/calendar` page no longer makes API calls during loading state.
+
+All three features have dry-run/fallback behavior when Atlas is local or the API key is missing, and use existing auth, credit deduction/refund, `withAtlas`, and `safeError` conventions. Unit tests added: 23 + 30 + 29 = 82 new tests (total unit tests now 2058+, up from 1976). Total E2E tests: 776+ (up from 600).

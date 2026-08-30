@@ -49,8 +49,8 @@ Production uses Cloudflare R2 via `src/lib/media-storage.cloudflare.ts`.
 ## Verification Commands
 ```bash
 npm run lint    # ESLint
-npm test        # Node test runner (1976+ tests)
-# E2E: 600+ passed, 0 skipped (chromium + mobile-chrome + chromium-auth)
+npm test        # Node test runner (2058+ tests)
+# E2E: 776+ passed, 0 skipped (chromium + mobile-chrome + chromium-auth)
 npm run build   # Production build (Cloudflare target)
 npm run cf:build  # Cloudflare/OpenNext build
 npm run cf:deploy # Deploy to Cloudflare Workers
@@ -117,7 +117,8 @@ npm run cf:deploy # Deploy to Cloudflare Workers
   `/api/creative/competitor-watch`, `/api/creative/ad-copy-generator`,
   `/api/creative/hook-library`, `/api/creative/brief-template-builder`,
   `/api/creative/ad-script-writer`, `/api/creative/audience-persona-generator`,
-  `/api/creative/variant-matrix-generator`
+  `/api/creative/variant-matrix-generator`, `/api/creative/ad-concept-merger`,
+  `/api/creative/brief-analyzer`, `/api/creative/ad-format-optimizer`
 - Ad platform API routes: `/api/ads/create`, `/api/ads/metrics`, `/api/ads/list`, `/api/ads/report`,
   `/api/ads/budget`, `/api/ads/google-budget`, `/api/ads/google-report`, `/api/analytics/ga4`,
   `/api/ads/meta-safety`, `/api/ads/meta-approve`, `/api/ads/google-safety`, `/api/ads/google-approve`
@@ -126,19 +127,21 @@ npm run cf:deploy # Deploy to Cloudflare Workers
 - `/api/creative/director` returns an NDJSON stream of step-by-step progress updates; legacy
   non-streaming mode available via `?stream=false`
 - Pipeline stages: brief, script, storyboard, media_generation, audio, edit, compliance, score, publish
-- ADRs 001-052 in `docs/adr/` document all major architecture decisions
+- ADRs 001-055 in `docs/adr/` document all major architecture decisions
 - Cross-feature handoffs: Brand Concepts → Creator Kits (query-param pre-fill),
   Brand Concepts → Shot Planner (script pre-fill), Clip Editor → Media Service Boundary (ASR/TTS)
-- Dashboard "Quick Create" grid includes all production apps and the 21 newest features
+- Dashboard "Quick Create" grid includes all production apps and the 24 newest features
   (Creator Kits, Brand Concepts, Clip Editor, Media Services, Product Brief, Reference Remix,
   Multi-Concept, Meta Safety, Google Safety, Performance Loop, Viral Analyzer, Skill Chains,
   Brand Guardrails, Smart Calendar, Competitor Watch, Ad Copy Generator, Hook Library,
-  Brief Template Builder, Ad Script Writer, Audience Persona Generator, Creative Variant Matrix)
-- Nav header includes links to all feature pages (visible lg+); the 17 newest features
+  Brief Template Builder, Ad Script Writer, Audience Persona Generator, Creative Variant Matrix,
+  Ad Concept Merger, Brief Analyzer, Ad Format Optimizer)
+- Nav header includes links to all feature pages (visible lg+); the 20 newest features
   (Product Brief, Reference Remix, Multi-Concept, Meta Safety, Google Safety, Performance Loop,
   Viral Analyzer, Skill Chains, Brand Guardrails, Smart Calendar, Competitor Watch, Ad Copy
   Generator, Hook Library, Brief Template Builder, Ad Script Writer, Audience Persona Generator,
-  Creative Variant Matrix) are in the overflow nav
+  Creative Variant Matrix, Ad Concept Merger, Brief Analyzer, Ad Format Optimizer) are in the
+  overflow nav
 
 ### JJ-Series: Research-Derived Creative Capabilities
 - Product Page → Ad Brief (`/product-brief`): URL/product extraction → brand/product brief →
@@ -226,6 +229,25 @@ npm run cf:deploy # Deploy to Cloudflare Workers
 - All 6 features use existing auth, credit deduction/refund, `withAtlas`, and `safeError` conventions
 - Hook Library uses D1 persistence via Prisma Hook model (per-user ownership)
 - Unit tests: 25 (ad-copy-generator) + 19 (hook-library) + 16 (brief-template-builder) + 29 (ad-script-writer) + 12 (audience-persona-generator) + 11 (variant-matrix-generator) = 112 new tests
+
+### TT3-Series: Three More AI Creative Tools
+- Ad Concept Merger (`/ad-concept-merger`): AI-powered concept merger.
+  Combines multiple hooks, angles, and scripts into one unified ad concept
+  with AI-resolved conflicts and flow score. 5 credits.
+  API: `POST /api/creative/ad-concept-merger`. See ADR-053.
+- Creative Brief Analyzer (`/brief-analyzer`): AI-powered brief analyzer.
+  Audits creative briefs for strengths, gaps, missing elements, and
+  improvement suggestions. Returns overall score (0-100), grade (F-A+),
+  section analysis, and recommendations. 4 credits.
+  API: `POST /api/creative/brief-analyzer`. See ADR-054.
+- Ad Format Optimizer (`/ad-format-optimizer`): AI-powered format optimizer.
+  Recommends best ad format (single image, carousel, video, story, reel,
+  collection) based on product, audience, platform, budget, and goals.
+  4 credits. API: `POST /api/creative/ad-format-optimizer`. See ADR-055.
+- All 3 features have dry-run/fallback behavior when Atlas is local or API key is missing
+- All 3 features use existing auth, credit deduction/refund, `withAtlas`, and `safeError` conventions
+- Unit tests: 23 (ad-concept-merger) + 30 (brief-analyzer) + 29 (ad-format-optimizer) = 82 new tests
+- Production audit fix: /calendar page no longer makes API calls during loading state
 
 ## Production-Only Testing (Cannot Be Verified Locally)
 

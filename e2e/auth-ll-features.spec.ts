@@ -613,3 +613,109 @@ test.describe('Ad Format Optimizer API', () => {
     expect(res.status()).toBe(400);
   });
 });
+
+test.describe('Mood Board Generator API', () => {
+  test('GET returns credit cost and schema', async ({ request }) => {
+    const res = await request.get('/api/creative/mood-board-generator');
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.creditCost).toBe(4);
+    expect(data.schema).toBeTruthy();
+  });
+
+  test('POST with valid input returns mood board', async ({ request }) => {
+    const res = await request.post('/api/creative/mood-board-generator', {
+      data: {
+        productOrBrand: 'Premium eco-friendly water bottle',
+        styleKeywords: ['minimal', 'natural', 'premium'],
+        platform: 'tiktok',
+        dryRun: true,
+      },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.result).toBeTruthy();
+    expect(data.result.moodBoard).toBeTruthy();
+  });
+
+  test('POST with missing productOrBrand returns 400', async ({ request }) => {
+    const res = await request.post('/api/creative/mood-board-generator', {
+      data: { styleKeywords: ['minimal'], dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.status()).toBe(400);
+  });
+});
+
+test.describe('Ad Performance Predictor API', () => {
+  test('GET returns credit cost and schema', async ({ request }) => {
+    const res = await request.get('/api/creative/ad-performance-predictor');
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.creditCost).toBe(5);
+    expect(data.schema).toBeTruthy();
+  });
+
+  test('POST with valid input returns prediction', async ({ request }) => {
+    const res = await request.post('/api/creative/ad-performance-predictor', {
+      data: {
+        briefOrConcept: 'TikTok ad for eco-friendly water bottle. Hook: Stop scrolling. CTA: Shop Now.',
+        platform: 'tiktok',
+        dryRun: true,
+      },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.result).toBeTruthy();
+    expect(data.result.prediction).toBeTruthy();
+    expect(typeof data.result.prediction.overallScore).toBe('number');
+  });
+
+  test('POST with missing briefOrConcept returns 400', async ({ request }) => {
+    const res = await request.post('/api/creative/ad-performance-predictor', {
+      data: { platform: 'tiktok', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.status()).toBe(400);
+  });
+});
+
+test.describe('Creative A/B Test Planner API (v2)', () => {
+  test('GET returns credit cost and schema', async ({ request }) => {
+    const res = await request.get('/api/creative/ab-test-planner-v2');
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.creditCost).toBe(4);
+    expect(data.schema).toBeTruthy();
+  });
+
+  test('POST with valid input returns test plan', async ({ request }) => {
+    const res = await request.post('/api/creative/ab-test-planner-v2', {
+      data: {
+        baseCreative: 'TikTok ad for eco-friendly water bottle. Hook: Stop scrolling. CTA: Shop Now.',
+        platform: 'tiktok',
+        goal: 'Increase CTR by 20%',
+        dryRun: true,
+      },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.result).toBeTruthy();
+    expect(data.result.plan).toBeTruthy();
+    expect(Array.isArray(data.result.plan.variants)).toBeTruthy();
+  });
+
+  test('POST with missing baseCreative returns 400', async ({ request }) => {
+    const res = await request.post('/api/creative/ab-test-planner-v2', {
+      data: { platform: 'tiktok', goal: 'x', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.status()).toBe(400);
+  });
+});

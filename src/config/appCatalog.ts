@@ -57,6 +57,9 @@ const CUSTOM_TITLES: Record<string, Bi> = {
   'ad-concept-merger': { en: 'Ad Concept Merger', zh: '广告概念合并器' },
   'brief-analyzer': { en: 'Creative Brief Analyzer', zh: '创意简报分析器' },
   'ad-format-optimizer': { en: 'Ad Format Optimizer', zh: '广告格式优化器' },
+  'mood-board-generator': { en: 'Mood Board Generator', zh: '情绪板生成器' },
+  'ad-performance-predictor': { en: 'Ad Performance Predictor', zh: '广告表现预测器' },
+  'ab-test-planner': { en: 'Creative A/B Test Planner', zh: '创意A/B测试规划器' },
 };
 const CUSTOM_DESCS: Record<string, Bi> = {
   'lazynext-studio': { en: 'Product + presenter photos → AI expands the prompt from your images → lip-synced UGC ad; one-click viral formats', zh: '产品图+人物图 → AI 看图扩写提示词 → 合成首帧 → 对口型真人口播广告;爆款玩法一键复刻' },
@@ -84,6 +87,9 @@ const CUSTOM_DESCS: Record<string, Bi> = {
   'ad-concept-merger': { en: 'AI-powered concept merger — combine multiple hooks, angles, and scripts into one unified ad concept', zh: 'AI驱动的概念合并器 — 将多个钩子、角度和脚本合并为一个统一的广告概念' },
   'brief-analyzer': { en: 'AI-powered brief analyzer — audit creative briefs for strengths, gaps, and improvement suggestions', zh: 'AI驱动的简报分析器 — 审查创意简报的优势、差距和改进建议' },
   'ad-format-optimizer': { en: 'AI-powered format optimizer — recommends the best ad format based on product, audience, platform, and budget', zh: 'AI驱动的格式优化器 — 根据产品、受众、平台和预算推荐最佳广告格式' },
+  'mood-board-generator': { en: 'AI-powered mood boards — generate color palettes, typography, imagery themes, and emotional tone from your brand and style keywords', zh: 'AI驱动的情绪板 — 从品牌和风格关键词生成配色、字体、图像主题和情感基调' },
+  'ad-performance-predictor': { en: 'AI-powered ad performance prediction — forecast CTR, engagement, conversion, and virality before you spend budget', zh: 'AI驱动的广告表现预测 — 在花费预算前预测CTR、互动率、转化和病毒传播潜力' },
+  'ab-test-planner': { en: 'AI-powered A/B test planner — design rigorous experiments with hypothesis, variants, sample size, and success criteria', zh: 'AI驱动的A/B测试规划器 — 设计包含假设、变体、样本量和成功标准的严谨实验' },
 };
 export function appTitle(id: string, fallbackTitle: string, locale: string = 'en'): string {
   const c = CUSTOM_TITLES[id];

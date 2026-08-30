@@ -177,7 +177,7 @@ test.describe('Header Navigation Links', () => {
     await expect(nav.locator('a', { hasText: 'Dashboard' })).toBeVisible();
     await expect(nav.locator('a', { hasText: 'Director' })).toBeVisible();
     await expect(nav.locator('a', { hasText: 'Ads' })).toBeVisible();
-    await expect(nav.locator('a', { hasText: 'Performance' })).toBeVisible();
+    await expect(nav.getByRole('link', { name: 'Performance', exact: true })).toBeVisible();
   });
 
   test('nav links are hidden on mobile (<768px)', async ({ page }) => {
@@ -209,7 +209,7 @@ test.describe('Header Navigation Links', () => {
     await page.setViewportSize({ width: 1280, height: 800 });
     await page.goto('/');
     await page.waitForTimeout(1000);
-    await page.locator('nav[aria-label="Primary"] a', { hasText: 'Performance' }).click();
+    await page.locator('nav[aria-label="Primary"]').getByRole('link', { name: 'Performance', exact: true }).click();
     await expect(page).toHaveURL(/\/performance/);
   });
 });

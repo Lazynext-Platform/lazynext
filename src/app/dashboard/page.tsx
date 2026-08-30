@@ -6,7 +6,7 @@ import { useSession } from 'next-auth/react';
 import {
   Clapperboard, Coins, Boxes, FolderOpen, ArrowRight, Loader2, Film, Play, Sparkles,
   TrendingDown, TrendingUp, BarChart3, Trophy, Calendar, Gift, Layers, Scissors, Server, Users, Zap, Workflow,
-  FileText, RefreshCw, Lightbulb, Shield, Flame, GitBranch, CalendarClock, Radar, PenLine, Anchor, FileSpreadsheet, ScrollText, UsersRound, LayoutGrid, GitMerge, FileSearch2, LayoutTemplate,
+  FileText, RefreshCw, Lightbulb, Shield, Flame, GitBranch, CalendarClock, Radar, PenLine, Anchor, FileSpreadsheet, ScrollText, UsersRound, LayoutGrid, GitMerge, FileSearch2, LayoutTemplate, Palette, Gauge, FlaskRound,
 } from 'lucide-react';
 import { useI18n } from '@/i18n/provider';
 import { appTitle, appDesc, isFeatured } from '@/config/appCatalog';
@@ -53,6 +53,9 @@ const APPS: App[] = [
   { id: 'ad-concept-merger', href: '/ad-concept-merger', icon: GitMerge },
   { id: 'brief-analyzer', href: '/brief-analyzer', icon: FileSearch2 },
   { id: 'ad-format-optimizer', href: '/ad-format-optimizer', icon: LayoutTemplate },
+  { id: 'mood-board-generator', href: '/mood-board-generator', icon: Palette },
+  { id: 'ad-performance-predictor', href: '/ad-performance-predictor', icon: Gauge },
+  { id: 'ab-test-planner', href: '/ab-test-planner', icon: FlaskRound },
 ];
 
 type Creation = {
