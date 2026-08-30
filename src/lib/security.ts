@@ -1,30 +1,40 @@
 /**
  * Security utilities for password hashing and URL validation.
  *
- * Uses Web Crypto API (SHA-256) which is available in both Node.js and
- * Cloudflare Workers environments. SHA-256 with a salt is used instead of
- * bcrypt because bcrypt is not available in the Workers runtime.
+ * Uses bcryptjs (pure JavaScript, compatible with Cloudflare Workers) for
+ * password hashing. Falls back to legacy SHA-256+salt verification for
+ * hashes created before the bcrypt upgrade (backward compatibility).
  */
 
+import bcrypt from 'bcryptjs';
+
 /**
- * Hash a password using SHA-256 with a random salt.
- * Returns "salt:hash" format for storage.
+ * Hash a password using bcrypt with a cost factor of 10.
+ * Returns a bcrypt hash string (starts with "$2a$" or "$2b$").
  */
 export async function hashPassword(password: string): Promise<string> {
-  const salt = crypto.getRandomValues(new Uint8Array(16));
-  const saltHex = Array.from(salt).map((b) => b.toString(16).padStart(2, '0')).join('');
-  const encoder = new TextEncoder();
-  const data = encoder.encode(saltHex + password);
-  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-  const hashHex = Array.from(new Uint8Array(hashBuffer)).map((b) => b.toString(16).padStart(2, '0')).join('');
-  return `${saltHex}:${hashHex}`;
+  return bcrypt.hash(password, 10);
 }
 
 /**
- * Verify a password against a stored "salt:hash" value.
+ * Verify a password against a stored hash.
+ * Supports both bcrypt hashes (starting with "$2a$"/"$2b$") and legacy
+ * SHA-256+salt hashes (format "saltHex:hashHex") for backward compatibility.
  * Returns true if the password matches.
  */
 export async function verifyPassword(password: string, stored: string): Promise<boolean> {
+  if (!stored) return false;
+
+  // Bcrypt hashes start with $2a$ or $2b$
+  if (stored.startsWith('$2a$') || stored.startsWith('$2b$') || stored.startsWith('$2y$')) {
+    try {
+      return bcrypt.compare(password, stored);
+    } catch {
+      return false;
+    }
+  }
+
+  // Legacy SHA-256+salt format: "saltHex:hashHex"
   const [saltHex, expectedHash] = stored.split(':');
   if (!saltHex || !expectedHash) return false;
   const encoder = new TextEncoder();

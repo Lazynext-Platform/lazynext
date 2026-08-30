@@ -6,7 +6,8 @@ describe('Security utilities', () => {
   describe('hashPassword / verifyPassword', () => {
     test('hashes a password and verifies it correctly', async () => {
       const hash = await hashPassword('mySecret123');
-      assert.ok(hash.includes(':'));
+      // bcrypt hashes start with $2a$ or $2b$
+      assert.ok(hash.startsWith('$2a$') || hash.startsWith('$2b$'));
       const ok = await verifyPassword('mySecret123', hash);
       assert.ok(ok);
     });
@@ -26,6 +27,34 @@ describe('Security utilities', () => {
     test('rejects malformed stored hash', async () => {
       const ok = await verifyPassword('test', 'malformed');
       assert.equal(ok, false);
+    });
+
+    test('rejects empty stored hash', async () => {
+      const ok = await verifyPassword('test', '');
+      assert.equal(ok, false);
+    });
+
+    test('bcrypt hash round-trip', async () => {
+      const hash = await hashPassword('testBcrypt123!');
+      assert.ok(hash.startsWith('$2a$') || hash.startsWith('$2b$'));
+      assert.ok(await verifyPassword('testBcrypt123!', hash));
+      assert.equal(await verifyPassword('wrong', hash), false);
+    });
+
+    test('legacy SHA-256+salt hashes are still verifiable', async () => {
+      // Recreate a legacy SHA-256+salt hash for backward compatibility
+      const saltHex = 'a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6';
+      const encoder = new TextEncoder();
+      const data = encoder.encode(saltHex + 'legacyPassword');
+      const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+      const hashHex = Array.from(new Uint8Array(hashBuffer))
+        .map((b) => b.toString(16).padStart(2, '0'))
+        .join('');
+      const legacyHash = `${saltHex}:${hashHex}`;
+      // Should verify with the correct password
+      assert.ok(await verifyPassword('legacyPassword', legacyHash));
+      // Should reject wrong password
+      assert.equal(await verifyPassword('wrongPassword', legacyHash), false);
     });
   });
 

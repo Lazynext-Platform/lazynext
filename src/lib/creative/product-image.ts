@@ -18,7 +18,7 @@
  * instructions (scene descriptions) for scene/lifestyle/multi-angle types so
  * the prompt engineering pipeline is exercised end-to-end.
  */
-import { atlasChat } from '@/lib/atlas';
+import { atlasChat, submitGen, pollOnce } from '@/lib/atlas';
 import { getLLMModel } from '@/lib/providers/model-helpers';
 import type { PlanTier } from '@/lib/plan-tier';
 
@@ -360,8 +360,9 @@ export function getEnhancementTypes(): Array<{
 /**
  * Enhance a product image. Validates the request, uses atlasChat to generate
  * processing instructions for scene/lifestyle/multi-angle types, and returns a
- * ProductImageResult. The actual image generation API is stubbed for now —
- * placeholder URLs are returned in both dry-run and real mode.
+ * ProductImageResult. In production (non-dry-run), calls the real Atlas Cloud
+ * image generation API for image-to-image transformations. In dry-run/mock
+ * mode, returns placeholder URLs.
  */
 export async function enhanceProductImage(
   request: ProductImageRequest,
@@ -397,11 +398,21 @@ export async function enhanceProductImage(
   // Multi-angle: produce a variants grid.
   if (request.enhancementType === 'multi_angle') {
     const angleDescs = await generateAngleDescriptions(request, planTier);
-    const variants = angleDescs.map((a) => ({
-      angle: a.angle,
-      url: placeholderUrl({ ...request, angleType: a.angle }, a.angle),
-      description: a.description,
-    }));
+    const variants: Array<{ angle: string; url: string; description: string }> = [];
+
+    for (const a of angleDescs) {
+      let url: string;
+      if (dryRun) {
+        url = placeholderUrl({ ...request, angleType: a.angle }, a.angle);
+      } else {
+        try {
+          url = await generateImageViaAtlas(request.imageUrl, a.description, planTier);
+        } catch {
+          url = placeholderUrl({ ...request, angleType: a.angle }, a.angle);
+        }
+      }
+      variants.push({ angle: a.angle, url, description: a.description });
+    }
     const primaryAngle = request.angleType || 'front';
     const primary = variants.find((v) => v.angle === primaryAngle) || variants[0];
     return {
@@ -420,8 +431,21 @@ export async function enhanceProductImage(
   }
 
   // Single-result enhancements.
+  let enhancedUrl: string;
+  if (dryRun) {
+    enhancedUrl = placeholderUrl(request);
+  } else {
+    try {
+      enhancedUrl = await generateImageViaAtlas(request.imageUrl, processingNotes, planTier);
+    } catch {
+      // Fall back to placeholder if the real API fails
+      enhancedUrl = placeholderUrl(request);
+      processingNotes = `${processingNotes} (fallback: atlas API unavailable)`;
+    }
+  }
+
   return {
-    enhancedImageUrl: placeholderUrl(request),
+    enhancedImageUrl: enhancedUrl,
     enhancementType: request.enhancementType,
     originalUrl: request.imageUrl,
     processingNotes,
@@ -432,6 +456,43 @@ export async function enhanceProductImage(
       fileSize: dryRun ? 0 : Math.round(width * height * 0.15),
     },
   };
+}
+
+/**
+ * Call the real Atlas Cloud image generation API for image-to-image transformations.
+ * Submits a generation task with the source image and prompt, polls for completion,
+ * and returns the output URL.
+ */
+async function generateImageViaAtlas(
+  sourceImageUrl: string,
+  prompt: string,
+  planTier?: PlanTier,
+): Promise<string> {
+  const model = process.env.ATLAS_IMAGE_EDIT_MODEL || 'seedream-3.0';
+  const task = await submitGen({
+    endpoint: 'generateImage',
+    model,
+    prompt,
+    image: sourceImageUrl,
+    imageField: 'image',
+    extra: {
+      // Request image-to-image mode if supported by the model
+      mode: 'image-to-image',
+    },
+  });
+
+  // Poll for completion (max ~60s, 3s intervals)
+  for (let i = 0; i < 20; i++) {
+    await new Promise((r) => setTimeout(r, 3000));
+    const result = await pollOnce(task.getUrl);
+    if (result.status === 'completed' && result.outputs.length > 0) {
+      return result.outputs[0];
+    }
+    if (result.status === 'failed') {
+      throw new Error('atlas_image_generation_failed');
+    }
+  }
+  throw new Error('atlas_image_generation_timeout');
 }
 
 // Re-export lifestyle contexts and angle types for UI consumers.
