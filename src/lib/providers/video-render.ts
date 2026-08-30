@@ -99,7 +99,7 @@ export const externalRender: VideoRenderProvider = {
     while (Date.now() - startTime < timeoutMs) {
       await new Promise((r) => setTimeout(r, 3000));
       const pollRes = await fetch(`${baseUrl}/render/${job.jobId}`, {
-        headers: ...(apiKey ? { Authorization: `Bearer ${apiKey}` } : {}),
+        headers: apiKey ? { Authorization: `Bearer ${apiKey}` } : undefined,
         signal: AbortSignal.timeout(10_000),
       }).catch(() => null);
 
