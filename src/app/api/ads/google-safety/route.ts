@@ -8,8 +8,10 @@ import {
   validateSafetyConfig,
   getSafetyConfig,
   updateSafetyConfig,
-  getAuditLog,
+  getAuditSummary,
+  getAuditSummaryFromDB,
   getPendingApprovals,
+  getPendingApprovalsFromDB,
   type SafetyConfig,
 } from '@/lib/ads/google-safety';
 
@@ -34,18 +36,16 @@ async function __byokGET() {
     return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
   }
 
-  const audit = getAuditLog();
-  const summary = {
-    total: audit.length,
-    successes: audit.filter((e) => e.result === 'success').length,
-    failures: audit.filter((e) => e.result === 'failure').length,
-    simulated: audit.filter((e) => e.result === 'simulated').length,
-  };
+  // Try D1 first, fall back to in-memory summary/pending counts.
+  const summary = await getAuditSummaryFromDB().catch(() => getAuditSummary());
+  const pending = await getPendingApprovalsFromDB()
+    .then((list) => list.length)
+    .catch(() => getPendingApprovals().length);
 
   return NextResponse.json({
     config: getSafetyConfig(),
     auditSummary: summary,
-    pendingApprovals: getPendingApprovals().length,
+    pendingApprovals: pending,
   });
 }
 

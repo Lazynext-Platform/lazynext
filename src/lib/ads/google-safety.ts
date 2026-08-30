@@ -472,3 +472,227 @@ export function rejectRequest(id: string, approver: string): ApprovalRequest | u
 export function clearApprovals(): void {
   approvalRequests.clear();
 }
+
+// ── D1 persistence (optional, activates when Prisma is available) ──
+//
+// The functions below mirror the in-memory storage above but persist to D1
+// via Prisma. They are designed to be resilient: if Prisma/D1 is unavailable
+// (e.g. in the Node test runner or dry-run mode), they fall back to the
+// in-memory Maps/arrays so existing behavior and unit tests are preserved.
+//
+// Prisma is imported lazily (dynamic import) so this module remains importable
+// in environments where @/lib/prisma or the generated client is not wired up.
+
+type PrismaLike = {
+  googleSafetyAudit: {
+    create: (args: { data: Record<string, unknown> }) => Promise<unknown>;
+    findMany: (args: {
+      orderBy?: Record<string, unknown>;
+      take?: number;
+    }) => Promise<Record<string, unknown>[]>;
+    count: (args: { where?: Record<string, unknown> }) => Promise<number>;
+  };
+  googleSafetyApproval: {
+    create: (args: { data: Record<string, unknown> }) => Promise<unknown>;
+    update: (args: {
+      where: Record<string, unknown>;
+      data: Record<string, unknown>;
+    }) => Promise<unknown>;
+    findMany: (args: {
+      where?: Record<string, unknown>;
+      orderBy?: Record<string, unknown>;
+    }) => Promise<Record<string, unknown>[]>;
+  };
+};
+
+async function getPrisma(): Promise<PrismaLike | null> {
+  try {
+    const mod = await import('@/lib/prisma');
+    const p = (mod as unknown as { prisma?: PrismaLike }).prisma;
+    if (p && p.googleSafetyAudit && p.googleSafetyApproval) return p;
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Persist an audit entry to D1. Falls back silently (no-op) when D1/Prisma is
+ * unavailable — the in-memory log already holds the entry.
+ */
+export async function persistAuditEntry(entry: AuditEntry): Promise<void> {
+  try {
+    const p = await getPrisma();
+    if (!p) return;
+    await p.googleSafetyAudit.create({
+      data: {
+        id: entry.id,
+        action: entry.action,
+        actor: entry.actor,
+        timestamp: new Date(entry.timestamp),
+        dryRun: entry.dryRun,
+        approved: entry.approved,
+        payload: JSON.stringify(entry.payload ?? {}),
+        result: entry.result,
+        spendDelta: entry.spendDelta ?? 0,
+      },
+    });
+  } catch {
+    // D1 unavailable — in-memory log is the source of truth.
+  }
+}
+
+/**
+ * Read the audit log from D1 (newest first). Falls back to the in-memory log
+ * when D1/Prisma is unavailable.
+ */
+export async function getAuditLogFromDB(limit = 100): Promise<AuditEntry[]> {
+  try {
+    const p = await getPrisma();
+    if (!p) return getAuditLog().slice(-limit);
+    const rows = await p.googleSafetyAudit.findMany({
+      orderBy: { timestamp: 'desc' },
+      take: limit,
+    });
+    return rows.map((r) => ({
+      id: String(r.id),
+      action: String(r.action),
+      actor: String(r.actor),
+      timestamp: new Date(r.timestamp as string).toISOString(),
+      dryRun: Boolean(r.dryRun),
+      approved: Boolean(r.approved),
+      payload: safeParseJson(r.payload as string),
+      result: (r.result as AuditEntry['result']) ?? 'success',
+      spendDelta: typeof r.spendDelta === 'number' ? r.spendDelta : 0,
+    }));
+  } catch {
+    return getAuditLog().slice(-limit);
+  }
+}
+
+/**
+ * Aggregate audit summary from D1. Falls back to the in-memory summary when
+ * D1/Prisma is unavailable.
+ */
+export async function getAuditSummaryFromDB(): Promise<{
+  total: number;
+  successes: number;
+  failures: number;
+  simulated: number;
+}> {
+  try {
+    const p = await getPrisma();
+    if (!p) return getAuditSummary();
+    const [total, successes, failures, simulated] = await Promise.all([
+      p.googleSafetyAudit.count({ where: {} }),
+      p.googleSafetyAudit.count({ where: { result: 'success' } }),
+      p.googleSafetyAudit.count({ where: { result: 'failure' } }),
+      p.googleSafetyAudit.count({ where: { result: 'simulated' } }),
+    ]);
+    return { total, successes, failures, simulated };
+  } catch {
+    return getAuditSummary();
+  }
+}
+
+/**
+ * Persist a pending approval request to D1. Falls back silently when D1/Prisma
+ * is unavailable — the in-memory Map already holds the request.
+ */
+export async function persistApprovalRequest(req: ApprovalRequest): Promise<void> {
+  try {
+    const p = await getPrisma();
+    if (!p) return;
+    await p.googleSafetyApproval.create({
+      data: {
+        id: req.id,
+        action: req.action,
+        payload: JSON.stringify(req.payload ?? {}),
+        status: req.status,
+        createdAt: new Date(req.createdAt),
+        expiresAt: new Date(req.expiresAt),
+        approvedBy: req.approvedBy ?? null,
+        approvedAt: req.approvedAt ? new Date(req.approvedAt) : null,
+      },
+    });
+  } catch {
+    // D1 unavailable — in-memory Map is the source of truth.
+  }
+}
+
+/**
+ * Update an approval request's status in D1. Falls back silently when
+ * D1/Prisma is unavailable — the in-memory record is updated by the caller.
+ */
+export async function updateApprovalStatusInDB(
+  id: string,
+  status: string,
+  approvedBy: string,
+): Promise<void> {
+  try {
+    const p = await getPrisma();
+    if (!p) return;
+    await p.googleSafetyApproval.update({
+      where: { id },
+      data: {
+        status,
+        approvedBy,
+        approvedAt: new Date(),
+      },
+    });
+  } catch {
+    // D1 unavailable — in-memory Map is the source of truth.
+  }
+}
+
+/**
+ * Read pending approval requests from D1 (auto-expires stale entries).
+ * Falls back to the in-memory list when D1/Prisma is unavailable.
+ */
+export async function getPendingApprovalsFromDB(): Promise<ApprovalRequest[]> {
+  try {
+    const p = await getPrisma();
+    if (!p) return getPendingApprovals();
+    const rows = await p.googleSafetyApproval.findMany({
+      where: { status: 'pending' },
+      orderBy: { createdAt: 'desc' },
+    });
+    const now = Date.now();
+    const out: ApprovalRequest[] = [];
+    for (const r of rows) {
+      const expiresAt = new Date(r.expiresAt as string);
+      if (expiresAt.getTime() < now) {
+        // Stale in DB — skip (a separate sweeper could mark these expired).
+        continue;
+      }
+      out.push({
+        id: String(r.id),
+        action: String(r.action),
+        payload: safeParseJson(r.payload as string),
+        status: (r.status as ApprovalRequest['status']) ?? 'pending',
+        createdAt: new Date(r.createdAt as string).toISOString(),
+        expiresAt: expiresAt.toISOString(),
+        approvedBy: (r.approvedBy as string | null) ?? undefined,
+        approvedAt: r.approvedAt
+          ? new Date(r.approvedAt as string).toISOString()
+          : undefined,
+      });
+    }
+    return out;
+  } catch {
+    return getPendingApprovals();
+  }
+}
+
+/** Parse a JSON string safely, returning {} on failure. */
+function safeParseJson(raw: string | null | undefined): Record<string, unknown> {
+  if (!raw) return {};
+  try {
+    const v = JSON.parse(raw);
+    return v && typeof v === 'object' && !Array.isArray(v)
+      ? (v as Record<string, unknown>)
+      : {};
+  } catch {
+    return {};
+  }
+}

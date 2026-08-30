@@ -8,6 +8,8 @@ import {
   validateSafetyConfig,
   getAuditLog,
   getPendingApprovals,
+  getAuditSummaryFromDB,
+  getPendingApprovalsFromDB,
   type SafetyConfig,
 } from '@/lib/ads/meta-safety';
 
@@ -42,18 +44,31 @@ async function __byokGET() {
     return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
   }
 
-  const audit = getAuditLog();
-  const summary = {
-    total: audit.length,
-    successes: audit.filter((e) => e.result === 'success').length,
-    failures: audit.filter((e) => e.result === 'failure').length,
-    simulated: audit.filter((e) => e.result === 'simulated').length,
-  };
+  // Try D1 first; fall back to in-memory when D1 is unavailable.
+  const dbSummary = await getAuditSummaryFromDB();
+  const dbPending = await getPendingApprovalsFromDB();
+  const useDB = dbSummary.total > 0 || dbPending.length > 0;
+
+  let summary: { total: number; successes: number; failures: number; simulated: number };
+  let pendingCount: number;
+  if (useDB) {
+    summary = dbSummary;
+    pendingCount = dbPending.length;
+  } else {
+    const audit = getAuditLog();
+    summary = {
+      total: audit.length,
+      successes: audit.filter((e) => e.result === 'success').length,
+      failures: audit.filter((e) => e.result === 'failure').length,
+      simulated: audit.filter((e) => e.result === 'simulated').length,
+    };
+    pendingCount = getPendingApprovals().length;
+  }
 
   return NextResponse.json({
     config: getSafetyConfig(),
     auditSummary: summary,
-    pendingApprovals: getPendingApprovals().length,
+    pendingApprovals: pendingCount,
   });
 }
 

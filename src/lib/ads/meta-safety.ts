@@ -436,3 +436,198 @@ export function rejectRequest(id: string, approver: string): ApprovalRequest | u
 export function clearApprovals(): void {
   approvalRequests.clear();
 }
+
+// ── D1 persistence (optional) ──
+//
+// The functions below mirror the in-memory audit/approval helpers but persist
+// to Cloudflare D1 via Prisma. They are designed to be *optional*: if Prisma
+// or D1 is unavailable (e.g. in the Node test runner or dry-run mode), every
+// call fails gracefully and the caller can fall back to the in-memory path.
+//
+// Prisma is imported lazily (dynamic `await import`) so this module remains
+// importable in environments that do not have a database bound (tests, dry
+// runs). All D1 operations are wrapped in try/catch and never throw.
+
+/** Lazily resolve the Prisma client. Returns null when unavailable. */
+async function getPrisma(): Promise<import('@prisma/client').PrismaClient | null> {
+  try {
+    const mod = await import('@/lib/prisma');
+    return (mod as { prisma: import('@prisma/client').PrismaClient }).prisma;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Persist an audit entry to D1. Resolves silently (no throw) if D1 is
+ * unavailable — callers should also keep the in-memory copy as a fallback.
+ */
+export async function persistAuditEntry(entry: AuditEntry): Promise<void> {
+  try {
+    const p = await getPrisma();
+    if (!p) return;
+    await p.metaSafetyAudit.create({
+      data: {
+        id: entry.id,
+        action: entry.action,
+        actor: entry.actor,
+        timestamp: new Date(entry.timestamp),
+        dryRun: entry.dryRun,
+        approved: entry.approved,
+        payload: JSON.stringify(entry.payload ?? {}),
+        result: entry.result,
+        spendDelta: entry.spendDelta ?? 0,
+      },
+    });
+  } catch {
+    // D1 unavailable — fall back to in-memory (already recorded by caller).
+  }
+}
+
+/**
+ * Read audit entries from D1 (newest first). Returns an empty array if D1 is
+ * unavailable so callers can fall back to `getAuditLog()`.
+ */
+export async function getAuditLogFromDB(limit = 100): Promise<AuditEntry[]> {
+  try {
+    const p = await getPrisma();
+    if (!p) return [];
+    const rows = await p.metaSafetyAudit.findMany({
+      orderBy: { timestamp: 'desc' },
+      take: limit,
+    });
+    return rows.map((r) => ({
+      id: r.id,
+      action: r.action,
+      actor: r.actor,
+      timestamp: r.timestamp.toISOString(),
+      dryRun: r.dryRun,
+      approved: r.approved,
+      payload: safeParseJson(r.payload),
+      result: r.result as AuditEntry['result'],
+      spendDelta: r.spendDelta,
+    }));
+  } catch {
+    return [];
+  }
+}
+
+/**
+ * Aggregate audit summary from D1. Returns an all-zero summary if D1 is
+ * unavailable so callers can fall back to the in-memory summary.
+ */
+export async function getAuditSummaryFromDB(): Promise<{
+  total: number;
+  successes: number;
+  failures: number;
+  simulated: number;
+}> {
+  const empty = { total: 0, successes: 0, failures: 0, simulated: 0 };
+  try {
+    const p = await getPrisma();
+    if (!p) return empty;
+    const [total, successes, failures, simulated] = await Promise.all([
+      p.metaSafetyAudit.count(),
+      p.metaSafetyAudit.count({ where: { result: 'success' } }),
+      p.metaSafetyAudit.count({ where: { result: 'failure' } }),
+      p.metaSafetyAudit.count({ where: { result: 'simulated' } }),
+    ]);
+    return { total, successes, failures, simulated };
+  } catch {
+    return empty;
+  }
+}
+
+/**
+ * Persist a pending approval request to D1. Resolves silently (no throw) if
+ * D1 is unavailable.
+ */
+export async function persistApprovalRequest(req: ApprovalRequest): Promise<void> {
+  try {
+    const p = await getPrisma();
+    if (!p) return;
+    await p.metaSafetyApproval.create({
+      data: {
+        id: req.id,
+        action: req.action,
+        payload: JSON.stringify(req.payload ?? {}),
+        status: req.status,
+        createdAt: new Date(req.createdAt),
+        expiresAt: new Date(req.expiresAt),
+        approvedBy: req.approvedBy ?? null,
+        approvedAt: req.approvedAt ? new Date(req.approvedAt) : null,
+      },
+    });
+  } catch {
+    // D1 unavailable — fall back to in-memory (already stored by caller).
+  }
+}
+
+/**
+ * Update the status of an approval request in D1. Resolves silently (no
+ * throw) if D1 is unavailable.
+ */
+export async function updateApprovalStatusInDB(
+  id: string,
+  status: string,
+  approvedBy: string,
+): Promise<void> {
+  try {
+    const p = await getPrisma();
+    if (!p) return;
+    await p.metaSafetyApproval.update({
+      where: { id },
+      data: {
+        status,
+        approvedBy,
+        approvedAt: new Date(),
+      },
+    });
+  } catch {
+    // D1 unavailable — fall back to in-memory (already updated by caller).
+  }
+}
+
+/**
+ * Read pending (non-expired) approval requests from D1. Returns an empty
+ * array if D1 is unavailable so callers can fall back to
+ * `getPendingApprovals()`.
+ */
+export async function getPendingApprovalsFromDB(): Promise<ApprovalRequest[]> {
+  try {
+    const p = await getPrisma();
+    if (!p) return [];
+    const now = new Date();
+    const rows = await p.metaSafetyApproval.findMany({
+      where: {
+        status: 'pending',
+        expiresAt: { gt: now },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+    return rows.map((r) => ({
+      id: r.id,
+      action: r.action,
+      payload: safeParseJson(r.payload),
+      status: r.status as ApprovalRequest['status'],
+      createdAt: r.createdAt.toISOString(),
+      expiresAt: r.expiresAt.toISOString(),
+      approvedBy: r.approvedBy ?? undefined,
+      approvedAt: r.approvedAt ? r.approvedAt.toISOString() : undefined,
+    }));
+  } catch {
+    return [];
+  }
+}
+
+/** Parse a JSON string into an object, returning {} on failure. */
+function safeParseJson(raw: string): Record<string, unknown> {
+  try {
+    const v = JSON.parse(raw);
+    return v && typeof v === 'object' && !Array.isArray(v)
+      ? (v as Record<string, unknown>)
+      : {};
+  } catch {
+    return {};
+  }
+}

@@ -8,6 +8,8 @@ import {
   getApprovalRequest,
   approveRequest,
   rejectRequest,
+  getPendingApprovalsFromDB,
+  updateApprovalStatusInDB,
 } from '@/lib/ads/meta-safety';
 
 export const maxDuration = 60;
@@ -31,7 +33,10 @@ async function __byokGET() {
     return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
   }
 
-  return NextResponse.json({ pending: getPendingApprovals() });
+  // Try D1 first; fall back to in-memory when D1 is unavailable.
+  const dbPending = await getPendingApprovalsFromDB();
+  const pending = dbPending.length > 0 ? dbPending : getPendingApprovals();
+  return NextResponse.json({ pending });
 }
 
 async function __byokPOST(req: Request) {
@@ -72,6 +77,10 @@ async function __byokPOST(req: Request) {
       action === 'approve'
         ? approveRequest(body.id, approver)
         : rejectRequest(body.id, approver);
+
+    // Mirror the status change to D1 (best-effort; falls back silently).
+    const dbStatus = action === 'approve' ? 'approved' : 'rejected';
+    await updateApprovalStatusInDB(body.id, dbStatus, approver);
 
     return NextResponse.json({ request: updated });
   } catch (e) {

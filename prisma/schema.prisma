@@ -608,3 +608,67 @@ model ScheduledPost {
   @@index([userId, status])
   @@index([status, scheduledAt])
 }
+
+// ── Meta Ads Safety Layer: persisted audit log & approval workflow ──
+// These tables back the D1 persistence path in src/lib/ads/meta-safety.ts.
+// The in-memory Maps remain as a fallback for tests and dry-run mode.
+
+model MetaSafetyAudit {
+  id        String   @id @default(cuid())
+  action    String
+  actor     String
+  timestamp DateTime @default(now())
+  dryRun    Boolean
+  approved  Boolean
+  payload   String
+  result    String
+  spendDelta Float   @default(0)
+
+  @@index([actor])
+  @@index([timestamp])
+}
+
+model MetaSafetyApproval {
+  id        String   @id @default(cuid())
+  action    String
+  payload   String
+  status    String   @default("pending")
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+  approvedBy String?
+  approvedAt DateTime?
+
+  @@index([status])
+  @@index([expiresAt])
+}
+
+// ── Google Ads Safety Layer: audit log & approval state (D1-persisted) ──
+
+model GoogleSafetyAudit {
+  id        String   @id @default(cuid())
+  action    String
+  actor     String
+  timestamp DateTime @default(now())
+  dryRun    Boolean
+  approved  Boolean
+  payload   String
+  result    String
+  spendDelta Float   @default(0)
+
+  @@index([actor])
+  @@index([timestamp])
+}
+
+model GoogleSafetyApproval {
+  id        String   @id @default(cuid())
+  action    String
+  payload   String
+  status    String   @default("pending")
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+  approvedBy String?
+  approvedAt DateTime?
+
+  @@index([status])
+  @@index([expiresAt])
+}

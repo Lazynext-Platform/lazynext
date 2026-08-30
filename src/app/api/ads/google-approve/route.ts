@@ -5,9 +5,11 @@ import { prisma } from '@/lib/prisma';
 import { safeError } from '@/lib/security';
 import {
   getPendingApprovals,
+  getPendingApprovalsFromDB,
   getApprovalRequest,
   approveRequest,
   rejectRequest,
+  updateApprovalStatusInDB,
 } from '@/lib/ads/google-safety';
 
 export const maxDuration = 60;
@@ -31,7 +33,9 @@ async function __byokGET() {
     return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
   }
 
-  return NextResponse.json({ pending: getPendingApprovals() });
+  return NextResponse.json({
+    pending: await getPendingApprovalsFromDB().catch(() => getPendingApprovals()),
+  });
 }
 
 async function __byokPOST(req: Request) {
@@ -72,6 +76,13 @@ async function __byokPOST(req: Request) {
       action === 'approve'
         ? approveRequest(body.id, approver)
         : rejectRequest(body.id, approver);
+
+    // Persist the status change to D1 (best-effort; in-memory is already updated).
+    if (updated) {
+      await updateApprovalStatusInDB(body.id, updated.status, approver).catch(
+        () => undefined,
+      );
+    }
 
     return NextResponse.json({ request: updated });
   } catch (e) {
