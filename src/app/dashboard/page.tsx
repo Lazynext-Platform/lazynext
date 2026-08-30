@@ -6,7 +6,7 @@ import { useSession } from 'next-auth/react';
 import {
   Clapperboard, Coins, Boxes, FolderOpen, ArrowRight, Loader2, Film, Play, Sparkles,
   TrendingDown, TrendingUp, BarChart3, Trophy, Calendar, Gift, Layers, Scissors, Server, Users, Zap, Workflow,
-  FileText, RefreshCw, Lightbulb, Shield, Flame, GitBranch, CalendarClock, Radar, PenLine, Anchor, FileSpreadsheet, ScrollText, UsersRound, LayoutGrid,
+  FileText, RefreshCw, Lightbulb, Shield, Flame, GitBranch, CalendarClock, Radar, PenLine, Anchor, FileSpreadsheet, ScrollText, UsersRound, LayoutGrid, GitMerge, FileSearch2, LayoutTemplate,
 } from 'lucide-react';
 import { useI18n } from '@/i18n/provider';
 import { appTitle, appDesc, isFeatured } from '@/config/appCatalog';
@@ -50,6 +50,9 @@ const APPS: App[] = [
   { id: 'ad-script-writer', href: '/ad-script-writer', icon: ScrollText },
   { id: 'audience-persona-generator', href: '/audience-persona-generator', icon: UsersRound },
   { id: 'variant-matrix-generator', href: '/variant-matrix-generator', icon: LayoutGrid },
+  { id: 'ad-concept-merger', href: '/ad-concept-merger', icon: GitMerge },
+  { id: 'brief-analyzer', href: '/brief-analyzer', icon: FileSearch2 },
+  { id: 'ad-format-optimizer', href: '/ad-format-optimizer', icon: LayoutTemplate },
 ];
 
 type Creation = {

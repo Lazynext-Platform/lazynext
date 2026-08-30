@@ -54,6 +54,9 @@ const CUSTOM_TITLES: Record<string, Bi> = {
   'ad-script-writer': { en: 'Ad Script Writer', zh: '广告脚本编写器' },
   'audience-persona-generator': { en: 'Audience Persona Generator', zh: '受众画像生成器' },
   'variant-matrix-generator': { en: 'Creative Variant Matrix', zh: '创意变体矩阵' },
+  'ad-concept-merger': { en: 'Ad Concept Merger', zh: '广告概念合并器' },
+  'brief-analyzer': { en: 'Creative Brief Analyzer', zh: '创意简报分析器' },
+  'ad-format-optimizer': { en: 'Ad Format Optimizer', zh: '广告格式优化器' },
 };
 const CUSTOM_DESCS: Record<string, Bi> = {
   'lazynext-studio': { en: 'Product + presenter photos → AI expands the prompt from your images → lip-synced UGC ad; one-click viral formats', zh: '产品图+人物图 → AI 看图扩写提示词 → 合成首帧 → 对口型真人口播广告;爆款玩法一键复刻' },
@@ -78,6 +81,9 @@ const CUSTOM_DESCS: Record<string, Bi> = {
   'ad-script-writer': { en: 'AI-powered multi-scene ad scripts with visual cues, voiceover, B-roll notes, and timing for TikTok, YouTube, and Instagram', zh: 'AI驱动的多场景广告脚本，包含视觉提示、配音、B-roll注释和时长，适用于TikTok、YouTube和Instagram' },
   'audience-persona-generator': { en: 'AI-powered audience personas with demographics, psychographics, pain points, and platform behavior', zh: 'AI驱动的受众画像，包含人口统计、心理特征、痛点和平台行为' },
   'variant-matrix-generator': { en: 'AI-powered creative variant matrix across hooks, angles, formats, and platforms for A/B testing', zh: 'AI驱动的创意变体矩阵，跨钩子、角度、格式和平台进行A/B测试' },
+  'ad-concept-merger': { en: 'AI-powered concept merger — combine multiple hooks, angles, and scripts into one unified ad concept', zh: 'AI驱动的概念合并器 — 将多个钩子、角度和脚本合并为一个统一的广告概念' },
+  'brief-analyzer': { en: 'AI-powered brief analyzer — audit creative briefs for strengths, gaps, and improvement suggestions', zh: 'AI驱动的简报分析器 — 审查创意简报的优势、差距和改进建议' },
+  'ad-format-optimizer': { en: 'AI-powered format optimizer — recommends the best ad format based on product, audience, platform, and budget', zh: 'AI驱动的格式优化器 — 根据产品、受众、平台和预算推荐最佳广告格式' },
 };
 export function appTitle(id: string, fallbackTitle: string, locale: string = 'en'): string {
   const c = CUSTOM_TITLES[id];

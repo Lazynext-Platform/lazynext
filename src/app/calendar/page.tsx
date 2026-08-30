@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useSession } from 'next-auth/react';
-import { CalendarDays } from 'lucide-react';
+import { CalendarDays, Loader2 } from 'lucide-react';
 import { useI18n } from '@/i18n/provider';
 import { AuthModal } from '@/components/AuthModal';
 import { ContentCalendar } from '@/components/ContentCalendar';
@@ -12,13 +12,17 @@ export default function CalendarPage() {
   const { t } = useI18n();
   const [authOpen, setAuthOpen] = useState(false);
 
-  if (status === 'unauthenticated') {
+  if (status !== 'authenticated') {
     return (
       <div className="min-h-screen bg-app">
         <AuthModal open={authOpen} onClose={() => setAuthOpen(false)} />
         <a href="#main-content" className="skip-link">Skip to content</a>
         <main id="main-content" className="max-w-2xl mx-auto px-4 py-16 text-center" tabIndex={-1}>
-          <CalendarDays className="mx-auto mb-4 h-10 w-10 text-brand-accent" aria-hidden="true" />
+          {status === 'loading' ? (
+            <Loader2 className="mx-auto mb-4 h-8 w-8 animate-spin text-brand-accent" aria-hidden="true" />
+          ) : (
+            <CalendarDays className="mx-auto mb-4 h-10 w-10 text-brand-accent" aria-hidden="true" />
+          )}
           <h1 className="text-2xl font-bold mb-2">{t('calendar.title')}</h1>
           <p className="text-sm text-fg-faint mb-6">{t('calendar.signInRequired')}</p>
           <button

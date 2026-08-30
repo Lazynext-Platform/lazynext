@@ -18,6 +18,9 @@
  * 10. GET/POST /api/creative/ad-script-writer
  * 11. GET/POST /api/creative/audience-persona-generator
  * 12. GET/POST /api/creative/variant-matrix-generator
+ * 13. GET/POST /api/creative/ad-concept-merger
+ * 14. GET/POST /api/creative/brief-analyzer
+ * 15. GET/POST /api/creative/ad-format-optimizer
  *
  * Rate-limited (429) responses skip the test gracefully.
  */
@@ -485,6 +488,126 @@ test.describe('Variant Matrix Generator API', () => {
   test('POST with missing productOrBrand returns 400', async ({ request }) => {
     const res = await request.post('/api/creative/variant-matrix-generator', {
       data: { count: 5 },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.status()).toBe(400);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Ad Concept Merger API
+// ---------------------------------------------------------------------------
+
+test.describe('Ad Concept Merger API', () => {
+  test('GET returns credit cost and schema', async ({ request }) => {
+    const res = await request.get('/api/creative/ad-concept-merger');
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.creditCost).toBe(5);
+    expect(data.schema).toBeTruthy();
+  });
+
+  test('POST with valid input returns merged concept', async ({ request }) => {
+    const res = await request.post('/api/creative/ad-concept-merger', {
+      data: {
+        concepts: [
+          { id: '1', type: 'hook', content: 'Stop scrolling' },
+          { id: '2', type: 'angle', content: 'Save time and money' },
+        ],
+        dryRun: true,
+      },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.result).toBeTruthy();
+    expect(data.result.merged).toBeTruthy();
+    expect(data.result.merged.unifiedHook).toBeTruthy();
+  });
+
+  test('POST with missing concepts returns 400', async ({ request }) => {
+    const res = await request.post('/api/creative/ad-concept-merger', {
+      data: { dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.status()).toBe(400);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Brief Analyzer API
+// ---------------------------------------------------------------------------
+
+test.describe('Brief Analyzer API', () => {
+  test('GET returns credit cost and schema', async ({ request }) => {
+    const res = await request.get('/api/creative/brief-analyzer');
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.creditCost).toBe(4);
+    expect(data.schema).toBeTruthy();
+  });
+
+  test('POST with valid input returns analysis', async ({ request }) => {
+    const res = await request.post('/api/creative/brief-analyzer', {
+      data: {
+        briefText:
+          'We want to create a TikTok ad for our eco-friendly water bottle targeting fitness enthusiasts aged 18-35. The key value prop is sustainability without sacrificing style. CTA: Shop Now. Visual: product on a gym background.',
+        dryRun: true,
+      },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.result).toBeTruthy();
+    expect(data.result.analysis).toBeTruthy();
+    expect(typeof data.result.analysis.overallScore).toBe('number');
+  });
+
+  test('POST with missing briefText returns 400', async ({ request }) => {
+    const res = await request.post('/api/creative/brief-analyzer', {
+      data: { dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.status()).toBe(400);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Ad Format Optimizer API
+// ---------------------------------------------------------------------------
+
+test.describe('Ad Format Optimizer API', () => {
+  test('GET returns credit cost and schema', async ({ request }) => {
+    const res = await request.get('/api/creative/ad-format-optimizer');
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.creditCost).toBe(4);
+    expect(data.schema).toBeTruthy();
+  });
+
+  test('POST with valid input returns recommendations', async ({ request }) => {
+    const res = await request.post('/api/creative/ad-format-optimizer', {
+      data: {
+        productOrBrand: 'Premium wireless earbuds',
+        platforms: ['tiktok'],
+        budget: 'low',
+        dryRun: true,
+      },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.result).toBeTruthy();
+    expect(Array.isArray(data.result.recommendations)).toBeTruthy();
+    expect(data.result.bestPick).toBeTruthy();
+  });
+
+  test('POST with missing productOrBrand returns 400', async ({ request }) => {
+    const res = await request.post('/api/creative/ad-format-optimizer', {
+      data: { platforms: ['tiktok'], budget: 'low', dryRun: true },
     });
     if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
     expect(res.status()).toBe(400);
