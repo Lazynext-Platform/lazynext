@@ -60,6 +60,10 @@ const CUSTOM_TITLES: Record<string, Bi> = {
   'mood-board-generator': { en: 'Mood Board Generator', zh: '情绪板生成器' },
   'ad-performance-predictor': { en: 'Ad Performance Predictor', zh: '广告表现预测器' },
   'ab-test-planner': { en: 'Creative A/B Test Planner', zh: '创意A/B测试规划器' },
+  'hook-tester': { en: 'Creative Hook Tester', zh: '创意钩子测试器' },
+  'trend-spotter': { en: 'Trend Spotter', zh: '趋势发现器' },
+  'brand-voice-analyzer': { en: 'Brand Voice Analyzer', zh: '品牌声音分析器' },
+  'ad-caption-generator': { en: 'Ad Caption Generator', zh: '广告文案生成器' },
 };
 const CUSTOM_DESCS: Record<string, Bi> = {
   'lazynext-studio': { en: 'Product + presenter photos → AI expands the prompt from your images → lip-synced UGC ad; one-click viral formats', zh: '产品图+人物图 → AI 看图扩写提示词 → 合成首帧 → 对口型真人口播广告;爆款玩法一键复刻' },
@@ -90,6 +94,10 @@ const CUSTOM_DESCS: Record<string, Bi> = {
   'mood-board-generator': { en: 'AI-powered mood boards — generate color palettes, typography, imagery themes, and emotional tone from your brand and style keywords', zh: 'AI驱动的情绪板 — 从品牌和风格关键词生成配色、字体、图像主题和情感基调' },
   'ad-performance-predictor': { en: 'AI-powered ad performance prediction — forecast CTR, engagement, conversion, and virality before you spend budget', zh: 'AI驱动的广告表现预测 — 在花费预算前预测CTR、互动率、转化和病毒传播潜力' },
   'ab-test-planner': { en: 'AI-powered A/B test planner — design rigorous experiments with hypothesis, variants, sample size, and success criteria', zh: 'AI驱动的A/B测试规划器 — 设计包含假设、变体、样本量和成功标准的严谨实验' },
+  'hook-tester': { en: 'AI-powered hook testing — rank multiple ad hooks by predicted performance before you launch', zh: 'AI驱动的钩子测试 — 在发布前按预测表现对多个广告钩子排名' },
+  'trend-spotter': { en: 'AI-powered trend discovery — identify trending topics, hashtags, and content styles for your niche', zh: 'AI驱动的趋势发现 — 为你的细分领域识别热门话题、标签和内容风格' },
+  'brand-voice-analyzer': { en: 'AI-powered brand voice analysis — extract tone, personality, and style guidelines from your content', zh: 'AI驱动的品牌声音分析 — 从内容中提取语调、个性和风格指南' },
+  'ad-caption-generator': { en: 'AI-powered ad captions — generate platform-specific captions with emojis, hashtags, and CTAs', zh: 'AI驱动的广告文案 — 生成带表情符号、标签和CTA的平台专属文案' },
 };
 export function appTitle(id: string, fallbackTitle: string, locale: string = 'en'): string {
   const c = CUSTOM_TITLES[id];

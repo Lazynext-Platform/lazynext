@@ -6,7 +6,7 @@ import { useSession } from 'next-auth/react';
 import {
   Clapperboard, Coins, Boxes, FolderOpen, ArrowRight, Loader2, Film, Play, Sparkles,
   TrendingDown, TrendingUp, BarChart3, Trophy, Calendar, Gift, Layers, Scissors, Server, Users, Zap, Workflow,
-  FileText, RefreshCw, Lightbulb, Shield, Flame, GitBranch, CalendarClock, Radar, PenLine, Anchor, FileSpreadsheet, ScrollText, UsersRound, LayoutGrid, GitMerge, FileSearch2, LayoutTemplate, Palette, Gauge, FlaskRound,
+  FileText, RefreshCw, Lightbulb, Shield, Flame, GitBranch, CalendarClock, Radar, PenLine, Anchor, FileSpreadsheet, ScrollText, UsersRound, LayoutGrid, GitMerge, FileSearch2, LayoutTemplate, Palette, Gauge, FlaskRound, TestTube, Compass, Mic, Type,
 } from 'lucide-react';
 import { useI18n } from '@/i18n/provider';
 import { appTitle, appDesc, isFeatured } from '@/config/appCatalog';
@@ -56,6 +56,10 @@ const APPS: App[] = [
   { id: 'mood-board-generator', href: '/mood-board-generator', icon: Palette },
   { id: 'ad-performance-predictor', href: '/ad-performance-predictor', icon: Gauge },
   { id: 'ab-test-planner', href: '/ab-test-planner', icon: FlaskRound },
+  { id: 'hook-tester', href: '/hook-tester', icon: TestTube },
+  { id: 'trend-spotter', href: '/trend-spotter', icon: Compass },
+  { id: 'brand-voice-analyzer', href: '/brand-voice-analyzer', icon: Mic },
+  { id: 'ad-caption-generator', href: '/ad-caption-generator', icon: Type },
 ];
 
 type Creation = {

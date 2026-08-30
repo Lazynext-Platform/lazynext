@@ -1,6 +1,6 @@
 # LazyNext Architecture Audit — 2026-09
 
-> **Status:** Current as of 2026-09-02 (post-TT3 series).
+> **Status:** Current as of 2026-09-02 (post-TT4 series).
 > The previous audit (`research/lazynext-architecture-audit.md`) is superseded.
 
 ## 1. Stack
@@ -95,6 +95,9 @@ All 5 templates include the `score` quality gate before publish.
 - `POST /api/creative/ad-concept-merger` — AI-powered concept merger combining hooks/angles/scripts into one unified ad concept with flow score (5 credits, ADR-053)
 - `POST /api/creative/brief-analyzer` — AI-powered brief analyzer auditing briefs for strengths/gaps with score (0-100) and grade (F-A+) (4 credits, ADR-054)
 - `POST /api/creative/ad-format-optimizer` — AI-powered format optimizer recommending best ad format based on product/audience/platform/budget/goals (4 credits, ADR-055)
+- `POST /api/creative/mood-board-generator` — AI-powered mood boards with color palettes, typography, imagery themes, and emotional tone from brand and style keywords (4 credits, ADR-056)
+- `POST /api/creative/ad-performance-predictor` — AI-powered pre-launch performance prediction forecasting CTR, engagement, conversion likelihood, and virality score with strengths, risks, and recommendations (5 credits, ADR-057)
+- `POST /api/creative/ab-test-planner-v2` — AI-powered A/B test experiment design with hypothesis, variants, metrics, sample size, duration, confidence level, and success/failure criteria (4 credits, ADR-058)
 
 Credit handling:
 - Credits are deducted before stage execution.
@@ -198,7 +201,7 @@ The `overall` score is on a **1-10 scale** (weighted average of 1-10 dimensions)
 
 ### Coverage
 
-- 13 locales: en, zh, ja, es, ko, pt, fr, de, ar, hi, vi, th, id. All 13 locales now have complete feature translations (including the JJ-, LL-, RR-, SS-, TT-, and TT3-series features).
+- 13 locales: en, zh, ja, es, ko, pt, fr, de, ar, hi, vi, th, id. All 13 locales now have complete feature translations (including the JJ-, LL-, RR-, SS-, TT-, TT3-, and TT4-series features).
 - RTL support for Arabic (`dir="rtl"`, `lang="ar"`).
 - Cookie-based locale switching.
 
@@ -251,11 +254,11 @@ The `pipeline` namespace includes:
 
 ### Test coverage
 
-- **440+ unauthenticated tests** — smoke tests, page loads, auth prompts, responsive, RTL (including 30 new page tests for brand-guardrails, smart-calendar, competitor-watch, plus page tests for the 6 TT-series features and 3 TT3-series features).
+- **440+ unauthenticated tests** — smoke tests, page loads, auth prompts, responsive, RTL (including 30 new page tests for brand-guardrails, smart-calendar, competitor-watch, plus page tests for the 6 TT-series features, 3 TT3-series features, and 3 TT4-series features).
 - **9 authenticated API tests** for RR-series features (brand-guardrails, smart-calendar, competitor-watch).
 - **12+ authenticated pipeline tests** — session, pipeline creation, templates, page loads.
 - **12+ authenticated user flow tests** — dashboard, my-work, settings, admin, credits, full pipeline execution, A/B.
-- Total: 776+ tests (440+ unauthenticated + 160+ authenticated), 0 skipped, 0 failed.
+- Total: 839+ tests (440+ unauthenticated + 160+ authenticated), 0 skipped, 0 failed.
 
 ### Test account
 
@@ -295,8 +298,8 @@ The `pipeline` namespace includes:
 
 ```bash
 npm run lint    # ESLint — 0 errors, 0 warnings
-npm test        # Node test runner — 2058+ tests
-npx playwright test  # E2E — 776+ tests, 0 skipped
+npm test        # Node test runner — 2099+ tests
+npx playwright test  # E2E — 839+ tests, 0 skipped
 npm run build   # Production build (Cloudflare target)
 ```
 
@@ -390,10 +393,15 @@ npm run build   # Production build (Cloudflare target)
 - Creative Brief Analyzer — AI-powered brief analyzer with score/grade (TT3, ADR-054)
 - Ad Format Optimizer — AI-powered format optimizer (TT3, ADR-055)
 - /calendar production audit fix — page no longer makes API calls during loading state (TT3)
+- Mood Board Generator — AI-powered mood boards with color palettes/typography/imagery/emotional tone (TT4, ADR-056)
+- Ad Performance Predictor — AI-powered pre-launch performance prediction with CTR/engagement/conversion/virality forecasts (TT4, ADR-057)
+- Creative A/B Test Planner — AI-powered A/B test experiment design with hypothesis/variants/metrics/sample size/duration/confidence level (TT4, ADR-058)
+- Nav link test fix — Performance vs Performance Predictor exact match (TT4)
+- i18n for 3 new TT4 features across all 13 locales — moodBoardGenerator, adPerformancePredictor, abTestPlannerV2 namespaces (TT4)
 
 ## 15. LL-Series Features
 
-The LL series extended the creative platform with four new capabilities, documented in ADRs 036-039. ADR-040 (OO series) documents D1 persistence for safety audit logs. ADRs 041-043 (QQ series) document chain mode unification, observability aggregation, and video rendering. ADRs 044-046 (RR series) document Brand Guardrails, Smart Calendar, and Competitor Watch. ADRs 047-052 (TT series) document Ad Copy Generator, Hook Library, Brief Template Builder, Ad Script Writer, Audience Persona Generator, and Creative Variant Matrix. ADRs 053-055 (TT3 series) document Ad Concept Merger, Creative Brief Analyzer, and Ad Format Optimizer. ADRs 001-055 now total 55 architecture decision records in `docs/adr/`.
+The LL series extended the creative platform with four new capabilities, documented in ADRs 036-039. ADR-040 (OO series) documents D1 persistence for safety audit logs. ADRs 041-043 (QQ series) document chain mode unification, observability aggregation, and video rendering. ADRs 044-046 (RR series) document Brand Guardrails, Smart Calendar, and Competitor Watch. ADRs 047-052 (TT series) document Ad Copy Generator, Hook Library, Brief Template Builder, Ad Script Writer, Audience Persona Generator, and Creative Variant Matrix. ADRs 053-055 (TT3 series) document Ad Concept Merger, Creative Brief Analyzer, and Ad Format Optimizer. ADRs 056-058 (TT4 series) document Mood Board Generator, Ad Performance Predictor, and Creative A/B Test Planner. ADRs 001-058 now total 58 architecture decision records in `docs/adr/`.
 
 ### Google Ads Safety Layer (`/google-safety`)
 
@@ -433,7 +441,7 @@ All four features have dry-run/fallback behavior when Atlas is local or the API 
 
 ### Dashboard Quick Create
 
-The dashboard "Quick Create" grid now includes all production apps plus the 24 newest features (Creator Kits, Brand Concepts, Clip Editor, Media Services, Product Brief, Reference Remix, Multi-Concept, Meta Safety, Google Safety, Performance Loop, Viral Analyzer, Skill Chains, Brand Guardrails, Smart Calendar, Competitor Watch, Ad Copy Generator, Hook Library, Brief Template Builder, Ad Script Writer, Audience Persona Generator, Creative Variant Matrix, Ad Concept Merger, Brief Analyzer, Ad Format Optimizer). The 20 newest features (Product Brief through Ad Format Optimizer) are in the nav overflow menu.
+The dashboard "Quick Create" grid now includes all production apps plus the 27 newest features (Creator Kits, Brand Concepts, Clip Editor, Media Services, Product Brief, Reference Remix, Multi-Concept, Meta Safety, Google Safety, Performance Loop, Viral Analyzer, Skill Chains, Brand Guardrails, Smart Calendar, Competitor Watch, Ad Copy Generator, Hook Library, Brief Template Builder, Ad Script Writer, Audience Persona Generator, Creative Variant Matrix, Ad Concept Merger, Brief Analyzer, Ad Format Optimizer, Mood Board Generator, Ad Performance Predictor, Creative A/B Test Planner). The 23 newest features (Product Brief through Creative A/B Test Planner) are in the nav overflow menu.
 
 ## 16. RR-Series Features
 
@@ -569,3 +577,37 @@ The TT3 series added three more AI creative tools, documented in ADRs 053-055. A
 - `/calendar` page no longer makes API calls during loading state.
 
 All three features have dry-run/fallback behavior when Atlas is local or the API key is missing, and use existing auth, credit deduction/refund, `withAtlas`, and `safeError` conventions. Unit tests added: 23 + 30 + 29 = 82 new tests (total unit tests now 2058+, up from 1976). Total E2E tests: 776+ (up from 600).
+
+## 19. TT4-Series Features
+
+The TT4 series added three more AI creative tools, documented in ADRs 056-058. All three features have dry-run/fallback behavior when Atlas is local or the API key is missing, and use existing auth, credit deduction/refund, `withAtlas`, and `safeError` conventions. This brings the total feature route count to 36 and the total ADR count to 58.
+
+### Mood Board Generator (`/mood-board-generator`)
+
+- AI-powered mood boards with color palettes, typography, imagery themes, and emotional tone generated from brand and style keywords.
+- 4 credits. API: `POST /api/creative/mood-board-generator`. See ADR-056.
+
+### Ad Performance Predictor (`/ad-performance-predictor`)
+
+- AI-powered pre-launch performance prediction — forecasts CTR, engagement, conversion likelihood, and virality score with strengths, risks, and recommendations.
+- 5 credits. API: `POST /api/creative/ad-performance-predictor`. See ADR-057.
+
+### Creative A/B Test Planner (`/ab-test-planner`)
+
+- AI-powered A/B test experiment design with hypothesis, variants, metrics, sample size, duration, confidence level, and success/failure criteria.
+- 4 credits. API: `POST /api/creative/ab-test-planner-v2`. See ADR-058.
+
+### New UI pages
+
+- `/mood-board-generator` — AI-powered mood board generator
+- `/ad-performance-predictor` — ad performance predictor with CTR/engagement/conversion/virality forecasts
+- `/ab-test-planner` — creative A/B test experiment planner
+
+### i18n, Dashboard, and Nav (TT4)
+
+- Translations added to all 13 locales for 3 new namespaces: `moodBoardGenerator`, `adPerformancePredictor`, `abTestPlannerV2`.
+- Dashboard "Quick Create" grid updated to 27 newest features (was 24).
+- Nav overflow menu updated to 23 newest features (was 20).
+- Fixed nav link test (Performance vs Performance Predictor exact match).
+
+All three features have dry-run/fallback behavior when Atlas is local or the API key is missing, and use existing auth, credit deduction/refund, `withAtlas`, and `safeError` conventions. Total unit tests now 2099+ (up from 2058). Total E2E tests: 839+ (up from 776).

@@ -719,3 +719,141 @@ test.describe('Creative A/B Test Planner API (v2)', () => {
     expect(res.status()).toBe(400);
   });
 });
+
+test.describe('Creative Hook Tester API', () => {
+  test('GET returns credit cost and schema', async ({ request }) => {
+    const res = await request.get('/api/creative/hook-tester');
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.creditCost).toBe(3);
+    expect(data.schema).toBeTruthy();
+  });
+
+  test('POST with valid input returns ranked hooks', async ({ request }) => {
+    const res = await request.post('/api/creative/hook-tester', {
+      data: {
+        hooks: ['Stop scrolling!', 'You won\'t believe this', 'This changed everything'],
+        productOrBrand: 'Eco-friendly water bottle',
+        platform: 'tiktok',
+        dryRun: true,
+      },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.result).toBeTruthy();
+    expect(Array.isArray(data.result.rankedHooks)).toBeTruthy();
+  });
+
+  test('POST with missing hooks returns 400', async ({ request }) => {
+    const res = await request.post('/api/creative/hook-tester', {
+      data: { productOrBrand: 'test', platform: 'tiktok', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.status()).toBe(400);
+  });
+});
+
+test.describe('Trend Spotter API', () => {
+  test('GET returns credit cost and schema', async ({ request }) => {
+    const res = await request.get('/api/creative/trend-spotter');
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.creditCost).toBe(5);
+    expect(data.schema).toBeTruthy();
+  });
+
+  test('POST with valid input returns trends', async ({ request }) => {
+    const res = await request.post('/api/creative/trend-spotter', {
+      data: {
+        niche: 'sustainable fashion',
+        platform: 'tiktok',
+        dryRun: true,
+      },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.result).toBeTruthy();
+    expect(Array.isArray(data.result.trends)).toBeTruthy();
+  });
+
+  test('POST with missing niche returns 400', async ({ request }) => {
+    const res = await request.post('/api/creative/trend-spotter', {
+      data: { platform: 'tiktok', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.status()).toBe(400);
+  });
+});
+
+test.describe('Brand Voice Analyzer API', () => {
+  test('GET returns credit cost and schema', async ({ request }) => {
+    const res = await request.get('/api/creative/brand-voice-analyzer');
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.creditCost).toBe(4);
+    expect(data.schema).toBeTruthy();
+  });
+
+  test('POST with valid input returns voice profile', async ({ request }) => {
+    const res = await request.post('/api/creative/brand-voice-analyzer', {
+      data: {
+        brandName: 'EcoBottle',
+        sampleContent: 'We believe in a sustainable future. Our products are designed with care for the environment. Every bottle you buy helps reduce plastic waste. Join us in making the world a better place, one bottle at a time.',
+        dryRun: true,
+      },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.result).toBeTruthy();
+    expect(data.result.voiceProfile).toBeTruthy();
+  });
+
+  test('POST with missing brandName returns 400', async ({ request }) => {
+    const res = await request.post('/api/creative/brand-voice-analyzer', {
+      data: { sampleContent: 'test content here', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.status()).toBe(400);
+  });
+});
+
+test.describe('Ad Caption Generator API', () => {
+  test('GET returns credit cost and schema', async ({ request }) => {
+    const res = await request.get('/api/creative/ad-caption-generator');
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.creditCost).toBe(3);
+    expect(data.schema).toBeTruthy();
+  });
+
+  test('POST with valid input returns captions', async ({ request }) => {
+    const res = await request.post('/api/creative/ad-caption-generator', {
+      data: {
+        productOrBrand: 'Premium wireless earbuds',
+        platform: 'tiktok',
+        count: 3,
+        dryRun: true,
+      },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.result).toBeTruthy();
+    expect(Array.isArray(data.result.captions)).toBeTruthy();
+  });
+
+  test('POST with missing productOrBrand returns 400', async ({ request }) => {
+    const res = await request.post('/api/creative/ad-caption-generator', {
+      data: { platform: 'tiktok', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.status()).toBe(400);
+  });
+});

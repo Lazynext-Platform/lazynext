@@ -49,8 +49,8 @@ Production uses Cloudflare R2 via `src/lib/media-storage.cloudflare.ts`.
 ## Verification Commands
 ```bash
 npm run lint    # ESLint
-npm test        # Node test runner (2058+ tests)
-# E2E: 776+ passed, 0 skipped (chromium + mobile-chrome + chromium-auth)
+npm test        # Node test runner (2099+ tests)
+# E2E: 839+ passed, 0 skipped (chromium + mobile-chrome + chromium-auth)
 npm run build   # Production build (Cloudflare target)
 npm run cf:build  # Cloudflare/OpenNext build
 npm run cf:deploy # Deploy to Cloudflare Workers
@@ -118,7 +118,9 @@ npm run cf:deploy # Deploy to Cloudflare Workers
   `/api/creative/hook-library`, `/api/creative/brief-template-builder`,
   `/api/creative/ad-script-writer`, `/api/creative/audience-persona-generator`,
   `/api/creative/variant-matrix-generator`, `/api/creative/ad-concept-merger`,
-  `/api/creative/brief-analyzer`, `/api/creative/ad-format-optimizer`
+  `/api/creative/brief-analyzer`, `/api/creative/ad-format-optimizer`,
+  `/api/creative/mood-board-generator`, `/api/creative/ad-performance-predictor`,
+  `/api/creative/ab-test-planner-v2`
 - Ad platform API routes: `/api/ads/create`, `/api/ads/metrics`, `/api/ads/list`, `/api/ads/report`,
   `/api/ads/budget`, `/api/ads/google-budget`, `/api/ads/google-report`, `/api/analytics/ga4`,
   `/api/ads/meta-safety`, `/api/ads/meta-approve`, `/api/ads/google-safety`, `/api/ads/google-approve`
@@ -127,21 +129,22 @@ npm run cf:deploy # Deploy to Cloudflare Workers
 - `/api/creative/director` returns an NDJSON stream of step-by-step progress updates; legacy
   non-streaming mode available via `?stream=false`
 - Pipeline stages: brief, script, storyboard, media_generation, audio, edit, compliance, score, publish
-- ADRs 001-055 in `docs/adr/` document all major architecture decisions
+- ADRs 001-058 in `docs/adr/` document all major architecture decisions
 - Cross-feature handoffs: Brand Concepts → Creator Kits (query-param pre-fill),
   Brand Concepts → Shot Planner (script pre-fill), Clip Editor → Media Service Boundary (ASR/TTS)
-- Dashboard "Quick Create" grid includes all production apps and the 24 newest features
+- Dashboard "Quick Create" grid includes all production apps and the 27 newest features
   (Creator Kits, Brand Concepts, Clip Editor, Media Services, Product Brief, Reference Remix,
   Multi-Concept, Meta Safety, Google Safety, Performance Loop, Viral Analyzer, Skill Chains,
   Brand Guardrails, Smart Calendar, Competitor Watch, Ad Copy Generator, Hook Library,
   Brief Template Builder, Ad Script Writer, Audience Persona Generator, Creative Variant Matrix,
-  Ad Concept Merger, Brief Analyzer, Ad Format Optimizer)
-- Nav header includes links to all feature pages (visible lg+); the 20 newest features
+  Ad Concept Merger, Brief Analyzer, Ad Format Optimizer, Mood Board Generator,
+  Ad Performance Predictor, Creative A/B Test Planner)
+- Nav header includes links to all feature pages (visible lg+); the 23 newest features
   (Product Brief, Reference Remix, Multi-Concept, Meta Safety, Google Safety, Performance Loop,
   Viral Analyzer, Skill Chains, Brand Guardrails, Smart Calendar, Competitor Watch, Ad Copy
   Generator, Hook Library, Brief Template Builder, Ad Script Writer, Audience Persona Generator,
-  Creative Variant Matrix, Ad Concept Merger, Brief Analyzer, Ad Format Optimizer) are in the
-  overflow nav
+  Creative Variant Matrix, Ad Concept Merger, Brief Analyzer, Ad Format Optimizer, Mood Board
+  Generator, Ad Performance Predictor, Creative A/B Test Planner) are in the overflow nav
 
 ### JJ-Series: Research-Derived Creative Capabilities
 - Product Page → Ad Brief (`/product-brief`): URL/product extraction → brand/product brief →
@@ -248,6 +251,25 @@ npm run cf:deploy # Deploy to Cloudflare Workers
 - All 3 features use existing auth, credit deduction/refund, `withAtlas`, and `safeError` conventions
 - Unit tests: 23 (ad-concept-merger) + 30 (brief-analyzer) + 29 (ad-format-optimizer) = 82 new tests
 - Production audit fix: /calendar page no longer makes API calls during loading state
+
+### TT4-Series: Three More AI Creative Tools
+- Mood Board Generator (`/mood-board-generator`): AI-powered mood boards with color palettes,
+  typography, imagery themes, and emotional tone from brand and style keywords.
+  4 credits. API: `POST /api/creative/mood-board-generator`. See ADR-056.
+- Ad Performance Predictor (`/ad-performance-predictor`): AI-powered pre-launch performance
+  prediction — forecasts CTR, engagement, conversion likelihood, and virality score with
+  strengths, risks, and recommendations. 5 credits.
+  API: `POST /api/creative/ad-performance-predictor`. See ADR-057.
+- Creative A/B Test Planner (`/ab-test-planner`): AI-powered A/B test experiment design with
+  hypothesis, variants, metrics, sample size, duration, confidence level, and success/failure
+  criteria. 4 credits. API: `POST /api/creative/ab-test-planner-v2`. See ADR-058.
+- All 3 features have dry-run/fallback behavior when Atlas is local or API key is missing
+- All 3 features use existing auth, credit deduction/refund, `withAtlas`, and `safeError` conventions
+- Unit tests: 2099 total (was 2058)
+- E2E tests: 839 total (was 776)
+- Translations added to all 13 locales for 3 new namespaces: moodBoardGenerator,
+  adPerformancePredictor, abTestPlannerV2
+- Fixed nav link test (Performance vs Performance Predictor exact match)
 
 ## Production-Only Testing (Cannot Be Verified Locally)
 
