@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { Anchor, Loader2, AlertCircle, Sparkles, Copy, Check, Filter } from 'lucide-react';
 import { useI18n } from '@/i18n/provider';
@@ -52,6 +52,25 @@ export default function HookLibraryPage() {
   const [filterTrigger, setFilterTrigger] = useState<EmotionalTrigger | ''>('');
   const [filterPlatform, setFilterPlatform] = useState<Platform | ''>('');
   const [filterMinScore, setFilterMinScore] = useState(0);
+
+  // Load the user's persisted hooks from D1 via the API route (which carries
+  // the session and enforces ownership). Runs once the session is available.
+  useEffect(() => {
+    if (!session?.user) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch('/api/creative/hook-library', { method: 'GET' });
+        const data = await res.json();
+        if (!cancelled && Array.isArray(data.hooks)) {
+          setHooks(data.hooks as Hook[]);
+        }
+      } catch {
+        // ignore — hooks will populate on next generation
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [session?.user]);
 
   const toggleTrigger = (tr: EmotionalTrigger) => {
     setSelectedTriggers((prev) =>

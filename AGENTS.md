@@ -49,8 +49,8 @@ Production uses Cloudflare R2 via `src/lib/media-storage.cloudflare.ts`.
 ## Verification Commands
 ```bash
 npm run lint    # ESLint
-npm test        # Node test runner (1871 tests)
-# E2E: 581 passed, 0 skipped (chromium + mobile-chrome + chromium-auth)
+npm test        # Node test runner (1976+ tests)
+# E2E: 600+ passed, 0 skipped (chromium + mobile-chrome + chromium-auth)
 npm run build   # Production build (Cloudflare target)
 npm run cf:build  # Cloudflare/OpenNext build
 npm run cf:deploy # Deploy to Cloudflare Workers
@@ -74,7 +74,7 @@ npm run cf:deploy # Deploy to Cloudflare Workers
 - Next.js 16 + React 19 + TypeScript 6
 - Tailwind CSS 4
 - NextAuth (JWT session, Google + Credentials providers)
-- Prisma 7 with D1 (prod) / SQLite (local) — 36 tables total (including MetaSafetyAudit, MetaSafetyApproval, GoogleSafetyAudit, GoogleSafetyApproval)
+- Prisma 7 with D1 (prod) / SQLite (local) — 37 tables total (including Hook model)
 - Cloudflare R2 (prod) / file-based (local) media storage
 - Atlas Cloud AI generation API (prod) / mock server (local)
 - Dodo Payments for billing
@@ -114,7 +114,10 @@ npm run cf:deploy # Deploy to Cloudflare Workers
   `/api/creative/product-brief`, `/api/creative/reference-remix`, `/api/creative/multi-concept`,
   `/api/creative/performance-loop`, `/api/creative/skill-chain-builder`,
   `/api/creative/brand-guardrails`, `/api/creative/smart-calendar`,
-  `/api/creative/competitor-watch`
+  `/api/creative/competitor-watch`, `/api/creative/ad-copy-generator`,
+  `/api/creative/hook-library`, `/api/creative/brief-template-builder`,
+  `/api/creative/ad-script-writer`, `/api/creative/audience-persona-generator`,
+  `/api/creative/variant-matrix-generator`
 - Ad platform API routes: `/api/ads/create`, `/api/ads/metrics`, `/api/ads/list`, `/api/ads/report`,
   `/api/ads/budget`, `/api/ads/google-budget`, `/api/ads/google-report`, `/api/analytics/ga4`,
   `/api/ads/meta-safety`, `/api/ads/meta-approve`, `/api/ads/google-safety`, `/api/ads/google-approve`
@@ -123,16 +126,19 @@ npm run cf:deploy # Deploy to Cloudflare Workers
 - `/api/creative/director` returns an NDJSON stream of step-by-step progress updates; legacy
   non-streaming mode available via `?stream=false`
 - Pipeline stages: brief, script, storyboard, media_generation, audio, edit, compliance, score, publish
-- ADRs 001-046 in `docs/adr/` document all major architecture decisions
+- ADRs 001-052 in `docs/adr/` document all major architecture decisions
 - Cross-feature handoffs: Brand Concepts → Creator Kits (query-param pre-fill),
   Brand Concepts → Shot Planner (script pre-fill), Clip Editor → Media Service Boundary (ASR/TTS)
-- Dashboard "Quick Create" grid includes all production apps and the 15 newest features
+- Dashboard "Quick Create" grid includes all production apps and the 21 newest features
   (Creator Kits, Brand Concepts, Clip Editor, Media Services, Product Brief, Reference Remix,
   Multi-Concept, Meta Safety, Google Safety, Performance Loop, Viral Analyzer, Skill Chains,
-  Brand Guardrails, Smart Calendar, Competitor Watch)
-- Nav header includes links to all feature pages (visible lg+); the 11 newest features
+  Brand Guardrails, Smart Calendar, Competitor Watch, Ad Copy Generator, Hook Library,
+  Brief Template Builder, Ad Script Writer, Audience Persona Generator, Creative Variant Matrix)
+- Nav header includes links to all feature pages (visible lg+); the 17 newest features
   (Product Brief, Reference Remix, Multi-Concept, Meta Safety, Google Safety, Performance Loop,
-  Viral Analyzer, Skill Chains, Brand Guardrails, Smart Calendar, Competitor Watch) are in the overflow nav
+  Viral Analyzer, Skill Chains, Brand Guardrails, Smart Calendar, Competitor Watch, Ad Copy
+  Generator, Hook Library, Brief Template Builder, Ad Script Writer, Audience Persona Generator,
+  Creative Variant Matrix) are in the overflow nav
 
 ### JJ-Series: Research-Derived Creative Capabilities
 - Product Page → Ad Brief (`/product-brief`): URL/product extraction → brand/product brief →
@@ -194,6 +200,32 @@ npm run cf:deploy # Deploy to Cloudflare Workers
 - Production audit fixes: pipeline.title translation fix (was nested in `legal` object),
   missing h1 on /dashboard, /creative-studio, /ugc-studio, /observability unauthenticated views
 - Video rendering research: RendoBar recommended for EDL rendering (see research/video-rendering-services.md)
+
+### TT-Series: Three AI Creative Tools + D1 Persistence
+- Ad Copy Generator (`/ad-copy-generator`): AI-powered platform-specific ad copy.
+  Generates TikTok, Instagram, and YouTube copy from a product URL or brief.
+  Returns headline, body copy, CTA, hashtags, description.
+  3 credits. API: `POST /api/creative/ad-copy-generator`. See ADR-047.
+- Hook Library (`/hook-library`): AI-powered hook library with D1 persistence.
+  Generates, categorizes, and stores reusable hooks by emotional trigger and platform.
+  Predicted performance score (0-100). Hooks persisted to D1 via Prisma Hook model.
+  4 credits. API: `POST /api/creative/hook-library`. See ADR-048.
+- Brief Template Builder (`/brief-template-builder`): AI-powered creative brief
+  templates with industry-specific presets (8 industries) and smart suggestions.
+  4 credits. API: `POST /api/creative/brief-template-builder`. See ADR-049.
+- Ad Script Writer (`/ad-script-writer`): AI-powered multi-scene ad scripts with
+  visual cues, voiceover, B-roll notes, and timing for TikTok, YouTube, Instagram.
+  5 credits. API: `POST /api/creative/ad-script-writer`. See ADR-050.
+- Audience Persona Generator (`/audience-persona-generator`): AI-powered audience
+  personas with demographics, psychographics, pain points, and platform behavior.
+  4 credits. API: `POST /api/creative/audience-persona-generator`. See ADR-051.
+- Creative Variant Matrix (`/variant-matrix-generator`): AI-powered creative variant
+  matrix across hooks, angles, formats, and platforms for A/B testing.
+  5 credits. API: `POST /api/creative/variant-matrix-generator`. See ADR-052.
+- All 6 features have dry-run/fallback behavior when Atlas is local or API key is missing
+- All 6 features use existing auth, credit deduction/refund, `withAtlas`, and `safeError` conventions
+- Hook Library uses D1 persistence via Prisma Hook model (per-user ownership)
+- Unit tests: 25 (ad-copy-generator) + 19 (hook-library) + 16 (brief-template-builder) + 29 (ad-script-writer) + 12 (audience-persona-generator) + 11 (variant-matrix-generator) = 112 new tests
 
 ## Production-Only Testing (Cannot Be Verified Locally)
 

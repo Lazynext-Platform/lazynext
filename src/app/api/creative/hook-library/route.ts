@@ -18,8 +18,11 @@ export const maxDuration = 60;
 
 /**
  * GET /api/creative/hook-library
- * Returns the credit cost, schema info, and optionally stored hooks (with
- * query-param filtering). No auth required for catalog metadata.
+ * Returns the credit cost and schema info (public catalog metadata). When the
+ * caller is authenticated, also returns their stored hooks (with optional
+ * query-param filtering). Hooks are scoped to the authenticated user — a
+ * caller can only ever retrieve their own hooks (ownership enforced in
+ * `getHooks` via the userId query).
  */
 export async function GET(req: Request) {
   const url = new URL(req.url);
@@ -28,9 +31,12 @@ export async function GET(req: Request) {
   const minScoreRaw = url.searchParams.get('minScore');
   const minScore = minScoreRaw ? Number(minScoreRaw) : undefined;
 
-  const hasFilter = trigger || platform || minScore !== undefined;
-  const hooks = hasFilter
-    ? getHooks({
+  // Catalog metadata is public; hooks require an authenticated session.
+  const session = await auth();
+  const uid = session?.user?.id;
+
+  const hooks = uid
+    ? await getHooks(uid, {
         trigger: trigger || undefined,
         platform: platform || undefined,
         minScore,
@@ -116,7 +122,7 @@ async function __byokPOST(req: Request) {
   }
 
   try {
-    const result = await generateHooks(input, planTier);
+    const result = await generateHooks(input, uid, planTier);
     return NextResponse.json({ result });
   } catch (e) {
     await refundCredits(uid, HOOK_LIBRARY_CREDIT_COST, 'creative:hook-library');

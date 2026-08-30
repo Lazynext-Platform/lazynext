@@ -12,6 +12,12 @@
  * 4. GET/POST /api/creative/brand-guardrails
  * 5. GET/POST /api/creative/smart-calendar
  * 6. GET/POST /api/creative/competitor-watch
+ * 7. GET/POST /api/creative/ad-copy-generator
+ * 8. GET/POST /api/creative/hook-library
+ * 9. GET/POST /api/creative/brief-template-builder
+ * 10. GET/POST /api/creative/ad-script-writer
+ * 11. GET/POST /api/creative/audience-persona-generator
+ * 12. GET/POST /api/creative/variant-matrix-generator
  *
  * Rate-limited (429) responses skip the test gracefully.
  */
@@ -238,6 +244,247 @@ test.describe('Competitor Watch API', () => {
   test('POST with missing competitorUrl returns 400', async ({ request }) => {
     const res = await request.post('/api/creative/competitor-watch', {
       data: { productCategory: 'skincare' },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.status()).toBe(400);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Ad Copy Generator API
+// ---------------------------------------------------------------------------
+
+test.describe('Ad Copy Generator API', () => {
+  test('GET returns credit cost and schema info', async ({ request }) => {
+    const res = await request.get('/api/creative/ad-copy-generator');
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.creditCost).toBe(3);
+    expect(data.schema).toBeTruthy();
+  });
+
+  test('POST with valid input returns ad copy result', async ({ request }) => {
+    const res = await request.post('/api/creative/ad-copy-generator', {
+      data: {
+        source: 'Eco-friendly reusable water bottle for active lifestyles.',
+        platform: 'tiktok',
+        dryRun: true,
+      },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.result).toBeTruthy();
+    expect(data.result.platform).toBe('tiktok');
+    expect(typeof data.result.headline).toBe('string');
+    expect(typeof data.result.bodyCopy).toBe('string');
+    expect(typeof data.result.cta).toBe('string');
+    expect(Array.isArray(data.result.hashtags)).toBeTruthy();
+    expect(typeof data.result.description).toBe('string');
+  });
+
+  test('POST with missing source returns 400', async ({ request }) => {
+    const res = await request.post('/api/creative/ad-copy-generator', {
+      data: { platform: 'tiktok' },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.status()).toBe(400);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Hook Library API
+// ---------------------------------------------------------------------------
+
+test.describe('Hook Library API', () => {
+  test('GET returns credit cost and schema info', async ({ request }) => {
+    const res = await request.get('/api/creative/hook-library');
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.creditCost).toBe(4);
+    expect(data.schema).toBeTruthy();
+  });
+
+  test('POST with valid input returns hooks', async ({ request }) => {
+    const res = await request.post('/api/creative/hook-library', {
+      data: {
+        productOrBrand: 'EcoSip reusable water bottle',
+        audience: 'eco-conscious athletes',
+        platforms: ['tiktok'],
+        count: 3,
+        dryRun: true,
+      },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.result).toBeTruthy();
+    expect(Array.isArray(data.result.hooks)).toBeTruthy();
+    expect(typeof data.result.generated).toBe('number');
+    expect(typeof data.result.stored).toBe('number');
+  });
+
+  test('POST with missing productOrBrand returns 400', async ({ request }) => {
+    const res = await request.post('/api/creative/hook-library', {
+      data: { audience: 'eco-conscious athletes' },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.status()).toBe(400);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Brief Template Builder API
+// ---------------------------------------------------------------------------
+
+test.describe('Brief Template Builder API', () => {
+  test('GET returns credit cost and schema info', async ({ request }) => {
+    const res = await request.get('/api/creative/brief-template-builder');
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.creditCost).toBe(4);
+    expect(data.schema).toBeTruthy();
+  });
+
+  test('POST with valid input returns brief template', async ({ request }) => {
+    const res = await request.post('/api/creative/brief-template-builder', {
+      data: {
+        industry: 'beauty',
+        productCategory: 'skincare serum',
+        dryRun: true,
+      },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.result).toBeTruthy();
+    expect(data.result.template).toBeTruthy();
+    expect(data.result.industry).toBe('beauty');
+    expect(Array.isArray(data.result.template.valueProps)).toBeTruthy();
+    expect(Array.isArray(data.result.template.hooks)).toBeTruthy();
+    expect(Array.isArray(data.result.template.angles)).toBeTruthy();
+  });
+
+  test('POST with missing industry returns 400', async ({ request }) => {
+    const res = await request.post('/api/creative/brief-template-builder', {
+      data: { productCategory: 'skincare serum' },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.status()).toBe(400);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Ad Script Writer API
+// ---------------------------------------------------------------------------
+
+test.describe('Ad Script Writer API', () => {
+  test('GET returns credit cost and schema info', async ({ request }) => {
+    const res = await request.get('/api/creative/ad-script-writer');
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.creditCost).toBe(5);
+    expect(data.schema).toBeTruthy();
+  });
+
+  test('POST with valid input returns ad script result', async ({ request }) => {
+    const res = await request.post('/api/creative/ad-script-writer', {
+      data: {
+        source: 'Premium wireless earbuds with active noise cancellation',
+        platform: 'tiktok',
+        dryRun: true,
+      },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.result).toBeTruthy();
+    expect(data.result.script).toBeTruthy();
+    expect(Array.isArray(data.result.script.scenes)).toBeTruthy();
+  });
+
+  test('POST with missing source returns 400', async ({ request }) => {
+    const res = await request.post('/api/creative/ad-script-writer', {
+      data: { platform: 'tiktok' },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.status()).toBe(400);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Audience Persona Generator API
+// ---------------------------------------------------------------------------
+
+test.describe('Audience Persona Generator API', () => {
+  test('GET returns credit cost and schema info', async ({ request }) => {
+    const res = await request.get('/api/creative/audience-persona-generator');
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.creditCost).toBe(4);
+    expect(data.schema).toBeTruthy();
+  });
+
+  test('POST with valid input returns personas result', async ({ request }) => {
+    const res = await request.post('/api/creative/audience-persona-generator', {
+      data: {
+        productOrBrand: 'Eco-friendly reusable water bottle for fitness enthusiasts',
+        dryRun: true,
+      },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.result).toBeTruthy();
+    expect(Array.isArray(data.result.personas)).toBeTruthy();
+  });
+
+  test('POST with missing productOrBrand returns 400', async ({ request }) => {
+    const res = await request.post('/api/creative/audience-persona-generator', {
+      data: { industry: 'fitness' },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.status()).toBe(400);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Variant Matrix Generator API
+// ---------------------------------------------------------------------------
+
+test.describe('Variant Matrix Generator API', () => {
+  test('GET returns credit cost and schema info', async ({ request }) => {
+    const res = await request.get('/api/creative/variant-matrix-generator');
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.creditCost).toBe(5);
+    expect(data.schema).toBeTruthy();
+  });
+
+  test('POST with valid input returns variants result', async ({ request }) => {
+    const res = await request.post('/api/creative/variant-matrix-generator', {
+      data: {
+        productOrBrand: 'Premium wireless earbuds',
+        count: 5,
+        dryRun: true,
+      },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.result).toBeTruthy();
+    expect(Array.isArray(data.result.variants)).toBeTruthy();
+  });
+
+  test('POST with missing productOrBrand returns 400', async ({ request }) => {
+    const res = await request.post('/api/creative/variant-matrix-generator', {
+      data: { count: 5 },
     });
     if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
     expect(res.status()).toBe(400);

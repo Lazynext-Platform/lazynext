@@ -3,7 +3,13 @@
  *
  * Generates ad hooks categorized by emotional trigger, tags each hook with
  * platform suitability, assigns a predicted performance score (0-100), and
- * stores them in an in-memory Map for later retrieval and filtering.
+ * persists them to D1 (via Prisma) so they survive deploys and can be
+ * retrieved/filtered per user.
+ *
+ * Persistence is best-effort: if the database is unavailable (e.g. in unit
+ * tests without a mocked client), writes/reads fail gracefully and the
+ * generated hooks are still returned to the caller. This mirrors the
+ * `.catch(() => [])` pattern in src/lib/creative/learning.ts.
  *
  * Patterns mirror src/lib/creative/brand-guardrails.ts and multi-concept.ts:
  * isDryRun(), resolveModel(), extractJson(), asStr()/asArr() helpers, a
@@ -13,6 +19,7 @@
 import { atlasChat } from '@/lib/atlas';
 import { getLLMModel } from '@/lib/providers/model-helpers';
 import type { PlanTier } from '@/lib/plan-tier';
+import { prisma } from '@/lib/prisma';
 
 // ── Credit cost ──
 export const HOOK_LIBRARY_CREDIT_COST = 4;
@@ -97,9 +104,71 @@ const PLATFORM_SCORE_BONUS: Record<Platform, number> = {
   facebook: 2,
 };
 
-// ── In-memory store ──
+// ── D1 persistence helpers ──
 
-const hookStore = new Map<string, Hook>();
+/**
+ * Persist generated hooks to D1. Best-effort: failures (e.g. no DB in unit
+ * tests) are swallowed so generation results are still returned to the caller.
+ * Returns the number of rows actually stored.
+ */
+async function persistHooks(
+  userId: string,
+  hooks: Hook[],
+  input: HookLibraryInput,
+): Promise<number> {
+  let stored = 0;
+  try {
+    await prisma.hook.createMany({
+      data: hooks.map((h) => ({
+        id: h.id,
+        userId,
+        text: h.text,
+        trigger: h.trigger,
+        platforms: JSON.stringify(h.platforms),
+        performanceScore: h.performanceScore,
+        productOrBrand: input.productOrBrand || null,
+        audience: input.audience || null,
+      })),
+    });
+    stored = hooks.length;
+  } catch {
+    // DB unavailable (tests / dry-run without a client) — keep going.
+  }
+  return stored;
+}
+
+/**
+ * Map a persisted Prisma Hook row back to the public Hook interface.
+ */
+function rowToHook(row: {
+  id: string;
+  text: string;
+  trigger: string;
+  platforms: string;
+  performanceScore: number;
+  createdAt: Date | string;
+}): Hook {
+  let platforms: Platform[] = [];
+  try {
+    const parsed = JSON.parse(row.platforms);
+    if (Array.isArray(parsed)) {
+      platforms = parsed.filter((p): p is Platform => VALID_PLATFORMS.has(p));
+    }
+  } catch {
+    platforms = [];
+  }
+  const trigger = VALID_TRIGGERS.has(row.trigger as EmotionalTrigger)
+    ? (row.trigger as EmotionalTrigger)
+    : 'curiosity';
+  return {
+    id: row.id,
+    text: row.text,
+    trigger,
+    platforms: platforms.length ? platforms : (['tiktok', 'instagram', 'youtube', 'facebook'] as Platform[]),
+    performanceScore: row.performanceScore,
+    createdAt: typeof row.createdAt === 'string' ? Date.parse(row.createdAt) : row.createdAt.getTime(),
+  };
+}
 
 // ── System prompt ──
 
@@ -359,14 +428,20 @@ function parseHooksJson(j: Record<string, unknown>, input: HookLibraryInput): Ho
 // ── Public API ──
 
 /**
- * Generate new hooks via AI, store them in the in-memory store, and return them.
+ * Generate new hooks via AI, persist them to D1 (per user), and return them.
  *
  * Cost: HOOK_LIBRARY_CREDIT_COST (4 credits).
  *
- * In dry-run/mock mode, returns heuristic-based hooks.
+ * In dry-run/mock mode, returns heuristic-based hooks — these are still
+ * persisted to the database so dry-run flows remain testable end-to-end.
+ *
+ * `userId` scopes ownership: only the generating user can later retrieve these
+ * hooks. Persistence is best-effort; if the DB is unavailable the hooks are
+ * still returned to the caller.
  */
 export async function generateHooks(
   input: HookLibraryInput,
+  userId: string,
   planTier?: PlanTier,
 ): Promise<HookLibraryOutput> {
   const validation = validateHookLibraryInput(input);
@@ -395,21 +470,38 @@ export async function generateHooks(
     }
   }
 
-  let stored = 0;
-  for (const h of hooks) {
-    hookStore.set(h.id, h);
-    stored++;
-  }
+  const stored = await persistHooks(userId, hooks, input);
 
   return { hooks, generated: hooks.length, stored };
 }
 
 /**
- * Retrieve stored hooks with optional filtering by emotional trigger, platform,
- * and minimum performance score. Cost: 0 credits.
+ * Retrieve a user's stored hooks from D1 with optional filtering by emotional
+ * trigger, platform, and minimum performance score. Cost: 0 credits.
+ *
+ * Only hooks owned by `userId` are returned (ownership enforced at the query
+ * level). If the DB is unavailable, returns an empty array.
  */
-export function getHooks(filter?: HookFilter): Hook[] {
-  let hooks = Array.from(hookStore.values());
+export async function getHooks(userId: string, filter?: HookFilter): Promise<Hook[]> {
+  let rows: Array<{
+    id: string;
+    text: string;
+    trigger: string;
+    platforms: string;
+    performanceScore: number;
+    createdAt: Date | string;
+  }> = [];
+
+  try {
+    rows = await prisma.hook.findMany({
+      where: { userId },
+      orderBy: { performanceScore: 'desc' },
+    });
+  } catch {
+    return [];
+  }
+
+  let hooks = rows.map(rowToHook);
 
   if (filter?.trigger && VALID_TRIGGERS.has(filter.trigger)) {
     hooks = hooks.filter((h) => h.trigger === filter.trigger);

@@ -21,10 +21,12 @@ Add an AI-powered Hook Library that:
   facebook)
 - Assigns a predicted performance score (0-100) based on trigger type
   and platform
-- Stores hooks in an in-memory store (Map) for retrieval and filtering
+- Stores hooks in D1 (via Prisma `Hook` model) so they survive deploys and
+  are scoped per user (`userId`); retrieval and filtering query the database
 - Supports filtering by emotional trigger, platform, and minimum score
 - Uses Atlas LLM via `atlasChat` with plan-tier-aware model selection
-- Falls back to heuristic-based hooks in dry-run mode
+- Falls back to heuristic-based hooks in dry-run mode (dry-run hooks are
+  still persisted to D1 so the flow is testable end-to-end)
 - Costs 4 credits for generation, 0 credits for retrieval
 
 ### API
@@ -42,7 +44,12 @@ Add an AI-powered Hook Library that:
 
 - Adds a new creative API route and UI page
 - Uses existing auth, credit deduction/refund, and `withAtlas` conventions
-- In-memory store is per-instance (not persisted to D1) — hooks are
-  ephemeral and reset on deploy. Future work could add a Prisma model
-  for persistent storage
+- Hooks are persisted to D1 via the Prisma `Hook` model (with `userId`
+  ownership and indexes on `[userId]` and `[userId, trigger]`). The
+  `generateHooks` and `getHooks` functions take a `userId` parameter so
+  users can only read their own hooks. Persistence is best-effort: if the
+  database is unavailable (e.g. unit tests without a mocked client),
+  writes/reads fail gracefully and generated hooks are still returned
+- The UI page fetches stored hooks via `GET /api/creative/hook-library`
+  (which carries the session and enforces ownership) on mount
 - Dry-run mode works with the local mock Atlas server

@@ -48,6 +48,7 @@ model User {
   customComplianceRules CustomComplianceRule[]
   platformConnections PlatformConnection[]
   scheduledPosts ScheduledPost[]
+  hooks        Hook[]
 }
 
 model Account {
@@ -671,4 +672,26 @@ model GoogleSafetyApproval {
 
   @@index([status])
   @@index([expiresAt])
+}
+
+// ── Hook Library: AI-generated reusable ad hooks (D1-persisted per user) ──
+// Backs the persistence path in src/lib/creative/hook-library.ts. Hooks are
+// generated via Atlas LLM (or heuristic dry-run fallback), stored here so they
+// survive deploys, and retrieved/filtered per user.
+
+model Hook {
+  id              String   @id @default(cuid())
+  userId          String
+  text            String
+  trigger         String
+  platforms       String   // JSON array stored as string (Platform[])
+  performanceScore Int
+  productOrBrand  String?
+  audience        String?
+  createdAt       DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([userId, trigger])
 }

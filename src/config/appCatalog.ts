@@ -51,6 +51,9 @@ const CUSTOM_TITLES: Record<string, Bi> = {
   'ad-copy-generator': { en: 'Ad Copy Generator', zh: '广告文案生成器' },
   'hook-library': { en: 'Hook Library', zh: '钩子库' },
   'brief-template-builder': { en: 'Brief Template Builder', zh: '简报模板构建器' },
+  'ad-script-writer': { en: 'Ad Script Writer', zh: '广告脚本编写器' },
+  'audience-persona-generator': { en: 'Audience Persona Generator', zh: '受众画像生成器' },
+  'variant-matrix-generator': { en: 'Creative Variant Matrix', zh: '创意变体矩阵' },
 };
 const CUSTOM_DESCS: Record<string, Bi> = {
   'lazynext-studio': { en: 'Product + presenter photos → AI expands the prompt from your images → lip-synced UGC ad; one-click viral formats', zh: '产品图+人物图 → AI 看图扩写提示词 → 合成首帧 → 对口型真人口播广告;爆款玩法一键复刻' },
@@ -72,6 +75,9 @@ const CUSTOM_DESCS: Record<string, Bi> = {
   'ad-copy-generator': { en: 'AI-powered platform-specific ad copy — generate TikTok, Instagram, and YouTube copy from a product URL or brief', zh: 'AI驱动的平台专属广告文案 — 从产品URL或简报生成TikTok、Instagram和YouTube文案' },
   'hook-library': { en: 'AI-powered hook library — generate, categorize, and store reusable hooks by emotional trigger and platform', zh: 'AI驱动的钩子库 — 按情感触发器和平台生成、分类和存储可复用钩子' },
   'brief-template-builder': { en: 'AI-powered creative brief templates with industry-specific presets and smart suggestions', zh: 'AI驱动的创意简报模板，行业专属预设和智能建议' },
+  'ad-script-writer': { en: 'AI-powered multi-scene ad scripts with visual cues, voiceover, B-roll notes, and timing for TikTok, YouTube, and Instagram', zh: 'AI驱动的多场景广告脚本，包含视觉提示、配音、B-roll注释和时长，适用于TikTok、YouTube和Instagram' },
+  'audience-persona-generator': { en: 'AI-powered audience personas with demographics, psychographics, pain points, and platform behavior', zh: 'AI驱动的受众画像，包含人口统计、心理特征、痛点和平台行为' },
+  'variant-matrix-generator': { en: 'AI-powered creative variant matrix across hooks, angles, formats, and platforms for A/B testing', zh: 'AI驱动的创意变体矩阵，跨钩子、角度、格式和平台进行A/B测试' },
 };
 export function appTitle(id: string, fallbackTitle: string, locale: string = 'en'): string {
   const c = CUSTOM_TITLES[id];

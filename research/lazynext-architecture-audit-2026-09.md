@@ -1,6 +1,6 @@
 # LazyNext Architecture Audit — 2026-09
 
-> **Status:** Current as of 2026-09-02 (post-SS series).
+> **Status:** Current as of 2026-09-02 (post-TT series).
 > The previous audit (`research/lazynext-architecture-audit.md`) is superseded.
 
 ## 1. Stack
@@ -26,13 +26,14 @@
 
 ## 2. Database Schema
 
-28→36 Prisma models. Key models for the creative pipeline:
+28→37 Prisma models (including the new Hook model for TT-series Hook Library persistence). Key models for the creative pipeline:
 
 - **User** — id, email, name, credits, password (bcrypt), image
 - **WorkflowRun** — persists pipeline state as JSON (`state` column)
 - **CreativeTemplate** — built-in (userId=null) and user-saved templates
 - **Timeline** / **TimelineVersion** — editor persistence
 - **CreativePerformance** — performance learning loop data
+- **Hook** — AI-generated hooks persisted with emotional trigger, platform, predicted performance score, and per-user ownership (TT-series)
 - **Asset** — persisted pipeline outputs (parent/child grouping)
 
 ## 3. Creative Pipeline Architecture
@@ -85,6 +86,12 @@ All 5 templates include the `score` quality gate before publish.
 - `POST /api/creative/brand-guardrails` — AI brand consistency checker (4 credits, ADR-044)
 - `POST /api/creative/smart-calendar` — AI-suggested optimal posting times (3 credits, ADR-045)
 - `POST /api/creative/competitor-watch` — competitor ad monitoring with alerts (5 credits, ADR-046)
+- `POST /api/creative/ad-copy-generator` — platform-specific ad copy for TikTok/Instagram/YouTube (3 credits, ADR-047)
+- `POST /api/creative/hook-library` — AI hook library with D1 persistence via Hook model (4 credits, ADR-048)
+- `POST /api/creative/brief-template-builder` — creative brief templates with industry presets (4 credits, ADR-049)
+- `POST /api/creative/ad-script-writer` — multi-scene ad scripts with visual cues/voiceover/B-roll (5 credits, ADR-050)
+- `POST /api/creative/audience-persona-generator` — audience personas with demographics/psychographics (4 credits, ADR-051)
+- `POST /api/creative/variant-matrix-generator` — creative variant matrix for A/B testing (5 credits, ADR-052)
 
 Credit handling:
 - Credits are deducted before stage execution.
@@ -188,7 +195,7 @@ The `overall` score is on a **1-10 scale** (weighted average of 1-10 dimensions)
 
 ### Coverage
 
-- 13 locales: en, zh, ja, es, ko, pt, fr, de, ar, hi, vi, th, id. All 13 locales now have complete feature translations (including the JJ-, LL-, RR-, and SS-series features).
+- 13 locales: en, zh, ja, es, ko, pt, fr, de, ar, hi, vi, th, id. All 13 locales now have complete feature translations (including the JJ-, LL-, RR-, SS-, and TT-series features).
 - RTL support for Arabic (`dir="rtl"`, `lang="ar"`).
 - Cookie-based locale switching.
 
@@ -241,11 +248,11 @@ The `pipeline` namespace includes:
 
 ### Test coverage
 
-- **440+ unauthenticated tests** — smoke tests, page loads, auth prompts, responsive, RTL (including 30 new page tests for brand-guardrails, smart-calendar, competitor-watch).
+- **440+ unauthenticated tests** — smoke tests, page loads, auth prompts, responsive, RTL (including 30 new page tests for brand-guardrails, smart-calendar, competitor-watch, plus page tests for the 6 TT-series features).
 - **9 authenticated API tests** for RR-series features (brand-guardrails, smart-calendar, competitor-watch).
 - **12+ authenticated pipeline tests** — session, pipeline creation, templates, page loads.
 - **12+ authenticated user flow tests** — dashboard, my-work, settings, admin, credits, full pipeline execution, A/B.
-- Total: 581 tests (440+ unauthenticated + 141 authenticated), 0 skipped, 0 failed.
+- Total: 600+ tests (440+ unauthenticated + 160+ authenticated), 0 skipped, 0 failed.
 
 ### Test account
 
@@ -285,8 +292,8 @@ The `pipeline` namespace includes:
 
 ```bash
 npm run lint    # ESLint — 0 errors, 0 warnings
-npm test        # Node test runner — 1871 tests
-npx playwright test  # E2E — 581 tests, 0 skipped
+npm test        # Node test runner — 1976+ tests
+npx playwright test  # E2E — 600+ tests, 0 skipped
 npm run build   # Production build (Cloudflare target)
 ```
 
@@ -368,10 +375,18 @@ npm run build   # Production build (Cloudflare target)
 - i18n for 3 new RR features across 12 non-English locales (SS)
 - E2E coverage for 3 new features — 30 page tests + 9 authenticated API tests (SS)
 - App catalog + dashboard Quick Create for 3 new features (SS)
+- Ad Copy Generator — platform-specific ad copy for TikTok/Instagram/YouTube (TT, ADR-047)
+- Hook Library — AI hook library with D1 persistence via Hook Prisma model (TT, ADR-048)
+- Brief Template Builder — creative brief templates with industry presets (TT, ADR-049)
+- Ad Script Writer — multi-scene ad scripts with visual cues/voiceover/B-roll (TT, ADR-050)
+- Audience Persona Generator — audience personas with demographics/psychographics (TT, ADR-051)
+- Creative Variant Matrix — variant matrix across hooks/angles/formats/platforms (TT, ADR-052)
+- D1 persistence for hooks — new Hook Prisma model with per-user ownership (TT)
+- App catalog + dashboard Quick Create for 6 new TT features (TT)
 
 ## 15. LL-Series Features
 
-The LL series extended the creative platform with four new capabilities, documented in ADRs 036-039. ADR-040 (OO series) documents D1 persistence for safety audit logs. ADRs 041-043 (QQ series) document chain mode unification, observability aggregation, and video rendering. ADRs 044-046 (RR series) document Brand Guardrails, Smart Calendar, and Competitor Watch. ADRs 001-046 now total 46 architecture decision records in `docs/adr/`.
+The LL series extended the creative platform with four new capabilities, documented in ADRs 036-039. ADR-040 (OO series) documents D1 persistence for safety audit logs. ADRs 041-043 (QQ series) document chain mode unification, observability aggregation, and video rendering. ADRs 044-046 (RR series) document Brand Guardrails, Smart Calendar, and Competitor Watch. ADRs 047-052 (TT series) document Ad Copy Generator, Hook Library, Brief Template Builder, Ad Script Writer, Audience Persona Generator, and Creative Variant Matrix. ADRs 001-052 now total 52 architecture decision records in `docs/adr/`.
 
 ### Google Ads Safety Layer (`/google-safety`)
 
@@ -411,7 +426,7 @@ All four features have dry-run/fallback behavior when Atlas is local or the API 
 
 ### Dashboard Quick Create
 
-The dashboard "Quick Create" grid now includes all production apps plus the 15 newest features (Creator Kits, Brand Concepts, Clip Editor, Media Services, Product Brief, Reference Remix, Multi-Concept, Meta Safety, Google Safety, Performance Loop, Viral Analyzer, Skill Chains, Brand Guardrails, Smart Calendar, Competitor Watch). The 11 newest features (Product Brief through Competitor Watch) are in the nav overflow menu.
+The dashboard "Quick Create" grid now includes all production apps plus the 21 newest features (Creator Kits, Brand Concepts, Clip Editor, Media Services, Product Brief, Reference Remix, Multi-Concept, Meta Safety, Google Safety, Performance Loop, Viral Analyzer, Skill Chains, Brand Guardrails, Smart Calendar, Competitor Watch, Ad Copy Generator, Hook Library, Brief Template Builder, Ad Script Writer, Audience Persona Generator, Creative Variant Matrix). The 17 newest features (Product Brief through Creative Variant Matrix) are in the nav overflow menu.
 
 ## 16. RR-Series Features
 
@@ -458,3 +473,56 @@ The RR series added three new creative capabilities, documented in ADRs 044-046.
 - Wired RendoBar compose API into `src/lib/providers/video-render.ts` with EDL-to-timeline mapper.
 - Added webhook endpoint at `/api/webhooks/rendobar` for signed HMAC completion callbacks.
 - Total unit tests: 1871 (up from 1786). Total E2E tests: 581 (up from 512).
+
+## 17. TT-Series Features
+
+The TT series added six new AI creative tools, documented in ADRs 047-052. All six features have dry-run/fallback behavior when Atlas is local or the API key is missing, and use existing auth, credit deduction/refund, `withAtlas`, and `safeError` conventions. The Hook Library introduces D1 persistence via a new Prisma `Hook` model (per-user ownership), bringing the total table count to 37.
+
+### Ad Copy Generator (`/ad-copy-generator`)
+
+- AI-powered platform-specific ad copy — generates TikTok, Instagram, and YouTube copy from a product URL or brief.
+- Returns headline, body copy, CTA, hashtags, and description.
+- 3 credits. API: `POST /api/creative/ad-copy-generator`. See ADR-047.
+- Unit tests: 25.
+
+### Hook Library (`/hook-library`)
+
+- AI-powered hook library with D1 persistence — generates, categorizes, and stores reusable hooks by emotional trigger and platform.
+- Predicted performance score (0-100). Hooks persisted to D1 via Prisma `Hook` model with per-user ownership.
+- 4 credits. API: `POST /api/creative/hook-library`. See ADR-048.
+- Unit tests: 19.
+
+### Brief Template Builder (`/brief-template-builder`)
+
+- AI-powered creative brief templates with industry-specific presets (8 industries) and smart suggestions.
+- 4 credits. API: `POST /api/creative/brief-template-builder`. See ADR-049.
+- Unit tests: 16.
+
+### Ad Script Writer (`/ad-script-writer`)
+
+- AI-powered multi-scene ad scripts with visual cues, voiceover, B-roll notes, and timing for TikTok, YouTube, and Instagram.
+- 5 credits. API: `POST /api/creative/ad-script-writer`. See ADR-050.
+- Unit tests: 29.
+
+### Audience Persona Generator (`/audience-persona-generator`)
+
+- AI-powered audience personas with demographics, psychographics, pain points, and platform behavior.
+- 4 credits. API: `POST /api/creative/audience-persona-generator`. See ADR-051.
+- Unit tests: 12.
+
+### Creative Variant Matrix (`/variant-matrix-generator`)
+
+- AI-powered creative variant matrix across hooks, angles, formats, and platforms for A/B testing.
+- 5 credits. API: `POST /api/creative/variant-matrix-generator`. See ADR-052.
+- Unit tests: 11.
+
+### New UI pages
+
+- `/ad-copy-generator` — platform-specific ad copy generator
+- `/hook-library` — AI hook library with D1 persistence
+- `/brief-template-builder` — creative brief template builder
+- `/ad-script-writer` — multi-scene ad script writer
+- `/audience-persona-generator` — audience persona generator
+- `/variant-matrix-generator` — creative variant matrix for A/B testing
+
+All six features have dry-run/fallback behavior when Atlas is local or the API key is missing, and use existing auth, credit deduction/refund, `withAtlas`, and `safeError` conventions. Unit tests added: 25 + 19 + 16 + 29 + 12 + 11 = 112 new tests (total unit tests now 1976+, up from 1871). Total E2E tests: 600+ (up from 581).
