@@ -116,6 +116,10 @@ const CUSTOM_TITLES: Record<string, Bi> = {
   'ad-creative-story-arc-designer': { en: 'Ad Creative Story Arc Designer', zh: '广告创意故事弧设计器' },
   'creative-ad-persuasion-strategist': { en: 'Creative Ad Persuasion Strategist', zh: '创意广告说服策略师' },
   'ad-creative-hook-timing-optimizer': { en: 'Ad Creative Hook Timing Optimizer', zh: '广告创意钩子时机优化器' },
+  'creative-ad-metaphor-generator': { en: 'Creative Ad Metaphor Generator', zh: '创意广告隐喻生成器' },
+  'ad-creative-sensory-enhancer': { en: 'Ad Creative Sensory Enhancer', zh: '广告创意感官增强器' },
+  'creative-ad-pattern-interrupt-designer': { en: 'Creative Ad Pattern Interrupt Designer', zh: '创意广告模式打断设计器' },
+  'ad-creative-social-proof-architect': { en: 'Ad Creative Social Proof Architect', zh: '广告创意社会证据架构师' },
 };
 const CUSTOM_DESCS: Record<string, Bi> = {
   'lazynext-studio': { en: 'Product + presenter photos → AI expands the prompt from your images → lip-synced UGC ad; one-click viral formats', zh: '产品图+人物图 → AI 看图扩写提示词 → 合成首帧 → 对口型真人口播广告;爆款玩法一键复刻' },

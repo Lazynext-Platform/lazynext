@@ -129,6 +129,10 @@ const NAV_LINKS = [
   { href: '/ad-creative-story-arc-designer', label: 'Story Arc Designer', icon: Lightbulb, hideOnMd: true },
   { href: '/creative-ad-persuasion-strategist', label: 'Persuasion Strategist', icon: Zap, hideOnMd: true },
   { href: '/ad-creative-hook-timing-optimizer', label: 'Hook Timing Optimizer', icon: Clock, hideOnMd: true },
+  { href: '/creative-ad-metaphor-generator', label: 'Metaphor Generator', icon: Wand2, hideOnMd: true },
+  { href: '/ad-creative-sensory-enhancer', label: 'Sensory Enhancer', icon: Eye, hideOnMd: true },
+  { href: '/creative-ad-pattern-interrupt-designer', label: 'Pattern Interrupt', icon: Zap, hideOnMd: true },
+  { href: '/ad-creative-social-proof-architect', label: 'Social Proof Architect', icon: Award, hideOnMd: true },
   { href: '/observability', label: 'Observability', icon: Activity, hideOnMd: true },
   { href: '/calendar', label: 'Calendar', icon: Calendar, hideOnMd: true },
 ];
