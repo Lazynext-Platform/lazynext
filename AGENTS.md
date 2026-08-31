@@ -49,7 +49,7 @@ Production uses Cloudflare R2 via `src/lib/media-storage.cloudflare.ts`.
 ## Verification Commands
 ```bash
 npm run lint    # ESLint
-npm test        # Node test runner (3635+ tests)
+npm test        # Node test runner (3789+ tests)
 # E2E: 1052+ passed, 0 skipped (chromium + mobile-chrome + chromium-auth)
 npm run build   # Production build (Cloudflare target)
 npm run cf:build  # Cloudflare/OpenNext build
@@ -146,7 +146,9 @@ npm run cf:deploy # Deploy to Cloudflare Workers
   `/api/creative/creative-visual-hierarchy-analyzer`, `/api/creative/ad-audience-pain-point-mapper`,
   `/api/creative/creative-messaging-framework-builder`,
   `/api/creative/ad-creative-burnout-detector`, `/api/creative/creative-ad-concept-synthesizer`,
-  `/api/creative/ad-audience-psychographic-profiler`, `/api/creative/creative-ad-tone-calibrator`
+  `/api/creative/ad-audience-psychographic-profiler`, `/api/creative/creative-ad-tone-calibrator`,
+  `/api/creative/creative-ad-format-innovator`, `/api/creative/ad-creative-story-arc-designer`,
+  `/api/creative/creative-ad-persuasion-strategist`, `/api/creative/ad-creative-hook-timing-optimizer`
 - Ad platform API routes: `/api/ads/create`, `/api/ads/metrics`, `/api/ads/list`, `/api/ads/report`,
   `/api/ads/budget`, `/api/ads/google-budget`, `/api/ads/google-report`, `/api/analytics/ga4`,
   `/api/ads/meta-safety`, `/api/ads/meta-approve`, `/api/ads/google-safety`, `/api/ads/google-approve`
@@ -155,10 +157,10 @@ npm run cf:deploy # Deploy to Cloudflare Workers
 - `/api/creative/director` returns an NDJSON stream of step-by-step progress updates; legacy
   non-streaming mode available via `?stream=false`
 - Pipeline stages: brief, script, storyboard, media_generation, audio, edit, compliance, score, publish
-- ADRs 001-110 in `docs/adr/` document all major architecture decisions
+- ADRs 001-114 in `docs/adr/` document all major architecture decisions
 - Cross-feature handoffs: Brand Concepts → Creator Kits (query-param pre-fill),
   Brand Concepts → Shot Planner (script pre-fill), Clip Editor → Media Service Boundary (ASR/TTS)
-- Dashboard "Quick Create" grid includes all production apps and the 79 newest features
+- Dashboard "Quick Create" grid includes all production apps and the 83 newest features
   (Creator Kits, Brand Concepts, Clip Editor, Media Services, Product Brief, Reference Remix,
   Multi-Concept, Meta Safety, Google Safety, Performance Loop, Viral Analyzer, Skill Chains,
   Brand Guardrails, Smart Calendar, Competitor Watch, Ad Copy Generator, Hook Library,
@@ -181,8 +183,10 @@ npm run cf:deploy # Deploy to Cloudflare Workers
   Ad Creative A/B Test Simulator, Creative Visual Hierarchy Analyzer,
   Ad Audience Pain Point Mapper, Creative Messaging Framework Builder,
   Ad Creative Burnout Detector, Creative Ad Concept Synthesizer,
-  Ad Audience Psychographic Profiler, Creative Ad Tone Calibrator)
-- Nav header includes links to all feature pages (visible lg+); the 75 newest features
+  Ad Audience Psychographic Profiler, Creative Ad Tone Calibrator,
+  Creative Ad Format Innovator, Ad Creative Story Arc Designer,
+  Creative Ad Persuasion Strategist, Ad Creative Hook Timing Optimizer)
+- Nav header includes links to all feature pages (visible lg+); the 79 newest features
   (Product Brief, Reference Remix, Multi-Concept, Meta Safety, Google Safety, Performance Loop,
   Viral Analyzer, Skill Chains, Brand Guardrails, Smart Calendar, Competitor Watch, Ad Copy
   Generator, Hook Library, Brief Template Builder, Ad Script Writer, Audience Persona Generator,
@@ -205,7 +209,9 @@ npm run cf:deploy # Deploy to Cloudflare Workers
   Creative Visual Hierarchy Analyzer, Ad Audience Pain Point Mapper,
   Creative Messaging Framework Builder, Ad Creative Burnout Detector,
   Creative Ad Concept Synthesizer, Ad Audience Psychographic Profiler,
-  Creative Ad Tone Calibrator) are in the overflow nav
+  Creative Ad Tone Calibrator, Creative Ad Format Innovator,
+  Ad Creative Story Arc Designer, Creative Ad Persuasion Strategist,
+  Ad Creative Hook Timing Optimizer) are in the overflow nav
 
 ### JJ-Series: Research-Derived Creative Capabilities
 - Product Page → Ad Brief (`/product-brief`): URL/product extraction → brand/product brief →
@@ -658,6 +664,33 @@ npm run cf:deploy # Deploy to Cloudflare Workers
 - Translations added to all 13 locales for 4 new namespaces: adCreativeBurnoutDetector,
   creativeAdConceptSynthesizer, adAudiencePsychographicProfiler, creativeAdToneCalibrator
 - Production deployment version ID: cdcff232-db32-49cd-9e80-7ee09ff5fa22
+
+### TT18-Series: Four More AI Creative Tools
+- Creative Ad Format Innovator (`/creative-ad-format-innovator`): AI-powered format innovator.
+  Innovates new ad formats by combining existing format elements in novel ways; returns innovative
+  format concepts with novelty score, format elements, implementation difficulty, and expected impact.
+  5 credits. API: `POST /api/creative/creative-ad-format-innovator`. See ADR-111.
+- Ad Creative Story Arc Designer (`/ad-creative-story-arc-designer`): AI-powered story arc designer.
+  Designs compelling story arcs for ad creative with acts, emotional beats, pacing guide, and key moments.
+  4 credits. API: `POST /api/creative/ad-creative-story-arc-designer`. See ADR-112.
+- Creative Ad Persuasion Strategist (`/creative-ad-persuasion-strategist`): AI-powered persuasion
+  strategist. Develops persuasion strategies using Cialdini principles with techniques, psychological
+  triggers, and ethical considerations.
+  4 credits. API: `POST /api/creative/creative-ad-persuasion-strategist`. See ADR-113.
+- Ad Creative Hook Timing Optimizer (`/ad-creative-hook-timing-optimizer`): AI-powered hook timing
+  optimizer. Optimizes hook timing for maximum engagement with optimal placement, effectiveness score,
+  timing analysis, and engagement predictions.
+  3 credits. API: `POST /api/creative/ad-creative-hook-timing-optimizer`. See ADR-114.
+- All 4 features have dry-run/fallback behavior when Atlas is local or API key is missing
+- All 4 features use existing auth, credit deduction/refund, `withAtlas`, and `safeError` conventions
+- Unit tests: 3789 total (was 3635) — 154 new tests across 4 new test suites
+- TT18 page E2E tests: 64 passing
+- TT18 API E2E tests: 12 passing
+- TT18 production audit: 20/20 passing (4 pages × 5 checks: HTTP 200, 1 H1, main#main-content,
+  skip link, API schema)
+- Translations added to all 13 locales for 4 new namespaces: creativeAdFormatInnovator,
+  adCreativeStoryArcDesigner, creativeAdPersuasionStrategist, adCreativeHookTimingOptimizer
+- Production deployment version ID: 6a946220-9ee4-43bf-acc7-b7e1219128fd
 
 ## Production-Only Testing (Cannot Be Verified Locally)
 
