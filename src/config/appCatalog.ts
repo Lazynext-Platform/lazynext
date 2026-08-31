@@ -136,6 +136,10 @@ const CUSTOM_TITLES: Record<string, Bi> = {
   'ad-creative-callback-memory-designer': { en: 'Ad Creative Callback Memory Designer', zh: '广告创意回调记忆设计师' },
   'creative-ad-climax-architect': { en: 'Creative Ad Climax Architect', zh: '创意广告高潮架构师' },
   'ad-creative-pacing-variability-designer': { en: 'Ad Creative Pacing Variability Designer', zh: '广告创意节奏变异性设计师' },
+  'creative-ad-foreshadowing-designer': { en: 'Creative Ad Foreshadowing Designer', zh: '创意广告伏笔设计师' },
+  'ad-creative-emotional-pivot-designer': { en: 'Ad Creative Emotional Pivot Designer', zh: '广告创意情感转折设计师' },
+  'creative-ad-resolution-designer': { en: 'Creative Ad Resolution Designer', zh: '创意广告结局设计师' },
+  'ad-creative-viewer-reward-designer': { en: 'Ad Creative Viewer Reward Designer', zh: '广告创意观众奖励设计师' },
 };
 const CUSTOM_DESCS: Record<string, Bi> = {
   'lazynext-studio': { en: 'Product + presenter photos → AI expands the prompt from your images → lip-synced UGC ad; one-click viral formats', zh: '产品图+人物图 → AI 看图扩写提示词 → 合成首帧 → 对口型真人口播广告;爆款玩法一键复刻' },

@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Sparkles, Megaphone, BarChart3, LayoutDashboard, Package, Scissors, Library, Lightbulb, Calendar, CalendarClock, Video, Wand2, ImageIcon, Send, BookOpen, Brain, Volume2, Eye, ShieldCheck, Wallet, Users, Workflow, Grid3x3, Activity, FileSearch, TrendingUp, FlaskConical, MessageSquareQuote, Award, Repeat, Users2, Flame, Film, Server, Clapperboard, Gift, Layers, Cpu, FileText, RefreshCw, Shield, GitBranch, Radar, PenLine, Anchor, FileSpreadsheet, ScrollText, UsersRound, LayoutGrid, GitMerge, FileSearch2, LayoutTemplate, Palette, Gauge, FlaskRound, TestTube, Compass, Mic, Type, Newspaper, Lightbulb as LightbulbIcon, Clock, BatteryLow, MousePointerClick, Expand, BookOpenCheck, Droplet, Hash, Clapperboard as ClapperboardIcon, Music, Mic2, FileText as FileTextIcon, Target, FlaskConical as FlaskIcon, Zap, Users as UsersIcon, ShieldCheck as ShieldIcon, HeartPulse, Repeat2, DollarSign, TrendingUp as TrendingIcon, ListOrdered, BookMarked, Globe2, LineChart, Smile, Grid2x2, RefreshCcw, MicVocal, Layers3, Swords, Radio, LayoutList, LifeBuoy, Split, AlertTriangle, SlidersHorizontal, Shuffle, Waves, Contrast, HelpCircle, Drum, Layout, AudioLines } from 'lucide-react';
+import { Sparkles, Megaphone, BarChart3, LayoutDashboard, Package, Scissors, Library, Lightbulb, Calendar, CalendarClock, Video, Wand2, ImageIcon, Send, BookOpen, Brain, Volume2, Eye, ShieldCheck, Wallet, Users, Workflow, Grid3x3, Activity, FileSearch, TrendingUp, FlaskConical, MessageSquareQuote, Award, Repeat, Users2, Flame, Film, Server, Clapperboard, Gift, Layers, Cpu, FileText, RefreshCw, Shield, GitBranch, Radar, PenLine, Anchor, FileSpreadsheet, ScrollText, UsersRound, LayoutGrid, GitMerge, FileSearch2, LayoutTemplate, Palette, Gauge, FlaskRound, TestTube, Compass, Mic, Type, Newspaper, Lightbulb as LightbulbIcon, Clock, BatteryLow, MousePointerClick, Expand, BookOpenCheck, Droplet, Hash, Clapperboard as ClapperboardIcon, Music, Mic2, FileText as FileTextIcon, Target, FlaskConical as FlaskIcon, Zap, Users as UsersIcon, ShieldCheck as ShieldIcon, HeartPulse, Repeat2, DollarSign, TrendingUp as TrendingIcon, ListOrdered, BookMarked, Globe2, LineChart, Smile, Grid2x2, RefreshCcw, MicVocal, Layers3, Swords, Radio, LayoutList, LifeBuoy, Split, AlertTriangle, SlidersHorizontal, Shuffle, Waves, Contrast, HelpCircle, Drum, Layout, AudioLines, CheckCircle } from 'lucide-react';
 import { UserMenu } from '@/components/UserMenu';
 import { LangToggle } from '@/components/LangToggle';
 import { CreditBadge } from '@/components/CreditBadge';
@@ -149,6 +149,10 @@ const NAV_LINKS = [
   { href: '/ad-creative-callback-memory-designer', label: 'Callback Memory Designer', icon: Repeat, hideOnMd: true },
   { href: '/creative-ad-climax-architect', label: 'Climax Architect', icon: TrendingUp, hideOnMd: true },
   { href: '/ad-creative-pacing-variability-designer', label: 'Pacing Variability Designer', icon: Gauge, hideOnMd: true },
+  { href: '/creative-ad-foreshadowing-designer', label: 'Foreshadowing Designer', icon: Eye, hideOnMd: true },
+  { href: '/ad-creative-emotional-pivot-designer', label: 'Emotional Pivot Designer', icon: Shuffle, hideOnMd: true },
+  { href: '/creative-ad-resolution-designer', label: 'Resolution Designer', icon: CheckCircle, hideOnMd: true },
+  { href: '/ad-creative-viewer-reward-designer', label: 'Viewer Reward Designer', icon: Gift, hideOnMd: true },
   { href: '/observability', label: 'Observability', icon: Activity, hideOnMd: true },
   { href: '/calendar', label: 'Calendar', icon: Calendar, hideOnMd: true },
 ];

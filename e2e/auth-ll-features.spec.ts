@@ -2989,3 +2989,115 @@ test.describe('Ad Creative Pacing Variability Designer API', () => {
     expect(res.status()).toBe(400);
   });
 });
+
+test.describe('Creative Ad Foreshadowing Designer API', () => {
+  test('GET returns credit cost and schema', async ({ request }) => {
+    const res = await request.get('/api/creative/creative-ad-foreshadowing-designer');
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.creditCost).toBe(4);
+    expect(data.schema).toBeTruthy();
+  });
+  test('POST with valid input returns strategy', async ({ request }) => {
+    const res = await request.post('/api/creative/creative-ad-foreshadowing-designer', {
+      data: { productOrBrand: 'Aura Earbuds', content: 'A subtle hint pays off later', targetAudience: 'Tech enthusiasts', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.result).toBeTruthy();
+    expect(data.result.strategy).toBeTruthy();
+  });
+  test('POST with missing productOrBrand returns 400', async ({ request }) => {
+    const res = await request.post('/api/creative/creative-ad-foreshadowing-designer', {
+      data: { content: 'test', targetAudience: 'test', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.status()).toBe(400);
+  });
+});
+
+test.describe('Ad Creative Emotional Pivot Designer API', () => {
+  test('GET returns credit cost and schema', async ({ request }) => {
+    const res = await request.get('/api/creative/ad-creative-emotional-pivot-designer');
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.creditCost).toBe(3);
+    expect(data.schema).toBeTruthy();
+  });
+  test('POST with valid input returns strategy', async ({ request }) => {
+    const res = await request.post('/api/creative/ad-creative-emotional-pivot-designer', {
+      data: { productOrBrand: 'Aura Earbuds', content: 'From tension to relief', targetAudience: 'Tech enthusiasts', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.result).toBeTruthy();
+    expect(data.result.strategy).toBeTruthy();
+  });
+  test('POST with missing productOrBrand returns 400', async ({ request }) => {
+    const res = await request.post('/api/creative/ad-creative-emotional-pivot-designer', {
+      data: { content: 'test', targetAudience: 'test', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.status()).toBe(400);
+  });
+});
+
+test.describe('Creative Ad Resolution Designer API', () => {
+  test('GET returns credit cost and schema', async ({ request }) => {
+    const res = await request.get('/api/creative/creative-ad-resolution-designer');
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.creditCost).toBe(4);
+    expect(data.schema).toBeTruthy();
+  });
+  test('POST with valid input returns design', async ({ request }) => {
+    const res = await request.post('/api/creative/creative-ad-resolution-designer', {
+      data: { productOrBrand: 'Aura Earbuds', content: 'The story reaches its conclusion', targetAudience: 'Tech enthusiasts', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.result).toBeTruthy();
+    expect(data.result.design).toBeTruthy();
+  });
+  test('POST with missing productOrBrand returns 400', async ({ request }) => {
+    const res = await request.post('/api/creative/creative-ad-resolution-designer', {
+      data: { content: 'test', targetAudience: 'test', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.status()).toBe(400);
+  });
+});
+
+test.describe('Ad Creative Viewer Reward Designer API', () => {
+  test('GET returns credit cost and schema', async ({ request }) => {
+    const res = await request.get('/api/creative/ad-creative-viewer-reward-designer');
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.creditCost).toBe(5);
+    expect(data.schema).toBeTruthy();
+  });
+  test('POST with valid input returns design', async ({ request }) => {
+    const res = await request.post('/api/creative/ad-creative-viewer-reward-designer', {
+      data: { productOrBrand: 'Aura Earbuds', content: 'Hidden details reward attentive viewers', targetAudience: 'Tech enthusiasts', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.result).toBeTruthy();
+    expect(data.result.design).toBeTruthy();
+  });
+  test('POST with missing productOrBrand returns 400', async ({ request }) => {
+    const res = await request.post('/api/creative/ad-creative-viewer-reward-designer', {
+      data: { content: 'test', targetAudience: 'test', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.status()).toBe(400);
+  });
+});
