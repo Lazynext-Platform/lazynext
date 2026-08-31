@@ -997,3 +997,147 @@ test.describe('Creative Fatigue Detector API', () => {
     expect(res.status()).toBe(400);
   });
 });
+
+test.describe('Ad CTA Optimizer API', () => {
+  test('GET returns credit cost and schema', async ({ request }) => {
+    const res = await request.get('/api/creative/ad-cta-optimizer');
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.creditCost).toBe(3);
+    expect(data.schema).toBeTruthy();
+  });
+
+  test('POST with valid input returns optimized CTAs', async ({ request }) => {
+    const res = await request.post('/api/creative/ad-cta-optimizer', {
+      data: {
+        productOrBrand: 'Premium wireless earbuds',
+        platform: 'tiktok',
+        count: 5,
+        dryRun: true,
+      },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.result).toBeTruthy();
+    expect(Array.isArray(data.result.ctas)).toBeTruthy();
+  });
+
+  test('POST with missing productOrBrand returns 400', async ({ request }) => {
+    const res = await request.post('/api/creative/ad-cta-optimizer', {
+      data: { platform: 'tiktok', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.status()).toBe(400);
+  });
+});
+
+test.describe('Creative Concept Expander API', () => {
+  test('GET returns credit cost and schema', async ({ request }) => {
+    const res = await request.get('/api/creative/concept-expander');
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.creditCost).toBe(4);
+    expect(data.schema).toBeTruthy();
+  });
+
+  test('POST with valid input returns expanded concepts', async ({ request }) => {
+    const res = await request.post('/api/creative/concept-expander', {
+      data: {
+        seedConcept: 'A day-in-the-life ad showing how the product fits into a busy morning routine',
+        platform: 'tiktok',
+        productOrBrand: 'Eco-friendly water bottle',
+        count: 5,
+        dryRun: true,
+      },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.result).toBeTruthy();
+    expect(Array.isArray(data.result.concepts)).toBeTruthy();
+  });
+
+  test('POST with missing seedConcept returns 400', async ({ request }) => {
+    const res = await request.post('/api/creative/concept-expander', {
+      data: { platform: 'tiktok', productOrBrand: 'test', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.status()).toBe(400);
+  });
+});
+
+test.describe('Ad Story Generator API', () => {
+  test('GET returns credit cost and schema', async ({ request }) => {
+    const res = await request.get('/api/creative/ad-story-generator');
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.creditCost).toBe(5);
+    expect(data.schema).toBeTruthy();
+  });
+
+  test('POST with valid input returns ad story', async ({ request }) => {
+    const res = await request.post('/api/creative/ad-story-generator', {
+      data: {
+        productOrBrand: 'Premium wireless earbuds',
+        platform: 'tiktok',
+        storyType: 'transformation',
+        duration: 30,
+        dryRun: true,
+      },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.result).toBeTruthy();
+    expect(data.result.story).toBeTruthy();
+    expect(Array.isArray(data.result.story.acts)).toBeTruthy();
+  });
+
+  test('POST with missing productOrBrand returns 400', async ({ request }) => {
+    const res = await request.post('/api/creative/ad-story-generator', {
+      data: { platform: 'tiktok', storyType: 'transformation', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.status()).toBe(400);
+  });
+});
+
+test.describe('Ad Color Palette Generator API', () => {
+  test('GET returns credit cost and schema', async ({ request }) => {
+    const res = await request.get('/api/creative/ad-color-palette-generator');
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.creditCost).toBe(3);
+    expect(data.schema).toBeTruthy();
+  });
+
+  test('POST with valid input returns palettes', async ({ request }) => {
+    const res = await request.post('/api/creative/ad-color-palette-generator', {
+      data: {
+        productOrBrand: 'Premium wireless earbuds',
+        platform: 'tiktok',
+        emotion: 'energetic',
+        count: 3,
+        dryRun: true,
+      },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.result).toBeTruthy();
+    expect(Array.isArray(data.result.palettes)).toBeTruthy();
+  });
+
+  test('POST with missing productOrBrand returns 400', async ({ request }) => {
+    const res = await request.post('/api/creative/ad-color-palette-generator', {
+      data: { platform: 'tiktok', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.status()).toBe(400);
+  });
+});

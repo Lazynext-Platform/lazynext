@@ -68,6 +68,10 @@ const CUSTOM_TITLES: Record<string, Bi> = {
   'angle-finder': { en: 'Creative Angle Finder', zh: '创意角度发现器' },
   'ad-timing-optimizer': { en: 'Ad Timing Optimizer', zh: '广告时段优化器' },
   'creative-fatigue-detector': { en: 'Creative Fatigue Detector', zh: '创意疲劳检测器' },
+  'ad-cta-optimizer': { en: 'Ad CTA Optimizer', zh: '广告CTA优化器' },
+  'concept-expander': { en: 'Creative Concept Expander', zh: '创意概念扩展器' },
+  'ad-story-generator': { en: 'Ad Story Generator', zh: '广告故事生成器' },
+  'ad-color-palette-generator': { en: 'Ad Color Palette Generator', zh: '广告配色生成器' },
 };
 const CUSTOM_DESCS: Record<string, Bi> = {
   'lazynext-studio': { en: 'Product + presenter photos → AI expands the prompt from your images → lip-synced UGC ad; one-click viral formats', zh: '产品图+人物图 → AI 看图扩写提示词 → 合成首帧 → 对口型真人口播广告;爆款玩法一键复刻' },
