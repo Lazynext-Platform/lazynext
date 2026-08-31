@@ -49,7 +49,7 @@ Production uses Cloudflare R2 via `src/lib/media-storage.cloudflare.ts`.
 ## Verification Commands
 ```bash
 npm run lint    # ESLint
-npm test        # Node test runner (5322+ tests)
+npm test        # Node test runner (6188+ tests)
 # E2E: 1052+ passed, 0 skipped (chromium + mobile-chrome + chromium-auth)
 npm run build   # Production build (Cloudflare target)
 npm run cf:build  # Cloudflare/OpenNext build
@@ -172,7 +172,7 @@ npm run cf:deploy # Deploy to Cloudflare Workers
 - ADRs 001-142 in `docs/adr/` document all major architecture decisions
 - Cross-feature handoffs: Brand Concepts → Creator Kits (query-param pre-fill),
   Brand Concepts → Shot Planner (script pre-fill), Clip Editor → Media Service Boundary (ASR/TTS)
-- Dashboard "Quick Create" grid includes all production apps and the 123 newest features
+- Dashboard "Quick Create" grid includes all production apps and the 145 newest features
   (Creator Kits, Brand Concepts, Clip Editor, Media Services, Product Brief, Reference Remix,
   Multi-Concept, Meta Safety, Google Safety, Performance Loop, Viral Analyzer, Skill Chains,
   Brand Guardrails, Smart Calendar, Competitor Watch, Ad Copy Generator, Hook Library,
@@ -214,7 +214,7 @@ npm run cf:deploy # Deploy to Cloudflare Workers
   Ad Creative Social Momentum Designer, Creative Ad Value Ladder Designer,
   Ad Creative Objection Neutralizer Designer, Creative Ad Micro-Commitment Designer,
   Ad Creative Scarcity Frame Designer, Creative Ad Identity Alignment Designer)
-- Nav header includes links to all feature pages (visible lg+); the 119 newest features
+- Nav header includes links to all feature pages (visible lg+); the 141 newest features
   (Product Brief, Reference Remix, Multi-Concept, Meta Safety, Google Safety, Performance Loop,
   Viral Analyzer, Skill Chains, Brand Guardrails, Smart Calendar, Competitor Watch, Ad Copy
   Generator, Hook Library, Brief Template Builder, Ad Script Writer, Audience Persona Generator,
@@ -1028,6 +1028,64 @@ npm run cf:deploy # Deploy to Cloudflare Workers
 - Dashboard Quick Create entries: 123 total (was 119)
 - Nav overflow entries: 119 total (was 115)
 - Production deployment version ID: 6312e896-4296-405e-a855-80fbc2ef0acf
+
+### TT29-Series: 22 Persuasion, Behavioral Economics & Copywriting Frameworks
+
+1. **Ad Creative PAS Framework Designer** — Problem-Agitation-Solution frameworks. 8 problem types.
+   Route: `/ad-creative-pas-framework-designer`. Credits: 4. ADR-155.
+2. **Creative Ad Offer Architecture Designer** — Offer architectures with bonus stacks. 8 offer types.
+   Route: `/creative-ad-offer-architecture-designer`. Credits: 5. ADR-156.
+3. **Ad Creative BAB Framework Designer** — Before-After-Bridge frameworks. 8 transformation types.
+   Route: `/ad-creative-bab-framework-designer`. Credits: 4. ADR-157.
+4. **Creative Ad Price Framing Designer** — Price framing strategies. 8 framing types.
+   Route: `/creative-ad-price-framing-designer`. Credits: 5. ADR-158.
+5. **Ad Creative Risk Reversal Designer** — Risk reversal with guarantees. 8 reversal types.
+   Route: `/ad-creative-risk-reversal-designer`. Credits: 4. ADR-159.
+6. **Creative Ad FAB Framework Designer** — Features-Advantages-Benefits frameworks. 8 benefit types.
+   Route: `/creative-ad-fab-framework-designer`. Credits: 5. ADR-160.
+7. **Ad Creative Testimonial Architecture Designer** — Testimonial architectures with social proof. 8 testimonial types.
+   Route: `/ad-creative-testimonial-architecture-designer`. Credits: 4. ADR-161.
+8. **Creative Ad Comparison Framework Designer** — Comparison frameworks for product advantages. 8 comparison types.
+   Route: `/creative-ad-comparison-framework-designer`. Credits: 5. ADR-162.
+9. **Ad Creative Demonstration Framework Designer** — Demonstration frameworks with visual proof. 8 demo types.
+   Route: `/ad-creative-demonstration-framework-designer`. Credits: 4. ADR-163.
+10. **Creative Ad Loss Aversion Framing Designer** — Loss aversion frames for inaction cost. 8 loss types.
+    Route: `/creative-ad-loss-aversion-framing-designer`. Credits: 5. ADR-164.
+11. **Ad Creative Anchoring Effect Designer** — Anchoring effect with reference anchors. 8 anchor types.
+    Route: `/ad-creative-anchoring-effect-designer`. Credits: 4. ADR-165.
+12. **Creative Ad Reciprocity Trigger Designer** — Reciprocity through value-first giving. 8 reciprocity types.
+    Route: `/creative-ad-reciprocity-trigger-designer`. Credits: 5. ADR-166.
+13. **Ad Creative Authority Positioning Designer** — Authority positioning with credentials. 8 authority types.
+    Route: `/ad-creative-authority-positioning-designer`. Credits: 4. ADR-167.
+14. **Creative Ad Liking Affinity Designer** — Liking affinity through similarity. 8 affinity types.
+    Route: `/creative-ad-liking-affinity-designer`. Credits: 5. ADR-168.
+15. **Ad Creative Fear Appeal Designer** — Fear appeal for protective action. 8 fear types.
+    Route: `/ad-creative-fear-appeal-designer`. Credits: 4. ADR-169.
+16. **Creative Ad Belonging Appeal Designer** — Belonging appeal for community connection. 8 belonging types.
+    Route: `/creative-ad-belonging-appeal-designer`. Credits: 5. ADR-170.
+17. **Ad Creative Humor Appeal Designer** — Humor appeal for shareability. 8 humor types.
+    Route: `/ad-creative-humor-appeal-designer`. Credits: 4. ADR-171.
+18. **Creative Ad Framing Effect Designer** — Framing effect for perception shaping. 8 framing types.
+    Route: `/creative-ad-framing-effect-designer`. Credits: 5. ADR-172.
+19. **Ad Creative Pride Appeal Designer** — Pride appeal for achievement motivation. 8 pride types.
+    Route: `/ad-creative-pride-appeal-designer`. Credits: 4. ADR-173.
+20. **Creative Ad Nostalgia Trigger Designer** — Nostalgia triggers through warm memories. 8 nostalgia types.
+    Route: `/creative-ad-nostalgia-trigger-designer`. Credits: 5. ADR-174.
+21. **Ad Creative Decoy Effect Designer** — Decoy effect with asymmetric options. 8 decoy types.
+    Route: `/ad-creative-decoy-effect-designer`. Credits: 4. ADR-175.
+22. **Creative Ad Endowment Effect Designer** — Endowment effect for ownership feeling. 8 endowment types.
+    Route: `/creative-ad-endowment-effect-designer`. Credits: 5. ADR-176.
+- All 22 features have dry-run/fallback behavior when Atlas is local or API key is missing
+- All 22 features use existing auth, credit deduction/refund, `withAtlas`, and `safeError` conventions
+- Unit tests: 6188 total (was 5322) — 866 new tests across 22 new test suites
+- TT29 page E2E tests: 176 passing (22 specs × 8 tests each)
+- TT29 API E2E tests: 66 passing (22 groups × 3 tests each)
+- Translations added to all 13 locales for 22 new namespaces
+- Feature routes: 154 total (was 132)
+- ADRs: 176 total (was 154)
+- Dashboard Quick Create entries: 145 total (was 123)
+- Nav overflow entries: 141 total (was 119)
+- Production deployment version ID: cb7067d5-0855-4d8a-8f5d-da54e7f7407e
 
 ## Production-Only Testing (Cannot Be Verified Locally)
 

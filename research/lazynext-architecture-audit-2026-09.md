@@ -1761,3 +1761,187 @@ The TT28 series added four more AI creative tools, documented in ADRs 151-154. A
 - TT28 production audit: all 4 pages HTTP 200, all 4 API metadata endpoints correct credit costs (4, 5, 4, 5).
 
 All four features have dry-run/fallback behavior when Atlas is local or the API key is missing, and use existing auth, credit deduction/refund, `withAtlas`, and `safeError` conventions. Total unit tests now 5322 (up from 5171) — 151 new tests across 4 new test suites. Total E2E tests: 1052+ (same — only TT28 page/API tests added, not full suite rerun for docs).
+
+## TT29-Series: 22 Persuasion, Behavioral Economics & Copywriting Frameworks
+
+### Overview
+
+Added 22 new AI creative features covering persuasion frameworks (PAS, BAB, FAB),
+behavioral economics principles (loss aversion, anchoring, decoy, endowment, framing effect,
+reciprocity), Cialdini-style influence (authority, liking, social proof via testimonials),
+emotional appeals (fear, belonging, humor, pride, nostalgia), and copywriting architectures
+(offer architecture, price framing, risk reversal, comparison, demonstration).
+
+Each feature follows the established TT28 self-contained five-file pattern: library, API route,
+page, unit test, ADR.
+
+### Features
+
+#### Ad Creative PAS Framework Designer (ADR-155)
+- Route: `/ad-creative-pas-framework-designer`
+- API: `POST /api/creative/ad-creative-pas-framework-designer`
+- Credit cost: 4
+- 8 problem types, dry-run returns 3 deterministic frameworks
+- Unit tests: 40 passing
+
+#### Creative Ad Offer Architecture Designer (ADR-156)
+- Route: `/creative-ad-offer-architecture-designer`
+- API: `POST /api/creative/creative-ad-offer-architecture-designer`
+- Credit cost: 5
+- 8 offer types, dry-run returns 3 deterministic architectures
+- Unit tests: 40 passing
+
+#### Ad Creative BAB Framework Designer (ADR-157)
+- Route: `/ad-creative-bab-framework-designer`
+- API: `POST /api/creative/ad-creative-bab-framework-designer`
+- Credit cost: 4
+- 8 transformation types, dry-run returns 3 deterministic frameworks
+- Unit tests: 42 passing
+
+#### Creative Ad Price Framing Designer (ADR-158)
+- Route: `/creative-ad-price-framing-designer`
+- API: `POST /api/creative/creative-ad-price-framing-designer`
+- Credit cost: 5
+- 8 framing types, dry-run returns 3 deterministic framings
+- Unit tests: 42 passing
+
+#### Ad Creative Risk Reversal Designer (ADR-159)
+- Route: `/ad-creative-risk-reversal-designer`
+- API: `POST /api/creative/ad-creative-risk-reversal-designer`
+- Credit cost: 4
+- 8 reversal types, dry-run returns 3 deterministic reversals
+- Unit tests: 40 passing
+
+#### Creative Ad FAB Framework Designer (ADR-160)
+- Route: `/creative-ad-fab-framework-designer`
+- API: `POST /api/creative/creative-ad-fab-framework-designer`
+- Credit cost: 5
+- 8 benefit types, dry-run returns 3 deterministic frameworks
+- Unit tests: 41 passing
+
+#### Ad Creative Testimonial Architecture Designer (ADR-161)
+- Route: `/ad-creative-testimonial-architecture-designer`
+- API: `POST /api/creative/ad-creative-testimonial-architecture-designer`
+- Credit cost: 4
+- 8 testimonial types, dry-run returns 3 deterministic architectures
+- Unit tests: 40 passing
+
+#### Creative Ad Comparison Framework Designer (ADR-162)
+- Route: `/creative-ad-comparison-framework-designer`
+- API: `POST /api/creative/creative-ad-comparison-framework-designer`
+- Credit cost: 5
+- 8 comparison types, dry-run returns 3 deterministic frameworks
+- Unit tests: 38 passing
+
+#### Ad Creative Demonstration Framework Designer (ADR-163)
+- Route: `/ad-creative-demonstration-framework-designer`
+- API: `POST /api/creative/ad-creative-demonstration-framework-designer`
+- Credit cost: 4
+- 8 demo types, dry-run returns 3 deterministic frameworks
+- Unit tests: 40 passing
+
+#### Creative Ad Loss Aversion Framing Designer (ADR-164)
+- Route: `/creative-ad-loss-aversion-framing-designer`
+- API: `POST /api/creative/creative-ad-loss-aversion-framing-designer`
+- Credit cost: 5
+- 8 loss types, dry-run returns 3 deterministic frameworks
+- Unit tests: 39 passing
+
+#### Ad Creative Anchoring Effect Designer (ADR-165)
+- Route: `/ad-creative-anchoring-effect-designer`
+- API: `POST /api/creative/ad-creative-anchoring-effect-designer`
+- Credit cost: 4
+- 8 anchor types, dry-run returns 3 deterministic frameworks
+- Unit tests: 35 passing
+
+#### Creative Ad Reciprocity Trigger Designer (ADR-166)
+- Route: `/creative-ad-reciprocity-trigger-designer`
+- API: `POST /api/creative/creative-ad-reciprocity-trigger-designer`
+- Credit cost: 5
+- 8 reciprocity types, dry-run returns 3 deterministic frameworks
+- Unit tests: 35 passing
+
+#### Ad Creative Authority Positioning Designer (ADR-167)
+- Route: `/ad-creative-authority-positioning-designer`
+- API: `POST /api/creative/ad-creative-authority-positioning-designer`
+- Credit cost: 4
+- 8 authority types, dry-run returns 3 deterministic positionings
+- Unit tests: 40 passing
+
+#### Creative Ad Liking Affinity Designer (ADR-168)
+- Route: `/creative-ad-liking-affinity-designer`
+- API: `POST /api/creative/creative-ad-liking-affinity-designer`
+- Credit cost: 5
+- 8 affinity types, dry-run returns 3 deterministic affinities
+- Unit tests: 40 passing
+
+#### Ad Creative Fear Appeal Designer (ADR-169)
+- Route: `/ad-creative-fear-appeal-designer`
+- API: `POST /api/creative/ad-creative-fear-appeal-designer`
+- Credit cost: 4
+- 8 fear types, dry-run returns 3 deterministic appeals
+- Unit tests: 38 passing
+
+#### Creative Ad Belonging Appeal Designer (ADR-170)
+- Route: `/creative-ad-belonging-appeal-designer`
+- API: `POST /api/creative/creative-ad-belonging-appeal-designer`
+- Credit cost: 5
+- 8 belonging types, dry-run returns 3 deterministic appeals
+- Unit tests: 38 passing
+
+#### Ad Creative Humor Appeal Designer (ADR-171)
+- Route: `/ad-creative-humor-appeal-designer`
+- API: `POST /api/creative/ad-creative-humor-appeal-designer`
+- Credit cost: 4
+- 8 humor types, dry-run returns 3 deterministic appeals
+- Unit tests: 40 passing
+
+#### Creative Ad Framing Effect Designer (ADR-172)
+- Route: `/creative-ad-framing-effect-designer`
+- API: `POST /api/creative/creative-ad-framing-effect-designer`
+- Credit cost: 5
+- 8 framing types, dry-run returns 3 deterministic effects
+- Unit tests: 40 passing
+
+#### Ad Creative Pride Appeal Designer (ADR-173)
+- Route: `/ad-creative-pride-appeal-designer`
+- API: `POST /api/creative/ad-creative-pride-appeal-designer`
+- Credit cost: 4
+- 8 pride types, dry-run returns 3 deterministic appeals
+- Unit tests: 35 passing
+
+#### Creative Ad Nostalgia Trigger Designer (ADR-174)
+- Route: `/creative-ad-nostalgia-trigger-designer`
+- API: `POST /api/creative/creative-ad-nostalgia-trigger-designer`
+- Credit cost: 5
+- 8 nostalgia types, dry-run returns 3 deterministic triggers
+- Unit tests: 40 passing
+
+#### Ad Creative Decoy Effect Designer (ADR-175)
+- Route: `/ad-creative-decoy-effect-designer`
+- API: `POST /api/creative/ad-creative-decoy-effect-designer`
+- Credit cost: 4
+- 8 decoy types, dry-run returns 3 deterministic effects
+- Unit tests: 40 passing
+
+#### Creative Ad Endowment Effect Designer (ADR-176)
+- Route: `/creative-ad-endowment-effect-designer`
+- API: `POST /api/creative/creative-ad-endowment-effect-designer`
+- Credit cost: 5
+- 8 endowment types, dry-run returns 3 deterministic effects
+- Unit tests: 43 passing
+
+### i18n, Dashboard, and Nav (TT29)
+
+- Translations added to all 13 locales for 22 new namespaces
+- Dashboard Quick Create entries: 145 total (was 123)
+- Nav overflow entries: 141 total (was 119)
+
+### Production deployment (TT29)
+
+- Cloudflare version ID: cb7067d5-0855-4d8a-8f5d-da54e7f7407e
+- TT29 page E2E tests: 176 passing (22 specs × 8 tests each)
+- TT29 API E2E tests: 66 passing (22 groups × 3 tests each)
+- TT29 production audit: all 22 pages HTTP 200, all 22 API metadata endpoints correct credit costs
+
+All 22 features have dry-run/fallback behavior when Atlas is local or the API key is missing, and use existing auth, credit deduction/refund, `withAtlas`, and `safeError` conventions. Total unit tests now 6188 (up from 5322) — 866 new tests across 22 new test suites. Total ADRs: 176 (up from 154). Total feature routes: 154 (up from 132).
