@@ -6,7 +6,7 @@ import { useSession } from 'next-auth/react';
 import {
   Clapperboard, Coins, Boxes, FolderOpen, ArrowRight, Loader2, Film, Play, Sparkles,
   TrendingDown, TrendingUp, BarChart3, Trophy, Calendar, Gift, Layers, Scissors, Server, Users, Zap, Workflow,
-  FileText, RefreshCw, Lightbulb, Shield, Flame, GitBranch, CalendarClock, Radar, PenLine, Anchor, FileSpreadsheet, ScrollText, UsersRound, LayoutGrid, GitMerge, FileSearch2, LayoutTemplate, Palette, Gauge, FlaskRound, TestTube, Compass, Mic, Type, Newspaper, Lightbulb as LightbulbIcon, Clock, BatteryLow, MousePointerClick, Expand, BookOpenCheck, Droplet,
+  FileText, RefreshCw, Lightbulb, Shield, Flame, GitBranch, CalendarClock, Radar, PenLine, Anchor, FileSpreadsheet, ScrollText, UsersRound, LayoutGrid, GitMerge, FileSearch2, LayoutTemplate, Palette, Gauge, FlaskRound, TestTube, Compass, Mic, Type, Newspaper, Lightbulb as LightbulbIcon, Clock, BatteryLow, MousePointerClick, Expand, BookOpenCheck, Droplet, Hash, Clapperboard as ClapperboardIcon, Image as ImageIcon,
 } from 'lucide-react';
 import { useI18n } from '@/i18n/provider';
 import { appTitle, appDesc, isFeatured } from '@/config/appCatalog';
@@ -68,6 +68,10 @@ const APPS: App[] = [
   { id: 'concept-expander', href: '/concept-expander', icon: Expand },
   { id: 'ad-story-generator', href: '/ad-story-generator', icon: BookOpenCheck },
   { id: 'ad-color-palette-generator', href: '/ad-color-palette-generator', icon: Droplet },
+  { id: 'ad-thumbnail-generator', href: '/ad-thumbnail-generator', icon: ImageIcon },
+  { id: 'ad-font-pairing-generator', href: '/ad-font-pairing-generator', icon: Type },
+  { id: 'ad-hashtag-generator', href: '/ad-hashtag-generator', icon: Hash },
+  { id: 'creative-scene-generator', href: '/creative-scene-generator', icon: ClapperboardIcon },
 ];
 
 type Creation = {
