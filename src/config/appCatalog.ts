@@ -152,6 +152,10 @@ const CUSTOM_TITLES: Record<string, Bi> = {
   'creative-ad-urgency-catalyst-designer': { en: 'Creative Ad Urgency Catalyst Designer', zh: '创意广告紧迫感催化剂设计师' },
   'ad-creative-social-momentum-designer': { en: 'Ad Creative Social Momentum Designer', zh: '广告创意社交势能设计师' },
   'creative-ad-value-ladder-designer': { en: 'Creative Ad Value Ladder Designer', zh: '创意广告价值阶梯设计师' },
+  'ad-creative-objection-neutralizer-designer': { en: 'Ad Creative Objection Neutralizer Designer', zh: '广告创意异议中和器设计师' },
+  'creative-ad-micro-commitment-designer': { en: 'Creative Ad Micro-Commitment Designer', zh: '创意广告微承诺设计师' },
+  'ad-creative-scarcity-frame-designer': { en: 'Ad Creative Scarcity Frame Designer', zh: '广告创意稀缺框架设计师' },
+  'creative-ad-identity-alignment-designer': { en: 'Creative Ad Identity Alignment Designer', zh: '创意广告身份对齐设计师' },
 };
 const CUSTOM_DESCS: Record<string, Bi> = {
   'lazynext-studio': { en: 'Product + presenter photos → AI expands the prompt from your images → lip-synced UGC ad; one-click viral formats', zh: '产品图+人物图 → AI 看图扩写提示词 → 合成首帧 → 对口型真人口播广告;爆款玩法一键复刻' },
