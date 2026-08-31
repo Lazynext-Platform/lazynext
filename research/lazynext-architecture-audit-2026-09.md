@@ -1530,3 +1530,38 @@ Designs pacing variability in ad creative content — alternating fast and slow 
 - TT23 production audit: 20/20 passing (4 pages x 5 checks: HTTP 200, 1 H1, main#main-content, skip link, API schema).
 
 All four features have dry-run/fallback behavior when Atlas is local or the API key is missing, and use existing auth, credit deduction/refund, `withAtlas`, and `safeError` conventions. Total unit tests now 4563 (up from 4402) — 161 new tests across 4 new test suites. Total E2E tests: 1052+ (same — only TT23 page/API tests added, not full suite rerun for docs).
+
+## 39. TT24-Series Features
+
+The TT24 series added four more AI creative tools, documented in ADRs 135-138. All four features have dry-run/fallback behavior when Atlas is local or the API key is missing, and use existing auth, credit deduction/refund, `withAtlas`, and `safeError` conventions. This brings the total feature route count to 116 and the total ADR count to 138.
+
+### Creative Ad Foreshadowing Designer (`/creative-ad-foreshadowing-designer`)
+
+Designs foreshadowing elements in ad creative content — subtle hints that pay off later and reward re-watching. Takes product/brand, content, target audience, and optional platform. Returns foreshadowing elements with hint type (visual_plant, verbal_cue, prop_placement, color_motif, sound_foreshadow, gesture_hint, text_overlay, background_detail), setup, payoff, subtlety score (0-100), rewatch value (0-100), placement, and viewer discovery. 4 credits. See ADR-135.
+
+### Ad Creative Emotional Pivot Designer (`/ad-creative-emotional-pivot-designer`)
+
+Designs emotional pivot points in ad creative content — moments where the emotional tone shifts dramatically. Takes product/brand, content, target audience, and optional platform. Returns pivot points with pivot type (joy_to_sadness, tension_to_relief, fear_to_hope, serious_to_playful, calm_to_excitement, nostalgia_to_aspiration, frustration_to_satisfaction, curiosity_to_revelation), before/after emotion, transition method, impact score (0-100), timing, and viewer effect. 3 credits. See ADR-136.
+
+### Creative Ad Resolution Designer (`/creative-ad-resolution-designer`)
+
+Designs resolution structures in ad creative content — how the narrative tension resolves and the emotional landing for viewers. Takes product/brand, content, target audience, and optional platform. Returns resolution structure (type, description, timing, narrative completion), emotional closure (primary emotion, closure method, viewer feeling, emotional depth), CTA bridge (bridge method, transition phrase, CTA placement, naturalness), satisfaction score (0-100), and memorability score (0-100). 4 credits. See ADR-137.
+
+### Ad Creative Viewer Reward Designer (`/ad-creative-viewer-reward-designer`)
+
+Designs viewer reward systems in ad creative content — elements that give viewers a sense of satisfaction, discovery, or emotional payoff for watching. Takes product/brand, content, target audience, and optional platform. Returns reward elements (type, description, viewer action, payoff, satisfaction level, timing), discovery moments, satisfaction triggers (trigger, emotion, intensity, viewer response), rewatch incentives, and reward score (0-100). 5 credits. See ADR-138.
+
+### i18n, Dashboard, and Nav (TT24)
+
+- 4 new namespaces added to all 13 locales: creativeAdForeshadowingDesigner, adCreativeEmotionalPivotDesigner, creativeAdResolutionDesigner, adCreativeViewerRewardDesigner.
+- Dashboard Quick Create grid: 107 newest features (was 103).
+- Nav overflow: 103 newest features (was 99).
+
+### Production deployment (TT24)
+
+- All 4 pages deployed and healthy in production.
+- TT24 page E2E tests: 32 passing.
+- TT24 API E2E tests: 12 passing.
+- TT24 production audit: 20/20 passing (4 pages x 5 checks: HTTP 200, 1 H1, main#main-content, skip link, API schema).
+
+All four features have dry-run/fallback behavior when Atlas is local or the API key is missing, and use existing auth, credit deduction/refund, `withAtlas`, and `safeError` conventions. Total unit tests now 4707 (up from 4563) — 144 new tests across 4 new test suites. Total E2E tests: 1052+ (same — only TT24 page/API tests added, not full suite rerun for docs).

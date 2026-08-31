@@ -49,7 +49,7 @@ Production uses Cloudflare R2 via `src/lib/media-storage.cloudflare.ts`.
 ## Verification Commands
 ```bash
 npm run lint    # ESLint
-npm test        # Node test runner (4563+ tests)
+npm test        # Node test runner (4707+ tests)
 # E2E: 1052+ passed, 0 skipped (chromium + mobile-chrome + chromium-auth)
 npm run build   # Production build (Cloudflare target)
 npm run cf:build  # Cloudflare/OpenNext build
@@ -158,7 +158,9 @@ npm run cf:deploy # Deploy to Cloudflare Workers
   `/api/creative/creative-ad-curiosity-gap-designer`, `/api/creative/ad-creative-rhythm-pacing-optimizer`,
   `/api/creative/creative-ad-visual-hierarchy-strategist`, `/api/creative/ad-creative-sound-design-strategist`,
   `/api/creative/creative-ad-surprise-element-designer`, `/api/creative/ad-creative-callback-memory-designer`,
-  `/api/creative/creative-ad-climax-architect`, `/api/creative/ad-creative-pacing-variability-designer`
+  `/api/creative/creative-ad-climax-architect`, `/api/creative/ad-creative-pacing-variability-designer`,
+  `/api/creative/creative-ad-foreshadowing-designer`, `/api/creative/ad-creative-emotional-pivot-designer`,
+  `/api/creative/creative-ad-resolution-designer`, `/api/creative/ad-creative-viewer-reward-designer`
 - Ad platform API routes: `/api/ads/create`, `/api/ads/metrics`, `/api/ads/list`, `/api/ads/report`,
   `/api/ads/budget`, `/api/ads/google-budget`, `/api/ads/google-report`, `/api/analytics/ga4`,
   `/api/ads/meta-safety`, `/api/ads/meta-approve`, `/api/ads/google-safety`, `/api/ads/google-approve`
@@ -167,10 +169,10 @@ npm run cf:deploy # Deploy to Cloudflare Workers
 - `/api/creative/director` returns an NDJSON stream of step-by-step progress updates; legacy
   non-streaming mode available via `?stream=false`
 - Pipeline stages: brief, script, storyboard, media_generation, audio, edit, compliance, score, publish
-- ADRs 001-134 in `docs/adr/` document all major architecture decisions
+- ADRs 001-138 in `docs/adr/` document all major architecture decisions
 - Cross-feature handoffs: Brand Concepts → Creator Kits (query-param pre-fill),
   Brand Concepts → Shot Planner (script pre-fill), Clip Editor → Media Service Boundary (ASR/TTS)
-- Dashboard "Quick Create" grid includes all production apps and the 103 newest features
+- Dashboard "Quick Create" grid includes all production apps and the 107 newest features
   (Creator Kits, Brand Concepts, Clip Editor, Media Services, Product Brief, Reference Remix,
   Multi-Concept, Meta Safety, Google Safety, Performance Loop, Viral Analyzer, Skill Chains,
   Brand Guardrails, Smart Calendar, Competitor Watch, Ad Copy Generator, Hook Library,
@@ -205,8 +207,10 @@ npm run cf:deploy # Deploy to Cloudflare Workers
   Creative Ad Curiosity Gap Designer, Ad Creative Rhythm Pacing Optimizer,
   Creative Ad Visual Hierarchy Strategist, Ad Creative Sound Design Strategist,
   Creative Ad Surprise Element Designer, Ad Creative Callback Memory Designer,
-  Creative Ad Climax Architect, Ad Creative Pacing Variability Designer)
-- Nav header includes links to all feature pages (visible lg+); the 99 newest features
+  Creative Ad Climax Architect, Ad Creative Pacing Variability Designer,
+  Creative Ad Foreshadowing Designer, Ad Creative Emotional Pivot Designer,
+  Creative Ad Resolution Designer, Ad Creative Viewer Reward Designer)
+- Nav header includes links to all feature pages (visible lg+); the 103 newest features
   (Product Brief, Reference Remix, Multi-Concept, Meta Safety, Google Safety, Performance Loop,
   Viral Analyzer, Skill Chains, Brand Guardrails, Smart Calendar, Competitor Watch, Ad Copy
   Generator, Hook Library, Brief Template Builder, Ad Script Writer, Audience Persona Generator,
@@ -241,7 +245,9 @@ npm run cf:deploy # Deploy to Cloudflare Workers
   Ad Creative Rhythm Pacing Optimizer, Creative Ad Visual Hierarchy Strategist,
   Ad Creative Sound Design Strategist, Creative Ad Surprise Element Designer,
   Ad Creative Callback Memory Designer, Creative Ad Climax Architect,
-  Ad Creative Pacing Variability Designer) are in the overflow nav
+  Ad Creative Pacing Variability Designer, Creative Ad Foreshadowing Designer,
+  Ad Creative Emotional Pivot Designer, Creative Ad Resolution Designer,
+  Ad Creative Viewer Reward Designer) are in the overflow nav
 
 ### JJ-Series: Research-Derived Creative Capabilities
 - Product Page → Ad Brief (`/product-brief`): URL/product extraction → brand/product brief →
@@ -861,6 +867,34 @@ npm run cf:deploy # Deploy to Cloudflare Workers
 - Feature routes: 112 total (was 108)
 - ADRs: 134 total (was 130)
 - Production deployment version ID: 77b2ca2f-96d6-4849-a807-554dfde51222
+
+### TT24-Series: Four More AI Creative Tools
+- Creative Ad Foreshadowing Designer (`/creative-ad-foreshadowing-designer`): AI-powered foreshadowing designer.
+  Designs foreshadowing elements that hint at future payoffs and reward re-watching; returns elements with
+  hint type, setup, payoff, subtlety score, rewatch value, placement, and viewer discovery.
+  4 credits. API: `POST /api/creative/creative-ad-foreshadowing-designer`. See ADR-135.
+- Ad Creative Emotional Pivot Designer (`/ad-creative-emotional-pivot-designer`): AI-powered emotional pivot designer.
+  Designs emotional pivot points where the tone shifts dramatically; returns pivots with pivot type,
+  before/after emotion, transition method, impact score, timing, and viewer effect.
+  3 credits. API: `POST /api/creative/ad-creative-emotional-pivot-designer`. See ADR-136.
+- Creative Ad Resolution Designer (`/creative-ad-resolution-designer`): AI-powered resolution designer.
+  Designs resolution structures that land the narrative and emotional closure; returns resolution structure,
+  emotional closure, CTA bridge, satisfaction score, and memorability score.
+  4 credits. API: `POST /api/creative/creative-ad-resolution-designer`. See ADR-137.
+- Ad Creative Viewer Reward Designer (`/ad-creative-viewer-reward-designer`): AI-powered viewer reward designer.
+  Designs viewer reward systems that give satisfaction, discovery, and emotional payoff; returns reward elements,
+  discovery moments, satisfaction triggers, rewatch incentives, and reward score.
+  5 credits. API: `POST /api/creative/ad-creative-viewer-reward-designer`. See ADR-138.
+- All 4 features have dry-run/fallback behavior when Atlas is local or API key is missing
+- All 4 features use existing auth, credit deduction/refund, `withAtlas`, and `safeError` conventions
+- Unit tests: 4707 total (was 4563) — 144 new tests across 4 new test suites
+- TT24 page E2E tests: 32 passing
+- TT24 API E2E tests: 12 passing
+- Translations added to all 13 locales for 4 new namespaces: creativeAdForeshadowingDesigner,
+  adCreativeEmotionalPivotDesigner, creativeAdResolutionDesigner, adCreativeViewerRewardDesigner
+- Feature routes: 116 total (was 112)
+- ADRs: 138 total (was 134)
+- Production deployment version ID: ad6167e0-4a90-47d0-85f0-2d9392ffd9a4
 
 ## Production-Only Testing (Cannot Be Verified Locally)
 
