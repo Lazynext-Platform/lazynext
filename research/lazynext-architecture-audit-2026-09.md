@@ -1494,3 +1494,39 @@ The TT22 series added four more AI creative tools, documented in ADRs 127-130. A
 - TT22 production audit: 20/20 passing (4 pages x 5 checks: HTTP 200, 1 H1, main#main-content, skip link, API schema).
 
 All four features have dry-run/fallback behavior when Atlas is local or the API key is missing, and use existing auth, credit deduction/refund, `withAtlas`, and `safeError` conventions. Total unit tests now 4402 (up from 4241) — 161 new tests across 4 new test suites. Total E2E tests: 1052+ (same — only TT22 page/API tests added, not full suite rerun for docs).
+
+## 38. TT23-Series Features
+
+The TT23 series added four more AI creative tools, documented in ADRs 131-134. All four features have dry-run/fallback behavior when Atlas is local or the API key is missing, and use existing auth, credit deduction/refund, `withAtlas`, and `safeError` conventions. This brings the total feature route count to 112 and the total ADR count to 134.
+
+### Creative Ad Surprise Element Designer (`/creative-ad-surprise-element-designer`)
+
+Designs surprise elements in ad creative content that delight and re-engage viewers. Takes product/brand, content, target audience, and optional platform. Returns surprise elements with surprise type (unexpected_twist, hidden_detail, sudden_reveal, role_reversal, genre_shift, breaking_fourth_wall, unexpected_character, surprise_collaboration), setup, reveal, delight score (0-100), execution guide, viewer reaction, and timing. 4 credits. See ADR-131.
+
+### Ad Creative Callback Memory Designer (`/ad-creative-callback-memory-designer`)
+
+Designs callback elements in ad creative content — references back to earlier moments that reward attentive viewers. Takes product/brand, content, target audience, and optional platform. Returns callback elements with callback type (visual_echo, phrase_recall, character_return, prop_reuse, setting_revisit, theme_callback, sound_motif, gesture_repeat), original moment, callback reference, payoff, recognition score (0-100), placement, and reward type (subtle/moderate/explicit). 3 credits. See ADR-132.
+
+### Creative Ad Climax Architect (`/creative-ad-climax-architect`)
+
+Architects the climax of ad creative content — the peak moment of emotional and narrative intensity. Takes product/brand, content, target audience, and optional platform. Returns climax structure (type, timing, duration, intensity), buildup sequence (steps with tension levels), peak moment (emotional intensity, visual/audio elements, viewer impact), resolution (emotional landing, CTA), and climax score (0-100). 4 credits. See ADR-133.
+
+### Ad Creative Pacing Variability Designer (`/ad-creative-pacing-variability-designer`)
+
+Designs pacing variability in ad creative content — alternating fast and slow segments to maintain engagement. Takes product/brand, content, target audience, and optional platform. Returns pacing variations (segment, speed, duration, energy, purpose), speed transitions (from/to speed, transition method, impact), energy fluctuations (direction, trigger), attention resets (method, reengagement score), and variability score (0-100). 5 credits. See ADR-134.
+
+### i18n, Dashboard, and Nav (TT23)
+
+- 4 new namespaces added to all 13 locales: creativeAdSurpriseElementDesigner, adCreativeCallbackMemoryDesigner, creativeAdClimaxArchitect, adCreativePacingVariabilityDesigner.
+- Dashboard Quick Create grid: 103 newest features (was 99).
+- Nav overflow: 99 newest features (was 95).
+
+### Production deployment (TT23)
+
+- All 4 pages deployed and healthy in production.
+- Production version ID: `77b2ca2f-96d6-4849-a807-554dfde51222`.
+- TT23 page E2E tests: 32 passing.
+- TT23 API E2E tests: 12 passing.
+- TT23 production audit: 20/20 passing (4 pages x 5 checks: HTTP 200, 1 H1, main#main-content, skip link, API schema).
+
+All four features have dry-run/fallback behavior when Atlas is local or the API key is missing, and use existing auth, credit deduction/refund, `withAtlas`, and `safeError` conventions. Total unit tests now 4563 (up from 4402) — 161 new tests across 4 new test suites. Total E2E tests: 1052+ (same — only TT23 page/API tests added, not full suite rerun for docs).

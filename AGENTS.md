@@ -49,7 +49,7 @@ Production uses Cloudflare R2 via `src/lib/media-storage.cloudflare.ts`.
 ## Verification Commands
 ```bash
 npm run lint    # ESLint
-npm test        # Node test runner (4402+ tests)
+npm test        # Node test runner (4563+ tests)
 # E2E: 1052+ passed, 0 skipped (chromium + mobile-chrome + chromium-auth)
 npm run build   # Production build (Cloudflare target)
 npm run cf:build  # Cloudflare/OpenNext build
@@ -156,7 +156,9 @@ npm run cf:deploy # Deploy to Cloudflare Workers
   `/api/creative/creative-ad-narrative-twist-designer`, `/api/creative/ad-creative-memory-anchor-builder`,
   `/api/creative/creative-ad-tension-release-strategist`, `/api/creative/ad-creative-sensory-contrast-designer`,
   `/api/creative/creative-ad-curiosity-gap-designer`, `/api/creative/ad-creative-rhythm-pacing-optimizer`,
-  `/api/creative/creative-ad-visual-hierarchy-strategist`, `/api/creative/ad-creative-sound-design-strategist`
+  `/api/creative/creative-ad-visual-hierarchy-strategist`, `/api/creative/ad-creative-sound-design-strategist`,
+  `/api/creative/creative-ad-surprise-element-designer`, `/api/creative/ad-creative-callback-memory-designer`,
+  `/api/creative/creative-ad-climax-architect`, `/api/creative/ad-creative-pacing-variability-designer`
 - Ad platform API routes: `/api/ads/create`, `/api/ads/metrics`, `/api/ads/list`, `/api/ads/report`,
   `/api/ads/budget`, `/api/ads/google-budget`, `/api/ads/google-report`, `/api/analytics/ga4`,
   `/api/ads/meta-safety`, `/api/ads/meta-approve`, `/api/ads/google-safety`, `/api/ads/google-approve`
@@ -165,10 +167,10 @@ npm run cf:deploy # Deploy to Cloudflare Workers
 - `/api/creative/director` returns an NDJSON stream of step-by-step progress updates; legacy
   non-streaming mode available via `?stream=false`
 - Pipeline stages: brief, script, storyboard, media_generation, audio, edit, compliance, score, publish
-- ADRs 001-130 in `docs/adr/` document all major architecture decisions
+- ADRs 001-134 in `docs/adr/` document all major architecture decisions
 - Cross-feature handoffs: Brand Concepts → Creator Kits (query-param pre-fill),
   Brand Concepts → Shot Planner (script pre-fill), Clip Editor → Media Service Boundary (ASR/TTS)
-- Dashboard "Quick Create" grid includes all production apps and the 99 newest features
+- Dashboard "Quick Create" grid includes all production apps and the 103 newest features
   (Creator Kits, Brand Concepts, Clip Editor, Media Services, Product Brief, Reference Remix,
   Multi-Concept, Meta Safety, Google Safety, Performance Loop, Viral Analyzer, Skill Chains,
   Brand Guardrails, Smart Calendar, Competitor Watch, Ad Copy Generator, Hook Library,
@@ -201,8 +203,10 @@ npm run cf:deploy # Deploy to Cloudflare Workers
   Creative Ad Narrative Twist Designer, Ad Creative Memory Anchor Builder,
   Creative Ad Tension Release Strategist, Ad Creative Sensory Contrast Designer,
   Creative Ad Curiosity Gap Designer, Ad Creative Rhythm Pacing Optimizer,
-  Creative Ad Visual Hierarchy Strategist, Ad Creative Sound Design Strategist)
-- Nav header includes links to all feature pages (visible lg+); the 95 newest features
+  Creative Ad Visual Hierarchy Strategist, Ad Creative Sound Design Strategist,
+  Creative Ad Surprise Element Designer, Ad Creative Callback Memory Designer,
+  Creative Ad Climax Architect, Ad Creative Pacing Variability Designer)
+- Nav header includes links to all feature pages (visible lg+); the 99 newest features
   (Product Brief, Reference Remix, Multi-Concept, Meta Safety, Google Safety, Performance Loop,
   Viral Analyzer, Skill Chains, Brand Guardrails, Smart Calendar, Competitor Watch, Ad Copy
   Generator, Hook Library, Brief Template Builder, Ad Script Writer, Audience Persona Generator,
@@ -235,7 +239,9 @@ npm run cf:deploy # Deploy to Cloudflare Workers
   Ad Creative Memory Anchor Builder, Creative Ad Tension Release Strategist,
   Ad Creative Sensory Contrast Designer, Creative Ad Curiosity Gap Designer,
   Ad Creative Rhythm Pacing Optimizer, Creative Ad Visual Hierarchy Strategist,
-  Ad Creative Sound Design Strategist) are in the overflow nav
+  Ad Creative Sound Design Strategist, Creative Ad Surprise Element Designer,
+  Ad Creative Callback Memory Designer, Creative Ad Climax Architect,
+  Ad Creative Pacing Variability Designer) are in the overflow nav
 
 ### JJ-Series: Research-Derived Creative Capabilities
 - Product Page → Ad Brief (`/product-brief`): URL/product extraction → brand/product brief →
@@ -827,6 +833,34 @@ npm run cf:deploy # Deploy to Cloudflare Workers
 - Translations added to all 13 locales for 4 new namespaces: creativeAdCuriosityGapDesigner,
   adCreativeRhythmPacingOptimizer, creativeAdVisualHierarchyStrategist, adCreativeSoundDesignStrategist
 - Production deployment version ID: a2c8ed0b-46c5-4994-baab-23e8cef6b589
+
+### TT23-Series: Four More AI Creative Tools
+- Creative Ad Surprise Element Designer (`/creative-ad-surprise-element-designer`): AI-powered surprise element designer.
+  Designs surprise elements in ad creative that delight and re-engage viewers; returns elements with
+  surprise type, setup, reveal, delight score, execution guide, viewer reaction, and timing.
+  4 credits. API: `POST /api/creative/creative-ad-surprise-element-designer`. See ADR-131.
+- Ad Creative Callback Memory Designer (`/ad-creative-callback-memory-designer`): AI-powered callback memory designer.
+  Designs callback elements that reward attentive viewers and build creative memory; returns callbacks with
+  callback type, original moment, callback reference, payoff, recognition score, placement, and reward type.
+  3 credits. API: `POST /api/creative/ad-creative-callback-memory-designer`. See ADR-132.
+- Creative Ad Climax Architect (`/creative-ad-climax-architect`): AI-powered climax architect.
+  Architects the climax of ad creative — the peak moment of emotional and narrative intensity; returns
+  climax structure, buildup sequence, peak moment, resolution, and climax score.
+  4 credits. API: `POST /api/creative/creative-ad-climax-architect`. See ADR-133.
+- Ad Creative Pacing Variability Designer (`/ad-creative-pacing-variability-designer`): AI-powered pacing variability designer.
+  Designs pacing variability that alternates fast and slow segments to maintain engagement; returns
+  pacing variations, speed transitions, energy fluctuations, attention resets, and variability score.
+  5 credits. API: `POST /api/creative/ad-creative-pacing-variability-designer`. See ADR-134.
+- All 4 features have dry-run/fallback behavior when Atlas is local or API key is missing
+- All 4 features use existing auth, credit deduction/refund, `withAtlas`, and `safeError` conventions
+- Unit tests: 4563 total (was 4402) — 161 new tests across 4 new test suites
+- TT23 page E2E tests: 32 passing
+- TT23 API E2E tests: 12 passing
+- Translations added to all 13 locales for 4 new namespaces: creativeAdSurpriseElementDesigner,
+  adCreativeCallbackMemoryDesigner, creativeAdClimaxArchitect, adCreativePacingVariabilityDesigner
+- Feature routes: 112 total (was 108)
+- ADRs: 134 total (was 130)
+- Production deployment version ID: 77b2ca2f-96d6-4849-a807-554dfde51222
 
 ## Production-Only Testing (Cannot Be Verified Locally)
 
