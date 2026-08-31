@@ -49,7 +49,7 @@ Production uses Cloudflare R2 via `src/lib/media-storage.cloudflare.ts`.
 ## Verification Commands
 ```bash
 npm run lint    # ESLint
-npm test        # Node test runner (4852+ tests)
+npm test        # Node test runner (5023+ tests)
 # E2E: 1052+ passed, 0 skipped (chromium + mobile-chrome + chromium-auth)
 npm run build   # Production build (Cloudflare target)
 npm run cf:build  # Cloudflare/OpenNext build
@@ -172,7 +172,7 @@ npm run cf:deploy # Deploy to Cloudflare Workers
 - ADRs 001-142 in `docs/adr/` document all major architecture decisions
 - Cross-feature handoffs: Brand Concepts → Creator Kits (query-param pre-fill),
   Brand Concepts → Shot Planner (script pre-fill), Clip Editor → Media Service Boundary (ASR/TTS)
-- Dashboard "Quick Create" grid includes all production apps and the 111 newest features
+- Dashboard "Quick Create" grid includes all production apps and the 115 newest features
   (Creator Kits, Brand Concepts, Clip Editor, Media Services, Product Brief, Reference Remix,
   Multi-Concept, Meta Safety, Google Safety, Performance Loop, Viral Analyzer, Skill Chains,
   Brand Guardrails, Smart Calendar, Competitor Watch, Ad Copy Generator, Hook Library,
@@ -210,7 +210,7 @@ npm run cf:deploy # Deploy to Cloudflare Workers
   Creative Ad Climax Architect, Ad Creative Pacing Variability Designer,
   Creative Ad Foreshadowing Designer, Ad Creative Emotional Pivot Designer,
   Creative Ad Resolution Designer, Ad Creative Viewer Reward Designer)
-- Nav header includes links to all feature pages (visible lg+); the 107 newest features
+- Nav header includes links to all feature pages (visible lg+); the 111 newest features
   (Product Brief, Reference Remix, Multi-Concept, Meta Safety, Google Safety, Performance Loop,
   Viral Analyzer, Skill Chains, Brand Guardrails, Smart Calendar, Competitor Watch, Ad Copy
   Generator, Hook Library, Brief Template Builder, Ad Script Writer, Audience Persona Generator,
@@ -923,6 +923,41 @@ npm run cf:deploy # Deploy to Cloudflare Workers
 - Feature routes: 120 total (was 116)
 - ADRs: 142 total (was 138)
 - Production deployment version ID: 1ec06e49-2367-49d6-8cdb-27c077036757
+
+### TT26-Series: Four More AI Creative Tools
+- Ad Creative Emotional Anchor Designer (`/ad-creative-emotional-anchor-designer`): AI-powered emotional anchor designer.
+  Designs emotional anchors that create recurring emotional touchpoints throughout the ad; returns anchors with
+  anchor type (nostalgia, aspiration, fear, joy, belonging, pride, trust, wonder), emotional trigger, anchor moment,
+  viewer resonance, anchor strength (0-100), emotional depth (0-100), and reinforcement strategy.
+  4 credits. API: `POST /api/creative/ad-creative-emotional-anchor-designer`. See ADR-143.
+- Creative Ad Empathy Bridge Designer (`/creative-ad-empathy-bridge-designer`): AI-powered empathy bridge designer.
+  Designs empathy bridges connecting the viewer's world to the product's world; returns bridges with
+  bridge type (shared experience, pain point mirror, aspiration link, value alignment, lifestyle reflection,
+  emotional memory, identity connection, transformation witness), viewer perspective, brand perspective,
+  connection point, empathy strength (0-100), emotional resonance (0-100), and bridge strategy.
+  5 credits. API: `POST /api/creative/creative-ad-empathy-bridge-designer`. See ADR-144.
+- Ad Creative Belief Shift Designer (`/ad-creative-belief-shift-designer`): AI-powered belief shift designer.
+  Designs belief shifts moving viewers from current beliefs to new beliefs about the product; returns shifts with
+  shift type (myth busting, paradigm shift, assumption challenge, reputation reframe, comparison shift,
+  evidence revelation, authority transfer, experience reframe), current belief, target belief, evidence anchor,
+  shift strength (0-100), conviction level (0-100), and shift pathway.
+  4 credits. API: `POST /api/creative/ad-creative-belief-shift-designer`. See ADR-145.
+- Creative Ad Desire Amplifier Designer (`/creative-ad-desire-amplifier-designer`): AI-powered desire amplifier designer.
+  Designs desire amplifiers intensifying viewer desire for the product or outcome; returns amplifiers with
+  amplifier type (scarcity, social proof, aspiration, exclusivity, transformation, pleasure, status, fomo),
+  desire trigger, escalation technique, craving builder, desire intensity (0-100), urgency level (0-100),
+  and amplification pathway.
+  5 credits. API: `POST /api/creative/creative-ad-desire-amplifier-designer`. See ADR-146.
+- All 4 features have dry-run/fallback behavior when Atlas is local or API key is missing
+- All 4 features use existing auth, credit deduction/refund, `withAtlas`, and `safeError` conventions
+- Unit tests: 5023 total (was 4852) — 171 new tests across 4 new test suites
+- TT26 page E2E tests: 32 passing
+- TT26 API E2E tests: 12 passing
+- Translations added to all 13 locales for 4 new namespaces: adCreativeEmotionalAnchorDesigner,
+  creativeAdEmpathyBridgeDesigner, adCreativeBeliefShiftDesigner, creativeAdDesireAmplifierDesigner
+- Feature routes: 124 total (was 120)
+- ADRs: 146 total (was 142)
+- Production deployment version ID: 92e82f33-96f1-4398-a5b0-85352cee06a5
 
 ## Production-Only Testing (Cannot Be Verified Locally)
 

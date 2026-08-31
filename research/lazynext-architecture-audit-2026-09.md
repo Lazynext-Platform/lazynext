@@ -1600,3 +1600,38 @@ Designs transformation arcs in ad creative content — the before/after journey 
 - TT25 production audit: 20/20 passing (4 pages x 5 checks: HTTP 200, 1 H1, main#main-content, skip link, API schema).
 
 All four features have dry-run/fallback behavior when Atlas is local or the API key is missing, and use existing auth, credit deduction/refund, `withAtlas`, and `safeError` conventions. Total unit tests now 4852 (up from 4707) — 145 new tests across 4 new test suites. Total E2E tests: 1052+ (same — only TT25 page/API tests added, not full suite rerun for docs).
+
+## 41. TT26-Series Features
+
+The TT26 series added four more AI creative tools, documented in ADRs 143-146. All four features have dry-run/fallback behavior when Atlas is local or the API key is missing, and use existing auth, credit deduction/refund, `withAtlas`, and `safeError` conventions. This brings the total feature route count to 124 and the total ADR count to 146.
+
+### Ad Creative Emotional Anchor Designer (`/ad-creative-emotional-anchor-designer`)
+
+Designs emotional anchors in ad creative content — the recurring emotional touchpoints that anchor the viewer's feelings throughout the ad. Takes product/brand, content, target audience, and optional platform. Returns emotional anchors with anchor type (nostalgia_anchor, aspiration_anchor, fear_anchor, joy_anchor, belonging_anchor, pride_anchor, trust_anchor, wonder_anchor), emotional trigger, anchor moment, viewer resonance, anchor strength (0-100), emotional depth (0-100), and reinforcement strategy. 4 credits. See ADR-143.
+
+### Creative Ad Empathy Bridge Designer (`/creative-ad-empathy-bridge-designer`)
+
+Designs empathy bridges in ad creative content — the emotional connections that bridge the viewer's world to the product's world. Takes product/brand, content, target audience, and optional platform. Returns empathy bridges with bridge type (shared_experience, pain_point_mirror, aspiration_link, value_alignment, lifestyle_reflection, emotional_memory, identity_connection, transformation_witness), viewer perspective, brand perspective, connection point, empathy strength (0-100), emotional resonance (0-100), and bridge strategy. 5 credits. See ADR-144.
+
+### Ad Creative Belief Shift Designer (`/ad-creative-belief-shift-designer`)
+
+Designs belief shifts in ad creative content — the cognitive journey that moves viewers from their current beliefs to new beliefs about the product or category. Takes product/brand, content, target audience, and optional platform. Returns belief shifts with shift type (myth_busting, paradigm_shift, assumption_challenge, reputation_reframe, comparison_shift, evidence_revelation, authority_transfer, experience_reframe), current belief, target belief, evidence anchor, shift strength (0-100), conviction level (0-100), and shift pathway. 4 credits. See ADR-145.
+
+### Creative Ad Desire Amplifier Designer (`/creative-ad-desire-amplifier-designer`)
+
+Designs desire amplifiers in ad creative content — the techniques that intensify viewer desire for the product or outcome. Takes product/brand, content, target audience, and optional platform. Returns desire amplifiers with amplifier type (scarcity_amplifier, social_proof_amplifier, aspiration_amplifier, exclusivity_amplifier, transformation_amplifier, pleasure_amplifier, status_amplifier, fomo_amplifier), desire trigger, escalation technique, craving builder, desire intensity (0-100), urgency level (0-100), and amplification pathway. 5 credits. See ADR-146.
+
+### i18n, Dashboard, and Nav (TT26)
+
+- 4 new namespaces added to all 13 locales: adCreativeEmotionalAnchorDesigner, creativeAdEmpathyBridgeDesigner, adCreativeBeliefShiftDesigner, creativeAdDesireAmplifierDesigner.
+- Dashboard Quick Create grid: 115 newest features (was 111).
+- Nav overflow: 111 newest features (was 107).
+
+### Production deployment (TT26)
+
+- All 4 pages deployed and healthy in production.
+- TT26 page E2E tests: 32 passing.
+- TT26 API E2E tests: 12 passing.
+- TT26 production audit: 20/20 passing (4 pages x 5 checks: HTTP 200, 1 H1, main#main-content, skip link, API schema).
+
+All four features have dry-run/fallback behavior when Atlas is local or the API key is missing, and use existing auth, credit deduction/refund, `withAtlas`, and `safeError` conventions. Total unit tests now 5023 (up from 4852) — 171 new tests across 4 new test suites. Total E2E tests: 1052+ (same — only TT26 page/API tests added, not full suite rerun for docs).
