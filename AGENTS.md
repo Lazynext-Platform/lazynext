@@ -49,7 +49,7 @@ Production uses Cloudflare R2 via `src/lib/media-storage.cloudflare.ts`.
 ## Verification Commands
 ```bash
 npm run lint    # ESLint
-npm test        # Node test runner (3789+ tests)
+npm test        # Node test runner (3937+ tests)
 # E2E: 1052+ passed, 0 skipped (chromium + mobile-chrome + chromium-auth)
 npm run build   # Production build (Cloudflare target)
 npm run cf:build  # Cloudflare/OpenNext build
@@ -148,7 +148,9 @@ npm run cf:deploy # Deploy to Cloudflare Workers
   `/api/creative/ad-creative-burnout-detector`, `/api/creative/creative-ad-concept-synthesizer`,
   `/api/creative/ad-audience-psychographic-profiler`, `/api/creative/creative-ad-tone-calibrator`,
   `/api/creative/creative-ad-format-innovator`, `/api/creative/ad-creative-story-arc-designer`,
-  `/api/creative/creative-ad-persuasion-strategist`, `/api/creative/ad-creative-hook-timing-optimizer`
+  `/api/creative/creative-ad-persuasion-strategist`, `/api/creative/ad-creative-hook-timing-optimizer`,
+  `/api/creative/creative-ad-metaphor-generator`, `/api/creative/ad-creative-sensory-enhancer`,
+  `/api/creative/creative-ad-pattern-interrupt-designer`, `/api/creative/ad-creative-social-proof-architect`
 - Ad platform API routes: `/api/ads/create`, `/api/ads/metrics`, `/api/ads/list`, `/api/ads/report`,
   `/api/ads/budget`, `/api/ads/google-budget`, `/api/ads/google-report`, `/api/analytics/ga4`,
   `/api/ads/meta-safety`, `/api/ads/meta-approve`, `/api/ads/google-safety`, `/api/ads/google-approve`
@@ -157,10 +159,10 @@ npm run cf:deploy # Deploy to Cloudflare Workers
 - `/api/creative/director` returns an NDJSON stream of step-by-step progress updates; legacy
   non-streaming mode available via `?stream=false`
 - Pipeline stages: brief, script, storyboard, media_generation, audio, edit, compliance, score, publish
-- ADRs 001-114 in `docs/adr/` document all major architecture decisions
+- ADRs 001-118 in `docs/adr/` document all major architecture decisions
 - Cross-feature handoffs: Brand Concepts → Creator Kits (query-param pre-fill),
   Brand Concepts → Shot Planner (script pre-fill), Clip Editor → Media Service Boundary (ASR/TTS)
-- Dashboard "Quick Create" grid includes all production apps and the 83 newest features
+- Dashboard "Quick Create" grid includes all production apps and the 87 newest features
   (Creator Kits, Brand Concepts, Clip Editor, Media Services, Product Brief, Reference Remix,
   Multi-Concept, Meta Safety, Google Safety, Performance Loop, Viral Analyzer, Skill Chains,
   Brand Guardrails, Smart Calendar, Competitor Watch, Ad Copy Generator, Hook Library,
@@ -185,8 +187,10 @@ npm run cf:deploy # Deploy to Cloudflare Workers
   Ad Creative Burnout Detector, Creative Ad Concept Synthesizer,
   Ad Audience Psychographic Profiler, Creative Ad Tone Calibrator,
   Creative Ad Format Innovator, Ad Creative Story Arc Designer,
-  Creative Ad Persuasion Strategist, Ad Creative Hook Timing Optimizer)
-- Nav header includes links to all feature pages (visible lg+); the 79 newest features
+  Creative Ad Persuasion Strategist, Ad Creative Hook Timing Optimizer,
+  Creative Ad Metaphor Generator, Ad Creative Sensory Enhancer,
+  Creative Ad Pattern Interrupt Designer, Ad Creative Social Proof Architect)
+- Nav header includes links to all feature pages (visible lg+); the 83 newest features
   (Product Brief, Reference Remix, Multi-Concept, Meta Safety, Google Safety, Performance Loop,
   Viral Analyzer, Skill Chains, Brand Guardrails, Smart Calendar, Competitor Watch, Ad Copy
   Generator, Hook Library, Brief Template Builder, Ad Script Writer, Audience Persona Generator,
@@ -211,7 +215,9 @@ npm run cf:deploy # Deploy to Cloudflare Workers
   Creative Ad Concept Synthesizer, Ad Audience Psychographic Profiler,
   Creative Ad Tone Calibrator, Creative Ad Format Innovator,
   Ad Creative Story Arc Designer, Creative Ad Persuasion Strategist,
-  Ad Creative Hook Timing Optimizer) are in the overflow nav
+  Ad Creative Hook Timing Optimizer, Creative Ad Metaphor Generator,
+  Ad Creative Sensory Enhancer, Creative Ad Pattern Interrupt Designer,
+  Ad Creative Social Proof Architect) are in the overflow nav
 
 ### JJ-Series: Research-Derived Creative Capabilities
 - Product Page → Ad Brief (`/product-brief`): URL/product extraction → brand/product brief →
@@ -691,6 +697,34 @@ npm run cf:deploy # Deploy to Cloudflare Workers
 - Translations added to all 13 locales for 4 new namespaces: creativeAdFormatInnovator,
   adCreativeStoryArcDesigner, creativeAdPersuasionStrategist, adCreativeHookTimingOptimizer
 - Production deployment version ID: 6a946220-9ee4-43bf-acc7-b7e1219128fd
+
+### TT19-Series: Four More AI Creative Tools
+- Creative Ad Metaphor Generator (`/creative-ad-metaphor-generator`): AI-powered metaphor generator.
+  Generates creative metaphors that make abstract product benefits tangible and memorable; returns
+  metaphors with memorability score, visual suggestions, emotional resonance, and category.
+  3 credits. API: `POST /api/creative/creative-ad-metaphor-generator`. See ADR-115.
+- Ad Creative Sensory Enhancer (`/ad-creative-sensory-enhancer`): AI-powered sensory enhancer.
+  Enhances ad content with sensory language appealing to the five senses; returns enhanced content,
+  sensory score, additions, and sense-specific enhancements.
+  4 credits. API: `POST /api/creative/ad-creative-sensory-enhancer`. See ADR-116.
+- Creative Ad Pattern Interrupt Designer (`/creative-ad-pattern-interrupt-designer`): AI-powered
+  pattern interrupt designer. Designs pattern interrupts that break through audience attention
+  filters; returns interrupt concepts with attention scores, implementation guides, and expected lift.
+  4 credits. API: `POST /api/creative/creative-ad-pattern-interrupt-designer`. See ADR-117.
+- Ad Creative Social Proof Architect (`/ad-creative-social-proof-architect`): AI-powered social proof
+  architect. Architects social proof elements that build trust and credibility; returns proof elements
+  with credibility scores, strategies, and authenticity guidelines.
+  5 credits. API: `POST /api/creative/ad-creative-social-proof-architect`. See ADR-118.
+- All 4 features have dry-run/fallback behavior when Atlas is local or API key is missing
+- All 4 features use existing auth, credit deduction/refund, `withAtlas`, and `safeError` conventions
+- Unit tests: 3937 total (was 3789) — 148 new tests across 4 new test suites
+- TT19 page E2E tests: 64 passing
+- TT19 API E2E tests: 12 passing
+- TT19 production audit: 20/20 passing (4 pages x 5 checks: HTTP 200, 1 H1, main#main-content,
+  skip link, API schema)
+- Translations added to all 13 locales for 4 new namespaces: creativeAdMetaphorGenerator,
+  adCreativeSensoryEnhancer, creativeAdPatternInterruptDesigner, adCreativeSocialProofArchitect
+- Production deployment version ID: ff2a8233-e5de-428a-b0db-338d7913f8ee
 
 ## Production-Only Testing (Cannot Be Verified Locally)
 
