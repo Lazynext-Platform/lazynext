@@ -482,7 +482,7 @@ npm run build   # Production build (Cloudflare target)
 
 ## 15. LL-Series Features
 
-The LL series extended the creative platform with four new capabilities, documented in ADRs 036-039. ADR-040 (OO series) documents D1 persistence for safety audit logs. ADRs 041-043 (QQ series) document chain mode unification, observability aggregation, and video rendering. ADRs 044-046 (RR series) document Brand Guardrails, Smart Calendar, and Competitor Watch. ADRs 047-052 (TT series) document Ad Copy Generator, Hook Library, Brief Template Builder, Ad Script Writer, Audience Persona Generator, and Creative Variant Matrix. ADRs 053-055 (TT3 series) document Ad Concept Merger, Creative Brief Analyzer, and Ad Format Optimizer. ADRs 056-058 (TT4 series) document Mood Board Generator, Ad Performance Predictor, and Creative A/B Test Planner. ADRs 059-062 (TT5 series) document Creative Hook Tester, Trend Spotter, Brand Voice Analyzer, and Ad Caption Generator. ADRs 063-066 (TT6 series) document Ad Headline Generator, Creative Angle Finder, Ad Timing Optimizer, and Creative Fatigue Detector. ADRs 067-070 (TT7 series) document Ad CTA Optimizer, Creative Concept Expander, Ad Story Generator, and Ad Color Palette Generator. ADRs 071-074 (TT8 series) document Ad Thumbnail Generator, Ad Font Pairing Generator, Ad Hashtag Generator, and Creative Scene Generator. ADRs 075-078 (TT9 series) document Ad Music Mood Matcher, Ad Voiceover Script Generator, Creative Brief Generator, and Ad Placement Strategist. ADRs 079-082 (TT10 series) document Ad A/B Test Name Generator, Creative Hook Revamp Generator, Ad Audience Segment Builder, and Creative Concept Validator. ADRs 083-086 (TT11 series) document Ad Emotion Analyzer, Creative Format Converter, Ad Budget Allocator, and Creative Trend Adapter. ADRs 087-090 (TT12 series) document Ad Creative Sequencer, Brand Story Architect, Ad Localization Adapter, and Creative Performance Forecaster. ADRs 091-094 (TT13 series) document Ad Sentiment Tuner, Creative Hook Matrix Generator, Ad Creative Rotator, and Brand Voice Consistency Checker. ADRs 095-098 (TT14 series) document Ad Persona Matcher, Creative Concept Expander Pro, Ad Competitive Intelligence, and Creative Quality Scorer. ADRs 001-094 now total 94 architecture decision records in `docs/adr/`.
+The LL series extended the creative platform with four new capabilities, documented in ADRs 036-039. ADR-040 (OO series) documents D1 persistence for safety audit logs. ADRs 041-043 (QQ series) document chain mode unification, observability aggregation, and video rendering. ADRs 044-046 (RR series) document Brand Guardrails, Smart Calendar, and Competitor Watch. ADRs 047-052 (TT series) document Ad Copy Generator, Hook Library, Brief Template Builder, Ad Script Writer, Audience Persona Generator, and Creative Variant Matrix. ADRs 053-055 (TT3 series) document Ad Concept Merger, Creative Brief Analyzer, and Ad Format Optimizer. ADRs 056-058 (TT4 series) document Mood Board Generator, Ad Performance Predictor, and Creative A/B Test Planner. ADRs 059-062 (TT5 series) document Creative Hook Tester, Trend Spotter, Brand Voice Analyzer, and Ad Caption Generator. ADRs 063-066 (TT6 series) document Ad Headline Generator, Creative Angle Finder, Ad Timing Optimizer, and Creative Fatigue Detector. ADRs 067-070 (TT7 series) document Ad CTA Optimizer, Creative Concept Expander, Ad Story Generator, and Ad Color Palette Generator. ADRs 071-074 (TT8 series) document Ad Thumbnail Generator, Ad Font Pairing Generator, Ad Hashtag Generator, and Creative Scene Generator. ADRs 075-078 (TT9 series) document Ad Music Mood Matcher, Ad Voiceover Script Generator, Creative Brief Generator, and Ad Placement Strategist. ADRs 079-082 (TT10 series) document Ad A/B Test Name Generator, Creative Hook Revamp Generator, Ad Audience Segment Builder, and Creative Concept Validator. ADRs 083-086 (TT11 series) document Ad Emotion Analyzer, Creative Format Converter, Ad Budget Allocator, and Creative Trend Adapter. ADRs 087-090 (TT12 series) document Ad Creative Sequencer, Brand Story Architect, Ad Localization Adapter, and Creative Performance Forecaster. ADRs 091-094 (TT13 series) document Ad Sentiment Tuner, Creative Hook Matrix Generator, Ad Creative Rotator, and Brand Voice Consistency Checker. ADRs 095-098 (TT14 series) document Ad Persona Matcher, Creative Concept Expander Pro, Ad Competitive Intelligence, and Creative Quality Scorer. ADRs 099-102 (TT15 series) document Ad Audience Resonance Predictor, Creative Format Recommender, Ad Creative Lifecycle Manager, and Creative Sentiment Journey Mapper. ADRs 001-094 now total 94 architecture decision records in `docs/adr/`.
 
 ### Google Ads Safety Layer (`/google-safety`)
 
@@ -1118,3 +1118,50 @@ The TT14 series added four more AI creative tools, documented in ADRs 095-098. A
 - TT14 production audit: 20/20 passing (4 pages × 5 checks: HTTP 200, 1 H1, main#main-content, skip link, API schema).
 
 All four features have dry-run/fallback behavior when Atlas is local or the API key is missing, and use existing auth, credit deduction/refund, `withAtlas`, and `safeError` conventions. Total unit tests now 3160 (up from 3049) — 111 new tests across 4 new test suites. Total E2E tests: 1052+ (same — only TT14 page/API tests added, not full suite rerun for docs).
+
+## 30. TT15-Series Features
+
+The TT15 series added four more AI creative tools, documented in ADRs 099-102. All four features have dry-run/fallback behavior when Atlas is local or the API key is missing, and use existing auth, credit deduction/refund, `withAtlas`, and `safeError` conventions. This brings the total feature route count to 80 and the total ADR count to 102.
+
+### Ad Audience Resonance Predictor (`/ad-audience-resonance-predictor`)
+
+- AI-powered audience resonance predictor — predicts how well ad content resonates with audience segments with segment scores, emotional triggers, resonance factors, and audience fit analysis.
+- 4 credits. API: `POST /api/creative/ad-audience-resonance-predictor`. See ADR-099.
+
+### Creative Format Recommender (`/creative-format-recommender`)
+
+- AI-powered format recommender — recommends the best creative formats (video, carousel, image, story, text) for a given product/brand and campaign goal with scores, rationale, best use cases, and platform tips.
+- 3 credits. API: `POST /api/creative/creative-format-recommender`. See ADR-100.
+
+### Ad Creative Lifecycle Manager (`/ad-creative-lifecycle-manager`)
+
+- AI-powered lifecycle manager — manages ad creative lifecycle from launch to retirement with stage analysis, health indicators, refresh recommendations, performance predictions, and retirement signals.
+- 5 credits. API: `POST /api/creative/ad-creative-lifecycle-manager`. See ADR-101.
+
+### Creative Sentiment Journey Mapper (`/creative-sentiment-journey-mapper`)
+
+- AI-powered sentiment journey mapper — maps the emotional/sentiment journey of ad creative content with beats, emotional arc, sentiment transitions, peak moments, and recommendations.
+- 4 credits. API: `POST /api/creative/creative-sentiment-journey-mapper`. See ADR-102.
+
+### New UI pages
+
+- `/ad-audience-resonance-predictor` — AI-powered audience resonance predictor with segment scores, emotional triggers, resonance factors, and audience fit analysis
+- `/creative-format-recommender` — AI-powered format recommender with ranked formats, top pick, reasoning, best use cases, and platform tips
+- `/ad-creative-lifecycle-manager` — AI-powered lifecycle manager with stage analysis timeline, refresh recommendations, performance prediction, and retirement signals
+- `/creative-sentiment-journey-mapper` — AI-powered sentiment journey mapper with beats timeline, emotional arc, transitions, and peak moments
+
+### i18n, Dashboard, and Nav (TT15)
+
+- Translations added to all 13 locales for 4 new namespaces: `adAudienceResonancePredictor`, `creativeFormatRecommender`, `adCreativeLifecycleManager`, `creativeSentimentJourneyMapper`.
+- Dashboard "Quick Create" grid updated to 71 newest features (was 67).
+- Nav overflow menu updated to 67 newest features (was 63).
+
+### Production deployment (TT15)
+
+- All 4 pages deployed and healthy in production.
+- Production version ID: `e6a85b31-591b-445c-bd75-e872110023ab`.
+- TT15 page E2E tests: 64 passing.
+- TT15 API E2E tests: 12 passing.
+- TT15 production audit: 20/20 passing (4 pages × 5 checks: HTTP 200, 1 H1, main#main-content, skip link, API schema).
+
+All four features have dry-run/fallback behavior when Atlas is local or the API key is missing, and use existing auth, credit deduction/refund, `withAtlas`, and `safeError` conventions. Total unit tests now 3315 (up from 3160) — 155 new tests across 4 new test suites. Total E2E tests: 1052+ (same — only TT15 page/API tests added, not full suite rerun for docs).

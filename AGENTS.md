@@ -49,7 +49,7 @@ Production uses Cloudflare R2 via `src/lib/media-storage.cloudflare.ts`.
 ## Verification Commands
 ```bash
 npm run lint    # ESLint
-npm test        # Node test runner (3160+ tests)
+npm test        # Node test runner (3315+ tests)
 # E2E: 1052+ passed, 0 skipped (chromium + mobile-chrome + chromium-auth)
 npm run build   # Production build (Cloudflare target)
 npm run cf:build  # Cloudflare/OpenNext build
@@ -140,7 +140,9 @@ npm run cf:deploy # Deploy to Cloudflare Workers
   `/api/creative/creative-hook-matrix-generator`, `/api/creative/ad-creative-rotator`,
   `/api/creative/brand-voice-consistency-checker`, `/api/creative/ad-persona-matcher`,
   `/api/creative/creative-concept-expander-pro`, `/api/creative/ad-competitive-intelligence`,
-  `/api/creative/creative-quality-scorer`
+  `/api/creative/creative-quality-scorer`, `/api/creative/ad-audience-resonance-predictor`,
+  `/api/creative/creative-format-recommender`, `/api/creative/ad-creative-lifecycle-manager`,
+  `/api/creative/creative-sentiment-journey-mapper`
 - Ad platform API routes: `/api/ads/create`, `/api/ads/metrics`, `/api/ads/list`, `/api/ads/report`,
   `/api/ads/budget`, `/api/ads/google-budget`, `/api/ads/google-report`, `/api/analytics/ga4`,
   `/api/ads/meta-safety`, `/api/ads/meta-approve`, `/api/ads/google-safety`, `/api/ads/google-approve`
@@ -149,10 +151,10 @@ npm run cf:deploy # Deploy to Cloudflare Workers
 - `/api/creative/director` returns an NDJSON stream of step-by-step progress updates; legacy
   non-streaming mode available via `?stream=false`
 - Pipeline stages: brief, script, storyboard, media_generation, audio, edit, compliance, score, publish
-- ADRs 001-098 in `docs/adr/` document all major architecture decisions
+- ADRs 001-102 in `docs/adr/` document all major architecture decisions
 - Cross-feature handoffs: Brand Concepts → Creator Kits (query-param pre-fill),
   Brand Concepts → Shot Planner (script pre-fill), Clip Editor → Media Service Boundary (ASR/TTS)
-- Dashboard "Quick Create" grid includes all production apps and the 67 newest features
+- Dashboard "Quick Create" grid includes all production apps and the 71 newest features
   (Creator Kits, Brand Concepts, Clip Editor, Media Services, Product Brief, Reference Remix,
   Multi-Concept, Meta Safety, Google Safety, Performance Loop, Viral Analyzer, Skill Chains,
   Brand Guardrails, Smart Calendar, Competitor Watch, Ad Copy Generator, Hook Library,
@@ -170,8 +172,9 @@ npm run cf:deploy # Deploy to Cloudflare Workers
   Ad Localization Adapter, Creative Performance Forecaster, Ad Sentiment Tuner,
   Creative Hook Matrix Generator, Ad Creative Rotator, Brand Voice Consistency Checker,
   Ad Persona Matcher, Creative Concept Expander Pro, Ad Competitive Intelligence,
-  Creative Quality Scorer)
-- Nav header includes links to all feature pages (visible lg+); the 63 newest features
+  Creative Quality Scorer, Ad Audience Resonance Predictor, Creative Format Recommender,
+  Ad Creative Lifecycle Manager, Creative Sentiment Journey Mapper)
+- Nav header includes links to all feature pages (visible lg+); the 67 newest features
   (Product Brief, Reference Remix, Multi-Concept, Meta Safety, Google Safety, Performance Loop,
   Viral Analyzer, Skill Chains, Brand Guardrails, Smart Calendar, Competitor Watch, Ad Copy
   Generator, Hook Library, Brief Template Builder, Ad Script Writer, Audience Persona Generator,
@@ -188,7 +191,9 @@ npm run cf:deploy # Deploy to Cloudflare Workers
   Brand Story Architect, Ad Localization Adapter, Creative Performance Forecaster,
   Ad Sentiment Tuner, Creative Hook Matrix Generator, Ad Creative Rotator,
   Brand Voice Consistency Checker, Ad Persona Matcher, Creative Concept Expander Pro,
-  Ad Competitive Intelligence, Creative Quality Scorer) are in the overflow nav
+  Ad Competitive Intelligence, Creative Quality Scorer, Ad Audience Resonance Predictor,
+  Creative Format Recommender, Ad Creative Lifecycle Manager,
+  Creative Sentiment Journey Mapper) are in the overflow nav
 
 ### JJ-Series: Research-Derived Creative Capabilities
 - Product Page → Ad Brief (`/product-brief`): URL/product extraction → brand/product brief →
@@ -558,6 +563,33 @@ npm run cf:deploy # Deploy to Cloudflare Workers
   skip link, API schema)
 - Translations added to all 13 locales for 4 new namespaces: adPersonaMatcher,
   creativeConceptExpanderPro, adCompetitiveIntelligence, creativeQualityScorer
+
+### TT15-Series: Four More AI Creative Tools
+- Ad Audience Resonance Predictor (`/ad-audience-resonance-predictor`): AI-powered audience
+  resonance predictor. Predicts how well ad content resonates with audience segments with
+  segment scores, emotional triggers, resonance factors, and audience fit analysis.
+  4 credits. API: `POST /api/creative/ad-audience-resonance-predictor`. See ADR-099.
+- Creative Format Recommender (`/creative-format-recommender`): AI-powered format recommender.
+  Recommends the best creative formats (video, carousel, image, story, text) for a given
+  product/brand and campaign goal with scores, rationale, best use cases, and platform tips.
+  3 credits. API: `POST /api/creative/creative-format-recommender`. See ADR-100.
+- Ad Creative Lifecycle Manager (`/ad-creative-lifecycle-manager`): AI-powered lifecycle
+  manager. Manages ad creative lifecycle from launch to retirement with stage analysis,
+  health indicators, refresh recommendations, performance predictions, and retirement signals.
+  5 credits. API: `POST /api/creative/ad-creative-lifecycle-manager`. See ADR-101.
+- Creative Sentiment Journey Mapper (`/creative-sentiment-journey-mapper`): AI-powered
+  sentiment journey mapper. Maps the emotional/sentiment journey of ad creative content with
+  beats, emotional arc, sentiment transitions, peak moments, and recommendations.
+  4 credits. API: `POST /api/creative/creative-sentiment-journey-mapper`. See ADR-102.
+- All 4 features have dry-run/fallback behavior when Atlas is local or API key is missing
+- All 4 features use existing auth, credit deduction/refund, `withAtlas`, and `safeError` conventions
+- Unit tests: 3315 total (was 3160) — 155 new tests across 4 new test suites
+- TT15 page E2E tests: 64 passing
+- TT15 API E2E tests: 12 passing
+- TT15 production audit: 20/20 passing (4 pages × 5 checks: HTTP 200, 1 H1, main#main-content,
+  skip link, API schema)
+- Translations added to all 13 locales for 4 new namespaces: adAudienceResonancePredictor,
+  creativeFormatRecommender, adCreativeLifecycleManager, creativeSentimentJourneyMapper
 
 ## Production-Only Testing (Cannot Be Verified Locally)
 
