@@ -49,7 +49,7 @@ Production uses Cloudflare R2 via `src/lib/media-storage.cloudflare.ts`.
 ## Verification Commands
 ```bash
 npm run lint    # ESLint
-npm test        # Node test runner (4707+ tests)
+npm test        # Node test runner (4852+ tests)
 # E2E: 1052+ passed, 0 skipped (chromium + mobile-chrome + chromium-auth)
 npm run build   # Production build (Cloudflare target)
 npm run cf:build  # Cloudflare/OpenNext build
@@ -169,10 +169,10 @@ npm run cf:deploy # Deploy to Cloudflare Workers
 - `/api/creative/director` returns an NDJSON stream of step-by-step progress updates; legacy
   non-streaming mode available via `?stream=false`
 - Pipeline stages: brief, script, storyboard, media_generation, audio, edit, compliance, score, publish
-- ADRs 001-138 in `docs/adr/` document all major architecture decisions
+- ADRs 001-142 in `docs/adr/` document all major architecture decisions
 - Cross-feature handoffs: Brand Concepts → Creator Kits (query-param pre-fill),
   Brand Concepts → Shot Planner (script pre-fill), Clip Editor → Media Service Boundary (ASR/TTS)
-- Dashboard "Quick Create" grid includes all production apps and the 107 newest features
+- Dashboard "Quick Create" grid includes all production apps and the 111 newest features
   (Creator Kits, Brand Concepts, Clip Editor, Media Services, Product Brief, Reference Remix,
   Multi-Concept, Meta Safety, Google Safety, Performance Loop, Viral Analyzer, Skill Chains,
   Brand Guardrails, Smart Calendar, Competitor Watch, Ad Copy Generator, Hook Library,
@@ -210,7 +210,7 @@ npm run cf:deploy # Deploy to Cloudflare Workers
   Creative Ad Climax Architect, Ad Creative Pacing Variability Designer,
   Creative Ad Foreshadowing Designer, Ad Creative Emotional Pivot Designer,
   Creative Ad Resolution Designer, Ad Creative Viewer Reward Designer)
-- Nav header includes links to all feature pages (visible lg+); the 103 newest features
+- Nav header includes links to all feature pages (visible lg+); the 107 newest features
   (Product Brief, Reference Remix, Multi-Concept, Meta Safety, Google Safety, Performance Loop,
   Viral Analyzer, Skill Chains, Brand Guardrails, Smart Calendar, Competitor Watch, Ad Copy
   Generator, Hook Library, Brief Template Builder, Ad Script Writer, Audience Persona Generator,
@@ -895,6 +895,34 @@ npm run cf:deploy # Deploy to Cloudflare Workers
 - Feature routes: 116 total (was 112)
 - ADRs: 138 total (was 134)
 - Production deployment version ID: ad6167e0-4a90-47d0-85f0-2d9392ffd9a4
+
+### TT25-Series: Four More AI Creative Tools
+- Ad Creative Tension Release Designer (`/ad-creative-tension-release-designer`): AI-powered tension-release designer.
+  Designs tension-release cycles that build and release tension for emotional engagement; returns cycles with
+  cycle type, tension build, release moment, emotional relief, catharsis score, viewer satisfaction, and timing.
+  4 credits. API: `POST /api/creative/ad-creative-tension-release-designer`. See ADR-139.
+- Creative Ad Stakes Escalation Designer (`/creative-ad-stakes-escalation-designer`): AI-powered stakes escalation designer.
+  Designs escalating stakes that build tension and consequence throughout the narrative; returns stakes levels with
+  escalation stage, description, consequence, tension level, emotional weight, viewer investment, and timing.
+  5 credits. API: `POST /api/creative/creative-ad-stakes-escalation-designer`. See ADR-140.
+- Ad Creative Curiosity Loop Designer (`/ad-creative-curiosity-loop-designer`): AI-powered curiosity loop designer.
+  Designs curiosity loops with open questions and mysteries that keep viewers watching; returns loops with
+  loop type, opening question, mystery element, reveal timing, payoff, curiosity retention score, and viewer hook.
+  4 credits. API: `POST /api/creative/ad-creative-curiosity-loop-designer`. See ADR-141.
+- Creative Ad Transformation Arc Designer (`/creative-ad-transformation-arc-designer`): AI-powered transformation arc designer.
+  Designs transformation arcs showing the before/after journey of the subject or viewer; returns arc with
+  arc type, before state, catalyst, transformation stages, after state, emotional journey, and viewer identification score.
+  5 credits. API: `POST /api/creative/creative-ad-transformation-arc-designer`. See ADR-142.
+- All 4 features have dry-run/fallback behavior when Atlas is local or API key is missing
+- All 4 features use existing auth, credit deduction/refund, `withAtlas`, and `safeError` conventions
+- Unit tests: 4852 total (was 4707) — 145 new tests across 4 new test suites
+- TT25 page E2E tests: 32 passing
+- TT25 API E2E tests: 12 passing
+- Translations added to all 13 locales for 4 new namespaces: adCreativeTensionReleaseDesigner,
+  creativeAdStakesEscalationDesigner, adCreativeCuriosityLoopDesigner, creativeAdTransformationArcDesigner
+- Feature routes: 120 total (was 116)
+- ADRs: 142 total (was 138)
+- Production deployment version ID: 1ec06e49-2367-49d6-8cdb-27c077036757
 
 ## Production-Only Testing (Cannot Be Verified Locally)
 

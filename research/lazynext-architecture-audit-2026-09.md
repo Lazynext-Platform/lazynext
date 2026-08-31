@@ -1565,3 +1565,38 @@ Designs viewer reward systems in ad creative content — elements that give view
 - TT24 production audit: 20/20 passing (4 pages x 5 checks: HTTP 200, 1 H1, main#main-content, skip link, API schema).
 
 All four features have dry-run/fallback behavior when Atlas is local or the API key is missing, and use existing auth, credit deduction/refund, `withAtlas`, and `safeError` conventions. Total unit tests now 4707 (up from 4563) — 144 new tests across 4 new test suites. Total E2E tests: 1052+ (same — only TT24 page/API tests added, not full suite rerun for docs).
+
+## 40. TT25-Series Features
+
+The TT25 series added four more AI creative tools, documented in ADRs 139-142. All four features have dry-run/fallback behavior when Atlas is local or the API key is missing, and use existing auth, credit deduction/refund, `withAtlas`, and `safeError` conventions. This brings the total feature route count to 120 and the total ADR count to 142.
+
+### Ad Creative Tension Release Designer (`/ad-creative-tension-release-designer`)
+
+Designs tension-release cycles in ad creative content — the rhythm of building tension and releasing it to create emotional engagement. Takes product/brand, content, target audience, and optional platform. Returns tension-release cycles with cycle type (slow_build_sudden_release, rapid_escalation_catharsis, wave_pattern, spiral_escalation, plateau_break, rhythmic_pulse, tension_plateau_release, crescendo_finale), tension build, release moment, emotional relief, catharsis score (0-100), viewer satisfaction (0-100), and timing. 4 credits. See ADR-139.
+
+### Creative Ad Stakes Escalation Designer (`/creative-ad-stakes-escalation-designer`)
+
+Designs escalating stakes throughout ad creative content — building tension and consequence as the narrative progresses. Takes product/brand, content, target audience, and optional platform. Returns stakes levels with escalation stage (initial_setup, rising_tension, complication, peak_stakes, consequence_reveal, transformation), description, consequence, tension level (0-100), emotional weight (0-100), viewer investment (0-100), and timing. 5 credits. See ADR-140.
+
+### Ad Creative Curiosity Loop Designer (`/ad-creative-curiosity-loop-designer`)
+
+Designs curiosity loops in ad creative content — open questions and mysteries that keep viewers watching until the end. Takes product/brand, content, target audience, and optional platform. Returns curiosity loops with loop type (open_question, mystery_box, before_after, transformation_tease, secret_reveal, countdown_hook, contradiction, unexpected_result), opening question, mystery element, reveal timing, payoff, curiosity retention score (0-100), and viewer hook. 4 credits. See ADR-141.
+
+### Creative Ad Transformation Arc Designer (`/creative-ad-transformation-arc-designer`)
+
+Designs transformation arcs in ad creative content — the before/after journey of the subject or viewer. Takes product/brand, content, target audience, and optional platform. Returns transformation arc with arc type (personal_growth, status_change, problem_solution, limitation_freedom, invisible_visible, doubt_confidence, chaos_order, ordinary_extraordinary), before state, catalyst, transformation stages with progress levels, after state, emotional journey, and viewer identification score (0-100). 5 credits. See ADR-142.
+
+### i18n, Dashboard, and Nav (TT25)
+
+- 4 new namespaces added to all 13 locales: adCreativeTensionReleaseDesigner, creativeAdStakesEscalationDesigner, adCreativeCuriosityLoopDesigner, creativeAdTransformationArcDesigner.
+- Dashboard Quick Create grid: 111 newest features (was 107).
+- Nav overflow: 107 newest features (was 103).
+
+### Production deployment (TT25)
+
+- All 4 pages deployed and healthy in production.
+- TT25 page E2E tests: 32 passing.
+- TT25 API E2E tests: 12 passing.
+- TT25 production audit: 20/20 passing (4 pages x 5 checks: HTTP 200, 1 H1, main#main-content, skip link, API schema).
+
+All four features have dry-run/fallback behavior when Atlas is local or the API key is missing, and use existing auth, credit deduction/refund, `withAtlas`, and `safeError` conventions. Total unit tests now 4852 (up from 4707) — 145 new tests across 4 new test suites. Total E2E tests: 1052+ (same — only TT25 page/API tests added, not full suite rerun for docs).
