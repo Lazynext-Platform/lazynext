@@ -6,7 +6,7 @@ import { useSession } from 'next-auth/react';
 import {
   Clapperboard, Coins, Boxes, FolderOpen, ArrowRight, Loader2, Film, Play, Sparkles,
   TrendingDown, TrendingUp, BarChart3, Trophy, Calendar, Gift, Layers, Scissors, Server, Users, Zap, Workflow,
-  FileText, RefreshCw, Lightbulb, Shield, Flame, GitBranch, CalendarClock, Radar, PenLine, Anchor, FileSpreadsheet, ScrollText, UsersRound, LayoutGrid, GitMerge, FileSearch2, LayoutTemplate, Palette, Gauge, FlaskRound, TestTube, Compass, Mic, Type, Newspaper, Lightbulb as LightbulbIcon, Clock, BatteryLow, MousePointerClick, Expand, BookOpenCheck, Droplet, Hash, Clapperboard as ClapperboardIcon, Image as ImageIcon, Music, Mic2, FileText as FileTextIcon, Target,
+  FileText, RefreshCw, Lightbulb, Shield, Flame, GitBranch, CalendarClock, Radar, PenLine, Anchor, FileSpreadsheet, ScrollText, UsersRound, LayoutGrid, GitMerge, FileSearch2, LayoutTemplate, Palette, Gauge, FlaskRound, TestTube, Compass, Mic, Type, Newspaper, Lightbulb as LightbulbIcon, Clock, BatteryLow, MousePointerClick, Expand, BookOpenCheck, Droplet, Hash, Clapperboard as ClapperboardIcon, Image as ImageIcon, Music, Mic2, FileText as FileTextIcon, Target, FlaskConical as FlaskIcon, Users as UsersIcon, ShieldCheck as ShieldIcon,
 } from 'lucide-react';
 import { useI18n } from '@/i18n/provider';
 import { appTitle, appDesc, isFeatured } from '@/config/appCatalog';
@@ -76,6 +76,10 @@ const APPS: App[] = [
   { id: 'ad-voiceover-script-generator', href: '/ad-voiceover-script-generator', icon: Mic2 },
   { id: 'creative-brief-generator', href: '/creative-brief-generator', icon: FileTextIcon },
   { id: 'ad-placement-strategist', href: '/ad-placement-strategist', icon: Target },
+  { id: 'ad-ab-test-name-generator', href: '/ad-ab-test-name-generator', icon: FlaskIcon },
+  { id: 'creative-hook-revamp-generator', href: '/creative-hook-revamp-generator', icon: Zap },
+  { id: 'ad-audience-segment-builder', href: '/ad-audience-segment-builder', icon: UsersIcon },
+  { id: 'creative-concept-validator', href: '/creative-concept-validator', icon: ShieldIcon },
 ];
 
 type Creation = {

@@ -1421,3 +1421,115 @@ test.describe('Ad Placement Strategist API', () => {
     expect(res.status()).toBe(400);
   });
 });
+
+test.describe('Ad A/B Test Name Generator API', () => {
+  test('GET returns credit cost and schema', async ({ request }) => {
+    const res = await request.get('/api/creative/ad-ab-test-name-generator');
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.creditCost).toBe(2);
+    expect(data.schema).toBeTruthy();
+  });
+  test('POST with valid input returns test names', async ({ request }) => {
+    const res = await request.post('/api/creative/ad-ab-test-name-generator', {
+      data: { productOrBrand: 'Premium earbuds', testType: 'hook', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.result).toBeTruthy();
+    expect(Array.isArray(data.result.testNames)).toBeTruthy();
+  });
+  test('POST with missing productOrBrand returns 400', async ({ request }) => {
+    const res = await request.post('/api/creative/ad-ab-test-name-generator', {
+      data: { testType: 'hook', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.status()).toBe(400);
+  });
+});
+
+test.describe('Creative Hook Revamp Generator API', () => {
+  test('GET returns credit cost and schema', async ({ request }) => {
+    const res = await request.get('/api/creative/creative-hook-revamp-generator');
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.creditCost).toBe(3);
+    expect(data.schema).toBeTruthy();
+  });
+  test('POST with valid input returns revamps', async ({ request }) => {
+    const res = await request.post('/api/creative/creative-hook-revamp-generator', {
+      data: { originalHook: 'Stop scrolling!', productOrBrand: 'Premium earbuds', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.result).toBeTruthy();
+    expect(Array.isArray(data.result.revamps)).toBeTruthy();
+  });
+  test('POST with missing originalHook returns 400', async ({ request }) => {
+    const res = await request.post('/api/creative/creative-hook-revamp-generator', {
+      data: { productOrBrand: 'test', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.status()).toBe(400);
+  });
+});
+
+test.describe('Ad Audience Segment Builder API', () => {
+  test('GET returns credit cost and schema', async ({ request }) => {
+    const res = await request.get('/api/creative/ad-audience-segment-builder');
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.creditCost).toBe(4);
+    expect(data.schema).toBeTruthy();
+  });
+  test('POST with valid input returns segments', async ({ request }) => {
+    const res = await request.post('/api/creative/ad-audience-segment-builder', {
+      data: { productOrBrand: 'Premium earbuds', primaryAudience: 'Gen Z fitness', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.result).toBeTruthy();
+    expect(Array.isArray(data.result.segments)).toBeTruthy();
+  });
+  test('POST with missing productOrBrand returns 400', async ({ request }) => {
+    const res = await request.post('/api/creative/ad-audience-segment-builder', {
+      data: { primaryAudience: 'test', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.status()).toBe(400);
+  });
+});
+
+test.describe('Creative Concept Validator API', () => {
+  test('GET returns credit cost and schema', async ({ request }) => {
+    const res = await request.get('/api/creative/creative-concept-validator');
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.creditCost).toBe(5);
+    expect(data.schema).toBeTruthy();
+  });
+  test('POST with valid input returns validation', async ({ request }) => {
+    const res = await request.post('/api/creative/creative-concept-validator', {
+      data: { concept: 'A bold visual-first ad', productOrBrand: 'Premium earbuds', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.result).toBeTruthy();
+    expect(data.result.validation).toBeTruthy();
+  });
+  test('POST with missing concept returns 400', async ({ request }) => {
+    const res = await request.post('/api/creative/creative-concept-validator', {
+      data: { productOrBrand: 'test', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.status()).toBe(400);
+  });
+});

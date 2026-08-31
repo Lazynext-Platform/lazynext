@@ -80,6 +80,10 @@ const CUSTOM_TITLES: Record<string, Bi> = {
   'ad-voiceover-script-generator': { en: 'Ad Voiceover Script Generator', zh: '广告配音脚本生成器' },
   'creative-brief-generator': { en: 'Creative Brief Generator', zh: '创意简报生成器' },
   'ad-placement-strategist': { en: 'Ad Placement Strategist', zh: '广告投放策略师' },
+  'ad-ab-test-name-generator': { en: 'Ad A/B Test Name Generator', zh: '广告A/B测试名称生成器' },
+  'creative-hook-revamp-generator': { en: 'Creative Hook Revamp Generator', zh: '创意钩子改造生成器' },
+  'ad-audience-segment-builder': { en: 'Ad Audience Segment Builder', zh: '广告受众细分构建器' },
+  'creative-concept-validator': { en: 'Creative Concept Validator', zh: '创意概念验证器' },
 };
 const CUSTOM_DESCS: Record<string, Bi> = {
   'lazynext-studio': { en: 'Product + presenter photos → AI expands the prompt from your images → lip-synced UGC ad; one-click viral formats', zh: '产品图+人物图 → AI 看图扩写提示词 → 合成首帧 → 对口型真人口播广告;爆款玩法一键复刻' },
