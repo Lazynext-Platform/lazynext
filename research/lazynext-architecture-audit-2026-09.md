@@ -482,7 +482,7 @@ npm run build   # Production build (Cloudflare target)
 
 ## 15. LL-Series Features
 
-The LL series extended the creative platform with four new capabilities, documented in ADRs 036-039. ADR-040 (OO series) documents D1 persistence for safety audit logs. ADRs 041-043 (QQ series) document chain mode unification, observability aggregation, and video rendering. ADRs 044-046 (RR series) document Brand Guardrails, Smart Calendar, and Competitor Watch. ADRs 047-052 (TT series) document Ad Copy Generator, Hook Library, Brief Template Builder, Ad Script Writer, Audience Persona Generator, and Creative Variant Matrix. ADRs 053-055 (TT3 series) document Ad Concept Merger, Creative Brief Analyzer, and Ad Format Optimizer. ADRs 056-058 (TT4 series) document Mood Board Generator, Ad Performance Predictor, and Creative A/B Test Planner. ADRs 059-062 (TT5 series) document Creative Hook Tester, Trend Spotter, Brand Voice Analyzer, and Ad Caption Generator. ADRs 063-066 (TT6 series) document Ad Headline Generator, Creative Angle Finder, Ad Timing Optimizer, and Creative Fatigue Detector. ADRs 067-070 (TT7 series) document Ad CTA Optimizer, Creative Concept Expander, Ad Story Generator, and Ad Color Palette Generator. ADRs 071-074 (TT8 series) document Ad Thumbnail Generator, Ad Font Pairing Generator, Ad Hashtag Generator, and Creative Scene Generator. ADRs 075-078 (TT9 series) document Ad Music Mood Matcher, Ad Voiceover Script Generator, Creative Brief Generator, and Ad Placement Strategist. ADRs 079-082 (TT10 series) document Ad A/B Test Name Generator, Creative Hook Revamp Generator, Ad Audience Segment Builder, and Creative Concept Validator. ADRs 083-086 (TT11 series) document Ad Emotion Analyzer, Creative Format Converter, Ad Budget Allocator, and Creative Trend Adapter. ADRs 087-090 (TT12 series) document Ad Creative Sequencer, Brand Story Architect, Ad Localization Adapter, and Creative Performance Forecaster. ADRs 091-094 (TT13 series) document Ad Sentiment Tuner, Creative Hook Matrix Generator, Ad Creative Rotator, and Brand Voice Consistency Checker. ADRs 095-098 (TT14 series) document Ad Persona Matcher, Creative Concept Expander Pro, Ad Competitive Intelligence, and Creative Quality Scorer. ADRs 099-102 (TT15 series) document Ad Audience Resonance Predictor, Creative Format Recommender, Ad Creative Lifecycle Manager, and Creative Sentiment Journey Mapper. ADRs 103-106 (TT16 series) document Ad Creative A/B Test Simulator, Creative Visual Hierarchy Analyzer, Ad Audience Pain Point Mapper, and Creative Messaging Framework Builder. ADRs 107-110 (TT17 series) document Ad Creative Burnout Detector, Creative Ad Concept Synthesizer, Ad Audience Psychographic Profiler, and Creative Ad Tone Calibrator. ADRs 111-114 (TT18 series) document Creative Ad Format Innovator, Ad Creative Story Arc Designer, Creative Ad Persuasion Strategist, and Ad Creative Hook Timing Optimizer. ADRs 115-118 (TT19 series) document Creative Ad Metaphor Generator, Ad Creative Sensory Enhancer, Creative Ad Pattern Interrupt Designer, and Ad Creative Social Proof Architect. ADRs 119-122 (TT20 series) document Creative Ad Anticipation Builder, Ad Creative Contrast Amplifier, Creative Ad Micro-Moment Designer, and Ad Creative Emotion Sequencer. ADRs 001-094 now total 94 architecture decision records in `docs/adr/`.
+The LL series extended the creative platform with four new capabilities, documented in ADRs 036-039. ADR-040 (OO series) documents D1 persistence for safety audit logs. ADRs 041-043 (QQ series) document chain mode unification, observability aggregation, and video rendering. ADRs 044-046 (RR series) document Brand Guardrails, Smart Calendar, and Competitor Watch. ADRs 047-052 (TT series) document Ad Copy Generator, Hook Library, Brief Template Builder, Ad Script Writer, Audience Persona Generator, and Creative Variant Matrix. ADRs 053-055 (TT3 series) document Ad Concept Merger, Creative Brief Analyzer, and Ad Format Optimizer. ADRs 056-058 (TT4 series) document Mood Board Generator, Ad Performance Predictor, and Creative A/B Test Planner. ADRs 059-062 (TT5 series) document Creative Hook Tester, Trend Spotter, Brand Voice Analyzer, and Ad Caption Generator. ADRs 063-066 (TT6 series) document Ad Headline Generator, Creative Angle Finder, Ad Timing Optimizer, and Creative Fatigue Detector. ADRs 067-070 (TT7 series) document Ad CTA Optimizer, Creative Concept Expander, Ad Story Generator, and Ad Color Palette Generator. ADRs 071-074 (TT8 series) document Ad Thumbnail Generator, Ad Font Pairing Generator, Ad Hashtag Generator, and Creative Scene Generator. ADRs 075-078 (TT9 series) document Ad Music Mood Matcher, Ad Voiceover Script Generator, Creative Brief Generator, and Ad Placement Strategist. ADRs 079-082 (TT10 series) document Ad A/B Test Name Generator, Creative Hook Revamp Generator, Ad Audience Segment Builder, and Creative Concept Validator. ADRs 083-086 (TT11 series) document Ad Emotion Analyzer, Creative Format Converter, Ad Budget Allocator, and Creative Trend Adapter. ADRs 087-090 (TT12 series) document Ad Creative Sequencer, Brand Story Architect, Ad Localization Adapter, and Creative Performance Forecaster. ADRs 091-094 (TT13 series) document Ad Sentiment Tuner, Creative Hook Matrix Generator, Ad Creative Rotator, and Brand Voice Consistency Checker. ADRs 095-098 (TT14 series) document Ad Persona Matcher, Creative Concept Expander Pro, Ad Competitive Intelligence, and Creative Quality Scorer. ADRs 099-102 (TT15 series) document Ad Audience Resonance Predictor, Creative Format Recommender, Ad Creative Lifecycle Manager, and Creative Sentiment Journey Mapper. ADRs 103-106 (TT16 series) document Ad Creative A/B Test Simulator, Creative Visual Hierarchy Analyzer, Ad Audience Pain Point Mapper, and Creative Messaging Framework Builder. ADRs 107-110 (TT17 series) document Ad Creative Burnout Detector, Creative Ad Concept Synthesizer, Ad Audience Psychographic Profiler, and Creative Ad Tone Calibrator. ADRs 111-114 (TT18 series) document Creative Ad Format Innovator, Ad Creative Story Arc Designer, Creative Ad Persuasion Strategist, and Ad Creative Hook Timing Optimizer. ADRs 115-118 (TT19 series) document Creative Ad Metaphor Generator, Ad Creative Sensory Enhancer, Creative Ad Pattern Interrupt Designer, and Ad Creative Social Proof Architect. ADRs 119-122 (TT20 series) document Creative Ad Anticipation Builder, Ad Creative Contrast Amplifier, Creative Ad Micro-Moment Designer, and Ad Creative Emotion Sequencer. ADRs 123-126 (TT21 series) document Creative Ad Narrative Twist Designer, Ad Creative Memory Anchor Builder, Creative Ad Tension Release Strategist, and Ad Creative Sensory Contrast Designer. ADRs 001-094 now total 94 architecture decision records in `docs/adr/`.
 
 ### Google Ads Safety Layer (`/google-safety`)
 
@@ -1400,3 +1400,50 @@ The TT20 series added four more AI creative tools, documented in ADRs 119-122. A
 - TT20 production audit: 20/20 passing (4 pages x 5 checks: HTTP 200, 1 H1, main#main-content, skip link, API schema).
 
 All four features have dry-run/fallback behavior when Atlas is local or the API key is missing, and use existing auth, credit deduction/refund, `withAtlas`, and `safeError` conventions. Total unit tests now 4091 (up from 3937) — 154 new tests across 4 new test suites. Total E2E tests: 1052+ (same — only TT20 page/API tests added, not full suite rerun for docs).
+
+## 36. TT21-Series Features
+
+The TT21 series added four more AI creative tools, documented in ADRs 123-126. All four features have dry-run/fallback behavior when Atlas is local or the API key is missing, and use existing auth, credit deduction/refund, `withAtlas`, and `safeError` conventions. This brings the total feature route count to 104 and the total ADR count to 126.
+
+### Creative Ad Narrative Twist Designer (`/creative-ad-narrative-twist-designer`)
+
+- AI-powered narrative twist designer — designs unexpected narrative twists that surprise and re-engage viewers; returns twist concepts with setup, twist, payoff, surprise score, and emotional impact.
+- 4 credits. API: `POST /api/creative/creative-ad-narrative-twist-designer`. See ADR-123.
+
+### Ad Creative Memory Anchor Builder (`/ad-creative-memory-anchor-builder`)
+
+- AI-powered memory anchor builder — creates memorable anchor moments that stick with viewers; returns anchors with mnemonic devices, retention scores, placement, recall triggers, and emotional bindings.
+- 3 credits. API: `POST /api/creative/ad-creative-memory-anchor-builder`. See ADR-124.
+
+### Creative Ad Tension Release Strategist (`/creative-ad-tension-release-strategist`)
+
+- AI-powered tension release strategist — strategizes tension buildup and release cycles for emotional catharsis; returns tension cycles, release points, catharsis moments, and rhythm score.
+- 4 credits. API: `POST /api/creative/creative-ad-tension-release-strategist`. See ADR-125.
+
+### Ad Creative Sensory Contrast Designer (`/ad-creative-sensory-contrast-designer`)
+
+- AI-powered sensory contrast designer — designs sensory contrasts (loud/quiet, bright/dark, fast/slow) for maximum sensory impact; returns sensory contrast elements, contrast pairs, and impact score.
+- 5 credits. API: `POST /api/creative/ad-creative-sensory-contrast-designer`. See ADR-126.
+
+### New UI pages
+
+- `/creative-ad-narrative-twist-designer` — AI-powered narrative twist designer with twist cards, type badges, surprise score bars, setup/twist/payoff sections, and emotional impact badges
+- `/ad-creative-memory-anchor-builder` — AI-powered memory anchor builder with anchor cards, retention score bars, mnemonic devices, placement, recall triggers, and emotional bindings
+- `/creative-ad-tension-release-strategist` — AI-powered tension release strategist with tension cycles, release points with relief badges, catharsis moments with impact bars, and rhythm score gauge
+- `/ad-creative-sensory-contrast-designer` — AI-powered sensory contrast designer with sensory contrast cards, dimension badges, impact badges, before/after states, and contrast pairs
+
+### i18n, Dashboard, and Nav (TT21)
+
+- Translations added to all 13 locales for 4 new namespaces: `creativeAdNarrativeTwistDesigner`, `adCreativeMemoryAnchorBuilder`, `creativeAdTensionReleaseStrategist`, `adCreativeSensoryContrastDesigner`.
+- Dashboard "Quick Create" grid updated to 95 newest features (was 91).
+- Nav overflow menu updated to 91 newest features (was 87).
+
+### Production deployment (TT21)
+
+- All 4 pages deployed and healthy in production.
+- Production version ID: `eb512e20-d0ae-447b-aa76-3492e0dde98a`.
+- TT21 page E2E tests: 64 passing.
+- TT21 API E2E tests: 12 passing.
+- TT21 production audit: 20/20 passing (4 pages x 5 checks: HTTP 200, 1 H1, main#main-content, skip link, API schema).
+
+All four features have dry-run/fallback behavior when Atlas is local or the API key is missing, and use existing auth, credit deduction/refund, `withAtlas`, and `safeError` conventions. Total unit tests now 4241 (up from 4091) — 150 new tests across 4 new test suites. Total E2E tests: 1052+ (same — only TT21 page/API tests added, not full suite rerun for docs).

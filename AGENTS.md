@@ -49,7 +49,7 @@ Production uses Cloudflare R2 via `src/lib/media-storage.cloudflare.ts`.
 ## Verification Commands
 ```bash
 npm run lint    # ESLint
-npm test        # Node test runner (4091+ tests)
+npm test        # Node test runner (4241+ tests)
 # E2E: 1052+ passed, 0 skipped (chromium + mobile-chrome + chromium-auth)
 npm run build   # Production build (Cloudflare target)
 npm run cf:build  # Cloudflare/OpenNext build
@@ -152,7 +152,9 @@ npm run cf:deploy # Deploy to Cloudflare Workers
   `/api/creative/creative-ad-metaphor-generator`, `/api/creative/ad-creative-sensory-enhancer`,
   `/api/creative/creative-ad-pattern-interrupt-designer`, `/api/creative/ad-creative-social-proof-architect`,
   `/api/creative/creative-ad-anticipation-builder`, `/api/creative/ad-creative-contrast-amplifier`,
-  `/api/creative/creative-ad-micro-moment-designer`, `/api/creative/ad-creative-emotion-sequencer`
+  `/api/creative/creative-ad-micro-moment-designer`, `/api/creative/ad-creative-emotion-sequencer`,
+  `/api/creative/creative-ad-narrative-twist-designer`, `/api/creative/ad-creative-memory-anchor-builder`,
+  `/api/creative/creative-ad-tension-release-strategist`, `/api/creative/ad-creative-sensory-contrast-designer`
 - Ad platform API routes: `/api/ads/create`, `/api/ads/metrics`, `/api/ads/list`, `/api/ads/report`,
   `/api/ads/budget`, `/api/ads/google-budget`, `/api/ads/google-report`, `/api/analytics/ga4`,
   `/api/ads/meta-safety`, `/api/ads/meta-approve`, `/api/ads/google-safety`, `/api/ads/google-approve`
@@ -161,10 +163,10 @@ npm run cf:deploy # Deploy to Cloudflare Workers
 - `/api/creative/director` returns an NDJSON stream of step-by-step progress updates; legacy
   non-streaming mode available via `?stream=false`
 - Pipeline stages: brief, script, storyboard, media_generation, audio, edit, compliance, score, publish
-- ADRs 001-122 in `docs/adr/` document all major architecture decisions
+- ADRs 001-126 in `docs/adr/` document all major architecture decisions
 - Cross-feature handoffs: Brand Concepts → Creator Kits (query-param pre-fill),
   Brand Concepts → Shot Planner (script pre-fill), Clip Editor → Media Service Boundary (ASR/TTS)
-- Dashboard "Quick Create" grid includes all production apps and the 91 newest features
+- Dashboard "Quick Create" grid includes all production apps and the 95 newest features
   (Creator Kits, Brand Concepts, Clip Editor, Media Services, Product Brief, Reference Remix,
   Multi-Concept, Meta Safety, Google Safety, Performance Loop, Viral Analyzer, Skill Chains,
   Brand Guardrails, Smart Calendar, Competitor Watch, Ad Copy Generator, Hook Library,
@@ -193,8 +195,10 @@ npm run cf:deploy # Deploy to Cloudflare Workers
   Creative Ad Metaphor Generator, Ad Creative Sensory Enhancer,
   Creative Ad Pattern Interrupt Designer, Ad Creative Social Proof Architect,
   Creative Ad Anticipation Builder, Ad Creative Contrast Amplifier,
-  Creative Ad Micro-Moment Designer, Ad Creative Emotion Sequencer)
-- Nav header includes links to all feature pages (visible lg+); the 87 newest features
+  Creative Ad Micro-Moment Designer, Ad Creative Emotion Sequencer,
+  Creative Ad Narrative Twist Designer, Ad Creative Memory Anchor Builder,
+  Creative Ad Tension Release Strategist, Ad Creative Sensory Contrast Designer)
+- Nav header includes links to all feature pages (visible lg+); the 91 newest features
   (Product Brief, Reference Remix, Multi-Concept, Meta Safety, Google Safety, Performance Loop,
   Viral Analyzer, Skill Chains, Brand Guardrails, Smart Calendar, Competitor Watch, Ad Copy
   Generator, Hook Library, Brief Template Builder, Ad Script Writer, Audience Persona Generator,
@@ -223,7 +227,9 @@ npm run cf:deploy # Deploy to Cloudflare Workers
   Ad Creative Sensory Enhancer, Creative Ad Pattern Interrupt Designer,
   Ad Creative Social Proof Architect, Creative Ad Anticipation Builder,
   Ad Creative Contrast Amplifier, Creative Ad Micro-Moment Designer,
-  Ad Creative Emotion Sequencer) are in the overflow nav
+  Ad Creative Emotion Sequencer, Creative Ad Narrative Twist Designer,
+  Ad Creative Memory Anchor Builder, Creative Ad Tension Release Strategist,
+  Ad Creative Sensory Contrast Designer) are in the overflow nav
 
 ### JJ-Series: Research-Derived Creative Capabilities
 - Product Page → Ad Brief (`/product-brief`): URL/product extraction → brand/product brief →
@@ -759,6 +765,34 @@ npm run cf:deploy # Deploy to Cloudflare Workers
 - Translations added to all 13 locales for 4 new namespaces: creativeAdAnticipationBuilder,
   adCreativeContrastAmplifier, creativeAdMicroMomentDesigner, adCreativeEmotionSequencer
 - Production deployment version ID: 99e96a78-beea-4e61-ada0-079f708daeb5
+
+### TT21-Series: Four More AI Creative Tools
+- Creative Ad Narrative Twist Designer (`/creative-ad-narrative-twist-designer`): AI-powered narrative twist designer.
+  Designs unexpected narrative twists that surprise and re-engage viewers; returns twist concepts with
+  setup, twist, payoff, surprise score, and emotional impact.
+  4 credits. API: `POST /api/creative/creative-ad-narrative-twist-designer`. See ADR-123.
+- Ad Creative Memory Anchor Builder (`/ad-creative-memory-anchor-builder`): AI-powered memory anchor builder.
+  Creates memorable anchor moments that stick with viewers; returns anchors with mnemonic devices,
+  retention scores, placement, recall triggers, and emotional bindings.
+  3 credits. API: `POST /api/creative/ad-creative-memory-anchor-builder`. See ADR-124.
+- Creative Ad Tension Release Strategist (`/creative-ad-tension-release-strategist`): AI-powered tension release strategist.
+  Strategizes tension buildup and release cycles for emotional catharsis; returns tension cycles,
+  release points, catharsis moments, and rhythm score.
+  4 credits. API: `POST /api/creative/creative-ad-tension-release-strategist`. See ADR-125.
+- Ad Creative Sensory Contrast Designer (`/ad-creative-sensory-contrast-designer`): AI-powered sensory contrast designer.
+  Designs sensory contrasts (loud/quiet, bright/dark, fast/slow) for maximum sensory impact; returns
+  sensory contrast elements, contrast pairs, and impact score.
+  5 credits. API: `POST /api/creative/ad-creative-sensory-contrast-designer`. See ADR-126.
+- All 4 features have dry-run/fallback behavior when Atlas is local or API key is missing
+- All 4 features use existing auth, credit deduction/refund, `withAtlas`, and `safeError` conventions
+- Unit tests: 4241 total (was 4091) — 150 new tests across 4 new test suites
+- TT21 page E2E tests: 64 passing
+- TT21 API E2E tests: 12 passing
+- TT21 production audit: 20/20 passing (4 pages x 5 checks: HTTP 200, 1 H1, main#main-content,
+  skip link, API schema)
+- Translations added to all 13 locales for 4 new namespaces: creativeAdNarrativeTwistDesigner,
+  adCreativeMemoryAnchorBuilder, creativeAdTensionReleaseStrategist, adCreativeSensoryContrastDesigner
+- Production deployment version ID: eb512e20-d0ae-447b-aa76-3492e0dde98a
 
 ## Production-Only Testing (Cannot Be Verified Locally)
 
