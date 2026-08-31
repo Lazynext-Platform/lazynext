@@ -104,6 +104,10 @@ const CUSTOM_TITLES: Record<string, Bi> = {
   'creative-format-recommender': { en: 'Creative Format Recommender', zh: '创意格式推荐器' },
   'ad-creative-lifecycle-manager': { en: 'Ad Creative Lifecycle Manager', zh: '广告创意生命周期管理器' },
   'creative-sentiment-journey-mapper': { en: 'Creative Sentiment Journey Mapper', zh: '创意情感旅程映射器' },
+  'ad-creative-ab-test-simulator': { en: 'Ad Creative A/B Test Simulator', zh: '广告创意A/B测试模拟器' },
+  'creative-visual-hierarchy-analyzer': { en: 'Creative Visual Hierarchy Analyzer', zh: '创意视觉层次分析器' },
+  'ad-audience-pain-point-mapper': { en: 'Ad Audience Pain Point Mapper', zh: '广告受众痛点映射器' },
+  'creative-messaging-framework-builder': { en: 'Creative Messaging Framework Builder', zh: '创意信息框架构建器' },
 };
 const CUSTOM_DESCS: Record<string, Bi> = {
   'lazynext-studio': { en: 'Product + presenter photos → AI expands the prompt from your images → lip-synced UGC ad; one-click viral formats', zh: '产品图+人物图 → AI 看图扩写提示词 → 合成首帧 → 对口型真人口播广告;爆款玩法一键复刻' },
