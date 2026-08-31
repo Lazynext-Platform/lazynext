@@ -49,7 +49,7 @@ Production uses Cloudflare R2 via `src/lib/media-storage.cloudflare.ts`.
 ## Verification Commands
 ```bash
 npm run lint    # ESLint
-npm test        # Node test runner (3937+ tests)
+npm test        # Node test runner (4091+ tests)
 # E2E: 1052+ passed, 0 skipped (chromium + mobile-chrome + chromium-auth)
 npm run build   # Production build (Cloudflare target)
 npm run cf:build  # Cloudflare/OpenNext build
@@ -150,7 +150,9 @@ npm run cf:deploy # Deploy to Cloudflare Workers
   `/api/creative/creative-ad-format-innovator`, `/api/creative/ad-creative-story-arc-designer`,
   `/api/creative/creative-ad-persuasion-strategist`, `/api/creative/ad-creative-hook-timing-optimizer`,
   `/api/creative/creative-ad-metaphor-generator`, `/api/creative/ad-creative-sensory-enhancer`,
-  `/api/creative/creative-ad-pattern-interrupt-designer`, `/api/creative/ad-creative-social-proof-architect`
+  `/api/creative/creative-ad-pattern-interrupt-designer`, `/api/creative/ad-creative-social-proof-architect`,
+  `/api/creative/creative-ad-anticipation-builder`, `/api/creative/ad-creative-contrast-amplifier`,
+  `/api/creative/creative-ad-micro-moment-designer`, `/api/creative/ad-creative-emotion-sequencer`
 - Ad platform API routes: `/api/ads/create`, `/api/ads/metrics`, `/api/ads/list`, `/api/ads/report`,
   `/api/ads/budget`, `/api/ads/google-budget`, `/api/ads/google-report`, `/api/analytics/ga4`,
   `/api/ads/meta-safety`, `/api/ads/meta-approve`, `/api/ads/google-safety`, `/api/ads/google-approve`
@@ -159,10 +161,10 @@ npm run cf:deploy # Deploy to Cloudflare Workers
 - `/api/creative/director` returns an NDJSON stream of step-by-step progress updates; legacy
   non-streaming mode available via `?stream=false`
 - Pipeline stages: brief, script, storyboard, media_generation, audio, edit, compliance, score, publish
-- ADRs 001-118 in `docs/adr/` document all major architecture decisions
+- ADRs 001-122 in `docs/adr/` document all major architecture decisions
 - Cross-feature handoffs: Brand Concepts → Creator Kits (query-param pre-fill),
   Brand Concepts → Shot Planner (script pre-fill), Clip Editor → Media Service Boundary (ASR/TTS)
-- Dashboard "Quick Create" grid includes all production apps and the 87 newest features
+- Dashboard "Quick Create" grid includes all production apps and the 91 newest features
   (Creator Kits, Brand Concepts, Clip Editor, Media Services, Product Brief, Reference Remix,
   Multi-Concept, Meta Safety, Google Safety, Performance Loop, Viral Analyzer, Skill Chains,
   Brand Guardrails, Smart Calendar, Competitor Watch, Ad Copy Generator, Hook Library,
@@ -189,8 +191,10 @@ npm run cf:deploy # Deploy to Cloudflare Workers
   Creative Ad Format Innovator, Ad Creative Story Arc Designer,
   Creative Ad Persuasion Strategist, Ad Creative Hook Timing Optimizer,
   Creative Ad Metaphor Generator, Ad Creative Sensory Enhancer,
-  Creative Ad Pattern Interrupt Designer, Ad Creative Social Proof Architect)
-- Nav header includes links to all feature pages (visible lg+); the 83 newest features
+  Creative Ad Pattern Interrupt Designer, Ad Creative Social Proof Architect,
+  Creative Ad Anticipation Builder, Ad Creative Contrast Amplifier,
+  Creative Ad Micro-Moment Designer, Ad Creative Emotion Sequencer)
+- Nav header includes links to all feature pages (visible lg+); the 87 newest features
   (Product Brief, Reference Remix, Multi-Concept, Meta Safety, Google Safety, Performance Loop,
   Viral Analyzer, Skill Chains, Brand Guardrails, Smart Calendar, Competitor Watch, Ad Copy
   Generator, Hook Library, Brief Template Builder, Ad Script Writer, Audience Persona Generator,
@@ -217,7 +221,9 @@ npm run cf:deploy # Deploy to Cloudflare Workers
   Ad Creative Story Arc Designer, Creative Ad Persuasion Strategist,
   Ad Creative Hook Timing Optimizer, Creative Ad Metaphor Generator,
   Ad Creative Sensory Enhancer, Creative Ad Pattern Interrupt Designer,
-  Ad Creative Social Proof Architect) are in the overflow nav
+  Ad Creative Social Proof Architect, Creative Ad Anticipation Builder,
+  Ad Creative Contrast Amplifier, Creative Ad Micro-Moment Designer,
+  Ad Creative Emotion Sequencer) are in the overflow nav
 
 ### JJ-Series: Research-Derived Creative Capabilities
 - Product Page → Ad Brief (`/product-brief`): URL/product extraction → brand/product brief →
@@ -725,6 +731,34 @@ npm run cf:deploy # Deploy to Cloudflare Workers
 - Translations added to all 13 locales for 4 new namespaces: creativeAdMetaphorGenerator,
   adCreativeSensoryEnhancer, creativeAdPatternInterruptDesigner, adCreativeSocialProofArchitect
 - Production deployment version ID: ff2a8233-e5de-428a-b0db-338d7913f8ee
+
+### TT20-Series: Four More AI Creative Tools
+- Creative Ad Anticipation Builder (`/creative-ad-anticipation-builder`): AI-powered anticipation builder.
+  Builds anticipation and suspense elements for ad creative; returns hooks, suspense techniques, reveal
+  strategies, tension curves, and anticipation score.
+  4 credits. API: `POST /api/creative/creative-ad-anticipation-builder`. See ADR-119.
+- Ad Creative Contrast Amplifier (`/ad-creative-contrast-amplifier`): AI-powered contrast amplifier.
+  Amplifies contrast in ad content (before/after, problem/solution, etc.); returns amplified content,
+  contrast score, contrast elements, and contrast pairs.
+  3 credits. API: `POST /api/creative/ad-creative-contrast-amplifier`. See ADR-120.
+- Creative Ad Micro-Moment Designer (`/creative-ad-micro-moment-designer`): AI-powered micro-moment
+  designer. Designs micro-moments that capture attention in 1-3 seconds; returns moment timeline with
+  attention scores, implementation guides, and emotional beats.
+  4 credits. API: `POST /api/creative/creative-ad-micro-moment-designer`. See ADR-121.
+- Ad Creative Emotion Sequencer (`/ad-creative-emotion-sequencer`): AI-powered emotion sequencer.
+  Sequences emotions throughout ad content for maximum emotional impact; returns emotion beats, peaks,
+  transition strategies, and resonance score.
+  5 credits. API: `POST /api/creative/ad-creative-emotion-sequencer`. See ADR-122.
+- All 4 features have dry-run/fallback behavior when Atlas is local or API key is missing
+- All 4 features use existing auth, credit deduction/refund, `withAtlas`, and `safeError` conventions
+- Unit tests: 4091 total (was 3937) — 154 new tests across 4 new test suites
+- TT20 page E2E tests: 64 passing
+- TT20 API E2E tests: 12 passing
+- TT20 production audit: 20/20 passing (4 pages x 5 checks: HTTP 200, 1 H1, main#main-content,
+  skip link, API schema)
+- Translations added to all 13 locales for 4 new namespaces: creativeAdAnticipationBuilder,
+  adCreativeContrastAmplifier, creativeAdMicroMomentDesigner, adCreativeEmotionSequencer
+- Production deployment version ID: 99e96a78-beea-4e61-ada0-079f708daeb5
 
 ## Production-Only Testing (Cannot Be Verified Locally)
 
