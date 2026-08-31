@@ -6,7 +6,7 @@ import { useSession } from 'next-auth/react';
 import {
   Clapperboard, Coins, Boxes, FolderOpen, ArrowRight, Loader2, Film, Play, Sparkles,
   TrendingDown, TrendingUp, BarChart3, Trophy, Calendar, Gift, Layers, Scissors, Server, Users, Zap, Workflow,
-  FileText, RefreshCw, Lightbulb, Shield, Flame, GitBranch, CalendarClock, Radar, PenLine, Anchor, FileSpreadsheet, ScrollText, UsersRound, LayoutGrid, GitMerge, FileSearch2, LayoutTemplate, Palette, Gauge, FlaskRound, TestTube, Compass, Mic, Type, Newspaper, Lightbulb as LightbulbIcon, Clock, BatteryLow, MousePointerClick, Expand, BookOpenCheck, Droplet, Hash, Clapperboard as ClapperboardIcon, Image as ImageIcon, Music, Mic2, FileText as FileTextIcon, Target, FlaskConical as FlaskIcon, Users as UsersIcon, ShieldCheck as ShieldIcon, HeartPulse, Repeat2, DollarSign, TrendingUp as TrendingIcon, ListOrdered, BookMarked, Globe2, LineChart, Smile, Grid2x2, RefreshCcw, MicVocal, Users2, Layers3, Swords, Radio, LayoutList, LifeBuoy, Split, AlertTriangle, Eye, MessageSquareQuote, Brain, SlidersHorizontal, Wand, Award, Shuffle, Waves, Contrast
+  FileText, RefreshCw, Lightbulb, Shield, Flame, GitBranch, CalendarClock, Radar, PenLine, Anchor, FileSpreadsheet, ScrollText, UsersRound, LayoutGrid, GitMerge, FileSearch2, LayoutTemplate, Palette, Gauge, FlaskRound, TestTube, Compass, Mic, Type, Newspaper, Lightbulb as LightbulbIcon, Clock, BatteryLow, MousePointerClick, Expand, BookOpenCheck, Droplet, Hash, Clapperboard as ClapperboardIcon, Image as ImageIcon, Music, Mic2, FileText as FileTextIcon, Target, FlaskConical as FlaskIcon, Users as UsersIcon, ShieldCheck as ShieldIcon, HeartPulse, Repeat2, DollarSign, TrendingUp as TrendingIcon, ListOrdered, BookMarked, Globe2, LineChart, Smile, Grid2x2, RefreshCcw, MicVocal, Users2, Layers3, Swords, Radio, LayoutList, LifeBuoy, Split, AlertTriangle, Eye, MessageSquareQuote, Brain, SlidersHorizontal, Wand, Award, Shuffle, Waves, Contrast, HelpCircle, Drum, Layout, AudioLines
 } from 'lucide-react';
 import { useI18n } from '@/i18n/provider';
 import { appTitle, appDesc, isFeatured } from '@/config/appCatalog';
@@ -124,6 +124,10 @@ const APPS: App[] = [
   { id: 'ad-creative-memory-anchor-builder', href: '/ad-creative-memory-anchor-builder', icon: Anchor },
   { id: 'creative-ad-tension-release-strategist', href: '/creative-ad-tension-release-strategist', icon: Waves },
   { id: 'ad-creative-sensory-contrast-designer', href: '/ad-creative-sensory-contrast-designer', icon: Contrast },
+  { id: 'creative-ad-curiosity-gap-designer', href: '/creative-ad-curiosity-gap-designer', icon: HelpCircle },
+  { id: 'ad-creative-rhythm-pacing-optimizer', href: '/ad-creative-rhythm-pacing-optimizer', icon: Drum },
+  { id: 'creative-ad-visual-hierarchy-strategist', href: '/creative-ad-visual-hierarchy-strategist', icon: Layout },
+  { id: 'ad-creative-sound-design-strategist', href: '/ad-creative-sound-design-strategist', icon: AudioLines },
 ];
 
 type Creation = {
