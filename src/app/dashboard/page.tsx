@@ -6,7 +6,7 @@ import { useSession } from 'next-auth/react';
 import {
   Clapperboard, Coins, Boxes, FolderOpen, ArrowRight, Loader2, Film, Play, Sparkles,
   TrendingDown, TrendingUp, BarChart3, Trophy, Calendar, Gift, Layers, Scissors, Server, Users, Zap, Workflow,
-  FileText, RefreshCw, Lightbulb, Shield, Flame, GitBranch, CalendarClock, Radar, PenLine, Anchor, FileSpreadsheet, ScrollText, UsersRound, LayoutGrid, GitMerge, FileSearch2, LayoutTemplate, Palette, Gauge, FlaskRound, TestTube, Compass, Mic, Type,
+  FileText, RefreshCw, Lightbulb, Shield, Flame, GitBranch, CalendarClock, Radar, PenLine, Anchor, FileSpreadsheet, ScrollText, UsersRound, LayoutGrid, GitMerge, FileSearch2, LayoutTemplate, Palette, Gauge, FlaskRound, TestTube, Compass, Mic, Type, Newspaper, Lightbulb as LightbulbIcon, Clock, BatteryLow,
 } from 'lucide-react';
 import { useI18n } from '@/i18n/provider';
 import { appTitle, appDesc, isFeatured } from '@/config/appCatalog';
@@ -60,6 +60,10 @@ const APPS: App[] = [
   { id: 'trend-spotter', href: '/trend-spotter', icon: Compass },
   { id: 'brand-voice-analyzer', href: '/brand-voice-analyzer', icon: Mic },
   { id: 'ad-caption-generator', href: '/ad-caption-generator', icon: Type },
+  { id: 'ad-headline-generator', href: '/ad-headline-generator', icon: Newspaper },
+  { id: 'angle-finder', href: '/angle-finder', icon: LightbulbIcon },
+  { id: 'ad-timing-optimizer', href: '/ad-timing-optimizer', icon: Clock },
+  { id: 'creative-fatigue-detector', href: '/creative-fatigue-detector', icon: BatteryLow },
 ];
 
 type Creation = {

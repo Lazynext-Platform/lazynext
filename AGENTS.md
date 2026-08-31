@@ -49,7 +49,7 @@ Production uses Cloudflare R2 via `src/lib/media-storage.cloudflare.ts`.
 ## Verification Commands
 ```bash
 npm run lint    # ESLint
-npm test        # Node test runner (2099+ tests)
+npm test        # Node test runner (2195+ tests)
 # E2E: 839+ passed, 0 skipped (chromium + mobile-chrome + chromium-auth)
 npm run build   # Production build (Cloudflare target)
 npm run cf:build  # Cloudflare/OpenNext build
@@ -120,7 +120,9 @@ npm run cf:deploy # Deploy to Cloudflare Workers
   `/api/creative/variant-matrix-generator`, `/api/creative/ad-concept-merger`,
   `/api/creative/brief-analyzer`, `/api/creative/ad-format-optimizer`,
   `/api/creative/mood-board-generator`, `/api/creative/ad-performance-predictor`,
-  `/api/creative/ab-test-planner-v2`
+  `/api/creative/ab-test-planner-v2`, `/api/creative/hook-tester`,
+  `/api/creative/trend-spotter`, `/api/creative/brand-voice-analyzer`,
+  `/api/creative/ad-caption-generator`
 - Ad platform API routes: `/api/ads/create`, `/api/ads/metrics`, `/api/ads/list`, `/api/ads/report`,
   `/api/ads/budget`, `/api/ads/google-budget`, `/api/ads/google-report`, `/api/analytics/ga4`,
   `/api/ads/meta-safety`, `/api/ads/meta-approve`, `/api/ads/google-safety`, `/api/ads/google-approve`
@@ -129,22 +131,24 @@ npm run cf:deploy # Deploy to Cloudflare Workers
 - `/api/creative/director` returns an NDJSON stream of step-by-step progress updates; legacy
   non-streaming mode available via `?stream=false`
 - Pipeline stages: brief, script, storyboard, media_generation, audio, edit, compliance, score, publish
-- ADRs 001-058 in `docs/adr/` document all major architecture decisions
+- ADRs 001-062 in `docs/adr/` document all major architecture decisions
 - Cross-feature handoffs: Brand Concepts → Creator Kits (query-param pre-fill),
   Brand Concepts → Shot Planner (script pre-fill), Clip Editor → Media Service Boundary (ASR/TTS)
-- Dashboard "Quick Create" grid includes all production apps and the 27 newest features
+- Dashboard "Quick Create" grid includes all production apps and the 31 newest features
   (Creator Kits, Brand Concepts, Clip Editor, Media Services, Product Brief, Reference Remix,
   Multi-Concept, Meta Safety, Google Safety, Performance Loop, Viral Analyzer, Skill Chains,
   Brand Guardrails, Smart Calendar, Competitor Watch, Ad Copy Generator, Hook Library,
   Brief Template Builder, Ad Script Writer, Audience Persona Generator, Creative Variant Matrix,
   Ad Concept Merger, Brief Analyzer, Ad Format Optimizer, Mood Board Generator,
-  Ad Performance Predictor, Creative A/B Test Planner)
-- Nav header includes links to all feature pages (visible lg+); the 23 newest features
+  Ad Performance Predictor, Creative A/B Test Planner, Creative Hook Tester, Trend Spotter,
+  Brand Voice Analyzer, Ad Caption Generator)
+- Nav header includes links to all feature pages (visible lg+); the 27 newest features
   (Product Brief, Reference Remix, Multi-Concept, Meta Safety, Google Safety, Performance Loop,
   Viral Analyzer, Skill Chains, Brand Guardrails, Smart Calendar, Competitor Watch, Ad Copy
   Generator, Hook Library, Brief Template Builder, Ad Script Writer, Audience Persona Generator,
   Creative Variant Matrix, Ad Concept Merger, Brief Analyzer, Ad Format Optimizer, Mood Board
-  Generator, Ad Performance Predictor, Creative A/B Test Planner) are in the overflow nav
+  Generator, Ad Performance Predictor, Creative A/B Test Planner, Creative Hook Tester,
+  Trend Spotter, Brand Voice Analyzer, Ad Caption Generator) are in the overflow nav
 
 ### JJ-Series: Research-Derived Creative Capabilities
 - Product Page → Ad Brief (`/product-brief`): URL/product extraction → brand/product brief →
@@ -270,6 +274,26 @@ npm run cf:deploy # Deploy to Cloudflare Workers
 - Translations added to all 13 locales for 3 new namespaces: moodBoardGenerator,
   adPerformancePredictor, abTestPlannerV2
 - Fixed nav link test (Performance vs Performance Predictor exact match)
+
+### TT5-Series: Four More AI Creative Tools
+- Creative Hook Tester (`/hook-tester`): AI-powered hook testing — rank multiple ad hooks
+  by predicted performance before launch. 3 credits.
+  API: `POST /api/creative/hook-tester`. See ADR-059.
+- Trend Spotter (`/trend-spotter`): AI-powered trend discovery — identify trending topics,
+  hashtags, and content styles for your niche. 5 credits.
+  API: `POST /api/creative/trend-spotter`. See ADR-060.
+- Brand Voice Analyzer (`/brand-voice-analyzer`): AI-powered brand voice analysis — extract
+  tone, personality, and style guidelines from sample content. 4 credits.
+  API: `POST /api/creative/brand-voice-analyzer`. See ADR-061.
+- Ad Caption Generator (`/ad-caption-generator`): AI-powered ad captions — generate
+  platform-specific captions with emojis, hashtags, and CTAs. 3 credits.
+  API: `POST /api/creative/ad-caption-generator`. See ADR-062.
+- All 4 features have dry-run/fallback behavior when Atlas is local or API key is missing
+- All 4 features use existing auth, credit deduction/refund, `withAtlas`, and `safeError` conventions
+- Unit tests: 2195 total (was 2099)
+- E2E tests: 839 total (unchanged from TT4, new tests replaced old counts)
+- Translations added to all 13 locales for 4 new namespaces: hookTester, trendSpotter,
+  brandVoiceAnalyzer, adCaptionGenerator
 
 ## Production-Only Testing (Cannot Be Verified Locally)
 

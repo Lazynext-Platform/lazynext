@@ -857,3 +857,143 @@ test.describe('Ad Caption Generator API', () => {
     expect(res.status()).toBe(400);
   });
 });
+
+test.describe('Ad Headline Generator API', () => {
+  test('GET returns credit cost and schema', async ({ request }) => {
+    const res = await request.get('/api/creative/ad-headline-generator');
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.creditCost).toBe(3);
+    expect(data.schema).toBeTruthy();
+  });
+
+  test('POST with valid input returns headlines', async ({ request }) => {
+    const res = await request.post('/api/creative/ad-headline-generator', {
+      data: {
+        productOrBrand: 'Premium wireless earbuds',
+        platform: 'tiktok',
+        count: 5,
+        dryRun: true,
+      },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.result).toBeTruthy();
+    expect(Array.isArray(data.result.headlines)).toBeTruthy();
+  });
+
+  test('POST with missing productOrBrand returns 400', async ({ request }) => {
+    const res = await request.post('/api/creative/ad-headline-generator', {
+      data: { platform: 'tiktok', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.status()).toBe(400);
+  });
+});
+
+test.describe('Creative Angle Finder API', () => {
+  test('GET returns credit cost and schema', async ({ request }) => {
+    const res = await request.get('/api/creative/angle-finder');
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.creditCost).toBe(4);
+    expect(data.schema).toBeTruthy();
+  });
+
+  test('POST with valid input returns angles', async ({ request }) => {
+    const res = await request.post('/api/creative/angle-finder', {
+      data: {
+        productOrBrand: 'Eco-friendly water bottle',
+        platform: 'tiktok',
+        dryRun: true,
+      },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.result).toBeTruthy();
+    expect(Array.isArray(data.result.angles)).toBeTruthy();
+  });
+
+  test('POST with missing productOrBrand returns 400', async ({ request }) => {
+    const res = await request.post('/api/creative/angle-finder', {
+      data: { platform: 'tiktok', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.status()).toBe(400);
+  });
+});
+
+test.describe('Ad Timing Optimizer API', () => {
+  test('GET returns credit cost and schema', async ({ request }) => {
+    const res = await request.get('/api/creative/ad-timing-optimizer');
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.creditCost).toBe(3);
+    expect(data.schema).toBeTruthy();
+  });
+
+  test('POST with valid input returns timing slots', async ({ request }) => {
+    const res = await request.post('/api/creative/ad-timing-optimizer', {
+      data: {
+        platform: 'tiktok',
+        audienceDescription: 'Gen Z fitness enthusiasts in the US',
+        dryRun: true,
+      },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.result).toBeTruthy();
+    expect(Array.isArray(data.result.optimalSlots)).toBeTruthy();
+  });
+
+  test('POST with missing audienceDescription returns 400', async ({ request }) => {
+    const res = await request.post('/api/creative/ad-timing-optimizer', {
+      data: { platform: 'tiktok', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.status()).toBe(400);
+  });
+});
+
+test.describe('Creative Fatigue Detector API', () => {
+  test('GET returns credit cost and schema', async ({ request }) => {
+    const res = await request.get('/api/creative/creative-fatigue-detector');
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.creditCost).toBe(4);
+    expect(data.schema).toBeTruthy();
+  });
+
+  test('POST with valid input returns fatigue analysis', async ({ request }) => {
+    const res = await request.post('/api/creative/creative-fatigue-detector', {
+      data: {
+        creativeDescription: 'TikTok ad for eco-friendly water bottle with gym background',
+        platform: 'tiktok',
+        daysRunning: 14,
+        currentCTR: 1.2,
+        impressions: 50000,
+        dryRun: true,
+      },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.result).toBeTruthy();
+    expect(typeof data.result.fatigueScore).toBe('number');
+  });
+
+  test('POST with missing creativeDescription returns 400', async ({ request }) => {
+    const res = await request.post('/api/creative/creative-fatigue-detector', {
+      data: { platform: 'tiktok', daysRunning: 14, currentCTR: 1.2, impressions: 50000, dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.status()).toBe(400);
+  });
+});

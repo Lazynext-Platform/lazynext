@@ -64,6 +64,10 @@ const CUSTOM_TITLES: Record<string, Bi> = {
   'trend-spotter': { en: 'Trend Spotter', zh: '趋势发现器' },
   'brand-voice-analyzer': { en: 'Brand Voice Analyzer', zh: '品牌声音分析器' },
   'ad-caption-generator': { en: 'Ad Caption Generator', zh: '广告文案生成器' },
+  'ad-headline-generator': { en: 'Ad Headline Generator', zh: '广告标题生成器' },
+  'angle-finder': { en: 'Creative Angle Finder', zh: '创意角度发现器' },
+  'ad-timing-optimizer': { en: 'Ad Timing Optimizer', zh: '广告时段优化器' },
+  'creative-fatigue-detector': { en: 'Creative Fatigue Detector', zh: '创意疲劳检测器' },
 };
 const CUSTOM_DESCS: Record<string, Bi> = {
   'lazynext-studio': { en: 'Product + presenter photos → AI expands the prompt from your images → lip-synced UGC ad; one-click viral formats', zh: '产品图+人物图 → AI 看图扩写提示词 → 合成首帧 → 对口型真人口播广告;爆款玩法一键复刻' },
@@ -98,6 +102,10 @@ const CUSTOM_DESCS: Record<string, Bi> = {
   'trend-spotter': { en: 'AI-powered trend discovery — identify trending topics, hashtags, and content styles for your niche', zh: 'AI驱动的趋势发现 — 为你的细分领域识别热门话题、标签和内容风格' },
   'brand-voice-analyzer': { en: 'AI-powered brand voice analysis — extract tone, personality, and style guidelines from your content', zh: 'AI驱动的品牌声音分析 — 从内容中提取语调、个性和风格指南' },
   'ad-caption-generator': { en: 'AI-powered ad captions — generate platform-specific captions with emojis, hashtags, and CTAs', zh: 'AI驱动的广告文案 — 生成带表情符号、标签和CTA的平台专属文案' },
+  'ad-headline-generator': { en: 'AI-powered ad headlines — generate attention-grabbing headlines optimized for specific platforms', zh: 'AI驱动的广告标题 — 生成针对特定平台优化的吸睛标题' },
+  'angle-finder': { en: 'AI-powered angle discovery — find unique marketing angles across psychological triggers', zh: 'AI驱动的角度发现 — 跨心理触发器发现独特营销角度' },
+  'ad-timing-optimizer': { en: 'AI-powered ad timing — find the optimal times to run ads based on platform, audience, and timezone', zh: 'AI驱动的广告时段 — 根据平台、受众和时区找到最佳投放时间' },
+  'creative-fatigue-detector': { en: 'AI-powered fatigue detection — detect when creatives need refreshing from performance metrics', zh: 'AI驱动的疲劳检测 — 从表现指标检测创意何时需要更新' },
 };
 export function appTitle(id: string, fallbackTitle: string, locale: string = 'en'): string {
   const c = CUSTOM_TITLES[id];

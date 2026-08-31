@@ -1,6 +1,6 @@
 # LazyNext Architecture Audit — 2026-09
 
-> **Status:** Current as of 2026-09-02 (post-TT4 series).
+> **Status:** Current as of 2026-09-02 (post-TT5 series).
 > The previous audit (`research/lazynext-architecture-audit.md`) is superseded.
 
 ## 1. Stack
@@ -98,6 +98,10 @@ All 5 templates include the `score` quality gate before publish.
 - `POST /api/creative/mood-board-generator` — AI-powered mood boards with color palettes, typography, imagery themes, and emotional tone from brand and style keywords (4 credits, ADR-056)
 - `POST /api/creative/ad-performance-predictor` — AI-powered pre-launch performance prediction forecasting CTR, engagement, conversion likelihood, and virality score with strengths, risks, and recommendations (5 credits, ADR-057)
 - `POST /api/creative/ab-test-planner-v2` — AI-powered A/B test experiment design with hypothesis, variants, metrics, sample size, duration, confidence level, and success/failure criteria (4 credits, ADR-058)
+- `POST /api/creative/hook-tester` — AI-powered hook testing ranking multiple ad hooks by predicted performance before launch (3 credits, ADR-059)
+- `POST /api/creative/trend-spotter` — AI-powered trend discovery identifying trending topics, hashtags, and content styles for your niche (5 credits, ADR-060)
+- `POST /api/creative/brand-voice-analyzer` — AI-powered brand voice analysis extracting tone, personality, and style guidelines from sample content (4 credits, ADR-061)
+- `POST /api/creative/ad-caption-generator` — AI-powered ad captions generating platform-specific captions with emojis, hashtags, and CTAs (3 credits, ADR-062)
 
 Credit handling:
 - Credits are deducted before stage execution.
@@ -201,7 +205,7 @@ The `overall` score is on a **1-10 scale** (weighted average of 1-10 dimensions)
 
 ### Coverage
 
-- 13 locales: en, zh, ja, es, ko, pt, fr, de, ar, hi, vi, th, id. All 13 locales now have complete feature translations (including the JJ-, LL-, RR-, SS-, TT-, TT3-, and TT4-series features).
+- 13 locales: en, zh, ja, es, ko, pt, fr, de, ar, hi, vi, th, id. All 13 locales now have complete feature translations (including the JJ-, LL-, RR-, SS-, TT-, TT3-, TT4-, and TT5-series features).
 - RTL support for Arabic (`dir="rtl"`, `lang="ar"`).
 - Cookie-based locale switching.
 
@@ -298,7 +302,7 @@ The `pipeline` namespace includes:
 
 ```bash
 npm run lint    # ESLint — 0 errors, 0 warnings
-npm test        # Node test runner — 2099+ tests
+npm test        # Node test runner — 2195+ tests
 npx playwright test  # E2E — 839+ tests, 0 skipped
 npm run build   # Production build (Cloudflare target)
 ```
@@ -401,7 +405,7 @@ npm run build   # Production build (Cloudflare target)
 
 ## 15. LL-Series Features
 
-The LL series extended the creative platform with four new capabilities, documented in ADRs 036-039. ADR-040 (OO series) documents D1 persistence for safety audit logs. ADRs 041-043 (QQ series) document chain mode unification, observability aggregation, and video rendering. ADRs 044-046 (RR series) document Brand Guardrails, Smart Calendar, and Competitor Watch. ADRs 047-052 (TT series) document Ad Copy Generator, Hook Library, Brief Template Builder, Ad Script Writer, Audience Persona Generator, and Creative Variant Matrix. ADRs 053-055 (TT3 series) document Ad Concept Merger, Creative Brief Analyzer, and Ad Format Optimizer. ADRs 056-058 (TT4 series) document Mood Board Generator, Ad Performance Predictor, and Creative A/B Test Planner. ADRs 001-058 now total 58 architecture decision records in `docs/adr/`.
+The LL series extended the creative platform with four new capabilities, documented in ADRs 036-039. ADR-040 (OO series) documents D1 persistence for safety audit logs. ADRs 041-043 (QQ series) document chain mode unification, observability aggregation, and video rendering. ADRs 044-046 (RR series) document Brand Guardrails, Smart Calendar, and Competitor Watch. ADRs 047-052 (TT series) document Ad Copy Generator, Hook Library, Brief Template Builder, Ad Script Writer, Audience Persona Generator, and Creative Variant Matrix. ADRs 053-055 (TT3 series) document Ad Concept Merger, Creative Brief Analyzer, and Ad Format Optimizer. ADRs 056-058 (TT4 series) document Mood Board Generator, Ad Performance Predictor, and Creative A/B Test Planner. ADRs 059-062 (TT5 series) document Creative Hook Tester, Trend Spotter, Brand Voice Analyzer, and Ad Caption Generator. ADRs 001-062 now total 62 architecture decision records in `docs/adr/`.
 
 ### Google Ads Safety Layer (`/google-safety`)
 
@@ -441,7 +445,7 @@ All four features have dry-run/fallback behavior when Atlas is local or the API 
 
 ### Dashboard Quick Create
 
-The dashboard "Quick Create" grid now includes all production apps plus the 27 newest features (Creator Kits, Brand Concepts, Clip Editor, Media Services, Product Brief, Reference Remix, Multi-Concept, Meta Safety, Google Safety, Performance Loop, Viral Analyzer, Skill Chains, Brand Guardrails, Smart Calendar, Competitor Watch, Ad Copy Generator, Hook Library, Brief Template Builder, Ad Script Writer, Audience Persona Generator, Creative Variant Matrix, Ad Concept Merger, Brief Analyzer, Ad Format Optimizer, Mood Board Generator, Ad Performance Predictor, Creative A/B Test Planner). The 23 newest features (Product Brief through Creative A/B Test Planner) are in the nav overflow menu.
+The dashboard "Quick Create" grid now includes all production apps plus the 31 newest features (Creator Kits, Brand Concepts, Clip Editor, Media Services, Product Brief, Reference Remix, Multi-Concept, Meta Safety, Google Safety, Performance Loop, Viral Analyzer, Skill Chains, Brand Guardrails, Smart Calendar, Competitor Watch, Ad Copy Generator, Hook Library, Brief Template Builder, Ad Script Writer, Audience Persona Generator, Creative Variant Matrix, Ad Concept Merger, Brief Analyzer, Ad Format Optimizer, Mood Board Generator, Ad Performance Predictor, Creative A/B Test Planner, Creative Hook Tester, Trend Spotter, Brand Voice Analyzer, Ad Caption Generator). The 27 newest features (Product Brief through Ad Caption Generator) are in the nav overflow menu.
 
 ## 16. RR-Series Features
 
@@ -611,3 +615,42 @@ The TT4 series added three more AI creative tools, documented in ADRs 056-058. A
 - Fixed nav link test (Performance vs Performance Predictor exact match).
 
 All three features have dry-run/fallback behavior when Atlas is local or the API key is missing, and use existing auth, credit deduction/refund, `withAtlas`, and `safeError` conventions. Total unit tests now 2099+ (up from 2058). Total E2E tests: 839+ (up from 776).
+
+## 20. TT5-Series Features
+
+The TT5 series added four more AI creative tools, documented in ADRs 059-062. All four features have dry-run/fallback behavior when Atlas is local or the API key is missing, and use existing auth, credit deduction/refund, `withAtlas`, and `safeError` conventions. This brings the total feature route count to 40 and the total ADR count to 62.
+
+### Creative Hook Tester (`/hook-tester`)
+
+- AI-powered hook testing — rank multiple ad hooks by predicted performance before launch.
+- 3 credits. API: `POST /api/creative/hook-tester`. See ADR-059.
+
+### Trend Spotter (`/trend-spotter`)
+
+- AI-powered trend discovery — identify trending topics, hashtags, and content styles for your niche.
+- 5 credits. API: `POST /api/creative/trend-spotter`. See ADR-060.
+
+### Brand Voice Analyzer (`/brand-voice-analyzer`)
+
+- AI-powered brand voice analysis — extract tone, personality, and style guidelines from sample content.
+- 4 credits. API: `POST /api/creative/brand-voice-analyzer`. See ADR-061.
+
+### Ad Caption Generator (`/ad-caption-generator`)
+
+- AI-powered ad captions — generate platform-specific captions with emojis, hashtags, and CTAs.
+- 3 credits. API: `POST /api/creative/ad-caption-generator`. See ADR-062.
+
+### New UI pages
+
+- `/hook-tester` — AI-powered hook tester ranking hooks by predicted performance
+- `/trend-spotter` — AI-powered trend spotter for niche trend discovery
+- `/brand-voice-analyzer` — AI-powered brand voice analyzer extracting tone/personality/style
+- `/ad-caption-generator` — AI-powered ad caption generator with platform-specific captions
+
+### i18n, Dashboard, and Nav (TT5)
+
+- Translations added to all 13 locales for 4 new namespaces: `hookTester`, `trendSpotter`, `brandVoiceAnalyzer`, `adCaptionGenerator`.
+- Dashboard "Quick Create" grid updated to 31 newest features (was 27).
+- Nav overflow menu updated to 27 newest features (was 23).
+
+All four features have dry-run/fallback behavior when Atlas is local or the API key is missing, and use existing auth, credit deduction/refund, `withAtlas`, and `safeError` conventions. Total unit tests now 2195+ (up from 2099). Total E2E tests: 839+ (unchanged from TT4, new tests replaced old counts).
