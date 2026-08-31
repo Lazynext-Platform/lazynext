@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Sparkles, Megaphone, BarChart3, LayoutDashboard, Package, Scissors, Library, Lightbulb, Calendar, CalendarClock, Video, Wand2, ImageIcon, Send, BookOpen, Brain, Volume2, Eye, ShieldCheck, Wallet, Users, Workflow, Grid3x3, Activity, FileSearch, TrendingUp, FlaskConical, MessageSquareQuote, Award, Repeat, Users2, Flame, Film, Server, Clapperboard, Gift, Layers, Cpu, FileText, RefreshCw, Shield, GitBranch, Radar, PenLine, Anchor, FileSpreadsheet, ScrollText, UsersRound, LayoutGrid, GitMerge, FileSearch2, LayoutTemplate, Palette, Gauge, FlaskRound, TestTube, Compass, Mic, Type, Newspaper, Lightbulb as LightbulbIcon, Clock, BatteryLow, MousePointerClick, Expand, BookOpenCheck, Droplet, Hash, Clapperboard as ClapperboardIcon, Music, Mic2, FileText as FileTextIcon, Target, FlaskConical as FlaskIcon, Zap, Users as UsersIcon, ShieldCheck as ShieldIcon, HeartPulse, Repeat2, DollarSign, TrendingUp as TrendingIcon } from 'lucide-react';
+import { Sparkles, Megaphone, BarChart3, LayoutDashboard, Package, Scissors, Library, Lightbulb, Calendar, CalendarClock, Video, Wand2, ImageIcon, Send, BookOpen, Brain, Volume2, Eye, ShieldCheck, Wallet, Users, Workflow, Grid3x3, Activity, FileSearch, TrendingUp, FlaskConical, MessageSquareQuote, Award, Repeat, Users2, Flame, Film, Server, Clapperboard, Gift, Layers, Cpu, FileText, RefreshCw, Shield, GitBranch, Radar, PenLine, Anchor, FileSpreadsheet, ScrollText, UsersRound, LayoutGrid, GitMerge, FileSearch2, LayoutTemplate, Palette, Gauge, FlaskRound, TestTube, Compass, Mic, Type, Newspaper, Lightbulb as LightbulbIcon, Clock, BatteryLow, MousePointerClick, Expand, BookOpenCheck, Droplet, Hash, Clapperboard as ClapperboardIcon, Music, Mic2, FileText as FileTextIcon, Target, FlaskConical as FlaskIcon, Zap, Users as UsersIcon, ShieldCheck as ShieldIcon, HeartPulse, Repeat2, DollarSign, TrendingUp as TrendingIcon, ListOrdered, BookMarked, Globe2, LineChart } from 'lucide-react';
 import { UserMenu } from '@/components/UserMenu';
 import { LangToggle } from '@/components/LangToggle';
 import { CreditBadge } from '@/components/CreditBadge';
@@ -101,6 +101,10 @@ const NAV_LINKS = [
   { href: '/creative-format-converter', label: 'Format Converter', icon: Repeat2, hideOnMd: true },
   { href: '/ad-budget-allocator', label: 'Budget Allocator', icon: DollarSign, hideOnMd: true },
   { href: '/creative-trend-adapter', label: 'Trend Adapter', icon: TrendingIcon, hideOnMd: true },
+  { href: '/ad-creative-sequencer', label: 'Creative Sequencer', icon: ListOrdered, hideOnMd: true },
+  { href: '/brand-story-architect', label: 'Story Architect', icon: BookMarked, hideOnMd: true },
+  { href: '/ad-localization-adapter', label: 'Localization Adapter', icon: Globe2, hideOnMd: true },
+  { href: '/creative-performance-forecaster', label: 'Performance Forecaster', icon: LineChart, hideOnMd: true },
   { href: '/observability', label: 'Observability', icon: Activity, hideOnMd: true },
   { href: '/calendar', label: 'Calendar', icon: Calendar, hideOnMd: true },
 ];

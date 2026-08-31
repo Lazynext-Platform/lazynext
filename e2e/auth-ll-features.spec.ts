@@ -1645,3 +1645,115 @@ test.describe('Creative Trend Adapter API', () => {
     expect(res.status()).toBe(400);
   });
 });
+
+test.describe('Ad Creative Sequencer API', () => {
+  test('GET returns credit cost and schema', async ({ request }) => {
+    const res = await request.get('/api/creative/ad-creative-sequencer');
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.creditCost).toBe(4);
+    expect(data.schema).toBeTruthy();
+  });
+  test('POST with valid input returns sequence', async ({ request }) => {
+    const res = await request.post('/api/creative/ad-creative-sequencer', {
+      data: { productOrBrand: 'Premium earbuds', campaignGoal: 'conversions', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.result).toBeTruthy();
+    expect(data.result.sequence).toBeTruthy();
+  });
+  test('POST with missing productOrBrand returns 400', async ({ request }) => {
+    const res = await request.post('/api/creative/ad-creative-sequencer', {
+      data: { campaignGoal: 'conversions', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.status()).toBe(400);
+  });
+});
+
+test.describe('Brand Story Architect API', () => {
+  test('GET returns credit cost and schema', async ({ request }) => {
+    const res = await request.get('/api/creative/brand-story-architect');
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.creditCost).toBe(5);
+    expect(data.schema).toBeTruthy();
+  });
+  test('POST with valid input returns story', async ({ request }) => {
+    const res = await request.post('/api/creative/brand-story-architect', {
+      data: { brandName: 'Aura', productOrService: 'Skincare serum', brandValues: 'Clean, effective, sustainable', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.result).toBeTruthy();
+    expect(data.result.story).toBeTruthy();
+  });
+  test('POST with missing brandName returns 400', async ({ request }) => {
+    const res = await request.post('/api/creative/brand-story-architect', {
+      data: { productOrService: 'Skincare', brandValues: 'Clean', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.status()).toBe(400);
+  });
+});
+
+test.describe('Ad Localization Adapter API', () => {
+  test('GET returns credit cost and schema', async ({ request }) => {
+    const res = await request.get('/api/creative/ad-localization-adapter');
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.creditCost).toBe(4);
+    expect(data.schema).toBeTruthy();
+  });
+  test('POST with valid input returns localization', async ({ request }) => {
+    const res = await request.post('/api/creative/ad-localization-adapter', {
+      data: { content: 'Check out our new product', productOrBrand: 'Premium earbuds', sourceMarket: 'us', targetMarket: 'jp', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.result).toBeTruthy();
+    expect(data.result.localization).toBeTruthy();
+  });
+  test('POST with missing content returns 400', async ({ request }) => {
+    const res = await request.post('/api/creative/ad-localization-adapter', {
+      data: { productOrBrand: 'test', sourceMarket: 'us', targetMarket: 'jp', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.status()).toBe(400);
+  });
+});
+
+test.describe('Creative Performance Forecaster API', () => {
+  test('GET returns credit cost and schema', async ({ request }) => {
+    const res = await request.get('/api/creative/creative-performance-forecaster');
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.creditCost).toBe(5);
+    expect(data.schema).toBeTruthy();
+  });
+  test('POST with valid input returns forecast', async ({ request }) => {
+    const res = await request.post('/api/creative/creative-performance-forecaster', {
+      data: { creativeContent: 'Amazing new earbuds with noise cancellation', productOrBrand: 'Premium earbuds', platform: 'tiktok', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.result).toBeTruthy();
+    expect(data.result.forecast).toBeTruthy();
+  });
+  test('POST with missing creativeContent returns 400', async ({ request }) => {
+    const res = await request.post('/api/creative/creative-performance-forecaster', {
+      data: { productOrBrand: 'test', platform: 'tiktok', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.status()).toBe(400);
+  });
+});

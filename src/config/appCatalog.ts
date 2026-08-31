@@ -88,6 +88,10 @@ const CUSTOM_TITLES: Record<string, Bi> = {
   'creative-format-converter': { en: 'Creative Format Converter', zh: '创意格式转换器' },
   'ad-budget-allocator': { en: 'Ad Budget Allocator', zh: '广告预算分配器' },
   'creative-trend-adapter': { en: 'Creative Trend Adapter', zh: '创意趋势适配器' },
+  'ad-creative-sequencer': { en: 'Ad Creative Sequencer', zh: '广告创意排序器' },
+  'brand-story-architect': { en: 'Brand Story Architect', zh: '品牌故事架构师' },
+  'ad-localization-adapter': { en: 'Ad Localization Adapter', zh: '广告本地化适配器' },
+  'creative-performance-forecaster': { en: 'Creative Performance Forecaster', zh: '创意表现预测器' },
 };
 const CUSTOM_DESCS: Record<string, Bi> = {
   'lazynext-studio': { en: 'Product + presenter photos → AI expands the prompt from your images → lip-synced UGC ad; one-click viral formats', zh: '产品图+人物图 → AI 看图扩写提示词 → 合成首帧 → 对口型真人口播广告;爆款玩法一键复刻' },

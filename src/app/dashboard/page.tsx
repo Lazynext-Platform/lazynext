@@ -6,7 +6,7 @@ import { useSession } from 'next-auth/react';
 import {
   Clapperboard, Coins, Boxes, FolderOpen, ArrowRight, Loader2, Film, Play, Sparkles,
   TrendingDown, TrendingUp, BarChart3, Trophy, Calendar, Gift, Layers, Scissors, Server, Users, Zap, Workflow,
-  FileText, RefreshCw, Lightbulb, Shield, Flame, GitBranch, CalendarClock, Radar, PenLine, Anchor, FileSpreadsheet, ScrollText, UsersRound, LayoutGrid, GitMerge, FileSearch2, LayoutTemplate, Palette, Gauge, FlaskRound, TestTube, Compass, Mic, Type, Newspaper, Lightbulb as LightbulbIcon, Clock, BatteryLow, MousePointerClick, Expand, BookOpenCheck, Droplet, Hash, Clapperboard as ClapperboardIcon, Image as ImageIcon, Music, Mic2, FileText as FileTextIcon, Target, FlaskConical as FlaskIcon, Users as UsersIcon, ShieldCheck as ShieldIcon, HeartPulse, Repeat2, DollarSign, TrendingUp as TrendingIcon,
+  FileText, RefreshCw, Lightbulb, Shield, Flame, GitBranch, CalendarClock, Radar, PenLine, Anchor, FileSpreadsheet, ScrollText, UsersRound, LayoutGrid, GitMerge, FileSearch2, LayoutTemplate, Palette, Gauge, FlaskRound, TestTube, Compass, Mic, Type, Newspaper, Lightbulb as LightbulbIcon, Clock, BatteryLow, MousePointerClick, Expand, BookOpenCheck, Droplet, Hash, Clapperboard as ClapperboardIcon, Image as ImageIcon, Music, Mic2, FileText as FileTextIcon, Target, FlaskConical as FlaskIcon, Users as UsersIcon, ShieldCheck as ShieldIcon, HeartPulse, Repeat2, DollarSign, TrendingUp as TrendingIcon, ListOrdered, BookMarked, Globe2, LineChart,
 } from 'lucide-react';
 import { useI18n } from '@/i18n/provider';
 import { appTitle, appDesc, isFeatured } from '@/config/appCatalog';
@@ -84,6 +84,10 @@ const APPS: App[] = [
   { id: 'creative-format-converter', href: '/creative-format-converter', icon: Repeat2 },
   { id: 'ad-budget-allocator', href: '/ad-budget-allocator', icon: DollarSign },
   { id: 'creative-trend-adapter', href: '/creative-trend-adapter', icon: TrendingIcon },
+  { id: 'ad-creative-sequencer', href: '/ad-creative-sequencer', icon: ListOrdered },
+  { id: 'brand-story-architect', href: '/brand-story-architect', icon: BookMarked },
+  { id: 'ad-localization-adapter', href: '/ad-localization-adapter', icon: Globe2 },
+  { id: 'creative-performance-forecaster', href: '/creative-performance-forecaster', icon: LineChart },
 ];
 
 type Creation = {
