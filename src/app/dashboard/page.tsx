@@ -6,7 +6,7 @@ import { useSession } from 'next-auth/react';
 import {
   Clapperboard, Coins, Boxes, FolderOpen, ArrowRight, Loader2, Film, Play, Sparkles,
   TrendingDown, TrendingUp, BarChart3, Trophy, Calendar, Gift, Layers, Scissors, Server, Users, Zap, Workflow,
-  FileText, RefreshCw, Lightbulb, Shield, Flame, GitBranch, CalendarClock, Radar, PenLine, Anchor, FileSpreadsheet, ScrollText, UsersRound, LayoutGrid, GitMerge, FileSearch2, LayoutTemplate, Palette, Gauge, FlaskRound, TestTube, Compass, Mic, Type, Newspaper, Lightbulb as LightbulbIcon, Clock, BatteryLow, MousePointerClick, Expand, BookOpenCheck, Droplet, Hash, Clapperboard as ClapperboardIcon, Image as ImageIcon, Music, Mic2, FileText as FileTextIcon, Target, FlaskConical as FlaskIcon, Users as UsersIcon, ShieldCheck as ShieldIcon, HeartPulse, Repeat2, DollarSign, TrendingUp as TrendingIcon, ListOrdered, BookMarked, Globe2, LineChart, Smile, Grid2x2, RefreshCcw, MicVocal, Users2, Layers3, Swords, Radio, LayoutList, LifeBuoy, Split, AlertTriangle, Eye, MessageSquareQuote, Brain, SlidersHorizontal, Wand, Award, Shuffle, Waves, Contrast, HelpCircle, Drum, Layout, AudioLines, CheckCircle
+  FileText, RefreshCw, Lightbulb, Shield, Flame, GitBranch, CalendarClock, Radar, PenLine, Anchor, FileSpreadsheet, ScrollText, UsersRound, LayoutGrid, GitMerge, FileSearch2, LayoutTemplate, Palette, Gauge, FlaskRound, TestTube, Compass, Mic, Type, Newspaper, Lightbulb as LightbulbIcon, Clock, BatteryLow, MousePointerClick, Expand, BookOpenCheck, Droplet, Hash, Clapperboard as ClapperboardIcon, Image as ImageIcon, Music, Mic2, FileText as FileTextIcon, Target, FlaskConical as FlaskIcon, Users as UsersIcon, ShieldCheck as ShieldIcon, HeartPulse, Heart, Repeat2, DollarSign, TrendingUp as TrendingIcon, ListOrdered, BookMarked, Globe2, LineChart, Smile, Grid2x2, RefreshCcw, MicVocal, Users2, Layers3, Swords, Radio, LayoutList, LifeBuoy, Split, AlertTriangle, Eye, MessageSquareQuote, Brain, SlidersHorizontal, Wand, Award, Shuffle, Waves, Contrast, HelpCircle, Drum, Layout, AudioLines, CheckCircle
 } from 'lucide-react';
 import { useI18n } from '@/i18n/provider';
 import { appTitle, appDesc, isFeatured } from '@/config/appCatalog';
@@ -140,6 +140,10 @@ const APPS: App[] = [
   { id: 'creative-ad-stakes-escalation-designer', href: '/creative-ad-stakes-escalation-designer', icon: TrendingUp },
   { id: 'ad-creative-curiosity-loop-designer', href: '/ad-creative-curiosity-loop-designer', icon: HelpCircle },
   { id: 'creative-ad-transformation-arc-designer', href: '/creative-ad-transformation-arc-designer', icon: RefreshCw },
+  { id: 'ad-creative-emotional-anchor-designer', href: '/ad-creative-emotional-anchor-designer', icon: Anchor },
+  { id: 'creative-ad-empathy-bridge-designer', href: '/creative-ad-empathy-bridge-designer', icon: Heart },
+  { id: 'ad-creative-belief-shift-designer', href: '/ad-creative-belief-shift-designer', icon: Brain },
+  { id: 'creative-ad-desire-amplifier-designer', href: '/creative-ad-desire-amplifier-designer', icon: Flame },
 ];
 
 type Creation = {
