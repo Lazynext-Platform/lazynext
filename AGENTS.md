@@ -49,7 +49,7 @@ Production uses Cloudflare R2 via `src/lib/media-storage.cloudflare.ts`.
 ## Verification Commands
 ```bash
 npm run lint    # ESLint
-npm test        # Node test runner (2938+ tests)
+npm test        # Node test runner (3049+ tests)
 # E2E: 1052+ passed, 0 skipped (chromium + mobile-chrome + chromium-auth)
 npm run build   # Production build (Cloudflare target)
 npm run cf:build  # Cloudflare/OpenNext build
@@ -136,7 +136,9 @@ npm run cf:deploy # Deploy to Cloudflare Workers
   `/api/creative/creative-format-converter`, `/api/creative/ad-budget-allocator`,
   `/api/creative/creative-trend-adapter`, `/api/creative/ad-creative-sequencer`,
   `/api/creative/brand-story-architect`, `/api/creative/ad-localization-adapter`,
-  `/api/creative/creative-performance-forecaster`
+  `/api/creative/creative-performance-forecaster`, `/api/creative/ad-sentiment-tuner`,
+  `/api/creative/creative-hook-matrix-generator`, `/api/creative/ad-creative-rotator`,
+  `/api/creative/brand-voice-consistency-checker`
 - Ad platform API routes: `/api/ads/create`, `/api/ads/metrics`, `/api/ads/list`, `/api/ads/report`,
   `/api/ads/budget`, `/api/ads/google-budget`, `/api/ads/google-report`, `/api/analytics/ga4`,
   `/api/ads/meta-safety`, `/api/ads/meta-approve`, `/api/ads/google-safety`, `/api/ads/google-approve`
@@ -145,10 +147,10 @@ npm run cf:deploy # Deploy to Cloudflare Workers
 - `/api/creative/director` returns an NDJSON stream of step-by-step progress updates; legacy
   non-streaming mode available via `?stream=false`
 - Pipeline stages: brief, script, storyboard, media_generation, audio, edit, compliance, score, publish
-- ADRs 001-090 in `docs/adr/` document all major architecture decisions
+- ADRs 001-094 in `docs/adr/` document all major architecture decisions
 - Cross-feature handoffs: Brand Concepts → Creator Kits (query-param pre-fill),
   Brand Concepts → Shot Planner (script pre-fill), Clip Editor → Media Service Boundary (ASR/TTS)
-- Dashboard "Quick Create" grid includes all production apps and the 59 newest features
+- Dashboard "Quick Create" grid includes all production apps and the 63 newest features
   (Creator Kits, Brand Concepts, Clip Editor, Media Services, Product Brief, Reference Remix,
   Multi-Concept, Meta Safety, Google Safety, Performance Loop, Viral Analyzer, Skill Chains,
   Brand Guardrails, Smart Calendar, Competitor Watch, Ad Copy Generator, Hook Library,
@@ -163,8 +165,9 @@ npm run cf:deploy # Deploy to Cloudflare Workers
   Ad A/B Test Name Generator, Creative Hook Revamp Generator, Ad Audience Segment Builder,
   Creative Concept Validator, Ad Emotion Analyzer, Creative Format Converter, Ad Budget
   Allocator, Creative Trend Adapter, Ad Creative Sequencer, Brand Story Architect,
-  Ad Localization Adapter, Creative Performance Forecaster)
-- Nav header includes links to all feature pages (visible lg+); the 55 newest features
+  Ad Localization Adapter, Creative Performance Forecaster, Ad Sentiment Tuner,
+  Creative Hook Matrix Generator, Ad Creative Rotator, Brand Voice Consistency Checker)
+- Nav header includes links to all feature pages (visible lg+); the 59 newest features
   (Product Brief, Reference Remix, Multi-Concept, Meta Safety, Google Safety, Performance Loop,
   Viral Analyzer, Skill Chains, Brand Guardrails, Smart Calendar, Competitor Watch, Ad Copy
   Generator, Hook Library, Brief Template Builder, Ad Script Writer, Audience Persona Generator,
@@ -178,7 +181,9 @@ npm run cf:deploy # Deploy to Cloudflare Workers
   Ad Placement Strategist, Ad A/B Test Name Generator, Creative Hook Revamp Generator,
   Ad Audience Segment Builder, Creative Concept Validator, Ad Emotion Analyzer, Creative
   Format Converter, Ad Budget Allocator, Creative Trend Adapter, Ad Creative Sequencer,
-  Brand Story Architect, Ad Localization Adapter, Creative Performance Forecaster) are in the overflow nav
+  Brand Story Architect, Ad Localization Adapter, Creative Performance Forecaster,
+  Ad Sentiment Tuner, Creative Hook Matrix Generator, Ad Creative Rotator,
+  Brand Voice Consistency Checker) are in the overflow nav
 
 ### JJ-Series: Research-Derived Creative Capabilities
 - Product Page → Ad Brief (`/product-brief`): URL/product extraction → brand/product brief →
@@ -497,6 +502,29 @@ npm run cf:deploy # Deploy to Cloudflare Workers
   skip link, API schema)
 - Translations added to all 13 locales for 4 new namespaces: adCreativeSequencer,
   brandStoryArchitect, adLocalizationAdapter, creativePerformanceForecaster
+
+### TT13-Series: Four More AI Creative Tools
+- Ad Sentiment Tuner (`/ad-sentiment-tuner`): AI-powered ad sentiment tuner. Tunes ad
+  sentiment with before/after scores, word changes, and audience alignment.
+  3 credits. API: `POST /api/creative/ad-sentiment-tuner`. See ADR-091.
+- Creative Hook Matrix Generator (`/creative-hook-matrix-generator`): AI-powered hook matrix
+  generator. Generates a matrix of hooks across emotional triggers and platforms with
+  predicted scores.
+  5 credits. API: `POST /api/creative/creative-hook-matrix-generator`. See ADR-092.
+- Ad Creative Rotator (`/ad-creative-rotator`): AI-powered creative rotator. Generates
+  creative variations with a rotation schedule and fatigue resistance scores.
+  4 credits. API: `POST /api/creative/ad-creative-rotator`. See ADR-093.
+- Brand Voice Consistency Checker (`/brand-voice-consistency-checker`): AI-powered brand
+  voice consistency checker. Checks content for brand voice consistency with dimension
+  scores, violations, and corrections.
+  4 credits. API: `POST /api/creative/brand-voice-consistency-checker`. See ADR-094.
+- All 4 features have dry-run/fallback behavior when Atlas is local or API key is missing
+- All 4 features use existing auth, credit deduction/refund, `withAtlas`, and `safeError` conventions
+- Unit tests: 3049 total (was 2938) — 84 new tests across 4 new test suites
+- TT13 page E2E tests: 64 passing
+- TT13 API E2E tests: 12 passing
+- TT13 production audit: 20/20 passing (4 pages × 5 checks: HTTP 200, 1 H1, main#main-content,
+  skip link, API schema)
 
 ## Production-Only Testing (Cannot Be Verified Locally)
 
