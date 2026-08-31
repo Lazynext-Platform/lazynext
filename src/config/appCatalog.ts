@@ -92,6 +92,10 @@ const CUSTOM_TITLES: Record<string, Bi> = {
   'brand-story-architect': { en: 'Brand Story Architect', zh: '品牌故事架构师' },
   'ad-localization-adapter': { en: 'Ad Localization Adapter', zh: '广告本地化适配器' },
   'creative-performance-forecaster': { en: 'Creative Performance Forecaster', zh: '创意表现预测器' },
+  'ad-sentiment-tuner': { en: 'Ad Sentiment Tuner', zh: '广告情感调优器' },
+  'creative-hook-matrix-generator': { en: 'Creative Hook Matrix Generator', zh: '创意钩子矩阵生成器' },
+  'ad-creative-rotator': { en: 'Ad Creative Rotator', zh: '广告创意轮换器' },
+  'brand-voice-consistency-checker': { en: 'Brand Voice Consistency Checker', zh: '品牌声音一致性检查器' },
 };
 const CUSTOM_DESCS: Record<string, Bi> = {
   'lazynext-studio': { en: 'Product + presenter photos → AI expands the prompt from your images → lip-synced UGC ad; one-click viral formats', zh: '产品图+人物图 → AI 看图扩写提示词 → 合成首帧 → 对口型真人口播广告;爆款玩法一键复刻' },
