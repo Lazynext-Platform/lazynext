@@ -49,7 +49,7 @@ Production uses Cloudflare R2 via `src/lib/media-storage.cloudflare.ts`.
 ## Verification Commands
 ```bash
 npm run lint    # ESLint
-npm test        # Node test runner (4241+ tests)
+npm test        # Node test runner (4402+ tests)
 # E2E: 1052+ passed, 0 skipped (chromium + mobile-chrome + chromium-auth)
 npm run build   # Production build (Cloudflare target)
 npm run cf:build  # Cloudflare/OpenNext build
@@ -154,7 +154,9 @@ npm run cf:deploy # Deploy to Cloudflare Workers
   `/api/creative/creative-ad-anticipation-builder`, `/api/creative/ad-creative-contrast-amplifier`,
   `/api/creative/creative-ad-micro-moment-designer`, `/api/creative/ad-creative-emotion-sequencer`,
   `/api/creative/creative-ad-narrative-twist-designer`, `/api/creative/ad-creative-memory-anchor-builder`,
-  `/api/creative/creative-ad-tension-release-strategist`, `/api/creative/ad-creative-sensory-contrast-designer`
+  `/api/creative/creative-ad-tension-release-strategist`, `/api/creative/ad-creative-sensory-contrast-designer`,
+  `/api/creative/creative-ad-curiosity-gap-designer`, `/api/creative/ad-creative-rhythm-pacing-optimizer`,
+  `/api/creative/creative-ad-visual-hierarchy-strategist`, `/api/creative/ad-creative-sound-design-strategist`
 - Ad platform API routes: `/api/ads/create`, `/api/ads/metrics`, `/api/ads/list`, `/api/ads/report`,
   `/api/ads/budget`, `/api/ads/google-budget`, `/api/ads/google-report`, `/api/analytics/ga4`,
   `/api/ads/meta-safety`, `/api/ads/meta-approve`, `/api/ads/google-safety`, `/api/ads/google-approve`
@@ -163,10 +165,10 @@ npm run cf:deploy # Deploy to Cloudflare Workers
 - `/api/creative/director` returns an NDJSON stream of step-by-step progress updates; legacy
   non-streaming mode available via `?stream=false`
 - Pipeline stages: brief, script, storyboard, media_generation, audio, edit, compliance, score, publish
-- ADRs 001-126 in `docs/adr/` document all major architecture decisions
+- ADRs 001-130 in `docs/adr/` document all major architecture decisions
 - Cross-feature handoffs: Brand Concepts → Creator Kits (query-param pre-fill),
   Brand Concepts → Shot Planner (script pre-fill), Clip Editor → Media Service Boundary (ASR/TTS)
-- Dashboard "Quick Create" grid includes all production apps and the 95 newest features
+- Dashboard "Quick Create" grid includes all production apps and the 99 newest features
   (Creator Kits, Brand Concepts, Clip Editor, Media Services, Product Brief, Reference Remix,
   Multi-Concept, Meta Safety, Google Safety, Performance Loop, Viral Analyzer, Skill Chains,
   Brand Guardrails, Smart Calendar, Competitor Watch, Ad Copy Generator, Hook Library,
@@ -197,8 +199,10 @@ npm run cf:deploy # Deploy to Cloudflare Workers
   Creative Ad Anticipation Builder, Ad Creative Contrast Amplifier,
   Creative Ad Micro-Moment Designer, Ad Creative Emotion Sequencer,
   Creative Ad Narrative Twist Designer, Ad Creative Memory Anchor Builder,
-  Creative Ad Tension Release Strategist, Ad Creative Sensory Contrast Designer)
-- Nav header includes links to all feature pages (visible lg+); the 91 newest features
+  Creative Ad Tension Release Strategist, Ad Creative Sensory Contrast Designer,
+  Creative Ad Curiosity Gap Designer, Ad Creative Rhythm Pacing Optimizer,
+  Creative Ad Visual Hierarchy Strategist, Ad Creative Sound Design Strategist)
+- Nav header includes links to all feature pages (visible lg+); the 95 newest features
   (Product Brief, Reference Remix, Multi-Concept, Meta Safety, Google Safety, Performance Loop,
   Viral Analyzer, Skill Chains, Brand Guardrails, Smart Calendar, Competitor Watch, Ad Copy
   Generator, Hook Library, Brief Template Builder, Ad Script Writer, Audience Persona Generator,
@@ -229,7 +233,9 @@ npm run cf:deploy # Deploy to Cloudflare Workers
   Ad Creative Contrast Amplifier, Creative Ad Micro-Moment Designer,
   Ad Creative Emotion Sequencer, Creative Ad Narrative Twist Designer,
   Ad Creative Memory Anchor Builder, Creative Ad Tension Release Strategist,
-  Ad Creative Sensory Contrast Designer) are in the overflow nav
+  Ad Creative Sensory Contrast Designer, Creative Ad Curiosity Gap Designer,
+  Ad Creative Rhythm Pacing Optimizer, Creative Ad Visual Hierarchy Strategist,
+  Ad Creative Sound Design Strategist) are in the overflow nav
 
 ### JJ-Series: Research-Derived Creative Capabilities
 - Product Page → Ad Brief (`/product-brief`): URL/product extraction → brand/product brief →
@@ -793,6 +799,34 @@ npm run cf:deploy # Deploy to Cloudflare Workers
 - Translations added to all 13 locales for 4 new namespaces: creativeAdNarrativeTwistDesigner,
   adCreativeMemoryAnchorBuilder, creativeAdTensionReleaseStrategist, adCreativeSensoryContrastDesigner
 - Production deployment version ID: eb512e20-d0ae-447b-aa76-3492e0dde98a
+
+### TT22-Series: Four More AI Creative Tools
+- Creative Ad Curiosity Gap Designer (`/creative-ad-curiosity-gap-designer`): AI-powered curiosity gap designer.
+  Designs curiosity gaps — the space between what viewers know and want to know; returns gaps with
+  opening, tease, payoff, curiosity score, and engagement strategy.
+  4 credits. API: `POST /api/creative/creative-ad-curiosity-gap-designer`. See ADR-127.
+- Ad Creative Rhythm Pacing Optimizer (`/ad-creative-rhythm-pacing-optimizer`): AI-powered rhythm pacing optimizer.
+  Optimizes rhythm and pacing of ad content; returns rhythm patterns, pacing segments, beat drops,
+  tempo changes, and rhythm score.
+  3 credits. API: `POST /api/creative/ad-creative-rhythm-pacing-optimizer`. See ADR-128.
+- Creative Ad Visual Hierarchy Strategist (`/creative-ad-visual-hierarchy-strategist`): AI-powered visual hierarchy strategist.
+  Strategizes visual hierarchy to guide viewer attention; returns hierarchy layers, attention weights,
+  focal points, visual flow, and hierarchy score.
+  4 credits. API: `POST /api/creative/creative-ad-visual-hierarchy-strategist`. See ADR-129.
+- Ad Creative Sound Design Strategist (`/ad-creative-sound-design-strategist`): AI-powered sound design strategist.
+  Strategizes sound design — music, SFX, voiceover, audio cues; returns sound layers, audio cues,
+  music strategy, voiceover direction, and sound design score.
+  5 credits. API: `POST /api/creative/ad-creative-sound-design-strategist`. See ADR-130.
+- All 4 features have dry-run/fallback behavior when Atlas is local or API key is missing
+- All 4 features use existing auth, credit deduction/refund, `withAtlas`, and `safeError` conventions
+- Unit tests: 4402 total (was 4241) — 161 new tests across 4 new test suites
+- TT22 page E2E tests: 64 passing
+- TT22 API E2E tests: 12 passing
+- TT22 production audit: 20/20 passing (4 pages x 5 checks: HTTP 200, 1 H1, main#main-content,
+  skip link, API schema)
+- Translations added to all 13 locales for 4 new namespaces: creativeAdCuriosityGapDesigner,
+  adCreativeRhythmPacingOptimizer, creativeAdVisualHierarchyStrategist, adCreativeSoundDesignStrategist
+- Production deployment version ID: a2c8ed0b-46c5-4994-baab-23e8cef6b589
 
 ## Production-Only Testing (Cannot Be Verified Locally)
 
