@@ -49,8 +49,8 @@ Production uses Cloudflare R2 via `src/lib/media-storage.cloudflare.ts`.
 ## Verification Commands
 ```bash
 npm run lint    # ESLint
-npm test        # Node test runner (2298+ tests)
-# E2E: 903+ passed, 0 skipped (chromium + mobile-chrome + chromium-auth)
+npm test        # Node test runner (2415+ tests)
+# E2E: 996+ passed, 0 skipped (chromium + mobile-chrome + chromium-auth)
 npm run build   # Production build (Cloudflare target)
 npm run cf:build  # Cloudflare/OpenNext build
 npm run cf:deploy # Deploy to Cloudflare Workers
@@ -124,7 +124,9 @@ npm run cf:deploy # Deploy to Cloudflare Workers
   `/api/creative/trend-spotter`, `/api/creative/brand-voice-analyzer`,
   `/api/creative/ad-caption-generator`, `/api/creative/ad-headline-generator`,
   `/api/creative/angle-finder`, `/api/creative/ad-timing-optimizer`,
-  `/api/creative/creative-fatigue-detector`
+  `/api/creative/creative-fatigue-detector`, `/api/creative/ad-cta-optimizer`,
+  `/api/creative/concept-expander`, `/api/creative/ad-story-generator`,
+  `/api/creative/ad-color-palette-generator`
 - Ad platform API routes: `/api/ads/create`, `/api/ads/metrics`, `/api/ads/list`, `/api/ads/report`,
   `/api/ads/budget`, `/api/ads/google-budget`, `/api/ads/google-report`, `/api/analytics/ga4`,
   `/api/ads/meta-safety`, `/api/ads/meta-approve`, `/api/ads/google-safety`, `/api/ads/google-approve`
@@ -133,10 +135,10 @@ npm run cf:deploy # Deploy to Cloudflare Workers
 - `/api/creative/director` returns an NDJSON stream of step-by-step progress updates; legacy
   non-streaming mode available via `?stream=false`
 - Pipeline stages: brief, script, storyboard, media_generation, audio, edit, compliance, score, publish
-- ADRs 001-066 in `docs/adr/` document all major architecture decisions
+- ADRs 001-070 in `docs/adr/` document all major architecture decisions
 - Cross-feature handoffs: Brand Concepts → Creator Kits (query-param pre-fill),
   Brand Concepts → Shot Planner (script pre-fill), Clip Editor → Media Service Boundary (ASR/TTS)
-- Dashboard "Quick Create" grid includes all production apps and the 35 newest features
+- Dashboard "Quick Create" grid includes all production apps and the 39 newest features
   (Creator Kits, Brand Concepts, Clip Editor, Media Services, Product Brief, Reference Remix,
   Multi-Concept, Meta Safety, Google Safety, Performance Loop, Viral Analyzer, Skill Chains,
   Brand Guardrails, Smart Calendar, Competitor Watch, Ad Copy Generator, Hook Library,
@@ -144,15 +146,17 @@ npm run cf:deploy # Deploy to Cloudflare Workers
   Ad Concept Merger, Brief Analyzer, Ad Format Optimizer, Mood Board Generator,
   Ad Performance Predictor, Creative A/B Test Planner, Creative Hook Tester, Trend Spotter,
   Brand Voice Analyzer, Ad Caption Generator, Ad Headline Generator, Creative Angle Finder,
-  Ad Timing Optimizer, Creative Fatigue Detector)
-- Nav header includes links to all feature pages (visible lg+); the 31 newest features
+  Ad Timing Optimizer, Creative Fatigue Detector, Ad CTA Optimizer, Creative Concept Expander,
+  Ad Story Generator, Ad Color Palette Generator)
+- Nav header includes links to all feature pages (visible lg+); the 35 newest features
   (Product Brief, Reference Remix, Multi-Concept, Meta Safety, Google Safety, Performance Loop,
   Viral Analyzer, Skill Chains, Brand Guardrails, Smart Calendar, Competitor Watch, Ad Copy
   Generator, Hook Library, Brief Template Builder, Ad Script Writer, Audience Persona Generator,
   Creative Variant Matrix, Ad Concept Merger, Brief Analyzer, Ad Format Optimizer, Mood Board
   Generator, Ad Performance Predictor, Creative A/B Test Planner, Creative Hook Tester,
   Trend Spotter, Brand Voice Analyzer, Ad Caption Generator, Ad Headline Generator,
-  Creative Angle Finder, Ad Timing Optimizer, Creative Fatigue Detector) are in the overflow nav
+  Creative Angle Finder, Ad Timing Optimizer, Creative Fatigue Detector, Ad CTA Optimizer,
+  Creative Concept Expander, Ad Story Generator, Ad Color Palette Generator) are in the overflow nav
 
 ### JJ-Series: Research-Derived Creative Capabilities
 - Product Page → Ad Brief (`/product-brief`): URL/product extraction → brand/product brief →
@@ -319,6 +323,30 @@ npm run cf:deploy # Deploy to Cloudflare Workers
 - E2E tests: 903 total (was 839)
 - Translations added to all 13 locales for 4 new namespaces: adHeadlineGenerator, angleFinder,
   adTimingOptimizer, creativeFatigueDetector
+
+### TT7-Series: Four More AI Creative Tools
+- Ad CTA Optimizer (`/ad-cta-optimizer`): AI-powered CTA optimization. Generates optimized
+  CTAs with action verbs, psychological triggers, predicted conversion lift, and platform fit.
+  3 credits. API: `POST /api/creative/ad-cta-optimizer`. See ADR-067.
+- Creative Concept Expander (`/concept-expander`): Expands a seed concept into multiple
+  fully fleshed-out creative directions with title, description, hook, visual direction, tone,
+  format, unique angle, and production difficulty. 4 credits.
+  API: `POST /api/creative/concept-expander`. See ADR-068.
+- Ad Story Generator (`/ad-story-generator`): Generates compelling ad narratives with
+  emotional arcs. Supports 5 story types (transformation, journey, conflict, resolution,
+  aspiration). Returns multi-act story with visual notes, voiceover, emotion beats, and CTA
+  integration. 5 credits. API: `POST /api/creative/ad-story-generator`. See ADR-069.
+- Ad Color Palette Generator (`/ad-color-palette-generator`): Generates optimized color
+  palettes for ad creatives based on product, platform, and emotional goal. Supports 6
+  emotions (energetic, calm, luxury, trust, playful, urgent). Returns palettes with
+  primary/secondary/accent/background/text colors, platform fit, and color psychology.
+  3 credits. API: `POST /api/creative/ad-color-palette-generator`. See ADR-070.
+- All 4 features have dry-run/fallback behavior when Atlas is local or API key is missing
+- All 4 features use existing auth, credit deduction/refund, `withAtlas`, and `safeError` conventions
+- Unit tests: 2415 total (was 2298)
+- E2E tests: 996+ total (was 903)
+- Translations added to all 13 locales for 4 new namespaces: adCtaOptimizer, conceptExpander,
+  adStoryGenerator, adColorPaletteGenerator
 
 ## Production-Only Testing (Cannot Be Verified Locally)
 
