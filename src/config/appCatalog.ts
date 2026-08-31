@@ -132,6 +132,10 @@ const CUSTOM_TITLES: Record<string, Bi> = {
   'ad-creative-rhythm-pacing-optimizer': { en: 'Ad Creative Rhythm Pacing Optimizer', zh: '广告创意节奏优化器' },
   'creative-ad-visual-hierarchy-strategist': { en: 'Creative Ad Visual Hierarchy Strategist', zh: '创意广告视觉层次策略师' },
   'ad-creative-sound-design-strategist': { en: 'Ad Creative Sound Design Strategist', zh: '广告创意声音设计策略师' },
+  'creative-ad-surprise-element-designer': { en: 'Creative Ad Surprise Element Designer', zh: '创意广告惊喜元素设计师' },
+  'ad-creative-callback-memory-designer': { en: 'Ad Creative Callback Memory Designer', zh: '广告创意回调记忆设计师' },
+  'creative-ad-climax-architect': { en: 'Creative Ad Climax Architect', zh: '创意广告高潮架构师' },
+  'ad-creative-pacing-variability-designer': { en: 'Ad Creative Pacing Variability Designer', zh: '广告创意节奏变异性设计师' },
 };
 const CUSTOM_DESCS: Record<string, Bi> = {
   'lazynext-studio': { en: 'Product + presenter photos → AI expands the prompt from your images → lip-synced UGC ad; one-click viral formats', zh: '产品图+人物图 → AI 看图扩写提示词 → 合成首帧 → 对口型真人口播广告;爆款玩法一键复刻' },

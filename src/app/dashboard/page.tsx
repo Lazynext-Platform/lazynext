@@ -128,6 +128,10 @@ const APPS: App[] = [
   { id: 'ad-creative-rhythm-pacing-optimizer', href: '/ad-creative-rhythm-pacing-optimizer', icon: Drum },
   { id: 'creative-ad-visual-hierarchy-strategist', href: '/creative-ad-visual-hierarchy-strategist', icon: Layout },
   { id: 'ad-creative-sound-design-strategist', href: '/ad-creative-sound-design-strategist', icon: AudioLines },
+  { id: 'creative-ad-surprise-element-designer', href: '/creative-ad-surprise-element-designer', icon: Sparkles },
+  { id: 'ad-creative-callback-memory-designer', href: '/ad-creative-callback-memory-designer', icon: Repeat2 },
+  { id: 'creative-ad-climax-architect', href: '/creative-ad-climax-architect', icon: TrendingUp },
+  { id: 'ad-creative-pacing-variability-designer', href: '/ad-creative-pacing-variability-designer', icon: Gauge },
 ];
 
 type Creation = {

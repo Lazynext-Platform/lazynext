@@ -145,6 +145,10 @@ const NAV_LINKS = [
   { href: '/ad-creative-rhythm-pacing-optimizer', label: 'Rhythm Pacing Optimizer', icon: Drum, hideOnMd: true },
   { href: '/creative-ad-visual-hierarchy-strategist', label: 'Visual Hierarchy Strategist', icon: Layout, hideOnMd: true },
   { href: '/ad-creative-sound-design-strategist', label: 'Sound Design Strategist', icon: AudioLines, hideOnMd: true },
+  { href: '/creative-ad-surprise-element-designer', label: 'Surprise Element Designer', icon: Sparkles, hideOnMd: true },
+  { href: '/ad-creative-callback-memory-designer', label: 'Callback Memory Designer', icon: Repeat, hideOnMd: true },
+  { href: '/creative-ad-climax-architect', label: 'Climax Architect', icon: TrendingUp, hideOnMd: true },
+  { href: '/ad-creative-pacing-variability-designer', label: 'Pacing Variability Designer', icon: Gauge, hideOnMd: true },
   { href: '/observability', label: 'Observability', icon: Activity, hideOnMd: true },
   { href: '/calendar', label: 'Calendar', icon: Calendar, hideOnMd: true },
 ];
