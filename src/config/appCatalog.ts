@@ -124,6 +124,10 @@ const CUSTOM_TITLES: Record<string, Bi> = {
   'ad-creative-contrast-amplifier': { en: 'Ad Creative Contrast Amplifier', zh: '广告创意对比放大器' },
   'creative-ad-micro-moment-designer': { en: 'Creative Ad Micro-Moment Designer', zh: '创意广告微时刻设计器' },
   'ad-creative-emotion-sequencer': { en: 'Ad Creative Emotion Sequencer', zh: '广告创意情感序列器' },
+  'creative-ad-narrative-twist-designer': { en: 'Creative Ad Narrative Twist Designer', zh: '创意广告叙事反转设计师' },
+  'ad-creative-memory-anchor-builder': { en: 'Ad Creative Memory Anchor Builder', zh: '广告创意记忆锚点构建器' },
+  'creative-ad-tension-release-strategist': { en: 'Creative Ad Tension Release Strategist', zh: '创意广告张力释放策略师' },
+  'ad-creative-sensory-contrast-designer': { en: 'Ad Creative Sensory Contrast Designer', zh: '广告创意感官对比设计师' },
 };
 const CUSTOM_DESCS: Record<string, Bi> = {
   'lazynext-studio': { en: 'Product + presenter photos → AI expands the prompt from your images → lip-synced UGC ad; one-click viral formats', zh: '产品图+人物图 → AI 看图扩写提示词 → 合成首帧 → 对口型真人口播广告;爆款玩法一键复刻' },
