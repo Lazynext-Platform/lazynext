@@ -1283,3 +1283,141 @@ test.describe('Creative Scene Generator API', () => {
     expect(res.status()).toBe(400);
   });
 });
+
+test.describe('Ad Music Mood Matcher API', () => {
+  test('GET returns credit cost and schema', async ({ request }) => {
+    const res = await request.get('/api/creative/ad-music-mood-matcher');
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.creditCost).toBe(3);
+    expect(data.schema).toBeTruthy();
+  });
+
+  test('POST with valid input returns recommendations', async ({ request }) => {
+    const res = await request.post('/api/creative/ad-music-mood-matcher', {
+      data: {
+        productOrBrand: 'Premium wireless earbuds',
+        platform: 'tiktok',
+        count: 3,
+        dryRun: true,
+      },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.result).toBeTruthy();
+    expect(Array.isArray(data.result.recommendations)).toBeTruthy();
+  });
+
+  test('POST with missing productOrBrand returns 400', async ({ request }) => {
+    const res = await request.post('/api/creative/ad-music-mood-matcher', {
+      data: { platform: 'tiktok', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.status()).toBe(400);
+  });
+});
+
+test.describe('Ad Voiceover Script Generator API', () => {
+  test('GET returns credit cost and schema', async ({ request }) => {
+    const res = await request.get('/api/creative/ad-voiceover-script-generator');
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.creditCost).toBe(4);
+    expect(data.schema).toBeTruthy();
+  });
+
+  test('POST with valid input returns voiceover script', async ({ request }) => {
+    const res = await request.post('/api/creative/ad-voiceover-script-generator', {
+      data: {
+        productOrBrand: 'Premium wireless earbuds',
+        platform: 'tiktok',
+        duration: 30,
+        dryRun: true,
+      },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.result).toBeTruthy();
+    expect(data.result.script).toBeTruthy();
+  });
+
+  test('POST with missing productOrBrand returns 400', async ({ request }) => {
+    const res = await request.post('/api/creative/ad-voiceover-script-generator', {
+      data: { platform: 'tiktok', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.status()).toBe(400);
+  });
+});
+
+test.describe('Creative Brief Generator API', () => {
+  test('GET returns credit cost and schema', async ({ request }) => {
+    const res = await request.get('/api/creative/creative-brief-generator');
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.creditCost).toBe(4);
+    expect(data.schema).toBeTruthy();
+  });
+
+  test('POST with valid input returns brief', async ({ request }) => {
+    const res = await request.post('/api/creative/creative-brief-generator', {
+      data: {
+        productOrBrand: 'Premium wireless earbuds',
+        campaignGoal: 'Increase brand awareness among Gen Z',
+        dryRun: true,
+      },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.result).toBeTruthy();
+    expect(data.result.brief).toBeTruthy();
+  });
+
+  test('POST with missing productOrBrand returns 400', async ({ request }) => {
+    const res = await request.post('/api/creative/creative-brief-generator', {
+      data: { campaignGoal: 'test', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.status()).toBe(400);
+  });
+});
+
+test.describe('Ad Placement Strategist API', () => {
+  test('GET returns credit cost and schema', async ({ request }) => {
+    const res = await request.get('/api/creative/ad-placement-strategist');
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.creditCost).toBe(5);
+    expect(data.schema).toBeTruthy();
+  });
+
+  test('POST with valid input returns strategy', async ({ request }) => {
+    const res = await request.post('/api/creative/ad-placement-strategist', {
+      data: {
+        productOrBrand: 'Premium wireless earbuds',
+        targetAudience: 'Gen Z fitness enthusiasts in the US',
+        dryRun: true,
+      },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.result).toBeTruthy();
+    expect(data.result.strategy).toBeTruthy();
+  });
+
+  test('POST with missing productOrBrand returns 400', async ({ request }) => {
+    const res = await request.post('/api/creative/ad-placement-strategist', {
+      data: { targetAudience: 'test', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.status()).toBe(400);
+  });
+});

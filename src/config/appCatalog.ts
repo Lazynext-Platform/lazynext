@@ -76,6 +76,10 @@ const CUSTOM_TITLES: Record<string, Bi> = {
   'ad-font-pairing-generator': { en: 'Ad Font Pairing Generator', zh: '广告字体搭配生成器' },
   'ad-hashtag-generator': { en: 'Ad Hashtag Generator', zh: '广告标签生成器' },
   'creative-scene-generator': { en: 'Creative Scene Generator', zh: '创意场景生成器' },
+  'ad-music-mood-matcher': { en: 'Ad Music Mood Matcher', zh: '广告音乐匹配器' },
+  'ad-voiceover-script-generator': { en: 'Ad Voiceover Script Generator', zh: '广告配音脚本生成器' },
+  'creative-brief-generator': { en: 'Creative Brief Generator', zh: '创意简报生成器' },
+  'ad-placement-strategist': { en: 'Ad Placement Strategist', zh: '广告投放策略师' },
 };
 const CUSTOM_DESCS: Record<string, Bi> = {
   'lazynext-studio': { en: 'Product + presenter photos → AI expands the prompt from your images → lip-synced UGC ad; one-click viral formats', zh: '产品图+人物图 → AI 看图扩写提示词 → 合成首帧 → 对口型真人口播广告;爆款玩法一键复刻' },

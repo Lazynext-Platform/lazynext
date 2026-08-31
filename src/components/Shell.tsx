@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Sparkles, Megaphone, BarChart3, LayoutDashboard, Package, Scissors, Library, Lightbulb, Calendar, CalendarClock, Video, Wand2, ImageIcon, Send, BookOpen, Brain, Volume2, Eye, ShieldCheck, Wallet, Users, Workflow, Grid3x3, Activity, FileSearch, TrendingUp, FlaskConical, MessageSquareQuote, Award, Repeat, Users2, Flame, Film, Server, Clapperboard, Gift, Layers, Cpu, FileText, RefreshCw, Shield, GitBranch, Radar, PenLine, Anchor, FileSpreadsheet, ScrollText, UsersRound, LayoutGrid, GitMerge, FileSearch2, LayoutTemplate, Palette, Gauge, FlaskRound, TestTube, Compass, Mic, Type, Newspaper, Lightbulb as LightbulbIcon, Clock, BatteryLow, MousePointerClick, Expand, BookOpenCheck, Droplet, Hash, Clapperboard as ClapperboardIcon } from 'lucide-react';
+import { Sparkles, Megaphone, BarChart3, LayoutDashboard, Package, Scissors, Library, Lightbulb, Calendar, CalendarClock, Video, Wand2, ImageIcon, Send, BookOpen, Brain, Volume2, Eye, ShieldCheck, Wallet, Users, Workflow, Grid3x3, Activity, FileSearch, TrendingUp, FlaskConical, MessageSquareQuote, Award, Repeat, Users2, Flame, Film, Server, Clapperboard, Gift, Layers, Cpu, FileText, RefreshCw, Shield, GitBranch, Radar, PenLine, Anchor, FileSpreadsheet, ScrollText, UsersRound, LayoutGrid, GitMerge, FileSearch2, LayoutTemplate, Palette, Gauge, FlaskRound, TestTube, Compass, Mic, Type, Newspaper, Lightbulb as LightbulbIcon, Clock, BatteryLow, MousePointerClick, Expand, BookOpenCheck, Droplet, Hash, Clapperboard as ClapperboardIcon, Music, Mic2, FileText as FileTextIcon, Target } from 'lucide-react';
 import { UserMenu } from '@/components/UserMenu';
 import { LangToggle } from '@/components/LangToggle';
 import { CreditBadge } from '@/components/CreditBadge';
@@ -89,6 +89,10 @@ const NAV_LINKS = [
   { href: '/ad-font-pairing-generator', label: 'Font Pairing', icon: Type, hideOnMd: true },
   { href: '/ad-hashtag-generator', label: 'Hashtag Gen', icon: Hash, hideOnMd: true },
   { href: '/creative-scene-generator', label: 'Scene Gen', icon: ClapperboardIcon, hideOnMd: true },
+  { href: '/ad-music-mood-matcher', label: 'Music Matcher', icon: Music, hideOnMd: true },
+  { href: '/ad-voiceover-script-generator', label: 'Voiceover Gen', icon: Mic2, hideOnMd: true },
+  { href: '/creative-brief-generator', label: 'Brief Gen', icon: FileTextIcon, hideOnMd: true },
+  { href: '/ad-placement-strategist', label: 'Placement Strategy', icon: Target, hideOnMd: true },
   { href: '/observability', label: 'Observability', icon: Activity, hideOnMd: true },
   { href: '/calendar', label: 'Calendar', icon: Calendar, hideOnMd: true },
 ];

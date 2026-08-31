@@ -6,7 +6,7 @@ import { useSession } from 'next-auth/react';
 import {
   Clapperboard, Coins, Boxes, FolderOpen, ArrowRight, Loader2, Film, Play, Sparkles,
   TrendingDown, TrendingUp, BarChart3, Trophy, Calendar, Gift, Layers, Scissors, Server, Users, Zap, Workflow,
-  FileText, RefreshCw, Lightbulb, Shield, Flame, GitBranch, CalendarClock, Radar, PenLine, Anchor, FileSpreadsheet, ScrollText, UsersRound, LayoutGrid, GitMerge, FileSearch2, LayoutTemplate, Palette, Gauge, FlaskRound, TestTube, Compass, Mic, Type, Newspaper, Lightbulb as LightbulbIcon, Clock, BatteryLow, MousePointerClick, Expand, BookOpenCheck, Droplet, Hash, Clapperboard as ClapperboardIcon, Image as ImageIcon,
+  FileText, RefreshCw, Lightbulb, Shield, Flame, GitBranch, CalendarClock, Radar, PenLine, Anchor, FileSpreadsheet, ScrollText, UsersRound, LayoutGrid, GitMerge, FileSearch2, LayoutTemplate, Palette, Gauge, FlaskRound, TestTube, Compass, Mic, Type, Newspaper, Lightbulb as LightbulbIcon, Clock, BatteryLow, MousePointerClick, Expand, BookOpenCheck, Droplet, Hash, Clapperboard as ClapperboardIcon, Image as ImageIcon, Music, Mic2, FileText as FileTextIcon, Target,
 } from 'lucide-react';
 import { useI18n } from '@/i18n/provider';
 import { appTitle, appDesc, isFeatured } from '@/config/appCatalog';
@@ -72,6 +72,10 @@ const APPS: App[] = [
   { id: 'ad-font-pairing-generator', href: '/ad-font-pairing-generator', icon: Type },
   { id: 'ad-hashtag-generator', href: '/ad-hashtag-generator', icon: Hash },
   { id: 'creative-scene-generator', href: '/creative-scene-generator', icon: ClapperboardIcon },
+  { id: 'ad-music-mood-matcher', href: '/ad-music-mood-matcher', icon: Music },
+  { id: 'ad-voiceover-script-generator', href: '/ad-voiceover-script-generator', icon: Mic2 },
+  { id: 'creative-brief-generator', href: '/creative-brief-generator', icon: FileTextIcon },
+  { id: 'ad-placement-strategist', href: '/ad-placement-strategist', icon: Target },
 ];
 
 type Creation = {
