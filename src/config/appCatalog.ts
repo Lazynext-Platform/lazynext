@@ -84,6 +84,10 @@ const CUSTOM_TITLES: Record<string, Bi> = {
   'creative-hook-revamp-generator': { en: 'Creative Hook Revamp Generator', zh: '创意钩子改造生成器' },
   'ad-audience-segment-builder': { en: 'Ad Audience Segment Builder', zh: '广告受众细分构建器' },
   'creative-concept-validator': { en: 'Creative Concept Validator', zh: '创意概念验证器' },
+  'ad-emotion-analyzer': { en: 'Ad Emotion Analyzer', zh: '广告情感分析器' },
+  'creative-format-converter': { en: 'Creative Format Converter', zh: '创意格式转换器' },
+  'ad-budget-allocator': { en: 'Ad Budget Allocator', zh: '广告预算分配器' },
+  'creative-trend-adapter': { en: 'Creative Trend Adapter', zh: '创意趋势适配器' },
 };
 const CUSTOM_DESCS: Record<string, Bi> = {
   'lazynext-studio': { en: 'Product + presenter photos → AI expands the prompt from your images → lip-synced UGC ad; one-click viral formats', zh: '产品图+人物图 → AI 看图扩写提示词 → 合成首帧 → 对口型真人口播广告;爆款玩法一键复刻' },

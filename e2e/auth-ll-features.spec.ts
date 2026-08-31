@@ -1533,3 +1533,115 @@ test.describe('Creative Concept Validator API', () => {
     expect(res.status()).toBe(400);
   });
 });
+
+test.describe('Ad Emotion Analyzer API', () => {
+  test('GET returns credit cost and schema', async ({ request }) => {
+    const res = await request.get('/api/creative/ad-emotion-analyzer');
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.creditCost).toBe(3);
+    expect(data.schema).toBeTruthy();
+  });
+  test('POST with valid input returns analysis', async ({ request }) => {
+    const res = await request.post('/api/creative/ad-emotion-analyzer', {
+      data: { adContent: 'Discover the power of vitamin C', productOrBrand: 'Skincare brand', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.result).toBeTruthy();
+    expect(data.result.analysis).toBeTruthy();
+  });
+  test('POST with missing adContent returns 400', async ({ request }) => {
+    const res = await request.post('/api/creative/ad-emotion-analyzer', {
+      data: { productOrBrand: 'test', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.status()).toBe(400);
+  });
+});
+
+test.describe('Creative Format Converter API', () => {
+  test('GET returns credit cost and schema', async ({ request }) => {
+    const res = await request.get('/api/creative/creative-format-converter');
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.creditCost).toBe(4);
+    expect(data.schema).toBeTruthy();
+  });
+  test('POST with valid input returns conversion', async ({ request }) => {
+    const res = await request.post('/api/creative/creative-format-converter', {
+      data: { content: 'Long blog post about skincare', productOrBrand: 'Skincare brand', sourceFormat: 'long-form', targetFormat: 'short-form', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.result).toBeTruthy();
+    expect(data.result.conversion).toBeTruthy();
+  });
+  test('POST with missing content returns 400', async ({ request }) => {
+    const res = await request.post('/api/creative/creative-format-converter', {
+      data: { productOrBrand: 'test', sourceFormat: 'long-form', targetFormat: 'short-form', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.status()).toBe(400);
+  });
+});
+
+test.describe('Ad Budget Allocator API', () => {
+  test('GET returns credit cost and schema', async ({ request }) => {
+    const res = await request.get('/api/creative/ad-budget-allocator');
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.creditCost).toBe(4);
+    expect(data.schema).toBeTruthy();
+  });
+  test('POST with valid input returns allocation', async ({ request }) => {
+    const res = await request.post('/api/creative/ad-budget-allocator', {
+      data: { productOrBrand: 'Premium earbuds', totalBudget: '$10,000', campaignGoal: 'conversions', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.result).toBeTruthy();
+    expect(data.result.allocation).toBeTruthy();
+  });
+  test('POST with missing productOrBrand returns 400', async ({ request }) => {
+    const res = await request.post('/api/creative/ad-budget-allocator', {
+      data: { totalBudget: '$10,000', campaignGoal: 'conversions', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.status()).toBe(400);
+  });
+});
+
+test.describe('Creative Trend Adapter API', () => {
+  test('GET returns credit cost and schema', async ({ request }) => {
+    const res = await request.get('/api/creative/creative-trend-adapter');
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.creditCost).toBe(3);
+    expect(data.schema).toBeTruthy();
+  });
+  test('POST with valid input returns adaptation', async ({ request }) => {
+    const res = await request.post('/api/creative/creative-trend-adapter', {
+      data: { content: 'Check out our new product', productOrBrand: 'Premium earbuds', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.result).toBeTruthy();
+    expect(data.result.adaptation).toBeTruthy();
+  });
+  test('POST with missing content returns 400', async ({ request }) => {
+    const res = await request.post('/api/creative/creative-trend-adapter', {
+      data: { productOrBrand: 'test', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.status()).toBe(400);
+  });
+});
