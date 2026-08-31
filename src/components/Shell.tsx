@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Sparkles, Megaphone, BarChart3, LayoutDashboard, Package, Scissors, Library, Lightbulb, Calendar, CalendarClock, Video, Wand2, ImageIcon, Send, BookOpen, Brain, Volume2, Eye, ShieldCheck, Wallet, Users, Workflow, Grid3x3, Activity, FileSearch, TrendingUp, FlaskConical, MessageSquareQuote, Award, Repeat, Users2, Flame, Film, Server, Clapperboard, Gift, Layers, Cpu, FileText, RefreshCw, Shield, GitBranch, Radar, PenLine, Anchor, FileSpreadsheet, ScrollText, UsersRound, LayoutGrid, GitMerge, FileSearch2, LayoutTemplate, Palette, Gauge, FlaskRound, TestTube, Compass, Mic, Type, Newspaper, Lightbulb as LightbulbIcon, Clock, BatteryLow, MousePointerClick, Expand, BookOpenCheck, Droplet, Hash, Clapperboard as ClapperboardIcon, Music, Mic2, FileText as FileTextIcon, Target, FlaskConical as FlaskIcon, Zap, Users as UsersIcon, ShieldCheck as ShieldIcon, HeartPulse, Heart, Repeat2, DollarSign, TrendingUp as TrendingIcon, ListOrdered, BookMarked, Globe2, LineChart, Smile, Grid2x2, RefreshCcw, MicVocal, Layers3, Swords, Radio, LayoutList, LifeBuoy, Split, AlertTriangle, SlidersHorizontal, Shuffle, Waves, Contrast, HelpCircle, Drum, Layout, AudioLines, CheckCircle, Hourglass } from 'lucide-react';
+import { Sparkles, Megaphone, BarChart3, LayoutDashboard, Package, Scissors, Library, Lightbulb, Calendar, CalendarClock, Video, Wand2, ImageIcon, Send, BookOpen, Brain, Volume2, Eye, ShieldCheck, Wallet, Users, Workflow, Grid3x3, Activity, FileSearch, TrendingUp, FlaskConical, MessageSquareQuote, Award, Repeat, Users2, Flame, Film, Server, Clapperboard, Gift, Layers, Cpu, FileText, RefreshCw, Shield, GitBranch, Radar, PenLine, Anchor, FileSpreadsheet, ScrollText, UsersRound, LayoutGrid, GitMerge, FileSearch2, LayoutTemplate, Palette, Gauge, FlaskRound, TestTube, Compass, Mic, Type, Newspaper, Lightbulb as LightbulbIcon, Clock, BatteryLow, MousePointerClick, Expand, BookOpenCheck, Droplet, Hash, Clapperboard as ClapperboardIcon, Music, Mic2, FileText as FileTextIcon, Target, FlaskConical as FlaskIcon, Zap, Users as UsersIcon, ShieldCheck as ShieldIcon, HeartPulse, Heart, Repeat2, DollarSign, TrendingUp as TrendingIcon, ListOrdered, BookMarked, Globe2, LineChart, Smile, Grid2x2, RefreshCcw, MicVocal, Layers3, Swords, Radio, LayoutList, LifeBuoy, Split, AlertTriangle, SlidersHorizontal, Shuffle, Waves, Contrast, HelpCircle, Drum, Layout, AudioLines, CheckCircle, Hourglass, Scale, GitCompare, Play, TrendingDown, Star } from 'lucide-react';
 import { UserMenu } from '@/components/UserMenu';
 import { LangToggle } from '@/components/LangToggle';
 import { CreditBadge } from '@/components/CreditBadge';
@@ -169,6 +169,28 @@ const NAV_LINKS = [
   { href: '/creative-ad-micro-commitment-designer', label: 'Micro-Commitment Designer', icon: MousePointerClick, hideOnMd: true },
   { href: '/ad-creative-scarcity-frame-designer', label: 'Scarcity Frame Designer', icon: Hourglass, hideOnMd: true },
   { href: '/creative-ad-identity-alignment-designer', label: 'Identity Alignment Designer', icon: Users, hideOnMd: true },
+  { href: '/ad-creative-pas-framework-designer', label: 'PAS Framework Designer', icon: AlertTriangle, hideOnMd: true },
+  { href: '/creative-ad-offer-architecture-designer', label: 'Offer Architecture Designer', icon: Layers, hideOnMd: true },
+  { href: '/ad-creative-bab-framework-designer', label: 'BAB Framework Designer', icon: RefreshCw, hideOnMd: true },
+  { href: '/creative-ad-price-framing-designer', label: 'Price Framing Designer', icon: DollarSign, hideOnMd: true },
+  { href: '/ad-creative-risk-reversal-designer', label: 'Risk Reversal Designer', icon: Shield, hideOnMd: true },
+  { href: '/ad-creative-testimonial-architecture-designer', label: 'Testimonial Architecture Designer', icon: MessageSquareQuote, hideOnMd: true },
+  { href: '/ad-creative-authority-positioning-designer', label: 'Authority Positioning Designer', icon: ShieldCheck, hideOnMd: true },
+  { href: '/creative-ad-liking-affinity-designer', label: 'Liking Affinity Designer', icon: Heart, hideOnMd: true },
+  { href: '/ad-creative-fear-appeal-designer', label: 'Fear Appeal Designer', icon: AlertTriangle, hideOnMd: true },
+  { href: '/creative-ad-belonging-appeal-designer', label: 'Belonging Appeal Designer', icon: Users, hideOnMd: true },
+  { href: '/ad-creative-humor-appeal-designer', label: 'Humor Appeal Designer', icon: Smile, hideOnMd: true },
+  { href: '/creative-ad-framing-effect-designer', label: 'Framing Effect Designer', icon: Layout, hideOnMd: true },
+  { href: '/ad-creative-pride-appeal-designer', label: 'Pride Appeal Designer', icon: Award, hideOnMd: true },
+  { href: '/creative-ad-nostalgia-trigger-designer', label: 'Nostalgia Trigger Designer', icon: Clock, hideOnMd: true },
+  { href: '/ad-creative-decoy-effect-designer', label: 'Decoy Effect Designer', icon: Shuffle, hideOnMd: true },
+  { href: '/creative-ad-endowment-effect-designer', label: 'Endowment Effect Designer', icon: Gift, hideOnMd: true },
+  { href: '/creative-ad-fab-framework-designer', label: 'FAB Framework Designer', icon: Star, hideOnMd: true },
+  { href: '/creative-ad-comparison-framework-designer', label: 'Comparison Framework Designer', icon: Scale, hideOnMd: true },
+  { href: '/ad-creative-demonstration-framework-designer', label: 'Demonstration Framework Designer', icon: Play, hideOnMd: true },
+  { href: '/creative-ad-loss-aversion-framing-designer', label: 'Loss Aversion Framing Designer', icon: TrendingDown, hideOnMd: true },
+  { href: '/ad-creative-anchoring-effect-designer', label: 'Anchoring Effect Designer', icon: Anchor, hideOnMd: true },
+  { href: '/creative-ad-reciprocity-trigger-designer', label: 'Reciprocity Trigger Designer', icon: Gift, hideOnMd: true },
   { href: '/observability', label: 'Observability', icon: Activity, hideOnMd: true },
   { href: '/calendar', label: 'Calendar', icon: Calendar, hideOnMd: true },
 ];

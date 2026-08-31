@@ -6,7 +6,7 @@ import { useSession } from 'next-auth/react';
 import {
   Clapperboard, Coins, Boxes, FolderOpen, ArrowRight, Loader2, Film, Play, Sparkles,
   TrendingDown, TrendingUp, BarChart3, Trophy, Calendar, Gift, Layers, Scissors, Server, Users, Zap, Workflow,
-  FileText, RefreshCw, Lightbulb, Shield, Flame, GitBranch, CalendarClock, Radar, PenLine, Anchor, FileSpreadsheet, ScrollText, UsersRound, LayoutGrid, GitMerge, FileSearch2, LayoutTemplate, Palette, Gauge, FlaskRound, TestTube, Compass, Mic, Type, Newspaper, Lightbulb as LightbulbIcon, Clock, BatteryLow, MousePointerClick, Expand, BookOpenCheck, Droplet, Hash, Clapperboard as ClapperboardIcon, Image as ImageIcon, Music, Mic2, FileText as FileTextIcon, Target, FlaskConical as FlaskIcon, Users as UsersIcon, ShieldCheck as ShieldIcon, HeartPulse, Heart, Repeat2, DollarSign, TrendingUp as TrendingIcon, ListOrdered, BookMarked, Globe2, LineChart, Smile, Grid2x2, RefreshCcw, MicVocal, Users2, Layers3, Swords, Radio, LayoutList, LifeBuoy, Split, AlertTriangle, Eye, MessageSquareQuote, Brain, SlidersHorizontal, Wand, Award, Shuffle, Waves, Contrast, HelpCircle, Drum, Layout, AudioLines, CheckCircle, Hourglass
+  FileText, RefreshCw, Lightbulb, Shield, Flame, GitBranch, CalendarClock, Radar, PenLine, Anchor, FileSpreadsheet, ScrollText, UsersRound, LayoutGrid, GitMerge, FileSearch2, LayoutTemplate, Palette, Gauge, FlaskRound, TestTube, Compass, Mic, Type, Newspaper, Lightbulb as LightbulbIcon, Clock, BatteryLow, MousePointerClick, Expand, BookOpenCheck, Droplet, Hash, Clapperboard as ClapperboardIcon, Image as ImageIcon, Music, Mic2, FileText as FileTextIcon, Target, FlaskConical as FlaskIcon, Users as UsersIcon, ShieldCheck as ShieldIcon, HeartPulse, Heart, Repeat2, DollarSign, TrendingUp as TrendingIcon, ListOrdered, BookMarked, Globe2, LineChart, Smile, Grid2x2, RefreshCcw, MicVocal, Users2, Layers3, Swords, Radio, LayoutList, LifeBuoy, Split, AlertTriangle, Eye, MessageSquareQuote, Brain, SlidersHorizontal, Wand, Award, Shuffle, Waves, Contrast, HelpCircle, Drum, Layout, AudioLines, CheckCircle, Hourglass, Scale, GitCompare, Star
 } from 'lucide-react';
 import { useI18n } from '@/i18n/provider';
 import { appTitle, appDesc, isFeatured } from '@/config/appCatalog';
@@ -152,6 +152,28 @@ const APPS: App[] = [
   { id: 'creative-ad-micro-commitment-designer', href: '/creative-ad-micro-commitment-designer', icon: MousePointerClick },
   { id: 'ad-creative-scarcity-frame-designer', href: '/ad-creative-scarcity-frame-designer', icon: Hourglass },
   { id: 'creative-ad-identity-alignment-designer', href: '/creative-ad-identity-alignment-designer', icon: Users },
+  { id: 'ad-creative-pas-framework-designer', href: '/ad-creative-pas-framework-designer', icon: AlertTriangle },
+  { id: 'creative-ad-offer-architecture-designer', href: '/creative-ad-offer-architecture-designer', icon: Layers },
+  { id: 'ad-creative-bab-framework-designer', href: '/ad-creative-bab-framework-designer', icon: RefreshCw },
+  { id: 'creative-ad-price-framing-designer', href: '/creative-ad-price-framing-designer', icon: DollarSign },
+  { id: 'ad-creative-risk-reversal-designer', href: '/ad-creative-risk-reversal-designer', icon: Shield },
+  { id: 'ad-creative-testimonial-architecture-designer', href: '/ad-creative-testimonial-architecture-designer', icon: MessageSquareQuote },
+  { id: 'ad-creative-authority-positioning-designer', href: '/ad-creative-authority-positioning-designer', icon: ShieldIcon },
+  { id: 'creative-ad-liking-affinity-designer', href: '/creative-ad-liking-affinity-designer', icon: Heart },
+  { id: 'ad-creative-fear-appeal-designer', href: '/ad-creative-fear-appeal-designer', icon: AlertTriangle },
+  { id: 'creative-ad-belonging-appeal-designer', href: '/creative-ad-belonging-appeal-designer', icon: Users },
+  { id: 'ad-creative-humor-appeal-designer', href: '/ad-creative-humor-appeal-designer', icon: Smile },
+  { id: 'creative-ad-framing-effect-designer', href: '/creative-ad-framing-effect-designer', icon: Layout },
+  { id: 'ad-creative-pride-appeal-designer', href: '/ad-creative-pride-appeal-designer', icon: Award },
+  { id: 'creative-ad-nostalgia-trigger-designer', href: '/creative-ad-nostalgia-trigger-designer', icon: Clock },
+  { id: 'ad-creative-decoy-effect-designer', href: '/ad-creative-decoy-effect-designer', icon: Shuffle },
+  { id: 'creative-ad-endowment-effect-designer', href: '/creative-ad-endowment-effect-designer', icon: Gift },
+  { id: 'creative-ad-fab-framework-designer', href: '/creative-ad-fab-framework-designer', icon: Star },
+  { id: 'creative-ad-comparison-framework-designer', href: '/creative-ad-comparison-framework-designer', icon: Scale },
+  { id: 'ad-creative-demonstration-framework-designer', href: '/ad-creative-demonstration-framework-designer', icon: Play },
+  { id: 'creative-ad-loss-aversion-framing-designer', href: '/creative-ad-loss-aversion-framing-designer', icon: TrendingDown },
+  { id: 'ad-creative-anchoring-effect-designer', href: '/ad-creative-anchoring-effect-designer', icon: Anchor },
+  { id: 'creative-ad-reciprocity-trigger-designer', href: '/creative-ad-reciprocity-trigger-designer', icon: Gift },
 ];
 
 type Creation = {
