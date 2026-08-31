@@ -140,6 +140,10 @@ const CUSTOM_TITLES: Record<string, Bi> = {
   'ad-creative-emotional-pivot-designer': { en: 'Ad Creative Emotional Pivot Designer', zh: '广告创意情感转折设计师' },
   'creative-ad-resolution-designer': { en: 'Creative Ad Resolution Designer', zh: '创意广告结局设计师' },
   'ad-creative-viewer-reward-designer': { en: 'Ad Creative Viewer Reward Designer', zh: '广告创意观众奖励设计师' },
+  'ad-creative-tension-release-designer': { en: 'Ad Creative Tension Release Designer', zh: '广告创意张力释放设计师' },
+  'creative-ad-stakes-escalation-designer': { en: 'Creative Ad Stakes Escalation Designer', zh: '创意广告风险升级设计师' },
+  'ad-creative-curiosity-loop-designer': { en: 'Ad Creative Curiosity Loop Designer', zh: '广告创意好奇心循环设计师' },
+  'creative-ad-transformation-arc-designer': { en: 'Creative Ad Transformation Arc Designer', zh: '创意广告转变弧设计师' },
 };
 const CUSTOM_DESCS: Record<string, Bi> = {
   'lazynext-studio': { en: 'Product + presenter photos → AI expands the prompt from your images → lip-synced UGC ad; one-click viral formats', zh: '产品图+人物图 → AI 看图扩写提示词 → 合成首帧 → 对口型真人口播广告;爆款玩法一键复刻' },

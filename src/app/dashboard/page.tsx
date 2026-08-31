@@ -136,6 +136,10 @@ const APPS: App[] = [
   { id: 'ad-creative-emotional-pivot-designer', href: '/ad-creative-emotional-pivot-designer', icon: Shuffle },
   { id: 'creative-ad-resolution-designer', href: '/creative-ad-resolution-designer', icon: CheckCircle },
   { id: 'ad-creative-viewer-reward-designer', href: '/ad-creative-viewer-reward-designer', icon: Gift },
+  { id: 'ad-creative-tension-release-designer', href: '/ad-creative-tension-release-designer', icon: Waves },
+  { id: 'creative-ad-stakes-escalation-designer', href: '/creative-ad-stakes-escalation-designer', icon: TrendingUp },
+  { id: 'ad-creative-curiosity-loop-designer', href: '/ad-creative-curiosity-loop-designer', icon: HelpCircle },
+  { id: 'creative-ad-transformation-arc-designer', href: '/creative-ad-transformation-arc-designer', icon: RefreshCw },
 ];
 
 type Creation = {

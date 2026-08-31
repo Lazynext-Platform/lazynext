@@ -153,6 +153,10 @@ const NAV_LINKS = [
   { href: '/ad-creative-emotional-pivot-designer', label: 'Emotional Pivot Designer', icon: Shuffle, hideOnMd: true },
   { href: '/creative-ad-resolution-designer', label: 'Resolution Designer', icon: CheckCircle, hideOnMd: true },
   { href: '/ad-creative-viewer-reward-designer', label: 'Viewer Reward Designer', icon: Gift, hideOnMd: true },
+  { href: '/ad-creative-tension-release-designer', label: 'Tension Release Designer', icon: Waves, hideOnMd: true },
+  { href: '/creative-ad-stakes-escalation-designer', label: 'Stakes Escalation Designer', icon: TrendingUp, hideOnMd: true },
+  { href: '/ad-creative-curiosity-loop-designer', label: 'Curiosity Loop Designer', icon: HelpCircle, hideOnMd: true },
+  { href: '/creative-ad-transformation-arc-designer', label: 'Transformation Arc Designer', icon: RefreshCw, hideOnMd: true },
   { href: '/observability', label: 'Observability', icon: Activity, hideOnMd: true },
   { href: '/calendar', label: 'Calendar', icon: Calendar, hideOnMd: true },
 ];
