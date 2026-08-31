@@ -108,6 +108,10 @@ const CUSTOM_TITLES: Record<string, Bi> = {
   'creative-visual-hierarchy-analyzer': { en: 'Creative Visual Hierarchy Analyzer', zh: '创意视觉层次分析器' },
   'ad-audience-pain-point-mapper': { en: 'Ad Audience Pain Point Mapper', zh: '广告受众痛点映射器' },
   'creative-messaging-framework-builder': { en: 'Creative Messaging Framework Builder', zh: '创意信息框架构建器' },
+  'ad-creative-burnout-detector': { en: 'Ad Creative Burnout Detector', zh: '广告创意疲劳检测器' },
+  'creative-ad-concept-synthesizer': { en: 'Creative Ad Concept Synthesizer', zh: '创意广告概念合成器' },
+  'ad-audience-psychographic-profiler': { en: 'Ad Audience Psychographic Profiler', zh: '广告受众心理画像器' },
+  'creative-ad-tone-calibrator': { en: 'Creative Ad Tone Calibrator', zh: '创意广告语调校准器' },
 };
 const CUSTOM_DESCS: Record<string, Bi> = {
   'lazynext-studio': { en: 'Product + presenter photos → AI expands the prompt from your images → lip-synced UGC ad; one-click viral formats', zh: '产品图+人物图 → AI 看图扩写提示词 → 合成首帧 → 对口型真人口播广告;爆款玩法一键复刻' },

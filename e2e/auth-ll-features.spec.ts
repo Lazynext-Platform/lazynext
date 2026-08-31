@@ -2205,3 +2205,115 @@ test.describe('Creative Messaging Framework Builder API', () => {
     expect(res.status()).toBe(400);
   });
 });
+
+test.describe('Ad Creative Burnout Detector API', () => {
+  test('GET returns credit cost and schema', async ({ request }) => {
+    const res = await request.get('/api/creative/ad-creative-burnout-detector');
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.creditCost).toBe(4);
+    expect(data.schema).toBeTruthy();
+  });
+  test('POST with valid input returns analysis', async ({ request }) => {
+    const res = await request.post('/api/creative/ad-creative-burnout-detector', {
+      data: { content: 'Our premium headphones deliver studio-quality sound for serious listeners.', productOrBrand: 'Aura Audio', daysRunning: 21, dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.result).toBeTruthy();
+    expect(data.result.analysis).toBeTruthy();
+  });
+  test('POST with missing content returns 400', async ({ request }) => {
+    const res = await request.post('/api/creative/ad-creative-burnout-detector', {
+      data: { productOrBrand: 'test', daysRunning: 10, dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.status()).toBe(400);
+  });
+});
+
+test.describe('Creative Ad Concept Synthesizer API', () => {
+  test('GET returns credit cost and schema', async ({ request }) => {
+    const res = await request.get('/api/creative/creative-ad-concept-synthesizer');
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.creditCost).toBe(5);
+    expect(data.schema).toBeTruthy();
+  });
+  test('POST with valid input returns synthesis', async ({ request }) => {
+    const res = await request.post('/api/creative/creative-ad-concept-synthesizer', {
+      data: { concepts: ['Bold visual hook with product reveal', 'Story-driven emotional appeal', 'Comedy skit with relatable problem'], productOrBrand: 'Aura Earbuds', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.result).toBeTruthy();
+    expect(data.result.synthesis).toBeTruthy();
+  });
+  test('POST with missing concepts returns 400', async ({ request }) => {
+    const res = await request.post('/api/creative/creative-ad-concept-synthesizer', {
+      data: { productOrBrand: 'test', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.status()).toBe(400);
+  });
+});
+
+test.describe('Ad Audience Psychographic Profiler API', () => {
+  test('GET returns credit cost and schema', async ({ request }) => {
+    const res = await request.get('/api/creative/ad-audience-psychographic-profiler');
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.creditCost).toBe(4);
+    expect(data.schema).toBeTruthy();
+  });
+  test('POST with valid input returns profile', async ({ request }) => {
+    const res = await request.post('/api/creative/ad-audience-psychographic-profiler', {
+      data: { productOrBrand: 'Aura Earbuds', targetAudience: 'Urban commuters aged 25-35 who value quality audio', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.result).toBeTruthy();
+    expect(data.result.profile).toBeTruthy();
+  });
+  test('POST with missing productOrBrand returns 400', async ({ request }) => {
+    const res = await request.post('/api/creative/ad-audience-psychographic-profiler', {
+      data: { targetAudience: 'test', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.status()).toBe(400);
+  });
+});
+
+test.describe('Creative Ad Tone Calibrator API', () => {
+  test('GET returns credit cost and schema', async ({ request }) => {
+    const res = await request.get('/api/creative/creative-ad-tone-calibrator');
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.creditCost).toBe(3);
+    expect(data.schema).toBeTruthy();
+  });
+  test('POST with valid input returns calibration', async ({ request }) => {
+    const res = await request.post('/api/creative/creative-ad-tone-calibrator', {
+      data: { content: 'Our premium headphones deliver studio-quality sound for serious listeners.', productOrBrand: 'Aura Audio', desiredTone: 'casual', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.result).toBeTruthy();
+    expect(data.result.calibration).toBeTruthy();
+  });
+  test('POST with missing content returns 400', async ({ request }) => {
+    const res = await request.post('/api/creative/creative-ad-tone-calibrator', {
+      data: { productOrBrand: 'test', desiredTone: 'casual', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.status()).toBe(400);
+  });
+});
