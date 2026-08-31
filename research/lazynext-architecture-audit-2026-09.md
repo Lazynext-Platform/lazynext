@@ -1,6 +1,6 @@
 # LazyNext Architecture Audit — 2026-09
 
-> **Status:** Current as of 2026-09-02 (post-TT7 series).
+> **Status:** Current as of 2026-09-02 (post-TT8 series).
 > The previous audit (`research/lazynext-architecture-audit.md`) is superseded.
 
 ## 1. Stack
@@ -110,6 +110,10 @@ All 5 templates include the `score` quality gate before publish.
 - `POST /api/creative/concept-expander` — expands a seed concept into multiple fully fleshed-out creative directions with title, description, hook, visual direction, tone, format, unique angle, and production difficulty (4 credits, ADR-068)
 - `POST /api/creative/ad-story-generator` — generates compelling ad narratives with emotional arcs across 5 story types (transformation, journey, conflict, resolution, aspiration) returning multi-act story with visual notes, voiceover, emotion beats, and CTA integration (5 credits, ADR-069)
 - `POST /api/creative/ad-color-palette-generator` — generates optimized color palettes for ad creatives based on product, platform, and emotional goal across 6 emotions (energetic, calm, luxury, trust, playful, urgent) returning palettes with primary/secondary/accent/background/text colors, platform fit, and color psychology (3 credits, ADR-070)
+- `POST /api/creative/ad-thumbnail-generator` — AI-powered thumbnail/cover image concept generator for video ads with visual description, text overlay, text position, font style, color scheme, emotion, and predicted CTR score (4 credits, ADR-071)
+- `POST /api/creative/ad-font-pairing-generator` — AI-powered font pairing recommendations for ad creatives with heading font, body font, style description, mood, readability score, platform fit, and use case (3 credits, ADR-072)
+- `POST /api/creative/ad-hashtag-generator` — AI-powered platform-optimized hashtag generator returning hashtags categorized by type (branded, trending, niche, community, campaign) with estimated reach, competition level, and recommended flag (2 credits, ADR-073)
+- `POST /api/creative/creative-scene-generator` — AI-powered detailed scene description generator for ad video shoots with shot type, camera angle, lighting, setting, props, actor notes, dialogue/voiceover, duration, and mood, returning total duration (5 credits, ADR-074)
 
 Credit handling:
 - Credits are deducted before stage execution.
@@ -213,7 +217,7 @@ The `overall` score is on a **1-10 scale** (weighted average of 1-10 dimensions)
 
 ### Coverage
 
-- 13 locales: en, zh, ja, es, ko, pt, fr, de, ar, hi, vi, th, id. All 13 locales now have complete feature translations (including the JJ-, LL-, RR-, SS-, TT-, TT3-, TT4-, TT5-, TT6-, and TT7-series features).
+- 13 locales: en, zh, ja, es, ko, pt, fr, de, ar, hi, vi, th, id. All 13 locales now have complete feature translations (including the JJ-, LL-, RR-, SS-, TT-, TT3-, TT4-, TT5-, TT6-, TT7-, and TT8-series features).
 - RTL support for Arabic (`dir="rtl"`, `lang="ar"`).
 - Cookie-based locale switching.
 
@@ -270,7 +274,7 @@ The `pipeline` namespace includes:
 - **9 authenticated API tests** for RR-series features (brand-guardrails, smart-calendar, competitor-watch).
 - **12+ authenticated pipeline tests** — session, pipeline creation, templates, page loads.
 - **12+ authenticated user flow tests** — dashboard, my-work, settings, admin, credits, full pipeline execution, A/B.
-- Total: 996+ tests (440+ unauthenticated + 160+ authenticated), 0 skipped, 0 failed.
+- Total: 1052+ tests (440+ unauthenticated + 160+ authenticated), 0 skipped, 0 failed.
 
 ### Test account
 
@@ -310,8 +314,8 @@ The `pipeline` namespace includes:
 
 ```bash
 npm run lint    # ESLint — 0 errors, 0 warnings
-npm test        # Node test runner — 2415+ tests
-npx playwright test  # E2E — 996+ tests, 0 skipped
+npm test        # Node test runner — 2534+ tests
+npx playwright test  # E2E — 1052+ tests, 0 skipped
 npm run build   # Production build (Cloudflare target)
 ```
 
@@ -425,10 +429,15 @@ npm run build   # Production build (Cloudflare target)
 - Ad Story Generator — generates compelling ad narratives with emotional arcs across 5 story types (transformation, journey, conflict, resolution, aspiration) with multi-act story, visual notes, voiceover, emotion beats, and CTA integration (TT7, ADR-069)
 - Ad Color Palette Generator — generates optimized color palettes for ad creatives based on product, platform, and emotional goal across 6 emotions (energetic, calm, luxury, trust, playful, urgent) with primary/secondary/accent/background/text colors, platform fit, and color psychology (TT7, ADR-070)
 - i18n for 4 new TT7 features across all 13 locales — adCtaOptimizer, conceptExpander, adStoryGenerator, adColorPaletteGenerator namespaces (TT7)
+- Ad Thumbnail Generator — AI-powered thumbnail/cover image concept generator for video ads with visual description, text overlay, text position, font style, color scheme, emotion, and predicted CTR score (TT8, ADR-071)
+- Ad Font Pairing Generator — AI-powered font pairing recommendations for ad creatives with heading font, body font, style description, mood, readability score, platform fit, and use case (TT8, ADR-072)
+- Ad Hashtag Generator — AI-powered platform-optimized hashtag generator returning hashtags categorized by type (branded, trending, niche, community, campaign) with estimated reach, competition level, and recommended flag (TT8, ADR-073)
+- Creative Scene Generator — AI-powered detailed scene description generator for ad video shoots with shot type, camera angle, lighting, setting, props, actor notes, dialogue/voiceover, duration, and mood, returning total duration (TT8, ADR-074)
+- i18n for 4 new TT8 features across all 13 locales — adThumbnailGenerator, adFontPairingGenerator, adHashtagGenerator, creativeSceneGenerator namespaces (TT8)
 
 ## 15. LL-Series Features
 
-The LL series extended the creative platform with four new capabilities, documented in ADRs 036-039. ADR-040 (OO series) documents D1 persistence for safety audit logs. ADRs 041-043 (QQ series) document chain mode unification, observability aggregation, and video rendering. ADRs 044-046 (RR series) document Brand Guardrails, Smart Calendar, and Competitor Watch. ADRs 047-052 (TT series) document Ad Copy Generator, Hook Library, Brief Template Builder, Ad Script Writer, Audience Persona Generator, and Creative Variant Matrix. ADRs 053-055 (TT3 series) document Ad Concept Merger, Creative Brief Analyzer, and Ad Format Optimizer. ADRs 056-058 (TT4 series) document Mood Board Generator, Ad Performance Predictor, and Creative A/B Test Planner. ADRs 059-062 (TT5 series) document Creative Hook Tester, Trend Spotter, Brand Voice Analyzer, and Ad Caption Generator. ADRs 063-066 (TT6 series) document Ad Headline Generator, Creative Angle Finder, Ad Timing Optimizer, and Creative Fatigue Detector. ADRs 067-070 (TT7 series) document Ad CTA Optimizer, Creative Concept Expander, Ad Story Generator, and Ad Color Palette Generator. ADRs 001-070 now total 70 architecture decision records in `docs/adr/`.
+The LL series extended the creative platform with four new capabilities, documented in ADRs 036-039. ADR-040 (OO series) documents D1 persistence for safety audit logs. ADRs 041-043 (QQ series) document chain mode unification, observability aggregation, and video rendering. ADRs 044-046 (RR series) document Brand Guardrails, Smart Calendar, and Competitor Watch. ADRs 047-052 (TT series) document Ad Copy Generator, Hook Library, Brief Template Builder, Ad Script Writer, Audience Persona Generator, and Creative Variant Matrix. ADRs 053-055 (TT3 series) document Ad Concept Merger, Creative Brief Analyzer, and Ad Format Optimizer. ADRs 056-058 (TT4 series) document Mood Board Generator, Ad Performance Predictor, and Creative A/B Test Planner. ADRs 059-062 (TT5 series) document Creative Hook Tester, Trend Spotter, Brand Voice Analyzer, and Ad Caption Generator. ADRs 063-066 (TT6 series) document Ad Headline Generator, Creative Angle Finder, Ad Timing Optimizer, and Creative Fatigue Detector. ADRs 067-070 (TT7 series) document Ad CTA Optimizer, Creative Concept Expander, Ad Story Generator, and Ad Color Palette Generator. ADRs 071-074 (TT8 series) document Ad Thumbnail Generator, Ad Font Pairing Generator, Ad Hashtag Generator, and Creative Scene Generator. ADRs 001-074 now total 74 architecture decision records in `docs/adr/`.
 
 ### Google Ads Safety Layer (`/google-safety`)
 
@@ -468,7 +477,7 @@ All four features have dry-run/fallback behavior when Atlas is local or the API 
 
 ### Dashboard Quick Create
 
-The dashboard "Quick Create" grid now includes all production apps plus the 39 newest features (Creator Kits, Brand Concepts, Clip Editor, Media Services, Product Brief, Reference Remix, Multi-Concept, Meta Safety, Google Safety, Performance Loop, Viral Analyzer, Skill Chains, Brand Guardrails, Smart Calendar, Competitor Watch, Ad Copy Generator, Hook Library, Brief Template Builder, Ad Script Writer, Audience Persona Generator, Creative Variant Matrix, Ad Concept Merger, Brief Analyzer, Ad Format Optimizer, Mood Board Generator, Ad Performance Predictor, Creative A/B Test Planner, Creative Hook Tester, Trend Spotter, Brand Voice Analyzer, Ad Caption Generator, Ad Headline Generator, Creative Angle Finder, Ad Timing Optimizer, Creative Fatigue Detector, Ad CTA Optimizer, Creative Concept Expander, Ad Story Generator, Ad Color Palette Generator). The 35 newest features (Product Brief through Ad Color Palette Generator) are in the nav overflow menu.
+The dashboard "Quick Create" grid now includes all production apps plus the 43 newest features (Creator Kits, Brand Concepts, Clip Editor, Media Services, Product Brief, Reference Remix, Multi-Concept, Meta Safety, Google Safety, Performance Loop, Viral Analyzer, Skill Chains, Brand Guardrails, Smart Calendar, Competitor Watch, Ad Copy Generator, Hook Library, Brief Template Builder, Ad Script Writer, Audience Persona Generator, Creative Variant Matrix, Ad Concept Merger, Brief Analyzer, Ad Format Optimizer, Mood Board Generator, Ad Performance Predictor, Creative A/B Test Planner, Creative Hook Tester, Trend Spotter, Brand Voice Analyzer, Ad Caption Generator, Ad Headline Generator, Creative Angle Finder, Ad Timing Optimizer, Creative Fatigue Detector, Ad CTA Optimizer, Creative Concept Expander, Ad Story Generator, Ad Color Palette Generator, Ad Thumbnail Generator, Ad Font Pairing Generator, Ad Hashtag Generator, Creative Scene Generator). The 39 newest features (Product Brief through Creative Scene Generator) are in the nav overflow menu.
 
 ## 16. RR-Series Features
 
@@ -758,3 +767,42 @@ The TT7 series added four more AI creative tools, documented in ADRs 067-070. Al
 - Nav overflow menu updated to 35 newest features (was 31).
 
 All four features have dry-run/fallback behavior when Atlas is local or the API key is missing, and use existing auth, credit deduction/refund, `withAtlas`, and `safeError` conventions. Total unit tests now 2415+ (up from 2298). Total E2E tests: 996+ (up from 903).
+
+## 23. TT8-Series Features
+
+The TT8 series added four more AI creative tools, documented in ADRs 071-074. All four features have dry-run/fallback behavior when Atlas is local or the API key is missing, and use existing auth, credit deduction/refund, `withAtlas`, and `safeError` conventions. This brings the total feature route count to 52 and the total ADR count to 74.
+
+### Ad Thumbnail Generator (`/ad-thumbnail-generator`)
+
+- AI-powered thumbnail/cover image concept generator for video ads — generates optimized thumbnails with visual description, text overlay, text position, font style, color scheme, emotion, and predicted CTR score.
+- 4 credits. API: `POST /api/creative/ad-thumbnail-generator`. See ADR-071.
+
+### Ad Font Pairing Generator (`/ad-font-pairing-generator`)
+
+- AI-powered font pairing recommendations for ad creatives — each pairing includes heading font, body font, style description, mood, readability score, platform fit, and use case.
+- 3 credits. API: `POST /api/creative/ad-font-pairing-generator`. See ADR-072.
+
+### Ad Hashtag Generator (`/ad-hashtag-generator`)
+
+- AI-powered platform-optimized hashtag generator — returns hashtags categorized by type (branded, trending, niche, community, campaign) with estimated reach, competition level, and recommended flag.
+- 2 credits. API: `POST /api/creative/ad-hashtag-generator`. See ADR-073.
+
+### Creative Scene Generator (`/creative-scene-generator`)
+
+- AI-powered detailed scene description generator for ad video shoots — each scene includes shot type, camera angle, lighting, setting, props, actor notes, dialogue/voiceover, duration, and mood. Returns total duration.
+- 5 credits. API: `POST /api/creative/creative-scene-generator`. See ADR-074.
+
+### New UI pages
+
+- `/ad-thumbnail-generator` — AI-powered thumbnail/cover image concept generator for video ads with predicted CTR score
+- `/ad-font-pairing-generator` — AI-powered font pairing recommendations for ad creatives with readability scores and platform fit
+- `/ad-hashtag-generator` — AI-powered platform-optimized hashtag generator with categorized hashtags, reach estimates, and competition levels
+- `/creative-scene-generator` — AI-powered detailed scene description generator for ad video shoots with shot type, camera angle, lighting, and mood
+
+### i18n, Dashboard, and Nav (TT8)
+
+- Translations added to all 13 locales for 4 new namespaces: `adThumbnailGenerator`, `adFontPairingGenerator`, `adHashtagGenerator`, `creativeSceneGenerator`.
+- Dashboard "Quick Create" grid updated to 43 newest features (was 39).
+- Nav overflow menu updated to 39 newest features (was 35).
+
+All four features have dry-run/fallback behavior when Atlas is local or the API key is missing, and use existing auth, credit deduction/refund, `withAtlas`, and `safeError` conventions. Total unit tests now 2534+ (up from 2415). Total E2E tests: 1052+ (up from 996).

@@ -49,8 +49,8 @@ Production uses Cloudflare R2 via `src/lib/media-storage.cloudflare.ts`.
 ## Verification Commands
 ```bash
 npm run lint    # ESLint
-npm test        # Node test runner (2415+ tests)
-# E2E: 996+ passed, 0 skipped (chromium + mobile-chrome + chromium-auth)
+npm test        # Node test runner (2534+ tests)
+# E2E: 1052+ passed, 0 skipped (chromium + mobile-chrome + chromium-auth)
 npm run build   # Production build (Cloudflare target)
 npm run cf:build  # Cloudflare/OpenNext build
 npm run cf:deploy # Deploy to Cloudflare Workers
@@ -126,7 +126,9 @@ npm run cf:deploy # Deploy to Cloudflare Workers
   `/api/creative/angle-finder`, `/api/creative/ad-timing-optimizer`,
   `/api/creative/creative-fatigue-detector`, `/api/creative/ad-cta-optimizer`,
   `/api/creative/concept-expander`, `/api/creative/ad-story-generator`,
-  `/api/creative/ad-color-palette-generator`
+  `/api/creative/ad-color-palette-generator`, `/api/creative/ad-thumbnail-generator`,
+  `/api/creative/ad-font-pairing-generator`, `/api/creative/ad-hashtag-generator`,
+  `/api/creative/creative-scene-generator`
 - Ad platform API routes: `/api/ads/create`, `/api/ads/metrics`, `/api/ads/list`, `/api/ads/report`,
   `/api/ads/budget`, `/api/ads/google-budget`, `/api/ads/google-report`, `/api/analytics/ga4`,
   `/api/ads/meta-safety`, `/api/ads/meta-approve`, `/api/ads/google-safety`, `/api/ads/google-approve`
@@ -135,10 +137,10 @@ npm run cf:deploy # Deploy to Cloudflare Workers
 - `/api/creative/director` returns an NDJSON stream of step-by-step progress updates; legacy
   non-streaming mode available via `?stream=false`
 - Pipeline stages: brief, script, storyboard, media_generation, audio, edit, compliance, score, publish
-- ADRs 001-070 in `docs/adr/` document all major architecture decisions
+- ADRs 001-074 in `docs/adr/` document all major architecture decisions
 - Cross-feature handoffs: Brand Concepts → Creator Kits (query-param pre-fill),
   Brand Concepts → Shot Planner (script pre-fill), Clip Editor → Media Service Boundary (ASR/TTS)
-- Dashboard "Quick Create" grid includes all production apps and the 39 newest features
+- Dashboard "Quick Create" grid includes all production apps and the 43 newest features
   (Creator Kits, Brand Concepts, Clip Editor, Media Services, Product Brief, Reference Remix,
   Multi-Concept, Meta Safety, Google Safety, Performance Loop, Viral Analyzer, Skill Chains,
   Brand Guardrails, Smart Calendar, Competitor Watch, Ad Copy Generator, Hook Library,
@@ -147,8 +149,9 @@ npm run cf:deploy # Deploy to Cloudflare Workers
   Ad Performance Predictor, Creative A/B Test Planner, Creative Hook Tester, Trend Spotter,
   Brand Voice Analyzer, Ad Caption Generator, Ad Headline Generator, Creative Angle Finder,
   Ad Timing Optimizer, Creative Fatigue Detector, Ad CTA Optimizer, Creative Concept Expander,
-  Ad Story Generator, Ad Color Palette Generator)
-- Nav header includes links to all feature pages (visible lg+); the 35 newest features
+  Ad Story Generator, Ad Color Palette Generator, Ad Thumbnail Generator, Ad Font Pairing
+  Generator, Ad Hashtag Generator, Creative Scene Generator)
+- Nav header includes links to all feature pages (visible lg+); the 39 newest features
   (Product Brief, Reference Remix, Multi-Concept, Meta Safety, Google Safety, Performance Loop,
   Viral Analyzer, Skill Chains, Brand Guardrails, Smart Calendar, Competitor Watch, Ad Copy
   Generator, Hook Library, Brief Template Builder, Ad Script Writer, Audience Persona Generator,
@@ -156,7 +159,8 @@ npm run cf:deploy # Deploy to Cloudflare Workers
   Generator, Ad Performance Predictor, Creative A/B Test Planner, Creative Hook Tester,
   Trend Spotter, Brand Voice Analyzer, Ad Caption Generator, Ad Headline Generator,
   Creative Angle Finder, Ad Timing Optimizer, Creative Fatigue Detector, Ad CTA Optimizer,
-  Creative Concept Expander, Ad Story Generator, Ad Color Palette Generator) are in the overflow nav
+  Creative Concept Expander, Ad Story Generator, Ad Color Palette Generator, Ad Thumbnail
+  Generator, Ad Font Pairing Generator, Ad Hashtag Generator, Creative Scene Generator) are in the overflow nav
 
 ### JJ-Series: Research-Derived Creative Capabilities
 - Product Page → Ad Brief (`/product-brief`): URL/product extraction → brand/product brief →
@@ -347,6 +351,30 @@ npm run cf:deploy # Deploy to Cloudflare Workers
 - E2E tests: 996+ total (was 903)
 - Translations added to all 13 locales for 4 new namespaces: adCtaOptimizer, conceptExpander,
   adStoryGenerator, adColorPaletteGenerator
+
+### TT8-Series: Four More AI Creative Tools
+- Ad Thumbnail Generator (`/ad-thumbnail-generator`): AI-powered thumbnail/cover image concept
+  generator for video ads. Generates optimized thumbnails with visual description, text overlay,
+  text position, font style, color scheme, emotion, and predicted CTR score.
+  4 credits. API: `POST /api/creative/ad-thumbnail-generator`. See ADR-071.
+- Ad Font Pairing Generator (`/ad-font-pairing-generator`): AI-powered font pairing
+  recommendations for ad creatives. Each pairing includes heading font, body font, style
+  description, mood, readability score, platform fit, and use case.
+  3 credits. API: `POST /api/creative/ad-font-pairing-generator`. See ADR-072.
+- Ad Hashtag Generator (`/ad-hashtag-generator`): AI-powered platform-optimized hashtag
+  generator. Returns hashtags categorized by type (branded, trending, niche, community,
+  campaign) with estimated reach, competition level, and recommended flag.
+  2 credits. API: `POST /api/creative/ad-hashtag-generator`. See ADR-073.
+- Creative Scene Generator (`/creative-scene-generator`): AI-powered detailed scene description
+  generator for ad video shoots. Each scene includes shot type, camera angle, lighting, setting,
+  props, actor notes, dialogue/voiceover, duration, and mood. Returns total duration.
+  5 credits. API: `POST /api/creative/creative-scene-generator`. See ADR-074.
+- All 4 features have dry-run/fallback behavior when Atlas is local or API key is missing
+- All 4 features use existing auth, credit deduction/refund, `withAtlas`, and `safeError` conventions
+- Unit tests: 2534 total (was 2415)
+- E2E tests: 1052+ total (was 996+)
+- Translations added to all 13 locales for 4 new namespaces: adThumbnailGenerator,
+  adFontPairingGenerator, adHashtagGenerator, creativeSceneGenerator
 
 ## Production-Only Testing (Cannot Be Verified Locally)
 
