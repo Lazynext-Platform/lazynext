@@ -116,6 +116,10 @@ const APPS: App[] = [
   { id: 'ad-creative-sensory-enhancer', href: '/ad-creative-sensory-enhancer', icon: Eye },
   { id: 'creative-ad-pattern-interrupt-designer', href: '/creative-ad-pattern-interrupt-designer', icon: Zap },
   { id: 'ad-creative-social-proof-architect', href: '/ad-creative-social-proof-architect', icon: Award },
+  { id: 'creative-ad-anticipation-builder', href: '/creative-ad-anticipation-builder', icon: Flame },
+  { id: 'ad-creative-contrast-amplifier', href: '/ad-creative-contrast-amplifier', icon: GitMerge },
+  { id: 'creative-ad-micro-moment-designer', href: '/creative-ad-micro-moment-designer', icon: Zap },
+  { id: 'ad-creative-emotion-sequencer', href: '/ad-creative-emotion-sequencer', icon: HeartPulse },
 ];
 
 type Creation = {

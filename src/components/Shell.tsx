@@ -133,6 +133,10 @@ const NAV_LINKS = [
   { href: '/ad-creative-sensory-enhancer', label: 'Sensory Enhancer', icon: Eye, hideOnMd: true },
   { href: '/creative-ad-pattern-interrupt-designer', label: 'Pattern Interrupt', icon: Zap, hideOnMd: true },
   { href: '/ad-creative-social-proof-architect', label: 'Social Proof Architect', icon: Award, hideOnMd: true },
+  { href: '/creative-ad-anticipation-builder', label: 'Anticipation Builder', icon: Flame, hideOnMd: true },
+  { href: '/ad-creative-contrast-amplifier', label: 'Contrast Amplifier', icon: GitMerge, hideOnMd: true },
+  { href: '/creative-ad-micro-moment-designer', label: 'Micro-Moment Designer', icon: Zap, hideOnMd: true },
+  { href: '/ad-creative-emotion-sequencer', label: 'Emotion Sequencer', icon: HeartPulse, hideOnMd: true },
   { href: '/observability', label: 'Observability', icon: Activity, hideOnMd: true },
   { href: '/calendar', label: 'Calendar', icon: Calendar, hideOnMd: true },
 ];
