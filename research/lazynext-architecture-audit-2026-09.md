@@ -1,6 +1,6 @@
 # LazyNext Architecture Audit — 2026-09
 
-> **Status:** Current as of 2026-09-02 (post-TT10 series).
+> **Status:** Current as of 2026-09-02 (post-TT11 series).
 > The previous audit (`research/lazynext-architecture-audit.md`) is superseded.
 
 ## 1. Stack
@@ -225,7 +225,7 @@ The `overall` score is on a **1-10 scale** (weighted average of 1-10 dimensions)
 
 ### Coverage
 
-- 13 locales: en, zh, ja, es, ko, pt, fr, de, ar, hi, vi, th, id. All 13 locales now have complete feature translations (including the JJ-, LL-, RR-, SS-, TT-, TT3-, TT4-, TT5-, TT6-, TT7-, TT8-, TT9-, and TT10-series features).
+- 13 locales: en, zh, ja, es, ko, pt, fr, de, ar, hi, vi, th, id. All 13 locales now have complete feature translations (including the JJ-, LL-, RR-, SS-, TT-, TT3-, TT4-, TT5-, TT6-, TT7-, TT8-, TT9-, TT10-, and TT11-series features).
 - RTL support for Arabic (`dir="rtl"`, `lang="ar"`).
 - Cookie-based locale switching.
 
@@ -322,7 +322,7 @@ The `pipeline` namespace includes:
 
 ```bash
 npm run lint    # ESLint — 0 errors, 0 warnings
-npm test        # Node test runner — 2736+ tests
+npm test        # Node test runner — 2830+ tests
 npx playwright test  # E2E — 1052+ tests, 0 skipped
 npm run build   # Production build (Cloudflare target)
 ```
@@ -455,7 +455,7 @@ npm run build   # Production build (Cloudflare target)
 
 ## 15. LL-Series Features
 
-The LL series extended the creative platform with four new capabilities, documented in ADRs 036-039. ADR-040 (OO series) documents D1 persistence for safety audit logs. ADRs 041-043 (QQ series) document chain mode unification, observability aggregation, and video rendering. ADRs 044-046 (RR series) document Brand Guardrails, Smart Calendar, and Competitor Watch. ADRs 047-052 (TT series) document Ad Copy Generator, Hook Library, Brief Template Builder, Ad Script Writer, Audience Persona Generator, and Creative Variant Matrix. ADRs 053-055 (TT3 series) document Ad Concept Merger, Creative Brief Analyzer, and Ad Format Optimizer. ADRs 056-058 (TT4 series) document Mood Board Generator, Ad Performance Predictor, and Creative A/B Test Planner. ADRs 059-062 (TT5 series) document Creative Hook Tester, Trend Spotter, Brand Voice Analyzer, and Ad Caption Generator. ADRs 063-066 (TT6 series) document Ad Headline Generator, Creative Angle Finder, Ad Timing Optimizer, and Creative Fatigue Detector. ADRs 067-070 (TT7 series) document Ad CTA Optimizer, Creative Concept Expander, Ad Story Generator, and Ad Color Palette Generator. ADRs 071-074 (TT8 series) document Ad Thumbnail Generator, Ad Font Pairing Generator, Ad Hashtag Generator, and Creative Scene Generator. ADRs 075-078 (TT9 series) document Ad Music Mood Matcher, Ad Voiceover Script Generator, Creative Brief Generator, and Ad Placement Strategist. ADRs 079-082 (TT10 series) document Ad A/B Test Name Generator, Creative Hook Revamp Generator, Ad Audience Segment Builder, and Creative Concept Validator. ADRs 001-082 now total 82 architecture decision records in `docs/adr/`.
+The LL series extended the creative platform with four new capabilities, documented in ADRs 036-039. ADR-040 (OO series) documents D1 persistence for safety audit logs. ADRs 041-043 (QQ series) document chain mode unification, observability aggregation, and video rendering. ADRs 044-046 (RR series) document Brand Guardrails, Smart Calendar, and Competitor Watch. ADRs 047-052 (TT series) document Ad Copy Generator, Hook Library, Brief Template Builder, Ad Script Writer, Audience Persona Generator, and Creative Variant Matrix. ADRs 053-055 (TT3 series) document Ad Concept Merger, Creative Brief Analyzer, and Ad Format Optimizer. ADRs 056-058 (TT4 series) document Mood Board Generator, Ad Performance Predictor, and Creative A/B Test Planner. ADRs 059-062 (TT5 series) document Creative Hook Tester, Trend Spotter, Brand Voice Analyzer, and Ad Caption Generator. ADRs 063-066 (TT6 series) document Ad Headline Generator, Creative Angle Finder, Ad Timing Optimizer, and Creative Fatigue Detector. ADRs 067-070 (TT7 series) document Ad CTA Optimizer, Creative Concept Expander, Ad Story Generator, and Ad Color Palette Generator. ADRs 071-074 (TT8 series) document Ad Thumbnail Generator, Ad Font Pairing Generator, Ad Hashtag Generator, and Creative Scene Generator. ADRs 075-078 (TT9 series) document Ad Music Mood Matcher, Ad Voiceover Script Generator, Creative Brief Generator, and Ad Placement Strategist. ADRs 079-082 (TT10 series) document Ad A/B Test Name Generator, Creative Hook Revamp Generator, Ad Audience Segment Builder, and Creative Concept Validator. ADRs 083-086 (TT11 series) document Ad Emotion Analyzer, Creative Format Converter, Ad Budget Allocator, and Creative Trend Adapter. ADRs 001-086 now total 86 architecture decision records in `docs/adr/`.
 
 ### Google Ads Safety Layer (`/google-safety`)
 
@@ -495,7 +495,7 @@ All four features have dry-run/fallback behavior when Atlas is local or the API 
 
 ### Dashboard Quick Create
 
-The dashboard "Quick Create" grid now includes all production apps plus the 51 newest features (Creator Kits, Brand Concepts, Clip Editor, Media Services, Product Brief, Reference Remix, Multi-Concept, Meta Safety, Google Safety, Performance Loop, Viral Analyzer, Skill Chains, Brand Guardrails, Smart Calendar, Competitor Watch, Ad Copy Generator, Hook Library, Brief Template Builder, Ad Script Writer, Audience Persona Generator, Creative Variant Matrix, Ad Concept Merger, Brief Analyzer, Ad Format Optimizer, Mood Board Generator, Ad Performance Predictor, Creative A/B Test Planner, Creative Hook Tester, Trend Spotter, Brand Voice Analyzer, Ad Caption Generator, Ad Headline Generator, Creative Angle Finder, Ad Timing Optimizer, Creative Fatigue Detector, Ad CTA Optimizer, Creative Concept Expander, Ad Story Generator, Ad Color Palette Generator, Ad Thumbnail Generator, Ad Font Pairing Generator, Ad Hashtag Generator, Creative Scene Generator, Ad Music Mood Matcher, Ad Voiceover Script Generator, Creative Brief Generator, Ad Placement Strategist, Ad A/B Test Name Generator, Creative Hook Revamp Generator, Ad Audience Segment Builder, Creative Concept Validator). The 47 newest features (Product Brief through Creative Concept Validator) are in the nav overflow menu.
+The dashboard "Quick Create" grid now includes all production apps plus the 55 newest features (Creator Kits, Brand Concepts, Clip Editor, Media Services, Product Brief, Reference Remix, Multi-Concept, Meta Safety, Google Safety, Performance Loop, Viral Analyzer, Skill Chains, Brand Guardrails, Smart Calendar, Competitor Watch, Ad Copy Generator, Hook Library, Brief Template Builder, Ad Script Writer, Audience Persona Generator, Creative Variant Matrix, Ad Concept Merger, Brief Analyzer, Ad Format Optimizer, Mood Board Generator, Ad Performance Predictor, Creative A/B Test Planner, Creative Hook Tester, Trend Spotter, Brand Voice Analyzer, Ad Caption Generator, Ad Headline Generator, Creative Angle Finder, Ad Timing Optimizer, Creative Fatigue Detector, Ad CTA Optimizer, Creative Concept Expander, Ad Story Generator, Ad Color Palette Generator, Ad Thumbnail Generator, Ad Font Pairing Generator, Ad Hashtag Generator, Creative Scene Generator, Ad Music Mood Matcher, Ad Voiceover Script Generator, Creative Brief Generator, Ad Placement Strategist, Ad A/B Test Name Generator, Creative Hook Revamp Generator, Ad Audience Segment Builder, Creative Concept Validator, Ad Emotion Analyzer, Creative Format Converter, Ad Budget Allocator, Creative Trend Adapter). The 51 newest features (Product Brief through Creative Trend Adapter) are in the nav overflow menu.
 
 ## 16. RR-Series Features
 
@@ -903,3 +903,50 @@ The TT10 series added four more AI creative tools, documented in ADRs 079-082. A
 - Nav overflow menu updated to 47 newest features (was 43).
 
 All four features have dry-run/fallback behavior when Atlas is local or the API key is missing, and use existing auth, credit deduction/refund, `withAtlas`, and `safeError` conventions. Total unit tests now 2736+ (up from 2638). Total E2E tests: 1052+ (same — only TT10 page/API tests added, not full suite rerun for docs).
+
+## 26. TT11-Series Features
+
+The TT11 series added four more AI creative tools, documented in ADRs 083-086. All four features have dry-run/fallback behavior when Atlas is local or the API key is missing, and use existing auth, credit deduction/refund, `withAtlas`, and `safeError` conventions. This brings the total feature route count to 64 and the total ADR count to 86.
+
+### Ad Emotion Analyzer (`/ad-emotion-analyzer`)
+
+- AI-powered emotional impact analyzer for ad content — analyzes dominant emotions, emotion scores, emotional journey, resonance, authenticity, and improvement recommendations.
+- 3 credits. API: `POST /api/creative/ad-emotion-analyzer`. See ADR-083.
+
+### Creative Format Converter (`/creative-format-converter`)
+
+- AI-powered creative content converter between ad formats (long-form, short-form, image-ad, video-script, carousel, story) with platform optimizations.
+- 4 credits. API: `POST /api/creative/creative-format-converter`. See ADR-084.
+
+### Ad Budget Allocator (`/ad-budget-allocator`)
+
+- AI-powered ad budget allocator across platforms — returns percentages, amounts, expected outcomes, and rationale.
+- 4 credits. API: `POST /api/creative/ad-budget-allocator`. See ADR-085.
+
+### Creative Trend Adapter (`/creative-trend-adapter`)
+
+- AI-powered creative content adapter to current trends — returns relevance scores, timing advice, and longevity scoring.
+- 3 credits. API: `POST /api/creative/creative-trend-adapter`. See ADR-086.
+
+### New UI pages
+
+- `/ad-emotion-analyzer` — AI-powered emotional impact analyzer for ad content with dominant emotions, scores, journey, resonance, authenticity, and recommendations
+- `/creative-format-converter` — AI-powered creative content converter between ad formats with platform optimizations
+- `/ad-budget-allocator` — AI-powered ad budget allocator across platforms with percentages, amounts, expected outcomes, and rationale
+- `/creative-trend-adapter` — AI-powered creative content adapter to current trends with relevance scores, timing advice, and longevity scoring
+
+### i18n, Dashboard, and Nav (TT11)
+
+- Translations added to all 13 locales for 4 new namespaces: `adEmotionAnalyzer`, `creativeFormatConverter`, `adBudgetAllocator`, `creativeTrendAdapter`.
+- Dashboard "Quick Create" grid updated to 55 newest features (was 51).
+- Nav overflow menu updated to 51 newest features (was 47).
+
+### Production deployment (TT11)
+
+- All 4 pages deployed and healthy in production.
+- Production version ID: `3ba042aa-79fd-474f-8059-f10f87aeb4ec`.
+- TT11 page E2E tests: 64 passing.
+- TT11 API E2E tests: 12 passing.
+- TT11 production audit: 20/20 passing (4 pages × 5 checks: HTTP 200, 1 H1, main#main-content, skip link, API schema).
+
+All four features have dry-run/fallback behavior when Atlas is local or the API key is missing, and use existing auth, credit deduction/refund, `withAtlas`, and `safeError` conventions. Total unit tests now 2830+ (up from 2736). Total E2E tests: 1052+ (same — only TT11 page/API tests added, not full suite rerun for docs).

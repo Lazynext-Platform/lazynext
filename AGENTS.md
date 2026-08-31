@@ -49,7 +49,7 @@ Production uses Cloudflare R2 via `src/lib/media-storage.cloudflare.ts`.
 ## Verification Commands
 ```bash
 npm run lint    # ESLint
-npm test        # Node test runner (2736+ tests)
+npm test        # Node test runner (2830+ tests)
 # E2E: 1052+ passed, 0 skipped (chromium + mobile-chrome + chromium-auth)
 npm run build   # Production build (Cloudflare target)
 npm run cf:build  # Cloudflare/OpenNext build
@@ -132,7 +132,9 @@ npm run cf:deploy # Deploy to Cloudflare Workers
   `/api/creative/ad-voiceover-script-generator`, `/api/creative/creative-brief-generator`,
   `/api/creative/ad-placement-strategist`, `/api/creative/ad-ab-test-name-generator`,
   `/api/creative/creative-hook-revamp-generator`, `/api/creative/ad-audience-segment-builder`,
-  `/api/creative/creative-concept-validator`
+  `/api/creative/creative-concept-validator`, `/api/creative/ad-emotion-analyzer`,
+  `/api/creative/creative-format-converter`, `/api/creative/ad-budget-allocator`,
+  `/api/creative/creative-trend-adapter`
 - Ad platform API routes: `/api/ads/create`, `/api/ads/metrics`, `/api/ads/list`, `/api/ads/report`,
   `/api/ads/budget`, `/api/ads/google-budget`, `/api/ads/google-report`, `/api/analytics/ga4`,
   `/api/ads/meta-safety`, `/api/ads/meta-approve`, `/api/ads/google-safety`, `/api/ads/google-approve`
@@ -141,10 +143,10 @@ npm run cf:deploy # Deploy to Cloudflare Workers
 - `/api/creative/director` returns an NDJSON stream of step-by-step progress updates; legacy
   non-streaming mode available via `?stream=false`
 - Pipeline stages: brief, script, storyboard, media_generation, audio, edit, compliance, score, publish
-- ADRs 001-082 in `docs/adr/` document all major architecture decisions
+- ADRs 001-086 in `docs/adr/` document all major architecture decisions
 - Cross-feature handoffs: Brand Concepts → Creator Kits (query-param pre-fill),
   Brand Concepts → Shot Planner (script pre-fill), Clip Editor → Media Service Boundary (ASR/TTS)
-- Dashboard "Quick Create" grid includes all production apps and the 51 newest features
+- Dashboard "Quick Create" grid includes all production apps and the 55 newest features
   (Creator Kits, Brand Concepts, Clip Editor, Media Services, Product Brief, Reference Remix,
   Multi-Concept, Meta Safety, Google Safety, Performance Loop, Viral Analyzer, Skill Chains,
   Brand Guardrails, Smart Calendar, Competitor Watch, Ad Copy Generator, Hook Library,
@@ -157,8 +159,9 @@ npm run cf:deploy # Deploy to Cloudflare Workers
   Generator, Ad Hashtag Generator, Creative Scene Generator, Ad Music Mood Matcher,
   Ad Voiceover Script Generator, Creative Brief Generator, Ad Placement Strategist,
   Ad A/B Test Name Generator, Creative Hook Revamp Generator, Ad Audience Segment Builder,
-  Creative Concept Validator)
-- Nav header includes links to all feature pages (visible lg+); the 47 newest features
+  Creative Concept Validator, Ad Emotion Analyzer, Creative Format Converter, Ad Budget
+  Allocator, Creative Trend Adapter)
+- Nav header includes links to all feature pages (visible lg+); the 51 newest features
   (Product Brief, Reference Remix, Multi-Concept, Meta Safety, Google Safety, Performance Loop,
   Viral Analyzer, Skill Chains, Brand Guardrails, Smart Calendar, Competitor Watch, Ad Copy
   Generator, Hook Library, Brief Template Builder, Ad Script Writer, Audience Persona Generator,
@@ -170,7 +173,8 @@ npm run cf:deploy # Deploy to Cloudflare Workers
   Generator, Ad Font Pairing Generator, Ad Hashtag Generator, Creative Scene Generator,
   Ad Music Mood Matcher, Ad Voiceover Script Generator, Creative Brief Generator,
   Ad Placement Strategist, Ad A/B Test Name Generator, Creative Hook Revamp Generator,
-  Ad Audience Segment Builder, Creative Concept Validator) are in the overflow nav
+  Ad Audience Segment Builder, Creative Concept Validator, Ad Emotion Analyzer, Creative
+  Format Converter, Ad Budget Allocator, Creative Trend Adapter) are in the overflow nav
 
 ### JJ-Series: Research-Derived Creative Capabilities
 - Product Page → Ad Brief (`/product-brief`): URL/product extraction → brand/product brief →
@@ -437,6 +441,31 @@ npm run cf:deploy # Deploy to Cloudflare Workers
 - E2E tests: 1052+ total (same — only TT10 page/API tests added, not full suite rerun for docs)
 - Translations added to all 13 locales for 4 new namespaces: adABTestNameGenerator,
   creativeHookRevampGenerator, adAudienceSegmentBuilder, creativeConceptValidator
+
+### TT11-Series: Four More AI Creative Tools
+- Ad Emotion Analyzer (`/ad-emotion-analyzer`): AI-powered emotional impact analyzer for ad
+  content. Analyzes dominant emotions, emotion scores, emotional journey, resonance,
+  authenticity, and improvement recommendations.
+  3 credits. API: `POST /api/creative/ad-emotion-analyzer`. See ADR-083.
+- Creative Format Converter (`/creative-format-converter`): AI-powered creative content
+  converter between ad formats (long-form, short-form, image-ad, video-script, carousel,
+  story) with platform optimizations.
+  4 credits. API: `POST /api/creative/creative-format-converter`. See ADR-084.
+- Ad Budget Allocator (`/ad-budget-allocator`): AI-powered ad budget allocator across
+  platforms. Returns percentages, amounts, expected outcomes, and rationale.
+  4 credits. API: `POST /api/creative/ad-budget-allocator`. See ADR-085.
+- Creative Trend Adapter (`/creative-trend-adapter`): AI-powered creative content adapter
+  to current trends. Returns relevance scores, timing advice, and longevity scoring.
+  3 credits. API: `POST /api/creative/creative-trend-adapter`. See ADR-086.
+- All 4 features have dry-run/fallback behavior when Atlas is local or API key is missing
+- All 4 features use existing auth, credit deduction/refund, `withAtlas`, and `safeError` conventions
+- Unit tests: 2830 total (was 2736)
+- TT11 page E2E tests: 64 passing
+- TT11 API E2E tests: 12 passing
+- TT11 production audit: 20/20 passing (4 pages × 5 checks: HTTP 200, 1 H1, main#main-content,
+  skip link, API schema)
+- Translations added to all 13 locales for 4 new namespaces: adEmotionAnalyzer,
+  creativeFormatConverter, adBudgetAllocator, creativeTrendAdapter
 
 ## Production-Only Testing (Cannot Be Verified Locally)
 
