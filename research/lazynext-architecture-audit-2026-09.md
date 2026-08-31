@@ -1635,3 +1635,66 @@ Designs desire amplifiers in ad creative content — the techniques that intensi
 - TT26 production audit: 20/20 passing (4 pages x 5 checks: HTTP 200, 1 H1, main#main-content, skip link, API schema).
 
 All four features have dry-run/fallback behavior when Atlas is local or the API key is missing, and use existing auth, credit deduction/refund, `withAtlas`, and `safeError` conventions. Total unit tests now 5023 (up from 4852) — 171 new tests across 4 new test suites. Total E2E tests: 1052+ (same — only TT26 page/API tests added, not full suite rerun for docs).
+
+## 42. TT27-Series Features
+
+The TT27 series added four more AI creative tools, documented in ADRs 147-150. All four features have dry-run/fallback behavior when Atlas is local or the API key is missing, and use existing auth, credit deduction/refund, `withAtlas`, and `safeError` conventions. This brings the total feature route count to 128 and the total ADR count to 150.
+
+### Ad Creative Trust Accelerator Designer (ADR-147)
+
+- Route: `/ad-creative-trust-accelerator-designer`
+- API: `POST /api/creative/ad-creative-trust-accelerator-designer`
+- Credit cost: 4
+- Library: `src/lib/creative/ad-creative-trust-accelerator-designer.ts`
+- 8 accelerator types: authority_endorsement, social_proof_cascade, expert_validation, user_testimony, data_backed_claim, transparency_reveal, guarantee_offer, community_consensus
+- Output: trust accelerators with trustSignal, credibilityMarker, proofElement, trustVelocity (0-100), credibilityScore (0-100), accelerationPathway
+- Dry-run returns 3 deterministic accelerators
+- Unit tests: 40 passing
+
+### Creative Ad Urgency Catalyst Designer (ADR-148)
+
+- Route: `/creative-ad-urgency-catalyst-designer`
+- API: `POST /api/creative/creative-ad-urgency-catalyst-designer`
+- Credit cost: 5
+- Library: `src/lib/creative/creative-ad-urgency-catalyst-designer.ts`
+- 8 catalyst types: time_scarcity, opportunity_window, event_tie_in, stock_pressure, price_deadline, social_fomo, consequence_forecast, momentum_riding
+- Output: urgency catalysts with urgencyTrigger, timePressureElement, actionDriver, urgencyIntensity (0-100), actionProbability (0-100), catalystPathway
+- Dry-run returns 3 deterministic catalysts
+- Unit tests: 35 passing
+
+### Ad Creative Social Momentum Designer (ADR-149)
+
+- Route: `/ad-creative-social-momentum-designer`
+- API: `POST /api/creative/ad-creative-social-momentum-designer`
+- Credit cost: 4
+- Library: `src/lib/creative/ad-creative-social-momentum-designer.ts`
+- 8 momentum types: viral_cascade, community_growth, trend_adoption, influencer_wave, user_generated_wave, milestone_celebration, movement_building, collective_action
+- Output: social momentum builders with socialSignal, communityEvidence, bandwagonElement, momentumVelocity (0-100), socialProofStrength (0-100), momentumPathway
+- Dry-run returns 3 deterministic momentum builders
+- Unit tests: 35 passing
+
+### Creative Ad Value Ladder Designer (ADR-150)
+
+- Route: `/creative-ad-value-ladder-designer`
+- API: `POST /api/creative/creative-ad-value-ladder-designer`
+- Credit cost: 5
+- Library: `src/lib/creative/creative-ad-value-ladder-designer.ts`
+- 8 step types: awareness_step, interest_step, trial_step, commitment_step, adoption_step, expansion_step, advocacy_step, loyalty_step
+- Output: value ladder steps with valueProposition, commitmentLevel, nextStepTrigger, perceivedValue (0-100), commitmentFriction (0-100), ladderProgression
+- Dry-run returns 4 deterministic ladder steps
+- Unit tests: 38 passing
+
+### i18n, Dashboard, and Nav (TT27)
+
+- Translations added to all 13 locales for 4 new namespaces: adCreativeTrustAcceleratorDesigner, creativeAdUrgencyCatalystDesigner, adCreativeSocialMomentumDesigner, creativeAdValueLadderDesigner
+- Dashboard Quick Create entries: 119 total (was 115)
+- Nav overflow entries: 115 total (was 111)
+
+### Production deployment (TT27)
+
+- Cloudflare version ID: aadac406-7952-436d-bbdb-648b034bd6f1
+- TT27 page E2E tests: 32 passing.
+- TT27 API E2E tests: 12 passing.
+- TT27 production audit: all 4 pages HTTP 200, all 4 API metadata endpoints correct credit costs (4, 5, 4, 5).
+
+All four features have dry-run/fallback behavior when Atlas is local or the API key is missing, and use existing auth, credit deduction/refund, `withAtlas`, and `safeError` conventions. Total unit tests now 5171 (up from 5023) — 148 new tests across 4 new test suites. Total E2E tests: 1052+ (same — only TT27 page/API tests added, not full suite rerun for docs).

@@ -49,7 +49,7 @@ Production uses Cloudflare R2 via `src/lib/media-storage.cloudflare.ts`.
 ## Verification Commands
 ```bash
 npm run lint    # ESLint
-npm test        # Node test runner (5023+ tests)
+npm test        # Node test runner (5171+ tests)
 # E2E: 1052+ passed, 0 skipped (chromium + mobile-chrome + chromium-auth)
 npm run build   # Production build (Cloudflare target)
 npm run cf:build  # Cloudflare/OpenNext build
@@ -172,7 +172,7 @@ npm run cf:deploy # Deploy to Cloudflare Workers
 - ADRs 001-142 in `docs/adr/` document all major architecture decisions
 - Cross-feature handoffs: Brand Concepts → Creator Kits (query-param pre-fill),
   Brand Concepts → Shot Planner (script pre-fill), Clip Editor → Media Service Boundary (ASR/TTS)
-- Dashboard "Quick Create" grid includes all production apps and the 115 newest features
+- Dashboard "Quick Create" grid includes all production apps and the 119 newest features
   (Creator Kits, Brand Concepts, Clip Editor, Media Services, Product Brief, Reference Remix,
   Multi-Concept, Meta Safety, Google Safety, Performance Loop, Viral Analyzer, Skill Chains,
   Brand Guardrails, Smart Calendar, Competitor Watch, Ad Copy Generator, Hook Library,
@@ -209,8 +209,10 @@ npm run cf:deploy # Deploy to Cloudflare Workers
   Creative Ad Surprise Element Designer, Ad Creative Callback Memory Designer,
   Creative Ad Climax Architect, Ad Creative Pacing Variability Designer,
   Creative Ad Foreshadowing Designer, Ad Creative Emotional Pivot Designer,
-  Creative Ad Resolution Designer, Ad Creative Viewer Reward Designer)
-- Nav header includes links to all feature pages (visible lg+); the 111 newest features
+  Creative Ad Resolution Designer, Ad Creative Viewer Reward Designer,
+  Ad Creative Trust Accelerator Designer, Creative Ad Urgency Catalyst Designer,
+  Ad Creative Social Momentum Designer, Creative Ad Value Ladder Designer)
+- Nav header includes links to all feature pages (visible lg+); the 115 newest features
   (Product Brief, Reference Remix, Multi-Concept, Meta Safety, Google Safety, Performance Loop,
   Viral Analyzer, Skill Chains, Brand Guardrails, Smart Calendar, Competitor Watch, Ad Copy
   Generator, Hook Library, Brief Template Builder, Ad Script Writer, Audience Persona Generator,
@@ -247,7 +249,9 @@ npm run cf:deploy # Deploy to Cloudflare Workers
   Ad Creative Callback Memory Designer, Creative Ad Climax Architect,
   Ad Creative Pacing Variability Designer, Creative Ad Foreshadowing Designer,
   Ad Creative Emotional Pivot Designer, Creative Ad Resolution Designer,
-  Ad Creative Viewer Reward Designer) are in the overflow nav
+  Ad Creative Viewer Reward Designer, Ad Creative Trust Accelerator Designer,
+  Creative Ad Urgency Catalyst Designer, Ad Creative Social Momentum Designer,
+  Creative Ad Value Ladder Designer) are in the overflow nav
 
 ### JJ-Series: Research-Derived Creative Capabilities
 - Product Page → Ad Brief (`/product-brief`): URL/product extraction → brand/product brief →
@@ -958,6 +962,37 @@ npm run cf:deploy # Deploy to Cloudflare Workers
 - Feature routes: 124 total (was 120)
 - ADRs: 146 total (was 142)
 - Production deployment version ID: 92e82f33-96f1-4398-a5b0-85352cee06a5
+
+### TT27-Series: Four More AI Creative Tools
+
+1. **Ad Creative Trust Accelerator Designer** — Designs trust accelerators that rapidly build
+   viewer trust. 8 accelerator types (authority_endorsement, social_proof_cascade, etc.).
+   Route: `/ad-creative-trust-accelerator-designer`. Credits: 4. API:
+   `POST /api/creative/ad-creative-trust-accelerator-designer`. See ADR-147.
+2. **Creative Ad Urgency Catalyst Designer** — Designs urgency catalysts that create immediate
+   action without being pushy. 8 catalyst types (time_scarcity, opportunity_window, etc.).
+   Route: `/creative-ad-urgency-catalyst-designer`. Credits: 5. API:
+   `POST /api/creative/creative-ad-urgency-catalyst-designer`. See ADR-148.
+3. **Ad Creative Social Momentum Designer** — Designs social momentum that makes viewers feel
+   they are joining a movement. 8 momentum types (viral_cascade, community_growth, etc.).
+   Route: `/ad-creative-social-momentum-designer`. Credits: 4. API:
+   `POST /api/creative/ad-creative-social-momentum-designer`. See ADR-149.
+4. **Creative Ad Value Ladder Designer** — Designs value ladders that guide viewers from initial
+   interest to deeper commitment. 8 step types (awareness_step, interest_step, etc.).
+   Route: `/creative-ad-value-ladder-designer`. Credits: 5. API:
+   `POST /api/creative/creative-ad-value-ladder-designer`. See ADR-150.
+- All 4 features have dry-run/fallback behavior when Atlas is local or API key is missing
+- All 4 features use existing auth, credit deduction/refund, `withAtlas`, and `safeError` conventions
+- Unit tests: 5171 total (was 5023) — 148 new tests across 4 new test suites
+- TT27 page E2E tests: 32 passing
+- TT27 API E2E tests: 12 passing
+- Translations added to all 13 locales for 4 new namespaces: adCreativeTrustAcceleratorDesigner,
+  creativeAdUrgencyCatalystDesigner, adCreativeSocialMomentumDesigner, creativeAdValueLadderDesigner
+- Feature routes: 128 total (was 124)
+- ADRs: 150 total (was 146)
+- Dashboard Quick Create entries: 119 total (was 115)
+- Nav overflow entries: 115 total (was 111)
+- Production deployment version ID: aadac406-7952-436d-bbdb-648b034bd6f1
 
 ## Production-Only Testing (Cannot Be Verified Locally)
 
