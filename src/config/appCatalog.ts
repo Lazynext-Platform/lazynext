@@ -96,6 +96,10 @@ const CUSTOM_TITLES: Record<string, Bi> = {
   'creative-hook-matrix-generator': { en: 'Creative Hook Matrix Generator', zh: '创意钩子矩阵生成器' },
   'ad-creative-rotator': { en: 'Ad Creative Rotator', zh: '广告创意轮换器' },
   'brand-voice-consistency-checker': { en: 'Brand Voice Consistency Checker', zh: '品牌声音一致性检查器' },
+  'ad-persona-matcher': { en: 'Ad Persona Matcher', zh: '广告人设匹配器' },
+  'creative-concept-expander-pro': { en: 'Creative Concept Expander Pro', zh: '创意概念扩展器 Pro' },
+  'ad-competitive-intelligence': { en: 'Ad Competitive Intelligence', zh: '广告竞争情报' },
+  'creative-quality-scorer': { en: 'Creative Quality Scorer', zh: '创意质量评分器' },
 };
 const CUSTOM_DESCS: Record<string, Bi> = {
   'lazynext-studio': { en: 'Product + presenter photos → AI expands the prompt from your images → lip-synced UGC ad; one-click viral formats', zh: '产品图+人物图 → AI 看图扩写提示词 → 合成首帧 → 对口型真人口播广告;爆款玩法一键复刻' },

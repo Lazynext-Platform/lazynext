@@ -6,7 +6,7 @@ import { useSession } from 'next-auth/react';
 import {
   Clapperboard, Coins, Boxes, FolderOpen, ArrowRight, Loader2, Film, Play, Sparkles,
   TrendingDown, TrendingUp, BarChart3, Trophy, Calendar, Gift, Layers, Scissors, Server, Users, Zap, Workflow,
-  FileText, RefreshCw, Lightbulb, Shield, Flame, GitBranch, CalendarClock, Radar, PenLine, Anchor, FileSpreadsheet, ScrollText, UsersRound, LayoutGrid, GitMerge, FileSearch2, LayoutTemplate, Palette, Gauge, FlaskRound, TestTube, Compass, Mic, Type, Newspaper, Lightbulb as LightbulbIcon, Clock, BatteryLow, MousePointerClick, Expand, BookOpenCheck, Droplet, Hash, Clapperboard as ClapperboardIcon, Image as ImageIcon, Music, Mic2, FileText as FileTextIcon, Target, FlaskConical as FlaskIcon, Users as UsersIcon, ShieldCheck as ShieldIcon, HeartPulse, Repeat2, DollarSign, TrendingUp as TrendingIcon, ListOrdered, BookMarked, Globe2, LineChart, Smile, Grid2x2, RefreshCcw, MicVocal,
+  FileText, RefreshCw, Lightbulb, Shield, Flame, GitBranch, CalendarClock, Radar, PenLine, Anchor, FileSpreadsheet, ScrollText, UsersRound, LayoutGrid, GitMerge, FileSearch2, LayoutTemplate, Palette, Gauge, FlaskRound, TestTube, Compass, Mic, Type, Newspaper, Lightbulb as LightbulbIcon, Clock, BatteryLow, MousePointerClick, Expand, BookOpenCheck, Droplet, Hash, Clapperboard as ClapperboardIcon, Image as ImageIcon, Music, Mic2, FileText as FileTextIcon, Target, FlaskConical as FlaskIcon, Users as UsersIcon, ShieldCheck as ShieldIcon, HeartPulse, Repeat2, DollarSign, TrendingUp as TrendingIcon, ListOrdered, BookMarked, Globe2, LineChart, Smile, Grid2x2, RefreshCcw, MicVocal, Users2, Layers3, Swords
 } from 'lucide-react';
 import { useI18n } from '@/i18n/provider';
 import { appTitle, appDesc, isFeatured } from '@/config/appCatalog';
@@ -92,6 +92,10 @@ const APPS: App[] = [
   { id: 'creative-hook-matrix-generator', href: '/creative-hook-matrix-generator', icon: Grid2x2 },
   { id: 'ad-creative-rotator', href: '/ad-creative-rotator', icon: RefreshCcw },
   { id: 'brand-voice-consistency-checker', href: '/brand-voice-consistency-checker', icon: MicVocal },
+  { id: 'ad-persona-matcher', href: '/ad-persona-matcher', icon: Users2 },
+  { id: 'creative-concept-expander-pro', href: '/creative-concept-expander-pro', icon: Layers3 },
+  { id: 'ad-competitive-intelligence', href: '/ad-competitive-intelligence', icon: Swords },
+  { id: 'creative-quality-scorer', href: '/creative-quality-scorer', icon: Gauge },
 ];
 
 type Creation = {

@@ -1869,3 +1869,115 @@ test.describe('Brand Voice Consistency Checker API', () => {
     expect(res.status()).toBe(400);
   });
 });
+
+test.describe('Ad Persona Matcher API', () => {
+  test('GET returns credit cost and schema', async ({ request }) => {
+    const res = await request.get('/api/creative/ad-persona-matcher');
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.creditCost).toBe(4);
+    expect(data.schema).toBeTruthy();
+  });
+  test('POST with valid input returns matching', async ({ request }) => {
+    const res = await request.post('/api/creative/ad-persona-matcher', {
+      data: { content: 'Premium earbuds for music lovers', productOrBrand: 'Aura Earbuds', personas: 'Gen Z audiophiles, busy professionals', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.result).toBeTruthy();
+    expect(data.result.matching).toBeTruthy();
+  });
+  test('POST with missing content returns 400', async ({ request }) => {
+    const res = await request.post('/api/creative/ad-persona-matcher', {
+      data: { productOrBrand: 'test', personas: 'test', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.status()).toBe(400);
+  });
+});
+
+test.describe('Creative Concept Expander Pro API', () => {
+  test('GET returns credit cost and schema', async ({ request }) => {
+    const res = await request.get('/api/creative/creative-concept-expander-pro');
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.creditCost).toBe(5);
+    expect(data.schema).toBeTruthy();
+  });
+  test('POST with valid input returns expansion', async ({ request }) => {
+    const res = await request.post('/api/creative/creative-concept-expander-pro', {
+      data: { concept: 'A bold visual-first ad showing transformation', productOrBrand: 'Aura Skincare', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.result).toBeTruthy();
+    expect(data.result.expansion).toBeTruthy();
+  });
+  test('POST with missing concept returns 400', async ({ request }) => {
+    const res = await request.post('/api/creative/creative-concept-expander-pro', {
+      data: { productOrBrand: 'test', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.status()).toBe(400);
+  });
+});
+
+test.describe('Ad Competitive Intelligence API', () => {
+  test('GET returns credit cost and schema', async ({ request }) => {
+    const res = await request.get('/api/creative/ad-competitive-intelligence');
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.creditCost).toBe(5);
+    expect(data.schema).toBeTruthy();
+  });
+  test('POST with valid input returns intelligence', async ({ request }) => {
+    const res = await request.post('/api/creative/ad-competitive-intelligence', {
+      data: { productOrBrand: 'Aura Earbuds', category: 'Audio electronics', competitors: 'Bose, Sony, AirPods', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.result).toBeTruthy();
+    expect(data.result.intelligence).toBeTruthy();
+  });
+  test('POST with missing productOrBrand returns 400', async ({ request }) => {
+    const res = await request.post('/api/creative/ad-competitive-intelligence', {
+      data: { category: 'test', competitors: 'test', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.status()).toBe(400);
+  });
+});
+
+test.describe('Creative Quality Scorer API', () => {
+  test('GET returns credit cost and schema', async ({ request }) => {
+    const res = await request.get('/api/creative/creative-quality-scorer');
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.creditCost).toBe(3);
+    expect(data.schema).toBeTruthy();
+  });
+  test('POST with valid input returns scoring', async ({ request }) => {
+    const res = await request.post('/api/creative/creative-quality-scorer', {
+      data: { content: 'Amazing earbuds with noise cancellation and premium sound', productOrBrand: 'Aura Earbuds', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.result).toBeTruthy();
+    expect(data.result.scoring).toBeTruthy();
+  });
+  test('POST with missing content returns 400', async ({ request }) => {
+    const res = await request.post('/api/creative/creative-quality-scorer', {
+      data: { productOrBrand: 'test', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.status()).toBe(400);
+  });
+});
