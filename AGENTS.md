@@ -49,7 +49,7 @@ Production uses Cloudflare R2 via `src/lib/media-storage.cloudflare.ts`.
 ## Verification Commands
 ```bash
 npm run lint    # ESLint
-npm test        # Node test runner (5171+ tests)
+npm test        # Node test runner (5322+ tests)
 # E2E: 1052+ passed, 0 skipped (chromium + mobile-chrome + chromium-auth)
 npm run build   # Production build (Cloudflare target)
 npm run cf:build  # Cloudflare/OpenNext build
@@ -172,7 +172,7 @@ npm run cf:deploy # Deploy to Cloudflare Workers
 - ADRs 001-142 in `docs/adr/` document all major architecture decisions
 - Cross-feature handoffs: Brand Concepts → Creator Kits (query-param pre-fill),
   Brand Concepts → Shot Planner (script pre-fill), Clip Editor → Media Service Boundary (ASR/TTS)
-- Dashboard "Quick Create" grid includes all production apps and the 119 newest features
+- Dashboard "Quick Create" grid includes all production apps and the 123 newest features
   (Creator Kits, Brand Concepts, Clip Editor, Media Services, Product Brief, Reference Remix,
   Multi-Concept, Meta Safety, Google Safety, Performance Loop, Viral Analyzer, Skill Chains,
   Brand Guardrails, Smart Calendar, Competitor Watch, Ad Copy Generator, Hook Library,
@@ -211,8 +211,10 @@ npm run cf:deploy # Deploy to Cloudflare Workers
   Creative Ad Foreshadowing Designer, Ad Creative Emotional Pivot Designer,
   Creative Ad Resolution Designer, Ad Creative Viewer Reward Designer,
   Ad Creative Trust Accelerator Designer, Creative Ad Urgency Catalyst Designer,
-  Ad Creative Social Momentum Designer, Creative Ad Value Ladder Designer)
-- Nav header includes links to all feature pages (visible lg+); the 115 newest features
+  Ad Creative Social Momentum Designer, Creative Ad Value Ladder Designer,
+  Ad Creative Objection Neutralizer Designer, Creative Ad Micro-Commitment Designer,
+  Ad Creative Scarcity Frame Designer, Creative Ad Identity Alignment Designer)
+- Nav header includes links to all feature pages (visible lg+); the 119 newest features
   (Product Brief, Reference Remix, Multi-Concept, Meta Safety, Google Safety, Performance Loop,
   Viral Analyzer, Skill Chains, Brand Guardrails, Smart Calendar, Competitor Watch, Ad Copy
   Generator, Hook Library, Brief Template Builder, Ad Script Writer, Audience Persona Generator,
@@ -251,7 +253,9 @@ npm run cf:deploy # Deploy to Cloudflare Workers
   Ad Creative Emotional Pivot Designer, Creative Ad Resolution Designer,
   Ad Creative Viewer Reward Designer, Ad Creative Trust Accelerator Designer,
   Creative Ad Urgency Catalyst Designer, Ad Creative Social Momentum Designer,
-  Creative Ad Value Ladder Designer) are in the overflow nav
+  Creative Ad Value Ladder Designer, Ad Creative Objection Neutralizer Designer,
+  Creative Ad Micro-Commitment Designer, Ad Creative Scarcity Frame Designer,
+  Creative Ad Identity Alignment Designer) are in the overflow nav
 
 ### JJ-Series: Research-Derived Creative Capabilities
 - Product Page → Ad Brief (`/product-brief`): URL/product extraction → brand/product brief →
@@ -993,6 +997,37 @@ npm run cf:deploy # Deploy to Cloudflare Workers
 - Dashboard Quick Create entries: 119 total (was 115)
 - Nav overflow entries: 115 total (was 111)
 - Production deployment version ID: aadac406-7952-436d-bbdb-648b034bd6f1
+
+### TT28-Series: Four More AI Creative Tools
+
+1. **Ad Creative Objection Neutralizer Designer** — Designs objection neutralizers that
+   preempt and neutralize likely viewer objections. 8 objection types (price_concern,
+   trust_doubt, complexity_fear, etc.). Route: `/ad-creative-objection-neutralizer-designer`.
+   Credits: 4. API: `POST /api/creative/ad-creative-objection-neutralizer-designer`. See ADR-151.
+2. **Creative Ad Micro-Commitment Designer** — Designs micro-commitment chains that lead
+   viewers toward conversion. 8 commitment types (attention_commitment, engagement_commitment,
+   etc.). Route: `/creative-ad-micro-commitment-designer`. Credits: 5. API:
+   `POST /api/creative/creative-ad-micro-commitment-designer`. See ADR-152.
+3. **Ad Creative Scarcity Frame Designer** — Designs scarcity frames that motivate without
+   manipulative pressure. 8 frame types (limited_quantity, limited_time, etc.). Route:
+   `/ad-creative-scarcity-frame-designer`. Credits: 4. API:
+   `POST /api/creative/ad-creative-scarcity-frame-designer`. See ADR-153.
+4. **Creative Ad Identity Alignment Designer** — Designs identity alignments that make buying
+   feel like self-expression. 8 alignment types (values_mirror, aspirational_self, etc.).
+   Route: `/creative-ad-identity-alignment-designer`. Credits: 5. API:
+   `POST /api/creative/creative-ad-identity-alignment-designer`. See ADR-154.
+- All 4 features have dry-run/fallback behavior when Atlas is local or API key is missing
+- All 4 features use existing auth, credit deduction/refund, `withAtlas`, and `safeError` conventions
+- Unit tests: 5322 total (was 5171) — 151 new tests across 4 new test suites
+- TT28 page E2E tests: 32 passing
+- TT28 API E2E tests: 12 passing
+- Translations added to all 13 locales for 4 new namespaces: adCreativeObjectionNeutralizerDesigner,
+  creativeAdMicroCommitmentDesigner, adCreativeScarcityFrameDesigner, creativeAdIdentityAlignmentDesigner
+- Feature routes: 132 total (was 128)
+- ADRs: 154 total (was 150)
+- Dashboard Quick Create entries: 123 total (was 119)
+- Nav overflow entries: 119 total (was 115)
+- Production deployment version ID: 6312e896-4296-405e-a855-80fbc2ef0acf
 
 ## Production-Only Testing (Cannot Be Verified Locally)
 

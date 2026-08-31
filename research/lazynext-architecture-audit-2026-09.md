@@ -1698,3 +1698,66 @@ The TT27 series added four more AI creative tools, documented in ADRs 147-150. A
 - TT27 production audit: all 4 pages HTTP 200, all 4 API metadata endpoints correct credit costs (4, 5, 4, 5).
 
 All four features have dry-run/fallback behavior when Atlas is local or the API key is missing, and use existing auth, credit deduction/refund, `withAtlas`, and `safeError` conventions. Total unit tests now 5171 (up from 5023) — 148 new tests across 4 new test suites. Total E2E tests: 1052+ (same — only TT27 page/API tests added, not full suite rerun for docs).
+
+## 43. TT28-Series Features
+
+The TT28 series added four more AI creative tools, documented in ADRs 151-154. All four features have dry-run/fallback behavior when Atlas is local or the API key is missing, and use existing auth, credit deduction/refund, `withAtlas`, and `safeError` conventions. This brings the total feature route count to 132 and the total ADR count to 154.
+
+### Ad Creative Objection Neutralizer Designer (ADR-151)
+
+- Route: `/ad-creative-objection-neutralizer-designer`
+- API: `POST /api/creative/ad-creative-objection-neutralizer-designer`
+- Credit cost: 4
+- Library: `src/lib/creative/ad-creative-objection-neutralizer-designer.ts`
+- 8 objection types: price_concern, trust_doubt, complexity_fear, time_investment, switching_cost, quality_skepticism, relevance_doubt, risk_aversion
+- Output: objection neutralizers with objectionTrigger, neutralizationTechnique, preemptiveEvidence, neutralizationStrength (0-100), objectionResolution (0-100), neutralizationPathway
+- Dry-run returns 3 deterministic neutralizers
+- Unit tests: 40 passing
+
+### Creative Ad Micro-Commitment Designer (ADR-152)
+
+- Route: `/creative-ad-micro-commitment-designer`
+- API: `POST /api/creative/creative-ad-micro-commitment-designer`
+- Credit cost: 5
+- Library: `src/lib/creative/creative-ad-micro-commitment-designer.ts`
+- 8 commitment types: attention_commitment, engagement_commitment, click_commitment, signup_commitment, trial_commitment, preference_commitment, social_commitment, purchase_commitment
+- Output: micro-commitments with commitmentTrigger, frictionLevel, nextCommitmentCue, commitmentMomentum (0-100), conversionProbability (0-100), commitmentPathway
+- Dry-run returns 4 deterministic commitments (progressive chain)
+- Unit tests: 38 passing
+
+### Ad Creative Scarcity Frame Designer (ADR-153)
+
+- Route: `/ad-creative-scarcity-frame-designer`
+- API: `POST /api/creative/ad-creative-scarcity-frame-designer`
+- Credit cost: 4
+- Library: `src/lib/creative/ad-creative-scarcity-frame-designer.ts`
+- 8 frame types: limited_quantity, limited_time, exclusive_access, seasonal_window, capacity_constraint, edition_rarity, waitlist_demand, price_increase_approaching
+- Output: scarcity frames with scarcitySignal, urgencyElement, authenticityMarker, scarcityIntensity (0-100), motivationStrength (0-100), framePathway
+- Dry-run returns 3 deterministic frames
+- Unit tests: 35 passing
+
+### Creative Ad Identity Alignment Designer (ADR-154)
+
+- Route: `/creative-ad-identity-alignment-designer`
+- API: `POST /api/creative/creative-ad-identity-alignment-designer`
+- Credit cost: 5
+- Library: `src/lib/creative/creative-ad-identity-alignment-designer.ts`
+- 8 alignment types: values_mirror, aspirational_self, tribe_membership, lifestyle_fit, professional_identity, creative_identity, role_model_echo, self_image_reinforcement
+- Output: identity alignments with identityAnchor, selfExpressionCue, belongingElement, alignmentStrength (0-100), identityResonance (0-100), alignmentPathway
+- Dry-run returns 3 deterministic alignments
+- Unit tests: 38 passing
+
+### i18n, Dashboard, and Nav (TT28)
+
+- Translations added to all 13 locales for 4 new namespaces: adCreativeObjectionNeutralizerDesigner, creativeAdMicroCommitmentDesigner, adCreativeScarcityFrameDesigner, creativeAdIdentityAlignmentDesigner
+- Dashboard Quick Create entries: 123 total (was 119)
+- Nav overflow entries: 119 total (was 115)
+
+### Production deployment (TT28)
+
+- Cloudflare version ID: 6312e896-4296-405e-a855-80fbc2ef0acf
+- TT28 page E2E tests: 32 passing.
+- TT28 API E2E tests: 12 passing.
+- TT28 production audit: all 4 pages HTTP 200, all 4 API metadata endpoints correct credit costs (4, 5, 4, 5).
+
+All four features have dry-run/fallback behavior when Atlas is local or the API key is missing, and use existing auth, credit deduction/refund, `withAtlas`, and `safeError` conventions. Total unit tests now 5322 (up from 5171) — 151 new tests across 4 new test suites. Total E2E tests: 1052+ (same — only TT28 page/API tests added, not full suite rerun for docs).
