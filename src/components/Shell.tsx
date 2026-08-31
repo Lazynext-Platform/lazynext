@@ -161,6 +161,10 @@ const NAV_LINKS = [
   { href: '/creative-ad-empathy-bridge-designer', label: 'Empathy Bridge Designer', icon: Heart, hideOnMd: true },
   { href: '/ad-creative-belief-shift-designer', label: 'Belief Shift Designer', icon: Brain, hideOnMd: true },
   { href: '/creative-ad-desire-amplifier-designer', label: 'Desire Amplifier Designer', icon: Flame, hideOnMd: true },
+  { href: '/ad-creative-trust-accelerator-designer', label: 'Trust Accelerator Designer', icon: ShieldCheck, hideOnMd: true },
+  { href: '/creative-ad-urgency-catalyst-designer', label: 'Urgency Catalyst Designer', icon: Zap, hideOnMd: true },
+  { href: '/ad-creative-social-momentum-designer', label: 'Social Momentum Designer', icon: Users, hideOnMd: true },
+  { href: '/creative-ad-value-ladder-designer', label: 'Value Ladder Designer', icon: TrendingUp, hideOnMd: true },
   { href: '/observability', label: 'Observability', icon: Activity, hideOnMd: true },
   { href: '/calendar', label: 'Calendar', icon: Calendar, hideOnMd: true },
 ];

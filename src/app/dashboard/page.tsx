@@ -144,6 +144,10 @@ const APPS: App[] = [
   { id: 'creative-ad-empathy-bridge-designer', href: '/creative-ad-empathy-bridge-designer', icon: Heart },
   { id: 'ad-creative-belief-shift-designer', href: '/ad-creative-belief-shift-designer', icon: Brain },
   { id: 'creative-ad-desire-amplifier-designer', href: '/creative-ad-desire-amplifier-designer', icon: Flame },
+  { id: 'ad-creative-trust-accelerator-designer', href: '/ad-creative-trust-accelerator-designer', icon: ShieldIcon },
+  { id: 'creative-ad-urgency-catalyst-designer', href: '/creative-ad-urgency-catalyst-designer', icon: Zap },
+  { id: 'ad-creative-social-momentum-designer', href: '/ad-creative-social-momentum-designer', icon: Users },
+  { id: 'creative-ad-value-ladder-designer', href: '/creative-ad-value-ladder-designer', icon: TrendingUp },
 ];
 
 type Creation = {

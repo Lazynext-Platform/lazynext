@@ -3325,3 +3325,115 @@ test.describe('Creative Ad Desire Amplifier Designer API', () => {
     expect(res.status()).toBe(400);
   });
 });
+
+test.describe('Ad Creative Trust Accelerator Designer API', () => {
+  test('GET returns credit cost and schema', async ({ request }) => {
+    const res = await request.get('/api/creative/ad-creative-trust-accelerator-designer');
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.creditCost).toBe(4);
+    expect(data.schema).toBeTruthy();
+  });
+  test('POST with valid input returns strategy', async ({ request }) => {
+    const res = await request.post('/api/creative/ad-creative-trust-accelerator-designer', {
+      data: { productOrBrand: 'Aura Earbuds', content: 'Accelerate viewer trust rapidly', targetAudience: 'Tech enthusiasts', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.result).toBeTruthy();
+    expect(data.result.strategy).toBeTruthy();
+  });
+  test('POST with missing productOrBrand returns 400', async ({ request }) => {
+    const res = await request.post('/api/creative/ad-creative-trust-accelerator-designer', {
+      data: { content: 'test', targetAudience: 'test', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.status()).toBe(400);
+  });
+});
+
+test.describe('Creative Ad Urgency Catalyst Designer API', () => {
+  test('GET returns credit cost and schema', async ({ request }) => {
+    const res = await request.get('/api/creative/creative-ad-urgency-catalyst-designer');
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.creditCost).toBe(5);
+    expect(data.schema).toBeTruthy();
+  });
+  test('POST with valid input returns strategy', async ({ request }) => {
+    const res = await request.post('/api/creative/creative-ad-urgency-catalyst-designer', {
+      data: { productOrBrand: 'Aura Earbuds', content: 'Catalyze urgency for immediate action', targetAudience: 'Tech enthusiasts', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.result).toBeTruthy();
+    expect(data.result.strategy).toBeTruthy();
+  });
+  test('POST with missing productOrBrand returns 400', async ({ request }) => {
+    const res = await request.post('/api/creative/creative-ad-urgency-catalyst-designer', {
+      data: { content: 'test', targetAudience: 'test', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.status()).toBe(400);
+  });
+});
+
+test.describe('Ad Creative Social Momentum Designer API', () => {
+  test('GET returns credit cost and schema', async ({ request }) => {
+    const res = await request.get('/api/creative/ad-creative-social-momentum-designer');
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.creditCost).toBe(4);
+    expect(data.schema).toBeTruthy();
+  });
+  test('POST with valid input returns strategy', async ({ request }) => {
+    const res = await request.post('/api/creative/ad-creative-social-momentum-designer', {
+      data: { productOrBrand: 'Aura Earbuds', content: 'Build social momentum and proof', targetAudience: 'Tech enthusiasts', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.result).toBeTruthy();
+    expect(data.result.strategy).toBeTruthy();
+  });
+  test('POST with missing productOrBrand returns 400', async ({ request }) => {
+    const res = await request.post('/api/creative/ad-creative-social-momentum-designer', {
+      data: { content: 'test', targetAudience: 'test', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.status()).toBe(400);
+  });
+});
+
+test.describe('Creative Ad Value Ladder Designer API', () => {
+  test('GET returns credit cost and schema', async ({ request }) => {
+    const res = await request.get('/api/creative/creative-ad-value-ladder-designer');
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.creditCost).toBe(5);
+    expect(data.schema).toBeTruthy();
+  });
+  test('POST with valid input returns strategy', async ({ request }) => {
+    const res = await request.post('/api/creative/creative-ad-value-ladder-designer', {
+      data: { productOrBrand: 'Aura Earbuds', content: 'Build a value ladder to deeper commitment', targetAudience: 'Tech enthusiasts', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.result).toBeTruthy();
+    expect(data.result.strategy).toBeTruthy();
+  });
+  test('POST with missing productOrBrand returns 400', async ({ request }) => {
+    const res = await request.post('/api/creative/creative-ad-value-ladder-designer', {
+      data: { content: 'test', targetAudience: 'test', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.status()).toBe(400);
+  });
+});
