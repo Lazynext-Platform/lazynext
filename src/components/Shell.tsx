@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Sparkles, Megaphone, BarChart3, LayoutDashboard, Package, Scissors, Library, Lightbulb, Calendar, CalendarClock, Video, Wand2, ImageIcon, Send, BookOpen, Brain, Volume2, Eye, ShieldCheck, Wallet, Users, Workflow, Grid3x3, Activity, FileSearch, TrendingUp, FlaskConical, MessageSquareQuote, Award, Repeat, Users2, Flame, Film, Server, Clapperboard, Gift, Layers, Cpu, FileText, RefreshCw, Shield, GitBranch, Radar, PenLine, Anchor, FileSpreadsheet, ScrollText, UsersRound, LayoutGrid, GitMerge, FileSearch2, LayoutTemplate, Palette, Gauge, FlaskRound, TestTube, Compass, Mic, Type, Newspaper, Lightbulb as LightbulbIcon, Clock, BatteryLow, MousePointerClick, Expand, BookOpenCheck, Droplet, Hash, Clapperboard as ClapperboardIcon, Music, Mic2, FileText as FileTextIcon, Target, FlaskConical as FlaskIcon, Zap, Users as UsersIcon, ShieldCheck as ShieldIcon, HeartPulse, Repeat2, DollarSign, TrendingUp as TrendingIcon, ListOrdered, BookMarked, Globe2, LineChart, Smile, Grid2x2, RefreshCcw, MicVocal, Layers3, Swords } from 'lucide-react';
+import { Sparkles, Megaphone, BarChart3, LayoutDashboard, Package, Scissors, Library, Lightbulb, Calendar, CalendarClock, Video, Wand2, ImageIcon, Send, BookOpen, Brain, Volume2, Eye, ShieldCheck, Wallet, Users, Workflow, Grid3x3, Activity, FileSearch, TrendingUp, FlaskConical, MessageSquareQuote, Award, Repeat, Users2, Flame, Film, Server, Clapperboard, Gift, Layers, Cpu, FileText, RefreshCw, Shield, GitBranch, Radar, PenLine, Anchor, FileSpreadsheet, ScrollText, UsersRound, LayoutGrid, GitMerge, FileSearch2, LayoutTemplate, Palette, Gauge, FlaskRound, TestTube, Compass, Mic, Type, Newspaper, Lightbulb as LightbulbIcon, Clock, BatteryLow, MousePointerClick, Expand, BookOpenCheck, Droplet, Hash, Clapperboard as ClapperboardIcon, Music, Mic2, FileText as FileTextIcon, Target, FlaskConical as FlaskIcon, Zap, Users as UsersIcon, ShieldCheck as ShieldIcon, HeartPulse, Repeat2, DollarSign, TrendingUp as TrendingIcon, ListOrdered, BookMarked, Globe2, LineChart, Smile, Grid2x2, RefreshCcw, MicVocal, Layers3, Swords, Radio, LayoutList, LifeBuoy } from 'lucide-react';
 import { UserMenu } from '@/components/UserMenu';
 import { LangToggle } from '@/components/LangToggle';
 import { CreditBadge } from '@/components/CreditBadge';
@@ -113,6 +113,10 @@ const NAV_LINKS = [
   { href: '/creative-concept-expander-pro', label: 'Concept Expander Pro', icon: Layers3, hideOnMd: true },
   { href: '/ad-competitive-intelligence', label: 'Competitive Intel', icon: Swords, hideOnMd: true },
   { href: '/creative-quality-scorer', label: 'Quality Scorer', icon: Gauge, hideOnMd: true },
+  { href: '/ad-audience-resonance-predictor', label: 'Resonance Predictor', icon: Radio, hideOnMd: true },
+  { href: '/creative-format-recommender', label: 'Format Recommender', icon: LayoutList, hideOnMd: true },
+  { href: '/ad-creative-lifecycle-manager', label: 'Lifecycle Manager', icon: LifeBuoy, hideOnMd: true },
+  { href: '/creative-sentiment-journey-mapper', label: 'Sentiment Journey', icon: HeartPulse, hideOnMd: true },
   { href: '/observability', label: 'Observability', icon: Activity, hideOnMd: true },
   { href: '/calendar', label: 'Calendar', icon: Calendar, hideOnMd: true },
 ];

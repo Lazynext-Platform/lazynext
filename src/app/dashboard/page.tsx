@@ -6,7 +6,7 @@ import { useSession } from 'next-auth/react';
 import {
   Clapperboard, Coins, Boxes, FolderOpen, ArrowRight, Loader2, Film, Play, Sparkles,
   TrendingDown, TrendingUp, BarChart3, Trophy, Calendar, Gift, Layers, Scissors, Server, Users, Zap, Workflow,
-  FileText, RefreshCw, Lightbulb, Shield, Flame, GitBranch, CalendarClock, Radar, PenLine, Anchor, FileSpreadsheet, ScrollText, UsersRound, LayoutGrid, GitMerge, FileSearch2, LayoutTemplate, Palette, Gauge, FlaskRound, TestTube, Compass, Mic, Type, Newspaper, Lightbulb as LightbulbIcon, Clock, BatteryLow, MousePointerClick, Expand, BookOpenCheck, Droplet, Hash, Clapperboard as ClapperboardIcon, Image as ImageIcon, Music, Mic2, FileText as FileTextIcon, Target, FlaskConical as FlaskIcon, Users as UsersIcon, ShieldCheck as ShieldIcon, HeartPulse, Repeat2, DollarSign, TrendingUp as TrendingIcon, ListOrdered, BookMarked, Globe2, LineChart, Smile, Grid2x2, RefreshCcw, MicVocal, Users2, Layers3, Swords
+  FileText, RefreshCw, Lightbulb, Shield, Flame, GitBranch, CalendarClock, Radar, PenLine, Anchor, FileSpreadsheet, ScrollText, UsersRound, LayoutGrid, GitMerge, FileSearch2, LayoutTemplate, Palette, Gauge, FlaskRound, TestTube, Compass, Mic, Type, Newspaper, Lightbulb as LightbulbIcon, Clock, BatteryLow, MousePointerClick, Expand, BookOpenCheck, Droplet, Hash, Clapperboard as ClapperboardIcon, Image as ImageIcon, Music, Mic2, FileText as FileTextIcon, Target, FlaskConical as FlaskIcon, Users as UsersIcon, ShieldCheck as ShieldIcon, HeartPulse, Repeat2, DollarSign, TrendingUp as TrendingIcon, ListOrdered, BookMarked, Globe2, LineChart, Smile, Grid2x2, RefreshCcw, MicVocal, Users2, Layers3, Swords, Radio, LayoutList, LifeBuoy
 } from 'lucide-react';
 import { useI18n } from '@/i18n/provider';
 import { appTitle, appDesc, isFeatured } from '@/config/appCatalog';
@@ -96,6 +96,10 @@ const APPS: App[] = [
   { id: 'creative-concept-expander-pro', href: '/creative-concept-expander-pro', icon: Layers3 },
   { id: 'ad-competitive-intelligence', href: '/ad-competitive-intelligence', icon: Swords },
   { id: 'creative-quality-scorer', href: '/creative-quality-scorer', icon: Gauge },
+  { id: 'ad-audience-resonance-predictor', href: '/ad-audience-resonance-predictor', icon: Radio },
+  { id: 'creative-format-recommender', href: '/creative-format-recommender', icon: LayoutList },
+  { id: 'ad-creative-lifecycle-manager', href: '/ad-creative-lifecycle-manager', icon: LifeBuoy },
+  { id: 'creative-sentiment-journey-mapper', href: '/creative-sentiment-journey-mapper', icon: HeartPulse },
 ];
 
 type Creation = {

@@ -100,6 +100,10 @@ const CUSTOM_TITLES: Record<string, Bi> = {
   'creative-concept-expander-pro': { en: 'Creative Concept Expander Pro', zh: '创意概念扩展器 Pro' },
   'ad-competitive-intelligence': { en: 'Ad Competitive Intelligence', zh: '广告竞争情报' },
   'creative-quality-scorer': { en: 'Creative Quality Scorer', zh: '创意质量评分器' },
+  'ad-audience-resonance-predictor': { en: 'Ad Audience Resonance Predictor', zh: '广告受众共鸣预测器' },
+  'creative-format-recommender': { en: 'Creative Format Recommender', zh: '创意格式推荐器' },
+  'ad-creative-lifecycle-manager': { en: 'Ad Creative Lifecycle Manager', zh: '广告创意生命周期管理器' },
+  'creative-sentiment-journey-mapper': { en: 'Creative Sentiment Journey Mapper', zh: '创意情感旅程映射器' },
 };
 const CUSTOM_DESCS: Record<string, Bi> = {
   'lazynext-studio': { en: 'Product + presenter photos → AI expands the prompt from your images → lip-synced UGC ad; one-click viral formats', zh: '产品图+人物图 → AI 看图扩写提示词 → 合成首帧 → 对口型真人口播广告;爆款玩法一键复刻' },

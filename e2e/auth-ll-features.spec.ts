@@ -1981,3 +1981,115 @@ test.describe('Creative Quality Scorer API', () => {
     expect(res.status()).toBe(400);
   });
 });
+
+test.describe('Ad Audience Resonance Predictor API', () => {
+  test('GET returns credit cost and schema', async ({ request }) => {
+    const res = await request.get('/api/creative/ad-audience-resonance-predictor');
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.creditCost).toBe(4);
+    expect(data.schema).toBeTruthy();
+  });
+  test('POST with valid input returns resonance', async ({ request }) => {
+    const res = await request.post('/api/creative/ad-audience-resonance-predictor', {
+      data: { content: 'Premium earbuds for music lovers', productOrBrand: 'Aura Earbuds', audienceSegments: 'Gen Z audiophiles, busy professionals', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.result).toBeTruthy();
+    expect(data.result.resonance).toBeTruthy();
+  });
+  test('POST with missing content returns 400', async ({ request }) => {
+    const res = await request.post('/api/creative/ad-audience-resonance-predictor', {
+      data: { productOrBrand: 'test', audienceSegments: 'test', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.status()).toBe(400);
+  });
+});
+
+test.describe('Creative Format Recommender API', () => {
+  test('GET returns credit cost and schema', async ({ request }) => {
+    const res = await request.get('/api/creative/creative-format-recommender');
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.creditCost).toBe(3);
+    expect(data.schema).toBeTruthy();
+  });
+  test('POST with valid input returns recommendation', async ({ request }) => {
+    const res = await request.post('/api/creative/creative-format-recommender', {
+      data: { productOrBrand: 'Aura Earbuds', campaignGoal: 'awareness', targetAudience: 'Gen Z music lovers', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.result).toBeTruthy();
+    expect(data.result.recommendation).toBeTruthy();
+  });
+  test('POST with missing productOrBrand returns 400', async ({ request }) => {
+    const res = await request.post('/api/creative/creative-format-recommender', {
+      data: { campaignGoal: 'awareness', targetAudience: 'test', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.status()).toBe(400);
+  });
+});
+
+test.describe('Ad Creative Lifecycle Manager API', () => {
+  test('GET returns credit cost and schema', async ({ request }) => {
+    const res = await request.get('/api/creative/ad-creative-lifecycle-manager');
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.creditCost).toBe(5);
+    expect(data.schema).toBeTruthy();
+  });
+  test('POST with valid input returns lifecycle', async ({ request }) => {
+    const res = await request.post('/api/creative/ad-creative-lifecycle-manager', {
+      data: { productOrBrand: 'Aura Earbuds', creativeDescription: 'A bold video ad showing transformation', currentStage: 'launch', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.result).toBeTruthy();
+    expect(data.result.lifecycle).toBeTruthy();
+  });
+  test('POST with missing productOrBrand returns 400', async ({ request }) => {
+    const res = await request.post('/api/creative/ad-creative-lifecycle-manager', {
+      data: { creativeDescription: 'test', currentStage: 'launch', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.status()).toBe(400);
+  });
+});
+
+test.describe('Creative Sentiment Journey Mapper API', () => {
+  test('GET returns credit cost and schema', async ({ request }) => {
+    const res = await request.get('/api/creative/creative-sentiment-journey-mapper');
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.creditCost).toBe(4);
+    expect(data.schema).toBeTruthy();
+  });
+  test('POST with valid input returns journey', async ({ request }) => {
+    const res = await request.post('/api/creative/creative-sentiment-journey-mapper', {
+      data: { content: 'Tired of dull skin? Our vitamin C serum brightens in 7 days. Try it today!', productOrBrand: 'Aura Skincare', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.result).toBeTruthy();
+    expect(data.result.journey).toBeTruthy();
+  });
+  test('POST with missing content returns 400', async ({ request }) => {
+    const res = await request.post('/api/creative/creative-sentiment-journey-mapper', {
+      data: { productOrBrand: 'test', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.status()).toBe(400);
+  });
+});
