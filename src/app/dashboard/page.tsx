@@ -108,6 +108,10 @@ const APPS: App[] = [
   { id: 'creative-ad-concept-synthesizer', href: '/creative-ad-concept-synthesizer', icon: GitMerge },
   { id: 'ad-audience-psychographic-profiler', href: '/ad-audience-psychographic-profiler', icon: Brain },
   { id: 'creative-ad-tone-calibrator', href: '/creative-ad-tone-calibrator', icon: SlidersHorizontal },
+  { id: 'creative-ad-format-innovator', href: '/creative-ad-format-innovator', icon: Sparkles },
+  { id: 'ad-creative-story-arc-designer', href: '/ad-creative-story-arc-designer', icon: Lightbulb },
+  { id: 'creative-ad-persuasion-strategist', href: '/creative-ad-persuasion-strategist', icon: Zap },
+  { id: 'ad-creative-hook-timing-optimizer', href: '/ad-creative-hook-timing-optimizer', icon: Clock },
 ];
 
 type Creation = {

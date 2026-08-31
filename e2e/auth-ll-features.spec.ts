@@ -2317,3 +2317,115 @@ test.describe('Creative Ad Tone Calibrator API', () => {
     expect(res.status()).toBe(400);
   });
 });
+
+test.describe('Creative Ad Format Innovator API', () => {
+  test('GET returns credit cost and schema', async ({ request }) => {
+    const res = await request.get('/api/creative/creative-ad-format-innovator');
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.creditCost).toBe(5);
+    expect(data.schema).toBeTruthy();
+  });
+  test('POST with valid input returns innovation', async ({ request }) => {
+    const res = await request.post('/api/creative/creative-ad-format-innovator', {
+      data: { productOrBrand: 'Aura Earbuds', targetAudience: 'Young professionals', currentFormats: 'carousel, video, story', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.result).toBeTruthy();
+    expect(data.result.innovation).toBeTruthy();
+  });
+  test('POST with missing productOrBrand returns 400', async ({ request }) => {
+    const res = await request.post('/api/creative/creative-ad-format-innovator', {
+      data: { targetAudience: 'test', currentFormats: 'test', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.status()).toBe(400);
+  });
+});
+
+test.describe('Ad Creative Story Arc Designer API', () => {
+  test('GET returns credit cost and schema', async ({ request }) => {
+    const res = await request.get('/api/creative/ad-creative-story-arc-designer');
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.creditCost).toBe(4);
+    expect(data.schema).toBeTruthy();
+  });
+  test('POST with valid input returns arc', async ({ request }) => {
+    const res = await request.post('/api/creative/ad-creative-story-arc-designer', {
+      data: { productOrBrand: 'Aura Earbuds', coreMessage: 'Premium sound for everyone', targetEmotion: 'joy', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.result).toBeTruthy();
+    expect(data.result.arc).toBeTruthy();
+  });
+  test('POST with missing productOrBrand returns 400', async ({ request }) => {
+    const res = await request.post('/api/creative/ad-creative-story-arc-designer', {
+      data: { coreMessage: 'test', targetEmotion: 'joy', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.status()).toBe(400);
+  });
+});
+
+test.describe('Creative Ad Persuasion Strategist API', () => {
+  test('GET returns credit cost and schema', async ({ request }) => {
+    const res = await request.get('/api/creative/creative-ad-persuasion-strategist');
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.creditCost).toBe(4);
+    expect(data.schema).toBeTruthy();
+  });
+  test('POST with valid input returns strategy', async ({ request }) => {
+    const res = await request.post('/api/creative/creative-ad-persuasion-strategist', {
+      data: { productOrBrand: 'Aura Earbuds', targetAudience: 'Budget-conscious music lovers', content: 'Convince them to upgrade', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.result).toBeTruthy();
+    expect(data.result.strategy).toBeTruthy();
+  });
+  test('POST with missing productOrBrand returns 400', async ({ request }) => {
+    const res = await request.post('/api/creative/creative-ad-persuasion-strategist', {
+      data: { targetAudience: 'test', content: 'test', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.status()).toBe(400);
+  });
+});
+
+test.describe('Ad Creative Hook Timing Optimizer API', () => {
+  test('GET returns credit cost and schema', async ({ request }) => {
+    const res = await request.get('/api/creative/ad-creative-hook-timing-optimizer');
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.creditCost).toBe(3);
+    expect(data.schema).toBeTruthy();
+  });
+  test('POST with valid input returns timing', async ({ request }) => {
+    const res = await request.post('/api/creative/ad-creative-hook-timing-optimizer', {
+      data: { content: 'Tired of dull skin? Our vitamin C serum brightens in 7 days.', productOrBrand: 'Aura Skincare', hookType: 'question', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.ok()).toBeTruthy();
+    const data = await res.json();
+    expect(data.result).toBeTruthy();
+    expect(data.result.timing).toBeTruthy();
+  });
+  test('POST with missing content returns 400', async ({ request }) => {
+    const res = await request.post('/api/creative/ad-creative-hook-timing-optimizer', {
+      data: { productOrBrand: 'test', hookType: 'question', dryRun: true },
+    });
+    if (res.status() === 429) { test.skip(true, 'rate limited'); return; }
+    expect(res.status()).toBe(400);
+  });
+});

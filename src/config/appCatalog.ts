@@ -112,6 +112,10 @@ const CUSTOM_TITLES: Record<string, Bi> = {
   'creative-ad-concept-synthesizer': { en: 'Creative Ad Concept Synthesizer', zh: '创意广告概念合成器' },
   'ad-audience-psychographic-profiler': { en: 'Ad Audience Psychographic Profiler', zh: '广告受众心理画像器' },
   'creative-ad-tone-calibrator': { en: 'Creative Ad Tone Calibrator', zh: '创意广告语调校准器' },
+  'creative-ad-format-innovator': { en: 'Creative Ad Format Innovator', zh: '创意广告格式创新器' },
+  'ad-creative-story-arc-designer': { en: 'Ad Creative Story Arc Designer', zh: '广告创意故事弧设计器' },
+  'creative-ad-persuasion-strategist': { en: 'Creative Ad Persuasion Strategist', zh: '创意广告说服策略师' },
+  'ad-creative-hook-timing-optimizer': { en: 'Ad Creative Hook Timing Optimizer', zh: '广告创意钩子时机优化器' },
 };
 const CUSTOM_DESCS: Record<string, Bi> = {
   'lazynext-studio': { en: 'Product + presenter photos → AI expands the prompt from your images → lip-synced UGC ad; one-click viral formats', zh: '产品图+人物图 → AI 看图扩写提示词 → 合成首帧 → 对口型真人口播广告;爆款玩法一键复刻' },

@@ -125,6 +125,10 @@ const NAV_LINKS = [
   { href: '/creative-ad-concept-synthesizer', label: 'Concept Synthesizer', icon: GitMerge, hideOnMd: true },
   { href: '/ad-audience-psychographic-profiler', label: 'Psychographic Profiler', icon: Brain, hideOnMd: true },
   { href: '/creative-ad-tone-calibrator', label: 'Tone Calibrator', icon: SlidersHorizontal, hideOnMd: true },
+  { href: '/creative-ad-format-innovator', label: 'Format Innovator', icon: Sparkles, hideOnMd: true },
+  { href: '/ad-creative-story-arc-designer', label: 'Story Arc Designer', icon: Lightbulb, hideOnMd: true },
+  { href: '/creative-ad-persuasion-strategist', label: 'Persuasion Strategist', icon: Zap, hideOnMd: true },
+  { href: '/ad-creative-hook-timing-optimizer', label: 'Hook Timing Optimizer', icon: Clock, hideOnMd: true },
   { href: '/observability', label: 'Observability', icon: Activity, hideOnMd: true },
   { href: '/calendar', label: 'Calendar', icon: Calendar, hideOnMd: true },
 ];
