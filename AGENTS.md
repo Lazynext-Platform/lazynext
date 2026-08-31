@@ -49,7 +49,7 @@ Production uses Cloudflare R2 via `src/lib/media-storage.cloudflare.ts`.
 ## Verification Commands
 ```bash
 npm run lint    # ESLint
-npm test        # Node test runner (2638+ tests)
+npm test        # Node test runner (2736+ tests)
 # E2E: 1052+ passed, 0 skipped (chromium + mobile-chrome + chromium-auth)
 npm run build   # Production build (Cloudflare target)
 npm run cf:build  # Cloudflare/OpenNext build
@@ -130,7 +130,9 @@ npm run cf:deploy # Deploy to Cloudflare Workers
   `/api/creative/ad-font-pairing-generator`, `/api/creative/ad-hashtag-generator`,
   `/api/creative/creative-scene-generator`, `/api/creative/ad-music-mood-matcher`,
   `/api/creative/ad-voiceover-script-generator`, `/api/creative/creative-brief-generator`,
-  `/api/creative/ad-placement-strategist`
+  `/api/creative/ad-placement-strategist`, `/api/creative/ad-ab-test-name-generator`,
+  `/api/creative/creative-hook-revamp-generator`, `/api/creative/ad-audience-segment-builder`,
+  `/api/creative/creative-concept-validator`
 - Ad platform API routes: `/api/ads/create`, `/api/ads/metrics`, `/api/ads/list`, `/api/ads/report`,
   `/api/ads/budget`, `/api/ads/google-budget`, `/api/ads/google-report`, `/api/analytics/ga4`,
   `/api/ads/meta-safety`, `/api/ads/meta-approve`, `/api/ads/google-safety`, `/api/ads/google-approve`
@@ -139,10 +141,10 @@ npm run cf:deploy # Deploy to Cloudflare Workers
 - `/api/creative/director` returns an NDJSON stream of step-by-step progress updates; legacy
   non-streaming mode available via `?stream=false`
 - Pipeline stages: brief, script, storyboard, media_generation, audio, edit, compliance, score, publish
-- ADRs 001-078 in `docs/adr/` document all major architecture decisions
+- ADRs 001-082 in `docs/adr/` document all major architecture decisions
 - Cross-feature handoffs: Brand Concepts → Creator Kits (query-param pre-fill),
   Brand Concepts → Shot Planner (script pre-fill), Clip Editor → Media Service Boundary (ASR/TTS)
-- Dashboard "Quick Create" grid includes all production apps and the 47 newest features
+- Dashboard "Quick Create" grid includes all production apps and the 51 newest features
   (Creator Kits, Brand Concepts, Clip Editor, Media Services, Product Brief, Reference Remix,
   Multi-Concept, Meta Safety, Google Safety, Performance Loop, Viral Analyzer, Skill Chains,
   Brand Guardrails, Smart Calendar, Competitor Watch, Ad Copy Generator, Hook Library,
@@ -153,8 +155,10 @@ npm run cf:deploy # Deploy to Cloudflare Workers
   Ad Timing Optimizer, Creative Fatigue Detector, Ad CTA Optimizer, Creative Concept Expander,
   Ad Story Generator, Ad Color Palette Generator, Ad Thumbnail Generator, Ad Font Pairing
   Generator, Ad Hashtag Generator, Creative Scene Generator, Ad Music Mood Matcher,
-  Ad Voiceover Script Generator, Creative Brief Generator, Ad Placement Strategist)
-- Nav header includes links to all feature pages (visible lg+); the 43 newest features
+  Ad Voiceover Script Generator, Creative Brief Generator, Ad Placement Strategist,
+  Ad A/B Test Name Generator, Creative Hook Revamp Generator, Ad Audience Segment Builder,
+  Creative Concept Validator)
+- Nav header includes links to all feature pages (visible lg+); the 47 newest features
   (Product Brief, Reference Remix, Multi-Concept, Meta Safety, Google Safety, Performance Loop,
   Viral Analyzer, Skill Chains, Brand Guardrails, Smart Calendar, Competitor Watch, Ad Copy
   Generator, Hook Library, Brief Template Builder, Ad Script Writer, Audience Persona Generator,
@@ -165,7 +169,8 @@ npm run cf:deploy # Deploy to Cloudflare Workers
   Creative Concept Expander, Ad Story Generator, Ad Color Palette Generator, Ad Thumbnail
   Generator, Ad Font Pairing Generator, Ad Hashtag Generator, Creative Scene Generator,
   Ad Music Mood Matcher, Ad Voiceover Script Generator, Creative Brief Generator,
-  Ad Placement Strategist) are in the overflow nav
+  Ad Placement Strategist, Ad A/B Test Name Generator, Creative Hook Revamp Generator,
+  Ad Audience Segment Builder, Creative Concept Validator) are in the overflow nav
 
 ### JJ-Series: Research-Derived Creative Capabilities
 - Product Page → Ad Brief (`/product-brief`): URL/product extraction → brand/product brief →
@@ -406,6 +411,32 @@ npm run cf:deploy # Deploy to Cloudflare Workers
 - E2E tests: 1052+ total (same — only TT9 page/API tests added, not full suite rerun for docs)
 - Translations added to all 13 locales for 4 new namespaces: adMusicMoodMatcher,
   adVoiceoverScriptGenerator, creativeBriefGenerator, adPlacementStrategist
+
+### TT10-Series: Four More AI Creative Tools
+- Ad A/B Test Name Generator (`/ad-ab-test-name-generator`): AI-powered A/B test name
+  generator. Returns test names with variant labels, hypothesis, category, and description.
+  2 credits. API: `POST /api/creative/ad-ab-test-name-generator`. See ADR-079.
+- Creative Hook Revamp Generator (`/creative-hook-revamp-generator`): AI-powered hook revamp
+  generator. Takes an existing hook and generates revamped versions with different angles,
+  emotional triggers, and formats. Returns revamps with revampedHook, angle, emotionalTrigger,
+  formatChange, predictedLift, and reasoning.
+  3 credits. API: `POST /api/creative/creative-hook-revamp-generator`. See ADR-080.
+- Ad Audience Segment Builder (`/ad-audience-segment-builder`): AI-powered audience segment
+  builder for ad targeting. Returns segments with demographics (ageRange, gender, location,
+  income), interests, behaviors, platformTargeting, estimatedReach, recommendedAdFormat,
+  and priority.
+  4 credits. API: `POST /api/creative/ad-audience-segment-builder`. See ADR-081.
+- Creative Concept Validator (`/creative-concept-validator`): AI-powered creative concept
+  validator. Returns a validation report with overallScore (0-100), grade (F-A+), platformFit,
+  brandSafety, engagementPotential, clarity, originality, issues (with severity, description,
+  suggestion), strengths, recommendations, and verdict.
+  5 credits. API: `POST /api/creative/creative-concept-validator`. See ADR-082.
+- All 4 features have dry-run/fallback behavior when Atlas is local or API key is missing
+- All 4 features use existing auth, credit deduction/refund, `withAtlas`, and `safeError` conventions
+- Unit tests: 2736 total (was 2638)
+- E2E tests: 1052+ total (same — only TT10 page/API tests added, not full suite rerun for docs)
+- Translations added to all 13 locales for 4 new namespaces: adABTestNameGenerator,
+  creativeHookRevampGenerator, adAudienceSegmentBuilder, creativeConceptValidator
 
 ## Production-Only Testing (Cannot Be Verified Locally)
 
