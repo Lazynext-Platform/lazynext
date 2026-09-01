@@ -91,6 +91,8 @@ export const NAV_CATEGORIES: NavCategory[] = [
       { slug: 'creative-ad-fab-framework-designer', href: '/creative-ad-fab-framework-designer' },
       { slug: 'ad-creative-demonstration-framework-designer', href: '/ad-creative-demonstration-framework-designer' },
       { slug: 'creative-ad-comparison-framework-designer', href: '/creative-ad-comparison-framework-designer' },
+      { slug: 'ad-creative-aida-framework-designer', href: '/ad-creative-aida-framework-designer' },
+      { slug: 'ad-creative-hook-story-offer-designer', href: '/ad-creative-hook-story-offer-designer' },
     ],
   },
   {
@@ -120,6 +122,8 @@ export const NAV_CATEGORIES: NavCategory[] = [
       { slug: 'ad-creative-risk-reversal-designer', href: '/ad-creative-risk-reversal-designer' },
       { slug: 'creative-ad-micro-commitment-designer', href: '/creative-ad-micro-commitment-designer' },
       { slug: 'ad-creative-testimonial-architecture-designer', href: '/ad-creative-testimonial-architecture-designer' },
+      { slug: 'ad-creative-unique-mechanism-designer', href: '/ad-creative-unique-mechanism-designer' },
+      { slug: 'ad-creative-future-pacing-designer', href: '/ad-creative-future-pacing-designer' },
     ],
   },
   {
@@ -140,6 +144,10 @@ export const NAV_CATEGORIES: NavCategory[] = [
       { slug: 'ad-creative-viewer-reward-designer', href: '/ad-creative-viewer-reward-designer' },
       { slug: 'creative-ad-anticipation-builder', href: '/creative-ad-anticipation-builder' },
       { slug: 'creative-ad-persuasion-strategist', href: '/creative-ad-persuasion-strategist' },
+      { slug: 'ad-creative-mental-accounting-designer', href: '/ad-creative-mental-accounting-designer' },
+      { slug: 'ad-creative-pain-of-paying-designer', href: '/ad-creative-pain-of-paying-designer' },
+      { slug: 'ad-creative-implementation-intention-designer', href: '/ad-creative-implementation-intention-designer' },
+      { slug: 'ad-creative-choice-simplifier-designer', href: '/ad-creative-choice-simplifier-designer' },
     ],
   },
   {
