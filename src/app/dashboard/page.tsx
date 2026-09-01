@@ -13,7 +13,7 @@ import { formatNumber, formatDateTime } from '@/lib/i18n-format';
 import { AuthModal } from '@/components/AuthModal';
 import { OnboardingModal } from '@/components/OnboardingModal';
 import { CategorizedAppGrid } from '@/components/CategorizedAppGrid';
-import { fetchWithRetry } from '@/lib/fetch-retry';
+import { fetchWithRetry, warmupApi } from '@/lib/fetch-retry';
 
 
 type Creation = {
@@ -54,6 +54,8 @@ export default function DashboardPage() {
 
   useEffect(() => {
     if (status !== 'authenticated') return;
+    // Warm up the Worker/D1 connection before firing data requests
+    warmupApi();
     fetchWithRetry('/api/me').then((r) => r.json()).then((j) => setCredits(j.credits ?? 0)).catch(() => {});
     fetchWithRetry('/api/creations', { cache: 'no-store' })
       .then((r) => r.json())
