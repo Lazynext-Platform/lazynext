@@ -88,13 +88,13 @@ export default function CompetitorWatchPage() {
         <div className="space-y-4">
           <div>
             <label htmlFor="cwCompetitorUrl" className="block text-sm font-medium mb-1">{t('competitorWatch.competitorUrl')}</label>
-            <input id="cwCompetitorUrl" type="url" value={competitorUrl} onChange={(e) => setCompetitorUrl(e.target.value)} placeholder="https://competitor.com" className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
+            <input id="cwCompetitorUrl" type="url" value={competitorUrl} onChange={(e) => setCompetitorUrl(e.target.value)} placeholder={t('competitorWatch.urlPlaceholder')} className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label htmlFor="cwProductCategory" className="block text-sm font-medium mb-1">{t('competitorWatch.productCategory')}</label>
-              <input id="cwProductCategory" type="text" value={productCategory} onChange={(e) => setProductCategory(e.target.value)} placeholder="e.g., skincare, fitness" className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
+              <input id="cwProductCategory" type="text" value={productCategory} onChange={(e) => setProductCategory(e.target.value)} placeholder={t('competitorWatch.categoryPlaceholder')} className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
             </div>
             <div>
               <label htmlFor="cwPlatform" className="block text-sm font-medium mb-1">{t('competitorWatch.platform')}</label>
@@ -178,10 +178,10 @@ export default function CompetitorWatchPage() {
                   <div>
                     <h3 className="text-sm font-medium mb-1 flex items-center gap-1"><Palette className="w-3.5 h-3.5" /> {t('competitorWatch.visualStyle')}</h3>
                     <div className="text-xs text-fg-muted space-y-0.5">
-                      <p><span className="font-medium">Tone:</span> {result.creativeExtraction.visualStyle.tone}</p>
-                      <p><span className="font-medium">Quality:</span> {result.creativeExtraction.visualStyle.productionQuality}</p>
+                      <p><span className="font-medium">{t('competitorWatch.tone')}</span> {result.creativeExtraction.visualStyle.tone}</p>
+                      <p><span className="font-medium">{t('competitorWatch.quality')}</span> {result.creativeExtraction.visualStyle.productionQuality}</p>
                       {result.creativeExtraction.visualStyle.colorPalette.length > 0 && (
-                        <p><span className="font-medium">Colors:</span> {result.creativeExtraction.visualStyle.colorPalette.join(', ')}</p>
+                        <p><span className="font-medium">{t('competitorWatch.colors')}</span> {result.creativeExtraction.visualStyle.colorPalette.join(', ')}</p>
                       )}
                     </div>
                   </div>
@@ -202,11 +202,11 @@ export default function CompetitorWatchPage() {
                   <div>
                     <h3 className="text-sm font-medium mb-1 flex items-center gap-1"><DollarSign className="w-3.5 h-3.5" /> {t('competitorWatch.pricingStrategy')}</h3>
                     <div className="text-xs text-fg-muted space-y-0.5">
-                      <p><span className="font-medium">Approach:</span> {result.creativeExtraction.pricingStrategy.approach}</p>
-                      <p><span className="font-medium">Discounting:</span> {result.creativeExtraction.pricingStrategy.discounting}</p>
-                      <p><span className="font-medium">Positioning:</span> {result.creativeExtraction.pricingStrategy.positioning}</p>
+                      <p><span className="font-medium">{t('competitorWatch.approach')}</span> {result.creativeExtraction.pricingStrategy.approach}</p>
+                      <p><span className="font-medium">{t('competitorWatch.discounting')}</span> {result.creativeExtraction.pricingStrategy.discounting}</p>
+                      <p><span className="font-medium">{t('competitorWatch.positioning')}</span> {result.creativeExtraction.pricingStrategy.positioning}</p>
                       {result.creativeExtraction.pricingStrategy.pricePoints.length > 0 && (
-                        <p><span className="font-medium">Price points:</span> {result.creativeExtraction.pricingStrategy.pricePoints.join(', ')}</p>
+                        <p><span className="font-medium">{t('competitorWatch.pricePoints')}</span> {result.creativeExtraction.pricingStrategy.pricePoints.join(', ')}</p>
                       )}
                     </div>
                   </div>
@@ -233,8 +233,8 @@ export default function CompetitorWatchPage() {
                         <span className="text-sm font-medium">{g.area}</span>
                         <span className={`text-xs font-medium px-2 py-0.5 rounded-full border ${PRIORITY_COLORS[g.priority] || PRIORITY_COLORS.medium}`}>{g.priority}</span>
                       </div>
-                      <p className="text-xs text-fg-muted"><span className="font-medium">Competitor strength:</span> {g.competitorStrength}</p>
-                      <p className="text-xs text-fg-muted"><span className="font-medium">Your gap:</span> {g.userWeakness}</p>
+                      <p className="text-xs text-fg-muted"><span className="font-medium">{t('competitorWatch.competitorStrength')}</span> {g.competitorStrength}</p>
+                      <p className="text-xs text-fg-muted"><span className="font-medium">{t('competitorWatch.yourGap')}</span> {g.userWeakness}</p>
                       <p className="text-xs mt-1">{g.opportunity}</p>
                     </div>
                   ))}
@@ -253,9 +253,9 @@ export default function CompetitorWatchPage() {
                         <span className="text-sm font-medium">{s.strategy}</span>
                         <span className={`text-xs font-medium px-2 py-0.5 rounded-full border ${PRIORITY_COLORS[s.priority] || PRIORITY_COLORS.medium}`}>{s.priority}</span>
                       </div>
-                      <p className="text-xs text-fg-muted"><span className="font-medium">Rationale:</span> {s.rationale}</p>
-                      <p className="text-xs text-fg-muted"><span className="font-medium">Expected impact:</span> {s.expectedImpact}</p>
-                      <p className="text-xs text-fg-muted"><span className="font-medium">Timeframe:</span> {s.timeframe}</p>
+                      <p className="text-xs text-fg-muted"><span className="font-medium">{t('competitorWatch.rationale')}</span> {s.rationale}</p>
+                      <p className="text-xs text-fg-muted"><span className="font-medium">{t('competitorWatch.expectedImpact')}</span> {s.expectedImpact}</p>
+                      <p className="text-xs text-fg-muted"><span className="font-medium">{t('competitorWatch.timeframe')}</span> {s.timeframe}</p>
                     </div>
                   ))}
                 </div>
@@ -279,7 +279,7 @@ export default function CompetitorWatchPage() {
                           <span className="text-xs opacity-70 ml-auto">{a.type.replace('_', ' ')}</span>
                         </div>
                         <p className="text-xs opacity-90">{a.description}</p>
-                        <p className="text-xs mt-1"><span className="font-medium">Action:</span> {a.recommendedAction}</p>
+                        <p className="text-xs mt-1"><span className="font-medium">{t('competitorWatch.action')}</span> {a.recommendedAction}</p>
                       </div>
                     );
                   })}

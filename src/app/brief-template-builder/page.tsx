@@ -138,15 +138,15 @@ export default function BriefTemplateBuilderPage() {
             <h2 className="text-lg font-semibold">{t('briefTemplateBuilder.brandKit')}</h2>
             <div className="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div>
-                <label htmlFor="btbBrandName" className="block text-sm font-medium mb-1">Brand Name</label>
+                <label htmlFor="btbBrandName" className="block text-sm font-medium mb-1">{t('briefTemplateBuilder.brandName')}</label>
                 <input id="btbBrandName" type="text" value={brandName} onChange={(e) => setBrandName(e.target.value)} placeholder="e.g., Acme" className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
               </div>
               <div>
-                <label htmlFor="btbTone" className="block text-sm font-medium mb-1">Tone (comma-separated)</label>
+                <label htmlFor="btbTone" className="block text-sm font-medium mb-1">{t('briefTemplateBuilder.brandTone')}</label>
                 <input id="btbTone" type="text" value={brandTone} onChange={(e) => setBrandTone(e.target.value)} placeholder="e.g., playful, professional" className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
               </div>
               <div>
-                <label htmlFor="btbColors" className="block text-sm font-medium mb-1">Colors (comma-separated)</label>
+                <label htmlFor="btbColors" className="block text-sm font-medium mb-1">{t('briefTemplateBuilder.brandColors')}</label>
                 <input id="btbColors" type="text" value={brandColors} onChange={(e) => setBrandColors(e.target.value)} placeholder="e.g., #FF0000, #00B2FC" className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
               </div>
             </div>
@@ -154,7 +154,7 @@ export default function BriefTemplateBuilderPage() {
 
           <div>
             <label htmlFor="btbUrl" className="block text-sm font-medium mb-1">{t('briefTemplateBuilder.productUrl')}</label>
-            <input id="btbUrl" type="url" value={productUrl} onChange={(e) => setProductUrl(e.target.value)} placeholder="https://..." className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
+            <input id="btbUrl" type="url" value={productUrl} onChange={(e) => setProductUrl(e.target.value)} placeholder={t('briefTemplateBuilder.urlPlaceholder')} className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
           </div>
 
           <button onClick={generate} disabled={loading || !productCategory.trim()} className="rounded-lg bg-brand-accent px-4 py-2 text-sm font-medium text-white hover:opacity-90 disabled:opacity-50 flex items-center gap-2">
@@ -180,7 +180,7 @@ export default function BriefTemplateBuilderPage() {
         {result && (
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <span className="text-xs text-fg-muted">{result.dryRun ? t('briefTemplateBuilder.presets') : 'AI-generated'}</span>
+              <span className="text-xs text-fg-muted">{result.dryRun ? t('briefTemplateBuilder.presets') : t('briefTemplateBuilder.aiGenerated')}</span>
               <button onClick={copyTemplate} className="rounded-lg border border-border bg-bg-card px-3 py-1.5 text-xs font-medium hover:bg-hover flex items-center gap-1.5">
                 {copied ? <Check className="w-3.5 h-3.5 text-success" /> : <Copy className="w-3.5 h-3.5" />}
                 {copied ? t('briefTemplateBuilder.copied') : t('briefTemplateBuilder.copy')}

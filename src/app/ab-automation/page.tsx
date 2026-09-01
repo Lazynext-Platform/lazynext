@@ -228,9 +228,9 @@ export default function ABAutomationPage() {
                 onChange={(e) => setPrimaryMetric(e.target.value)}
                 className="w-full mt-1 rounded-md border border-border bg-input px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent"
               >
-                <option value="roas">ROAS (Return on Ad Spend)</option>
-                <option value="ctr">CTR (Click-Through Rate)</option>
-                <option value="cvr">CVR (Conversion Rate)</option>
+                <option value="roas">{t('abAutomation.metricRoasFull')}</option>
+                <option value="ctr">{t('abAutomation.metricCtrFull')}</option>
+                <option value="cvr">{t('abAutomation.metricCvrFull')}</option>
               </select>
             </div>
             <div>

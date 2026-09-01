@@ -102,7 +102,7 @@ export default function AdCopyGeneratorPage() {
         <div className="space-y-4">
           <div>
             <label htmlFor="acgSource" className="block text-sm font-medium mb-1">{t('adCopyGenerator.productUrl')} / {t('adCopyGenerator.briefText')}</label>
-            <textarea id="acgSource" value={source} onChange={(e) => setSource(e.target.value)} placeholder="Paste a product URL or brief..." rows={4} className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent resize-y" disabled={loading} />
+            <textarea id="acgSource" value={source} onChange={(e) => setSource(e.target.value)} placeholder={t('adCopyGenerator.briefPlaceholder')} rows={4} className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent resize-y" disabled={loading} />
           </div>
 
           <div>
@@ -130,7 +130,7 @@ export default function AdCopyGeneratorPage() {
             <h2 className="text-lg font-semibold">{t('adCopyGenerator.brandKit')}</h2>
             <div className="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div>
-                <label htmlFor="acgBrandName" className="block text-sm font-medium mb-1">Brand Name</label>
+                <label htmlFor="acgBrandName" className="block text-sm font-medium mb-1">{t('adCopyGenerator.brandName')}</label>
                 <input id="acgBrandName" type="text" value={brandName} onChange={(e) => setBrandName(e.target.value)} placeholder="e.g., Acme" className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
               </div>
               <div>

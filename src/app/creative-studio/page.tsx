@@ -1988,9 +1988,9 @@ export default function CreativeStudioPage() {
                   onChange={(e) => setRatio(e.target.value)}
                   className="rounded-lg border border-line bg-app px-2 py-1 text-xs text-fg focus:border-[#00b2fc]/40 focus:outline-none"
                 >
-                  <option value="9:16">9:16 (TikTok/Reels)</option>
-                  <option value="16:9">16:9 (YouTube)</option>
-                  <option value="1:1">1:1 (Feed)</option>
+                  <option value="9:16">9:16 ({t('creativeStudio.ratioTiktokReels')})</option>
+                  <option value="16:9">16:9 ({t('creativeStudio.ratioYoutube')})</option>
+                  <option value="1:1">1:1 ({t('creativeStudio.ratioFeed')})</option>
                   <option value="4:3">4:3</option>
                   <option value="3:4">3:4</option>
                 </select>

@@ -118,13 +118,13 @@ export default function CreativeAdConceptSynthesizerPage() {
               id="cacsConcepts"
               value={concepts}
               onChange={(e) => setConcepts(e.target.value)}
-              placeholder={'Enter one concept per line, e.g.,\nA fast-paced UGC hook showing the product solving a real problem\nA cinematic brand story focused on aspiration and transformation\nA humorous skit poking fun at the competitor\'s shortcomings'}
+              placeholder={t('creativeAdConceptSynthesizer.conceptsPlaceholder')}
               rows={6}
               maxLength={20000}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent resize-y"
               disabled={loading}
             />
-            <p className="text-xs text-fg-muted mt-1">One concept per line (max 10 concepts).</p>
+            <p className="text-xs text-fg-muted mt-1">{t('creativeAdConceptSynthesizer.conceptsHint')}</p>
           </div>
 
           <div>
@@ -156,7 +156,7 @@ export default function CreativeAdConceptSynthesizerPage() {
                 }`}
                 disabled={loading}
               >
-                any
+                {t('creativeAdConceptSynthesizer.anyPlatform')}
               </button>
               {PLATFORMS.map((p) => (
                 <button
@@ -264,19 +264,19 @@ export default function CreativeAdConceptSynthesizerPage() {
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <p className="text-xs font-medium text-fg-muted">Style</p>
+                  <p className="text-xs font-medium text-fg-muted">{t('creativeAdConceptSynthesizer.style')}</p>
                   <p className="text-sm text-fg">{result.synthesis.creativeDirection.style}</p>
                 </div>
                 <div>
-                  <p className="text-xs font-medium text-fg-muted">Tone</p>
+                  <p className="text-xs font-medium text-fg-muted">{t('creativeAdConceptSynthesizer.tone')}</p>
                   <p className="text-sm text-fg">{result.synthesis.creativeDirection.tone}</p>
                 </div>
                 <div>
-                  <p className="text-xs font-medium text-fg-muted">Visual Approach</p>
+                  <p className="text-xs font-medium text-fg-muted">{t('creativeAdConceptSynthesizer.visualApproach')}</p>
                   <p className="text-sm text-fg">{result.synthesis.creativeDirection.visualApproach}</p>
                 </div>
                 <div>
-                  <p className="text-xs font-medium text-fg-muted">Narrative Arc</p>
+                  <p className="text-xs font-medium text-fg-muted">{t('creativeAdConceptSynthesizer.narrativeArc')}</p>
                   <p className="text-sm text-fg">{result.synthesis.creativeDirection.narrativeArc}</p>
                 </div>
               </div>

@@ -173,7 +173,7 @@ export default function SmartCalendarPage() {
               {creatives.map((c, i) => (
                 <div key={i} className="grid grid-cols-1 sm:grid-cols-5 gap-2 items-end">
                   <div>
-                    <input type="text" value={c.title} onChange={(e) => updateCreative(i, 'title', e.target.value)} placeholder="Title" className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
+                    <input type="text" value={c.title} onChange={(e) => updateCreative(i, 'title', e.target.value)} placeholder={t('smartCalendar.creativeTitlePlaceholder')} className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
                   </div>
                   <div>
                     <select value={c.platform} onChange={(e) => updateCreative(i, 'platform', e.target.value)} className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading}>
@@ -186,13 +186,13 @@ export default function SmartCalendarPage() {
                     </select>
                   </div>
                   <div>
-                    <input type="text" value={c.audience} onChange={(e) => updateCreative(i, 'audience', e.target.value)} placeholder="Audience" className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
+                    <input type="text" value={c.audience} onChange={(e) => updateCreative(i, 'audience', e.target.value)} placeholder={t('smartCalendar.creativeAudiencePlaceholder')} className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
                   </div>
-                  <button type="button" onClick={() => removeCreative(i)} className="rounded-lg border border-border px-3 py-2 text-sm text-danger hover:bg-danger/10" disabled={loading || creatives.length === 1}>Remove</button>
+                  <button type="button" onClick={() => removeCreative(i)} className="rounded-lg border border-border px-3 py-2 text-sm text-danger hover:bg-danger/10" disabled={loading || creatives.length === 1}>{t('smartCalendar.remove')}</button>
                 </div>
               ))}
             </div>
-            <button type="button" onClick={addCreative} className="mt-2 rounded-lg border border-border px-3 py-1.5 text-xs font-medium text-fg-muted hover:bg-hover" disabled={loading}>+ Add creative</button>
+            <button type="button" onClick={addCreative} className="mt-2 rounded-lg border border-border px-3 py-1.5 text-xs font-medium text-fg-muted hover:bg-hover" disabled={loading}>{t('smartCalendar.addCreative')}</button>
           </div>
 
           <button onClick={generate} disabled={loading || !startDate.trim() || !endDate.trim() || creatives.length === 0} className="rounded-lg bg-brand-accent px-4 py-2 text-sm font-medium text-white hover:opacity-90 disabled:opacity-50 flex items-center gap-2">

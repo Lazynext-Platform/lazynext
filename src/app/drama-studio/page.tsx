@@ -761,7 +761,7 @@ export default function DramaStudioPage() {
                     <div className="flex items-center gap-2 mb-2 flex-wrap">
                       <span className="text-[11px] rounded-full px-2 py-0.5 bg-hover border border-line" style={{ color: ACCENT }}>{t('drama.sceneN', { n: seg.i })}</span>
                       {/* Per-segment duration: AI gives suggested value, user can fine-tune */}
-                      <select value={seg.durationSec || 8} onChange={(e) => setSegDuration(i, Number(e.target.value))} className="appearance-none bg-elevated rounded px-1.5 py-0.5 text-[10px] text-fg-secondary focus:outline-none focus:ring-1 focus:ring-[#00b2fc]" title={t('drama.sceneDuration')} aria-label={t('drama.sceneDuration')}>{VIDEO_DURATIONS.map((d) => <option key={d} value={d}>{d}s</option>)}</select>
+                      <select value={seg.durationSec || 8} onChange={(e) => setSegDuration(i, Number(e.target.value))} className="appearance-none bg-elevated rounded px-1.5 py-0.5 text-[10px] text-fg-secondary focus:outline-none focus:ring-1 focus:ring-[#00b2fc]" title={t('drama.sceneDuration')} aria-label={t('drama.sceneDuration')}>{VIDEO_DURATIONS.map((d) => <option key={d} value={d}>{d}{t('drama.secondsSuffix')}</option>)}</select>
                       {/* Appearing characters (corresponding portrait references) */}
                       {(seg.cast || []).map((k) => {
                         const c = script.characters?.find((x) => x.key === k);

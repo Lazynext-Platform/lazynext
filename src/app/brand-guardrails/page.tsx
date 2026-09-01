@@ -130,19 +130,19 @@ export default function BrandGuardrailsPage() {
                 <input id="bgTone" type="text" value={tone} onChange={(e) => setTone(e.target.value)} placeholder="e.g., playful, professional" className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
               </div>
               <div>
-                <label htmlFor="bgKeywords" className="block text-sm font-medium mb-1">Keywords (comma-separated)</label>
+                <label htmlFor="bgKeywords" className="block text-sm font-medium mb-1">{t('brandGuardrails.keywords')}</label>
                 <input id="bgKeywords" type="text" value={keywords} onChange={(e) => setKeywords(e.target.value)} placeholder="e.g., quality, affordable" className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
               </div>
               <div>
-                <label htmlFor="bgForbidden" className="block text-sm font-medium mb-1">Forbidden Words (comma-separated)</label>
+                <label htmlFor="bgForbidden" className="block text-sm font-medium mb-1">{t('brandGuardrails.forbiddenWords')}</label>
                 <input id="bgForbidden" type="text" value={forbiddenWords} onChange={(e) => setForbiddenWords(e.target.value)} placeholder="e.g., cheap, scam" className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
               </div>
               <div>
-                <label htmlFor="bgColors" className="block text-sm font-medium mb-1">Colors (comma-separated)</label>
+                <label htmlFor="bgColors" className="block text-sm font-medium mb-1">{t('brandGuardrails.colors')}</label>
                 <input id="bgColors" type="text" value={colors} onChange={(e) => setColors(e.target.value)} placeholder="e.g., #FF0000, #00B2FC" className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
               </div>
               <div>
-                <label htmlFor="bgFonts" className="block text-sm font-medium mb-1">Fonts (comma-separated)</label>
+                <label htmlFor="bgFonts" className="block text-sm font-medium mb-1">{t('brandGuardrails.fonts')}</label>
                 <input id="bgFonts" type="text" value={fonts} onChange={(e) => setFonts(e.target.value)} placeholder="e.g., Inter, Roboto" className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
               </div>
             </div>
@@ -153,7 +153,7 @@ export default function BrandGuardrailsPage() {
             <div className="mt-3 space-y-3">
               <div>
                 <label htmlFor="bgBrief" className="block text-sm font-medium mb-1">{t('brandGuardrails.brief')}</label>
-                <textarea id="bgBrief" value={brief} onChange={(e) => setBrief(e.target.value)} placeholder="Paste the creative brief..." rows={4} className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent resize-y" disabled={loading} />
+                <textarea id="bgBrief" value={brief} onChange={(e) => setBrief(e.target.value)} placeholder={t('brandGuardrails.briefPlaceholder')} rows={4} className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent resize-y" disabled={loading} />
               </div>
               <div>
                 <label htmlFor="bgScript" className="block text-sm font-medium mb-1">{t('brandGuardrails.script')}</label>
@@ -228,7 +228,7 @@ export default function BrandGuardrailsPage() {
                           <span className={`text-xs font-medium px-2 py-0.5 rounded-full border ${SEVERITY_COLORS[v.severity]}`}>{t(`brandGuardrails.${v.severity}`)}</span>
                         </div>
                         <p className="text-xs text-fg-muted">{v.detail}</p>
-                        <p className="text-xs mt-1"><span className="font-medium">Fix:</span> {v.recommendation}</p>
+                        <p className="text-xs mt-1"><span className="font-medium">{t('brandGuardrails.fix')}</span> {v.recommendation}</p>
                       </div>
                     );
                   })}
