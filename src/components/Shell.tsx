@@ -54,6 +54,39 @@ export function Shell({ children }: { children: React.ReactNode }) {
     return () => document.removeEventListener('mousedown', handler);
   }, []);
 
+  // Keyboard shortcuts: g+d=dashboard, g+p=pricing, g+a=assets, g+w=my-work
+  useEffect(() => {
+    let gPressed = false;
+    let gTimer: ReturnType<typeof setTimeout> | null = null;
+    const handler = (e: KeyboardEvent) => {
+      // Skip if typing in an input/textarea or if modifier keys are pressed
+      const target = e.target as HTMLElement;
+      if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable) return;
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+
+      if (e.key === 'g' && !gPressed) {
+        gPressed = true;
+        gTimer = setTimeout(() => { gPressed = false; }, 800);
+        return;
+      }
+      if (gPressed) {
+        const routes: Record<string, string> = {
+          d: '/dashboard', p: '/pricing', a: '/assets',
+          w: '/my-work', s: '/settings', c: '/creative-director',
+        };
+        const route = routes[e.key];
+        if (route) {
+          e.preventDefault();
+          window.location.href = route;
+        }
+        gPressed = false;
+        if (gTimer) clearTimeout(gTimer);
+      }
+    };
+    document.addEventListener('keydown', handler);
+    return () => document.removeEventListener('keydown', handler);
+  }, []);
+
   return (
     <div className="min-h-screen bg-app text-fg">
       <a href="#main-content" className="skip-link">Skip to content</a>
@@ -161,9 +194,26 @@ export function Shell({ children }: { children: React.ReactNode }) {
 
         {/* Mobile menu */}
         {mobileOpen && (
-          <div className="md:hidden border-t border-line bg-app">
+          <div className="md:hidden border-t border-line bg-app max-h-[calc(100vh-3.5rem)] overflow-y-auto">
             <div className="px-4 py-3 space-y-3">
               <FeatureSearch showShortcut={false} onSelect={() => setMobileOpen(false)} />
+              {/* Flagship apps — quick access */}
+              <div className="grid grid-cols-2 gap-2">
+                {[
+                  { href: '/lazynext-studio', label: 'UGC Product Ad' },
+                  { href: '/ad-reference', label: 'Reference to Ad' },
+                  { href: '/drama-studio', label: 'AI Drama Ad' },
+                  { href: '/ad-skit', label: 'Ad Skit' },
+                ].map((app) => (
+                  <Link
+                    key={app.href}
+                    href={app.href}
+                    className="rounded-lg border border-[#00b2fc]/20 bg-[#00b2fc]/5 px-3 py-2 text-xs font-medium text-[#00b2fc]"
+                  >
+                    {app.label}
+                  </Link>
+                ))}
+              </div>
               <div className="grid grid-cols-2 gap-2">
                 {PRIMARY_NAV.map((link) => {
                   const Icon = link.icon;
