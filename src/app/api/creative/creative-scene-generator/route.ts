@@ -20,7 +20,7 @@ import {
 } from '@/lib/creative/creative-scene-generator';
 import { deductCredits, refundCredits } from '@/lib/credits';
 import { getUserPlanTier } from '@/lib/plan-tier';
-import { safeError } from '@/lib/security';
+import { safeError, safeAtlasError } from '@/lib/security';
 
 export const maxDuration = 60;
 
@@ -126,8 +126,8 @@ async function __byokPOST(req: Request) {
     return NextResponse.json({ result });
   } catch (e) {
     await refundCredits(uid, cost, 'creative:creative-scene-generator').catch(() => {});
-    const safe = safeError(e, 'creative/creative-scene-generator', 'generate_failed');
-    return NextResponse.json(safe, { status: 500 });
+    const { error, status } = safeAtlasError(e, 'creative/creative-scene-generator', 'generate_failed');
+    return NextResponse.json({ error }, { status });
   }
 }
 

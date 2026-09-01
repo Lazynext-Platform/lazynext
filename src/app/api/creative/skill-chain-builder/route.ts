@@ -15,7 +15,7 @@ import {
 import { listSkills } from '@/lib/creative/skill-library';
 import { deductCredits, refundCredits } from '@/lib/credits';
 import { getUserPlanTier } from '@/lib/plan-tier';
-import { safeError } from '@/lib/security';
+import { safeError, safeAtlasError } from '@/lib/security';
 import { randomUUID } from 'crypto';
 import { prisma } from '@/lib/prisma';
 
@@ -149,9 +149,8 @@ async function __byokPOST(req: Request) {
       // Best-effort
     }
 
-    return NextResponse.json(safeError(e, 'creative/skill-chain-builder', 'chain_execution_failed'), {
-      status: 500,
-    });
+    const { error, status } = safeAtlasError(e, 'creative/skill-chain-builder', 'chain_execution_failed');
+    return NextResponse.json({ error }, { status });
   }
 }
 

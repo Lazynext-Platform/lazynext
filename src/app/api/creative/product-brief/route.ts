@@ -9,7 +9,7 @@ import {
 } from '@/lib/creative/product-brief';
 import { deductCredits, refundCredits } from '@/lib/credits';
 import { getUserPlanTier } from '@/lib/plan-tier';
-import { safeError } from '@/lib/security';
+import { safeError, safeAtlasError } from '@/lib/security';
 
 export const maxDuration = 60;
 
@@ -129,9 +129,8 @@ async function __byokPOST(req: Request) {
     return NextResponse.json({ result });
   } catch (e) {
     await refundCredits(uid, PRODUCT_BRIEF_CREDIT_COST, 'creative:product-brief');
-    return NextResponse.json(safeError(e, 'creative/product-brief', 'product_brief_failed'), {
-      status: 500,
-    });
+    const { error, status } = safeAtlasError(e, 'creative/product-brief', 'product_brief_failed');
+    return NextResponse.json({ error }, { status });
   }
 }
 

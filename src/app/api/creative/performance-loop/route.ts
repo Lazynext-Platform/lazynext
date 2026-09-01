@@ -9,7 +9,7 @@ import {
 } from '@/lib/creative/performance-loop';
 import { deductCredits, refundCredits } from '@/lib/credits';
 import { getUserPlanTier } from '@/lib/plan-tier';
-import { safeError } from '@/lib/security';
+import { safeError, safeAtlasError } from '@/lib/security';
 
 export const maxDuration = 60;
 
@@ -105,9 +105,8 @@ async function __byokPOST(req: Request) {
     return NextResponse.json({ result });
   } catch (e) {
     await refundCredits(uid, PERFORMANCE_LOOP_CREDIT_COST, 'creative:performance-loop');
-    return NextResponse.json(safeError(e, 'creative/performance-loop', 'performance_loop_failed'), {
-      status: 500,
-    });
+    const { error, status } = safeAtlasError(e, 'creative/performance-loop', 'performance_loop_failed');
+    return NextResponse.json({ error }, { status });
   }
 }
 

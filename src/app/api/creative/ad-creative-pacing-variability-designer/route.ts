@@ -16,7 +16,7 @@ import {
 } from '@/lib/creative/ad-creative-pacing-variability-designer';
 import { deductCredits, refundCredits } from '@/lib/credits';
 import { getUserPlanTier } from '@/lib/plan-tier';
-import { safeError } from '@/lib/security';
+import { safeError, safeAtlasError } from '@/lib/security';
 
 export const maxDuration = 60;
 
@@ -117,12 +117,12 @@ async function __byokPOST(req: Request) {
     await refundCredits(uid, cost, 'creative:ad-creative-pacing-variability-designer').catch(
       () => {},
     );
-    const safe = safeError(
+    const { error, status } = safeAtlasError(
       e,
       'creative/ad-creative-pacing-variability-designer',
       'generate_failed',
     );
-    return NextResponse.json(safe, { status: 500 });
+    return NextResponse.json({ error }, { status });
   }
 }
 

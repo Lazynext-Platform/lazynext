@@ -11,7 +11,7 @@ import {
 } from '@/lib/creative/ad-copy-generator';
 import { deductCredits, refundCredits } from '@/lib/credits';
 import { getUserPlanTier } from '@/lib/plan-tier';
-import { safeError } from '@/lib/security';
+import { safeError, safeAtlasError } from '@/lib/security';
 
 export const maxDuration = 60;
 
@@ -104,9 +104,8 @@ async function __byokPOST(req: Request) {
     return NextResponse.json({ result });
   } catch (e) {
     await refundCredits(uid, AD_COPY_GENERATOR_CREDIT_COST, 'creative:ad-copy-generator');
-    return NextResponse.json(safeError(e, 'creative/ad-copy-generator', 'ad_copy_failed'), {
-      status: 500,
-    });
+    const { error, status } = safeAtlasError(e, 'creative/ad-copy-generator', 'ad_copy_failed');
+    return NextResponse.json({ error }, { status });
   }
 }
 

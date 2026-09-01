@@ -257,3 +257,102 @@ if (existsSync(middlewareHandler)) {
     writeFileSync(middlewareHandler, content);
   }
 }
+
+// --- Trim unnecessary Next.js modules from the server function bundle ---
+// These modules are bundled by Next.js/OpenNext but not used in our production
+// Cloudflare Worker. Removing them reduces the compressed bundle size.
+
+const nextCompiledDir = join(
+  projectRoot,
+  '.open-next',
+  'server-functions',
+  'default',
+  'node_modules',
+  'next',
+  'dist',
+  'compiled',
+);
+
+const trimModules = [
+  // next-devtools is only used in development mode
+  { path: join(nextCompiledDir, 'next-devtools'), label: 'next-devtools' },
+  // @next/font is not used — we use Tailwind CSS for fonts
+  { path: join(nextCompiledDir, '@next', 'font'), label: '@next/font' },
+  // Turbo and experimental runtime variants are not used in production
+  { path: join(nextCompiledDir, 'next-server', 'app-page-turbo.runtime.prod.js'), label: 'next-server/app-page-turbo' },
+  { path: join(nextCompiledDir, 'next-server', 'app-page-turbo-experimental.runtime.prod.js'), label: 'next-server/app-page-turbo-experimental' },
+  { path: join(nextCompiledDir, 'next-server', 'app-page-experimental.runtime.prod.js'), label: 'next-server/app-page-experimental' },
+  // Pages runtime is not used — we only use the app router
+  { path: join(nextCompiledDir, 'next-server', 'pages.runtime.prod.js'), label: 'next-server/pages' },
+  { path: join(nextCompiledDir, 'next-server', 'pages-turbo.runtime.prod.js'), label: 'next-server/pages-turbo' },
+];
+
+console.log('\nTrimming unused Next.js modules from server function bundle...');
+let nextTrimmedBytes = 0;
+for (const { path: modPath, label } of trimModules) {
+  if (existsSync(modPath)) {
+    const stat = statSync(modPath);
+    rmSync(modPath, { recursive: true, force: true });
+    nextTrimmedBytes += stat.size;
+    console.log(`  removed: ${label} (${(stat.size / 1024).toFixed(0)} KiB)`);
+  }
+}
+if (nextTrimmedBytes > 0) {
+  console.log(`  Next.js trim saved ${(nextTrimmedBytes / 1024).toFixed(0)} KiB uncompressed (~${(nextTrimmedBytes / 1024 / 4).toFixed(0)} KiB gzipped)`);
+}
+
+// --- Remove source maps, .d.ts files, and other non-runtime artifacts ---
+// These are not needed at runtime and inflate the bundle.
+
+const serverFuncDir = join(projectRoot, '.open-next', 'server-functions', 'default');
+const removePatterns = [
+  // Source maps — not needed in production workerd
+  '**/*.map',
+  // TypeScript declarations — not needed at runtime
+  '**/*.d.ts',
+  // Font metrics — we use Tailwind CSS, not capsize fonts
+  'node_modules/next/dist/server/capsize-font-metrics.json',
+];
+
+console.log('\nRemoving source maps and non-runtime artifacts...');
+let artifactBytes = 0;
+let artifactCount = 0;
+
+function removeGlob(dir, pattern) {
+  if (!existsSync(dir)) return;
+  const entries = readdirSync(dir, { withFileTypes: true });
+  for (const entry of entries) {
+    const fullPath = join(dir, entry.name);
+    if (entry.isDirectory()) {
+      removeGlob(fullPath, pattern);
+    } else {
+      // Check if file matches pattern
+      const relativePath = fullPath.replace(serverFuncDir + '/', '');
+      if (pattern === '**/*.map' && entry.name.endsWith('.map')) {
+        const stat = statSync(fullPath);
+        rmSync(fullPath, { force: true });
+        artifactBytes += stat.size;
+        artifactCount++;
+      } else if (pattern === '**/*.d.ts' && entry.name.endsWith('.d.ts')) {
+        const stat = statSync(fullPath);
+        rmSync(fullPath, { force: true });
+        artifactBytes += stat.size;
+        artifactCount++;
+      } else if (pattern === 'node_modules/next/dist/server/capsize-font-metrics.json' &&
+                 relativePath === pattern) {
+        const stat = statSync(fullPath);
+        rmSync(fullPath, { force: true });
+        artifactBytes += stat.size;
+        artifactCount++;
+        console.log(`  removed: capsize-font-metrics.json (${(stat.size / 1024).toFixed(0)} KiB)`);
+      }
+    }
+  }
+}
+
+for (const pattern of removePatterns) {
+  removeGlob(serverFuncDir, pattern);
+}
+if (artifactCount > 0) {
+  console.log(`  removed ${artifactCount} artifacts, saved ${(artifactBytes / 1024).toFixed(0)} KiB uncompressed`);
+}

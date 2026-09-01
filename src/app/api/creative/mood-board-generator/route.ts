@@ -9,7 +9,7 @@ import {
 } from '@/lib/creative/mood-board-generator';
 import { deductCredits, refundCredits } from '@/lib/credits';
 import { getUserPlanTier } from '@/lib/plan-tier';
-import { safeError } from '@/lib/security';
+import { safeError, safeAtlasError } from '@/lib/security';
 
 export const maxDuration = 60;
 
@@ -97,10 +97,8 @@ async function __byokPOST(req: Request) {
     return NextResponse.json({ result });
   } catch (e) {
     await refundCredits(uid, MOOD_BOARD_GENERATOR_CREDIT_COST, 'creative:mood-board-generator');
-    return NextResponse.json(
-      safeError(e, 'creative/mood-board-generator', 'mood_board_failed'),
-      { status: 500 },
-    );
+    const { error, status } = safeAtlasError(e, 'creative/mood-board-generator', 'mood_board_failed');
+    return NextResponse.json({ error }, { status });
   }
 }
 

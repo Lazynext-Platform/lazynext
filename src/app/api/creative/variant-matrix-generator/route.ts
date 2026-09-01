@@ -10,7 +10,7 @@ import {
 } from '@/lib/creative/variant-matrix-generator';
 import { deductCredits, refundCredits } from '@/lib/credits';
 import { getUserPlanTier } from '@/lib/plan-tier';
-import { safeError } from '@/lib/security';
+import { safeError, safeAtlasError } from '@/lib/security';
 
 export const maxDuration = 60;
 
@@ -97,10 +97,8 @@ async function __byokPOST(req: Request) {
     return NextResponse.json({ result });
   } catch (e) {
     await refundCredits(uid, VARIANT_MATRIX_GENERATOR_CREDIT_COST, 'creative:variant-matrix-generator');
-    return NextResponse.json(
-      safeError(e, 'creative/variant-matrix-generator', 'variant_matrix_failed'),
-      { status: 500 },
-    );
+    const { error, status } = safeAtlasError(e, 'creative/variant-matrix-generator', 'variant_matrix_failed');
+    return NextResponse.json({ error }, { status });
   }
 }
 

@@ -14,7 +14,7 @@ import {
 } from '@/lib/creative/smart-calendar';
 import { deductCredits, refundCredits } from '@/lib/credits';
 import { getUserPlanTier } from '@/lib/plan-tier';
-import { safeError } from '@/lib/security';
+import { safeError, safeAtlasError } from '@/lib/security';
 
 export const maxDuration = 60;
 
@@ -113,9 +113,8 @@ async function __byokPOST(req: Request) {
     return NextResponse.json({ result });
   } catch (e) {
     await refundCredits(uid, SMART_CALENDAR_COST, 'creative:smart-calendar').catch(() => {});
-    return NextResponse.json(safeError(e, 'creative/smart-calendar', 'smart_calendar_failed'), {
-      status: 500,
-    });
+    const { error, status } = safeAtlasError(e, 'creative/smart-calendar', 'smart_calendar_failed');
+    return NextResponse.json({ error }, { status });
   }
 }
 

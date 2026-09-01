@@ -106,3 +106,35 @@ export function safeError(
   console.error(`[${route}] error:`, message);
   return { error: errorCode };
 }
+
+/**
+ * Detect whether an error is an Atlas Cloud 402 (insufficient platform balance).
+ * Atlas 402 errors surface as `Error("Atlas chat 402: ...")` or `Error("Atlas 402: ...")`.
+ * When the platform account has $0 balance, all AI generation calls fail with this error.
+ */
+export function isAtlas402(e: unknown): boolean {
+  const message = e instanceof Error ? e.message : String(e);
+  return message.includes('Atlas chat 402') || message.includes('Atlas 402') || message.includes('Atlas submit 402');
+}
+
+/**
+ * Like safeError, but detects Atlas 402 (insufficient platform balance) and returns
+ * a specific error code + 402 status so the frontend can show a helpful message
+ * instead of a generic "generate_failed".
+ *
+ * Returns `{ error, status }` so the caller can use it as:
+ *   const { error, status } = safeAtlasError(e, 'my_route', 'generate_failed');
+ *   return NextResponse.json({ error }, { status });
+ */
+export function safeAtlasError(
+  e: unknown,
+  route: string,
+  errorCode: string,
+): { error: string; status: number } {
+  const message = e instanceof Error ? e.message : String(e);
+  console.error(`[${route}] error:`, message);
+  if (isAtlas402(e)) {
+    return { error: 'atlas_insufficient_balance', status: 503 };
+  }
+  return { error: errorCode, status: 500 };
+}

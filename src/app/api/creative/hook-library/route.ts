@@ -12,7 +12,7 @@ import {
 } from '@/lib/creative/hook-library';
 import { deductCredits, refundCredits } from '@/lib/credits';
 import { getUserPlanTier } from '@/lib/plan-tier';
-import { safeError } from '@/lib/security';
+import { safeError, safeAtlasError } from '@/lib/security';
 
 export const maxDuration = 60;
 
@@ -126,9 +126,8 @@ async function __byokPOST(req: Request) {
     return NextResponse.json({ result });
   } catch (e) {
     await refundCredits(uid, HOOK_LIBRARY_CREDIT_COST, 'creative:hook-library');
-    return NextResponse.json(safeError(e, 'creative/hook-library', 'hook_library_failed'), {
-      status: 500,
-    });
+    const { error, status } = safeAtlasError(e, 'creative/hook-library', 'hook_library_failed');
+    return NextResponse.json({ error }, { status });
   }
 }
 

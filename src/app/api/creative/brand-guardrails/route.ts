@@ -10,7 +10,7 @@ import {
 } from '@/lib/creative/brand-guardrails';
 import { deductCredits, refundCredits } from '@/lib/credits';
 import { getUserPlanTier } from '@/lib/plan-tier';
-import { safeError } from '@/lib/security';
+import { safeError, safeAtlasError } from '@/lib/security';
 
 export const maxDuration = 60;
 
@@ -111,9 +111,8 @@ async function __byokPOST(req: Request) {
     return NextResponse.json({ result });
   } catch (e) {
     await refundCredits(uid, BRAND_GUARDRAILS_CREDIT_COST, 'creative:brand-guardrails');
-    return NextResponse.json(safeError(e, 'creative/brand-guardrails', 'brand_guardrails_failed'), {
-      status: 500,
-    });
+    const { error, status } = safeAtlasError(e, 'creative/brand-guardrails', 'brand_guardrails_failed');
+    return NextResponse.json({ error }, { status });
   }
 }
 
