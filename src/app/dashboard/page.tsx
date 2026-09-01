@@ -6,12 +6,14 @@ import { useSession } from 'next-auth/react';
 import {
   Clapperboard, Coins, Boxes, FolderOpen, ArrowRight, Loader2,
   TrendingDown, TrendingUp, BarChart3, Trophy, Calendar, Film, Play,
+  Sparkles, Video, Drama, Mic, Star,
 } from 'lucide-react';
 import { useI18n } from '@/i18n/provider';
 import { formatNumber, formatDateTime } from '@/lib/i18n-format';
 import { AuthModal } from '@/components/AuthModal';
 import { OnboardingModal } from '@/components/OnboardingModal';
 import { CategorizedAppGrid } from '@/components/CategorizedAppGrid';
+import { fetchWithRetry } from '@/lib/fetch-retry';
 
 
 type Creation = {
@@ -52,15 +54,15 @@ export default function DashboardPage() {
 
   useEffect(() => {
     if (status !== 'authenticated') return;
-    fetch('/api/me').then((r) => r.json()).then((j) => setCredits(j.credits ?? 0)).catch(() => {});
-    fetch('/api/creations', { cache: 'no-store' })
+    fetchWithRetry('/api/me').then((r) => r.json()).then((j) => setCredits(j.credits ?? 0)).catch(() => {});
+    fetchWithRetry('/api/creations', { cache: 'no-store' })
       .then((r) => r.json())
       .then((j) => setRecent(((j.creations || []) as Creation[]).slice(0, 4)))
       .catch(() => setRecent([]));
     Promise.all([
-      fetch('/api/assets/products', { cache: 'no-store' }).then((r) => r.json()),
-      fetch('/api/assets/avatars', { cache: 'no-store' }).then((r) => r.json()),
-      fetch('/api/assets/brand-kits', { cache: 'no-store' }).then((r) => r.json()),
+      fetchWithRetry('/api/assets/products', { cache: 'no-store' }).then((r) => r.json()),
+      fetchWithRetry('/api/assets/avatars', { cache: 'no-store' }).then((r) => r.json()),
+      fetchWithRetry('/api/assets/brand-kits', { cache: 'no-store' }).then((r) => r.json()),
     ])
       .then(([p, a, b]) => setCounts({
         products: (p.products || []).length,
@@ -68,15 +70,15 @@ export default function DashboardPage() {
         brandKits: (b.brandKits || []).length,
       }))
       .catch(() => setCounts({ products: 0, avatars: 0, brandKits: 0 }));
-    fetch('/api/credits/analytics', { cache: 'no-store' })
+    fetchWithRetry('/api/credits/analytics', { cache: 'no-store' })
       .then((r) => r.json())
       .then((j) => setAnalytics(j))
       .catch(() => {});
-    fetch('/api/creative/leaderboard', { cache: 'no-store' })
+    fetchWithRetry('/api/creative/leaderboard', { cache: 'no-store' })
       .then((r) => r.json())
       .then((j) => setLeaderboard(j))
       .catch(() => {});
-    fetch('/api/creative/calendar', { cache: 'no-store' })
+    fetchWithRetry('/api/creative/calendar', { cache: 'no-store' })
       .then((r) => r.json())
       .then((j) => setCalendar(j))
       .catch(() => {});
@@ -361,6 +363,46 @@ export default function DashboardPage() {
             </div>
           </div>
         )}
+
+        {/* Featured apps — 4 flagship creative studios */}
+        <div className="mb-10">
+          <h2 className="mb-4 flex items-center gap-2 text-lg font-bold text-fg">
+            <Star className="h-5 w-5 text-brand-accent" />
+            {t('dashboard.featuredApps') || 'Featured Apps'}
+          </h2>
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            {[
+              { href: '/lazynext-studio', icon: Mic, key: 'ugcProductAd' },
+              { href: '/ad-reference', icon: Video, key: 'referenceToAd' },
+              { href: '/drama-studio', icon: Drama, key: 'aiDramaAd' },
+              { href: '/ad-skit', icon: Sparkles, key: 'adSkit' },
+            ].map((app) => {
+              const Icon = app.icon;
+              return (
+                <Link
+                  key={app.href}
+                  href={app.href}
+                  className="group relative overflow-hidden rounded-2xl border border-line bg-surface p-5 transition hover:border-[#00b2fc]/50 hover:shadow-lg hover:shadow-[#00b2fc]/5"
+                >
+                  <div className="mb-3 flex items-center gap-2">
+                    <div className="grid h-10 w-10 place-items-center rounded-xl bg-[#00b2fc]/10 text-[#00b2fc] transition group-hover:bg-[#00b2fc]/20">
+                      <Icon className="h-5 w-5" />
+                    </div>
+                  </div>
+                  <h3 className="text-sm font-bold text-fg">
+                    {t(`home.${app.key}.title`) || app.key}
+                  </h3>
+                  <p className="mt-1 text-xs text-fg-faint line-clamp-2">
+                    {t(`home.${app.key}.subtitle`) || ''}
+                  </p>
+                  <div className="mt-3 flex items-center gap-1 text-xs text-brand-accent opacity-0 transition group-hover:opacity-100">
+                    {t('common.tryIt') || 'Try it'} <ArrowRight className="h-3 w-3" />
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
 
         {/* Quick create — categorized with search */}
         <div className="mb-10">

@@ -6,6 +6,7 @@ import { Coins } from 'lucide-react';
 import { useMounted } from '@/lib/use-mounted';
 import { useI18n } from '@/i18n/provider';
 import { formatNumber } from '@/lib/i18n-format';
+import { fetchWithRetry } from '@/lib/fetch-retry';
 
 // Credit balance badge in the top-right of the immersive dark shell: reads /api/me and listens
 // for the 'lazynext:credits' event to refresh after each charge. Hidden when signed out. Click to
@@ -18,7 +19,7 @@ export function CreditBadge() {
 
   const refresh = useCallback(async () => {
     try {
-      const r = await fetch('/api/me');
+      const r = await fetchWithRetry('/api/me');
       if (r.ok) setCredits((await r.json()).credits);
     } catch {
       /* ignore */

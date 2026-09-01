@@ -19,6 +19,7 @@ import {
 import { planTaskResume } from '@/lib/lazynext-studio/resume';
 import { videoCredits } from '@/lib/video-pricing';
 import { useI18n } from '@/i18n/provider';
+import { fetchWithRetry } from '@/lib/fetch-retry';
 import { AssetPicker } from '@/components/AssetPicker';
 
 // ── Higgsfield lazynext-studio/product visual specs (measured) ──
@@ -173,7 +174,7 @@ export default function MarketingStudioPage() {
   const refreshCredits = useCallback(async () => {
     const attempt = async (): Promise<number | null> => {
       try {
-        const r = await fetch('/api/me', { cache: 'no-store' });
+        const r = await fetchWithRetry('/api/me', { cache: 'no-store' });
         if (!r.ok) return null;
         const j = await r.json();
         const n = Number(j.credits);

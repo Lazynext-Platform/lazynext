@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { useI18n } from '@/i18n/provider';
+import { fetchWithRetry } from '@/lib/fetch-retry';
 import { AuthModal } from '@/components/AuthModal';
 import { CostEstimator, type CostEstimateItem } from '@/components/CostEstimator';
 import { useKeyboardShortcuts } from '@/lib/use-keyboard-shortcuts';
@@ -129,7 +130,7 @@ export default function CreativeStudioPage() {
   // Fetch credit balance
   useEffect(() => {
     if (status !== 'authenticated') return;
-    fetch('/api/me').then(r => r.json()).then(j => setCredits(j.credits ?? 0)).catch(() => {});
+    fetchWithRetry('/api/me').then(r => r.json()).then(j => setCredits(j.credits ?? 0)).catch(() => {});
   }, [status]);
 
   // Brand extraction state

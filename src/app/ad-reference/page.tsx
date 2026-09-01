@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { useI18n } from '@/i18n/provider';
+import { fetchWithRetry } from '@/lib/fetch-retry';
 import { AssetPicker } from '@/components/AssetPicker';
 import { useMounted } from '@/lib/use-mounted';
 import { uploadDirectMediaIfSupported } from '@/lib/client-media-upload';
@@ -152,7 +153,7 @@ export default function AdReferencePage() {
 
   const refreshCredits = useCallback(async () => {
     try {
-      const r = await fetch('/api/me', { cache: 'no-store' });
+      const r = await fetchWithRetry('/api/me', { cache: 'no-store' });
       if (!r.ok) {
         setCredits(null);
         return null;

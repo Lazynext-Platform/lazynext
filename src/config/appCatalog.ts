@@ -178,6 +178,14 @@ const CUSTOM_TITLES: Record<string, Bi> = {
   'creative-ad-loss-aversion-framing-designer': { en: 'Creative Ad Loss Aversion Framing Designer', zh: '创意广告损失规避框架设计师' },
   'ad-creative-anchoring-effect-designer': { en: 'Ad Creative Anchoring Effect Designer', zh: '广告创意锚定效应设计师' },
   'creative-ad-reciprocity-trigger-designer': { en: 'Creative Ad Reciprocity Trigger Designer', zh: '创意广告互惠触发器设计师' },
+  'ad-creative-aida-framework-designer': { en: 'AIDA Framework Designer', zh: 'AIDA框架设计师' },
+  'ad-creative-hook-story-offer-designer': { en: 'Hook-Story-Offer Designer', zh: '钩子-故事-报价设计师' },
+  'ad-creative-unique-mechanism-designer': { en: 'Unique Mechanism Designer', zh: '独特机制设计师' },
+  'ad-creative-future-pacing-designer': { en: 'Future-Pacing Designer', zh: '未来投射设计师' },
+  'ad-creative-mental-accounting-designer': { en: 'Mental Accounting Reframer', zh: '心理账户重构师' },
+  'ad-creative-pain-of-paying-designer': { en: 'Pain-of-Paying Smoother', zh: '支付痛苦缓解器' },
+  'ad-creative-implementation-intention-designer': { en: 'Implementation-Intention Designer', zh: '执行意图设计师' },
+  'ad-creative-choice-simplifier-designer': { en: 'Choice Simplifier', zh: '选择简化器' },
 };
 const CUSTOM_DESCS: Record<string, Bi> = {
   'lazynext-studio': { en: 'Product + presenter photos → AI expands the prompt from your images → lip-synced UGC ad; one-click viral formats', zh: '产品图+人物图 → AI 看图扩写提示词 → 合成首帧 → 对口型真人口播广告;爆款玩法一键复刻' },
@@ -216,6 +224,14 @@ const CUSTOM_DESCS: Record<string, Bi> = {
   'angle-finder': { en: 'AI-powered angle discovery — find unique marketing angles across psychological triggers', zh: 'AI驱动的角度发现 — 跨心理触发器发现独特营销角度' },
   'ad-timing-optimizer': { en: 'AI-powered ad timing — find the optimal times to run ads based on platform, audience, and timezone', zh: 'AI驱动的广告时段 — 根据平台、受众和时区找到最佳投放时间' },
   'creative-fatigue-detector': { en: 'AI-powered fatigue detection — detect when creatives need refreshing from performance metrics', zh: 'AI驱动的疲劳检测 — 从表现指标检测创意何时需要更新' },
+  'ad-creative-aida-framework-designer': { en: 'Generate Attention-Interest-Desire-Action copy that guides viewers from first impression to purchase', zh: '生成注意-兴趣-欲望-行动文案，引导观众从第一印象到购买' },
+  'ad-creative-hook-story-offer-designer': { en: 'Create UGC video ad structures with opening hook, relatable story, and compelling offer close', zh: '创建UGC视频广告结构，包含开场钩子、共鸣故事和有力报价收尾' },
+  'ad-creative-unique-mechanism-designer': { en: 'Identify and articulate the unique mechanism of action that differentiates your product from competitors', zh: '识别并阐述使你的产品与竞争对手不同的独特作用机制' },
+  'ad-creative-future-pacing-designer': { en: 'Design copy that helps viewers mentally rehearse the post-purchase outcome with sensory-rich future scenarios', zh: '设计帮助观众在心理上预演购买后结果的文案，包含丰富的感官未来场景' },
+  'ad-creative-mental-accounting-designer': { en: 'Reframe price using mental-budget categories — cost-per-use, daily-equivalent, and category comparisons to reduce price pain', zh: '使用心理预算类别重构价格 — 每次使用成本、每日等价物和类别比较以减少价格痛苦' },
+  'ad-creative-pain-of-paying-designer': { en: 'Reduce psychological payment friction with installment, trial, bundle, and risk-reversal framing strategies', zh: '用分期、试用、捆绑和风险逆转框架策略减少心理支付摩擦' },
+  'ad-creative-implementation-intention-designer': { en: 'Build if-then action plans that convert viewer intent into purchase with specific triggers and commitment devices', zh: '构建如果-那么行动计划，用特定触发器和承诺装置将观众意图转化为购买' },
+  'ad-creative-choice-simplifier-designer': { en: 'Solve choice overload by recommending the single best option and reducing cognitive load for your audience', zh: '通过推荐单一最佳选项并减少受众认知负荷来解决选择过载' },
 };
 export function appTitle(id: string, fallbackTitle: string, locale: string = 'en'): string {
   const c = CUSTOM_TITLES[id];
