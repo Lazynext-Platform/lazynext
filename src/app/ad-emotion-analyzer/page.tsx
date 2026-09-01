@@ -157,7 +157,7 @@ export default function AdEmotionAnalyzerPage() {
               id="aeaContent"
               value={adContent}
               onChange={(e) => setAdContent(e.target.value)}
-              placeholder="e.g., When I first tried this serum, I was skeptical. But after two weeks, my skin was glowing. Here's why it changed my routine forever..."
+              placeholder={t('adEmotionAnalyzer.contentPh')}
               rows={5}
               maxLength={2000}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent resize-y"

@@ -668,6 +668,12 @@ export const koMessages = {
       ratioFeed: '피드',
       ratioTiktokReels: 'TikTok/Reels',
       ratioYoutube: 'YouTube',
+      namePh: 'Q4 제품 출시 A/B 테스트',
+      namePh2: 'GlowPatch LED Face Mask',
+      numberPh: '50',
+      urlPh: 'https://yourbrand.com',
+      urlPh2: 'https://shop.example.com/products/led-mask',
+      urlPh3: 'https://example.com/reference-ad.mp4',
     },
 
     costEstimate: {
@@ -1099,6 +1105,8 @@ export const koMessages = {
       loadingCampaigns: '캠페인 로드 중…',
       refreshingMetrics: '새로고침 중…',
       refreshMetricsLabel: '{name}의 지표 새로고침',
+      namePh: '여름 세일 - Glow Serum',
+      contentPh: 'abc123, def456',
     },
     perf: {
       title: '성과 대시보드',
@@ -2776,6 +2784,7 @@ export const koMessages = {
     creativeAudiencePlaceholder: '오디언스',
     remove: '제거',
     addCreative: '+ 크리에이티브 추가',
+    timezonePh: 'UTC',
   },
   competitorWatch: {
     title: '경쟁사 모니터링',
@@ -2867,6 +2876,7 @@ export const koMessages = {
     clearFilters: '필터 초기화',
     audience: '오디언스',
     error: '훅 생성 실패',
+    audiencePh: '예: 원격 근무자',
   },
   briefTemplateBuilder: {
     title: '브리프 템플릿 빌더',
@@ -2893,6 +2903,7 @@ export const koMessages = {
     brandColors: '색상 (쉼표로 구분)',
     urlPlaceholder: 'https://...',
     aiGenerated: 'AI 생성',
+    contentPh: '예: 스킨케어 세럼, 무선 이어버드',
   },
   adScriptWriter: {
       title: "광고 스크립트 작성기",
@@ -2950,6 +2961,8 @@ export const koMessages = {
       objections: "이의",
       copy: "복사",
       noResults: "아직 페르소나가 생성되지 않았습니다. 제품 또는 브랜드를 입력하세요.",
+    productPh: '예: 안티에이징 관심사를 타겟팅하는 프리미엄 오가닉 스킨케어 세럼',
+    audiencePh: '예: US 밀레니얼, EU 전문가',
   },
   variantMatrixGenerator: {
       title: "크리에이티브 변형 매트릭스",
@@ -3063,6 +3076,10 @@ export const koMessages = {
     text: '텍스트',
     references: '참조',
     brandHeadline: '브랜드 헤드라인',
+    productPh: '예: 피트니스 애호가를 위한 친환경 재사용 가능한 물병',
+    tonePh: '예: 미니멀, 볼드, 플레이풀',
+    audiencePh: '예: 도시 밀레니얼',
+    formatPh: '예: instagram, tiktok',
   },
   adPerformancePredictor: {
     title: "광고 성과 예측기",
@@ -3096,6 +3113,8 @@ export const koMessages = {
     benchmark: '벤치마크',
     rationale: '근거',
     briefPh: '여기에 크리에이티브 브리프 또는 광고 콘셉트를 붙여넣으세요...',
+    metricPh: '예: 전자제품, 뷰티, SaaS',
+    audiencePh: '예: US의 25-40세 원격 근무자',
   },
   abTestPlannerV2: {
     title: "크리에이티브 A/B 테스트 플래너",
@@ -3168,6 +3187,8 @@ export const koMessages = {
     copied: '복사됨',
     error: '트렌드 발견 실패',
     dryRunNotice: '드라이런 모드 — 휴리스틱 트렌드 사용',
+    contentPh: '예: 클린 스킨케어, 홈 피트니스, 식물 기반 요리',
+    contentPh2: '예: US, UK, Global (선택 사항)',
   },
   brandVoiceAnalyzer: {
     title: '브랜드 보이스 분석기',
@@ -3190,6 +3211,7 @@ export const koMessages = {
     error: '분석 실패',
     dryRunNotice: '드라이런 모드 — 휴리스틱 분석 사용',
     sampleContentPh: '브랜드 콘텐츠의 100자 이상을 붙여넣으세요 — 웹사이트 카피, 광고 캡션, 소셜 게시물, 이메일…',
+    brandNamePh: '예: Glow & Co.',
   },
   adCaptionGenerator: {
     title: '광고 캡션 생성기',
@@ -3264,6 +3286,9 @@ export const koMessages = {
     copied: '복사됨',
     error: '타이밍 최적화 실패',
     dryRunNotice: '드라이런 모드 — 휴리스틱 타이밍 사용 중',
+    audiencePh: '예: 피트니스 인플루언서를 팔로우하는 US Z세대 대학생',
+    timezonePh: '예: America/New_York (선택 사항, 기본 UTC)',
+    productPh: '예: 피트니스 의류 (선택 사항)',
   },
   creativeFatigueDetector: {
     title: '크리에이티브 피로도 감지기',
@@ -3287,6 +3312,11 @@ export const koMessages = {
     copied: '복사됨',
     error: '피로도 감지 실패',
     dryRunNotice: '드라이런 모드 — 휴리스틱 분석 사용 중',
+    contentPh: '예: 호기심 유발 훅과 함께 스킨케어 루틴을 보여주는 UGC 스타일 TikTok 광고',
+    numberPh: '예: 12',
+    metricPh: '예: 150000',
+    numberPh2: '예: 1.2',
+    numberPh3: '예: 2.5 (선택 사항)',
   },
   adCtaOptimizer: {
     title: '광고 CTA 최적화 도구',
@@ -3308,6 +3338,8 @@ export const koMessages = {
     copied: '복사됨',
     error: 'CTA 최적화 실패',
     dryRunNotice: '드라이런 모드 — 템플릿 CTA 사용 중',
+    contentPh: '예: 구매 (선택 사항)',
+    contentPh2: '예: 지금 쇼핑 (선택 사항)',
   },
   conceptExpander: {
     title: '크리에이티브 콘셉트 확장기',
@@ -3330,6 +3362,7 @@ export const koMessages = {
     copied: '복사됨',
     error: '콘셉트 확장 실패',
     dryRunNotice: '드라이런 모드 — 템플릿 콘셉트 사용 중',
+    contentPh: '예: 제품이 루틴을 변화시키는 모습을 보여주는 사용 전후 공개',
   },
   adStoryGenerator: {
     title: '광고 스토리 생성기',
@@ -3380,6 +3413,7 @@ export const koMessages = {
     copied: '복사됨',
     error: '컬러 팔레트 생성 실패',
     dryRunNotice: '드라이런 모드 — 템플릿 팔레트 사용 중',
+    colorPh: '예: #1a1a1a (선택 사항)',
   },
   adThumbnailGenerator: {
     title: '광고 썸네일 생성기',
@@ -3404,6 +3438,8 @@ export const koMessages = {
     copied: '복사됨',
     error: '썸네일 생성 실패',
     dryRunNotice: '드라이런 모드 — 템플릿 썸네일 사용 중',
+    numberPh: '예: 당신이 저지르고 있는 5가지 스킨케어 실수',
+    benefitPh: '예: 비타민 C 세럼 혜택',
   },
   adFontPairingGenerator: {
     title: '광고 폰트 페어링 생성기',
@@ -3444,6 +3480,7 @@ export const koMessages = {
     copied: '복사됨',
     error: '해시태그 생성 실패',
     dryRunNotice: '드라이런 모드 — 템플릿 해시태그 사용 중',
+    categoryPh: '예: 스킨케어, 피트니스, 테크 가젯',
   },
   creativeSceneGenerator: {
     title: '크리에이티브 씬 생성기',
@@ -3469,6 +3506,7 @@ export const koMessages = {
     copied: '복사됨',
     error: '씬 생성 실패',
     dryRunNotice: '드라이런 모드 — 템플릿 씬 사용 중',
+    contentPh: '예: 제품의 실제 결과를 보여주는 사용 전후 변화',
   },
   adMusicMoodMatcher: {
     title: '광고 음악 무드 매처',
@@ -3538,6 +3576,8 @@ export const koMessages = {
     copied: '복사됨',
     error: '브리프 생성 실패',
     dryRunNotice: '드라이런 모드 — 템플릿 브리프 사용 중',
+    contentPh: '예: 새로운 제품 라인 출시 및 예약 주문 촉진',
+    audiencePh: '예: 25-35세 밀레니얼 스킨케어 애호가',
   },
   adPlacementStrategist: {
     title: '광고 배치 전략가',
@@ -3560,6 +3600,7 @@ export const koMessages = {
     copied: '복사됨',
     error: '배치 전략 생성 실패',
     dryRunNotice: '드라이런 모드 — 템플릿 전략 사용 중',
+    audiencePh: '예: 스킨케어에 관심 있는 25-35세 밀레니얼 여성',
   },
   adABTestNameGenerator: {
     title: '광고 A/B 테스트 이름 생성기',
@@ -3597,6 +3638,7 @@ export const koMessages = {
     copied: '복사됨',
     error: '훅 개선 생성 실패',
     dryRunNotice: '드라이런 모드 — 템플릿 개선 사용 중',
+    contentPh: '예: 이 스킨케어 제품이 당신의 인생을 바꿀 것입니다',
   },
   adAudienceSegmentBuilder: {
     title: '광고 오디언스 세그먼트 빌더',
@@ -3622,6 +3664,7 @@ export const koMessages = {
     copied: '복사됨',
     error: '세그먼트 구축 실패',
     dryRunNotice: '드라이런 모드 — 템플릿 세그먼트 사용 중',
+    audiencePh: '예: 클린 뷰티에 관심 있는 건강을 의식하는 25-40세 여성',
   },
   creativeConceptValidator: {
     title: '크리에이티브 컨셉 검증기',
@@ -3649,6 +3692,8 @@ export const koMessages = {
     copied: '복사됨',
     error: '컨셉 검증 실패',
     dryRunNotice: '드라이런 모드 — 템플릿 검증 사용 중',
+    contentPh: '예: 비타민 C 세럼을 사용한 사용 전후 변화를 보여주는 15초 TikTok 영상, 호기심 유발 훅과 UGC 스타일의 진정성 포함',
+    audiencePh: '예: 건강을 의식하는 25-40세 여성',
   },
   adEmotionAnalyzer: {
     title: '광고 감정 분석기',
@@ -3671,6 +3716,7 @@ export const koMessages = {
     error: '감정 분석 실패',
     dryRunNotice: '드라이런 모드 — 템플릿 분석 사용 중',
     overallEmotionalImpact: '전체 감정적 영향',
+    contentPh: '예: 이 세럼을 처음 시도했을 때 회의적이었습니다. 하지만 2주 후, 피부가 빛났습니다. 이것이 제 루틴을 영원히 바꾼 이유입니다...',
   },
   creativeFormatConverter: {
     title: '크리에이티브 포맷 변환기',
@@ -3692,6 +3738,7 @@ export const koMessages = {
     copied: '복사됨',
     error: '포맷 변환 실패',
     dryRunNotice: '드라이런 모드 — 템플릿 변환 사용 중',
+    contentPh: '예: 비타민 C 세럼이 단 2주 만에 피부를 밝게 합니다. 20% L-아스코르빈산으로 처방되어 검반점을 줄이고 피부톤을 균일하게 합니다...',
   },
   adBudgetAllocator: {
     title: '광고 예산 할당기',
@@ -3715,6 +3762,7 @@ export const koMessages = {
     copied: '복사됨',
     error: '예산 할당 실패',
     dryRunNotice: '드라이런 모드 — 템플릿 할당 사용 중',
+    contentPh: '예: $10,000',
   },
   creativeTrendAdapter: {
     title: '크리에이티브 트렌드 어댑터',
@@ -3739,6 +3787,8 @@ export const koMessages = {
     copied: '복사됨',
     error: '트렌드 적응 실패',
     dryRunNotice: '드라이런 모드 — 템플릿 적응 사용 중',
+    contentPh: '예: 빛나는 피부를 위한 새로운 비타민 C 세럼 확인해 보세요',
+    brandNamePh: '예: GlowUp Skincare',
   },
   adCreativeSequencer: {
     title: '광고 크리에이티브 시퀀서',
@@ -3790,6 +3840,9 @@ export const koMessages = {
     copied: '복사됨',
     error: '스토리 생성 실패',
     dryRunNotice: '드라이런 모드 — 템플릿 스토리 사용 중',
+    brandNamePh: '예: GlowUp',
+    audiencePh: '예: 진정성, 역량 강화, 지속 가능성',
+    productPh: '예: AI를 사용하여 루틴을 개인화하는 스킨케어 앱',
   },
   adLocalizationAdapter: {
     title: '광고 현지화 어댑터',
@@ -3815,6 +3868,8 @@ export const koMessages = {
     copied: '복사됨',
     error: '현지화 실패',
     dryRunNotice: '드라이런 모드 — 템플릿 현지화 사용 중',
+    contentPh: '예: 우리의 놀라운 신제품을 확인해 보세요 — 게임 체인저입니다! 지금 구매하고 20% 할인!',
+    brandNamePh: '예: GlowUp skincare',
   },
   creativePerformanceForecaster: {
     title: '크리에이티브 성과 예측기',
@@ -3844,6 +3899,7 @@ export const koMessages = {
     copied: '복사됨',
     error: '성과 예측 실패',
     dryRunNotice: '드라이런 모드 — 템플릿 예측 사용 중',
+    contentPh: '예: 비타민 C 세럼을 사용하는 사람의 사용 전후를 보여주는 15초 TikTok, 처음 3초에 훅과 지금 쇼핑하라는 CTA 포함',
   },
   adSentimentTuner: {
     title: '광고 감성 튜너',
@@ -3867,6 +3923,7 @@ export const koMessages = {
     copied: '복사됨',
     error: '감성 조정 실패',
     dryRunNotice: '드라이런 모드 — 템플릿 조정 사용',
+    contentPh: '예: 새로운 제품이 시간을 절약하고 더 많은 일을 완료하도록 도와줍니다.',
   },
   creativeHookMatrixGenerator: {
     title: '크리에이티브 훅 매트릭스 생성기',
@@ -3914,6 +3971,7 @@ export const koMessages = {
     dryRunNotice: '드라이런 모드 — 템플릿 로테이션 사용',
     credits: '크레딧',
     days: '일',
+    contentPh: '예: 이번 주 한정, 베스트셀러 비타민 C 세럼을 50% 할인.',
   },
   brandVoiceConsistencyChecker: {
     title: '브랜드 보이스 일관성 검사기',
@@ -3941,6 +3999,9 @@ export const koMessages = {
     copied: '복사됨',
     error: '브랜드 보이스 검사 실패',
     dryRunNotice: '드라이런 모드 — 템플릿 검사 사용',
+    contentPh: '예: 여러분! 우리의 놀라운 신제품을 확인해 보세요, 정말 좋아하실 거예요!!!',
+    brandNamePh: '예: Lumina Skincare',
+    contentPh2: '예: 전문적, 따뜻함, 과학 기반. 명확하고 접근하기 쉬운 언어 사용. 은어와 과도한 구두점 회피.',
   },
   adPersonaMatcher: {
     title: '광고 페르소나 매처',
@@ -3961,6 +4022,8 @@ export const koMessages = {
     copied: '복사됨',
     error: '페르소나 매칭 실패',
     dryRunNotice: '드라이런 모드 — 템플릿 매칭 사용',
+    contentPh: '예: 비타민 C 세럼으로 스킨케어의 미래를 발견하세요...',
+    audiencePh: '예: 18-25세 뷰티 애호가, 바쁜 엄마 30-45세, 친환경 쇼퍼',
   },
   creativeConceptExpanderPro: {
     title: '크리에이티브 콘셉트 익스팬더 프로',
@@ -3986,6 +4049,7 @@ export const koMessages = {
     copied: '복사됨',
     error: '콘셉트 확장 실패',
     dryRunNotice: '드라이런 모드 — 템플릿 확장 사용',
+    contentPh: '예: 30일 만에 실제 결과를 보여주는 사용 전후 변화',
   },
   adCompetitiveIntelligence: {
     title: '광고 경쟁 인텔리전스',
@@ -4011,6 +4075,8 @@ export const koMessages = {
     copied: '복사됨',
     error: '경쟁 인텔리전스 실패',
     dryRunNotice: '드라이런 모드 — 템플릿 인텔리전스 사용',
+    productPh: '예: 스킨케어, 피트니스 앱, 밀 키트',
+    competitorsPh: '예: Glossier, The Ordinary, CeraVe, Drunk Elephant',
   },
   creativeQualityScorer: {
     title: '크리에이티브 품질 스코어러',
@@ -4056,6 +4122,7 @@ export const koMessages = {
     copied: '복사됨',
     error: '감정 여정 매핑 실패',
     dryRunNotice: '드라이런 모드 — 템플릿 여정 사용',
+    contentPh: '예: 칙칙한 피부에 지치셨나요? 비타민 C 세럼이 단 7일 만에 피부를 밝게 해줍니다. 오늘 바로 리스크 없이 체험해 보세요!',
   },
   adAudienceResonancePredictor: {
     title: '광고 오디언스 공명 예측기',
@@ -4077,6 +4144,7 @@ export const koMessages = {
     copied: '복사됨',
     error: '오디언스 공명 예측 실패',
     dryRunNotice: '드라이런 모드 — 템플릿 공명 사용',
+    audiencePh: '예: Z세대, 바쁜 부모, 피트니스 애호가',
   },
   creativeFormatRecommender: {
     title: '크리에이티브 포맷 추천기',
@@ -4121,6 +4189,7 @@ export const koMessages = {
     copied: '복사됨',
     error: '라이프사이클 분석 실패',
     dryRunNotice: '드라이런 모드 — 템플릿 라이프사이클 사용',
+    contentPh: '예: 강력한 훅과 명확한 CTA로 사용 전후 변화를 보여주는 15초 UGC 스타일 영상...',
   },
   adCreativeAbTestSimulator: {
     title: '광고 크리에이티브 A/B 테스트 시뮬레이터',
@@ -4147,6 +4216,7 @@ export const koMessages = {
     copied: '복사됨',
     error: 'A/B 테스트 시뮬레이션 실패',
     dryRunNotice: '드라이런 모드 — 템플릿 시뮬레이션 사용',
+    contentPh: '예: 7일 만에 글로우 업. 비타민 C 세럼이 피부를 밝게 하는 것이 임상적으로 입증되었습니다...',
   },
   creativeVisualHierarchyAnalyzer: {
     title: '크리에이티브 시각적 위계 분석기',
@@ -4169,6 +4239,7 @@ export const koMessages = {
     copied: '복사됨',
     error: '시각적 위계 분석 실패',
     dryRunNotice: '드라이런 모드 — 템플릿 분석 사용',
+    contentPh: '예: 상단에 히어로 이미지 (높이 60%), 중앙에 오버레이된 볼드 헤드라인, 좌하단에 제품 사진, 고대비의 CTA 버튼이 우하단에...',
   },
   adAudiencePainPointMapper: {
     title: '광고 고객 페인포인트 매퍼',
@@ -4192,6 +4263,7 @@ export const koMessages = {
     frequency: '빈도',
     emotionalImpact: '감정적 영향',
     addresses: '해결',
+    audiencePh: '예: 피부 노화가 걱정인 바쁜 25-40세 전문직 여성',
   },
   creativeMessagingFrameworkBuilder: {
     title: '크리에이티브 메시징 프레임워크 빌더',
@@ -4221,6 +4293,8 @@ export const koMessages = {
     evidence: '증거',
     do: '실행',
     dont: '금지',
+    contentPh: '예: 임상적으로 입증된 비타민 C로 단 7일 만에 칙칙한 피부를 밝게 — 리스크 없는 체험 가능.',
+    audiencePh: '예: 칙칙한 피부와 초기 노화 징후가 걱정인 25-40세 여성',
   },
   adCreativeBurnoutDetector: {
     title: '광고 크리에이티브 번아웃 감지기',
@@ -4244,6 +4318,7 @@ export const koMessages = {
     copied: '복사됨',
     error: '번아웃 감지 실패',
     dryRunNotice: '드라이런 모드 — 템플릿 분석 사용',
+    numberPh: '예: 14',
   },
   creativeAdConceptSynthesizer: {
     title: '크리에이티브 광고 콘셉트 통합기',
@@ -4293,6 +4368,7 @@ export const koMessages = {
     copied: '복사됨',
     error: '심리그래픽 프로파일링 실패',
     dryRunNotice: '드라이런 모드 — 템플릿 프로필 사용',
+    audiencePh: '예: 25-34세 여성, 웰니스에 관심 있는 도시 전문가',
   },
   creativeAdToneCalibrator: {
     title: '크리에이티브 광고 톤 교정기',
@@ -4315,6 +4391,7 @@ export const koMessages = {
     copied: '복사됨',
     error: '톤 교정 실패',
     dryRunNotice: '드라이런 모드 — 템플릿 교정 사용',
+    contentPh: '예: 오늘 우리의 놀라운 비타민 C 세럼을 구매하고 7일 만에 결과를 확인하세요!',
   },
   creativeAdFormatInnovator: {
     title: '크리에이티브 광고 포맷 혁신가',
@@ -4338,6 +4415,7 @@ export const koMessages = {
     copied: '복사됨',
     error: '포맷 혁신 실패',
     dryRunNotice: '드라이런 모드 — 템플릿 포맷 사용',
+    contentPh: '예: 세로형 영상, 이미지 캐러셀, 스토리 광고, 인플루언서 클립',
   },
   adCreativeStoryArcDesigner: {
     title: '광고 크리에이티브 스토리 아크 디자이너',
@@ -4359,6 +4437,7 @@ export const koMessages = {
     copied: '복사됨',
     error: '스토리 아크 디자인 실패',
     dryRunNotice: '드라이런 모드 — 템플릿 스토리 아크 사용',
+    contentPh: '예: 단 7일 만에 피부를 밝게 — 리스크 없이',
   },
   creativeAdPersuasionStrategist: {
     title: '크리에이티브 광고 설득 전략가',
@@ -4382,6 +4461,7 @@ export const koMessages = {
     dryRunNotice: '드라이런 모드 — 템플릿 전략 사용',
     effect: '효과',
     principle: '원리',
+    contentPh: '예: 한정 시간 할인으로 7일 글로우 챌린지를 홍보하세요...',
   },
   adCreativeHookTimingOptimizer: {
     title: '광고 크리에이티브 훅 타이밍 최적화기',
@@ -4407,6 +4487,8 @@ export const koMessages = {
     currentPlacement: '현재 배치',
     optimalWindow: '최적의 윈도우',
     attentionCurve: '주목 곡선',
+    contentPh: '예: 90%의 사람들이 2월이면 피트니스 목표를 포기한다는 것을 아셨나요? 10%에 머무는 방법은 다음과 같습니다...',
+    productPh: '예: 습관 추적 구독을 판매하는 DTC 피트니스 앱',
   },
   creativeAdMetaphorGenerator: {
     title: '크리에이티브 광고 메타포 생성기',
@@ -4429,6 +4511,7 @@ export const koMessages = {
     copied: '복사됨',
     error: '메타포 생성 실패',
     dryRunNotice: '드라이런 모드 — 템플릿 메타포 사용',
+    benefitPh: '예: 7일 만에 칙칙한 피부를 밝게',
   },
   adCreativeSensoryEnhancer: {
     title: '광고 크리에이티브 감각 강화기',
@@ -4472,6 +4555,8 @@ export const koMessages = {
     copied: '복사됨',
     error: '패턴 인터럽트 디자인 실패',
     dryRunNotice: '드라이런 모드 — 템플릿 인터럽트 사용',
+    audiencePh: '예: 클린 뷰티에 관심 있는 25-34세 여성',
+    contentPh: '예: 제품 데모로 시작한 후 리뷰가 이어지는 15초 TikTok 광고...',
   },
   adCreativeSocialProofArchitect: {
     title: '광고 크리에이티브 소셜 증명 아키텍트',
@@ -4497,6 +4582,8 @@ export const koMessages = {
     dryRunNotice: '드라이런 모드 — 템플릿 설계 사용',
     type: '유형',
     integration: '통합',
+    audiencePh: '예: 안티에이징 스킨케어에 관심 있는 25-40세 여성',
+    audiencePh2: '예: 밝게 하는 결과와 신뢰 구축에 중점을 두어 새로운 비타민 C 세럼을 홍보하세요...',
   },
   adCreativeEmotionSequencer: {
     title: '광고 크리에이티브 감정 시퀀서',
@@ -4626,6 +4713,7 @@ export const koMessages = {
     copied: '복사됨',
     error: '내러티브 트위스트 설계 실패',
     dryRunNotice: '드라이런 모드 — 템플릿 트위스트 사용',
+    contentPh: '예: 한 여성이 칙칙한 피부로 고민하다가 우리의 세럼을 발견하기까지...',
   },
   adCreativeMemoryAnchorBuilder: {
     title: '광고 크리에이티브 메모리 앵커 빌더',
@@ -4776,6 +4864,7 @@ export const koMessages = {
     dryRunNotice: '드라이런 모드 — 템플릿 계층 사용',
     direction: '방향',
     anchors: '앵커',
+    elementsPh: '예: 헤드라인, 제품 이미지, 로고, CTA 버튼, 배경',
   },
   adCreativeSoundDesignStrategist: {
     title: '광고 크리에이티브 사운드 디자인 전략가',
@@ -4798,6 +4887,7 @@ export const koMessages = {
     copied: '복사됨',
     error: '사운드 디자인 전략화 실패',
     dryRunNotice: '드라이런 모드 — 템플릿 사운드 디자인 사용',
+    contentPh: '예: 에너제틱, 차분함, 미스터리어스, 플레이풀, 드라마틱, 고무적인...',
   },
   creativeAdSurpriseElementDesigner: {
     title: '크리에이티브 광고 서프라이즈 요소 디자이너',
@@ -4822,6 +4912,7 @@ export const koMessages = {
     copied: '복사됨',
     error: '서프라이즈 요소 디자인 실패',
     dryRunNotice: '드라이런 모드 — 템플릿 서프라이즈 요소 사용',
+    audiencePh: '예: 18-24세 Z세대 스킨케어 애호가',
   },
   adCreativeCallbackMemoryDesigner: {
     title: '광고 크리에이티브 콜백 메모리 디자이너',
@@ -5262,6 +5353,7 @@ export const koMessages = {
     copied: '복사됨',
     error: '소셜 모멘텀 디자인 실패',
     dryRunNotice: '드라이런 모드 — 템플릿 소셜 모멘텀 사용',
+    audiencePh: '예: 비타민 C 세럼으로 피부를 변화시킨 50,000명 이상의 여성에 합류하세요...',
   },
   creativeAdValueLadderDesigner: {
     title: '크리에이티브 광고 밸류 래더 디자이너',
@@ -5358,6 +5450,7 @@ export const koMessages = {
     copied: '복사됨',
     error: '희소성 프레임 디자인 실패',
     dryRunNotice: '드라이런 모드 — 템플릿 희소성 프레임 사용',
+    contentPh: '예: 한정판 비타민 C 세럼은 단 50병 남았습니다...',
   },
   creativeAdIdentityAlignmentDesigner: {
     title: '크리에이티브 광고 아이덴티티 얼라인먼트 디자이너',
@@ -5406,6 +5499,7 @@ export const koMessages = {
     copied: '복사됨',
     error: '상호성 프레임워크 디자인 실패',
     dryRunNotice: '드라이런 모드 — 템플릿 상호성 프레임워크 사용',
+    contentPh: '예: 우리 커뮤니티에 무료 5일 스킨케어 미니 코스를 제공하고 있습니다...',
   },
   adCreativePASFrameworkDesigner: {
     title: '광고 크리에이티브 PAS 프레임워크 디자이너',
@@ -5622,6 +5716,9 @@ export const koMessages = {
     copied: '복사됨',
     error: '공포 어필 디자인 실패',
     dryRunNotice: '드라이런 모드 — 템플릿 공포 어필 사용',
+    productPh: '예: 홈 프로텍션 플랜을 판매하는 DTC 보험 브랜드',
+    contentPh: '예: 예상치 못한 한 사건으로 당신이 이룬 모든 것을 잃지 마세요...',
+    audiencePh: '예: 자산 보호에 관심 있는 35-55세 주택 소유자',
   },
   creativeAdBelongingAppealDesigner: {
     title: '크리에이티브 광고 소속감 어필 디자이너',
@@ -5670,6 +5767,9 @@ export const koMessages = {
     copied: '복사됨',
     error: '유머 어필 디자인 실패',
     dryRunNotice: '드라이런 모드 — 템플릿 유머 어필 사용',
+    productPh: '예: 매콤한 팝콘을 판매하는 DTC 스낵 브랜드',
+    contentPh: '예: 볼드한 것이 당기나요? 매콤한 팝콘이 색다른 맛을 선사합니다...',
+    audiencePh: '예: 밤에 TikTok을 스크롤하는 18-24세 Z세대 스낵 러버',
   },
   creativeAdFramingEffectDesigner: {
     title: '크리에이티브 광고 프레이밍 이펙트 디자이너',
@@ -5718,6 +5818,7 @@ export const koMessages = {
     copied: '복사됨',
     error: '자긍심 어필 디자인 실패',
     dryRunNotice: '드라이런 모드 — 템플릿 자긍심 어필 사용',
+    contentPh: '예: 당신은 이것을 얻을 자격이 있습니다 — 타협하지 않는 사람들을 위한 비타민 C 세럼...',
   },
   creativeAdNostalgiaTriggerDesigner: {
     title: '크리에이티브 광고 향수 트리거 디자이너',
@@ -5886,6 +5987,7 @@ export const koMessages = {
     copied: '복사됨',
     error: '손실 회피 프레이밍 디자인 실패',
     dryRunNotice: '드라이런 모드 — 템플릿 손실 회피 프레임워크 사용',
+    contentPh: '예: 기다리는 매일마다 피부는 노화되고 손상이 누적됩니다...',
   },
   adCreativeAnchoringEffectDesigner: {
     title: '광고 크리에이티브 앵커링 이펙트 디자이너',
@@ -5910,6 +6012,7 @@ export const koMessages = {
     copied: '복사됨',
     error: '앵커링 이펙트 디자인 실패',
     dryRunNotice: '드라이런 모드 — 템플릿 앵커링 프레임워크 사용',
+    contentPh: '예: 원래 $199, 지금은 단 $89로 비타민 C 세럼을...',
   },
   aidaFrameworkDesigner: {
     title: 'AIDA 프레임워크 디자이너',

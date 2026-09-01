@@ -671,6 +671,12 @@ export const viMessages = {
       ratioFeed: 'Bảng tin',
       ratioTiktokReels: 'TikTok/Reels',
       ratioYoutube: 'YouTube',
+      namePh: 'Ra mắt Sản phẩm Q4 - Thử nghiệm A/B',
+      namePh2: 'GlowPatch LED Face Mask',
+      numberPh: '50',
+      urlPh: 'https://yourbrand.com',
+      urlPh2: 'https://shop.example.com/products/led-mask',
+      urlPh3: 'https://example.com/reference-ad.mp4',
     },
 
     costEstimate: {
@@ -1102,6 +1108,8 @@ export const viMessages = {
       loadingCampaigns: 'Đang tải chiến dịch…',
       refreshingMetrics: 'Đang làm mới…',
       refreshMetricsLabel: 'Làm mới chỉ số cho {name}',
+      namePh: 'Khuyến mãi Mùa hè - Glow Serum',
+      contentPh: 'abc123, def456',
     },
     perf: {
       title: 'Bảng hiệu suất',
@@ -2778,6 +2786,7 @@ export const viMessages = {
     creativeAudiencePlaceholder: 'Đối tượng',
     remove: 'Xóa',
     addCreative: '+ Thêm sáng tạo',
+    timezonePh: 'UTC',
   },
   competitorWatch: {
     title: 'Theo dõi đối thủ',
@@ -2869,6 +2878,7 @@ export const viMessages = {
     clearFilters: 'Xóa bộ lọc',
     audience: 'Khán giả',
     error: 'Tạo hook thất bại',
+    audiencePh: 'vd., người làm việc từ xa',
   },
   briefTemplateBuilder: {
     title: 'Trình tạo Mẫu Tóm tắt',
@@ -2895,6 +2905,7 @@ export const viMessages = {
     brandColors: 'Màu sắc (phân tách bằng dấu phẩy)',
     urlPlaceholder: 'https://...',
     aiGenerated: 'Tạo bởi AI',
+    contentPh: 'vd., serum skincare, tai nghe không dây',
   },
   adScriptWriter: {
       title: "Trình Viết Kịch Bản Quảng Cáo",
@@ -2952,6 +2963,8 @@ export const viMessages = {
       objections: "Phản đối",
       copy: "Sao chép",
       noResults: "Chưa có chân dung. Nhập sản phẩm hoặc thương hiệu để bắt đầu.",
+    productPh: 'vd., Serum skincare hữu cơ cao cấp nhắm vào vấn đề chống lão hóa',
+    audiencePh: 'vd., millennials Mỹ, chuyên gia EU',
   },
   variantMatrixGenerator: {
       title: "Ma Trận Biến Thể Sáng Tạo",
@@ -3058,6 +3071,10 @@ export const viMessages = {
     brandPersonality: "Tính cách thương hiệu",
     copy: "Sao chép",
     noResults: "Chưa có mood board nào được tạo. Nhập sản phẩm hoặc thương hiệu để bắt đầu.",
+    productPh: 'vd., Bình nước tái sử dụng thân thiện với môi trường cho người yêu fitness',
+    tonePh: 'vd., tối giản, nổi bật, vui nhộn',
+    audiencePh: 'vd., millennials thành thị',
+    formatPh: 'vd., instagram, tiktok',
   },
   adPerformancePredictor: {
     title: "Trình dự đoán hiệu suất quảng cáo",
@@ -3085,6 +3102,8 @@ export const viMessages = {
     copy: "Sao chép",
     error: "Dự đoán thất bại",
     briefPh: 'Dán brief sáng tạo hoặc ý tưởng quảng cáo của bạn tại đây...',
+    metricPh: 'vd., Điện tử, Làm đẹp, SaaS',
+    audiencePh: 'vd., Người làm việc từ xa 25-40 tuổi ở Mỹ',
   },
   abTestPlannerV2: {
     title: "Trình lập kế hoạch A/B Test sáng tạo",
@@ -3160,6 +3179,8 @@ export const viMessages = {
     copied: 'Đã sao chép',
     error: 'Phát hiện xu hướng thất bại',
     dryRunNotice: 'Chế độ thử nghiệm — sử dụng xu hướng heuristic',
+    contentPh: 'vd., skincare sạch, fitness tại nhà, nấu ăn dựa trên thực vật',
+    contentPh2: 'vd., Mỹ, Anh, Toàn cầu (tùy chọn)',
   },
   brandVoiceAnalyzer: {
     title: 'Trình Phân Tích Giọng Nói Thương Hiệu',
@@ -3182,6 +3203,7 @@ export const viMessages = {
     error: 'Phân tích thất bại',
     dryRunNotice: 'Chế độ thử nghiệm — sử dụng phân tích heuristic',
     sampleContentPh: 'Dán 100+ ký tự nội dung thương hiệu của bạn — văn bản trang web, chú thích quảng cáo, bài đăng mạng xã hội, email…',
+    brandNamePh: 'vd., Glow & Co.',
   },
   adCaptionGenerator: {
     title: 'Trình Tạo Chú thích Quảng cáo',
@@ -3256,6 +3278,9 @@ export const viMessages = {
     copied: 'Đã sao chép',
     error: 'Tối ưu thời điểm thất bại',
     dryRunNotice: 'Chế độ mô phỏng — sử dụng thời điểm heuristic',
+    audiencePh: 'vd., Sinh viên đại học Gen Z ở Mỹ theo dõi influencer fitness',
+    timezonePh: 'vd., America/New_York (tùy chọn, mặc định UTC)',
+    productPh: 'vd., quần áo fitness (tùy chọn)',
   },
   creativeFatigueDetector: {
     title: 'Trình phát hiện Mệt mỏi Sáng tạo',
@@ -3279,6 +3304,11 @@ export const viMessages = {
     copied: 'Đã sao chép',
     error: 'Phát hiện mệt mỏi thất bại',
     dryRunNotice: 'Chế độ mô phỏng — sử dụng phân tích heuristic',
+    contentPh: 'vd., Quảng cáo TikTok phong cách UGC cho thấy quy trình skincare với hook gây tò mò',
+    numberPh: 'vd., 12',
+    metricPh: 'vd., 150000',
+    numberPh2: 'vd., 1.2',
+    numberPh3: 'vd., 2.5 (tùy chọn)',
   },
   adCtaOptimizer: {
     title: 'Trình Tối Ưu CTA Quảng Cáo',
@@ -3300,6 +3330,8 @@ export const viMessages = {
     copied: 'Đã sao chép',
     error: 'Tối ưu hóa CTA thất bại',
     dryRunNotice: 'Chế độ mô phỏng — sử dụng CTA mẫu',
+    contentPh: 'vd., lượt mua (tùy chọn)',
+    contentPh2: 'vd., Mua ngay (tùy chọn)',
   },
   conceptExpander: {
     title: 'Trình Mở rộng Khái niệm Sáng tạo',
@@ -3322,6 +3354,7 @@ export const viMessages = {
     copied: 'Đã sao chép',
     error: 'Mở rộng khái niệm thất bại',
     dryRunNotice: 'Chế độ mô phỏng — sử dụng khái niệm mẫu',
+    contentPh: 'vd., Một tiết lộ trước và sau cho thấy sản phẩm biến đổi quy trình',
   },
   adStoryGenerator: {
     title: 'Trình tạo Câu chuyện Quảng cáo',
@@ -3372,6 +3405,7 @@ export const viMessages = {
     copied: 'Đã sao chép',
     error: 'Tạo bảng màu thất bại',
     dryRunNotice: 'Chế độ mô phỏng — sử dụng bảng màu mẫu',
+    colorPh: 'vd., #1a1a1a (tùy chọn)',
   },
   adThumbnailGenerator: {
     title: 'Trình tạo Hình thu nhỏ Quảng cáo',
@@ -3396,6 +3430,8 @@ export const viMessages = {
     copied: 'Đã sao chép',
     error: 'Tạo hình thu nhỏ thất bại',
     dryRunNotice: 'Chế độ mô phỏng — sử dụng hình thu nhỏ mẫu',
+    numberPh: 'vd., 5 sai lầm về skincare mà bạn đang mắc phải',
+    benefitPh: 'vd., lợi ích của serum vitamin C',
   },
   adFontPairingGenerator: {
     title: 'Trình tạo Cặp Phông chữ Quảng cáo',
@@ -3436,6 +3472,7 @@ export const viMessages = {
     copied: 'Đã sao chép',
     error: 'Tạo hashtag thất bại',
     dryRunNotice: 'Chế độ mô phỏng — sử dụng hashtag mẫu',
+    categoryPh: 'vd., skincare, fitness, thiết bị công nghệ',
   },
   creativeSceneGenerator: {
     title: 'Trình tạo Cảnh Sáng tạo',
@@ -3461,6 +3498,7 @@ export const viMessages = {
     copied: 'Đã sao chép',
     error: 'Tạo cảnh thất bại',
     dryRunNotice: 'Chế độ mô phỏng — sử dụng cảnh mẫu',
+    contentPh: 'vd., Một biến đổi trước và sau cho thấy kết quả thực của sản phẩm',
   },
   adMusicMoodMatcher: {
     title: 'Trình đối chiếu Âm nhạc và Tâm trạng Quảng cáo',
@@ -3530,6 +3568,8 @@ export const viMessages = {
     copied: 'Đã sao chép',
     error: 'Tạo bản tóm tắt thất bại',
     dryRunNotice: 'Chế độ mô phỏng — sử dụng bản tóm tắt mẫu',
+    contentPh: 'vd., ra mắt dòng sản phẩm mới và thúc đẩy đặt trước',
+    audiencePh: 'vd., người yêu skincare thế hệ millennials 25-35 tuổi',
   },
   adPlacementStrategist: {
     title: 'Chiến lược gia Vị trí Quảng cáo',
@@ -3552,6 +3592,7 @@ export const viMessages = {
     copied: 'Đã sao chép',
     error: 'Tạo chiến lược vị trí thất bại',
     dryRunNotice: 'Chế độ mô phỏng — sử dụng chiến lược mẫu',
+    audiencePh: 'vd., phụ nữ millennials 25-35 tuổi quan tâm đến skincare',
   },
   adABTestNameGenerator: {
     title: 'Trình Tạo Tên Kiểm tra A/B Quảng cáo',
@@ -3589,6 +3630,7 @@ export const viMessages = {
     copied: 'Đã sao chép',
     error: 'Tạo cải tiến hook thất bại',
     dryRunNotice: 'Chế độ mô phỏng — sử dụng cải tiến mẫu',
+    contentPh: 'vd., Sản phẩm skincare này sẽ thay đổi cuộc sống của bạn',
   },
   adAudienceSegmentBuilder: {
     title: 'Trình Xây dựng Phân khúc Khán giả Quảng cáo',
@@ -3614,6 +3656,7 @@ export const viMessages = {
     copied: 'Đã sao chép',
     error: 'Xây dựng phân khúc thất bại',
     dryRunNotice: 'Chế độ mô phỏng — sử dụng phân khúc mẫu',
+    audiencePh: 'vd., Phụ nữ quan tâm sức khỏe 25-40 tuổi quan tâm đến làm sạch sắc đẹp',
   },
   creativeConceptValidator: {
     title: 'Trình Xác thực Khái niệm Sáng tạo',
@@ -3641,6 +3684,8 @@ export const viMessages = {
     copied: 'Đã sao chép',
     error: 'Xác thực khái niệm thất bại',
     dryRunNotice: 'Chế độ mô phỏng — sử dụng xác thực mẫu',
+    contentPh: 'vd., Một video TikTok 15 giây cho thấy biến đổi trước và sau khi dùng serum vitamin C của chúng tôi, với hook gây tò mò và tính chân thực phong cách UGC',
+    audiencePh: 'vd., Phụ nữ quan tâm đến sức khỏe từ 25-40 tuổi',
   },
   adEmotionAnalyzer: {
     title: 'Trình phân tích cảm xúc quảng cáo',
@@ -3663,6 +3708,7 @@ export const viMessages = {
     error: 'Phân tích cảm xúc thất bại',
     dryRunNotice: 'Chế độ mô phỏng — sử dụng phân tích mẫu',
     overallEmotionalImpact: 'Tác động cảm xúc tổng thể',
+    contentPh: 'vd., Khi mới thử serum này, tôi hoài nghi. Nhưng sau hai tuần, da tôi rạng rỡ. Đây là lý do nó thay đổi quy trình của tôi mãi mãi...',
   },
   creativeFormatConverter: {
     title: 'Trình chuyển đổi định dạng sáng tạo',
@@ -3684,6 +3730,7 @@ export const viMessages = {
     copied: 'Đã sao chép',
     error: 'Chuyển đổi định dạng thất bại',
     dryRunNotice: 'Chế độ mô phỏng — sử dụng chuyển đổi mẫu',
+    contentPh: 'vd., Serum vitamin C của chúng tôi làm sáng da chỉ trong hai tuần. Công thức với 20% axit L-ascorbic, giảm đốm nâu và đều màu da...',
   },
   adBudgetAllocator: {
     title: 'Trình phân bổ ngân sách quảng cáo',
@@ -3707,6 +3754,7 @@ export const viMessages = {
     copied: 'Đã sao chép',
     error: 'Phân bổ ngân sách thất bại',
     dryRunNotice: 'Chế độ mô phỏng — sử dụng phân bổ mẫu',
+    contentPh: 'vd., $10,000',
   },
   creativeTrendAdapter: {
     title: 'Trình thích ứng xu hướng sáng tạo',
@@ -3731,6 +3779,8 @@ export const viMessages = {
     copied: 'Đã sao chép',
     error: 'Thích ứng xu hướng thất bại',
     dryRunNotice: 'Chế độ mô phỏng — sử dụng thích ứng mẫu',
+    contentPh: 'vd., Khám phá serum vitamin C mới của chúng tôi cho làn da rạng rỡ',
+    brandNamePh: 'vd., GlowUp Skincare',
   },
   adCreativeSequencer: {
     title: 'Trình tuần tự sáng tạo quảng cáo',
@@ -3782,6 +3832,9 @@ export const viMessages = {
     copied: 'Đã sao chép',
     error: 'Tạo câu chuyện thất bại',
     dryRunNotice: 'Chế độ mô phỏng — sử dụng câu chuyện mẫu',
+    brandNamePh: 'vd., GlowUp',
+    audiencePh: 'vd., tính xác thực, trao quyền, bền vững',
+    productPh: 'vd., Một ứng dụng skincare dùng AI để cá nhân hóa quy trình',
   },
   adLocalizationAdapter: {
     title: 'Bộ thích ứng Bản địa hóa Quảng cáo',
@@ -3807,6 +3860,8 @@ export const viMessages = {
     copied: 'Đã sao chép',
     error: 'Bản địa hóa thất bại',
     dryRunNotice: 'Chế độ mô phỏng — sử dụng bản địa hóa mẫu',
+    contentPh: 'vd., Khám phá sản phẩm mới tuyệt vời của chúng tôi — nó thay đổi cuộc chơi! Mua ngay và tiết kiệm 20%!',
+    brandNamePh: 'vd., GlowUp skincare',
   },
   creativePerformanceForecaster: {
     title: 'Trình dự báo Hiệu suất Sáng tạo',
@@ -3836,6 +3891,7 @@ export const viMessages = {
     copied: 'Đã sao chép',
     error: 'Dự báo hiệu suất thất bại',
     dryRunNotice: 'Chế độ mô phỏng — sử dụng dự báo mẫu',
+    contentPh: 'vd., Một video TikTok 15 giây cho thấy trước/sau của ai đó dùng serum vitamin C của chúng tôi, với hook trong 3 giây đầu và CTA để mua ngay',
   },
   adSentimentTuner: {
     title: 'Bộ Điều chỉnh Cảm xúc Quảng cáo',
@@ -3859,6 +3915,7 @@ export const viMessages = {
     copied: 'Đã sao chép',
     error: 'Điều chỉnh cảm xúc thất bại',
     dryRunNotice: 'Chế độ thử nghiệm — sử dụng điều chỉnh mẫu',
+    contentPh: 'vd., Sản phẩm mới của chúng tôi giúp bạn tiết kiệm thời gian và làm được nhiều hơn.',
   },
   creativeHookMatrixGenerator: {
     title: 'Trình Tạo Ma trận Hook Sáng tạo',
@@ -3906,6 +3963,7 @@ export const viMessages = {
     dryRunNotice: 'Chế độ thử nghiệm — sử dụng xoay mẫu',
     credits: 'tín dụng',
     days: 'ngày',
+    contentPh: 'vd., Giảm 50% serum vitamin C bán chạy nhất của chúng tôi chỉ trong tuần này.',
   },
   brandVoiceConsistencyChecker: {
     title: 'Trình Kiểm tra Nhất quán Giọng Thương hiệu',
@@ -3933,6 +3991,9 @@ export const viMessages = {
     copied: 'Đã sao chép',
     error: 'Kiểm tra giọng thương hiệu thất bại',
     dryRunNotice: 'Chế độ thử nghiệm — sử dụng kiểm tra mẫu',
+    contentPh: 'vd., NÀY MỌI NGƯỜI! Xem sản phẩm mới TUYỆT VỜI của chúng tôi LOL bạn sẽ THÍCH nó!!!',
+    brandNamePh: 'vd., Lumina Skincare',
+    contentPh2: 'vd., Chuyên nghiệp, ấm áp và có cơ sở khoa học. Sử dụng ngôn ngữ rõ ràng, dễ tiếp cận. Tránh tiếng lóng và dấu câu quá mức.',
   },
   adPersonaMatcher: {
     title: 'Trình Ghép Nhân vật Quảng cáo',
@@ -3953,6 +4014,8 @@ export const viMessages = {
     copied: 'Đã sao chép',
     error: 'Ghép nhân vật thất bại',
     dryRunNotice: 'Chế độ thử nghiệm — sử dụng ghép mẫu',
+    contentPh: 'vd., Khám phá tương lai của skincare với serum vitamin C của chúng tôi...',
+    audiencePh: 'vd., người yêu làm đẹp 18-25 tuổi, mẹ bận rộn 30-45, người mua quan tâm môi trường',
   },
   creativeConceptExpanderPro: {
     title: 'Trình Mở rộng Khái niệm Sáng tạo Pro',
@@ -3978,6 +4041,7 @@ export const viMessages = {
     copied: 'Đã sao chép',
     error: 'Mở rộng khái niệm thất bại',
     dryRunNotice: 'Chế độ thử nghiệm — sử dụng mở rộng mẫu',
+    contentPh: 'vd., Một biến đổi trước và sau cho thấy kết quả thực trong 30 ngày',
   },
   adCompetitiveIntelligence: {
     title: 'Tình báo Cạnh tranh Quảng cáo',
@@ -4003,6 +4067,8 @@ export const viMessages = {
     copied: 'Đã sao chép',
     error: 'Tình báo cạnh tranh thất bại',
     dryRunNotice: 'Chế độ thử nghiệm — sử dụng tình báo mẫu',
+    productPh: 'vd., skincare, ứng dụng fitness, bộ bữa ăn',
+    competitorsPh: 'vd., Glossier, The Ordinary, CeraVe, Drunk Elephant',
   },
   creativeQualityScorer: {
     title: 'Trình Chấm điểm Chất lượng Sáng tạo',
@@ -4048,6 +4114,7 @@ export const viMessages = {
     copied: 'Đã sao chép',
     error: 'Ánh xạ hành trình cảm xúc thất bại',
     dryRunNotice: 'Chế độ thử nghiệm — sử dụng hành trình mẫu',
+    contentPh: 'vd., Mệt mỏi với làn da xỉn màu? Serum vitamin C của chúng tôi làm sáng da chỉ trong 7 ngày. Thử ngay hôm nay không rủi ro!',
   },
   adAudienceResonancePredictor: {
     title: 'Trình Dự đoán Cộng hưởng Khán giả',
@@ -4069,6 +4136,7 @@ export const viMessages = {
     copied: 'Đã sao chép',
     error: 'Dự đoán cộng hưởng khán giả thất bại',
     dryRunNotice: 'Chế độ thử nghiệm — sử dụng cộng hưởng mẫu',
+    audiencePh: 'vd., Gen Z, cha mẹ bận rộn, người yêu fitness',
   },
   creativeFormatRecommender: {
     title: 'Trình Gợi ý Định dạng Sáng tạo',
@@ -4113,6 +4181,7 @@ export const viMessages = {
     copied: 'Đã sao chép',
     error: 'Phân tích vòng đời thất bại',
     dryRunNotice: 'Chế độ thử nghiệm — sử dụng vòng đời mẫu',
+    contentPh: 'vd., Một video phong cách UGC 15s cho thấy biến đổi trước/sau với hook mạnh và CTA rõ ràng...',
   },
   adCreativeAbTestSimulator: {
     title: 'Mô phỏng Thử nghiệm A/B Quảng cáo',
@@ -4139,6 +4208,7 @@ export const viMessages = {
     copied: 'Đã sao chép',
     error: 'Mô phỏng thử nghiệm A/B thất bại',
     dryRunNotice: 'Chế độ thử nghiệm — sử dụng mô phỏng mẫu',
+    contentPh: 'vd., Da rạng rỡ trong 7 ngày. Serum vitamin C của chúng tôi được chứng minh lâm sàng làm sáng da...',
   },
   creativeVisualHierarchyAnalyzer: {
     title: 'Phân tích Hierarchy Thị giác Sáng tạo',
@@ -4161,6 +4231,7 @@ export const viMessages = {
     copied: 'Đã sao chép',
     error: 'Phân tích hierarchy thị giác thất bại',
     dryRunNotice: 'Chế độ thử nghiệm — sử dụng phân tích mẫu',
+    contentPh: 'vd., Hình ảnh chính ở trên cùng (chiều cao 60%), tiêu đề nổi bật chồng ở giữa, ảnh sản phẩm ở góc dưới bên trái, nút CTA ở góc dưới bên phải với độ tương phản cao...',
   },
   adAudiencePainPointMapper: {
     title: 'Ánh xạ Điểm đau Khách hàng Quảng cáo',
@@ -4183,6 +4254,7 @@ export const viMessages = {
     dryRunNotice: 'Chế độ thử nghiệm — sử dụng ánh xạ mẫu',
     frequency: 'Tần suất',
     addresses: 'Giải quyết',
+    audiencePh: 'vd., Phụ nữ chuyên gia bận rộn 25-40 tuổi lo lắng về lão hóa da',
   },
   creativeMessagingFrameworkBuilder: {
     title: 'Xây dựng Khung Tin nhắn Sáng tạo',
@@ -4208,6 +4280,8 @@ export const viMessages = {
     dryRunNotice: 'Chế độ thử nghiệm — sử dụng khung mẫu',
     supports: 'Hỗ trợ',
     dont: 'Không làm',
+    contentPh: 'vd., Làm sáng da xỉn màu chỉ trong 7 ngày với vitamin C đã được chứng minh lâm sàng — có bản dùng thử không rủi ro.',
+    audiencePh: 'vd., Phụ nữ 25-40 lo lắng về da xỉn màu và dấu hiệu lão hóa sớm',
   },
   adCreativeBurnoutDetector: {
     title: 'Trình Phát hiện Burnout Sáng tạo Quảng cáo',
@@ -4231,6 +4305,7 @@ export const viMessages = {
     copied: 'Đã sao chép',
     error: 'Phát hiện burnout thất bại',
     dryRunNotice: 'Chế độ thử nghiệm — sử dụng phân tích mẫu',
+    numberPh: 'vd., 14',
   },
   creativeAdConceptSynthesizer: {
     title: 'Trình Tổng hợp Khái niệm Quảng cáo Sáng tạo',
@@ -4280,6 +4355,7 @@ export const viMessages = {
     copied: 'Đã sao chép',
     error: 'Lập hồ sơ tâm lý thất bại',
     dryRunNotice: 'Chế độ thử nghiệm — sử dụng hồ sơ mẫu',
+    audiencePh: 'vd., Phụ nữ 25-34 tuổi, chuyên gia thành thị quan tâm đến sức khỏe',
   },
   creativeAdToneCalibrator: {
     title: 'Trình Hiệu chỉnh Giọng điệu Quảng cáo Sáng tạo',
@@ -4302,6 +4378,7 @@ export const viMessages = {
     copied: 'Đã sao chép',
     error: 'Hiệu chỉnh giọng điệu thất bại',
     dryRunNotice: 'Chế độ thử nghiệm — sử dụng hiệu chỉnh mẫu',
+    contentPh: 'vd., Mua serum vitamin C tuyệt vời của chúng tôi hôm nay và thấy kết quả trong 7 ngày!',
   },
   creativeAdFormatInnovator: {
     title: 'Nhà Đổi mới Định dạng Quảng cáo Sáng tạo',
@@ -4325,6 +4402,7 @@ export const viMessages = {
     copied: 'Đã sao chép',
     error: 'Đổi mới định dạng thất bại',
     dryRunNotice: 'Chế độ thử nghiệm — sử dụng định dạng mẫu',
+    contentPh: 'vd., video dọc, băng chuyền hình ảnh, quảng cáo story, clip influencer',
   },
   adCreativeStoryArcDesigner: {
     title: 'Trình thiết kế Cấu trúc Câu chuyện Quảng cáo',
@@ -4346,6 +4424,7 @@ export const viMessages = {
     copied: 'Đã sao chép',
     error: 'Thiết kế cấu trúc câu chuyện thất bại',
     dryRunNotice: 'Chế độ thử nghiệm — sử dụng cấu trúc câu chuyện mẫu',
+    contentPh: 'vd., Làm sáng da chỉ trong 7 ngày — không rủi ro',
   },
   creativeAdPersuasionStrategist: {
     title: 'Chiến lược gia Thuyết phục Quảng cáo Sáng tạo',
@@ -4369,6 +4448,7 @@ export const viMessages = {
     dryRunNotice: 'Chế độ thử nghiệm — sử dụng chiến lược mẫu',
     effect: 'Hiệu ứng',
     principle: 'Nguyên tắc',
+    contentPh: 'vd., Quảng bá thử thách da rạng rỡ 7 ngày với giảm giá trong thời gian giới hạn...',
   },
   adCreativeHookTimingOptimizer: {
     title: 'Trình tối ưu Thời điểm Hook Quảng cáo',
@@ -4394,6 +4474,8 @@ export const viMessages = {
     currentPlacement: 'Vị trí hiện tại',
     optimalWindow: 'Cửa sổ tối ưu',
     attentionCurve: 'Đường cong sự chú ý',
+    contentPh: 'vd., Bạn có biết 90% người bỏ mục tiêu fitness vào tháng 2? Đây là cách ở lại trong 10%...',
+    productPh: 'vd., Ứng dụng fitness DTC bán gói đăng ký theo dõi thói quen',
   },
   creativeAdMetaphorGenerator: {
     title: 'Trình tạo Ẩn dụ Quảng cáo Sáng tạo',
@@ -4416,6 +4498,7 @@ export const viMessages = {
     copied: 'Đã sao chép',
     error: 'Tạo ẩn dụ thất bại',
     dryRunNotice: 'Chế độ thử nghiệm — sử dụng ẩn dụ mẫu',
+    benefitPh: 'vd., làm sáng da xỉn màu trong 7 ngày',
   },
   adCreativeSensoryEnhancer: {
     title: 'Trình tăng cường Cảm giác Quảng cáo Sáng tạo',
@@ -4459,6 +4542,8 @@ export const viMessages = {
     copied: 'Đã sao chép',
     error: 'Thiết kế điểm ngắt thất bại',
     dryRunNotice: 'Chế độ thử nghiệm — sử dụng điểm ngắt mẫu',
+    audiencePh: 'vd., Phụ nữ 25-34 quan tâm đến làm sạch sắc đẹp',
+    contentPh: 'vd., Một quảng cáo TikTok 15 giây mở đầu bằng demo sản phẩm rồi đến lời chứng thực...',
   },
   adCreativeSocialProofArchitect: {
     title: 'Kiến trúc sư Bằng chứng Xã hội Quảng cáo',
@@ -4483,6 +4568,8 @@ export const viMessages = {
     error: 'Kiến trúc bằng chứng xã hội thất bại',
     dryRunNotice: 'Chế độ thử nghiệm — sử dụng kiến trúc mẫu',
     integration: 'Tích hợp',
+    audiencePh: 'vd., Phụ nữ 25-40 quan tâm đến skincare chống lão hóa',
+    audiencePh2: 'vd., Quảng bá serum vitamin C mới của chúng tôi với trọng tâm vào kết quả làm sáng và xây dựng niềm tin...',
   },
   adCreativeEmotionSequencer: {
     title: 'Trình tự Cảm xúc Quảng cáo Kreatif',
@@ -4610,6 +4697,7 @@ export const viMessages = {
     copied: 'Đã sao chép',
     error: 'Thiết kế twist tường thuật thất bại',
     dryRunNotice: 'Chế độ thử nghiệm — sử dụng twist mẫu',
+    contentPh: 'vd., Một người phụ nữ vật lộn với da xỉn màu cho đến khi cô ấy khám phá ra serum của chúng tôi...',
   },
   adCreativeMemoryAnchorBuilder: {
     title: 'Trình xây dựng Neo Trí nhớ Quảng cáo Sáng tạo',
@@ -4754,6 +4842,7 @@ export const viMessages = {
     copied: 'Đã sao chép',
     error: 'Chiến lược hệ thống thị giác thất bại',
     dryRunNotice: 'Chế độ thử nghiệm — sử dụng hệ thống mẫu',
+    elementsPh: 'vd., tiêu đề, hình sản phẩm, logo, nút CTA, nền',
   },
   adCreativeSoundDesignStrategist: {
     title: 'Chuyên gia Chiến lược Thiết kế Âm thanh Quảng cáo Sáng tạo',
@@ -4776,6 +4865,7 @@ export const viMessages = {
     copied: 'Đã sao chép',
     error: 'Chiến lược thiết kế âm thanh thất bại',
     dryRunNotice: 'Chế độ thử nghiệm — sử dụng thiết kế âm thanh mẫu',
+    contentPh: 'vd., năng động, bình tĩnh, bí ẩn, vui nhộn, kịch tính, truyền cảm hứng...',
   },
   creativeAdSurpriseElementDesigner: {
     title: 'Người Thiết Kế Yếu Tố Bất Ngờ Quảng Cáo Sáng Tạo',
@@ -4800,6 +4890,7 @@ export const viMessages = {
     copied: 'Đã sao chép',
     error: 'Thiết kế yếu tố bất ngờ thất bại',
     dryRunNotice: 'Chế độ thử nghiệm — sử dụng yếu tố bất ngờ mẫu',
+    audiencePh: 'vd., người yêu skincare Gen Z 18-24 tuổi',
   },
   adCreativeCallbackMemoryDesigner: {
     title: 'Người Thiết Kế Trí Nhớ Callback Quảng Cáo Sáng Tạo',
@@ -5239,6 +5330,7 @@ export const viMessages = {
     copied: 'Đã sao chép',
     error: 'Thiết kế động lượng xã hội thất bại',
     dryRunNotice: 'Chế độ thử nghiệm — sử dụng động lượng xã hội mẫu',
+    audiencePh: 'vd., Tham gia cùng hơn 50.000 phụ nữ đã biến đổi làn da với serum vitamin C của chúng tôi...',
   },
   creativeAdValueLadderDesigner: {
     title: 'Người Thiết Kế Thang Giá Trị Quảng Cáo Sáng Tạo',
@@ -5335,6 +5427,7 @@ export const viMessages = {
     copied: 'Đã sao chép',
     error: 'Thiết kế khung khan hiếm thất bại',
     dryRunNotice: 'Chế độ thử nghiệm — sử dụng khung khan hiếm mẫu',
+    contentPh: 'vd., Chỉ còn 50 chai serum vitamin C phiên bản giới hạn của chúng tôi...',
   },
   creativeAdIdentityAlignmentDesigner: {
     title: 'Người Thiết Kế Căn Chỉnh Nhận Diện Quảng Cáo Sáng Tạo',
@@ -5383,6 +5476,7 @@ export const viMessages = {
     copied: 'Đã sao chép',
     error: 'Thiết kế khung hỗ tương thất bại',
     dryRunNotice: 'Chế độ thử nghiệm — sử dụng khung hỗ tương mẫu',
+    contentPh: 'vd., Chúng tôi đang tặng khóa học skincare mini miễn phí 5 ngày cho cộng đồng của mình...',
   },
   adCreativePASFrameworkDesigner: {
     title: 'Người Thiết Kế Khung PAS Quảng Cáo Sáng Tạo',
@@ -5599,6 +5693,9 @@ export const viMessages = {
     copied: 'Đã sao chép',
     error: 'Thiết kế kích thích sợ hãi thất bại',
     dryRunNotice: 'Chế độ thử nghiệm — sử dụng kích thích sợ hãi mẫu',
+    productPh: 'vd., Thương hiệu bảo hiểm DTC bán gói bảo vệ nhà cửa',
+    contentPh: 'vd., Đừng để một sự kiện bất ngờ phá hủy tất cả những gì bạn đã xây dựng...',
+    audiencePh: 'vd., Chủ nhà 35-55 tuổi lo lắng về việc bảo vệ tài sản',
   },
   creativeAdBelongingAppealDesigner: {
     title: 'Người Thiết Kế Kích Thích Thuộc Về Quảng Cáo Sáng Tạo',
@@ -5647,6 +5744,9 @@ export const viMessages = {
     copied: 'Đã sao chép',
     error: 'Thiết kế kích thích hài hước thất bại',
     dryRunNotice: 'Chế độ thử nghiệm — sử dụng kích thích hài hước mẫu',
+    productPh: 'vd., Thương hiệu snack DTC bán bỏng ngô cay',
+    contentPh: 'vd., Thèm một thứ gì đó nổi bật? Bỏng ngô cay của chúng tôi mang cảm giác khác...',
+    audiencePh: 'vd., Người yêu snack Gen Z 18-24 tuổi lướt TikTok ban đêm',
   },
   creativeAdFramingEffectDesigner: {
     title: 'Người Thiết Kế Hiệu Ứng Định Hình Quảng Cáo Sáng Tạo',
@@ -5695,6 +5795,7 @@ export const viMessages = {
     copied: 'Đã sao chép',
     error: 'Thiết kế kích thích tự hào thất bại',
     dryRunNotice: 'Chế độ thử nghiệm — sử dụng kích thích tự hào mẫu',
+    contentPh: 'vd., Bạn xứng đáng điều này — serum vitamin C của chúng tôi dành cho những người không bao giờ thỏa hiệp...',
   },
   creativeAdNostalgiaTriggerDesigner: {
     title: 'Người Thiết Kế Kích Hoạt Hoài Niệm Quảng Cáo Sáng Tạo',
@@ -5863,6 +5964,7 @@ export const viMessages = {
     copied: 'Đã sao chép',
     error: 'Thiết kế khung khác biệt mất mát thất bại',
     dryRunNotice: 'Chế độ thử nghiệm — sử dụng khung khác biệt mất mát mẫu',
+    contentPh: 'vd., Mỗi ngày bạn chờ đợi, da của bạn lão hóa và tổn thương tích tụ...',
   },
   adCreativeAnchoringEffectDesigner: {
     title: 'Người Thiết Kế Hiệu Ứng Mỏ Neo Quảng Cáo Sáng Tạo',
@@ -5887,6 +5989,7 @@ export const viMessages = {
     copied: 'Đã sao chép',
     error: 'Thiết kế hiệu ứng mỏ neo thất bại',
     dryRunNotice: 'Chế độ thử nghiệm — sử dụng khung mỏ neo mẫu',
+    contentPh: 'vd., Trước đây $199, nay chỉ $89 cho serum vitamin C của chúng tôi...',
   },
   aidaFrameworkDesigner: {
     title: 'Trình Thiết Kế Framework AIDA',

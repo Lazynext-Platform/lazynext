@@ -135,7 +135,7 @@ export default function CreativeFormatConverterPage() {
               id="cfcContent"
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              placeholder="e.g., Our vitamin C serum brightens skin in just two weeks. Formulated with 20% L-ascorbic acid, it reduces dark spots and evens skin tone..."
+              placeholder={t('creativeFormatConverter.contentPh')}
               rows={5}
               maxLength={2000}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent resize-y"

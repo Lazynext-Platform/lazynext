@@ -115,7 +115,7 @@ export default function CreativeConceptExpanderProPage() {
               id="cepConcept"
               value={concept}
               onChange={(e) => setConcept(e.target.value)}
-              placeholder="e.g., A before-and-after transformation showing real results in 30 days"
+              placeholder={t('creativeConceptExpanderPro.contentPh')}
               rows={3}
               maxLength={2000}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent resize-y"

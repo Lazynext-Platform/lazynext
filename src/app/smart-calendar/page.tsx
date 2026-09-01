@@ -142,7 +142,7 @@ export default function SmartCalendarPage() {
             </div>
             <div>
               <label htmlFor="scTimezone" className="block text-sm font-medium mb-1">{t('smartCalendar.timezone')}</label>
-              <input id="scTimezone" type="text" value={timezone} onChange={(e) => setTimezone(e.target.value)} placeholder="UTC" className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
+              <input id="scTimezone" type="text" value={timezone} onChange={(e) => setTimezone(e.target.value)} placeholder={t('smartCalendar.timezonePh')} className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
             </div>
           </div>
 

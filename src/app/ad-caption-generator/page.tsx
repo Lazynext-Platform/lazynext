@@ -169,7 +169,7 @@ export default function AdCaptionGeneratorPage() {
                 type="text"
                 value={tone}
                 onChange={(e) => setTone(e.target.value)}
-                placeholder="e.g., playful, bold, luxurious (optional)"
+                placeholder={t('common.phToneLuxurious')}
                 maxLength={100}
                 className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
                 disabled={loading}

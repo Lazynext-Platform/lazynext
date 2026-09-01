@@ -668,6 +668,12 @@ export const zhMessages = {
       ratioFeed: '动态',
       ratioTiktokReels: 'TikTok/Reels',
       ratioYoutube: 'YouTube',
+      namePh: 'Q4产品发布 - A/B测试',
+      namePh2: 'GlowPatch LED Face Mask',
+      numberPh: '50',
+      urlPh: 'https://yourbrand.com',
+      urlPh2: 'https://shop.example.com/products/led-mask',
+      urlPh3: 'https://example.com/reference-ad.mp4',
     },
 
     costEstimate: {
@@ -1099,6 +1105,8 @@ export const zhMessages = {
       loadingCampaigns: '加载广告活动中…',
       refreshingMetrics: '刷新中…',
       refreshMetricsLabel: '刷新 {name} 的指标',
+      namePh: '夏季促销 - Glow Serum',
+      contentPh: 'abc123, def456',
     },
     perf: {
       title: '效果仪表盘',
@@ -2776,6 +2784,7 @@ export const zhMessages = {
     creativeAudiencePlaceholder: '受众',
     remove: '移除',
     addCreative: '+ 添加创意',
+    timezonePh: 'UTC',
   },
   competitorWatch: {
     title: '竞品监控',
@@ -2867,6 +2876,7 @@ export const zhMessages = {
     clearFilters: '清除筛选',
     audience: '受众',
     error: '钩子生成失败',
+    audiencePh: '例如，远程工作者',
   },
   briefTemplateBuilder: {
     title: '简报模板构建器',
@@ -2893,6 +2903,7 @@ export const zhMessages = {
     brandColors: '颜色（逗号分隔）',
     urlPlaceholder: 'https://...',
     aiGenerated: 'AI生成',
+    contentPh: '例如，护肤精华液、无线耳机',
   },
   adScriptWriter: {
       title: "广告脚本编写器",
@@ -2950,6 +2961,8 @@ export const zhMessages = {
       objections: "异议",
       copy: "复制",
       noResults: "尚未生成画像。输入产品或品牌以开始。",
+    productPh: '例如，一款针对抗衰老问题的高端有机护肤精华液',
+    audiencePh: '例如，美国千禧一代、欧盟专业人士',
   },
   variantMatrixGenerator: {
       title: "创意变体矩阵",
@@ -3056,6 +3069,10 @@ export const zhMessages = {
     brandPersonality: "品牌个性",
     copy: "复制",
     noResults: "尚未生成情绪板。输入产品或品牌以开始。",
+    productPh: '例如，适合健身爱好者的环保可重复使用水瓶',
+    tonePh: '例如，简约、大胆、活泼',
+    audiencePh: '例如，城市千禧一代',
+    formatPh: '例如，instagram, tiktok',
   },
   adPerformancePredictor: {
     title: "广告效果预测器",
@@ -3083,6 +3100,8 @@ export const zhMessages = {
     copy: "复制",
     error: "预测失败",
     briefPh: '在此粘贴您的创意简报或广告概念...',
+    metricPh: '例如，电子、美容、SaaS',
+    audiencePh: '例如，美国25-40岁的远程工作者',
   },
   abTestPlannerV2: {
     title: "创意 A/B 测试规划器",
@@ -3158,6 +3177,8 @@ export const zhMessages = {
     copied: '已复制',
     error: '趋势发现失败',
     dryRunNotice: '试运行模式 — 使用启发式趋势',
+    contentPh: '例如，清洁护肤、家庭健身、植物性烹饪',
+    contentPh2: '例如，美国、英国、全球（可选）',
   },
   brandVoiceAnalyzer: {
     title: '品牌声音分析器',
@@ -3180,6 +3201,7 @@ export const zhMessages = {
     error: '分析失败',
     dryRunNotice: '试运行模式 — 使用启发式分析',
     sampleContentPh: '粘贴100+字符的品牌内容 — 网站文案、广告说明、社交帖子、邮件…',
+    brandNamePh: '例如，Glow & Co.',
   },
   adCaptionGenerator: {
     title: '广告文案生成器',
@@ -3254,6 +3276,9 @@ export const zhMessages = {
     copied: '已复制',
     error: '时段优化失败',
     dryRunNotice: '试运行模式 — 使用启发式时段',
+    audiencePh: '例如，关注健身网红的美国Z世代大学生',
+    timezonePh: '例如，America/New_York（可选，默认UTC）',
+    productPh: '例如，健身服饰（可选）',
   },
   creativeFatigueDetector: {
     title: '创意疲劳检测器',
@@ -3277,6 +3302,11 @@ export const zhMessages = {
     copied: '已复制',
     error: '疲劳检测失败',
     dryRunNotice: '试运行模式 — 使用启发式分析',
+    contentPh: '例如，UGC风格的TikTok广告展示护肤流程，带有好奇心钩子',
+    numberPh: '例如，12',
+    metricPh: '例如，150000',
+    numberPh2: '例如，1.2',
+    numberPh3: '例如，2.5（可选）',
   },
   adCtaOptimizer: {
     title: '广告 CTA 优化器',
@@ -3298,6 +3328,8 @@ export const zhMessages = {
     copied: '已复制',
     error: 'CTA 优化失败',
     dryRunNotice: '试运行模式 — 使用模板 CTA',
+    contentPh: '例如，购买（可选）',
+    contentPh2: '例如，立即购买（可选）',
   },
   conceptExpander: {
     title: '创意概念扩展器',
@@ -3320,6 +3352,7 @@ export const zhMessages = {
     copied: '已复制',
     error: '概念扩展失败',
     dryRunNotice: '试运行模式 — 使用模板概念',
+    contentPh: '例如，展示产品改变日常流程的前后揭示',
   },
   adStoryGenerator: {
     title: '广告故事生成器',
@@ -3370,6 +3403,7 @@ export const zhMessages = {
     copied: '已复制',
     error: '配色生成失败',
     dryRunNotice: '试运行模式 — 使用模板配色',
+    colorPh: '例如，#1a1a1a（可选）',
   },
   adThumbnailGenerator: {
     title: '广告缩略图生成器',
@@ -3394,6 +3428,8 @@ export const zhMessages = {
     copied: '已复制',
     error: '缩略图生成失败',
     dryRunNotice: '试运行模式 — 使用模板缩略图',
+    numberPh: '例如，你正在犯的5个护肤错误',
+    benefitPh: '例如，维生素C精华液的好处',
   },
   adFontPairingGenerator: {
     title: '广告字体搭配生成器',
@@ -3434,6 +3470,7 @@ export const zhMessages = {
     copied: '已复制',
     error: '标签生成失败',
     dryRunNotice: '试运行模式 — 使用模板标签',
+    categoryPh: '例如，护肤、健身、科技小工具',
   },
   creativeSceneGenerator: {
     title: '创意场景生成器',
@@ -3459,6 +3496,7 @@ export const zhMessages = {
     copied: '已复制',
     error: '场景生成失败',
     dryRunNotice: '试运行模式 — 使用模板场景',
+    contentPh: '例如，展示产品真实效果的前后对比变化',
   },
   adMusicMoodMatcher: {
     title: '广告音乐情绪匹配器',
@@ -3528,6 +3566,8 @@ export const zhMessages = {
     copied: '已复制',
     error: '简报生成失败',
     dryRunNotice: '试运行模式 — 使用模板简报',
+    contentPh: '例如，推出新产品线并推动预订',
+    audiencePh: '例如，25-35岁的千禧一代护肤爱好者',
   },
   adPlacementStrategist: {
     title: '广告投放策略师',
@@ -3550,6 +3590,7 @@ export const zhMessages = {
     copied: '已复制',
     error: '投放策略生成失败',
     dryRunNotice: '试运行模式 — 使用模板策略',
+    audiencePh: '例如，25-35岁对护肤感兴趣的千禧一代女性',
   },
   adABTestNameGenerator: {
     title: '广告 A/B 测试名称生成器',
@@ -3587,6 +3628,7 @@ export const zhMessages = {
     copied: '已复制',
     error: '钩子改版生成失败',
     dryRunNotice: '试运行模式 — 使用模板改版',
+    contentPh: '例如，这款护肤产品将改变你的生活',
   },
   adAudienceSegmentBuilder: {
     title: '广告受众细分构建器',
@@ -3612,6 +3654,7 @@ export const zhMessages = {
     copied: '已复制',
     error: '细分构建失败',
     dryRunNotice: '试运行模式 — 使用模板细分',
+    audiencePh: '例如，25-40岁关注健康、对清洁美容感兴趣的女性',
   },
   creativeConceptValidator: {
     title: '创意概念验证器',
@@ -3639,6 +3682,8 @@ export const zhMessages = {
     copied: '已复制',
     error: '概念验证失败',
     dryRunNotice: '试运行模式 — 使用模板验证',
+    contentPh: '例如，一段15秒的TikTok视频展示使用我们的维生素C精华液的前后变化，带有好奇心钩子和UGC风格的真实性',
+    audiencePh: '例如，关注健康的25-40岁女性',
   },
   adEmotionAnalyzer: {
     title: '广告情感分析器',
@@ -3661,6 +3706,7 @@ export const zhMessages = {
     error: '情感分析失败',
     dryRunNotice: '试运行模式 — 使用模板分析',
     overallEmotionalImpact: '整体情感影响',
+    contentPh: '例如，当我第一次尝试这款精华液时，我持怀疑态度。但两周后，我的肌肤发光了。这就是它永远改变我日常流程的原因...',
   },
   creativeFormatConverter: {
     title: '创意格式转换器',
@@ -3682,6 +3728,7 @@ export const zhMessages = {
     copied: '已复制',
     error: '格式转换失败',
     dryRunNotice: '试运行模式 — 使用模板转换',
+    contentPh: '例如，我们的维生素C精华液两周即可提亮肌肤。配方含20% L-抗坏血酸，减少黑斑并均匀肤色...',
   },
   adBudgetAllocator: {
     title: '广告预算分配器',
@@ -3705,6 +3752,7 @@ export const zhMessages = {
     copied: '已复制',
     error: '预算分配失败',
     dryRunNotice: '试运行模式 — 使用模板分配',
+    contentPh: '例如，$10,000',
   },
   creativeTrendAdapter: {
     title: '创意趋势适配器',
@@ -3729,6 +3777,8 @@ export const zhMessages = {
     copied: '已复制',
     error: '趋势适配失败',
     dryRunNotice: '试运行模式 — 使用模板适配',
+    contentPh: '例如，看看我们全新的维生素C精华液，打造发光肌肤',
+    brandNamePh: '例如，GlowUp Skincare',
   },
   adCreativeSequencer: {
     title: '广告创意排序器',
@@ -3780,6 +3830,9 @@ export const zhMessages = {
     copied: '已复制',
     error: '故事生成失败',
     dryRunNotice: '试运行模式 — 使用模板故事',
+    brandNamePh: '例如，GlowUp',
+    audiencePh: '例如，真实性、赋权、可持续性',
+    productPh: '例如，一款使用AI个性化护肤流程的护肤应用',
   },
   adLocalizationAdapter: {
     title: '广告本地化适配器',
@@ -3805,6 +3858,8 @@ export const zhMessages = {
     copied: '已复制',
     error: '本地化失败',
     dryRunNotice: '试运行模式 — 使用模板本地化',
+    contentPh: '例如，看看我们超棒的新产品——它是游戏规则改变者！立即购买，节省20%！',
+    brandNamePh: '例如，GlowUp skincare',
   },
   creativePerformanceForecaster: {
     title: '创意效果预测器',
@@ -3834,6 +3889,7 @@ export const zhMessages = {
     copied: '已复制',
     error: '效果预测失败',
     dryRunNotice: '试运行模式 — 使用模板预测',
+    contentPh: '例如，一段15秒的TikTok展示某人使用我们的维生素C精华液的前后对比，前3秒有钩子，并有立即购买的CTA',
   },
   adSentimentTuner: {
     title: '广告情感调音器',
@@ -3857,6 +3913,7 @@ export const zhMessages = {
     copied: '已复制',
     error: '情感调整失败',
     dryRunNotice: '试运行模式 — 使用模板调整',
+    contentPh: '例如，我们的新产品帮你节省时间，完成更多事情。',
   },
   creativeHookMatrixGenerator: {
     title: '创意钩子矩阵生成器',
@@ -3904,6 +3961,7 @@ export const zhMessages = {
     dryRunNotice: '试运行模式 — 使用模板轮换',
     credits: '积分',
     days: '天',
+    contentPh: '例如，本周仅限，我们最畅销的维生素C精华液享50%折扣。',
   },
   brandVoiceConsistencyChecker: {
     title: '品牌语调一致性检查器',
@@ -3931,6 +3989,9 @@ export const zhMessages = {
     copied: '已复制',
     error: '品牌语调检查失败',
     dryRunNotice: '试运行模式 — 使用模板检查',
+    contentPh: '例如，嘿家人们！看看我们超棒的新产品LOL你一定会爱死它的!!!',
+    brandNamePh: '例如，Lumina Skincare',
+    contentPh2: '例如，专业、温暖且有科学依据。使用清晰、易懂的语言。避免俚语和过多标点。',
   },
   adPersonaMatcher: {
     title: '广告人群画像匹配器',
@@ -3951,6 +4012,8 @@ export const zhMessages = {
     copied: '已复制',
     error: '人群画像匹配失败',
     dryRunNotice: '试运行模式 — 使用模板匹配',
+    contentPh: '例如，用我们的维生素C精华液探索护肤的未来...',
+    audiencePh: '例如，18-25岁的美容爱好者、30-45岁的忙碌妈妈、环保购物者',
   },
   creativeConceptExpanderPro: {
     title: '创意概念扩展专业版',
@@ -3976,6 +4039,7 @@ export const zhMessages = {
     copied: '已复制',
     error: '概念扩展失败',
     dryRunNotice: '试运行模式 — 使用模板扩展',
+    contentPh: '例如，展示30天真实效果的前后变化',
   },
   adCompetitiveIntelligence: {
     title: '广告竞争情报',
@@ -4001,6 +4065,8 @@ export const zhMessages = {
     copied: '已复制',
     error: '竞争情报分析失败',
     dryRunNotice: '试运行模式 — 使用模板情报',
+    productPh: '例如，护肤、健身应用、餐包',
+    competitorsPh: '例如，Glossier, The Ordinary, CeraVe, Drunk Elephant',
   },
   creativeQualityScorer: {
     title: '创意质量评分器',
@@ -4046,6 +4112,7 @@ export const zhMessages = {
     copied: '已复制',
     error: '情感旅程映射失败',
     dryRunNotice: '试运行模式 — 使用模板旅程',
+    contentPh: '例如，厌倦了暗沉肌肤？我们的维生素C精华液7天即可提亮。今天就无风险试用！',
   },
   adAudienceResonancePredictor: {
     title: '广告受众共鸣预测器',
@@ -4067,6 +4134,7 @@ export const zhMessages = {
     copied: '已复制',
     error: '受众共鸣预测失败',
     dryRunNotice: '试运行模式 — 使用模板共鸣',
+    audiencePh: '例如，Z世代、忙碌的父母、健身爱好者',
   },
   creativeFormatRecommender: {
     title: '创意格式推荐器',
@@ -4111,6 +4179,7 @@ export const zhMessages = {
     copied: '已复制',
     error: '生命周期分析失败',
     dryRunNotice: '试运行模式 — 使用模板生命周期',
+    contentPh: '例如，一段15秒UGC风格视频展示前后变化，带有强钩子和清晰CTA...',
   },
   adCreativeAbTestSimulator: {
     title: '广告创意 A/B 测试模拟器',
@@ -4137,6 +4206,7 @@ export const zhMessages = {
     copied: '已复制',
     error: 'A/B 测试模拟失败',
     dryRunNotice: '试运行模式 — 使用模板模拟',
+    contentPh: '例如，7天发光。我们的维生素C精华液经临床验证可提亮肌肤...',
   },
   creativeVisualHierarchyAnalyzer: {
     title: '创意视觉层次分析器',
@@ -4159,6 +4229,7 @@ export const zhMessages = {
     copied: '已复制',
     error: '视觉层次分析失败',
     dryRunNotice: '试运行模式 — 使用模板分析',
+    contentPh: '例如，顶部主图（60%高度），中心叠加粗体标题，左下角产品图，右下角高对比度CTA按钮...',
   },
   adAudiencePainPointMapper: {
     title: '广告受众痛点映射器',
@@ -4181,6 +4252,7 @@ export const zhMessages = {
     dryRunNotice: '试运行模式 — 使用模板映射',
     frequency: '频率',
     addresses: '解决',
+    audiencePh: '例如，25-40岁忙碌的职业女性，关注肌肤衰老',
   },
   creativeMessagingFrameworkBuilder: {
     title: '创意信息框架构建器',
@@ -4207,6 +4279,8 @@ export const zhMessages = {
     supports: '支持',
     do: '做',
     dont: '不要',
+    contentPh: '例如，7天即可提亮暗沉肌肤，使用临床验证的维生素C——提供无风险试用。',
+    audiencePh: '例如，25-40岁关注暗沉肌肤和早期衰老迹象的女性',
   },
   adCreativeBurnoutDetector: {
     title: '广告创意疲劳检测器',
@@ -4230,6 +4304,7 @@ export const zhMessages = {
     copied: '已复制',
     error: '疲劳检测失败',
     dryRunNotice: '试运行模式 — 使用模板分析',
+    numberPh: '例如，14',
   },
   creativeAdConceptSynthesizer: {
     title: '创意广告概念合成器',
@@ -4279,6 +4354,7 @@ export const zhMessages = {
     copied: '已复制',
     error: '心理画像分析失败',
     dryRunNotice: '试运行模式 — 使用模板画像',
+    audiencePh: '例如，25-34岁女性、关注健康的城市职场人士',
   },
   creativeAdToneCalibrator: {
     title: '创意广告语气校准器',
@@ -4301,6 +4377,7 @@ export const zhMessages = {
     copied: '已复制',
     error: '语气校准失败',
     dryRunNotice: '试运行模式 — 使用模板校准',
+    contentPh: '例如，今天就购买我们令人惊叹的维生素C精华液，7天见效！',
   },
   creativeAdFormatInnovator: {
     title: '创意广告格式创新器',
@@ -4324,6 +4401,7 @@ export const zhMessages = {
     copied: '已复制',
     error: '格式创新失败',
     dryRunNotice: '试运行模式 — 使用模板格式',
+    contentPh: '例如，竖版视频、图片轮播、故事广告、网红片段',
   },
   adCreativeStoryArcDesigner: {
     title: '广告创意故事弧设计器',
@@ -4345,6 +4423,7 @@ export const zhMessages = {
     copied: '已复制',
     error: '故事弧设计失败',
     dryRunNotice: '试运行模式 — 使用模板故事弧',
+    contentPh: '例如，7天提亮肌肤——无风险',
   },
   creativeAdPersuasionStrategist: {
     title: '创意广告说服策略师',
@@ -4368,6 +4447,7 @@ export const zhMessages = {
     dryRunNotice: '试运行模式 — 使用模板策略',
     effect: '效果',
     principle: '原则',
+    contentPh: '例如，推广7天发光挑战，限时折扣...',
   },
   adCreativeHookTimingOptimizer: {
     title: '广告创意钩子时机优化器',
@@ -4393,6 +4473,8 @@ export const zhMessages = {
     currentPlacement: '当前位置',
     optimalWindow: '最佳窗口',
     attentionCurve: '注意力曲线',
+    contentPh: '例如，你知道90%的人到二月就放弃了健身目标吗？以下是保持在10%的方法...',
+    productPh: '例如，销售习惯追踪订阅的DTC健身应用',
   },
   creativeAdMetaphorGenerator: {
     title: '创意广告隐喻生成器',
@@ -4415,6 +4497,7 @@ export const zhMessages = {
     copied: '已复制',
     error: '隐喻生成失败',
     dryRunNotice: '试运行模式 — 使用模板隐喻',
+    benefitPh: '例如，7天提亮暗沉肌肤',
   },
   adCreativeSensoryEnhancer: {
     title: '广告创意感官增强器',
@@ -4458,6 +4541,8 @@ export const zhMessages = {
     copied: '已复制',
     error: '模式中断设计失败',
     dryRunNotice: '试运行模式 — 使用模板中断',
+    audiencePh: '例如，25-34岁对清洁美容感兴趣的女性',
+    contentPh: '例如，一段15秒的TikTok广告，以产品演示开场，然后是用户评价...',
   },
   adCreativeSocialProofArchitect: {
     title: '广告创意社会认同架构师',
@@ -4482,6 +4567,8 @@ export const zhMessages = {
     error: '社会认同架构失败',
     dryRunNotice: '试运行模式 — 使用模板架构',
     integration: '整合',
+    audiencePh: '例如，25-40岁对抗衰老护肤感兴趣的女性',
+    audiencePh2: '例如，推广我们全新的维生素C精华液，重点放在提亮效果和建立信任上...',
   },
   adCreativeEmotionSequencer: {
     title: '广告创意情感序列器',
@@ -4609,6 +4696,7 @@ export const zhMessages = {
     copied: '已复制',
     error: '叙事反转设计失败',
     dryRunNotice: '试运行模式 — 使用模板反转',
+    contentPh: '例如，一位女性与暗沉肌肤抗争，直到她发现了我们的精华液...',
   },
   adCreativeMemoryAnchorBuilder: {
     title: '广告创意记忆锚点构建器',
@@ -4753,6 +4841,7 @@ export const zhMessages = {
     copied: '已复制',
     error: '视觉层次策划失败',
     dryRunNotice: '试运行模式 — 使用模板层次',
+    elementsPh: '例如，标题、产品图片、logo、CTA按钮、背景',
   },
   adCreativeSoundDesignStrategist: {
     title: '广告创意声音设计策略师',
@@ -4775,6 +4864,7 @@ export const zhMessages = {
     copied: '已复制',
     error: '声音设计策划失败',
     dryRunNotice: '试运行模式 — 使用模板声音设计',
+    contentPh: '例如，充满活力、平静、神秘、俏皮、戏剧性、振奋人心...',
   },
   creativeAdSurpriseElementDesigner: {
     title: '创意广告惊喜元素设计师',
@@ -4799,6 +4889,7 @@ export const zhMessages = {
     copied: '已复制',
     error: '惊喜元素设计失败',
     dryRunNotice: '试运行模式 — 使用模板惊喜元素',
+    audiencePh: '例如，18-24岁的Z世代护肤爱好者',
   },
   adCreativeCallbackMemoryDesigner: {
     title: '广告创意回调记忆设计师',
@@ -5238,6 +5329,7 @@ export const zhMessages = {
     copied: '已复制',
     error: '社交势能设计失败',
     dryRunNotice: '试运行模式 — 使用模板社交势能',
+    audiencePh: '例如，加入50,000+用我们的维生素C精华液改变肌肤的女性...',
   },
   creativeAdValueLadderDesigner: {
     title: '创意广告价值阶梯设计师',
@@ -5334,6 +5426,7 @@ export const zhMessages = {
     copied: '已复制',
     error: '稀缺框架设计失败',
     dryRunNotice: '试运行模式 — 使用模板稀缺框架',
+    contentPh: '例如，我们的限量版维生素C精华液仅剩50瓶...',
   },
   creativeAdIdentityAlignmentDesigner: {
     title: '广告创意身份认同设计师',
@@ -5382,6 +5475,7 @@ export const zhMessages = {
     copied: '已复制',
     error: '互惠框架设计失败',
     dryRunNotice: '试运行模式 — 使用模板互惠框架',
+    contentPh: '例如，我们正在向社区赠送免费的5天护肤迷你课程...',
   },
   adCreativePASFrameworkDesigner: {
     title: '广告创意PAS框架设计师',
@@ -5598,6 +5692,9 @@ export const zhMessages = {
     copied: '已复制',
     error: '恐惧诉求设计失败',
     dryRunNotice: '试运行模式 — 使用模板恐惧诉求',
+    productPh: '例如，销售房屋保护计划的DTC保险品牌',
+    contentPh: '例如，别让一个意外事件毁掉你建立的一切...',
+    audiencePh: '例如，35-55岁关注保护资产的房主',
   },
   creativeAdBelongingAppealDesigner: {
     title: '广告创意归属诉求设计师',
@@ -5646,6 +5743,9 @@ export const zhMessages = {
     copied: '已复制',
     error: '幽默诉求设计失败',
     dryRunNotice: '试运行模式 — 使用模板幽默诉求',
+    productPh: '例如，销售辣味爆米花的DTC零食品牌',
+    contentPh: '例如，想来点大胆的？我们的辣味爆米花感觉就是不一样...',
+    audiencePh: '例如，18-24岁晚上刷TikTok的Z世代零食爱好者',
   },
   creativeAdFramingEffectDesigner: {
     title: '广告创意框架效应设计师',
@@ -5694,6 +5794,7 @@ export const zhMessages = {
     copied: '已复制',
     error: '自豪诉求设计失败',
     dryRunNotice: '试运行模式 — 使用模板自豪诉求',
+    contentPh: '例如，你值得拥有——我们的维生素C精华液，为永不妥协的人而设...',
   },
   creativeAdNostalgiaTriggerDesigner: {
     title: '广告创意怀旧触发设计师',
@@ -5862,6 +5963,7 @@ export const zhMessages = {
     copied: '已复制',
     error: '损失厌恶框架设计失败',
     dryRunNotice: '试运行模式 — 使用模板损失厌恶框架',
+    contentPh: '例如，你每等一天，肌肤就在老化，损伤在累积...',
   },
   adCreativeAnchoringEffectDesigner: {
     title: '广告创意锚定效应设计师',
@@ -5886,6 +5988,7 @@ export const zhMessages = {
     copied: '已复制',
     error: '锚定效应设计失败',
     dryRunNotice: '试运行模式 — 使用模板锚定框架',
+    contentPh: '例如，原价$199，现在仅需$89购买我们的维生素C精华液...',
   },
   aidaFrameworkDesigner: {
     title: 'AIDA框架设计师',

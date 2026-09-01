@@ -142,7 +142,7 @@ export default function CreativeMessagingFrameworkBuilderPage() {
               id="cmfbValueProp"
               value={valueProposition}
               onChange={(e) => setValueProposition(e.target.value)}
-              placeholder="e.g., Brightens dull skin in just 7 days with clinically-proven vitamin C — risk-free trial available."
+              placeholder={t('creativeMessagingFrameworkBuilder.contentPh')}
               rows={3}
               maxLength={2000}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent resize-y"
@@ -159,7 +159,7 @@ export default function CreativeMessagingFrameworkBuilderPage() {
               type="text"
               value={targetAudience}
               onChange={(e) => setTargetAudience(e.target.value)}
-              placeholder="e.g., Women 25-40 concerned about dull skin and early signs of aging"
+              placeholder={t('creativeMessagingFrameworkBuilder.audiencePh')}
               maxLength={2000}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
               disabled={loading}

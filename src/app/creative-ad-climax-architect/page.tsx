@@ -163,7 +163,7 @@ export default function CreativeAdClimaxArchitectPage() {
               type="text"
               value={targetAudience}
               onChange={(e) => setTargetAudience(e.target.value)}
-              placeholder="e.g., women 25-40 interested in skincare and self-care"
+              placeholder={t('common.phAudienceSelfCare')}
               maxLength={2000}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
               disabled={loading}

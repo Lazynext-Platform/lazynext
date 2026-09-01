@@ -139,7 +139,7 @@ export default function AdCopyGeneratorPage() {
               </div>
               <div>
                 <label htmlFor="acgKeywords" className="block text-sm font-medium mb-1">{t('adCopyGenerator.keywords')}</label>
-                <input id="acgKeywords" type="text" value={keywords} onChange={(e) => setKeywords(e.target.value)} placeholder="e.g., quality, affordable" className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
+                <input id="acgKeywords" type="text" value={keywords} onChange={(e) => setKeywords(e.target.value)} placeholder={t('common.phKeywords')} className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
               </div>
             </div>
           </div>

@@ -127,7 +127,7 @@ export default function TrendSpotterPage() {
               type="text"
               value={niche}
               onChange={(e) => setNiche(e.target.value)}
-              placeholder="e.g., clean skincare, home fitness, plant-based cooking"
+              placeholder={t('trendSpotter.contentPh')}
               maxLength={500}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
               disabled={loading}
@@ -164,7 +164,7 @@ export default function TrendSpotterPage() {
               type="text"
               value={region}
               onChange={(e) => setRegion(e.target.value)}
-              placeholder="e.g., US, UK, Global (optional)"
+              placeholder={t('trendSpotter.contentPh2')}
               maxLength={200}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
               disabled={loading}

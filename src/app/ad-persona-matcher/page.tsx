@@ -118,7 +118,7 @@ export default function AdPersonaMatcherPage() {
               id="apmContent"
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              placeholder="e.g., Discover the future of skincare with our vitamin C serum..."
+              placeholder={t('adPersonaMatcher.contentPh')}
               rows={4}
               maxLength={2000}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent resize-y"
@@ -151,7 +151,7 @@ export default function AdPersonaMatcherPage() {
               type="text"
               value={personas}
               onChange={(e) => setPersonas(e.target.value)}
-              placeholder="e.g., beauty enthusiasts aged 18-25, busy moms 30-45, eco-conscious shoppers"
+              placeholder={t('adPersonaMatcher.audiencePh')}
               maxLength={500}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
               disabled={loading}

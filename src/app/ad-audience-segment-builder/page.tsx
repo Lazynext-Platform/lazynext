@@ -137,7 +137,7 @@ export default function AdAudienceSegmentBuilderPage() {
               id="aasbAudience"
               value={primaryAudience}
               onChange={(e) => setPrimaryAudience(e.target.value)}
-              placeholder="e.g., Health-conscious women aged 25-40 interested in clean beauty"
+              placeholder={t('adAudienceSegmentBuilder.audiencePh')}
               rows={3}
               maxLength={1000}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent resize-y"

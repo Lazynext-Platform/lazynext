@@ -147,7 +147,7 @@ export default function CreativeBriefGeneratorPage() {
               type="text"
               value={campaignGoal}
               onChange={(e) => setCampaignGoal(e.target.value)}
-              placeholder="e.g., launch a new product line and drive pre-orders"
+              placeholder={t('creativeBriefGenerator.contentPh')}
               maxLength={500}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
               disabled={loading}
@@ -196,7 +196,7 @@ export default function CreativeBriefGeneratorPage() {
               type="text"
               value={targetAudience}
               onChange={(e) => setTargetAudience(e.target.value)}
-              placeholder="e.g., millennial skincare enthusiasts aged 25-35"
+              placeholder={t('creativeBriefGenerator.audiencePh')}
               maxLength={1000}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
               disabled={loading}

@@ -130,7 +130,7 @@ export default function BriefTemplateBuilderPage() {
             </div>
             <div>
               <label htmlFor="btbCategory" className="block text-sm font-medium mb-1">{t('briefTemplateBuilder.productCategory')}</label>
-              <input id="btbCategory" type="text" value={productCategory} onChange={(e) => setProductCategory(e.target.value)} placeholder="e.g., skincare serum, wireless earbuds" className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
+              <input id="btbCategory" type="text" value={productCategory} onChange={(e) => setProductCategory(e.target.value)} placeholder={t('briefTemplateBuilder.contentPh')} className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
             </div>
           </div>
 
@@ -143,11 +143,11 @@ export default function BriefTemplateBuilderPage() {
               </div>
               <div>
                 <label htmlFor="btbTone" className="block text-sm font-medium mb-1">{t('briefTemplateBuilder.brandTone')}</label>
-                <input id="btbTone" type="text" value={brandTone} onChange={(e) => setBrandTone(e.target.value)} placeholder="e.g., playful, professional" className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
+                <input id="btbTone" type="text" value={brandTone} onChange={(e) => setBrandTone(e.target.value)} placeholder={t('common.phToneProfessional')} className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
               </div>
               <div>
                 <label htmlFor="btbColors" className="block text-sm font-medium mb-1">{t('briefTemplateBuilder.brandColors')}</label>
-                <input id="btbColors" type="text" value={brandColors} onChange={(e) => setBrandColors(e.target.value)} placeholder="e.g., #FF0000, #00B2FC" className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
+                <input id="btbColors" type="text" value={brandColors} onChange={(e) => setBrandColors(e.target.value)} placeholder={t('common.phColors')} className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
               </div>
             </div>
           </div>

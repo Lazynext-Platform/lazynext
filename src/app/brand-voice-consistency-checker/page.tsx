@@ -136,7 +136,7 @@ export default function BrandVoiceConsistencyCheckerPage() {
               id="bvccContent"
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              placeholder="e.g., HEY FAM! Check out our AMAZING new product LOL you will LOVE it!!!"
+              placeholder={t('brandVoiceConsistencyChecker.contentPh')}
               rows={4}
               maxLength={2000}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent resize-y"
@@ -153,7 +153,7 @@ export default function BrandVoiceConsistencyCheckerPage() {
               type="text"
               value={brandName}
               onChange={(e) => setBrandName(e.target.value)}
-              placeholder="e.g., Lumina Skincare"
+              placeholder={t('brandVoiceConsistencyChecker.brandNamePh')}
               maxLength={2000}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
               disabled={loading}
@@ -168,7 +168,7 @@ export default function BrandVoiceConsistencyCheckerPage() {
               id="bvccVoice"
               value={brandVoiceDescription}
               onChange={(e) => setBrandVoiceDescription(e.target.value)}
-              placeholder="e.g., Professional, warm, and science-backed. Uses clear, accessible language. Avoids slang and excessive punctuation."
+              placeholder={t('brandVoiceConsistencyChecker.contentPh2')}
               rows={3}
               maxLength={1000}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent resize-y"

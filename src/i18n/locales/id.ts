@@ -671,6 +671,12 @@ export const idMessages = {
       ratioFeed: 'Feed',
       ratioTiktokReels: 'TikTok/Reels',
       ratioYoutube: 'YouTube',
+      namePh: 'Q4 Peluncuran Produk A/B Test',
+      namePh2: 'GlowPatch LED Face Mask',
+      numberPh: '50',
+      urlPh: 'https://yourbrand.com',
+      urlPh2: 'https://shop.example.com/products/led-mask',
+      urlPh3: 'https://example.com/reference-ad.mp4',
     },
 
     costEstimate: {
@@ -1080,6 +1086,8 @@ export const idMessages = {
       loadingCampaigns: 'Memuat kampanye…',
       refreshingMetrics: 'Memperbarui…',
       refreshMetricsLabel: 'Perbarui metrik untuk {name}',
+      namePh: 'Summer Sale - Glow Serum',
+      contentPh: 'abc123, def456',
     },
     perf: {
       title: 'Dasbor performa',
@@ -2755,6 +2763,7 @@ export const idMessages = {
     creativeAudiencePlaceholder: 'Audiens',
     remove: 'Hapus',
     addCreative: '+ Tambah kreatif',
+    timezonePh: 'UTC',
   },
   competitorWatch: {
     title: 'Pantau Kompetitor',
@@ -2846,6 +2855,7 @@ export const idMessages = {
     clearFilters: 'Hapus Filter',
     audience: 'Audiens',
     error: 'Pembuatan hook gagal',
+    audiencePh: 'mis., pekerja jarak jauh',
   },
   briefTemplateBuilder: {
     title: 'Pembangun Templat Brief',
@@ -2872,6 +2882,7 @@ export const idMessages = {
     brandColors: 'Warna (dipisahkan koma)',
     urlPlaceholder: 'https://...',
     aiGenerated: 'Dihasilkan AI',
+    contentPh: 'mis., serum skincare, earbud nirkabel',
   },
   adScriptWriter: {
       title: "Penulis Skrip Iklan",
@@ -2929,6 +2940,8 @@ export const idMessages = {
       objections: "Keberatan",
       copy: "Salin",
       noResults: "Belum ada persona. Masukkan produk atau merek untuk memulai.",
+    productPh: 'mis., Serum skincare organik premium yang menargetkan masalah anti-aging',
+    audiencePh: 'mis., milenial US, profesional EU',
   },
   variantMatrixGenerator: {
       title: "Matriks Varian Kreatif",
@@ -3042,6 +3055,10 @@ export const idMessages = {
     text: 'Teks',
     references: 'Referensi',
     brandHeadline: 'Judul Merek Anda',
+    productPh: 'mis., Botol air ramah lingkungan yang dapat digunakan kembali untuk penggemar kebugaran',
+    tonePh: 'mis., minimal, berani, playful',
+    audiencePh: 'mis., milenial perkotaan',
+    formatPh: 'mis., instagram, tiktok',
   },
   adPerformancePredictor: {
     title: "Prediktor Performa Iklan",
@@ -3075,6 +3092,8 @@ export const idMessages = {
     benchmark: 'Benchmark',
     rationale: 'Rasional',
     briefPh: 'Tempel brief kreatif atau konsep iklan Anda di sini...',
+    metricPh: 'mis., Elektronik, Kecantikan, SaaS',
+    audiencePh: 'mis., Pekerja jarak jauh berusia 25-40 di AS',
   },
   abTestPlannerV2: {
     title: "Perencana A/B Test Kreatif",
@@ -3147,6 +3166,8 @@ export const idMessages = {
     copied: 'Disalin',
     error: 'Deteksi tren gagal',
     dryRunNotice: 'Mode uji-coba — menggunakan tren heuristik',
+    contentPh: 'mis., skincare bersih, kebugaran di rumah, masakan berbasis tanaman',
+    contentPh2: 'mis., US, UK, Global (opsional)',
   },
   brandVoiceAnalyzer: {
     title: 'Penganalisis Suara Merek',
@@ -3169,6 +3190,7 @@ export const idMessages = {
     error: 'Analisis gagal',
     dryRunNotice: 'Mode uji-coba — menggunakan analisis heuristik',
     sampleContentPh: 'Tempel 100+ karakter konten merek Anda — salinan situs web, caption iklan, postingan sosial, email…',
+    brandNamePh: 'mis., Glow & Co.',
   },
   adCaptionGenerator: {
     title: 'Generator Kapsi Iklan',
@@ -3243,6 +3265,9 @@ export const idMessages = {
     copied: 'Disalin',
     error: 'Optimasi waktu gagal',
     dryRunNotice: 'Mode uji-coba — menggunakan waktu heuristik',
+    audiencePh: 'mis., Mahasiswa kuliah Gen Z di AS yang mengikuti influencer kebugaran',
+    timezonePh: 'mis., America/New_York (opsional, default UTC)',
+    productPh: 'mis., pakaian kebugaran (opsional)',
   },
   creativeFatigueDetector: {
     title: 'Detektor Kelelahan Kreatif',
@@ -3266,6 +3291,11 @@ export const idMessages = {
     copied: 'Disalin',
     error: 'Deteksi kelelahan gagal',
     dryRunNotice: 'Mode uji-coba — menggunakan analisis heuristik',
+    contentPh: 'mis., Iklan TikTok bergaya UGC yang menampilkan rutinitas skincare dengan hook rasa penasaran',
+    numberPh: 'mis., 12',
+    metricPh: 'mis., 150000',
+    numberPh2: 'mis., 1.2',
+    numberPh3: 'mis., 2.5 (opsional)',
   },
   adCtaOptimizer: {
     title: 'Pengoptimal CTA Iklan',
@@ -3287,6 +3317,8 @@ export const idMessages = {
     copied: 'Disalin',
     error: 'Optimasi CTA gagal',
     dryRunNotice: 'Mode uji-coba — menggunakan CTA templat',
+    contentPh: 'mis., pembelian (opsional)',
+    contentPh2: 'mis., Belanja sekarang (opsional)',
   },
   conceptExpander: {
     title: 'Pengembang Konsep Kreatif',
@@ -3309,6 +3341,7 @@ export const idMessages = {
     copied: 'Disalin',
     error: 'Pengembangan konsep gagal',
     dryRunNotice: 'Mode uji-coba — menggunakan konsep templat',
+    contentPh: 'mis., Ungkapan before-and-after yang menunjukkan produk mengubah rutinitas',
   },
   adStoryGenerator: {
     title: 'Generator Cerita Iklan',
@@ -3359,6 +3392,7 @@ export const idMessages = {
     copied: 'Disalin',
     error: 'Pembuatan palet warna gagal',
     dryRunNotice: 'Mode uji-coba — menggunakan palet templat',
+    colorPh: 'mis., #1a1a1a (opsional)',
   },
   adThumbnailGenerator: {
     title: 'Generator Miniatur Iklan',
@@ -3383,6 +3417,8 @@ export const idMessages = {
     copied: 'Disalin',
     error: 'Pembuatan miniatur gagal',
     dryRunNotice: 'Mode uji-coba — menggunakan miniatur templat',
+    numberPh: 'mis., 5 kesalahan skincare yang Anda lakukan',
+    benefitPh: 'mis., manfaat vitamin C serum',
   },
   adFontPairingGenerator: {
     title: 'Generator Pasangan Font Iklan',
@@ -3423,6 +3459,7 @@ export const idMessages = {
     copied: 'Disalin',
     error: 'Pembuatan hashtag gagal',
     dryRunNotice: 'Mode uji-coba — menggunakan hashtag templat',
+    categoryPh: 'mis., skincare, kebugaran, gadget teknologi',
   },
   creativeSceneGenerator: {
     title: 'Generator Adegan Kreatif',
@@ -3448,6 +3485,7 @@ export const idMessages = {
     copied: 'Disalin',
     error: 'Pembuatan adegan gagal',
     dryRunNotice: 'Mode uji-coba — menggunakan adegan templat',
+    contentPh: 'mis., Transformasi sebelum dan sesudah yang menunjukkan hasil nyata produk',
   },
   adMusicMoodMatcher: {
     title: 'Pencocok Musik & Mood Iklan',
@@ -3517,6 +3555,8 @@ export const idMessages = {
     copied: 'Disalin',
     error: 'Pembuatan brief gagal',
     dryRunNotice: 'Mode uji-coba — menggunakan brief templat',
+    contentPh: 'mis., luncurkan lini produk baru dan dorong pre-order',
+    audiencePh: 'mis., penggemar skincare milenial berusia 25-35 tahun',
   },
   adPlacementStrategist: {
     title: 'Strategis Penempatan Iklan',
@@ -3539,6 +3579,7 @@ export const idMessages = {
     copied: 'Disalin',
     error: 'Pembuatan strategi penempatan gagal',
     dryRunNotice: 'Mode uji-coba — menggunakan strategi templat',
+    audiencePh: 'mis., wanita milenial berusia 25-35 yang tertarik dengan skincare',
   },
   adABTestNameGenerator: {
     title: 'Generator Nama Tes A/B Iklan',
@@ -3576,6 +3617,7 @@ export const idMessages = {
     copied: 'Disalin',
     error: 'Pembuatan pembaruan hook gagal',
     dryRunNotice: 'Mode uji-coba — menggunakan pembaruan templat',
+    contentPh: 'mis., Produk skincare ini akan mengubah hidup Anda',
   },
   adAudienceSegmentBuilder: {
     title: 'Pembangun Segmen Audiens Iklan',
@@ -3601,6 +3643,7 @@ export const idMessages = {
     copied: 'Disalin',
     error: 'Pembangunan segmen gagal',
     dryRunNotice: 'Mode uji-coba — menggunakan segmen templat',
+    audiencePh: 'mis., Wanita sadar kesehatan berusia 25-40 yang tertarik dengan clean beauty',
   },
   creativeConceptValidator: {
     title: 'Validator Konsep Kreatif',
@@ -3628,6 +3671,8 @@ export const idMessages = {
     copied: 'Disalin',
     error: 'Validasi konsep gagal',
     dryRunNotice: 'Mode uji-coba — menggunakan validasi templat',
+    contentPh: 'mis., Video TikTok 15 detik yang menampilkan transformasi before-and-after menggunakan vitamin C serum kami, dengan hook rasa penasaran dan keaslian gaya UGC',
+    audiencePh: 'mis., Wanita sadar kesehatan berusia 25-40 tahun',
   },
   adEmotionAnalyzer: {
     title: 'Penganalisis Emosi Iklan',
@@ -3650,6 +3695,7 @@ export const idMessages = {
     error: 'Analisis emosi gagal',
     dryRunNotice: 'Mode uji-coba — menggunakan analisis templat',
     overallEmotionalImpact: 'Dampak emosional keseluruhan',
+    contentPh: 'mis., Saat pertama kali mencoba serum ini, saya skeptis. Tapi setelah dua minggu, kulit saya bercahaya. Inilah alasan mengapa ini mengubah rutinitas saya selamanya...',
   },
   creativeFormatConverter: {
     title: 'Pengonversi Format Kreatif',
@@ -3671,6 +3717,7 @@ export const idMessages = {
     copied: 'Disalin',
     error: 'Konversi format gagal',
     dryRunNotice: 'Mode uji-coba — menggunakan konversi templat',
+    contentPh: 'mis., Vitamin C serum kami mencerahkan kulit dalam dua minggu saja. Diformulasikan dengan 20% L-ascorbic acid, mengurangi noda hitam dan meratakan warna kulit...',
   },
   adBudgetAllocator: {
     title: 'Pengalokasi Anggaran Iklan',
@@ -3694,6 +3741,7 @@ export const idMessages = {
     copied: 'Disalin',
     error: 'Alokasi anggaran gagal',
     dryRunNotice: 'Mode uji-coba — menggunakan alokasi templat',
+    contentPh: 'mis., $10,000',
   },
   creativeTrendAdapter: {
     title: 'Penyesuai Tren Kreatif',
@@ -3718,6 +3766,8 @@ export const idMessages = {
     copied: 'Disalin',
     error: 'Penyesuaian tren gagal',
     dryRunNotice: 'Mode uji-coba — menggunakan penyesuaian templat',
+    contentPh: 'mis., Lihat vitamin C serum baru kami untuk kulit yang bercahaya',
+    brandNamePh: 'mis., GlowUp Skincare',
   },
   adCreativeSequencer: {
     title: 'Pengurut Kreatif Iklan',
@@ -3769,6 +3819,9 @@ export const idMessages = {
     copied: 'Disalin',
     error: 'Pembuatan cerita gagal',
     dryRunNotice: 'Mode uji-coba — menggunakan cerita templat',
+    brandNamePh: 'mis., GlowUp',
+    audiencePh: 'mis., keaslian, pemberdayaan, keberlanjutan',
+    productPh: 'mis., Aplikasi skincare yang menggunakan AI untuk mempersonalisasi rutinitas',
   },
   adLocalizationAdapter: {
     title: 'Adaptor Lokalisasi Iklan',
@@ -3794,6 +3847,8 @@ export const idMessages = {
     copied: 'Disalin',
     error: 'Lokalisasi gagal',
     dryRunNotice: 'Mode uji-coba — menggunakan lokalisasi templat',
+    contentPh: 'mis., Lihat produk baru luar biasa kami — ini game changer! Beli sekarang dan hemat 20%!',
+    brandNamePh: 'mis., GlowUp skincare',
   },
   creativePerformanceForecaster: {
     title: 'Peramal Kinerja Kreatif',
@@ -3823,6 +3878,7 @@ export const idMessages = {
     copied: 'Disalin',
     error: 'Peramalan kinerja gagal',
     dryRunNotice: 'Mode uji-coba — menggunakan peramalan templat',
+    contentPh: 'mis., TikTok 15 detik yang menampilkan before/after seseorang menggunakan vitamin C serum kami, dengan hook di 3 detik pertama dan CTA untuk belanja sekarang',
   },
   adSentimentTuner: {
     title: 'Penala Sentimen Iklan',
@@ -3846,6 +3902,7 @@ export const idMessages = {
     copied: 'Disalin',
     error: 'Penalaan sentimen gagal',
     dryRunNotice: 'Mode uji-coba — menggunakan penalaan templat',
+    contentPh: 'mis., Produk baru kami membantu Anda menghemat waktu dan menyelesaikan lebih banyak.',
   },
   creativeHookMatrixGenerator: {
     title: 'Generator Matriks Hook Kreatif',
@@ -3893,6 +3950,7 @@ export const idMessages = {
     dryRunNotice: 'Mode uji-coba — menggunakan rotasi templat',
     credits: 'kredit',
     days: 'hari',
+    contentPh: 'mis., Dapatkan diskon 50% untuk vitamin C serum terlaris kami minggu ini saja.',
   },
   brandVoiceConsistencyChecker: {
     title: 'Pemeriksa Konsistensi Suara Merek',
@@ -3920,6 +3978,9 @@ export const idMessages = {
     copied: 'Disalin',
     error: 'Pemeriksaan suara merek gagal',
     dryRunNotice: 'Mode uji-coba — menggunakan pemeriksaan templat',
+    contentPh: 'mis., HEY FAM! Lihat produk baru LUAR BIASA kami, kamu akan MENYUKAINYA!!!',
+    brandNamePh: 'mis., Lumina Skincare',
+    contentPh2: 'mis., Profesional, hangat, dan berbasis sains. Menggunakan bahasa yang jelas dan mudah dipahami. Menghindari slang dan tanda baca berlebihan.',
   },
   adPersonaMatcher: {
     title: 'Pencocok Persona Iklan',
@@ -3940,6 +4001,8 @@ export const idMessages = {
     copied: 'Disalin',
     error: 'Pencocokan persona gagal',
     dryRunNotice: 'Mode uji-coba — menggunakan pencocokan templat',
+    contentPh: 'mis., Temukan masa depan skincare dengan vitamin C serum kami...',
+    audiencePh: 'mis., penggemar kecantikan berusia 18-25, ibu sibuk 30-45, pembeli sadar lingkungan',
   },
   creativeConceptExpanderPro: {
     title: 'Pengembang Konsep Kreatif Pro',
@@ -3965,6 +4028,7 @@ export const idMessages = {
     copied: 'Disalin',
     error: 'Pengembangan konsep gagal',
     dryRunNotice: 'Mode uji-coba — menggunakan pengembangan templat',
+    contentPh: 'mis., Transformasi before-and-after yang menunjukkan hasil nyata dalam 30 hari',
   },
   adCompetitiveIntelligence: {
     title: 'Intelijen Kompetitif Iklan',
@@ -3990,6 +4054,8 @@ export const idMessages = {
     copied: 'Disalin',
     error: 'Intelijen kompetitif gagal',
     dryRunNotice: 'Mode uji-coba — menggunakan intelijen templat',
+    productPh: 'mis., skincare, aplikasi kebugaran, meal kit',
+    competitorsPh: 'mis., Glossier, The Ordinary, CeraVe, Drunk Elephant',
   },
   creativeQualityScorer: {
     title: 'Penilai Kualitas Kreatif',
@@ -4035,6 +4101,7 @@ export const idMessages = {
     copied: 'Disalin',
     error: 'Pemetaan perjalanan sentimen gagal',
     dryRunNotice: 'Mode uji-coba — menggunakan perjalanan templat',
+    contentPh: 'mis., Lelah dengan kulit kusam? Vitamin C serum kami mencerahkan dalam 7 hari saja. Coba tanpa risiko hari ini!',
   },
   adAudienceResonancePredictor: {
     title: 'Prediktor Resonansi Audiens Iklan',
@@ -4056,6 +4123,7 @@ export const idMessages = {
     copied: 'Disalin',
     error: 'Prediksi resonansi audiens gagal',
     dryRunNotice: 'Mode uji-coba — menggunakan resonansi templat',
+    audiencePh: 'mis., Gen Z, orang tua sibuk, penggemar kebugaran',
   },
   creativeFormatRecommender: {
     title: 'Perekomendasi Format Kreatif',
@@ -4100,6 +4168,7 @@ export const idMessages = {
     copied: 'Disalin',
     error: 'Analisis siklus hidup gagal',
     dryRunNotice: 'Mode uji-coba — menggunakan siklus hidup templat',
+    contentPh: 'mis., Video bergaya UGC 15 detik yang menampilkan transformasi before/after dengan hook kuat dan CTA jelas...',
   },
   adCreativeAbTestSimulator: {
     title: 'Simulator Tes A/B Iklan Kreatif',
@@ -4126,6 +4195,7 @@ export const idMessages = {
     copied: 'Disalin',
     error: 'Simulasi tes A/B gagal',
     dryRunNotice: 'Mode uji-coba — menggunakan simulasi templat',
+    contentPh: 'mis., Glow dalam 7 hari. Vitamin C serum kami terbukti secara klinis mencerahkan kulit...',
   },
   creativeVisualHierarchyAnalyzer: {
     title: 'Penganalisis Hierarki Visual Kreatif',
@@ -4148,6 +4218,7 @@ export const idMessages = {
     copied: 'Disalin',
     error: 'Analisis hierarki visual gagal',
     dryRunNotice: 'Mode uji-coba — menggunakan analisis templat',
+    contentPh: 'mis., Gambar hero di atas (tinggi 60%), headline berani dilapisi di tengah, foto produk di kiri bawah, tombol CTA di kanan bawah dengan kontras tinggi...',
   },
   adAudiencePainPointMapper: {
     title: 'Pemeta Titik Nyeri Audiens Iklan',
@@ -4171,6 +4242,7 @@ export const idMessages = {
     frequency: 'Frekuensi',
     emotionalImpact: 'Dampak emosional',
     addresses: 'Menangani',
+    audiencePh: 'mis., Wanita profesional sibuk berusia 25-40 yang khawatir tentang penuaan kulit',
   },
   creativeMessagingFrameworkBuilder: {
     title: 'Pembangun Kerangka Pesan Kreatif',
@@ -4200,6 +4272,8 @@ export const idMessages = {
     evidence: 'Bukti',
     do: 'Lakukan',
     dont: 'Jangan',
+    contentPh: 'mis., Mencerahkan kulit kusam dalam 7 hari saja dengan vitamin C yang terbukti secara klinis — uji coba tanpa risiko tersedia.',
+    audiencePh: 'mis., Wanita 25-40 yang khawatir tentang kulit kusam dan tanda-tanda awal penuaan',
   },
   adCreativeBurnoutDetector: {
     title: 'Detektor Kelelahan Kreatif Iklan',
@@ -4223,6 +4297,7 @@ export const idMessages = {
     copied: 'Disalin',
     error: 'Deteksi kelelahan gagal',
     dryRunNotice: 'Mode uji-coba — menggunakan analisis templat',
+    numberPh: 'mis., 14',
   },
   creativeAdConceptSynthesizer: {
     title: 'Sintesis Konsep Iklan Kreatif',
@@ -4272,6 +4347,7 @@ export const idMessages = {
     copied: 'Disalin',
     error: 'Profil psikografis gagal',
     dryRunNotice: 'Mode uji-coba — menggunakan profil templat',
+    audiencePh: 'mis., Wanita berusia 25-34, profesional perkotaan yang tertarik dengan wellness',
   },
   creativeAdToneCalibrator: {
     title: 'Kalibrator Nada Iklan Kreatif',
@@ -4294,6 +4370,7 @@ export const idMessages = {
     copied: 'Disalin',
     error: 'Kalibrasi nada gagal',
     dryRunNotice: 'Mode uji-coba — menggunakan kalibrasi templat',
+    contentPh: 'mis., Beli vitamin C serum luar biasa kami hari ini dan lihat hasilnya dalam 7 hari!',
   },
   creativeAdFormatInnovator: {
     title: 'Inovator Format Iklan Kreatif',
@@ -4317,6 +4394,7 @@ export const idMessages = {
     copied: 'Disalin',
     error: 'Inovasi format gagal',
     dryRunNotice: 'Mode uji-coba — menggunakan format templat',
+    contentPh: 'mis., video vertikal, carousel gambar, iklan story, klip influencer',
   },
   adCreativeStoryArcDesigner: {
     title: 'Perancang Alur Cerita Iklan Kreatif',
@@ -4338,6 +4416,7 @@ export const idMessages = {
     copied: 'Disalin',
     error: 'Perancangan alur cerita gagal',
     dryRunNotice: 'Mode uji-coba — menggunakan alur cerita templat',
+    contentPh: 'mis., Cerahkan kulit Anda dalam 7 hari saja — tanpa risiko',
   },
   creativeAdPersuasionStrategist: {
     title: 'Strategis Persuasi Iklan Kreatif',
@@ -4361,6 +4440,7 @@ export const idMessages = {
     dryRunNotice: 'Mode uji-coba — menggunakan strategi templat',
     effect: 'Efek',
     principle: 'Prinsip',
+    contentPh: 'mis., Promosikan tantangan glow 7 hari dengan diskon terbatas...',
   },
   adCreativeHookTimingOptimizer: {
     title: 'Pengoptimal Waktu Hook Iklan Kreatif',
@@ -4386,6 +4466,8 @@ export const idMessages = {
     currentPlacement: 'Penempatan saat ini',
     optimalWindow: 'Jendela optimal',
     attentionCurve: 'Kurva perhatian',
+    contentPh: 'mis., Tahukah Anda 90% orang menyerah pada tujuan kebugaran mereka pada Februari? Inilah cara tetap berada di 10%...',
+    productPh: 'mis., Aplikasi kebugaran DTC yang menjual langganan pelacakan kebiasaan',
   },
   creativeAdMetaphorGenerator: {
     title: 'Generator Metafora Iklan Kreatif',
@@ -4408,6 +4490,7 @@ export const idMessages = {
     copied: 'Disalin',
     error: 'Pembuatan metafora gagal',
     dryRunNotice: 'Mode uji-coba — menggunakan metafora templat',
+    benefitPh: 'mis., mencerahkan kulit kusam dalam 7 hari',
   },
   adCreativeSensoryEnhancer: {
     title: 'Peningkat Sensori Iklan Kreatif',
@@ -4451,6 +4534,8 @@ export const idMessages = {
     copied: 'Disalin',
     error: 'Perancangan pola interupsi gagal',
     dryRunNotice: 'Mode uji-coba — menggunakan interupsi templat',
+    audiencePh: 'mis., Wanita 25-34 yang tertarik dengan clean beauty',
+    contentPh: 'mis., Iklan TikTok 15 detik yang dibuka dengan demo produk lalu testimoni...',
   },
   adCreativeSocialProofArchitect: {
     title: 'Arsitek Bukti Sosial Iklan Kreatif',
@@ -4476,6 +4561,8 @@ export const idMessages = {
     dryRunNotice: 'Mode uji-coba — menggunakan arsitektur templat',
     type: 'Tipe',
     integration: 'Integrasi',
+    audiencePh: 'mis., Wanita 25-40 yang tertarik dengan skincare anti-aging',
+    audiencePh2: 'mis., Promosikan vitamin C serum baru kami dengan fokus pada hasil pencerahan dan membangun kepercayaan...',
   },
   adCreativeEmotionSequencer: {
     title: 'Pengurut Emosi Iklan Kreatif',
@@ -4605,6 +4692,7 @@ export const idMessages = {
     copied: 'Disalin',
     error: 'Perancangan twist naratif gagal',
     dryRunNotice: 'Mode uji-coba — menggunakan twist templat',
+    contentPh: 'mis., Seorang wanita berjuang dengan kulit kusam sampai dia menemukan serum kami...',
   },
   adCreativeMemoryAnchorBuilder: {
     title: 'Pembangun Jangkar Memori Iklan Kreatif',
@@ -4755,6 +4843,7 @@ export const idMessages = {
     dryRunNotice: 'Mode uji-coba — menggunakan hierarki templat',
     direction: 'Arah',
     anchors: 'Jangkar',
+    elementsPh: 'mis., headline, gambar produk, logo, tombol cta, background',
   },
   adCreativeSoundDesignStrategist: {
     title: 'Strategis Desain Suara Iklan Kreatif',
@@ -4777,6 +4866,7 @@ export const idMessages = {
     copied: 'Disalin',
     error: 'Strategi desain suara gagal',
     dryRunNotice: 'Mode uji-coba — menggunakan desain suara templat',
+    contentPh: 'mis., energik, tenang, misterius, playful, dramatis, menyemangati...',
   },
   creativeAdSurpriseElementDesigner: {
     title: 'Designer Elemen Kejutan Iklan Kreatif',
@@ -4801,6 +4891,7 @@ export const idMessages = {
     copied: 'Disalin',
     error: 'Perancangan elemen kejutan gagal',
     dryRunNotice: 'Mode uji-coba — menggunakan elemen kejutan template',
+    audiencePh: 'mis., Penggemar skincare Gen Z berusia 18-24 tahun',
   },
   adCreativeCallbackMemoryDesigner: {
     title: 'Designer Memori Callback Iklan Kreatif',
@@ -5241,6 +5332,7 @@ export const idMessages = {
     copied: 'Disalin',
     error: 'Perancangan momentum sosial gagal',
     dryRunNotice: 'Mode uji-coba — menggunakan momentum sosial template',
+    audiencePh: 'mis., Bergabunglah dengan 50.000+ wanita yang mengubah kulit mereka dengan vitamin C serum kami...',
   },
   creativeAdValueLadderDesigner: {
     title: 'Designer Tangga Nilai Iklan Kreatif',
@@ -5337,6 +5429,7 @@ export const idMessages = {
     copied: 'Disalin',
     error: 'Perancangan bingkai kelangkaan gagal',
     dryRunNotice: 'Mode uji-coba — menggunakan bingkai kelangkaan template',
+    contentPh: 'mis., Hanya tersisa 50 botol vitamin C serum edisi terbatas kami...',
   },
   creativeAdIdentityAlignmentDesigner: {
     title: 'Designer Penyelarasan Identitas Iklan Kreatif',
@@ -5385,6 +5478,7 @@ export const idMessages = {
     copied: 'Disalin',
     error: 'Perancangan kerangka resiprositas gagal',
     dryRunNotice: 'Mode uji-coba — menggunakan kerangka resiprositas template',
+    contentPh: 'mis., Kami memberikan kursus mini skincare gratis 5 hari kepada komunitas kami...',
   },
   adCreativePASFrameworkDesigner: {
     title: 'Designer Kerangka PAS Iklan Kreatif',
@@ -5601,6 +5695,9 @@ export const idMessages = {
     copied: 'Disalin',
     error: 'Perancangan daya tarik ketakutan gagal',
     dryRunNotice: 'Mode uji-coba — menggunakan daya tarik ketakutan template',
+    productPh: 'mis., Merek asuransi DTC yang menjual paket perlindungan rumah',
+    contentPh: 'mis., Jangan biarkan satu peristiwa tak terduga menghapus semua yang telah Anda bangun...',
+    audiencePh: 'mis., Pemilik rumah 35-55 yang khawatir tentang melindungi aset mereka',
   },
   creativeAdBelongingAppealDesigner: {
     title: 'Designer Daya Tarik Kebersamaan Iklan Kreatif',
@@ -5649,6 +5746,9 @@ export const idMessages = {
     copied: 'Disalin',
     error: 'Perancangan daya tarik humor gagal',
     dryRunNotice: 'Mode uji-coba — menggunakan daya tarik humor template',
+    productPh: 'mis., Merek camilan DTC yang menjual popcorn pedas',
+    contentPh: 'mis., Lapar sesuatu yang berani? Popcorn pedas kami terasa berbeda...',
+    audiencePh: 'mis., Pencinta camilan Gen Z 18-24 yang scroll TikTok di malam hari',
   },
   creativeAdFramingEffectDesigner: {
     title: 'Designer Efek Pembingkaian Iklan Kreatif',
@@ -5697,6 +5797,7 @@ export const idMessages = {
     copied: 'Disalin',
     error: 'Perancangan daya tarik kebanggaan gagal',
     dryRunNotice: 'Mode uji-coba — menggunakan daya tarik kebanggaan template',
+    contentPh: 'mis., Anda pantas mendapatkan ini — vitamin C serum kami untuk mereka yang tidak pernah berkompromi...',
   },
   creativeAdNostalgiaTriggerDesigner: {
     title: 'Designer Pemicu Nostalgia Iklan Kreatif',
@@ -5865,6 +5966,7 @@ export const idMessages = {
     copied: 'Disalin',
     error: 'Perancangan pembingkaian aversi kerugian gagal',
     dryRunNotice: 'Mode uji-coba — menggunakan kerangka aversi kerugian template',
+    contentPh: 'mis., Setiap hari Anda menunggu, kulit Anda menua dan kerusakan menumpuk...',
   },
   adCreativeAnchoringEffectDesigner: {
     title: 'Designer Efek Penjangkaran Iklan Kreatif',
@@ -5889,6 +5991,7 @@ export const idMessages = {
     copied: 'Disalin',
     error: 'Perancangan efek penjangkaran gagal',
     dryRunNotice: 'Mode uji-coba — menggunakan kerangka penjangkaran template',
+    contentPh: 'mis., Awalnya $199, sekarang hanya $89 untuk vitamin C serum kami...',
   },
   aidaFrameworkDesigner: {
     title: 'Perancang Framework AIDA',

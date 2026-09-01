@@ -149,7 +149,7 @@ export default function AdLocalizationAdapterPage() {
               id="alaContent"
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              placeholder="e.g., Check out our amazing new product — it's a game changer! Buy now and save 20%!"
+              placeholder={t('adLocalizationAdapter.contentPh')}
               rows={4}
               maxLength={2000}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent resize-y"
@@ -166,7 +166,7 @@ export default function AdLocalizationAdapterPage() {
               type="text"
               value={productOrBrand}
               onChange={(e) => setProductOrBrand(e.target.value)}
-              placeholder="e.g., GlowUp skincare"
+              placeholder={t('adLocalizationAdapter.brandNamePh')}
               maxLength={2000}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
               disabled={loading}

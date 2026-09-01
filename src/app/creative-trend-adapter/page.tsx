@@ -129,7 +129,7 @@ export default function CreativeTrendAdapterPage() {
               id="ctaContent"
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              placeholder="e.g., Check out our new vitamin C serum for glowing skin"
+              placeholder={t('creativeTrendAdapter.contentPh')}
               rows={4}
               maxLength={2000}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent resize-y"
@@ -146,7 +146,7 @@ export default function CreativeTrendAdapterPage() {
               type="text"
               value={productOrBrand}
               onChange={(e) => setProductOrBrand(e.target.value)}
-              placeholder="e.g., GlowUp Skincare"
+              placeholder={t('creativeTrendAdapter.brandNamePh')}
               maxLength={2000}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
               disabled={loading}

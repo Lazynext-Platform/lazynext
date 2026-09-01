@@ -169,7 +169,7 @@ export default function CreativeConceptValidatorPage() {
               id="ccvConcept"
               value={concept}
               onChange={(e) => setConcept(e.target.value)}
-              placeholder="e.g., A 15-second TikTok video showing a before-and-after transformation using our vitamin C serum, with a curiosity hook and UGC-style authenticity"
+              placeholder={t('creativeConceptValidator.contentPh')}
               rows={4}
               maxLength={2000}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent resize-y"
@@ -236,7 +236,7 @@ export default function CreativeConceptValidatorPage() {
                 type="text"
                 value={targetAudience}
                 onChange={(e) => setTargetAudience(e.target.value)}
-                placeholder="e.g., Health-conscious women aged 25-40"
+                placeholder={t('creativeConceptValidator.audiencePh')}
                 maxLength={1000}
                 className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
                 disabled={loading}

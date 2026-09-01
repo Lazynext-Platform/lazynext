@@ -157,7 +157,7 @@ export default function AdTimingOptimizerPage() {
               id="atoAudience"
               value={audienceDescription}
               onChange={(e) => setAudienceDescription(e.target.value)}
-              placeholder="e.g., Gen Z college students in the US who follow fitness influencers"
+              placeholder={t('adTimingOptimizer.audiencePh')}
               rows={3}
               maxLength={2000}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent resize-y"
@@ -175,7 +175,7 @@ export default function AdTimingOptimizerPage() {
                 type="text"
                 value={timezone}
                 onChange={(e) => setTimezone(e.target.value)}
-                placeholder="e.g., America/New_York (optional, default UTC)"
+                placeholder={t('adTimingOptimizer.timezonePh')}
                 maxLength={100}
                 className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
                 disabled={loading}
@@ -191,7 +191,7 @@ export default function AdTimingOptimizerPage() {
                 type="text"
                 value={productCategory}
                 onChange={(e) => setProductCategory(e.target.value)}
-                placeholder="e.g., fitness apparel (optional)"
+                placeholder={t('adTimingOptimizer.productPh')}
                 maxLength={200}
                 className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
                 disabled={loading}

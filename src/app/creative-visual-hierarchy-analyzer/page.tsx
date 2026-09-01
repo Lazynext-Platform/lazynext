@@ -130,7 +130,7 @@ export default function CreativeVisualHierarchyAnalyzerPage() {
               id="cvhaLayout"
               value={layoutDescription}
               onChange={(e) => setLayoutDescription(e.target.value)}
-              placeholder="e.g., Hero image at top (60% height), bold headline overlaid center, product shot bottom-left, CTA button bottom-right with high contrast..."
+              placeholder={t('creativeVisualHierarchyAnalyzer.contentPh')}
               rows={4}
               maxLength={2000}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent resize-y"

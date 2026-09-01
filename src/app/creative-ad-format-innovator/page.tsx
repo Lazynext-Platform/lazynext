@@ -167,7 +167,7 @@ export default function CreativeAdFormatInnovatorPage() {
               id="cafiFormats"
               value={currentFormats}
               onChange={(e) => setCurrentFormats(e.target.value)}
-              placeholder="e.g., vertical video, image carousel, story ad, influencer clip"
+              placeholder={t('creativeAdFormatInnovator.contentPh')}
               rows={3}
               maxLength={2000}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent resize-y"

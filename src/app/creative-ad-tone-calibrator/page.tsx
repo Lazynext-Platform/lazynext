@@ -138,7 +138,7 @@ export default function CreativeAdToneCalibratorPage() {
               id="catcContent"
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              placeholder="e.g., Buy our amazing vitamin C serum today and see results in 7 days!"
+              placeholder={t('creativeAdToneCalibrator.contentPh')}
               rows={4}
               maxLength={2000}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent resize-y"

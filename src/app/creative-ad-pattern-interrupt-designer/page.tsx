@@ -151,7 +151,7 @@ export default function CreativeAdPatternInterruptDesignerPage() {
               type="text"
               value={targetAudience}
               onChange={(e) => setTargetAudience(e.target.value)}
-              placeholder="e.g., Women 25-34 interested in clean beauty"
+              placeholder={t('creativeAdPatternInterruptDesigner.audiencePh')}
               maxLength={2000}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
               disabled={loading}
@@ -166,7 +166,7 @@ export default function CreativeAdPatternInterruptDesignerPage() {
               id="capidContext"
               value={context}
               onChange={(e) => setContext(e.target.value)}
-              placeholder="e.g., A 15-second TikTok ad opening with a product demo then a testimonial..."
+              placeholder={t('creativeAdPatternInterruptDesigner.contentPh')}
               rows={4}
               maxLength={2000}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent resize-y"

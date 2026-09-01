@@ -172,7 +172,7 @@ export default function CreativeSceneGeneratorPage() {
               id="csgConcept"
               value={concept}
               onChange={(e) => setConcept(e.target.value)}
-              placeholder="e.g., A before-and-after transformation showing the product's real results"
+              placeholder={t('creativeSceneGenerator.contentPh')}
               rows={3}
               maxLength={2000}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent resize-y"

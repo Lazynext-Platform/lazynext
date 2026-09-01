@@ -753,6 +753,12 @@ export const enMessages = {
       ratioFeed: 'Feed',
       ratioTiktokReels: 'TikTok/Reels',
       ratioYoutube: 'YouTube',
+      namePh: 'Q4 Product Launch A/B Test',
+      namePh2: 'GlowPatch LED Face Mask',
+      numberPh: '50',
+      urlPh: 'https://yourbrand.com',
+      urlPh2: 'https://shop.example.com/products/led-mask',
+      urlPh3: 'https://example.com/reference-ad.mp4',
     },
 
     costEstimate: {
@@ -1185,6 +1191,8 @@ export const enMessages = {
       loadingCampaigns: 'Loading campaigns…',
       refreshingMetrics: 'Refreshing…',
       refreshMetricsLabel: 'Refresh metrics for {name}',
+      namePh: 'Summer Sale - Glow Serum',
+      contentPh: 'abc123, def456',
     },
     perf: {
       title: 'Performance Dashboard',
@@ -3422,6 +3430,7 @@ export const enMessages = {
     creativeAudiencePlaceholder: 'Audience',
     remove: 'Remove',
     addCreative: '+ Add creative',
+    timezonePh: 'UTC',
   },
   competitorWatch: {
     title: 'Competitor Watch',
@@ -3513,6 +3522,7 @@ export const enMessages = {
     clearFilters: 'Clear Filters',
     audience: 'Audience',
     error: 'Hook generation failed',
+    audiencePh: 'e.g., remote workers',
   },
   briefTemplateBuilder: {
     title: 'Brief Template Builder',
@@ -3539,6 +3549,7 @@ export const enMessages = {
     brandColors: 'Colors (comma-separated)',
     urlPlaceholder: 'https://...',
     aiGenerated: 'AI-generated',
+    contentPh: 'e.g., skincare serum, wireless earbuds',
   },
   adScriptWriter: {
     title: 'Ad Script Writer',
@@ -3596,6 +3607,8 @@ export const enMessages = {
     objections: 'Objections',
     copy: 'Copy',
     noResults: 'No personas generated yet. Enter a product or brand to begin.',
+    productPh: 'e.g., A premium organic skincare serum targeting anti-aging concerns',
+    audiencePh: 'e.g., US millennials, EU professionals',
   },
   variantMatrixGenerator: {
     title: 'Creative Variant Matrix',
@@ -3709,6 +3722,10 @@ export const enMessages = {
     text: 'Text',
     references: 'References',
     brandHeadline: 'Your Brand Headline',
+    productPh: 'e.g., Eco-friendly reusable water bottle for fitness enthusiasts',
+    tonePh: 'e.g., minimal, bold, playful',
+    audiencePh: 'e.g., urban millennials',
+    formatPh: 'e.g., instagram, tiktok',
   },
   adPerformancePredictor: {
     title: 'Ad Performance Predictor',
@@ -3742,6 +3759,8 @@ export const enMessages = {
     copy: 'Copy',
     error: 'Prediction failed',
     briefPh: "Paste your creative brief or ad concept here... (e.g., 'A 15-second TikTok showing a remote worker struggling with noise, then discovering our noise-cancelling headphones with a bold hook in the first 3 seconds')",
+    metricPh: 'e.g., Electronics, Beauty, SaaS',
+    audiencePh: 'e.g., Remote workers aged 25-40 in the US',
   },
   abTestPlannerV2: {
     title: 'Creative A/B Test Planner',
@@ -3814,6 +3833,8 @@ export const enMessages = {
     copied: 'Copied',
     error: 'Trend spotting failed',
     dryRunNotice: 'Dry-run mode — using heuristic trends',
+    contentPh: 'e.g., clean skincare, home fitness, plant-based cooking',
+    contentPh2: 'e.g., US, UK, Global (optional)',
   },
   brandVoiceAnalyzer: {
     title: 'Brand Voice Analyzer',
@@ -3836,6 +3857,7 @@ export const enMessages = {
     error: 'Analysis failed',
     dryRunNotice: 'Dry-run mode — using heuristic analysis',
     sampleContentPh: "Paste 100+ characters of your brand's content — website copy, ad captions, social posts, emails…",
+    brandNamePh: 'e.g., Glow & Co.',
   },
   adCaptionGenerator: {
     title: 'Ad Caption Generator',
@@ -3910,6 +3932,9 @@ export const enMessages = {
     copied: 'Copied',
     error: 'Timing optimization failed',
     dryRunNotice: 'Dry-run mode — using heuristic timing',
+    audiencePh: 'e.g., Gen Z college students in the US who follow fitness influencers',
+    timezonePh: 'e.g., America/New_York (optional, default UTC)',
+    productPh: 'e.g., fitness apparel (optional)',
   },
   creativeFatigueDetector: {
     title: 'Creative Fatigue Detector',
@@ -3933,6 +3958,11 @@ export const enMessages = {
     copied: 'Copied',
     error: 'Fatigue detection failed',
     dryRunNotice: 'Dry-run mode — using heuristic analysis',
+    contentPh: 'e.g., UGC-style TikTok ad showing a skincare routine with a curiosity hook',
+    numberPh: 'e.g., 12',
+    metricPh: 'e.g., 150000',
+    numberPh2: 'e.g., 1.2',
+    numberPh3: 'e.g., 2.5 (optional)',
   },
   adCtaOptimizer: {
     title: 'Ad CTA Optimizer',
@@ -3954,6 +3984,8 @@ export const enMessages = {
     copied: 'Copied',
     error: 'CTA optimization failed',
     dryRunNotice: 'Dry-run mode — using template CTAs',
+    contentPh: 'e.g., purchases (optional)',
+    contentPh2: 'e.g., Shop now (optional)',
   },
   conceptExpander: {
     title: 'Creative Concept Expander',
@@ -3976,6 +4008,7 @@ export const enMessages = {
     copied: 'Copied',
     error: 'Concept expansion failed',
     dryRunNotice: 'Dry-run mode — using template concepts',
+    contentPh: 'e.g., A before-and-after reveal showing the product transforming a routine',
   },
   adStoryGenerator: {
     title: 'Ad Story Generator',
@@ -4026,6 +4059,7 @@ export const enMessages = {
     copied: 'Copied',
     error: 'Color palette generation failed',
     dryRunNotice: 'Dry-run mode — using template palettes',
+    colorPh: 'e.g., #1a1a1a (optional)',
   },
   adThumbnailGenerator: {
     title: 'Ad Thumbnail Generator',
@@ -4050,6 +4084,8 @@ export const enMessages = {
     copied: 'Copied',
     error: 'Thumbnail generation failed',
     dryRunNotice: 'Dry-run mode — using template thumbnails',
+    numberPh: "e.g., 5 skincare mistakes you're making",
+    benefitPh: 'e.g., vitamin C serum benefits',
   },
   adFontPairingGenerator: {
     title: 'Ad Font Pairing Generator',
@@ -4090,6 +4126,7 @@ export const enMessages = {
     copied: 'Copied',
     error: 'Hashtag generation failed',
     dryRunNotice: 'Dry-run mode — using template hashtags',
+    categoryPh: 'e.g., skincare, fitness, tech gadgets',
   },
   creativeSceneGenerator: {
     title: 'Creative Scene Generator',
@@ -4115,6 +4152,7 @@ export const enMessages = {
     copied: 'Copied',
     error: 'Scene generation failed',
     dryRunNotice: 'Dry-run mode — using template scenes',
+    contentPh: "e.g., A before-and-after transformation showing the product's real results",
   },
   adMusicMoodMatcher: {
     title: 'Ad Music Mood Matcher',
@@ -4184,6 +4222,8 @@ export const enMessages = {
     copied: 'Copied',
     error: 'Brief generation failed',
     dryRunNotice: 'Dry-run mode — using template brief',
+    contentPh: 'e.g., launch a new product line and drive pre-orders',
+    audiencePh: 'e.g., millennial skincare enthusiasts aged 25-35',
   },
   adPlacementStrategist: {
     title: 'Ad Placement Strategist',
@@ -4206,6 +4246,7 @@ export const enMessages = {
     copied: 'Copied',
     error: 'Placement strategy generation failed',
     dryRunNotice: 'Dry-run mode — using template strategy',
+    audiencePh: 'e.g., millennial women aged 25-35 interested in skincare',
   },
   adABTestNameGenerator: {
     title: 'Ad A/B Test Name Generator',
@@ -4243,6 +4284,7 @@ export const enMessages = {
     copied: 'Copied',
     error: 'Hook revamp generation failed',
     dryRunNotice: 'Dry-run mode — using template revamps',
+    contentPh: 'e.g., This skincare product will change your life',
   },
   adAudienceSegmentBuilder: {
     title: 'Ad Audience Segment Builder',
@@ -4268,6 +4310,7 @@ export const enMessages = {
     copied: 'Copied',
     error: 'Segment building failed',
     dryRunNotice: 'Dry-run mode — using template segments',
+    audiencePh: 'e.g., Health-conscious women aged 25-40 interested in clean beauty',
   },
   creativeConceptValidator: {
     title: 'Creative Concept Validator',
@@ -4295,6 +4338,8 @@ export const enMessages = {
     copied: 'Copied',
     error: 'Concept validation failed',
     dryRunNotice: 'Dry-run mode — using template validation',
+    contentPh: 'e.g., A 15-second TikTok video showing a before-and-after transformation using our vitamin C serum, with a curiosity hook and UGC-style authenticity',
+    audiencePh: 'e.g., Health-conscious women aged 25-40',
   },
   adEmotionAnalyzer: {
     title: 'Ad Emotion Analyzer',
@@ -4317,6 +4362,7 @@ export const enMessages = {
     copied: 'Copied',
     error: 'Emotion analysis failed',
     dryRunNotice: 'Dry-run mode — using template analysis',
+    contentPh: "e.g., When I first tried this serum, I was skeptical. But after two weeks, my skin was glowing. Here's why it changed my routine forever...",
   },
   creativeFormatConverter: {
     title: 'Creative Format Converter',
@@ -4338,6 +4384,7 @@ export const enMessages = {
     copied: 'Copied',
     error: 'Format conversion failed',
     dryRunNotice: 'Dry-run mode — using template conversion',
+    contentPh: 'e.g., Our vitamin C serum brightens skin in just two weeks. Formulated with 20% L-ascorbic acid, it reduces dark spots and evens skin tone...',
   },
   adBudgetAllocator: {
     title: 'Ad Budget Allocator',
@@ -4361,6 +4408,7 @@ export const enMessages = {
     copied: 'Copied',
     error: 'Budget allocation failed',
     dryRunNotice: 'Dry-run mode — using template allocation',
+    contentPh: 'e.g., $10,000',
   },
   creativeTrendAdapter: {
     title: 'Creative Trend Adapter',
@@ -4385,6 +4433,8 @@ export const enMessages = {
     copied: 'Copied',
     error: 'Trend adaptation failed',
     dryRunNotice: 'Dry-run mode — using template adaptation',
+    contentPh: 'e.g., Check out our new vitamin C serum for glowing skin',
+    brandNamePh: 'e.g., GlowUp Skincare',
   },
   adCreativeSequencer: {
     title: 'Ad Creative Sequencer',
@@ -4436,6 +4486,9 @@ export const enMessages = {
     copied: 'Copied',
     error: 'Story generation failed',
     dryRunNotice: 'Dry-run mode — using template story',
+    brandNamePh: 'e.g., GlowUp',
+    audiencePh: 'e.g., authenticity, empowerment, sustainability',
+    productPh: 'e.g., A skincare app that uses AI to personalize routines',
   },
   adLocalizationAdapter: {
     title: 'Ad Localization Adapter',
@@ -4461,6 +4514,8 @@ export const enMessages = {
     copied: 'Copied',
     error: 'Localization failed',
     dryRunNotice: 'Dry-run mode — using template localization',
+    contentPh: "e.g., Check out our amazing new product — it's a game changer! Buy now and save 20%!",
+    brandNamePh: 'e.g., GlowUp skincare',
   },
   creativePerformanceForecaster: {
     title: 'Creative Performance Forecaster',
@@ -4490,6 +4545,7 @@ export const enMessages = {
     copied: 'Copied',
     error: 'Performance forecast failed',
     dryRunNotice: 'Dry-run mode — using template forecast',
+    contentPh: 'e.g., A 15-second TikTok showing a before/after of someone using our vitamin C serum, with a hook in the first 3 seconds and a CTA to shop now',
   },
   adSentimentTuner: {
     title: 'Ad Sentiment Tuner',
@@ -4513,6 +4569,7 @@ export const enMessages = {
     copied: 'Copied',
     error: 'Sentiment tuning failed',
     dryRunNotice: 'Dry-run mode — using template tuning',
+    contentPh: 'e.g., Our new product helps you save time and get more done.',
   },
   creativeHookMatrixGenerator: {
     title: 'Creative Hook Matrix Generator',
@@ -4560,6 +4617,7 @@ export const enMessages = {
     dryRunNotice: 'Dry-run mode — using template rotation',
     credits: 'credits',
     days: 'days',
+    contentPh: 'e.g., Get 50% off our best-selling vitamin C serum this week only.',
   },
   brandVoiceConsistencyChecker: {
     title: 'Brand Voice Consistency Checker',
@@ -4587,6 +4645,9 @@ export const enMessages = {
     copied: 'Copied',
     error: 'Brand voice check failed',
     dryRunNotice: 'Dry-run mode — using template check',
+    contentPh: 'e.g., HEY FAM! Check out our AMAZING new product LOL you will LOVE it!!!',
+    brandNamePh: 'e.g., Lumina Skincare',
+    contentPh2: 'e.g., Professional, warm, and science-backed. Uses clear, accessible language. Avoids slang and excessive punctuation.',
   },
   adPersonaMatcher: {
     title: 'Ad Persona Matcher',
@@ -4607,6 +4668,8 @@ export const enMessages = {
     copied: 'Copied',
     error: 'Persona matching failed',
     dryRunNotice: 'Dry-run mode — using template matching',
+    contentPh: 'e.g., Discover the future of skincare with our vitamin C serum...',
+    audiencePh: 'e.g., beauty enthusiasts aged 18-25, busy moms 30-45, eco-conscious shoppers',
   },
   creativeConceptExpanderPro: {
     title: 'Creative Concept Expander Pro',
@@ -4632,6 +4695,7 @@ export const enMessages = {
     copied: 'Copied',
     error: 'Concept expansion failed',
     dryRunNotice: 'Dry-run mode — using template expansion',
+    contentPh: 'e.g., A before-and-after transformation showing real results in 30 days',
   },
   adCompetitiveIntelligence: {
     title: 'Ad Competitive Intelligence',
@@ -4657,6 +4721,8 @@ export const enMessages = {
     copied: 'Copied',
     error: 'Competitive intelligence failed',
     dryRunNotice: 'Dry-run mode — using template intelligence',
+    productPh: 'e.g., skincare, fitness apps, meal kits',
+    competitorsPh: 'e.g., Glossier, The Ordinary, CeraVe, Drunk Elephant',
   },
   adCreativeStoryArcDesigner: {
     title: 'Ad Creative Story Arc Designer',
@@ -4678,6 +4744,7 @@ export const enMessages = {
     copied: 'Copied',
     error: 'Story arc design failed',
     dryRunNotice: 'Dry-run mode — using template story arc',
+    contentPh: "e.g., Brighten your skin in just 7 days — risk-free",
   },
   creativeAdVisualHierarchyStrategist: {
     title: 'Creative Ad Visual Hierarchy Strategist',
@@ -4702,6 +4769,7 @@ export const enMessages = {
     dryRunNotice: 'Dry-run mode — using template hierarchy',
     direction: 'Direction',
     anchors: 'Anchors',
+    elementsPh: 'e.g., headline, product image, logo, cta button, background',
   },
   creativeQualityScorer: {
     title: 'Creative Quality Scorer',
@@ -4800,6 +4868,8 @@ export const enMessages = {
     currentPlacement: 'Current placement',
     optimalWindow: 'Optimal window',
     attentionCurve: 'Attention curve',
+    contentPh: "e.g., Did you know 90% of people quit their fitness goals by February? Here's how to stay in the 10%...",
+    productPh: 'e.g., DTC fitness app selling a habit-tracking subscription',
   },
   creativeSentimentJourneyMapper: {
     title: 'Creative Sentiment Journey Mapper',
@@ -4821,6 +4891,7 @@ export const enMessages = {
     copied: 'Copied',
     error: 'Sentiment journey mapping failed',
     dryRunNotice: 'Dry-run mode — using template journey',
+    contentPh: 'e.g., Tired of dull skin? Our vitamin C serum brightens in just 7 days. Try it risk-free today!',
   },
   adAudienceResonancePredictor: {
     title: 'Ad Audience Resonance Predictor',
@@ -4842,6 +4913,7 @@ export const enMessages = {
     copied: 'Copied',
     error: 'Audience resonance prediction failed',
     dryRunNotice: 'Dry-run mode — using template resonance',
+    audiencePh: 'e.g., Gen Z, busy parents, fitness enthusiasts',
   },
   creativeFormatRecommender: {
     title: 'Creative Format Recommender',
@@ -4886,6 +4958,7 @@ export const enMessages = {
     copied: 'Copied',
     error: 'Lifecycle analysis failed',
     dryRunNotice: 'Dry-run mode — using template lifecycle',
+    contentPh: 'e.g., A 15s UGC-style video showing a before/after transformation with a strong hook and clear CTA...',
   },
   adCreativeAbTestSimulator: {
     title: 'Ad Creative A/B Test Simulator',
@@ -4912,6 +4985,7 @@ export const enMessages = {
     copied: 'Copied',
     error: 'A/B test simulation failed',
     dryRunNotice: 'Dry-run mode — using template simulation',
+    contentPh: 'e.g., Glow up in 7 days. Our vitamin C serum is clinically proven to brighten skin...',
   },
   creativeVisualHierarchyAnalyzer: {
     title: 'Creative Visual Hierarchy Analyzer',
@@ -4934,6 +5008,7 @@ export const enMessages = {
     copied: 'Copied',
     error: 'Visual hierarchy analysis failed',
     dryRunNotice: 'Dry-run mode — using template analysis',
+    contentPh: 'e.g., Hero image at top (60% height), bold headline overlaid center, product shot bottom-left, CTA button bottom-right with high contrast...',
   },
   adAudiencePainPointMapper: {
     title: 'Ad Audience Pain Point Mapper',
@@ -4957,6 +5032,7 @@ export const enMessages = {
     frequency: 'Frequency',
     emotionalImpact: 'Emotional impact',
     addresses: 'Addresses',
+    audiencePh: 'e.g., Busy professional women aged 25-40 concerned about skin aging',
   },
   creativeMessagingFrameworkBuilder: {
     title: 'Creative Messaging Framework Builder',
@@ -4986,6 +5062,8 @@ export const enMessages = {
     evidence: 'Evidence',
     do: 'Do',
     dont: "Don't",
+    contentPh: "e.g., Brightens dull skin in just 7 days with clinically-proven vitamin C — risk-free trial available.",
+    audiencePh: 'e.g., Women 25-40 concerned about dull skin and early signs of aging',
   },
   adCreativeBurnoutDetector: {
     title: 'Ad Creative Burnout Detector',
@@ -5009,6 +5087,7 @@ export const enMessages = {
     copied: 'Copied',
     error: 'Burnout detection failed',
     dryRunNotice: 'Dry-run mode — using template analysis',
+    numberPh: 'e.g., 14',
   },
   creativeAdConceptSynthesizer: {
     title: 'Creative Ad Concept Synthesizer',
@@ -5058,6 +5137,7 @@ export const enMessages = {
     copied: 'Copied',
     error: 'Psychographic profiling failed',
     dryRunNotice: 'Dry-run mode — using template profile',
+    audiencePh: 'e.g., Women aged 25-34, urban professionals interested in wellness',
   },
   creativeAdToneCalibrator: {
     title: 'Creative Ad Tone Calibrator',
@@ -5080,6 +5160,7 @@ export const enMessages = {
     copied: 'Copied',
     error: 'Tone calibration failed',
     dryRunNotice: 'Dry-run mode — using template calibration',
+    contentPh: 'e.g., Buy our amazing vitamin C serum today and see results in 7 days!',
   },
   creativeAdFormatInnovator: {
     title: 'Creative Ad Format Innovator',
@@ -5103,6 +5184,7 @@ export const enMessages = {
     copied: 'Copied',
     error: 'Format innovation failed',
     dryRunNotice: 'Dry-run mode — using template formats',
+    contentPh: 'e.g., vertical video, image carousel, story ad, influencer clip',
   },
   creativeAdPersuasionStrategist: {
     title: 'Creative Ad Persuasion Strategist',
@@ -5126,6 +5208,7 @@ export const enMessages = {
     dryRunNotice: 'Dry-run mode — using template strategy',
     effect: 'Effect',
     principle: 'Principle',
+    contentPh: 'e.g., Promote a 7-day glow challenge with a limited-time discount...',
   },
   creativeAdMetaphorGenerator: {
     title: 'Creative Ad Metaphor Generator',
@@ -5148,6 +5231,7 @@ export const enMessages = {
     copied: 'Copied',
     error: 'Metaphor generation failed',
     dryRunNotice: 'Dry-run mode — using template metaphors',
+    benefitPh: 'e.g., brightens dull skin in 7 days',
   },
   adCreativeSensoryEnhancer: {
     title: 'Ad Creative Sensory Enhancer',
@@ -5191,6 +5275,8 @@ export const enMessages = {
     copied: 'Copied',
     error: 'Pattern interrupt design failed',
     dryRunNotice: 'Dry-run mode — using template interrupts',
+    audiencePh: 'e.g., Women 25-34 interested in clean beauty',
+    contentPh: 'e.g., A 15-second TikTok ad opening with a product demo then a testimonial...',
   },
   adCreativeSocialProofArchitect: {
     title: 'Ad Creative Social Proof Architect',
@@ -5216,6 +5302,8 @@ export const enMessages = {
     dryRunNotice: 'Dry-run mode — using template architecture',
     type: 'Type',
     integration: 'Integration',
+    audiencePh: 'e.g., Women 25-40 interested in anti-aging skincare',
+    audiencePh2: 'e.g., Promote our new vitamin C serum with a focus on brightening results and trust-building...',
   },
   adCreativeEmotionSequencer: {
     title: 'Ad Creative Emotion Sequencer',
@@ -5345,6 +5433,7 @@ export const enMessages = {
     copied: 'Copied',
     error: 'Narrative twist design failed',
     dryRunNotice: 'Dry-run mode — using template twists',
+    contentPh: 'e.g., A woman struggles with dull skin until she discovers our serum...',
   },
   creativeAdTensionReleaseStrategist: {
     title: 'Creative Ad Tension Release Strategist',
@@ -5444,6 +5533,7 @@ export const enMessages = {
     copied: 'Copied',
     error: 'Sound design strategy failed',
     dryRunNotice: 'Dry-run mode — using template sound design',
+    contentPh: 'e.g., energetic, calm, mysterious, playful, dramatic, uplifting...',
   },
   creativeAdSurpriseElementDesigner: {
     title: 'Creative Ad Surprise Element Designer',
@@ -5468,6 +5558,7 @@ export const enMessages = {
     copied: 'Copied',
     error: 'Surprise element design failed',
     dryRunNotice: 'Dry-run mode — using template surprise elements',
+    audiencePh: 'e.g., Gen Z skincare enthusiasts aged 18-24',
   },
   adCreativeCallbackMemoryDesigner: {
     title: 'Ad Creative Callback Memory Designer',
@@ -5908,6 +5999,7 @@ export const enMessages = {
     copied: 'Copied',
     error: 'Social momentum design failed',
     dryRunNotice: 'Dry-run mode — using template social momentum',
+    audiencePh: 'e.g., Join 50,000+ women who transformed their skin with our vitamin C serum...',
   },
   creativeAdValueLadderDesigner: {
     title: 'Creative Ad Value Ladder Designer',
@@ -6004,6 +6096,7 @@ export const enMessages = {
     copied: 'Copied',
     error: 'Scarcity frame design failed',
     dryRunNotice: 'Dry-run mode — using template scarcity frames',
+    contentPh: 'e.g., Only 50 bottles left of our limited-edition vitamin C serum...',
   },
   creativeAdIdentityAlignmentDesigner: {
     title: 'Creative Ad Identity Alignment Designer',
@@ -6052,6 +6145,7 @@ export const enMessages = {
     copied: 'Copied',
     error: 'Reciprocity framework design failed',
     dryRunNotice: 'Dry-run mode — using template reciprocity frameworks',
+    contentPh: "e.g., We're giving away a free 5-day skincare mini course to our community...",
   },
   adCreativePASFrameworkDesigner: {
     title: 'Ad Creative PAS Framework Designer',
@@ -6268,6 +6362,9 @@ export const enMessages = {
     copied: 'Copied',
     error: 'Fear appeal design failed',
     dryRunNotice: 'Dry-run mode — using template fear appeals',
+    productPh: 'e.g., DTC insurance brand selling a home protection plan',
+    contentPh: "e.g., Don't let one unexpected event wipe out everything you've built...",
+    audiencePh: 'e.g., Homeowners 35-55 concerned about protecting their assets',
   },
   creativeAdBelongingAppealDesigner: {
     title: 'Creative Ad Belonging Appeal Designer',
@@ -6316,6 +6413,9 @@ export const enMessages = {
     copied: 'Copied',
     error: 'Humor appeal design failed',
     dryRunNotice: 'Dry-run mode — using template humor appeals',
+    productPh: 'e.g., DTC snack brand selling spicy popcorn',
+    contentPh: 'e.g., Craving something bold? Our spicy popcorn hits different...',
+    audiencePh: 'e.g., Gen Z snack lovers 18-24 who scroll TikTok at night',
   },
   creativeAdFramingEffectDesigner: {
     title: 'Creative Ad Framing Effect Designer',
@@ -6364,6 +6464,7 @@ export const enMessages = {
     copied: 'Copied',
     error: 'Pride appeal design failed',
     dryRunNotice: 'Dry-run mode — using template pride appeals',
+    contentPh: "e.g., You've earned this — our vitamin C serum for those who never settle...",
   },
   creativeAdNostalgiaTriggerDesigner: {
     title: 'Creative Ad Nostalgia Trigger Designer',
@@ -6532,6 +6633,7 @@ export const enMessages = {
     copied: 'Copied',
     error: 'Loss aversion framing design failed',
     dryRunNotice: 'Dry-run mode — using template loss aversion frameworks',
+    contentPh: 'e.g., Every day you wait, your skin ages and the damage compounds...',
   },
   adCreativeAnchoringEffectDesigner: {
     title: 'Ad Creative Anchoring Effect Designer',
@@ -6556,6 +6658,7 @@ export const enMessages = {
     copied: 'Copied',
     error: 'Anchoring effect design failed',
     dryRunNotice: 'Dry-run mode — using template anchoring frameworks',
+    contentPh: 'e.g., Originally $199, now just $89 for our vitamin C serum...',
   },
   aidaFrameworkDesigner: {
     title: 'AIDA Framework Designer',

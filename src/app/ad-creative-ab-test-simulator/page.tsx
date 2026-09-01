@@ -234,7 +234,7 @@ export default function AdCreativeAbTestSimulatorPage() {
               id="abtsVariantB"
               value={variantB}
               onChange={(e) => setVariantB(e.target.value)}
-              placeholder="e.g., Glow up in 7 days. Our vitamin C serum is clinically proven to brighten skin..."
+              placeholder={t('adCreativeAbTestSimulator.contentPh')}
               rows={4}
               maxLength={2000}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent resize-y"

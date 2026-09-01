@@ -152,7 +152,7 @@ export default function AdCreativeSocialMomentumDesignerPage() {
               id="acsmdContent"
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              placeholder="e.g., Join 50,000+ women who transformed their skin with our vitamin C serum..."
+              placeholder={t('adCreativeSocialMomentumDesigner.audiencePh')}
               rows={4}
               maxLength={2000}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent resize-y"

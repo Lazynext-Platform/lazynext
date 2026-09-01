@@ -155,7 +155,7 @@ export default function AdCreativeLifecycleManagerPage() {
               id="aclmCreative"
               value={creativeDescription}
               onChange={(e) => setCreativeDescription(e.target.value)}
-              placeholder="e.g., A 15s UGC-style video showing a before/after transformation with a strong hook and clear CTA..."
+              placeholder={t('adCreativeLifecycleManager.contentPh')}
               rows={4}
               maxLength={2000}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent resize-y"

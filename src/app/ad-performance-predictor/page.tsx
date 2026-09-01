@@ -217,7 +217,7 @@ export default function AdPerformancePredictorPage() {
                 type="text"
                 value={productCategory}
                 onChange={(e) => setProductCategory(e.target.value)}
-                placeholder="e.g., Electronics, Beauty, SaaS"
+                placeholder={t('adPerformancePredictor.metricPh')}
                 className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
                 disabled={loading}
               />
@@ -233,7 +233,7 @@ export default function AdPerformancePredictorPage() {
               type="text"
               value={targetAudience}
               onChange={(e) => setTargetAudience(e.target.value)}
-              placeholder="e.g., Remote workers aged 25-40 in the US"
+              placeholder={t('adPerformancePredictor.audiencePh')}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
               disabled={loading}
             />

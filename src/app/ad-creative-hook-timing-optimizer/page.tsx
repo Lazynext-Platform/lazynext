@@ -143,7 +143,7 @@ export default function AdCreativeHookTimingOptimizerPage() {
               id="ahtoContent"
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              placeholder="e.g., Did you know 90% of people quit their fitness goals by February? Here's how to stay in the 10%..."
+              placeholder={t('adCreativeHookTimingOptimizer.contentPh')}
               rows={4}
               maxLength={2000}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent resize-y"
@@ -160,7 +160,7 @@ export default function AdCreativeHookTimingOptimizerPage() {
               type="text"
               value={productOrBrand}
               onChange={(e) => setProductOrBrand(e.target.value)}
-              placeholder="e.g., DTC fitness app selling a habit-tracking subscription"
+              placeholder={t('adCreativeHookTimingOptimizer.productPh')}
               maxLength={2000}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
               disabled={loading}

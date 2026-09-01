@@ -132,7 +132,7 @@ export default function CreativeSentimentJourneyMapperPage() {
               id="csjmContent"
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              placeholder="e.g., Tired of dull skin? Our vitamin C serum brightens in just 7 days. Try it risk-free today!"
+              placeholder={t('creativeSentimentJourneyMapper.contentPh')}
               rows={4}
               maxLength={2000}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent resize-y"

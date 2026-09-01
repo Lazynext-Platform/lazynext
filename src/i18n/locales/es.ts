@@ -670,6 +670,12 @@ export const esMessages = {
       ratioFeed: 'Feed',
       ratioTiktokReels: 'TikTok/Reels',
       ratioYoutube: 'YouTube',
+      namePh: 'Test A/B de Lanzamiento de Producto Q4',
+      namePh2: 'GlowPatch LED Face Mask',
+      numberPh: '50',
+      urlPh: 'https://yourbrand.com',
+      urlPh2: 'https://shop.example.com/products/led-mask',
+      urlPh3: 'https://example.com/reference-ad.mp4',
     },
 
     costEstimate: {
@@ -1101,6 +1107,8 @@ export const esMessages = {
       loadingCampaigns: 'Cargando campañas…',
       refreshingMetrics: 'Actualizando…',
       refreshMetricsLabel: 'Actualizar métricas para {name}',
+      namePh: 'Rebajas de Verano - Glow Serum',
+      contentPh: 'abc123, def456',
     },
     perf: {
       title: 'Panel de rendimiento',
@@ -2778,6 +2786,7 @@ export const esMessages = {
     creativeAudiencePlaceholder: 'Audiencia',
     remove: 'Eliminar',
     addCreative: '+ Añadir creativo',
+    timezonePh: 'UTC',
   },
   competitorWatch: {
     title: 'Vigilancia de Competencia',
@@ -2869,6 +2878,7 @@ export const esMessages = {
     clearFilters: 'Borrar filtros',
     audience: 'Audiencia',
     error: 'Error al generar ganchos',
+    audiencePh: 'ej., trabajadores remotos',
   },
   briefTemplateBuilder: {
     title: 'Constructor de Plantillas de Brief',
@@ -2895,6 +2905,7 @@ export const esMessages = {
     brandColors: 'Colores (separados por comas)',
     urlPlaceholder: 'https://...',
     aiGenerated: 'Generado por IA',
+    contentPh: 'ej., suero de cuidado de la piel, auriculares inalámbricos',
   },
   adScriptWriter: {
       title: "Escritor de Guiones Publicitarios",
@@ -2952,6 +2963,8 @@ export const esMessages = {
       objections: "Objeciones",
       copy: "Copiar",
       noResults: "Aún no se han generado personas. Ingresa un producto o marca para comenzar.",
+    productPh: 'ej., un suero de cuidado de la piel orgánico premium dirigido a problemas antienvejecimiento',
+    audiencePh: 'ej., millennials de US, profesionales de EU',
   },
   variantMatrixGenerator: {
       title: "Matriz de Variantes Creativas",
@@ -3065,6 +3078,10 @@ export const esMessages = {
     text: 'Texto',
     references: 'Referencias',
     brandHeadline: 'El titular de su marca',
+    productPh: 'ej., botella de agua reutilizable y ecológica para entusiastas del fitness',
+    tonePh: 'ej., minimalista, atrevido, juguetón',
+    audiencePh: 'ej., millennials urbanos',
+    formatPh: 'ej., Instagram, TikTok',
   },
   adPerformancePredictor: {
     title: "Predictor de Rendimiento de Anuncios",
@@ -3098,6 +3115,8 @@ export const esMessages = {
     benchmark: 'Benchmark',
     rationale: 'Justificación',
     briefPh: 'Pega tu brief creativo o concepto de anuncio aquí...',
+    metricPh: 'ej., Electronics, Beauty, SaaS',
+    audiencePh: 'ej., trabajadores remotos 25-40 en US',
   },
   abTestPlannerV2: {
     title: "Planificador de Tests A/B Creativos",
@@ -3170,6 +3189,8 @@ export const esMessages = {
     copied: 'Copiado',
     error: 'Detección de tendencias fallida',
     dryRunNotice: 'Modo de prueba — usando tendencias heurísticas',
+    contentPh: 'ej., cuidado de la piel limpio, fitness en casa, cocina a base de plantas',
+    contentPh2: 'ej., US, UK, Global (opcional)',
   },
   brandVoiceAnalyzer: {
     title: 'Analizador de Voz de Marca',
@@ -3192,6 +3213,7 @@ export const esMessages = {
     error: 'Análisis fallido',
     dryRunNotice: 'Modo de prueba — usando análisis heurístico',
     sampleContentPh: 'Pega 100+ caracteres del contenido de tu marca — copia web, captions de anuncios, posts sociales, emails…',
+    brandNamePh: 'ej., Glow & Co.',
   },
   adCaptionGenerator: {
     title: 'Generador de Subtítulos de Anuncios',
@@ -3266,6 +3288,9 @@ export const esMessages = {
     copied: 'Copiado',
     error: 'Error al optimizar tiempos',
     dryRunNotice: 'Modo simulación — usando tiempos heurísticos',
+    audiencePh: 'ej., estudiantes universitarios Gen Z en US que siguen influencers de fitness',
+    timezonePh: 'ej., America/New_York (opcional, predeterminado UTC)',
+    productPh: 'ej., ropa de fitness (opcional)',
   },
   creativeFatigueDetector: {
     title: 'Detector de Fatiga Creativa',
@@ -3289,6 +3314,11 @@ export const esMessages = {
     copied: 'Copiado',
     error: 'Error al detectar fatiga',
     dryRunNotice: 'Modo simulación — usando análisis heurístico',
+    contentPh: 'ej., anuncio TikTok estilo UGC mostrando una rutina de cuidado de la piel con un gancho de curiosidad',
+    numberPh: 'ej., 12',
+    metricPh: 'ej., 150000',
+    numberPh2: 'ej., 1.2',
+    numberPh3: 'ej., 2.5 (opcional)',
   },
   adCtaOptimizer: {
     title: 'Optimizador de CTA de Anuncios',
@@ -3310,6 +3340,8 @@ export const esMessages = {
     copied: 'Copiado',
     error: 'Optimización de CTA fallida',
     dryRunNotice: 'Modo simulación — usando CTA de plantilla',
+    contentPh: 'ej., compras (opcional)',
+    contentPh2: 'ej., Comprar ahora (opcional)',
   },
   conceptExpander: {
     title: 'Expansor de Conceptos Creativos',
@@ -3332,6 +3364,7 @@ export const esMessages = {
     copied: 'Copiado',
     error: 'Expansión de conceptos fallida',
     dryRunNotice: 'Modo simulación — usando conceptos de plantilla',
+    contentPh: 'ej., una revelación antes y después que muestra el producto transformando una rutina',
   },
   adStoryGenerator: {
     title: 'Generador de Historias de Anuncios',
@@ -3382,6 +3415,7 @@ export const esMessages = {
     copied: 'Copiado',
     error: 'Generación de paleta de color fallida',
     dryRunNotice: 'Modo simulación — usando paletas de plantilla',
+    colorPh: 'ej., #1a1a1a (opcional)',
   },
   adThumbnailGenerator: {
     title: 'Generador de Miniaturas de Anuncios',
@@ -3406,6 +3440,8 @@ export const esMessages = {
     copied: 'Copiado',
     error: 'Generación de miniatura fallida',
     dryRunNotice: 'Modo simulación — usando miniaturas de plantilla',
+    numberPh: 'ej., 5 errores de cuidado de la piel que estás cometiendo',
+    benefitPh: 'ej., beneficios del suero de vitamina C',
   },
   adFontPairingGenerator: {
     title: 'Generador de Emparejamiento de Fuentes para Anuncios',
@@ -3446,6 +3482,7 @@ export const esMessages = {
     copied: 'Copiado',
     error: 'Generación de hashtag fallida',
     dryRunNotice: 'Modo simulación — usando hashtags de plantilla',
+    categoryPh: 'ej., cuidado de la piel, fitness, gadgets tecnológicos',
   },
   creativeSceneGenerator: {
     title: 'Generador de Escenas Creativas',
@@ -3471,6 +3508,7 @@ export const esMessages = {
     copied: 'Copiado',
     error: 'Generación de escena fallida',
     dryRunNotice: 'Modo simulación — usando escenas de plantilla',
+    contentPh: 'ej., una transformación antes y después que muestra los resultados reales del producto',
   },
   adMusicMoodMatcher: {
     title: 'Emparejador de Música y Estado de Ánimo para Anuncios',
@@ -3540,6 +3578,8 @@ export const esMessages = {
     copied: 'Copiado',
     error: 'Generación de brief fallida',
     dryRunNotice: 'Modo simulación — usando brief de plantilla',
+    contentPh: 'ej., lanzar una nueva línea de productos e impulsar pedidos anticipados',
+    audiencePh: 'ej., entusiastas del cuidado de la piel millennials de 25-35',
   },
   adPlacementStrategist: {
     title: 'Estratega de Ubicación de Anuncios',
@@ -3562,6 +3602,7 @@ export const esMessages = {
     copied: 'Copiado',
     error: 'Generación de estrategia de ubicicación fallida',
     dryRunNotice: 'Modo simulación — usando estrategia de plantilla',
+    audiencePh: 'ej., mujeres millennials de 25-35 interesadas en el cuidado de la piel',
   },
   adABTestNameGenerator: {
     title: 'Generador de Nombres para Test A/B de Anuncios',
@@ -3599,6 +3640,7 @@ export const esMessages = {
     copied: 'Copiado',
     error: 'Generación de renovación de hooks fallida',
     dryRunNotice: 'Modo simulación — usando renovaciones de plantilla',
+    contentPh: 'ej., este producto de cuidado de la piel cambiará tu vida',
   },
   adAudienceSegmentBuilder: {
     title: 'Constructor de Segmentos de Audiencia de Anuncios',
@@ -3624,6 +3666,7 @@ export const esMessages = {
     copied: 'Copiado',
     error: 'Construcción de segmentos fallida',
     dryRunNotice: 'Modo simulación — usando segmentos de plantilla',
+    audiencePh: 'ej., mujeres conscientes de la salud 25-40 interesadas en belleza limpia',
   },
   creativeConceptValidator: {
     title: 'Validador de Conceptos Creativos',
@@ -3651,6 +3694,8 @@ export const esMessages = {
     copied: 'Copiado',
     error: 'Validación de concepto fallida',
     dryRunNotice: 'Modo simulación — usando validación de plantilla',
+    contentPh: 'ej., un video TikTok de 15 segundos mostrando una transformación antes y después usando nuestro suero de vitamina C, con un gancho de curiosidad y autenticidad estilo UGC',
+    audiencePh: 'ej., mujeres conscientes de la salud de 25-40',
   },
   adEmotionAnalyzer: {
     title: 'Analizador de Emociones de Anuncios',
@@ -3673,6 +3718,7 @@ export const esMessages = {
     error: 'Análisis de emociones fallido',
     dryRunNotice: 'Modo simulación — usando análisis de plantilla',
     overallEmotionalImpact: 'Impacto emocional general',
+    contentPh: 'ej., cuando probé este suero por primera vez, era escéptica. Pero después de dos semanas, mi piel brillaba. Aquí está por qué cambió mi rutina para siempre...',
   },
   creativeFormatConverter: {
     title: 'Conversor de Formatos Creativos',
@@ -3694,6 +3740,7 @@ export const esMessages = {
     copied: 'Copiado',
     error: 'Conversión de formato fallida',
     dryRunNotice: 'Modo simulación — usando conversión de plantilla',
+    contentPh: 'ej., nuestro suero de vitamina C ilumina la piel en solo dos semanas. Formulado con 20% de ácido L-ascórbico, reduce las manchas oscuras y unifica el tono de piel...',
   },
   adBudgetAllocator: {
     title: 'Asignador de Presupuesto Publicitario',
@@ -3717,6 +3764,7 @@ export const esMessages = {
     copied: 'Copiado',
     error: 'Asignación de presupuesto fallida',
     dryRunNotice: 'Modo simulación — usando asignación de plantilla',
+    contentPh: 'ej., $10,000',
   },
   creativeTrendAdapter: {
     title: 'Adaptador de Tendencias Creativas',
@@ -3741,6 +3789,8 @@ export const esMessages = {
     copied: 'Copiado',
     error: 'Adaptación de tendencias fallida',
     dryRunNotice: 'Modo simulación — usando adaptación de plantilla',
+    contentPh: 'ej., prueba nuestro nuevo suero de vitamina C para piel radiante',
+    brandNamePh: 'ej., GlowUp Skincare',
   },
   adCreativeSequencer: {
     title: 'Secuenciador de Creatividades Publicitarias',
@@ -3792,6 +3842,9 @@ export const esMessages = {
     copied: 'Copiado',
     error: 'Generación de historia fallida',
     dryRunNotice: 'Modo simulación — usando historia de plantilla',
+    brandNamePh: 'ej., GlowUp',
+    audiencePh: 'ej., autenticidad, empoderamiento, sostenibilidad',
+    productPh: 'ej., una app de cuidado de la piel que usa IA para personalizar rutinas',
   },
   adLocalizationAdapter: {
     title: 'Adaptador de Localización Publicitaria',
@@ -3817,6 +3870,8 @@ export const esMessages = {
     copied: 'Copiado',
     error: 'Localización fallida',
     dryRunNotice: 'Modo simulación — usando localización de plantilla',
+    contentPh: 'ej., ¡Mira nuestro increíble nuevo producto — es un cambio total! ¡Compra ahora y ahorra 20%!',
+    brandNamePh: 'ej., GlowUp skincare',
   },
   creativePerformanceForecaster: {
     title: 'Pronosticador de Rendimiento Creativo',
@@ -3846,6 +3901,7 @@ export const esMessages = {
     copied: 'Copiado',
     error: 'Pronóstico de rendimiento fallido',
     dryRunNotice: 'Modo simulación — usando pronóstico de plantilla',
+    contentPh: 'ej., un TikTok de 15 segundos mostrando un antes/después de alguien usando nuestro suero de vitamina C, con un gancho en los primeros 3 segundos y un CTA para comprar ahora',
   },
   adSentimentTuner: {
     title: 'Afinador de Sentimiento de Anuncios',
@@ -3869,6 +3925,7 @@ export const esMessages = {
     copied: 'Copiado',
     error: 'Ajuste de sentimiento fallido',
     dryRunNotice: 'Modo de prueba — usando ajuste de plantilla',
+    contentPh: 'ej., nuestro nuevo producto te ayuda a ahorrar tiempo y hacer más.',
   },
   creativeHookMatrixGenerator: {
     title: 'Generador de Matriz de Ganchos Creativos',
@@ -3916,6 +3973,7 @@ export const esMessages = {
     dryRunNotice: 'Modo de prueba — usando rotación de plantilla',
     credits: 'créditos',
     days: 'días',
+    contentPh: 'ej., obtén 50% de descuento en nuestro suero de vitamina C más vendido, solo esta semana.',
   },
   brandVoiceConsistencyChecker: {
     title: 'Comprobador de Consistencia de Voz de Marca',
@@ -3943,6 +4001,9 @@ export const esMessages = {
     copied: 'Copiado',
     error: 'Comprobación de voz de marca fallida',
     dryRunNotice: 'Modo de prueba — usando comprobación de plantilla',
+    contentPh: 'ej., ¡HOLA GENTE! Mira nuestro NUEVO e increíble producto JAJAJA te va a ENCANTAR!!!',
+    brandNamePh: 'ej., Lumina Skincare',
+    contentPh2: 'ej., Profesional, cálido y respaldado científicamente. Usa lenguaje claro y accesible. Evita la jerga y la puntuación excesiva.',
   },
   adPersonaMatcher: {
     title: 'Emparejador de Personas de Anuncio',
@@ -3963,6 +4024,8 @@ export const esMessages = {
     copied: 'Copiado',
     error: 'Emparejamiento de personas fallido',
     dryRunNotice: 'Modo de prueba — usando emparejamiento de plantilla',
+    contentPh: 'ej., descubre el futuro del cuidado de la piel con nuestro suero de vitamina C...',
+    audiencePh: 'ej., entusiastas de la belleza 18-25, mamás ocupadas 30-45, compradores ecológicos',
   },
   creativeConceptExpanderPro: {
     title: 'Expansor de Conceptos Creativos Pro',
@@ -3988,6 +4051,7 @@ export const esMessages = {
     copied: 'Copiado',
     error: 'Expansión de concepto fallida',
     dryRunNotice: 'Modo de prueba — usando expansión de plantilla',
+    contentPh: 'ej., una transformación antes y después que muestra resultados reales en 30 días',
   },
   adCompetitiveIntelligence: {
     title: 'Inteligencia Competitiva de Anuncios',
@@ -4013,6 +4077,8 @@ export const esMessages = {
     copied: 'Copiado',
     error: 'Inteligencia competitiva fallida',
     dryRunNotice: 'Modo de prueba — usando inteligencia de plantilla',
+    productPh: 'ej., cuidado de la piel, apps de fitness, kits de comidas',
+    competitorsPh: 'ej., Glossier, The Ordinary, CeraVe, Drunk Elephant',
   },
   creativeQualityScorer: {
     title: 'Puntuador de Calidad Creativa',
@@ -4058,6 +4124,7 @@ export const esMessages = {
     copied: 'Copiado',
     error: 'Mapeo del viaje de sentimiento fallido',
     dryRunNotice: 'Modo de prueba — usando viaje de plantilla',
+    contentPh: 'ej., ¿Cansada de piel opaca? Nuestro suero de vitamina C ilumina en solo 7 días. ¡Pruébalo sin riesgo hoy!',
   },
   adAudienceResonancePredictor: {
     title: 'Predictor de Resonancia de Audiencia',
@@ -4079,6 +4146,7 @@ export const esMessages = {
     copied: 'Copiado',
     error: 'Predicción de resonancia de audiencia fallida',
     dryRunNotice: 'Modo de prueba — usando resonancia de plantilla',
+    audiencePh: 'ej., Gen Z, padres ocupados, entusiastas del fitness',
   },
   creativeFormatRecommender: {
     title: 'Recomendador de Formato Creativo',
@@ -4123,6 +4191,7 @@ export const esMessages = {
     copied: 'Copiado',
     error: 'Análisis de ciclo de vida fallido',
     dryRunNotice: 'Modo de prueba — usando ciclo de vida de plantilla',
+    contentPh: 'ej., un video estilo UGC de 15s mostrando una transformación antes/después con un gancho fuerte y CTA claro...',
   },
   adCreativeAbTestSimulator: {
     title: 'Simulador de Pruebas A/B de Anuncios',
@@ -4149,6 +4218,7 @@ export const esMessages = {
     copied: 'Copiado',
     error: 'Simulación de prueba A/B fallida',
     dryRunNotice: 'Modo de prueba — usando simulación de plantilla',
+    contentPh: 'ej., brilla en 7 días. Nuestro suero de vitamina C está clínicamente probado para iluminar la piel...',
   },
   creativeVisualHierarchyAnalyzer: {
     title: 'Analizador de Jerarquía Visual Creativa',
@@ -4171,6 +4241,7 @@ export const esMessages = {
     copied: 'Copiado',
     error: 'Análisis de jerarquía visual fallido',
     dryRunNotice: 'Modo de prueba — usando análisis de plantilla',
+    contentPh: 'ej., imagen principal arriba (60% de altura), titular audaz superpuesto al centro, foto de producto abajo a la izquierda, botón CTA abajo a la derecha con alto contraste...',
   },
   adAudiencePainPointMapper: {
     title: 'Mapeador de Puntos de Dolor de Audiencia',
@@ -4194,6 +4265,7 @@ export const esMessages = {
     frequency: 'Frecuencia',
     emotionalImpact: 'Impacto emocional',
     addresses: 'Aborda',
+    audiencePh: 'ej., mujeres profesionales ocupadas 25-40 preocupadas por el envejecimiento de la piel',
   },
   creativeMessagingFrameworkBuilder: {
     title: 'Constructor de Marco de Mensajes Creativos',
@@ -4223,6 +4295,8 @@ export const esMessages = {
     evidence: 'Evidencia',
     do: 'Hacer',
     dont: 'No hagas',
+    contentPh: 'ej., ilumina la piel opaca en solo 7 días con vitamina C clínicamente probada — prueba sin riesgo disponible.',
+    audiencePh: 'ej., mujeres 25-40 preocupadas por la piel opaca y los primeros signos de envejecimiento',
   },
   adCreativeBurnoutDetector: {
     title: 'Detector de Burnout Creativo de Anuncios',
@@ -4246,6 +4320,7 @@ export const esMessages = {
     copied: 'Copiado',
     error: 'Detección de burnout fallida',
     dryRunNotice: 'Modo de prueba — usando análisis de plantilla',
+    numberPh: 'ej., 14',
   },
   creativeAdConceptSynthesizer: {
     title: 'Sintetizador de Conceptos Publicitarios Creativos',
@@ -4295,6 +4370,7 @@ export const esMessages = {
     copied: 'Copiado',
     error: 'Perfilado psicográfico fallido',
     dryRunNotice: 'Modo de prueba — usando perfil de plantilla',
+    audiencePh: 'ej., mujeres 25-34, profesionales urbanos interesados en el bienestar',
   },
   creativeAdToneCalibrator: {
     title: 'Calibrador de Tono Creativo Publicitario',
@@ -4317,6 +4393,7 @@ export const esMessages = {
     copied: 'Copiado',
     error: 'Calibración de tono fallida',
     dryRunNotice: 'Modo de prueba — usando calibración de plantilla',
+    contentPh: 'ej., ¡Compra nuestro increíble suero de vitamina C hoy y ve resultados en 7 días!',
   },
   creativeAdFormatInnovator: {
     title: 'Innovador de Formatos Creativos Publicitarios',
@@ -4340,6 +4417,7 @@ export const esMessages = {
     copied: 'Copiado',
     error: 'Innovación de formatos fallida',
     dryRunNotice: 'Modo de prueba — usando formatos de plantilla',
+    contentPh: 'ej., video vertical, carrusel de imágenes, anuncio de historia, clip de influencer',
   },
   adCreativeStoryArcDesigner: {
     title: 'Diseñador de Arcos Narrativos Creativos Publicitarios',
@@ -4361,6 +4439,7 @@ export const esMessages = {
     copied: 'Copiado',
     error: 'Diseño de arco narrativo fallido',
     dryRunNotice: 'Modo de prueba — usando arco narrativo de plantilla',
+    contentPh: 'ej., ilumina tu piel en solo 7 días — sin riesgo',
   },
   creativeAdPersuasionStrategist: {
     title: 'Estratega de Persuasión Creativa Publicitaria',
@@ -4384,6 +4463,7 @@ export const esMessages = {
     dryRunNotice: 'Modo de prueba — usando estrategia de plantilla',
     effect: 'Efecto',
     principle: 'Principio',
+    contentPh: 'ej., Promueve un desafío de brillo de 7 días con un descuento por tiempo limitado...',
   },
   adCreativeHookTimingOptimizer: {
     title: 'Optimizador de Tiempo de Hooks Creativos Publicitarios',
@@ -4409,6 +4489,8 @@ export const esMessages = {
     currentPlacement: 'Colocación actual',
     optimalWindow: 'Ventana óptima',
     attentionCurve: 'Curva de atención',
+    contentPh: 'ej., ¿Sabías que el 90% de las personas abandonan sus metas de fitness para febrero? Así es como permaneces en el 10%...',
+    productPh: 'ej., app de fitness DTC que vende una suscripción de seguimiento de hábitos',
   },
   creativeAdMetaphorGenerator: {
     title: 'Generador de Metáforas Creativas Publicitarias',
@@ -4431,6 +4513,7 @@ export const esMessages = {
     copied: 'Copiado',
     error: 'Generación de metáforas fallida',
     dryRunNotice: 'Modo de prueba — usando metáforas de plantilla',
+    benefitPh: 'ej., ilumina la piel opaca en 7 días',
   },
   adCreativeSensoryEnhancer: {
     title: 'Mejorador Sensorial de Creativos Publicitarios',
@@ -4474,6 +4557,8 @@ export const esMessages = {
     copied: 'Copiado',
     error: 'Diseño de interrupciones de patrón fallido',
     dryRunNotice: 'Modo de prueba — usando interrupciones de plantilla',
+    audiencePh: 'ej., mujeres 25-34 interesadas en belleza limpia',
+    contentPh: 'ej., un anuncio TikTok de 15 segundos que comienza con una demostración de producto y luego un testimonio...',
   },
   adCreativeSocialProofArchitect: {
     title: 'Arquitecto de Prueba Social de Creativos Publicitarios',
@@ -4499,6 +4584,8 @@ export const esMessages = {
     dryRunNotice: 'Modo de prueba — usando diseño de plantilla',
     type: 'Tipo',
     integration: 'Integración',
+    audiencePh: 'ej., mujeres 25-40 interesadas en cuidado de la piel antienvejecimiento',
+    audiencePh2: 'ej., promueve nuestro nuevo suero de vitamina C con enfoque en resultados de brillo y construcción de confianza...',
   },
   adCreativeEmotionSequencer: {
     title: 'Secuenciador de Emociones de Creativos Publicitarios',
@@ -4628,6 +4715,7 @@ export const esMessages = {
     copied: 'Copiado',
     error: 'Diseño de giro narrativo fallido',
     dryRunNotice: 'Modo de prueba — usando giros de plantilla',
+    contentPh: 'ej., una mujer lucha con piel opaca hasta que descubre nuestro suero...',
   },
   adCreativeMemoryAnchorBuilder: {
     title: 'Constructor de Anclas de Memoria de Anuncios Creativos',
@@ -4778,6 +4866,7 @@ export const esMessages = {
     dryRunNotice: 'Modo de prueba — usando jerarquía de plantilla',
     direction: 'Dirección',
     anchors: 'Anclajes',
+    elementsPh: 'ej., titular, imagen de producto, logo, botón CTA, fondo',
   },
   adCreativeSoundDesignStrategist: {
     title: 'Estratega de Diseño de Sonido de Anuncios Creativos',
@@ -4800,6 +4889,7 @@ export const esMessages = {
     copied: 'Copiado',
     error: 'Estrategia de diseño de sonido fallida',
     dryRunNotice: 'Modo de prueba — usando diseño de sonido de plantilla',
+    contentPh: 'ej., enérgico, tranquilo, misterioso, juguetón, dramático, inspirador...',
   },
   creativeAdSurpriseElementDesigner: {
     title: 'Diseñador de Elementos Sorpresa para Anuncios Creativos',
@@ -4824,6 +4914,7 @@ export const esMessages = {
     copied: 'Copiado',
     error: 'Diseño de elementos sorpresa falló',
     dryRunNotice: 'Modo de prueba — usando elementos sorpresa de plantilla',
+    audiencePh: 'ej., entusiastas del cuidado de la piel Gen Z 18-24',
   },
   adCreativeCallbackMemoryDesigner: {
     title: 'Diseñador de Memoria de Callback para Anuncios Creativos',
@@ -5264,6 +5355,7 @@ export const esMessages = {
     copied: 'Copiado',
     error: 'Diseño de momentum social falló',
     dryRunNotice: 'Modo de prueba — usando momentum social de plantilla',
+    audiencePh: 'ej., únete a más de 50.000 mujeres que transformaron su piel con nuestro suero de vitamina C...',
   },
   creativeAdValueLadderDesigner: {
     title: 'Diseñador de Escaleras de Valor para Anuncios Creativos',
@@ -5360,6 +5452,7 @@ export const esMessages = {
     copied: 'Copiado',
     error: 'Diseño de marcos de escasez falló',
     dryRunNotice: 'Modo de prueba — usando marcos de escasez de plantilla',
+    contentPh: 'ej., quedan solo 50 botellas de nuestro suero de vitamina C de edición limitada...',
   },
   creativeAdIdentityAlignmentDesigner: {
     title: 'Diseñador de Alineación de Identidad para Anuncios Creativos',
@@ -5408,6 +5501,7 @@ export const esMessages = {
     copied: 'Copiado',
     error: 'Diseño de marco de reciprocidad falló',
     dryRunNotice: 'Modo de prueba — usando marcos de reciprocidad de plantilla',
+    contentPh: 'ej., Estamos regalando un mini curso gratuito de cuidado de la piel de 5 días a nuestra comunidad...',
   },
   adCreativePASFrameworkDesigner: {
     title: 'Diseñador de Marco PAS para Anuncios Creativos',
@@ -5624,6 +5718,9 @@ export const esMessages = {
     copied: 'Copiado',
     error: 'Diseño de apelación al miedo falló',
     dryRunNotice: 'Modo de prueba — usando apelaciones al miedo de plantilla',
+    productPh: 'ej., marca de seguros DTC que vende un plan de protección del hogar',
+    contentPh: 'ej., no dejes que un evento inesperado borre todo lo que has construido...',
+    audiencePh: 'ej., propietarios 35-55 preocupados por proteger sus activos',
   },
   creativeAdBelongingAppealDesigner: {
     title: 'Diseñador de Apelación de Pertenencia para Anuncios Creativos',
@@ -5672,6 +5769,9 @@ export const esMessages = {
     copied: 'Copiado',
     error: 'Diseño de apelación de humor falló',
     dryRunNotice: 'Modo de prueba — usando apelaciones de humor de plantilla',
+    productPh: 'ej., marca de snacks DTC que vende palomitas picantes',
+    contentPh: 'ej., ¿Antojo de algo audaz? Nuestras palomitas picantes son diferentes...',
+    audiencePh: 'ej., amantes de snacks Gen Z 18-24 que navegan TikTok por la noche',
   },
   creativeAdFramingEffectDesigner: {
     title: 'Diseñador de Efecto de Encuadre para Anuncios Creativos',
@@ -5720,6 +5820,7 @@ export const esMessages = {
     copied: 'Copiado',
     error: 'Diseño de apelación al orgullo falló',
     dryRunNotice: 'Modo de prueba — usando apelaciones al orgullo de plantilla',
+    contentPh: 'ej., te lo has ganado — nuestro suero de vitamina C para quienes nunca se conforman...',
   },
   creativeAdNostalgiaTriggerDesigner: {
     title: 'Diseñador de Disparador de Nostalgia para Anuncios Creativos',
@@ -5888,6 +5989,7 @@ export const esMessages = {
     copied: 'Copiado',
     error: 'Diseño de encuadre de aversión a pérdidas falló',
     dryRunNotice: 'Modo de prueba — usando marcos de aversión a pérdidas de plantilla',
+    contentPh: 'ej., cada día que esperas, tu piel envejece y el daño se acumula...',
   },
   adCreativeAnchoringEffectDesigner: {
     title: 'Diseñador de Efecto de Anclaje para Anuncios Creativos',
@@ -5912,6 +6014,7 @@ export const esMessages = {
     copied: 'Copiado',
     error: 'Diseño de efecto de anclaje falló',
     dryRunNotice: 'Modo de prueba — usando marcos de anclaje de plantilla',
+    contentPh: 'ej., originalmente $199, ahora solo $89 por nuestro suero de vitamina C...',
   },
   aidaFrameworkDesigner: {
     title: 'Diseñador de Framework AIDA',

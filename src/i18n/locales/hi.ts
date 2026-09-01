@@ -668,6 +668,12 @@ export const hiMessages = {
       ratioFeed: 'फ़ीड',
       ratioTiktokReels: 'TikTok/Reels',
       ratioYoutube: 'YouTube',
+      namePh: 'Q4 प्रोडक्ट लॉन्च A/B टेस्ट',
+      namePh2: 'GlowPatch LED Face Mask',
+      numberPh: '50',
+      urlPh: 'https://yourbrand.com',
+      urlPh2: 'https://shop.example.com/products/led-mask',
+      urlPh3: 'https://example.com/reference-ad.mp4',
     },
 
     costEstimate: {
@@ -1099,6 +1105,8 @@ export const hiMessages = {
       loadingCampaigns: 'कैम्पेन लोड हो रहे हैं…',
       refreshingMetrics: 'रिफ्रेश हो रहा है…',
       refreshMetricsLabel: '{name} के लिए मेट्रिक्स रिफ्रेश करें',
+      namePh: 'समर सेल - Glow Serum',
+      contentPh: 'abc123, def456',
     },
     perf: {
       title: 'प्रदर्शन डैशबोर्ड',
@@ -2776,6 +2784,7 @@ export const hiMessages = {
     creativeAudiencePlaceholder: 'दर्शक',
     remove: 'हटाएं',
     addCreative: '+ रचनात्मक जोड़ें',
+    timezonePh: 'UTC',
   },
   competitorWatch: {
     title: 'प्रतिस्पर्धी निगरानी',
@@ -2867,6 +2876,7 @@ export const hiMessages = {
     clearFilters: 'फ़िल्टर साफ़ करें',
     audience: 'ऑडियंस',
     error: 'हुक निर्माण विफल',
+    audiencePh: 'उदा., रिमोट वर्कर्स',
   },
   briefTemplateBuilder: {
     title: 'ब्रीफ टेम्पलेट बिल्डर',
@@ -2893,6 +2903,7 @@ export const hiMessages = {
     brandColors: 'रंग (कॉमा से अलग)',
     urlPlaceholder: 'https://...',
     aiGenerated: 'AI-जनित',
+    contentPh: 'उदा., स्किनकेयर सीरम, वायरलेस ईयरबड्स',
   },
   adScriptWriter: {
       title: "विज्ञापन स्क्रिप्ट लेखक",
@@ -2950,6 +2961,8 @@ export const hiMessages = {
       objections: "आपत्तियां",
       copy: "कॉपी",
       noResults: "अभी तक कोई पर्सोना नहीं बनी। शुरू करने के लिए उत्पाद या ब्रांड दर्ज करें।",
+    productPh: 'उदा., एंटी-एजिंग समस्याओं को लक्षित करने वाला एक प्रीमियम ऑर्गेनिक स्किनकेयर सीरम',
+    audiencePh: 'उदा., US मिलेनियल्स, EU पेशेवर',
   },
   variantMatrixGenerator: {
       title: "क्रिएटिव वेरिएंट मैट्रिक्स",
@@ -3063,6 +3076,10 @@ export const hiMessages = {
     text: 'पाठ',
     references: 'संदर्भ',
     brandHeadline: 'आपका ब्रांड शीर्षक',
+    productPh: 'उदा., फिटनेस के शौकीनों के लिए पर्यावरण-अनुकूल पुन: उपयोग योग्य जल बोतल',
+    tonePh: 'उदा., मिनिमल, बोल्ड, प्लेफुल',
+    audiencePh: 'उदा., शहरी मिलेनियल्स',
+    formatPh: 'उदा., instagram, tiktok',
   },
   adPerformancePredictor: {
     title: "विज्ञापन प्रदर्शन पूर्वानुमानकर्ता",
@@ -3096,6 +3113,8 @@ export const hiMessages = {
     benchmark: 'बेंचमार्क',
     rationale: 'तर्क',
     briefPh: 'अपना क्रिएटिव ब्रीफ या विज्ञापन कॉन्सेप्ट यहां पेस्ट करें...',
+    metricPh: 'उदा., इलेक्ट्रॉनिक्स, ब्यूटी, SaaS',
+    audiencePh: 'उदा., US में 25-40 वर्ष के रिमोट वर्कर्स',
   },
   abTestPlannerV2: {
     title: "रचनात्मक A/B टेस्ट प्लानर",
@@ -3168,6 +3187,8 @@ export const hiMessages = {
     copied: 'कॉपी हो गया',
     error: 'ट्रेंड खोज विफल',
     dryRunNotice: 'ड्राई-रन मोड — ह्यूरिस्टिक ट्रेंड का उपयोग',
+    contentPh: 'उदा., क्लीन स्किनकेयर, होम फिटनेस, प्लांट-आधारित कुकिंग',
+    contentPh2: 'उदा., US, UK, Global (वैकल्पिक)',
   },
   brandVoiceAnalyzer: {
     title: 'ब्रांड वॉइस एनालाइज़र',
@@ -3190,6 +3211,7 @@ export const hiMessages = {
     error: 'विश्लेषण विफल',
     dryRunNotice: 'ड्राई-रन मोड — ह्यूरिस्टिक विश्लेषण का उपयोग',
     sampleContentPh: 'अपने ब्रांड की सामग्री के 100+ अक्षर पेस्ट करें — वेबसाइट कॉपी, विज्ञापन कैप्शन, सोशल पोस्ट, ईमेल…',
+    brandNamePh: 'उदा., Glow & Co.',
   },
   adCaptionGenerator: {
     title: 'विज्ञापन कैप्शन जनरेटर',
@@ -3264,6 +3286,9 @@ export const hiMessages = {
     copied: 'कॉपी हो गया',
     error: 'समय अनुकूलन विफल',
     dryRunNotice: 'ड्राई-रन मोड — ह्यूरिस्टिक समय का उपयोग',
+    audiencePh: 'उदा., US में Gen Z कॉलेज छात्र जो फिटनेस इंफ्लुएंसर्स को फॉलो करते हैं',
+    timezonePh: 'उदा., America/New_York (वैकल्पिक, डिफ़ॉल्ट UTC)',
+    productPh: 'उदा., फिटनेस अपरल (वैकल्पिक)',
   },
   creativeFatigueDetector: {
     title: 'रचनात्मक थकान डिटेक्टर',
@@ -3287,6 +3312,11 @@ export const hiMessages = {
     copied: 'कॉपी हो गया',
     error: 'थकान पहचान विफल',
     dryRunNotice: 'ड्राई-रन मोड — ह्यूरिस्टिक विश्लेषण का उपयोग',
+    contentPh: 'उदा., जिज्ञासा हुक के साथ स्किनकेयर रूटीन दिखाने वाला UGC-स्टाइल TikTok विज्ञापन',
+    numberPh: 'उदा., 12',
+    metricPh: 'उदा., 150000',
+    numberPh2: 'उदा., 1.2',
+    numberPh3: 'उदा., 2.5 (वैकल्पिक)',
   },
   adCtaOptimizer: {
     title: 'विज्ञापन CTA ऑप्टिमाइज़र',
@@ -3308,6 +3338,8 @@ export const hiMessages = {
     copied: 'कॉपी हो गया',
     error: 'CTA अनुकूलन विफल',
     dryRunNotice: 'ड्राई-रन मोड — टेम्पलेट CTA का उपयोग',
+    contentPh: 'उदा., खरीदारी (वैकल्पिक)',
+    contentPh2: 'उदा., अभी खरीदें (वैकल्पिक)',
   },
   conceptExpander: {
     title: 'रचनात्मक अवधारणा विस्तारक',
@@ -3330,6 +3362,7 @@ export const hiMessages = {
     copied: 'कॉपी हो गया',
     error: 'अवधारणा विस्तार विफल',
     dryRunNotice: 'ड्राई-रन मोड — टेम्पलेट अवधारणाओं का उपयोग',
+    contentPh: 'उदा., उत्पाद द्वारा रूटीन को बदलने वाला एक बिफोर-और-आफ्टर रिवील',
   },
   adStoryGenerator: {
     title: 'विज्ञापन कहानी जनरेटर',
@@ -3380,6 +3413,7 @@ export const hiMessages = {
     copied: 'कॉपी हो गया',
     error: 'रंग पैलेट निर्माण विफल',
     dryRunNotice: 'ड्राई-रन मोड — टेम्पलेट पैलेट का उपयोग',
+    colorPh: 'उदा., #1a1a1a (वैकल्पिक)',
   },
   adThumbnailGenerator: {
     title: 'विज्ञापन थंबनेल जनरेटर',
@@ -3404,6 +3438,8 @@ export const hiMessages = {
     copied: 'कॉपी हो गया',
     error: 'थंबनेल निर्माण विफल',
     dryRunNotice: 'ड्राई-रन मोड — टेम्पलेट थंबनेल का उपयोग',
+    numberPh: 'उदा., आप कर रहे हैं 5 स्किनकेयर गलतियां',
+    benefitPh: 'उदा., विटामिन सी सीरम लाभ',
   },
   adFontPairingGenerator: {
     title: 'विज्ञापन फ़ॉन्ट पेयरिंग जनरेटर',
@@ -3444,6 +3480,7 @@ export const hiMessages = {
     copied: 'कॉपी हो गया',
     error: 'हैशटैग निर्माण विफल',
     dryRunNotice: 'ड्राई-रन मोड — टेम्पलेट हैशटैग का उपयोग',
+    categoryPh: 'उदा., स्किनकेयर, फिटनेस, टेक गैजेट्स',
   },
   creativeSceneGenerator: {
     title: 'रचनात्मक दृश्य जनरेटर',
@@ -3469,6 +3506,7 @@ export const hiMessages = {
     copied: 'कॉपी हो गया',
     error: 'दृश्य निर्माण विफल',
     dryRunNotice: 'ड्राई-रन मोड — टेम्पलेट दृश्य का उपयोग',
+    contentPh: 'उदा., उत्पाद के वास्तविक परिणाम दिखाने वाला एक बिफोर-और-आफ्टर ट्रांसफॉर्मेशन',
   },
   adMusicMoodMatcher: {
     title: 'विज्ञापन संगीत मूड मैचर',
@@ -3538,6 +3576,8 @@ export const hiMessages = {
     copied: 'कॉपी हो गया',
     error: 'ब्रीफ निर्माण विफल',
     dryRunNotice: 'ड्राई-रन मोड — टेम्पलेट ब्रीफ का उपयोग',
+    contentPh: 'उदा., एक नई उत्पाद लाइन लॉन्च करें और प्री-ऑर्डर बढ़ाएं',
+    audiencePh: 'उदा., 25-35 वर्ष के मिलेनियल स्किनकेयर उत्साही',
   },
   adPlacementStrategist: {
     title: 'विज्ञापन प्लेसमेंट रणनीतिकार',
@@ -3560,6 +3600,7 @@ export const hiMessages = {
     copied: 'कॉपी हो गया',
     error: 'प्लेसमेंट रणनीति निर्माण विफल',
     dryRunNotice: 'ड्राई-रन मोड — टेम्पलेट रणनीति का उपयोग',
+    audiencePh: 'उदा., स्किनकेयर में रुचि रखने वाली 25-35 वर्ष की मिलेनियल महिलाएं',
   },
   adABTestNameGenerator: {
     title: 'विज्ञापन A/B टेस्ट नाम जनरेटर',
@@ -3597,6 +3638,7 @@ export const hiMessages = {
     copied: 'कॉपी हो गया',
     error: 'हुक नवीनीकरण निर्माण विफल',
     dryRunNotice: 'ड्राई-रन मोड — टेम्पलेट नवीनीकरण का उपयोग',
+    contentPh: 'उदा., यह स्किनकेयर उत्पाद आपकी ज़िंदगी बदल देगा',
   },
   adAudienceSegmentBuilder: {
     title: 'विज्ञापन दर्शक सेगमेंट बिल्डर',
@@ -3622,6 +3664,7 @@ export const hiMessages = {
     copied: 'कॉपी हो गया',
     error: 'सेगमेंट निर्माण विफल',
     dryRunNotice: 'ड्राई-रन मोड — टेम्पलेट सेगमेंट का उपयोग',
+    audiencePh: 'उदा., क्लीन ब्यूटी में रुचि रखने वाली 25-40 वर्ष की स्वास्थ्य-चेतना वाली महिलाएं',
   },
   creativeConceptValidator: {
     title: 'क्रिएटिव कॉन्सेप्ट सत्यापनकर्ता',
@@ -3649,6 +3692,8 @@ export const hiMessages = {
     copied: 'कॉपी हो गया',
     error: 'कॉन्सेप्ट सत्यापन विफल',
     dryRunNotice: 'ड्राई-रन मोड — टेम्पलेट सत्यापन का उपयोग',
+    contentPh: 'उदा., हमारे विटामिन सी सीरम का उपयोग करते हुए बिफोर-और-आफ्टर ट्रांसफॉर्मेशन दिखाने वाला 15-सेकंड का TikTok वीडियो, जिज्ञासा हुक और UGC-स्टाइल ऑथेंटिसिटी के साथ',
+    audiencePh: 'उदा., 25-40 वर्ष की स्वास्थ्य-चेतना वाली महिलाएं',
   },
   adEmotionAnalyzer: {
     title: 'विज्ञापन भावना विश्लेषक',
@@ -3671,6 +3716,7 @@ export const hiMessages = {
     error: 'भावना विश्लेषण विफल',
     dryRunNotice: 'ड्राई-रन मोड — टेम्पलेट विश्लेषण का उपयोग',
     overallEmotionalImpact: 'समग्र भावनात्मक प्रभाव',
+    contentPh: 'उदा., जब मैंने पहली बार यह सीरम आज़माया, मुझे संदेह था। लेकिन दो हफ्तों के बाद, मेरी त्वचा चमक रही थी। यहाँ बताया गया है कि इसने मेरी रूटीन हमेशा के लिए कैसे बदल दी...',
   },
   creativeFormatConverter: {
     title: 'क्रिएटिव फॉर्मेट कन्वर्टर',
@@ -3692,6 +3738,7 @@ export const hiMessages = {
     copied: 'कॉपी हो गया',
     error: 'फॉर्मेट कन्वर्शन विफल',
     dryRunNotice: 'ड्राई-रन मोड — टेम्पलेट कन्वर्शन का उपयोग',
+    contentPh: 'उदा., हमारा विटामिन सी सीरम केवल दो हफ्तों में त्वचा को चमकाता है। 20% L-ascorbic acid के साथ तैयार, यह डार्क स्पॉट कम करता है और स्किन टोन इवन करता है...',
   },
   adBudgetAllocator: {
     title: 'विज्ञापन बजट आवंटक',
@@ -3715,6 +3762,7 @@ export const hiMessages = {
     copied: 'कॉपी हो गया',
     error: 'बजट आवंटन विफल',
     dryRunNotice: 'ड्राई-रन मोड — टेम्पलेट आवंटन का उपयोग',
+    contentPh: 'उदा., $10,000',
   },
   creativeTrendAdapter: {
     title: 'क्रिएटिव ट्रेंड एडाप्टर',
@@ -3739,6 +3787,8 @@ export const hiMessages = {
     copied: 'कॉपी हो गया',
     error: 'ट्रेंड अनुकूलन विफल',
     dryRunNotice: 'ड्राई-रन मोड — टेम्पलेट अनुकूलन का उपयोग',
+    contentPh: 'उदा., चमकती त्वचा के लिए हमारे नए विटामिन सी सीरम को देखें',
+    brandNamePh: 'उदा., GlowUp Skincare',
   },
   adCreativeSequencer: {
     title: 'विज्ञापन क्रिएटिव अनुक्रमकर्ता',
@@ -3790,6 +3840,9 @@ export const hiMessages = {
     copied: 'कॉपी हो गया',
     error: 'स्टोरी जनरेशन विफल',
     dryRunNotice: 'ड्राई-रन मोड — टेम्पलेट स्टोरी का उपयोग',
+    brandNamePh: 'उदा., GlowUp',
+    audiencePh: 'उदा., ऑथेंटिसिटी, एम्पावरमेंट, सस्टेनेबिलिटी',
+    productPh: 'उदा., एक स्किनकेयर ऐप जो रूटीन को पर्सनलाइज़ करने के लिए AI का उपयोग करता है',
   },
   adLocalizationAdapter: {
     title: 'विज्ञापन स्थानीयकरण एडाप्टर',
@@ -3815,6 +3868,8 @@ export const hiMessages = {
     copied: 'कॉपी हो गया',
     error: 'स्थानीयकरण विफल',
     dryRunNotice: 'ड्राई-रन मोड — टेम्पलेट स्थानीयकरण का उपयोग',
+    contentPh: 'उदा., हमारे अद्भुत नए उत्पाद को देखें — यह गेम चेंजर है! अभी खरीदें और 20% बचाएं!',
+    brandNamePh: 'उदा., GlowUp skincare',
   },
   creativePerformanceForecaster: {
     title: 'क्रिएटिव प्रदर्शन पूर्वानुमानकर्ता',
@@ -3844,6 +3899,7 @@ export const hiMessages = {
     copied: 'कॉपी हो गया',
     error: 'प्रदर्शन पूर्वानुमान विफल',
     dryRunNotice: 'ड्राई-रन मोड — टेम्पलेट पूर्वानुमान का उपयोग',
+    contentPh: 'उदा., हमारे विटामिन सी सीरम का उपयोग करते हुए किसी का बिफोर/आफ्टर दिखाने वाला 15-सेकंड का TikTok, पहले 3 सेकंड में एक हुक और अभी शॉप करने के लिए CTA के साथ',
   },
   adSentimentTuner: {
     title: 'विज्ञापन भावना ट्यूनर',
@@ -3867,6 +3923,7 @@ export const hiMessages = {
     copied: 'कॉपी हो गया',
     error: 'भावना ट्यूनिंग विफल',
     dryRunNotice: 'ड्राई-रन मोड — टेम्पलेट ट्यूनिंग का उपयोग',
+    contentPh: 'उदा., हमारा नया उत्पाद आपको समय बचाने और अधिक काम करने में मदद करता है।',
   },
   creativeHookMatrixGenerator: {
     title: 'क्रिएटिव हुक मैट्रिक्स जनरेटर',
@@ -3914,6 +3971,7 @@ export const hiMessages = {
     dryRunNotice: 'ड्राई-रन मोड — टेम्पलेट रोटेशन का उपयोग',
     credits: 'क्रेडिट',
     days: 'दिन',
+    contentPh: 'उदा., इस हफ्ते केवल हमारे बेस्ट-सेलिंग विटामिन सी सीरम पर 50% छूट पाएं।',
   },
   brandVoiceConsistencyChecker: {
     title: 'ब्रांड आवाज़ संगतता जांचकर्ता',
@@ -3941,6 +3999,9 @@ export const hiMessages = {
     copied: 'कॉपी हो गया',
     error: 'ब्रांड आवाज़ जांच विफल',
     dryRunNotice: 'ड्राई-रन मोड — टेम्पलेट जांच का उपयोग',
+    contentPh: 'उदा., अरे दोस्तों! हमारे अद्भुत नए उत्पाद को देखें, आप इसे पसंद करेंगे!!!',
+    brandNamePh: 'उदा., Lumina Skincare',
+    contentPh2: 'उदा., पेशेवर, गर्मजोशी, और विज्ञान-आधारित। स्पष्ट, सुलभ भाषा का उपयोग करता है। अशिष्ट भाषा और अत्यधिक विराम चिह्न से बचता है।',
   },
   adPersonaMatcher: {
     title: 'विज्ञापन पर्सोना मैचर',
@@ -3961,6 +4022,8 @@ export const hiMessages = {
     copied: 'कॉपी हो गया',
     error: 'पर्सोना मिलान विफल',
     dryRunNotice: 'ड्राई-रन मोड — टेम्पलेट मिलान का उपयोग',
+    contentPh: 'उदा., हमारे विटामिन सी सीरम के साथ स्किनकेयर का भविष्य खोजें...',
+    audiencePh: 'उदा., 18-25 वर्ष के ब्यूटी उत्साही, व्यस्त माएं 30-45, इको-कॉन्शस शॉपर्स',
   },
   creativeConceptExpanderPro: {
     title: 'क्रिएटिव कॉन्सेप्ट एक्सपैंडर प्रो',
@@ -3986,6 +4049,7 @@ export const hiMessages = {
     copied: 'कॉपी हो गया',
     error: 'कॉन्सेप्ट विस्तार विफल',
     dryRunNotice: 'ड्राई-रन मोड — टेम्पलेट विस्तार का उपयोग',
+    contentPh: 'उदा., 30 दिनों में वास्तविक परिणाम दिखाने वाला एक बिफोर-और-आफ्टर ट्रांसफॉर्मेशन',
   },
   adCompetitiveIntelligence: {
     title: 'विज्ञापन प्रतिस्पर्धी खुफिया',
@@ -4011,6 +4075,8 @@ export const hiMessages = {
     copied: 'कॉपी हो गया',
     error: 'प्रतिस्पर्धी खुफिया विफल',
     dryRunNotice: 'ड्राई-रन मोड — टेम्पलेट खुफिया का उपयोग',
+    productPh: 'उदा., स्किनकेयर, फिटनेस ऐप्स, मील किट्स',
+    competitorsPh: 'उदा., Glossier, The Ordinary, CeraVe, Drunk Elephant',
   },
   creativeQualityScorer: {
     title: 'क्रिएटिव गुणवत्ता स्कोरर',
@@ -4056,6 +4122,7 @@ export const hiMessages = {
     copied: 'कॉपी हो गया',
     error: 'सेंटीमेंट यात्रा मैपिंग विफल',
     dryRunNotice: 'ड्राई-रन मोड — टेम्पलेट यात्रा का उपयोग',
+    contentPh: 'उदा., डल स्किन से थक गई हैं? हमारा विटामिन सी सीरम केवल 7 दिनों में चमक देता है। आज ही रिस्क-फ्री आज़माएं!',
   },
   adAudienceResonancePredictor: {
     title: 'विज्ञापन ऑडियंस रेज़ोनेंस प्रेडिक्टर',
@@ -4077,6 +4144,7 @@ export const hiMessages = {
     copied: 'कॉपी हो गया',
     error: 'ऑडियंस रेज़ोनेंस भविष्यवाणी विफल',
     dryRunNotice: 'ड्राई-रन मोड — टेम्पलेट रेज़ोनेंस का उपयोग',
+    audiencePh: 'उदा., Gen Z, व्यस्त माता-पिता, फिटनेस उत्साही',
   },
   creativeFormatRecommender: {
     title: 'क्रिएटिव फॉर्मेट रेकमेंडर',
@@ -4121,6 +4189,7 @@ export const hiMessages = {
     copied: 'कॉपी हो गया',
     error: 'जीवनचक्र विश्लेषण विफल',
     dryRunNotice: 'ड्राई-रन मोड — टेम्पलेट जीवनचक्र का उपयोग',
+    contentPh: 'उदा., मजबूत हुक और स्पष्ट CTA के साथ बिफोर/आफ्टर ट्रांसफॉर्मेशन दिखाने वाला 15s UGC-स्टाइल वीडियो...',
   },
   adCreativeAbTestSimulator: {
     title: 'विज्ञापन क्रिएटिव A/B टेस्ट सिम्युलेटर',
@@ -4147,6 +4216,7 @@ export const hiMessages = {
     copied: 'कॉपी हो गया',
     error: 'A/B टेस्ट सिम्युलेशन विफल',
     dryRunNotice: 'ड्राई-रन मोड — टेम्पलेट सिम्युलेशन का उपयोग',
+    contentPh: 'उदा., 7 दिनों में ग्लो पाएं। हमारा विटामिन सी सीरम त्वचा को चमकाने के लिए क्लिनिकली प्रूवन है...',
   },
   creativeVisualHierarchyAnalyzer: {
     title: 'क्रिएटिव विज़ुअल हायरार्की एनालाइज़र',
@@ -4169,6 +4239,7 @@ export const hiMessages = {
     copied: 'कॉपी हो गया',
     error: 'विज़ुअल हायरार्की विश्लेषण विफल',
     dryRunNotice: 'ड्राई-रन मोड — टेम्पलेट विश्लेषण का उपयोग',
+    contentPh: 'उदा., शीर्ष पर हीरो इमेज (60% ऊंचाई), केंद्र में बोल्ड हेडलाइन ओवरले, निचले-बाएं प्रोडक्ट शॉट, उच्च कंट्रास्ट के साथ निचले-दाएं CTA बटन...',
   },
   adAudiencePainPointMapper: {
     title: 'विज्ञापन ऑडियंस पेन पॉइंट मैपर',
@@ -4192,6 +4263,7 @@ export const hiMessages = {
     frequency: 'आवृत्ति',
     emotionalImpact: 'भावनात्मक प्रभाव',
     addresses: 'संबोधित करता है',
+    audiencePh: 'उदा., त्वचा की उम्र बढ़ने के बारे में चिंतित 25-40 वर्ष की व्यस्त पेशेवर महिलाएं',
   },
   creativeMessagingFrameworkBuilder: {
     title: 'क्रिएटिव मैसेजिंग फ्रेमवर्क बिल्डर',
@@ -4221,6 +4293,8 @@ export const hiMessages = {
     evidence: 'साक्ष्य',
     do: 'करें',
     dont: 'न करें',
+    contentPh: 'उदा., केवल 7 दिनों में क्लिनिकल-प्रूवन विटामिन सी के साथ डल स्किन को चमकाएं — रिस्क-फ्री ट्रायल उपलब्ध।',
+    audiencePh: 'उदा., डल स्किन और उम्र बढ़ने के शुरुआती संकेतों के बारे में चिंतित 25-40 वर्ष की महिलाएं',
   },
   adCreativeBurnoutDetector: {
     title: 'विज्ञापन क्रिएटिव बर्नआउट डिटेक्टर',
@@ -4244,6 +4318,7 @@ export const hiMessages = {
     copied: 'कॉपी हो गया',
     error: 'बर्नआउट का पता लगाना विफल',
     dryRunNotice: 'ड्राई-रन मोड — टेम्पलेट विश्लेषण का उपयोग',
+    numberPh: 'उदा., 14',
   },
   creativeAdConceptSynthesizer: {
     title: 'क्रिएटिव एड कॉन्सेप्ट सिंथेसाइज़र',
@@ -4293,6 +4368,7 @@ export const hiMessages = {
     copied: 'कॉपी हो गया',
     error: 'साइकोग्राफिक प्रोफाइलिंग विफल',
     dryRunNotice: 'ड्राई-रन मोड — टेम्पलेट प्रोफाइल का उपयोग',
+    audiencePh: 'उदा., 25-34 वर्ष की महिलाएं, वेलनेस में रुचि रखने वाले शहरी पेशेवर',
   },
   creativeAdToneCalibrator: {
     title: 'क्रिएटिव एड टोन कैलिब्रेटर',
@@ -4315,6 +4391,7 @@ export const hiMessages = {
     copied: 'कॉपी हो गया',
     error: 'टोन कैलिब्रेशन विफल',
     dryRunNotice: 'ड्राई-रन मोड — टेम्पलेट कैलिब्रेशन का उपयोग',
+    contentPh: 'उदा., आज हमारा अद्भुत विटामिन सी सीरम खरीदें और 7 दिनों में परिणाम देखें!',
   },
   creativeAdFormatInnovator: {
     title: 'क्रिएटिव एड फॉर्मेट इनोवेटर',
@@ -4338,6 +4415,7 @@ export const hiMessages = {
     copied: 'कॉपी हो गया',
     error: 'फॉर्मेट इनोवेशन विफल',
     dryRunNotice: 'ड्राई-रन मोड — टेम्पलेट फॉर्मेट का उपयोग',
+    contentPh: 'उदा., वर्टिकल वीडियो, इमेज कैरोसेल, स्टोरी विज्ञापन, इंफ्लुएंसर क्लिप',
   },
   adCreativeStoryArcDesigner: {
     title: 'एड क्रिएटिव स्टोरी आर्क डिज़ाइनर',
@@ -4359,6 +4437,7 @@ export const hiMessages = {
     copied: 'कॉपी हो गया',
     error: 'स्टोरी आर्क डिज़ाइन विफल',
     dryRunNotice: 'ड्राई-रन मोड — टेम्पलेट स्टोरी आर्क का उपयोग',
+    contentPh: 'उदा., केवल 7 दिनों में अपनी त्वचा को चमकाएं — रिस्क-फ्री',
   },
   creativeAdPersuasionStrategist: {
     title: 'क्रिएटिव एड पर्सुएशन स्ट्रेटेजिस्ट',
@@ -4382,6 +4461,7 @@ export const hiMessages = {
     dryRunNotice: 'ड्राई-रन मोड — टेम्पलेट रणनीति का उपयोग',
     effect: 'प्रभाव',
     principle: 'सिद्धांत',
+    contentPh: 'उदा., सीमित-समय छूट के साथ 7-दिन की ग्लो चैलेंज को बढ़ावा दें...',
   },
   adCreativeHookTimingOptimizer: {
     title: 'एड क्रिएटिव हुक टाइमिंग ऑप्टिमाइज़र',
@@ -4407,6 +4487,8 @@ export const hiMessages = {
     currentPlacement: 'वर्तमान स्थान',
     optimalWindow: 'इष्टतम विंडो',
     attentionCurve: 'ध्यान वक्र',
+    contentPh: 'उदा., क्या आप जानते हैं कि 90% लोग फरवरी तक अपने फिटनेस लक्ष्य छोड़ देते हैं? यहाँ बताया गया है कि 10% में कैसे बने रहें...',
+    productPh: 'उदा., हैबिट-ट्रैकिंग सब्सक्रिप्शन बेचने वाला DTC फिटनेस ऐप',
   },
   creativeAdMetaphorGenerator: {
     title: 'क्रिएटिव एड मेटाफ़ोर जनरेटर',
@@ -4429,6 +4511,7 @@ export const hiMessages = {
     copied: 'कॉपी हो गया',
     error: 'रूपक निर्माण विफल',
     dryRunNotice: 'ड्राई-रन मोड — टेम्पलेट रूपक का उपयोग',
+    benefitPh: 'उदा., 7 दिनों में डल स्किन को चमकाएं',
   },
   adCreativeSensoryEnhancer: {
     title: 'एड क्रिएटिव सेंसरी एन्हांसर',
@@ -4472,6 +4555,8 @@ export const hiMessages = {
     copied: 'कॉपी हो गया',
     error: 'पैटर्न इंटरप्ट डिज़ाइन विफल',
     dryRunNotice: 'ड्राई-रन मोड — टेम्पलेट इंटरप्ट का उपयोग',
+    audiencePh: 'उदा., क्लीन ब्यूटी में रुचि रखने वाली 25-34 वर्ष की महिलाएं',
+    contentPh: 'उदा., प्रोडक्ट डेमो के साथ शुरू होकर फिर एक टेस्टिमोनियल देने वाला 15-सेकंड का TikTok विज्ञापन...',
   },
   adCreativeSocialProofArchitect: {
     title: 'एड क्रिएटिव सोशल प्रूफ आर्किटेक्ट',
@@ -4497,6 +4582,8 @@ export const hiMessages = {
     dryRunNotice: 'ड्राई-रन मोड — टेम्पलेट आर्किटेक्चर का उपयोग',
     type: 'प्रकार',
     integration: 'एकीकरण',
+    audiencePh: 'उदा., एंटी-एजिंग स्किनकेयर में रुचि रखने वाली 25-40 वर्ष की महिलाएं',
+    audiencePh2: 'उदा., चमक परिणामों और ट्रस्ट-बिल्डिंग पर ध्यान केंद्रित करते हुए हमारे नए विटामिन सी सीरम को बढ़ावा दें...',
   },
   adCreativeEmotionSequencer: {
     title: 'एड क्रिएटिव इमोशन सीक्वेंसर',
@@ -4626,6 +4713,7 @@ export const hiMessages = {
     copied: 'कॉपी हो गया',
     error: 'नैरेटिव ट्विस्ट डिज़ाइन विफल',
     dryRunNotice: 'ड्राई-रन मोड — टेम्पलेट ट्विस्ट का उपयोग',
+    contentPh: 'उदा., एक महिला डल स्किन से जूझती है जब तक उसे हमारा सीरम नहीं मिलता...',
   },
   adCreativeMemoryAnchorBuilder: {
     title: 'एड क्रिएटिव मेमोरी एंकर बिल्डर',
@@ -4776,6 +4864,7 @@ export const hiMessages = {
     dryRunNotice: 'ड्राई-रन मोड — टेम्पलेट हायरार्की का उपयोग',
     direction: 'दिशा',
     anchors: 'एंकर',
+    elementsPh: 'उदा., हेडलाइन, प्रोडक्ट इमेज, लोगो, CTA बटन, बैकग्राउंड',
   },
   adCreativeSoundDesignStrategist: {
     title: 'एड क्रिएटिव साउंड डिज़ाइन स्ट्रेटेजिस्ट',
@@ -4798,6 +4887,7 @@ export const hiMessages = {
     copied: 'कॉपी हो गया',
     error: 'साउंड डिज़ाइन रणनीति विफल',
     dryRunNotice: 'ड्राई-रन मोड — टेम्पलेट साउंड डिज़ाइन का उपयोग',
+    contentPh: 'उदा., एनर्जेटिक, शांत, रहस्यमय, प्लेफुल, ड्रामैटिक, अपलिफ्टिंग...',
   },
   creativeAdSurpriseElementDesigner: {
     title: 'क्रिएटिव एड सरप्राइज एलिमेंट डिजाइनर',
@@ -4822,6 +4912,7 @@ export const hiMessages = {
     copied: 'कॉपी हो गया',
     error: 'सरप्राइज एलिमेंट डिजाइन विफल',
     dryRunNotice: 'ड्राई-रन मोड — टेम्पलेट सरप्राइज एलिमेंट का उपयोग',
+    audiencePh: 'उदा., 18-24 वर्ष के Gen Z स्किनकेयर उत्साही',
   },
   adCreativeCallbackMemoryDesigner: {
     title: 'एड क्रिएटिव कॉलबैक मेमोरी डिजाइनर',
@@ -5262,6 +5353,7 @@ export const hiMessages = {
     copied: 'कॉपी हो गया',
     error: 'सोशल मोमेंटम डिजाइन विफल',
     dryRunNotice: 'ड्राई-रन मोड — टेम्पलेट सोशल मोमेंटम का उपयोग',
+    audiencePh: 'उदा., हमारे विटामिन सी सीरम से अपनी त्वचा बदलने वाली 50,000+ महिलाओं में शामिल हों...',
   },
   creativeAdValueLadderDesigner: {
     title: 'क्रिएटिव एड वैल्यू लैडर डिजाइनर',
@@ -5358,6 +5450,7 @@ export const hiMessages = {
     copied: 'कॉपी हो गया',
     error: 'स्कार्सिटी फ्रेम डिजाइन विफल',
     dryRunNotice: 'ड्राई-रन मोड — टेम्पलेट स्कार्सिटी फ्रेम का उपयोग',
+    contentPh: 'उदा., हमारे लिमिटेड-एडिशन विटामिन सी सीरम की केवल 50 बोतलें बची हैं...',
   },
   creativeAdIdentityAlignmentDesigner: {
     title: 'क्रिएटिव एड आइडेंटिटी अलाइनमेंट डिजाइनर',
@@ -5406,6 +5499,7 @@ export const hiMessages = {
     copied: 'कॉपी हो गया',
     error: 'रेसिप्रोसिटी फ्रेमवर्क डिजाइन विफल',
     dryRunNotice: 'ड्राई-रन मोड — टेम्पलेट रेसिप्रोसिटी फ्रेमवर्क का उपयोग',
+    contentPh: 'उदा., हम अपने समुदाय को एक मुफ्त 5-दिन का स्किनकेयर मिनी कोर्स दे रहे हैं...',
   },
   adCreativePASFrameworkDesigner: {
     title: 'एड क्रिएटिव PAS फ्रेमवर्क डिजाइनर',
@@ -5622,6 +5716,9 @@ export const hiMessages = {
     copied: 'कॉपी हो गया',
     error: 'फियर अपील डिजाइन विफल',
     dryRunNotice: 'ड्राई-रन मोड — टेम्पलेट फियर अपील का उपयोग',
+    productPh: 'उदा., होम प्रोटेक्शन प्लान बेचने वाला DTC इंश्योरेंस ब्रांड',
+    contentPh: 'उदा., एक अप्रत्याशित घटना को आपने जो बनाया है उसे मिटने दें...',
+    audiencePh: 'उदा., अपनी संपत्ति की रक्षा के बारे में चिंतित 35-55 वर्ष के घर मालिक',
   },
   creativeAdBelongingAppealDesigner: {
     title: 'क्रिएटिव एड बिलॉन्गिंग अपील डिजाइनर',
@@ -5670,6 +5767,9 @@ export const hiMessages = {
     copied: 'कॉपी हो गया',
     error: 'ह्यूमर अपील डिजाइन विफल',
     dryRunNotice: 'ड्राई-रन मोड — टेम्पलेट ह्यूमर अपील का उपयोग',
+    productPh: 'उदा., DTC स्नैक ब्रांड जो मसालेदार पॉपकॉर्न बेचता है',
+    contentPh: 'उदा., कुछ बोल्ड चाहिए? हमारा मसालेदार पॉपकॉर्न अलग अहसास देता है...',
+    audiencePh: 'उदा., रात में TikTok स्क्रॉल करने वाले 18-24 वर्ष के Gen Z स्नैक प्रेमी',
   },
   creativeAdFramingEffectDesigner: {
     title: 'क्रिएटिव एड फ्रेमिंग इफेक्ट डिजाइनर',
@@ -5718,6 +5818,7 @@ export const hiMessages = {
     copied: 'कॉपी हो गया',
     error: 'प्राइड अपील डिजाइन विफल',
     dryRunNotice: 'ड्राई-रन मोड — टेम्पलेट प्राइड अपील का उपयोग',
+    contentPh: 'उदा., आपने यह अर्जित किया है — जो कभी समझौता नहीं करते उनके लिए हमारा विटामिन सी सीरम...',
   },
   creativeAdNostalgiaTriggerDesigner: {
     title: 'क्रिएटिव एड नॉस्टेल्जिया ट्रिगर डिजाइनर',
@@ -5886,6 +5987,7 @@ export const hiMessages = {
     copied: 'कॉपी हो गया',
     error: 'लॉस अवर्शन फ्रेमिंग डिजाइन विफल',
     dryRunNotice: 'ड्राई-रन मोड — टेम्पलेट लॉस अवर्शन फ्रेमवर्क का उपयोग',
+    contentPh: 'उदा., हर दिन आप इंतज़ार करते हैं, आपकी त्वचा उम्र बढ़ती है और नुकसान बढ़ता है...',
   },
   adCreativeAnchoringEffectDesigner: {
     title: 'एड क्रिएटिव एंकरिंग इफेक्ट डिजाइनर',
@@ -5910,6 +6012,7 @@ export const hiMessages = {
     copied: 'कॉपी हो गया',
     error: 'एंकरिंग इफेक्ट डिजाइन विफल',
     dryRunNotice: 'ड्राई-रन मोड — टेम्पलेट एंकरिंग फ्रेमवर्क का उपयोग',
+    contentPh: 'उदा., मूल रूप से $199, अब केवल $89 हमारे विटामिन सी सीरम के लिए...',
   },
   aidaFrameworkDesigner: {
     title: 'AIDA फ्रेमवर्क डिज़ाइनर',

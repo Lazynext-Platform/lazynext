@@ -197,7 +197,7 @@ export default function AdColorPaletteGeneratorPage() {
                   type="text"
                   value={brandColor}
                   onChange={(e) => setBrandColor(e.target.value)}
-                  placeholder="e.g., #1a1a1a (optional)"
+                  placeholder={t('adColorPaletteGenerator.colorPh')}
                   maxLength={7}
                   className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
                   disabled={loading}

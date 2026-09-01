@@ -152,7 +152,7 @@ export default function CreativeAdReciprocityTriggerDesignerPage() {
               id="cartdContent"
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              placeholder="e.g., We're giving away a free 5-day skincare mini course to our community..."
+              placeholder={t('creativeAdReciprocityTriggerDesigner.contentPh')}
               rows={4}
               maxLength={2000}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent resize-y"

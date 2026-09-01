@@ -156,7 +156,7 @@ export default function AdCreativeStoryArcDesignerPage() {
               type="text"
               value={coreMessage}
               onChange={(e) => setCoreMessage(e.target.value)}
-              placeholder="e.g., Brighten your skin in just 7 days — risk-free"
+              placeholder={t('adCreativeStoryArcDesigner.contentPh')}
               maxLength={2000}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
               disabled={loading}

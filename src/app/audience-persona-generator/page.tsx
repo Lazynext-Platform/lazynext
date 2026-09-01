@@ -141,7 +141,7 @@ export default function AudiencePersonaGeneratorPage() {
               id="apgProduct"
               value={productOrBrand}
               onChange={(e) => setProductOrBrand(e.target.value)}
-              placeholder="e.g., A premium organic skincare serum targeting anti-aging concerns"
+              placeholder={t('audiencePersonaGenerator.productPh')}
               rows={3}
               maxLength={2000}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent resize-y"
@@ -170,7 +170,7 @@ export default function AudiencePersonaGeneratorPage() {
                 type="text"
                 value={targetMarket}
                 onChange={(e) => setTargetMarket(e.target.value)}
-                placeholder="e.g., US millennials, EU professionals"
+                placeholder={t('audiencePersonaGenerator.audiencePh')}
                 maxLength={500}
                 className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
                 disabled={loading}

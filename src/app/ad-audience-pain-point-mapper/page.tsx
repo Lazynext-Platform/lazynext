@@ -151,7 +151,7 @@ export default function AdAudiencePainPointMapperPage() {
               type="text"
               value={targetAudience}
               onChange={(e) => setTargetAudience(e.target.value)}
-              placeholder="e.g., Busy professional women aged 25-40 concerned about skin aging"
+              placeholder={t('adAudiencePainPointMapper.audiencePh')}
               maxLength={2000}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
               disabled={loading}

@@ -136,7 +136,7 @@ export default function AdCreativeHumorAppealDesignerPage() {
               type="text"
               value={productOrBrand}
               onChange={(e) => setProductOrBrand(e.target.value)}
-              placeholder="e.g., DTC snack brand selling spicy popcorn"
+              placeholder={t('adCreativeHumorAppealDesigner.productPh')}
               maxLength={2000}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
               disabled={loading}
@@ -151,7 +151,7 @@ export default function AdCreativeHumorAppealDesignerPage() {
               id="achadContent"
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              placeholder="e.g., Craving something bold? Our spicy popcorn hits different..."
+              placeholder={t('adCreativeHumorAppealDesigner.contentPh')}
               rows={4}
               maxLength={2000}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent resize-y"
@@ -168,7 +168,7 @@ export default function AdCreativeHumorAppealDesignerPage() {
               type="text"
               value={targetAudience}
               onChange={(e) => setTargetAudience(e.target.value)}
-              placeholder="e.g., Gen Z snack lovers 18-24 who scroll TikTok at night"
+              placeholder={t('adCreativeHumorAppealDesigner.audiencePh')}
               maxLength={2000}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
               disabled={loading}

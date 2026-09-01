@@ -128,7 +128,7 @@ export default function BrandVoiceAnalyzerPage() {
               type="text"
               value={brandName}
               onChange={(e) => setBrandName(e.target.value)}
-              placeholder="e.g., Glow & Co."
+              placeholder={t('brandVoiceAnalyzer.brandNamePh')}
               maxLength={200}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
               disabled={loading}

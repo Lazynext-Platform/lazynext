@@ -164,7 +164,7 @@ export default function AdsPage() {
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="Summer Sale - Glow Serum"
+                placeholder={t('ads.namePh')}
                 className="mt-1 w-full rounded-lg border border-line bg-app px-3 py-2 text-sm text-fg outline-none focus:border-brand-accent"
               />
             </div>
@@ -175,7 +175,7 @@ export default function AdsPage() {
                 type="text"
                 value={creativeIds}
                 onChange={(e) => setCreativeIds(e.target.value)}
-                placeholder="abc123, def456"
+                placeholder={t('ads.contentPh')}
                 className="mt-1 w-full rounded-lg border border-line bg-app px-3 py-2 text-sm text-fg outline-none focus:border-brand-accent"
               />
             </div>

@@ -144,7 +144,7 @@ export default function AdCreativeSocialProofArchitectPage() {
               type="text"
               value={targetAudience}
               onChange={(e) => setTargetAudience(e.target.value)}
-              placeholder="e.g., Women 25-40 interested in anti-aging skincare"
+              placeholder={t('adCreativeSocialProofArchitect.audiencePh')}
               maxLength={2000}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
               disabled={loading}
@@ -159,7 +159,7 @@ export default function AdCreativeSocialProofArchitectPage() {
               id="acspaContent"
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              placeholder="e.g., Promote our new vitamin C serum with a focus on brightening results and trust-building..."
+              placeholder={t('adCreativeSocialProofArchitect.audiencePh2')}
               rows={4}
               maxLength={2000}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent resize-y"

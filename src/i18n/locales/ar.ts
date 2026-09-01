@@ -668,6 +668,12 @@ export const arMessages = {
       ratioFeed: 'المنشورات',
       ratioTiktokReels: 'TikTok/Reels',
       ratioYoutube: 'YouTube',
+      namePh: 'اختبار A/B لإطلاق منتج الربع الرابع',
+      namePh2: 'GlowPatch LED Face Mask',
+      numberPh: '50',
+      urlPh: 'https://yourbrand.com',
+      urlPh2: 'https://shop.example.com/products/led-mask',
+      urlPh3: 'https://example.com/reference-ad.mp4',
     },
 
     costEstimate: {
@@ -1099,6 +1105,8 @@ export const arMessages = {
       loadingCampaigns: 'جارٍ تحميل الحملات…',
       refreshingMetrics: 'جارٍ التحديث…',
       refreshMetricsLabel: 'تحديث المقاييس لـ {name}',
+      namePh: 'تخفيضات الصيف - Glow Serum',
+      contentPh: 'abc123, def456',
     },
     perf: {
       title: 'لوحة الأداء',
@@ -2776,6 +2784,7 @@ export const arMessages = {
     creativeAudiencePlaceholder: 'الجمهور',
     remove: 'إزالة',
     addCreative: '+ إضافة إبداع',
+    timezonePh: 'UTC',
   },
   competitorWatch: {
     title: 'مراقبة المنافسين',
@@ -2867,6 +2876,7 @@ export const arMessages = {
     clearFilters: 'مسح التصفية',
     audience: 'الجمهور',
     error: 'فشل إنشاء الخطافات',
+    audiencePh: 'مثال: العاملون عن بُعد',
   },
   briefTemplateBuilder: {
     title: 'منشئ قوالب الموجز',
@@ -2893,6 +2903,7 @@ export const arMessages = {
     brandColors: 'الألوان (مفصولة بفواصل)',
     urlPlaceholder: 'https://...',
     aiGenerated: 'مولّد بالذكاء الاصطناعي',
+    contentPh: 'مثال: سيروم العناية بالبشرة، سماعات لاسلكية',
   },
   adScriptWriter: {
       title: "كاتب نصوص الإعلانات",
@@ -2950,6 +2961,8 @@ export const arMessages = {
       objections: "الاعتراضات",
       copy: "نسخ",
       noResults: "لم يتم إنشاء شخصيات بعد. أدخل منتج أو علامة للبدء.",
+    productPh: 'مثال: سيروم عناية بالبشرة عضوي فاخر يستهدف مشاكل مكافحة الشيخوخة',
+    audiencePh: 'مثال: جيل الألفية في US, المحترفون في EU',
   },
   variantMatrixGenerator: {
       title: "مصفوفة المتغيرات الإبداعية",
@@ -3063,6 +3076,10 @@ export const arMessages = {
     text: 'النص',
     references: 'المراجع',
     brandHeadline: 'عنوان علامتك التجارية',
+    productPh: 'مثال: زجاجة ماء قابلة لإعادة الاستخدام وصديقة للبيئة لعشاق اللياقة',
+    tonePh: 'مثال: بسيط، جريء، مرح',
+    audiencePh: 'مثال: جيل الألفية الحضري',
+    formatPh: 'مثال: Instagram, TikTok',
   },
   adPerformancePredictor: {
     title: "متوقع أداء الإعلان",
@@ -3096,6 +3113,8 @@ export const arMessages = {
     benchmark: 'المعيار',
     rationale: 'المبرر',
     briefPh: 'الصق ملخصك الإبداعي أو مفهوم الإعلان هنا...',
+    metricPh: 'مثال: Electronics, Beauty, SaaS',
+    audiencePh: 'مثال: العاملون عن بُعد من 25-40 في US',
   },
   abTestPlannerV2: {
     title: "مخطط اختبارات A/B الإبداعية",
@@ -3168,6 +3187,8 @@ export const arMessages = {
     copied: 'تم النسخ',
     error: 'فشل اكتشاف الاتجاهات',
     dryRunNotice: 'وضع التجربة — استخدام اتجاهات استدلالية',
+    contentPh: 'مثال: العناية بالبشرة النظيفة، اللياقة المنزلية، الطبخ النباتي',
+    contentPh2: 'مثال: US, UK, Global (اختياري)',
   },
   brandVoiceAnalyzer: {
     title: 'محلل صوت العلامة',
@@ -3190,6 +3211,7 @@ export const arMessages = {
     error: 'فشل التحليل',
     dryRunNotice: 'وضع التجربة — استخدام تحليل استدلالي',
     sampleContentPh: 'الصق أكثر من 100 حرف من محتوى علامتك التجارية — نسخ الموقع، تعليقات الإعلانات، منشورات التواصل، رسائل البريد…',
+    brandNamePh: 'مثال: Glow & Co.',
   },
   adCaptionGenerator: {
     title: 'مولّد تعليقات الإعلانات',
@@ -3264,6 +3286,9 @@ export const arMessages = {
     copied: 'تم النسخ',
     error: 'فشل تحسين التوقيت',
     dryRunNotice: 'وضع المحاكاة — استخدام توقيت استدلالي',
+    audiencePh: 'مثال: طلاب الجامعات من Gen Z في US يتابعون مؤثري اللياقة',
+    timezonePh: 'مثال: America/New_York (اختياري، افتراضي UTC)',
+    productPh: 'مثال: ملابس رياضية (اختياري)',
   },
   creativeFatigueDetector: {
     title: 'كاشف إرهاق الإبداع',
@@ -3287,6 +3312,11 @@ export const arMessages = {
     copied: 'تم النسخ',
     error: 'فشل اكتشاف الإرهاق',
     dryRunNotice: 'وضع المحاكاة — استخدام تحليل استدلالي',
+    contentPh: 'مثال: إعلان TikTok بأسلوب UGC يعرض روتين العناية بالبشرة مع خطاف فضولي',
+    numberPh: 'مثال: 12',
+    metricPh: 'مثال: 150000',
+    numberPh2: 'مثال: 1.2',
+    numberPh3: 'مثال: 2.5 (اختياري)',
   },
   adCtaOptimizer: {
     title: 'مُحسِّن دعوة الإجراء للإعلانات',
@@ -3308,6 +3338,8 @@ export const arMessages = {
     copied: 'تم النسخ',
     error: 'فشل تحسين دعوات الإجراء',
     dryRunNotice: 'وضع المحاكاة — استخدام دعوات إجراء من القوالب',
+    contentPh: 'مثال: مشتريات (اختياري)',
+    contentPh2: 'مثال: تسوق الآن (اختياري)',
   },
   conceptExpander: {
     title: 'موسِّع المفاهيم الإبداعية',
@@ -3330,6 +3362,7 @@ export const arMessages = {
     copied: 'تم النسخ',
     error: 'فشل توسيع المفاهيم',
     dryRunNotice: 'وضع المحاكاة — استخدام مفاهيم من القوالب',
+    contentPh: 'مثال: كشف قبل وبعد يظهر المنتج وهو يحوّل الروتين',
   },
   adStoryGenerator: {
     title: 'مولِّد قصص الإعلانات',
@@ -3380,6 +3413,7 @@ export const arMessages = {
     copied: 'تم النسخ',
     error: 'فشل إنشاء لوحة الألوان',
     dryRunNotice: 'وضع المحاكاة — استخدام لوحات ألوان من القوالب',
+    colorPh: 'مثال: #1a1a1a (اختياري)',
   },
   adThumbnailGenerator: {
     title: 'مولِّد صور مصغرة للإعلانات',
@@ -3404,6 +3438,8 @@ export const arMessages = {
     copied: 'تم النسخ',
     error: 'فشل إنشاء الصور المصغرة',
     dryRunNotice: 'وضع المحاكاة — استخدام صور مصغرة من القوالب',
+    numberPh: 'مثال: 5 أخطاء في العناية بالبشرة ترتكبها',
+    benefitPh: 'مثال: فوائد سيروم فيتامين C',
   },
   adFontPairingGenerator: {
     title: 'مولِّد اقتران خطوط الإعلانات',
@@ -3444,6 +3480,7 @@ export const arMessages = {
     copied: 'تم النسخ',
     error: 'فشل إنشاء الوسوم',
     dryRunNotice: 'وضع المحاكاة — استخدام وسوم من القوالب',
+    categoryPh: 'مثال: العناية بالبشرة، اللياقة، الأجهزة التقنية',
   },
   creativeSceneGenerator: {
     title: 'مولِّد المشاهد الإبداعية',
@@ -3469,6 +3506,7 @@ export const arMessages = {
     copied: 'تم النسخ',
     error: 'فشل إنشاء المشاهد',
     dryRunNotice: 'وضع المحاكاة — استخدام مشاهد من القوالب',
+    contentPh: 'مثال: تحويل قبل وبعد يظهر النتائج الحقيقية للمنتج',
   },
   adMusicMoodMatcher: {
     title: 'مطابق مزاج موسيقى الإعلانات',
@@ -3538,6 +3576,8 @@ export const arMessages = {
     copied: 'تم النسخ',
     error: 'فشل إنشاء الموجز',
     dryRunNotice: 'وضع المحاكاة — استخدام موجز من القوالب',
+    contentPh: 'مثال: أطلق خط منتجات جديد وادفع الطلبات المسبقة',
+    audiencePh: 'مثال: عشاق العناية بالبشرة من جيل الألفية من 25-35',
   },
   adPlacementStrategist: {
     title: 'استراتيجي موضع الإعلانات',
@@ -3560,6 +3600,7 @@ export const arMessages = {
     copied: 'تم النسخ',
     error: 'فشل إنشاء استراتيجية الموضع',
     dryRunNotice: 'وضع المحاكاة — استخدام استراتيجية من القوالب',
+    audiencePh: 'مثال: نساء جيل الألفية من 25-35 مهتمات بالعناية بالبشرة',
   },
   adABTestNameGenerator: {
     title: 'مولّد أسماء اختبارات A/B للإعلانات',
@@ -3597,6 +3638,7 @@ export const arMessages = {
     copied: 'تم النسخ',
     error: 'فشل إنشاء تجديد الخطافات',
     dryRunNotice: 'وضع المحاكاة — استخدام تجديدات من القوالب',
+    contentPh: 'مثال: منتج العناية بالبشرة هذا سيغير حياتك',
   },
   adAudienceSegmentBuilder: {
     title: 'مُنشئ شرائح جمهور الإعلانات',
@@ -3622,6 +3664,7 @@ export const arMessages = {
     copied: 'تم النسخ',
     error: 'فشل إنشاء الشرائح',
     dryRunNotice: 'وضع المحاكاة — استخدام شرائح من القوالب',
+    audiencePh: 'مثال: نساء مهتمات بالصحة من 25-40 مهتمات بالجمال النظيف',
   },
   creativeConceptValidator: {
     title: 'مدقّق المفاهيم الإبداعية',
@@ -3649,6 +3692,8 @@ export const arMessages = {
     copied: 'تم النسخ',
     error: 'فشل التحقق من المفهوم',
     dryRunNotice: 'وضع المحاكاة — استخدام تحقق من القوالب',
+    contentPh: 'مثال: مقطع TikTok لمدة 15 ثانية يعرض تحويلاً قبل وبعد باستخدام سيروم فيتامين C لدينا، مع خطاف فضولي وأصالة بأسلوب UGC',
+    audiencePh: 'مثال: نساء مهتمات بالصحة من 25-40',
   },
   adEmotionAnalyzer: {
     title: 'محلل عواطف الإعلان',
@@ -3671,6 +3716,7 @@ export const arMessages = {
     error: 'فشل تحليل العواطف',
     dryRunNotice: 'وضع المحاكاة — استخدام تحليل من القوالب',
     overallEmotionalImpact: 'التأثير العاطفي الإجمالي',
+    contentPh: 'مثال: عندما جربت هذا السيروم لأول مرة، كنت متشككاً. لكن بعد أسبوعين، كانت بشرتي مشرقة. إليكم لماذا غيّر روتيني للأبد...',
   },
   creativeFormatConverter: {
     title: 'محوّل تنسيقات الإبداع',
@@ -3692,6 +3738,7 @@ export const arMessages = {
     copied: 'تم النسخ',
     error: 'فشل تحويل التنسيق',
     dryRunNotice: 'وضع المحاكاة — استخدام تحويل من القوالب',
+    contentPh: 'مثال: سيروم فيتامين C لدينا يفتح البشرة في أسبوعين فقط. مصمم بـ 20% L-ascorbic acid، يقلل البقع الداكنة ويوحّد لون البشرة...',
   },
   adBudgetAllocator: {
     title: 'مخصّص ميزانية الإعلان',
@@ -3715,6 +3762,7 @@ export const arMessages = {
     copied: 'تم النسخ',
     error: 'فشل تخصيص الميزانية',
     dryRunNotice: 'وضع المحاكاة — استخدام تخصيص من القوالب',
+    contentPh: 'مثال: $10,000',
   },
   creativeTrendAdapter: {
     title: 'مكيّف اتجاهات الإبداع',
@@ -3739,6 +3787,8 @@ export const arMessages = {
     copied: 'تم النسخ',
     error: 'فشل تكييف الاتجاهات',
     dryRunNotice: 'وضع المحاكاة — استخدام تكييف من القوالب',
+    contentPh: 'مثال: جرّب سيروم فيتامين C الجديد لبشرة مشرقة',
+    brandNamePh: 'مثال: GlowUp Skincare',
   },
   adCreativeSequencer: {
     title: 'مُرتِّب الإبداعات الإعلانية',
@@ -3790,6 +3840,9 @@ export const arMessages = {
     copied: 'تم النسخ',
     error: 'فشل توليد القصة',
     dryRunNotice: 'وضع المحاكاة — استخدام قصة من القوالب',
+    brandNamePh: 'مثال: GlowUp',
+    audiencePh: 'مثال: أصالة، تمكين، استدامة',
+    productPh: 'مثال: تطبيق عناية بالبشرة يستخدم الذكاء الاصطناعي لتخصيص الروتين',
   },
   adLocalizationAdapter: {
     title: 'مُكيِّف توطين الإعلانات',
@@ -3815,6 +3868,8 @@ export const arMessages = {
     copied: 'تم النسخ',
     error: 'فشل التوطين',
     dryRunNotice: 'وضع المحاكاة — استخدام توطين من القوالب',
+    contentPh: 'مثال: شوفوا منتجنا الجديد المذهل — هيغير اللعبة! اشتري الآن ووفّر 20%!',
+    brandNamePh: 'مثال: GlowUp skincare',
   },
   creativePerformanceForecaster: {
     title: 'مُتنبِّئ أداء الإبداعات',
@@ -3844,6 +3899,7 @@ export const arMessages = {
     copied: 'تم النسخ',
     error: 'فشل التنبؤ بالأداء',
     dryRunNotice: 'وضع المحاكاة — استخدام تنبؤ من القوالب',
+    contentPh: 'مثال: مقطع TikTok لمدة 15 ثانية يعرض قبل/بعد لشخص يستخدم سيروم فيتامين C لدينا، مع خطاف في أول 3 ثوانٍ ودعوة للتسوق الآن',
   },
   adSentimentTuner: {
     title: 'موالف المشاعر للإعلانات',
@@ -3867,6 +3923,7 @@ export const arMessages = {
     copied: 'تم النسخ',
     error: 'فشل ضبط المشاعر',
     dryRunNotice: 'وضع التجربة — استخدام ضبط من القوالب',
+    contentPh: 'مثال: منتجنا الجديد يساعدك على توفير الوقت وإنجاز المزيد.',
   },
   creativeHookMatrixGenerator: {
     title: 'مولّد مصفوفة خطافات إبداعية',
@@ -3914,6 +3971,7 @@ export const arMessages = {
     dryRunNotice: 'وضع التجربة — استخدام تدوير من القوالب',
     credits: 'ائتمانات',
     days: 'أيام',
+    contentPh: 'مثال: احصل على خصم 50% على سيروم فيتامين C الأكثر مبيعاً لدينا هذا الأسبوع فقط.',
   },
   brandVoiceConsistencyChecker: {
     title: 'مدقق اتساق صوت العلامة',
@@ -3941,6 +3999,9 @@ export const arMessages = {
     copied: 'تم النسخ',
     error: 'فشل التحقق من صوت العلامة',
     dryRunNotice: 'وضع التجربة — استخدام تحقق من القوالب',
+    contentPh: 'مثال: يا جماعة! شوفوا منتجنا الجديد المذهل هههه هتحبوه!!!',
+    brandNamePh: 'مثال: Lumina Skincare',
+    contentPh2: 'مثال: احترافي، دافئ، ومدعوم علمياً. يستخدم لغة واضحة وسهلة. يتجنب العامية وعلامات الترقيم المفرطة.',
   },
   adPersonaMatcher: {
     title: 'مطابق شخصيات الإعلان',
@@ -3961,6 +4022,8 @@ export const arMessages = {
     copied: 'تم النسخ',
     error: 'فشل مطابقة الشخصيات',
     dryRunNotice: 'وضع التجربة — استخدام مطابقة من القوالب',
+    contentPh: 'مثال: اكتشف مستقبل العناية بالبشرة مع سيروم فيتامين C لدينا...',
+    audiencePh: 'مثال: عشاق الجمال من 18-25، أمهات مشغولات 30-45، متسوقون واعون بيئياً',
   },
   creativeConceptExpanderPro: {
     title: 'موسّع المفاهيم الإبداعية الاحترافي',
@@ -3986,6 +4049,7 @@ export const arMessages = {
     copied: 'تم النسخ',
     error: 'فشل توسيع المفهوم',
     dryRunNotice: 'وضع التجربة — استخدام توسيع من القوالب',
+    contentPh: 'مثال: تحويل قبل وبعد يظهر نتائج حقيقية في 30 يوماً',
   },
   adCompetitiveIntelligence: {
     title: 'استخبارات المنافسة الإعلانية',
@@ -4011,6 +4075,8 @@ export const arMessages = {
     copied: 'تم النسخ',
     error: 'فشل استخبارات المنافسة',
     dryRunNotice: 'وضع التجربة — استخدام استخبارات من القوالب',
+    productPh: 'مثال: العناية بالبشرة، تطبيقات اللياقة، وجبات جاهزة',
+    competitorsPh: 'مثال: Glossier, The Ordinary, CeraVe, Drunk Elephant',
   },
   creativeQualityScorer: {
     title: 'مقيّم جودة الإبداع',
@@ -4056,6 +4122,7 @@ export const arMessages = {
     copied: 'تم النسخ',
     error: 'فشل رسم رحلة المشاعر',
     dryRunNotice: 'وضع التجربة — استخدام رحلة من القوالب',
+    contentPh: 'مثال: سئمت من البشرة الباهتة؟ سيروم فيتامين C لدينا يفتح البشرة في 7 أيام فقط. جرّبه بدون مخاطرة اليوم!',
   },
   adAudienceResonancePredictor: {
     title: 'متوقع صدى الجمهور الإعلاني',
@@ -4077,6 +4144,7 @@ export const arMessages = {
     copied: 'تم النسخ',
     error: 'فشل توقع صدى الجمهور',
     dryRunNotice: 'وضع التجربة — استخدام صدى من القوالب',
+    audiencePh: 'مثال: Gen Z، آباء مشغولون، عشاق اللياقة',
   },
   creativeFormatRecommender: {
     title: 'موصي صيغة الإبداع',
@@ -4121,6 +4189,7 @@ export const arMessages = {
     copied: 'تم النسخ',
     error: 'فشل تحليل دورة الحياة',
     dryRunNotice: 'وضع التجربة — استخدام دورة حياة من القوالب',
+    contentPh: 'مثال: مقطع UGC لمدة 15 ثانية يعرض تحويلاً قبل/بعد مع خطاف قوي ودعوة واضحة...',
   },
   adCreativeAbTestSimulator: {
     title: 'محاكي اختبار A/B للإبداع الإعلاني',
@@ -4147,6 +4216,7 @@ export const arMessages = {
     copied: 'تم النسخ',
     error: 'فشلت محاكاة اختبار A/B',
     dryRunNotice: 'وضع التجربة — استخدام محاكاة من القوالب',
+    contentPh: 'مثال: إشراق في 7 أيام. سيروم فيتامين C لدينا مثبت سريرياً لفتح البشرة...',
   },
   creativeVisualHierarchyAnalyzer: {
     title: 'محلّل التسلسل الهرمي البصري للإبداع',
@@ -4169,6 +4239,7 @@ export const arMessages = {
     copied: 'تم النسخ',
     error: 'فشل تحليل التسلسل الهرمي البصري',
     dryRunNotice: 'وضع التجربة — استخدام تحليل من القوالب',
+    contentPh: 'مثال: صورة رئيسية في الأعلى (60% ارتفاع)، عنوان جريء في المنتصف، صورة المنتج أسفل اليسار، زر CTA أسفل اليمين بتباين عالٍ...',
   },
   adAudiencePainPointMapper: {
     title: 'مخطّط نقاط ألم جمهور الإعلان',
@@ -4192,6 +4263,7 @@ export const arMessages = {
     frequency: 'التكرار',
     emotionalImpact: 'التأثير العاطفي',
     addresses: 'يعالج',
+    audiencePh: 'مثال: نساء مشغولات مهنياً من 25-40 مهتمات بشيخوخة البشرة',
   },
   creativeMessagingFrameworkBuilder: {
     title: 'منشئ إطار عمل الرسائل الإبداعية',
@@ -4221,6 +4293,8 @@ export const arMessages = {
     evidence: 'الدليل',
     do: 'افعل',
     dont: 'لا تفعل',
+    contentPh: 'مثال: يفتح البشرة الباهتة في 7 أيام فقط بفيتامين C مثبت سريرياً — تجربة مجانية متاحة.',
+    audiencePh: 'مثال: نساء 25-40 مهتمات بالبشرة الباهتة وعلامات الشيخوخة المبكرة',
   },
   adCreativeBurnoutDetector: {
     title: 'كاشف احتراق الإبداع الإعلاني',
@@ -4244,6 +4318,7 @@ export const arMessages = {
     copied: 'تم النسخ',
     error: 'فشل اكتشاف الاحتراق',
     dryRunNotice: 'وضع التجربة — استخدام تحليل القوالب',
+    numberPh: 'مثال: 14',
   },
   creativeAdConceptSynthesizer: {
     title: 'مُركّب مفاهيم الإعلان الإبداعي',
@@ -4293,6 +4368,7 @@ export const arMessages = {
     copied: 'تم النسخ',
     error: 'فشل التحليل السيكوغرافي',
     dryRunNotice: 'وضع التجربة — استخدام ملف تعريفي من القوالب',
+    audiencePh: 'مثال: نساء من 25-34، محترفون حضريون مهتمون بالعافية',
   },
   creativeAdToneCalibrator: {
     title: 'معاير نبرة الإعلان الإبداعي',
@@ -4315,6 +4391,7 @@ export const arMessages = {
     copied: 'تم النسخ',
     error: 'فشل معايرة النبرة',
     dryRunNotice: 'وضع التجربة — استخدام معايرة القوالب',
+    contentPh: 'مثال: اشترِ سيروم فيتامين C المذهل اليوم وسترى النتائج في 7 أيام!',
   },
   creativeAdFormatInnovator: {
     title: 'مبتكر تنسيقات الإعلان الإبداعي',
@@ -4338,6 +4415,7 @@ export const arMessages = {
     copied: 'تم النسخ',
     error: 'فشل ابتكار التنسيقات',
     dryRunNotice: 'وضع التجربة — استخدام تنسيقات القوالب',
+    contentPh: 'مثال: فيديو عمودي، كاروسيل صور، إعلان ستوري، مقطع مؤثر',
   },
   adCreativeStoryArcDesigner: {
     title: 'مصمم قصة الإعلان الإبداعي',
@@ -4359,6 +4437,7 @@ export const arMessages = {
     copied: 'تم النسخ',
     error: 'فشل تصميم القصة',
     dryRunNotice: 'وضع التجربة — استخدام قصة القوالب',
+    contentPh: 'مثال: أفتح بشرتك في 7 أيام فقط — بدون مخاطرة',
   },
   creativeAdPersuasionStrategist: {
     title: 'استراتيجي الإقناع الإبداعي للإعلان',
@@ -4382,6 +4461,7 @@ export const arMessages = {
     dryRunNotice: 'وضع التجربة — استخدام استراتيجية القوالب',
     effect: 'التأثير',
     principle: 'المبدأ',
+    contentPh: 'مثال: روّج لتحدي إشراق لمدة 7 أيام مع خصم لفترة محدودة...',
   },
   adCreativeHookTimingOptimizer: {
     title: 'مُحسّن توقيت الخطاف للإعلان الإبداعي',
@@ -4407,6 +4487,8 @@ export const arMessages = {
     currentPlacement: 'الموضع الحالي',
     optimalWindow: 'النافذة المثلى',
     attentionCurve: 'منحنى الانتباه',
+    contentPh: 'مثال: هل تعلم أن 90% من الناس يتركون أهدافهم الرياضية بحلول فبراير؟ إليك كيف تبقى في الـ 10%...',
+    productPh: 'مثال: تطبيق لياقة DTC يبيع اشتراك تتبع العادات',
   },
   creativeAdMetaphorGenerator: {
     title: 'مولّد الاستعارات الإبداعية للإعلان',
@@ -4429,6 +4511,7 @@ export const arMessages = {
     copied: 'تم النسخ',
     error: 'فشل توليد الاستعارات',
     dryRunNotice: 'وضع التجربة — استخدام استعارات القوالب',
+    benefitPh: 'مثال: يفتح البشرة الباهتة في 7 أيام',
   },
   adCreativeSensoryEnhancer: {
     title: 'المُحسّن الحسي للإعلان الإبداعي',
@@ -4472,6 +4555,8 @@ export const arMessages = {
     copied: 'تم النسخ',
     error: 'فشل تصميم مقاطعة النمط',
     dryRunNotice: 'وضع التجربة — استخدام مقاطعات القوالب',
+    audiencePh: 'مثال: نساء 25-34 مهتمات بالجمال النظيف',
+    contentPh: 'مثال: إعلان TikTok لمدة 15 ثانية يبدأ بعرض منتج ثم شهادة...',
   },
   adCreativeSocialProofArchitect: {
     title: 'مهندس الدليل الاجتماعي للإعلان الإبداعي',
@@ -4497,6 +4582,8 @@ export const arMessages = {
     dryRunNotice: 'وضع التجربة — استخدام هندسة القوالب',
     type: 'النوع',
     integration: 'التكامل',
+    audiencePh: 'مثال: نساء 25-40 مهتمات بالعناية بالبشرة المضادة للشيخوخة',
+    audiencePh2: 'مثال: روّج لسيروم فيتامين C الجديد مع التركيز على نتائج الإشراق وبناء الثقة...',
   },
   adCreativeEmotionSequencer: {
     title: 'مُسلسِل المشاعر للإعلان الإبداعي',
@@ -4626,6 +4713,7 @@ export const arMessages = {
     copied: 'تم النسخ',
     error: 'فشل تصميم الالتفافات السردية',
     dryRunNotice: 'وضع التجربة — استخدام التفاتات قوالب',
+    contentPh: 'مثال: امرأة تعاني من بشرة باهتة حتى تكتشف سيرومنا...',
   },
   adCreativeMemoryAnchorBuilder: {
     title: 'بنّاء مراسي الذاكرة للإعلانات الإبداعية',
@@ -4776,6 +4864,7 @@ export const arMessages = {
     dryRunNotice: 'وضع التجربة — استخدام تسلسل هرمي قوالب',
     direction: 'الاتجاه',
     anchors: 'المراسي',
+    elementsPh: 'مثال: عنوان، صورة منتج، شعار، زر CTA، خلفية',
   },
   adCreativeSoundDesignStrategist: {
     title: 'استراتيجي تصميم الصوت للإعلانات الإبداعية',
@@ -4798,6 +4887,7 @@ export const arMessages = {
     copied: 'تم النسخ',
     error: 'فشل استراتيجية تصميم الصوت',
     dryRunNotice: 'وضع التجربة — استخدام تصميم صوت قوالب',
+    contentPh: 'مثال: حماسي، هادئ، غامض، مرح، درامي، ملهم...',
   },
   creativeAdSurpriseElementDesigner: {
     title: 'مصمم عنصر المفاجأة في الإعلان الإبداعي',
@@ -4822,6 +4912,7 @@ export const arMessages = {
     copied: 'تم النسخ',
     error: 'فشل تصميم عنصر المفاجأة',
     dryRunNotice: 'وضع التجربة — استخدام عناصر مفاجأة قوالب',
+    audiencePh: 'مثال: عشاق العناية بالبشرة من Gen Z من 18-24',
   },
   adCreativeCallbackMemoryDesigner: {
     title: 'مصمم ذاكرة الاستدعاء في الإعلان الإبداعي',
@@ -5262,6 +5353,7 @@ export const arMessages = {
     copied: 'تم النسخ',
     error: 'فشل تصميم الزخم الاجتماعي',
     dryRunNotice: 'وضع التجربة — استخدام زخم اجتماعي نموذجي',
+    audiencePh: 'مثال: انضمي إلى أكثر من 50,000 امرأة حولن بشرتهن بسيروم فيتامين C لدينا...',
   },
   creativeAdValueLadderDesigner: {
     title: 'مصمم سلم القيمة للإعلانات الإبداعية',
@@ -5358,6 +5450,7 @@ export const arMessages = {
     copied: 'تم النسخ',
     error: 'فشل تصميم أطر الندرة',
     dryRunNotice: 'وضع التجربة — استخدام أطر ندرة نموذجية',
+    contentPh: 'مثال: تبقى 50 زجاجة فقط من سيروم فيتامين C الإصدار المحدود لدينا...',
   },
   creativeAdIdentityAlignmentDesigner: {
     title: 'مصمم محاذاة الهوية للإعلانات الإبداعية',
@@ -5406,6 +5499,7 @@ export const arMessages = {
     copied: 'تم النسخ',
     error: 'فشل تصميم إطار المعاملة بالمثل',
     dryRunNotice: 'وضع التجربة — استخدام أطر معاملة بالمثل نموذجية',
+    contentPh: 'مثال: نقدم دورة مصغرة مجانية لمدة 5 أيام للعناية بالبشرة لمجتمعنا...',
   },
   adCreativePASFrameworkDesigner: {
     title: 'مصمم إطار PAS للإعلانات الإبداعية',
@@ -5622,6 +5716,9 @@ export const arMessages = {
     copied: 'تم النسخ',
     error: 'فشل تصميم نداء الخوف',
     dryRunNotice: 'وضع التجربة — استخدام نداءات خوف نموذجية',
+    productPh: 'مثال: علامة تأمين DTC تبيع خطة حماية المنزل',
+    contentPh: 'مثال: لا تدع حدثاً غير متوقع يمحو كل ما بنيته...',
+    audiencePh: 'مثال: أصحاب المنازل 35-55 المهتمون بحماية أصولهم',
   },
   creativeAdBelongingAppealDesigner: {
     title: 'مصمم نداء الانتماء للإعلانات الإبداعية',
@@ -5670,6 +5767,9 @@ export const arMessages = {
     copied: 'تم النسخ',
     error: 'فشل تصميم نداء الفكاهة',
     dryRunNotice: 'وضع التجربة — استخدام نداءات فكاهة نموذجية',
+    productPh: 'مثال: علامة DTC تبيع فشار حار',
+    contentPh: 'مثال: مشتاق لشيء جريء؟ فشارنا الحار مختلف...',
+    audiencePh: 'مثال: عشاق الوجبات الخفيفة من Gen Z 18-24 يتصفحون TikTok ليلاً',
   },
   creativeAdFramingEffectDesigner: {
     title: 'مصمم تأثير التأطير للإعلانات الإبداعية',
@@ -5718,6 +5818,7 @@ export const arMessages = {
     copied: 'تم النسخ',
     error: 'فشل تصميم نداء الفخر',
     dryRunNotice: 'وضع التجربة — استخدام نداءات فخر نموذجية',
+    contentPh: 'مثال: لقد استحققتِ هذا — سيروم فيتامين C لدينا لمن لا يقبل بأقل من الأفضل...',
   },
   creativeAdNostalgiaTriggerDesigner: {
     title: 'مصمم محفز الحنين للإعلانات الإبداعية',
@@ -5886,6 +5987,7 @@ export const arMessages = {
     copied: 'تم النسخ',
     error: 'فشل تصميم تأطير النفور من الخسارة',
     dryRunNotice: 'وضع التجربة — استخدام أطر نفور من الخسارة نموذجية',
+    contentPh: 'مثال: كل يوم تنتظره، شيخوخة بشرتك تزداد والضرر يتراكم...',
   },
   adCreativeAnchoringEffectDesigner: {
     title: 'مصمم تأثير التثبيت للإعلانات الإبداعية',
@@ -5910,6 +6012,7 @@ export const arMessages = {
     copied: 'تم النسخ',
     error: 'فشل تصميم تأثير التثبيت',
     dryRunNotice: 'وضع التجربة — استخدام أطر تثبيت نموذجية',
+    contentPh: 'مثال: كان 199$، الآن 89$ فقط لسيروم فيتامين C لدينا...',
   },
   aidaFrameworkDesigner: {
     title: 'مصمم إطار AIDA',

@@ -1520,7 +1520,7 @@ export default function CreativeStudioPage() {
                     type="text"
                     value={abCampaignName}
                     onChange={e => setAbCampaignName(e.target.value)}
-                    placeholder="Q4 Product Launch A/B Test"
+                    placeholder={t('creativeStudio.namePh')}
                     className="mt-1 w-full rounded-lg border border-line bg-app px-3 py-2 text-sm text-fg placeholder:text-fg-faint/50 focus:border-brand-accent focus:outline-none"
                   />
                 </div>
@@ -1541,7 +1541,7 @@ export default function CreativeStudioPage() {
                     type="number"
                     value={abBudgetDaily}
                     onChange={e => setAbBudgetDaily(e.target.value)}
-                    placeholder="50"
+                    placeholder={t('creativeStudio.numberPh')}
                     min="1"
                     className="mt-1 w-full rounded-lg border border-line bg-app px-3 py-2 text-sm text-fg placeholder:text-fg-faint/50 focus:border-brand-accent focus:outline-none"
                   />
@@ -1640,7 +1640,7 @@ export default function CreativeStudioPage() {
                   type="url"
                   value={brandUrl}
                   onChange={(e) => setBrandUrl(e.target.value)}
-                  placeholder="https://yourbrand.com"
+                  placeholder={t('creativeStudio.urlPh')}
                   className="min-w-0 flex-1 rounded-lg border border-line bg-app px-3 py-2 text-sm text-fg placeholder:text-fg-placeholder focus:border-[#00b2fc]/40 focus:outline-none"
                 />
                 <button
@@ -1675,7 +1675,7 @@ export default function CreativeStudioPage() {
                   type="url"
                   value={productUrl}
                   onChange={(e) => setProductUrl(e.target.value)}
-                  placeholder="https://shop.example.com/products/led-mask"
+                  placeholder={t('creativeStudio.urlPh2')}
                   className="min-w-0 flex-1 rounded-lg border border-line bg-app px-3 py-2 text-sm text-fg placeholder:text-fg-placeholder focus:border-[#00b2fc]/40 focus:outline-none"
                 />
                 <button
@@ -1715,7 +1715,7 @@ export default function CreativeStudioPage() {
                 <input
                   value={productName}
                   onChange={(e) => setProductName(e.target.value)}
-                  placeholder="GlowPatch LED Face Mask"
+                  placeholder={t('creativeStudio.namePh2')}
                   className="mt-1 w-full rounded-lg border border-line bg-app px-3 py-2 text-sm text-fg placeholder:text-fg-placeholder focus:border-[#00b2fc]/40 focus:outline-none"
                 />
               </div>
@@ -2128,7 +2128,7 @@ export default function CreativeStudioPage() {
                 type="url"
                 value={refUrl}
                 onChange={(e) => setRefUrl(e.target.value)}
-                placeholder="https://example.com/reference-ad.mp4"
+                placeholder={t('creativeStudio.urlPh3')}
                 className="min-w-0 flex-1 rounded-lg border border-line bg-app px-3 py-2 text-sm text-fg placeholder:text-fg-placeholder focus:border-[#00b2fc]/40 focus:outline-none"
               />
               <button

@@ -670,6 +670,12 @@ export const jaMessages = {
       ratioFeed: 'フィード',
       ratioTiktokReels: 'TikTok/Reels',
       ratioYoutube: 'YouTube',
+      namePh: 'Q4製品ローンチ A/Bテスト',
+      namePh2: 'GlowPatch LED Face Mask',
+      numberPh: '50',
+      urlPh: 'https://yourbrand.com',
+      urlPh2: 'https://shop.example.com/products/led-mask',
+      urlPh3: 'https://example.com/reference-ad.mp4',
     },
 
     costEstimate: {
@@ -1101,6 +1107,8 @@ export const jaMessages = {
       loadingCampaigns: 'キャンペーンを読み込み中…',
       refreshingMetrics: '更新中…',
       refreshMetricsLabel: '{name}の指標を更新',
+      namePh: 'サマーセール - Glow Serum',
+      contentPh: 'abc123, def456',
     },
     perf: {
       title: 'パフォーマンスダッシュボード',
@@ -2778,6 +2786,7 @@ export const jaMessages = {
     creativeAudiencePlaceholder: 'オーディエンス',
     remove: '削除',
     addCreative: '+ クリエイティブを追加',
+    timezonePh: 'UTC',
   },
   competitorWatch: {
     title: '競合ウォッチ',
@@ -2869,6 +2878,7 @@ export const jaMessages = {
     clearFilters: 'フィルターをクリア',
     audience: 'オーディエンス',
     error: 'フックの生成に失敗しました',
+    audiencePh: '例：リモートワーカー',
   },
   briefTemplateBuilder: {
     title: 'ブリーフテンプレートビルダー',
@@ -2895,6 +2905,7 @@ export const jaMessages = {
     brandColors: 'カラー（カンマ区切り）',
     urlPlaceholder: 'https://...',
     aiGenerated: 'AI生成',
+    contentPh: '例：スキンケアセラム、ワイヤレスイヤホン',
   },
   adScriptWriter: {
       title: "広告スクリプトライター",
@@ -2952,6 +2963,8 @@ export const jaMessages = {
       objections: "反論",
       copy: "コピー",
       noResults: "ペルソナがまだ生成されていません。製品またはブランドを入力してください。",
+    productPh: '例：エイジングケアの悩みをターゲットにしたプレミアムオーガニックスキンケアセラム',
+    audiencePh: '例：USミレニアル世代、EUのプロフェッショナル',
   },
   variantMatrixGenerator: {
       title: "クリエイティブバリアントマトリックス",
@@ -3065,6 +3078,10 @@ export const jaMessages = {
     text: 'テキスト',
     references: '参照',
     brandHeadline: 'あなたのブランド見出し',
+    productPh: '例：フィットネス愛好家向けの環境に優しい再利用可能な水ボトル',
+    tonePh: '例：ミニマル、ボールド、プレイフル',
+    audiencePh: '例：都市部のミレニアル世代',
+    formatPh: '例：instagram、tiktok',
   },
   adPerformancePredictor: {
     title: "広告パフォーマンス予測器",
@@ -3098,6 +3115,8 @@ export const jaMessages = {
     benchmark: 'ベンチマーク',
     rationale: '根拠',
     briefPh: 'ここにクリエイティブブリーフまたは広告コンセプトを貼り付け...',
+    metricPh: '例：エレクトロニクス、美容、SaaS',
+    audiencePh: '例：USの25-40歳のリモートワーカー',
   },
   abTestPlannerV2: {
     title: "クリエイティブA/Bテストプランナー",
@@ -3170,6 +3189,8 @@ export const jaMessages = {
     copied: 'コピーしました',
     error: 'トレンド発見に失敗しました',
     dryRunNotice: 'ドライランモード — ヒューリスティックトレンドを使用',
+    contentPh: '例：クリーンスキンケア、ホームフィットネス、植物ベースの料理',
+    contentPh2: '例：US、UK、Global（任意）',
   },
   brandVoiceAnalyzer: {
     title: 'ブランドボイスアナライザー',
@@ -3192,6 +3213,7 @@ export const jaMessages = {
     error: '分析に失敗しました',
     dryRunNotice: 'ドライランモード — ヒューリスティック分析を使用',
     sampleContentPh: 'ブランドコンテンツの100文字以上を貼り付け — ウェブコピー、広告キャプション、ソーシャル投稿、メール…',
+    brandNamePh: '例：Glow & Co.',
   },
   adCaptionGenerator: {
     title: '広告キャプション生成器',
@@ -3266,6 +3288,9 @@ export const jaMessages = {
     copied: 'コピーしました',
     error: 'タイミングの最適化に失敗しました',
     dryRunNotice: 'ドライランモード — ヒューリスティックタイミングを使用中',
+    audiencePh: '例：フィットネスインフルエンサーをフォローしているUSのZ世代大学生',
+    timezonePh: '例：America/New_York（任意、デフォルトUTC）',
+    productPh: '例：フィットネスアパレル（任意）',
   },
   creativeFatigueDetector: {
     title: 'クリエイティブ疲労検出器',
@@ -3289,6 +3314,11 @@ export const jaMessages = {
     copied: 'コピーしました',
     error: '疲労検出に失敗しました',
     dryRunNotice: 'ドライランモード — ヒューリスティック分析を使用中',
+    contentPh: '例：好奇心フックを含むスキンケアルーティンを示すUGCスタイルのTikTok広告',
+    numberPh: '例：12',
+    metricPh: '例：150000',
+    numberPh2: '例：1.2',
+    numberPh3: '例：2.5（任意）',
   },
   adCtaOptimizer: {
     title: '広告 CTA オプティマイザー',
@@ -3310,6 +3340,8 @@ export const jaMessages = {
     copied: 'コピーしました',
     error: 'CTA 最適化に失敗しました',
     dryRunNotice: 'ドライランモード — テンプレート CTA を使用中',
+    contentPh: '例：購入（任意）',
+    contentPh2: '例：今すぐ購入（任意）',
   },
   conceptExpander: {
     title: 'クリエイティブコンセプトエキスパンダー',
@@ -3332,6 +3364,7 @@ export const jaMessages = {
     copied: 'コピーしました',
     error: 'コンセプト展開に失敗しました',
     dryRunNotice: 'ドライランモード — テンプレートコンセプトを使用中',
+    contentPh: '例：製品がルーティンを変革する様子を示すビフォーアフターの公開',
   },
   adStoryGenerator: {
     title: '広告ストーリージェネレーター',
@@ -3382,6 +3415,7 @@ export const jaMessages = {
     copied: 'コピーしました',
     error: 'カラーパレット生成に失敗しました',
     dryRunNotice: 'ドライランモード — テンプレートパレットを使用中',
+    colorPh: '例：#1a1a1a（任意）',
   },
   adThumbnailGenerator: {
     title: '広告サムネイルジェネレーター',
@@ -3406,6 +3440,8 @@ export const jaMessages = {
     copied: 'コピーしました',
     error: 'サムネイル生成に失敗しました',
     dryRunNotice: 'ドライランモード — テンプレートサムネイルを使用中',
+    numberPh: '例：あなたがしている5つのスキンケアの間違い',
+    benefitPh: '例：ビタミンCセラムのメリット',
   },
   adFontPairingGenerator: {
     title: '広告フォントペアリングジェネレーター',
@@ -3446,6 +3482,7 @@ export const jaMessages = {
     copied: 'コピーしました',
     error: 'ハッシュタグ生成に失敗しました',
     dryRunNotice: 'ドライランモード — テンプレートハッシュタグを使用中',
+    categoryPh: '例：スキンケア、フィットネス、テクノロジーガジェット',
   },
   creativeSceneGenerator: {
     title: 'クリエイティブシーンジェネレーター',
@@ -3471,6 +3508,7 @@ export const jaMessages = {
     copied: 'コピーしました',
     error: 'シーン生成に失敗しました',
     dryRunNotice: 'ドライランモード — テンプレートシーンを使用中',
+    contentPh: '例：製品の実際の結果を示すビフォーアフターの変化',
   },
   adMusicMoodMatcher: {
     title: '広告音楽ムードマッチャー',
@@ -3540,6 +3578,8 @@ export const jaMessages = {
     copied: 'コピーしました',
     error: 'ブリーフ生成に失敗しました',
     dryRunNotice: 'ドライランモード — テンプレートブリーフを使用中',
+    contentPh: '例：新製品ラインを立ち上げ、予約注文を促進する',
+    audiencePh: '例：25-35歳のミレニアル世代のスキンケア愛好家',
   },
   adPlacementStrategist: {
     title: '広告配置ストラテジスト',
@@ -3562,6 +3602,7 @@ export const jaMessages = {
     copied: 'コピーしました',
     error: '配置戦略生成に失敗しました',
     dryRunNotice: 'ドライランモード — テンプレート戦略を使用中',
+    audiencePh: '例：スキンケアに興味がある25-35歳のミレニアル女性',
   },
   adABTestNameGenerator: {
     title: '広告 A/B テスト名生成器',
@@ -3599,6 +3640,7 @@ export const jaMessages = {
     copied: 'コピーしました',
     error: 'フック改修生成に失敗しました',
     dryRunNotice: 'ドライランモード — テンプレート改修を使用中',
+    contentPh: '例：このスキンケア製品があなたの人生を変えます',
   },
   adAudienceSegmentBuilder: {
     title: '広告オーディエンスセグメントビルダー',
@@ -3624,6 +3666,7 @@ export const jaMessages = {
     copied: 'コピーしました',
     error: 'セグメント構築に失敗しました',
     dryRunNotice: 'ドライランモード — テンプレートセグメントを使用中',
+    audiencePh: '例：クリーンビューティーに興味がある健康意識の高い25-40歳の女性',
   },
   creativeConceptValidator: {
     title: 'クリエイティブ概念バリデーター',
@@ -3651,6 +3694,8 @@ export const jaMessages = {
     copied: 'コピーしました',
     error: '概念検証に失敗しました',
     dryRunNotice: 'ドライランモード — テンプレート検証を使用中',
+    contentPh: '例：私たちのビタミンCセラムを使ったビフォーアフターの変化を示す15秒のTikTok動画、好奇心フックとUGCスタイルの信頼性付き',
+    audiencePh: '例：健康意識の高い25-40歳の女性',
   },
   adEmotionAnalyzer: {
     title: '広告感情アナライザー',
@@ -3673,6 +3718,7 @@ export const jaMessages = {
     error: '感情分析に失敗しました',
     dryRunNotice: 'ドライランモード — テンプレート分析を使用中',
     overallEmotionalImpact: '全体的な感情的影響',
+    contentPh: '例：このセラムを初めて試した時、懐疑的でした。でも2週間後、肌は輝いていました。これが私のルーティンを永遠に変えた理由です...',
   },
   creativeFormatConverter: {
     title: 'クリエイティブフォーマットコンバーター',
@@ -3694,6 +3740,7 @@ export const jaMessages = {
     copied: 'コピーしました',
     error: 'フォーマット変換に失敗しました',
     dryRunNotice: 'ドライランモード — テンプレート変換を使用中',
+    contentPh: '例：私たちのビタミンCセラムはたった2週間で肌を明るくします。20% L-アスコルビン酸で処方され、黒ずみを減らし肌のトーンを均一にします...',
   },
   adBudgetAllocator: {
     title: '広告予算アロケーター',
@@ -3717,6 +3764,7 @@ export const jaMessages = {
     copied: 'コピーしました',
     error: '予算配分に失敗しました',
     dryRunNotice: 'ドライランモード — テンプレート配分を使用中',
+    contentPh: '例：$10,000',
   },
   creativeTrendAdapter: {
     title: 'クリエイティブトレンドアダプター',
@@ -3741,6 +3789,8 @@ export const jaMessages = {
     copied: 'コピーしました',
     error: 'トレンド適応に失敗しました',
     dryRunNotice: 'ドライランモード — テンプレート適応を使用中',
+    contentPh: '例：輝く肌のための新しいビタミンCセラムをチェック',
+    brandNamePh: '例：GlowUp Skincare',
   },
   adCreativeSequencer: {
     title: '広告クリエイティブシーケンサー',
@@ -3792,6 +3842,9 @@ export const jaMessages = {
     copied: 'コピーしました',
     error: 'ストーリー生成に失敗しました',
     dryRunNotice: 'ドライランモード — テンプレートストーリーを使用中',
+    brandNamePh: '例：GlowUp',
+    audiencePh: '例：真正性、エンパワーメント、サステナビリティ',
+    productPh: '例：AIを使用してルーティンをパーソナライズするスキンケアアプリ',
   },
   adLocalizationAdapter: {
     title: '広告ローカライズアダプター',
@@ -3817,6 +3870,8 @@ export const jaMessages = {
     copied: 'コピーしました',
     error: 'ローカライズに失敗しました',
     dryRunNotice: 'ドライランモード — テンプレートローカライズを使用中',
+    contentPh: '例：私たちの素晴らしい新製品をチェック — これはゲームチェンジャーです！今すぐ買って20%オフ！',
+    brandNamePh: '例：GlowUp skincare',
   },
   creativePerformanceForecaster: {
     title: 'クリエイティブパフォーマンス予測器',
@@ -3846,6 +3901,7 @@ export const jaMessages = {
     copied: 'コピーしました',
     error: 'パフォーマンス予測に失敗しました',
     dryRunNotice: 'ドライランモード — テンプレート予測を使用中',
+    contentPh: '例：私たちのビタミンCセラムを使っている人のビフォーアフターを示す15秒のTikTok、最初の3秒にフックがあり、今すぐ購入のCTA付き',
   },
   adSentimentTuner: {
     title: '広告センチメントチューナー',
@@ -3869,6 +3925,7 @@ export const jaMessages = {
     copied: 'コピーしました',
     error: 'センチメント調整に失敗しました',
     dryRunNotice: 'ドライランモード — テンプレート調整を使用',
+    contentPh: '例：私たちの新製品は時間を節約し、より多くを達成するのに役立ちます。',
   },
   creativeHookMatrixGenerator: {
     title: 'クリエイティブフックマトリックス生成器',
@@ -3916,6 +3973,7 @@ export const jaMessages = {
     dryRunNotice: 'ドライランモード — テンプレートローテーションを使用',
     credits: 'クレジット',
     days: '日',
+    contentPh: '例：今週だけ、当社のベストセラービタミンCセラムが50%オフ。',
   },
   brandVoiceConsistencyChecker: {
     title: 'ブランドボイス一貫性チェッカー',
@@ -3943,6 +4001,9 @@ export const jaMessages = {
     copied: 'コピーしました',
     error: 'ブランドボイス確認に失敗しました',
     dryRunNotice: 'ドライランモード — テンプレート確認を使用',
+    contentPh: '例：ねえみんな！私たちの素晴らしい新製品をチェックして、絶対気に入るよ！！！',
+    brandNamePh: '例：Lumina Skincare',
+    contentPh2: '例：プロフェッショナル、温かみ、そして科学的根拠に基づく。明確でアクセスしやすい言葉を使用。スラングや過度な句読点を避ける。',
   },
   adPersonaMatcher: {
     title: '広告ペルソナマッチャー',
@@ -3963,6 +4024,8 @@ export const jaMessages = {
     copied: 'コピーしました',
     error: 'ペルソナマッチングに失敗しました',
     dryRunNotice: 'ドライランモード — テンプレートマッチングを使用',
+    contentPh: '例：私たちのビタミンCセラムでスキンケアの未来を発見...',
+    audiencePh: '例：18-25歳の美容愛好家、忙しいママ30-45歳、エココンシャスな買い物客',
   },
   creativeConceptExpanderPro: {
     title: 'クリエイティブ概念拡張プロ',
@@ -3988,6 +4051,7 @@ export const jaMessages = {
     copied: 'コピーしました',
     error: '概念拡張に失敗しました',
     dryRunNotice: 'ドライランモード — テンプレート拡張を使用',
+    contentPh: '例：30日で実際の結果を示すビフォーアフターの変化',
   },
   adCompetitiveIntelligence: {
     title: '広告競合インテリジェンス',
@@ -4013,6 +4077,8 @@ export const jaMessages = {
     copied: 'コピーしました',
     error: '競合インテリジェンスに失敗しました',
     dryRunNotice: 'ドライランモード — テンプレートインテリジェンスを使用',
+    productPh: '例：スキンケア、フィットネスアプリ、ミールキット',
+    competitorsPh: '例：Glossier, The Ordinary, CeraVe, Drunk Elephant',
   },
   creativeQualityScorer: {
     title: 'クリエイティブ品質スコアラー',
@@ -4058,6 +4124,7 @@ export const jaMessages = {
     copied: 'コピーしました',
     error: '感情ジャーニーのマッピングに失敗しました',
     dryRunNotice: 'ドライランモード — テンプレートジャーニーを使用',
+    contentPh: '例：くすんだ肌にうんざりしていませんか？私たちのビタミンCセラムはたった7日で明るくします。今日リスクフリーでお試しください！',
   },
   adAudienceResonancePredictor: {
     title: '広告オーディエンス共鳴予測器',
@@ -4079,6 +4146,7 @@ export const jaMessages = {
     copied: 'コピーしました',
     error: 'オーディエンス共鳴予測に失敗しました',
     dryRunNotice: 'ドライランモード — テンプレート共鳴を使用',
+    audiencePh: '例：Z世代、忙しい親、フィットネス愛好家',
   },
   creativeFormatRecommender: {
     title: 'クリエイティブフォーマットレコメンダー',
@@ -4123,6 +4191,7 @@ export const jaMessages = {
     copied: 'コピーしました',
     error: 'ライフサイクル分析に失敗しました',
     dryRunNotice: 'ドライランモード — テンプレートライフサイクルを使用',
+    contentPh: '例：強力なフックと明確なCTAを伴うビフォーアフターの変化を示す15秒のUGCスタイル動画...',
   },
   adCreativeAbTestSimulator: {
     title: '広告クリエイティブ A/B テストシミュレーター',
@@ -4149,6 +4218,7 @@ export const jaMessages = {
     copied: 'コピーしました',
     error: 'A/B テストシミュレーションに失敗しました',
     dryRunNotice: 'ドライランモード — テンプレートシミュレーションを使用',
+    contentPh: '例：7日でグロウアップ。私たちのビタミンCセラムは肌を明るくすることが臨床的に証明されています...',
   },
   creativeVisualHierarchyAnalyzer: {
     title: 'クリエイティブ視覚階層アナライザー',
@@ -4171,6 +4241,7 @@ export const jaMessages = {
     copied: 'コピーしました',
     error: '視覚階層分析に失敗しました',
     dryRunNotice: 'ドライランモード — テンプレート分析を使用',
+    contentPh: '例：上部にヒーロー画像（高さ60%）、中央に重ねた太字の見出し、左下に製品写真、右下に高コントラストのCTAボタン...',
   },
   adAudiencePainPointMapper: {
     title: '広告オーディエンスペインポイントマッパー',
@@ -4194,6 +4265,7 @@ export const jaMessages = {
     frequency: '頻度',
     emotionalImpact: '感情的影響',
     addresses: '対処',
+    audiencePh: '例：肌の老化が気になる忙しい25-40歳のプロフェッショナル女性',
   },
   creativeMessagingFrameworkBuilder: {
     title: 'クリエイティブメッセージングフレームワークビルダー',
@@ -4223,6 +4295,8 @@ export const jaMessages = {
     evidence: 'エビデンス',
     do: '実行',
     dont: '非推奨',
+    contentPh: '例：臨床実証済みのビタミンCでたった7日でくすんだ肌を明るく — リスクフリートライアルあり。',
+    audiencePh: '例：くすんだ肌と初期の老化の兆候が気になる25-40歳の女性',
   },
   adCreativeBurnoutDetector: {
     title: '広告クリエイティブバーンアウト検出器',
@@ -4246,6 +4320,7 @@ export const jaMessages = {
     copied: 'コピーしました',
     error: 'バーンアウト検出に失敗しました',
     dryRunNotice: 'ドライランモード — テンプレート分析を使用',
+    numberPh: '例：14',
   },
   creativeAdConceptSynthesizer: {
     title: 'クリエイティブ広告コンセプト統合器',
@@ -4295,6 +4370,7 @@ export const jaMessages = {
     copied: 'コピーしました',
     error: 'サイコグラフィックプロファイリングに失敗しました',
     dryRunNotice: 'ドライランモード — テンプレートプロファイルを使用',
+    audiencePh: '例：25-34歳の女性、ウェルネスに興味がある都市部のプロフェッショナル',
   },
   creativeAdToneCalibrator: {
     title: 'クリエイティブ広告トーンキャリブレーター',
@@ -4317,6 +4393,7 @@ export const jaMessages = {
     copied: 'コピーしました',
     error: 'トーン調整に失敗しました',
     dryRunNotice: 'ドライランモード — テンプレート調整を使用',
+    contentPh: '例：今日私たちの素晴らしいビタミンCセラムを買って、7日で結果を実感！',
   },
   creativeAdFormatInnovator: {
     title: 'クリエイティブ広告フォーマットイノベーター',
@@ -4340,6 +4417,7 @@ export const jaMessages = {
     copied: 'コピーしました',
     error: 'フォーマット革新に失敗しました',
     dryRunNotice: 'ドライランモード — テンプレートフォーマットを使用',
+    contentPh: '例：縦型動画、画像カルーセル、ストーリー広告、インフルエンサークリップ',
   },
   adCreativeStoryArcDesigner: {
     title: '広告クリエイティブストーリーアークデザイナー',
@@ -4361,6 +4439,7 @@ export const jaMessages = {
     copied: 'コピーしました',
     error: 'ストーリーアーク設計に失敗しました',
     dryRunNotice: 'ドライランモード — テンプレートストーリーアークを使用',
+    contentPh: '例：たった7日で肌を明るく — リスクフリー',
   },
   creativeAdPersuasionStrategist: {
     title: 'クリエイティブ広告説得戦略家',
@@ -4384,6 +4463,7 @@ export const jaMessages = {
     dryRunNotice: 'ドライランモード — テンプレート戦略を使用',
     effect: '効果',
     principle: '原則',
+    contentPh: '例：期間限定割引で7日間のグロウチャレンジをプロモート...',
   },
   adCreativeHookTimingOptimizer: {
     title: '広告クリエイティブフックタイミングオプティマイザー',
@@ -4409,6 +4489,8 @@ export const jaMessages = {
     currentPlacement: '現在の配置',
     optimalWindow: '最適なウィンドウ',
     attentionCurve: 'アテンションカーブ',
+    contentPh: '例：90%の人が2月までにフィットネス目標を諦めることをご存知ですか？10%に留まる方法はこちら...',
+    productPh: '例：習慣トラッキングのサブスクリプションを販売するDTCフィットネスアプリ',
   },
   creativeAdMetaphorGenerator: {
     title: 'クリエイティブ広告メタファージェネレーター',
@@ -4431,6 +4513,7 @@ export const jaMessages = {
     copied: 'コピーしました',
     error: 'メタファー生成に失敗しました',
     dryRunNotice: 'ドライランモード — テンプレートメタファーを使用',
+    benefitPh: '例：7日でくすんだ肌を明るくする',
   },
   adCreativeSensoryEnhancer: {
     title: '広告クリエイティブセンサリーエンハンサー',
@@ -4474,6 +4557,8 @@ export const jaMessages = {
     copied: 'コピーしました',
     error: 'パターンインタラプト設計に失敗しました',
     dryRunNotice: 'ドライランモード — テンプレートインタラプトを使用',
+    audiencePh: '例：クリーンビューティーに興味がある25-34歳の女性',
+    contentPh: '例：製品デモから始まり、その後口コミが続く15秒のTikTok広告...',
   },
   adCreativeSocialProofArchitect: {
     title: '広告クリエイティブソーシャルプルーフアーキテクト',
@@ -4499,6 +4584,8 @@ export const jaMessages = {
     dryRunNotice: 'ドライランモード — テンプレート設計を使用',
     type: 'タイプ',
     integration: '統合',
+    audiencePh: '例：アンチエイジングスキンケアに興味がある25-40歳の女性',
+    audiencePh2: '例：明るさの結果と信頼構築に焦点を当てて、新しいビタミンCセラムをプロモート...',
   },
   adCreativeEmotionSequencer: {
     title: '広告クリエイティブエモーションシーケンサー',
@@ -4628,6 +4715,7 @@ export const jaMessages = {
     copied: 'コピーしました',
     error: 'ナラティブツイスト設計に失敗しました',
     dryRunNotice: 'ドライランモード — テンプレートツイストを使用',
+    contentPh: '例：ある女性がくすんだ肌に悩み、私たちのセラムを見つけるまで...',
   },
   adCreativeMemoryAnchorBuilder: {
     title: '広告クリエイティブメモリーアンカービルダー',
@@ -4778,6 +4866,7 @@ export const jaMessages = {
     dryRunNotice: 'ドライランモード — テンプレートヒエラルキーを使用',
     direction: '方向',
     anchors: 'アンカー',
+    elementsPh: '例：見出し、製品画像、ロゴ、CTAボタン、背景',
   },
   adCreativeSoundDesignStrategist: {
     title: '広告クリエイティブサウンドデザインストラテジスト',
@@ -4800,6 +4889,7 @@ export const jaMessages = {
     copied: 'コピーしました',
     error: 'サウンドデザイン戦略化に失敗しました',
     dryRunNotice: 'ドライランモード — テンプレートサウンドデザインを使用',
+    contentPh: '例：エネルギッシュ、穏やか、ミステリアス、プレイフル、ドラマチック、アップリフティング...',
   },
   creativeAdSurpriseElementDesigner: {
     title: 'クリエイティブ広告サプライズ要素デザイナー',
@@ -4824,6 +4914,7 @@ export const jaMessages = {
     copied: 'コピーしました',
     error: 'サプライズ要素デザインに失敗しました',
     dryRunNotice: 'ドライランモード — テンプレートサプライズ要素を使用',
+    audiencePh: '例：18-24歳のZ世代スキンケア愛好家',
   },
   adCreativeCallbackMemoryDesigner: {
     title: '広告クリエイティブコールバックメモリーデザイナー',
@@ -5264,6 +5355,7 @@ export const jaMessages = {
     copied: 'コピーしました',
     error: '社会的勢いデザインに失敗しました',
     dryRunNotice: 'ドライランモード — テンプレート社会的勢いを使用',
+    audiencePh: '例：私たちのビタミンCセラムで肌を変えた50,000人以上の女性に参加...',
   },
   creativeAdValueLadderDesigner: {
     title: 'クリエイティブ広告バリューラダーデザイナー',
@@ -5360,6 +5452,7 @@ export const jaMessages = {
     copied: 'コピーしました',
     error: '希少性フレームデザインに失敗しました',
     dryRunNotice: 'ドライランモード — テンプレート希少性フレームを使用',
+    contentPh: '例：限定版ビタミンCセラムは残りわずか50本...',
   },
   creativeAdIdentityAlignmentDesigner: {
     title: 'クリエイティブ広告アイデンティティアライメントデザイナー',
@@ -5408,6 +5501,7 @@ export const jaMessages = {
     copied: 'コピーしました',
     error: '互恵フレームワークのデザインに失敗しました',
     dryRunNotice: 'ドライランモード — テンプレート互恵フレームワークを使用',
+    contentPh: '例：私たちのコミュニティに無料の5日間スキンケアミニコースを提供しています...',
   },
   adCreativePASFrameworkDesigner: {
     title: '広告クリエイティブPASフレームワークデザイナー',
@@ -5624,6 +5718,9 @@ export const jaMessages = {
     copied: 'コピーしました',
     error: 'フィアアピールのデザインに失敗しました',
     dryRunNotice: 'ドライランモード — テンプレートフィアアピールを使用',
+    productPh: '例：ホームプロテクションプランを販売するDTC保険ブランド',
+    contentPh: '例：予期せぬ出来事一つで築き上げたものすべてを失わないで...',
+    audiencePh: '例：資産の保護に関心がある35-55歳の住宅所有者',
   },
   creativeAdBelongingAppealDesigner: {
     title: 'クリエイティブ広告ビロングアピールデザイナー',
@@ -5672,6 +5769,9 @@ export const jaMessages = {
     copied: 'コピーしました',
     error: 'ユーモアアピールのデザインに失敗しました',
     dryRunNotice: 'ドライランモード — テンプレートユーモアアピールを使用',
+    productPh: '例：スパイシーポップコーンを販売するDTCスナックブランド',
+    contentPh: '例：大胆なものが欲しい？私たちのスパイシーポップコーンは別格...',
+    audiencePh: '例：夜にTikTokをスクロールする18-24歳のZ世代スナック愛好家',
   },
   creativeAdFramingEffectDesigner: {
     title: 'クリエイティブ広告フレーミングエフェクトデザイナー',
@@ -5720,6 +5820,7 @@ export const jaMessages = {
     copied: 'コピーしました',
     error: 'プライドアピールのデザインに失敗しました',
     dryRunNotice: 'ドライランモード — テンプレートプライドアピールを使用',
+    contentPh: '例：あなたはこれを手にした — 妥協しない人々のための私たちのビタミンCセラム...',
   },
   creativeAdNostalgiaTriggerDesigner: {
     title: 'クリエイティブ広告ノスタルジアトリガーデザイナー',
@@ -5888,6 +5989,7 @@ export const jaMessages = {
     copied: 'コピーしました',
     error: '損失回避フレーミングのデザインに失敗しました',
     dryRunNotice: 'ドライランモード — テンプレート損失回避フレームワークを使用',
+    contentPh: '例：待つ毎日に肌は老化し、ダメージが蓄積していきます...',
   },
   adCreativeAnchoringEffectDesigner: {
     title: '広告クリエイティブアンカリングエフェクトデザイナー',
@@ -5912,6 +6014,7 @@ export const jaMessages = {
     copied: 'コピーしました',
     error: 'アンカリングエフェクトのデザインに失敗しました',
     dryRunNotice: 'ドライランモード — テンプレートアンカリングフレームワークを使用',
+    contentPh: '例：元々$199、今なら私たちのビタミンCセラムがたった$89...',
   },
   aidaFrameworkDesigner: {
     title: 'AIDAフレームワークデザイナー',

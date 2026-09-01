@@ -139,7 +139,7 @@ export default function AdCompetitiveIntelligencePage() {
               type="text"
               value={category}
               onChange={(e) => setCategory(e.target.value)}
-              placeholder="e.g., skincare, fitness apps, meal kits"
+              placeholder={t('adCompetitiveIntelligence.productPh')}
               maxLength={500}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
               disabled={loading}
@@ -155,7 +155,7 @@ export default function AdCompetitiveIntelligencePage() {
               type="text"
               value={competitors}
               onChange={(e) => setCompetitors(e.target.value)}
-              placeholder="e.g., Glossier, The Ordinary, CeraVe, Drunk Elephant"
+              placeholder={t('adCompetitiveIntelligence.competitorsPh')}
               maxLength={1000}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
               disabled={loading}

@@ -147,7 +147,7 @@ export default function CreativeAdNarrativeTwistDesignerPage() {
               id="cantwdContent"
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              placeholder="e.g., A woman struggles with dull skin until she discovers our serum..."
+              placeholder={t('creativeAdNarrativeTwistDesigner.contentPh')}
               rows={4}
               maxLength={2000}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent resize-y"
@@ -164,7 +164,7 @@ export default function CreativeAdNarrativeTwistDesignerPage() {
               type="text"
               value={targetAudience}
               onChange={(e) => setTargetAudience(e.target.value)}
-              placeholder="e.g., Women 25-40 interested in skincare and self-care"
+              placeholder={t('common.phAudienceSelfCare')}
               maxLength={2000}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
               disabled={loading}

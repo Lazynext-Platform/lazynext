@@ -136,7 +136,7 @@ export default function AdCreativeFearAppealDesignerPage() {
               type="text"
               value={productOrBrand}
               onChange={(e) => setProductOrBrand(e.target.value)}
-              placeholder="e.g., DTC insurance brand selling a home protection plan"
+              placeholder={t('adCreativeFearAppealDesigner.productPh')}
               maxLength={2000}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
               disabled={loading}
@@ -151,7 +151,7 @@ export default function AdCreativeFearAppealDesignerPage() {
               id="acfadContent"
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              placeholder="e.g., Don't let one unexpected event wipe out everything you've built..."
+              placeholder={t('adCreativeFearAppealDesigner.contentPh')}
               rows={4}
               maxLength={2000}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent resize-y"
@@ -168,7 +168,7 @@ export default function AdCreativeFearAppealDesignerPage() {
               type="text"
               value={targetAudience}
               onChange={(e) => setTargetAudience(e.target.value)}
-              placeholder="e.g., Homeowners 35-55 concerned about protecting their assets"
+              placeholder={t('adCreativeFearAppealDesigner.audiencePh')}
               maxLength={2000}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
               disabled={loading}

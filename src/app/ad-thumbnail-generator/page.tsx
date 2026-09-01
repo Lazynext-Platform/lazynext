@@ -165,7 +165,7 @@ export default function AdThumbnailGeneratorPage() {
                 type="text"
                 value={videoTitle}
                 onChange={(e) => setVideoTitle(e.target.value)}
-                placeholder="e.g., 5 skincare mistakes you're making"
+                placeholder={t('adThumbnailGenerator.numberPh')}
                 maxLength={500}
                 className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
                 disabled={loading}
@@ -181,7 +181,7 @@ export default function AdThumbnailGeneratorPage() {
                 type="text"
                 value={videoTopic}
                 onChange={(e) => setVideoTopic(e.target.value)}
-                placeholder="e.g., vitamin C serum benefits"
+                placeholder={t('adThumbnailGenerator.benefitPh')}
                 maxLength={500}
                 className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
                 disabled={loading}

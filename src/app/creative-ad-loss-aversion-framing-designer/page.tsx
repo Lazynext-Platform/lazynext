@@ -152,7 +152,7 @@ export default function CreativeAdLossAversionFramingDesignerPage() {
               id="calafContent"
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              placeholder="e.g., Every day you wait, your skin ages and the damage compounds..."
+              placeholder={t('creativeAdLossAversionFramingDesigner.contentPh')}
               rows={4}
               maxLength={2000}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent resize-y"

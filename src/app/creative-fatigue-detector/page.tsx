@@ -158,7 +158,7 @@ export default function CreativeFatigueDetectorPage() {
               id="cfdDescription"
               value={creativeDescription}
               onChange={(e) => setCreativeDescription(e.target.value)}
-              placeholder="e.g., UGC-style TikTok ad showing a skincare routine with a curiosity hook"
+              placeholder={t('creativeFatigueDetector.contentPh')}
               rows={3}
               maxLength={5000}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent resize-y"
@@ -197,7 +197,7 @@ export default function CreativeFatigueDetectorPage() {
                 type="number"
                 value={daysRunning}
                 onChange={(e) => setDaysRunning(e.target.value)}
-                placeholder="e.g., 12"
+                placeholder={t('creativeFatigueDetector.numberPh')}
                 min="1"
                 className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
                 disabled={loading}
@@ -213,7 +213,7 @@ export default function CreativeFatigueDetectorPage() {
                 type="number"
                 value={impressions}
                 onChange={(e) => setImpressions(e.target.value)}
-                placeholder="e.g., 150000"
+                placeholder={t('creativeFatigueDetector.metricPh')}
                 min="1"
                 className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
                 disabled={loading}
@@ -231,7 +231,7 @@ export default function CreativeFatigueDetectorPage() {
                 type="number"
                 value={currentCTR}
                 onChange={(e) => setCurrentCTR(e.target.value)}
-                placeholder="e.g., 1.2"
+                placeholder={t('creativeFatigueDetector.numberPh2')}
                 min="0"
                 max="100"
                 step="0.01"
@@ -249,7 +249,7 @@ export default function CreativeFatigueDetectorPage() {
                 type="number"
                 value={previousCTR}
                 onChange={(e) => setPreviousCTR(e.target.value)}
-                placeholder="e.g., 2.5 (optional)"
+                placeholder={t('creativeFatigueDetector.numberPh3')}
                 min="0"
                 max="100"
                 step="0.01"

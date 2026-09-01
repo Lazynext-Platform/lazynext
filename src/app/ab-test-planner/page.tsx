@@ -151,7 +151,7 @@ export default function ABTestPlannerPage() {
                 value={audienceSize}
                 onChange={(e) => setAudienceSize(e.target.value)}
                 min={1}
-                placeholder="optional"
+                placeholder={t('common.phOptional')}
                 className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
                 disabled={loading}
               />
@@ -166,7 +166,7 @@ export default function ABTestPlannerPage() {
                 min={0}
                 max={100}
                 step={0.01}
-                placeholder="optional %"
+                placeholder={t('common.phOptionalPercent')}
                 className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
                 disabled={loading}
               />
@@ -179,7 +179,7 @@ export default function ABTestPlannerPage() {
                 value={budget}
                 onChange={(e) => setBudget(e.target.value)}
                 min={0}
-                placeholder="optional $"
+                placeholder={t('common.phOptionalDollar')}
                 className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
                 disabled={loading}
               />

@@ -167,7 +167,7 @@ export default function CreativeAdPersuasionStrategistPage() {
               id="capsContent"
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              placeholder="e.g., Promote a 7-day glow challenge with a limited-time discount..."
+              placeholder={t('creativeAdPersuasionStrategist.contentPh')}
               rows={4}
               maxLength={2000}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent resize-y"

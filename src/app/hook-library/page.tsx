@@ -163,7 +163,7 @@ export default function HookLibraryPage() {
               </div>
               <div>
                 <label htmlFor="hlAudience" className="block text-sm font-medium mb-1">{t('hookLibrary.audience')}</label>
-                <input id="hlAudience" type="text" value={audience} onChange={(e) => setAudience(e.target.value)} placeholder="e.g., remote workers" className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
+                <input id="hlAudience" type="text" value={audience} onChange={(e) => setAudience(e.target.value)} placeholder={t('hookLibrary.audiencePh')} className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
               </div>
             </div>
           </div>

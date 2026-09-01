@@ -151,7 +151,7 @@ export default function CreativePerformanceForecasterPage() {
               id="cpfCreativeContent"
               value={creativeContent}
               onChange={(e) => setCreativeContent(e.target.value)}
-              placeholder="e.g., A 15-second TikTok showing a before/after of someone using our vitamin C serum, with a hook in the first 3 seconds and a CTA to shop now"
+              placeholder={t('creativePerformanceForecaster.contentPh')}
               rows={4}
               maxLength={2000}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent resize-y"

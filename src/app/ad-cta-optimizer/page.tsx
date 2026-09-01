@@ -168,7 +168,7 @@ export default function AdCTAOptimizerPage() {
                 type="text"
                 value={goal}
                 onChange={(e) => setGoal(e.target.value)}
-                placeholder="e.g., purchases (optional)"
+                placeholder={t('adCtaOptimizer.contentPh')}
                 maxLength={200}
                 className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
                 disabled={loading}
@@ -184,7 +184,7 @@ export default function AdCTAOptimizerPage() {
                 type="text"
                 value={currentCTA}
                 onChange={(e) => setCurrentCTA(e.target.value)}
-                placeholder="e.g., Shop now (optional)"
+                placeholder={t('adCtaOptimizer.contentPh2')}
                 maxLength={200}
                 className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
                 disabled={loading}

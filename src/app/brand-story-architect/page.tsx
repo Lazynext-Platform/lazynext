@@ -158,7 +158,7 @@ export default function BrandStoryArchitectPage() {
                 type="text"
                 value={brandName}
                 onChange={(e) => setBrandName(e.target.value)}
-                placeholder="e.g., GlowUp"
+                placeholder={t('brandStoryArchitect.brandNamePh')}
                 maxLength={2000}
                 className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
                 disabled={loading}
@@ -174,7 +174,7 @@ export default function BrandStoryArchitectPage() {
                 type="text"
                 value={brandValues}
                 onChange={(e) => setBrandValues(e.target.value)}
-                placeholder="e.g., authenticity, empowerment, sustainability"
+                placeholder={t('brandStoryArchitect.audiencePh')}
                 maxLength={500}
                 className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
                 disabled={loading}
@@ -190,7 +190,7 @@ export default function BrandStoryArchitectPage() {
               id="bsaProduct"
               value={productOrService}
               onChange={(e) => setProductOrService(e.target.value)}
-              placeholder="e.g., A skincare app that uses AI to personalize routines"
+              placeholder={t('brandStoryArchitect.productPh')}
               rows={3}
               maxLength={2000}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent resize-y"

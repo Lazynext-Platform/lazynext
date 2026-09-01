@@ -671,6 +671,12 @@ export const thMessages = {
       ratioFeed: 'ฟีด',
       ratioTiktokReels: 'TikTok/Reels',
       ratioYoutube: 'YouTube',
+      namePh: 'เปิดตัวสินค้า Q4 - ทดสอบ A/B',
+      namePh2: 'GlowPatch LED Face Mask',
+      numberPh: '50',
+      urlPh: 'https://yourbrand.com',
+      urlPh2: 'https://shop.example.com/products/led-mask',
+      urlPh3: 'https://example.com/reference-ad.mp4',
     },
 
     costEstimate: {
@@ -1102,6 +1108,8 @@ export const thMessages = {
       loadingCampaigns: 'กำลังโหลดแคมเปญ…',
       refreshingMetrics: 'กำลังรีเฟรช…',
       refreshMetricsLabel: 'รีเฟรชเมตริกสำหรับ {name}',
+      namePh: 'โปรโมชั่นฤดูร้อน - Glow Serum',
+      contentPh: 'abc123, def456',
     },
     perf: {
       title: 'แดชบอร์ดประสิทธิภาพ',
@@ -2777,6 +2785,7 @@ export const thMessages = {
     creativeAudiencePlaceholder: 'กลุ่มเป้าหมาย',
     remove: 'ลบ',
     addCreative: '+ เพิ่มครีเอทีฟ',
+    timezonePh: 'UTC',
   },
   competitorWatch: {
     title: 'เฝ้าระวังคู่แข่ง',
@@ -2868,6 +2877,7 @@ export const thMessages = {
     clearFilters: 'ล้างตัวกรอง',
     audience: 'กลุ่มเป้าหมาย',
     error: 'การสร้างฮุกล้มเหลว',
+    audiencePh: 'เช่น ผู้ทำงานทางไกล',
   },
   briefTemplateBuilder: {
     title: 'ตัวสร้างเทมเพลตบรีฟ',
@@ -2894,6 +2904,7 @@ export const thMessages = {
     brandColors: 'สี (คั่นด้วยจุลภาค)',
     urlPlaceholder: 'https://...',
     aiGenerated: 'สร้างโดย AI',
+    contentPh: 'เช่น เซรั่มสกินแคร์, หูฟังไร้สาย',
   },
   adScriptWriter: {
       title: "เครื่องมือเขียนสคริปต์โฆษณา",
@@ -2951,6 +2962,8 @@ export const thMessages = {
       objections: "ข้อโต้แย้ง",
       copy: "คัดลอก",
       noResults: "ยังไม่มีบุคลิก ป้อนสินค้าหรือแบรนด์เพื่อเริ่มต้น",
+    productPh: 'เช่น เซรั่มสกินแคร์ออร์แกนิคพรีเมียมที่เน้นปัญหาต้านริ้วรอย',
+    audiencePh: 'เช่น มิลเลนเนียลสหรัฐฯ, มืออาชีพสหภาพยุโรป',
   },
   variantMatrixGenerator: {
       title: "เมทริกซ์ตัวแปรสร้างสรรค์",
@@ -3064,6 +3077,10 @@ export const thMessages = {
     text: 'ข้อความ',
     references: 'อ้างอิง',
     brandHeadline: 'พาดหัวแบรนด์ของคุณ',
+    productPh: 'เช่น ขวดน้ำใช้ซ้ำได้เป็นมิตรกับสิ่งแวดล้อมสำหรับผู้ที่ชื่นชอบฟิตเนส',
+    tonePh: 'เช่น มินิมอล, โดดเด่น, สนุกสนาน',
+    audiencePh: 'เช่น มิลเลนเนียลในเมือง',
+    formatPh: 'เช่น instagram, tiktok',
   },
   adPerformancePredictor: {
     title: "ตัวทำนายประสิทธิภาพโฆษณา",
@@ -3097,6 +3114,8 @@ export const thMessages = {
     benchmark: 'เกณฑ์อ้างอิง',
     rationale: 'เหตุผล',
     briefPh: 'วางครีเอทีฟบรีฟหรือแนวคิดโฆษณาที่นี่...',
+    metricPh: 'เช่น อิเล็กทรอนิกส์, ความงาม, SaaS',
+    audiencePh: 'เช่น ผู้ทำงานทางไกลอายุ 25-40 ปีในสหรัฐฯ',
   },
   abTestPlannerV2: {
     title: "ตัววางแผน A/B Test สร้างสรรค์",
@@ -3169,6 +3188,8 @@ export const thMessages = {
     copied: 'คัดลอกแล้ว',
     error: 'การตรวจจับเทรนด์ล้มเหลว',
     dryRunNotice: 'โหมดทดลอง — ใช้เทรนด์แบบฮิวริสติก',
+    contentPh: 'เช่น สกินแคร์สะอาด, ฟิตเนสที่บ้าน, ทำอาหารจากพืช',
+    contentPh2: 'เช่น สหรัฐฯ, สหราชอาณาจักร, ทั่วโลก (ไม่บังคับ)',
   },
   brandVoiceAnalyzer: {
     title: 'วิเคราะห์เสียงแบรนด์',
@@ -3191,6 +3212,7 @@ export const thMessages = {
     error: 'การวิเคราะห์ล้มเหลว',
     dryRunNotice: 'โหมดทดลอง — ใช้การวิเคราะห์แบบฮิวริสติก',
     sampleContentPh: 'วาง 100+ ตัวอักษรของเนื้อหาแบรนด์ของคุณ — สำเนาเว็บไซต์ คำบรรยายโฆษณา โพสต์โซเชียล อีเมล…',
+    brandNamePh: 'เช่น Glow & Co.',
   },
   adCaptionGenerator: {
     title: 'สร้างคำบรรยายโฆษณา',
@@ -3265,6 +3287,9 @@ export const thMessages = {
     copied: 'คัดลอกแล้ว',
     error: 'การเพิ่มประสิทธิภาพช่วงเวลาล้มเหลว',
     dryRunNotice: 'โหมดจำลอง — ใช้ช่วงเวลาแบบฮิวริสติก',
+    audiencePh: 'เช่น นักศึกษามหาวิทยาลัย Gen Z ในสหรัฐฯ ที่ติดตามอินฟลูเอนเซอร์ฟิตเนส',
+    timezonePh: 'เช่น America/New_York (ไม่บังคับ, ค่าเริ่มต้น UTC)',
+    productPh: 'เช่น เสื้อผ้าฟิตเนส (ไม่บังคับ)',
   },
   creativeFatigueDetector: {
     title: 'ตัวตรวจจับความเหนื่อยล้าของครีเอทีฟ',
@@ -3288,6 +3313,11 @@ export const thMessages = {
     copied: 'คัดลอกแล้ว',
     error: 'การตรวจจับความเหนื่อยล้าล้มเหลว',
     dryRunNotice: 'โหมดจำลอง — ใช้การวิเคราะห์แบบฮิวริสติก',
+    contentPh: 'เช่น โฆษณา TikTok สไตล์ UGC ที่แสดงกิจวัรสกินแคร์พร้อมฮุคชวนสงสัย',
+    numberPh: 'เช่น 12',
+    metricPh: 'เช่น 150000',
+    numberPh2: 'เช่น 1.2',
+    numberPh3: 'เช่น 2.5 (ไม่บังคับ)',
   },
   adCtaOptimizer: {
     title: 'ตัวเพิ่มประสิทธิภาพ CTA โฆษณา',
@@ -3309,6 +3339,8 @@ export const thMessages = {
     copied: 'คัดลอกแล้ว',
     error: 'การเพิ่มประสิทธิภาพ CTA ล้มเหลว',
     dryRunNotice: 'โหมดจำลอง — ใช้ CTA จากเทมเพลต',
+    contentPh: 'เช่น การซื้อ (ไม่บังคับ)',
+    contentPh2: 'เช่น ซื้อตอนนี้ (ไม่บังคับ)',
   },
   conceptExpander: {
     title: 'ตัวขยายแนวคิดสร้างสรรค์',
@@ -3331,6 +3363,7 @@ export const thMessages = {
     copied: 'คัดลอกแล้ว',
     error: 'การขยายแนวคิดล้มเหลว',
     dryRunNotice: 'โหมดจำลอง — ใช้แนวคิดจากเทมเพลต',
+    contentPh: 'เช่น การเผยก่อนและหลังที่แสดงสินค้าเปลี่ยนแปลงกิจวัร',
   },
   adStoryGenerator: {
     title: 'ตัวสร้างเรื่องราวโฆษณา',
@@ -3381,6 +3414,7 @@ export const thMessages = {
     copied: 'คัดลอกแล้ว',
     error: 'การสร้างชุดสีล้มเหลว',
     dryRunNotice: 'โหมดจำลอง — ใช้ชุดสีจากเทมเพลต',
+    colorPh: 'เช่น #1a1a1a (ไม่บังคับ)',
   },
   adThumbnailGenerator: {
     title: 'ตัวสร้างภาพปกโฆษณา',
@@ -3405,6 +3439,8 @@ export const thMessages = {
     copied: 'คัดลอกแล้ว',
     error: 'การสร้างภาพปกล้มเหลว',
     dryRunNotice: 'โหมดจำลอง — ใช้ภาพปกจากเทมเพลต',
+    numberPh: 'เช่น 5 ข้อผิดพลาดเรื่องสกินแคร์ที่คุณกำลังทำอยู่',
+    benefitPh: 'เช่น ประโยชน์ของเซรั่มวิตามินซี',
   },
   adFontPairingGenerator: {
     title: 'ตัวสร้างการจับคู่ฟอนต์โฆษณา',
@@ -3445,6 +3481,7 @@ export const thMessages = {
     copied: 'คัดลอกแล้ว',
     error: 'การสร้างแฮชแท็กล้มเหลว',
     dryRunNotice: 'โหมดจำลอง — ใช้แฮชแท็กจากเทมเพลต',
+    categoryPh: 'เช่น สกินแคร์, ฟิตเนส, แกดเจ็ตเทคโนโลยี',
   },
   creativeSceneGenerator: {
     title: 'ตัวสร้างฉากสร้างสรรค์',
@@ -3470,6 +3507,7 @@ export const thMessages = {
     copied: 'คัดลอกแล้ว',
     error: 'การสร้างฉากล้มเหลว',
     dryRunNotice: 'โหมดจำลอง — ใช้ฉากจากเทมเพลต',
+    contentPh: 'เช่น การเปลี่ยนแปลงก่อนและหลังที่แสดงผลลัพธ์จริงของผลิตภัณฑ์',
   },
   adMusicMoodMatcher: {
     title: 'ตัวจับคู่เพลงและอารมณ์โฆษณา',
@@ -3539,6 +3577,8 @@ export const thMessages = {
     copied: 'คัดลอกแล้ว',
     error: 'การสร้างบรีฟล้มเหลว',
     dryRunNotice: 'โหมดจำลอง — ใช้บรีฟจากเทมเพลต',
+    contentPh: 'เช่น เปิดตัวสินค้าใหม่และกระตุ้นการสั่งจองล่วงหน้า',
+    audiencePh: 'เช่น ผู้ที่ชื่นชอบสกินแคร์รุ่นมิลเลนเนียลอายุ 25-35 ปี',
   },
   adPlacementStrategist: {
     title: 'นักยุทธศาสตร์ตำแหน่งโฆษณา',
@@ -3561,6 +3601,7 @@ export const thMessages = {
     copied: 'คัดลอกแล้ว',
     error: 'การสร้างกลยุทธ์ตำแหน่งล้มเหลว',
     dryRunNotice: 'โหมดจำลอง — ใช้กลยุทธ์จากเทมเพลต',
+    audiencePh: 'เช่น ผู้หญิงมิลเลนเนียลอายุ 25-35 ปีที่สนใจสกินแคร์',
   },
   adABTestNameGenerator: {
     title: 'ตัวสร้างชื่อทดสอบ A/B โฆษณา',
@@ -3598,6 +3639,7 @@ export const thMessages = {
     copied: 'คัดลอกแล้ว',
     error: 'การสร้างการปรับปรุงฮุคล้มเหลว',
     dryRunNotice: 'โหมดจำลอง — ใช้การปรับปรุงจากเทมเพลต',
+    contentPh: 'เช่น ผลิตภัณฑ์สกินแคร์นี้จะเปลี่ยนชีวิตคุณ',
   },
   adAudienceSegmentBuilder: {
     title: 'ตัวสร้างเซ็กเมนต์กลุ่มเป้าหมายโฆษณา',
@@ -3623,6 +3665,7 @@ export const thMessages = {
     copied: 'คัดลอกแล้ว',
     error: 'การสร้างเซ็กเมนต์ล้มเหลว',
     dryRunNotice: 'โหมดจำลอง — ใช้เซ็กเมนต์จากเทมเพลต',
+    audiencePh: 'เช่น ผู้หญิงที่ใส่ใจสุขภาพอายุ 25-40 ปีที่สนใจความงามสะอาด',
   },
   creativeConceptValidator: {
     title: 'ตัวตรวจสอบแนวคิดสร้างสรรค์',
@@ -3650,6 +3693,8 @@ export const thMessages = {
     copied: 'คัดลอกแล้ว',
     error: 'การตรวจสอบแนวคิดล้มเหลว',
     dryRunNotice: 'โหมดจำลอง — ใช้การตรวจสอบจากเทมเพลต',
+    contentPh: 'เช่น วิดีโอ TikTok 15 วินาทีที่แสดงการเปลี่ยนแปลงก่อนและหลังจากการใช้เซรั่มวิตามินซีของเรา พร้อมฮุคชวนสงสัยและความน่าเชื่อถือสไตล์ UGC',
+    audiencePh: 'เช่น ผู้หญิงที่ใส่ใจสุขภาพอายุ 25-40 ปี',
   },
   adEmotionAnalyzer: {
     title: 'ตัววิเคราะห์อารมณ์โฆษณา',
@@ -3672,6 +3717,7 @@ export const thMessages = {
     error: 'การวิเคราะห์อารมณ์ล้มเหลว',
     dryRunNotice: 'โหมดจำลอง — ใช้การวิเคราะห์จากเทมเพลต',
     overallEmotionalImpact: 'ผลกระทบทางอารมณ์โดยรวม',
+    contentPh: 'เช่น ตอนที่ลองเซรั่มนี้ครั้งแรก ฉันสงสัย แต่หลังจากสองสัปดาห์ ผิวของฉันเปล่งปลั่ง นี่คือเหตุผลที่มันเปลี่ยนกิจวัรของฉันตลอดไป...',
   },
   creativeFormatConverter: {
     title: 'ตัวแปลงฟอร์แมตครีเอทีฟ',
@@ -3693,6 +3739,7 @@ export const thMessages = {
     copied: 'คัดลอกแล้ว',
     error: 'การแปลงฟอร์แมตล้มเหลว',
     dryRunNotice: 'โหมดจำลอง — ใช้การแปลงจากเทมเพลต',
+    contentPh: 'เช่น เซรั่มวิตามินซีของเราช่วยผิวสว่างขึ้นในเพียงสองสัปดาห์ ทำสูตรด้วยกรดแอล-แอสคอร์บิก 20% ช่วยลดจุดด่างดำและปรับผิวให้สม่ำเสมอ...',
   },
   adBudgetAllocator: {
     title: 'ตัวจัดสรรงบประมาณโฆษณา',
@@ -3716,6 +3763,7 @@ export const thMessages = {
     copied: 'คัดลอกแล้ว',
     error: 'การจัดสรรงบประมาณล้มเหลว',
     dryRunNotice: 'โหมดจำลอง — ใช้การจัดสรรจากเทมเพลต',
+    contentPh: 'เช่น $10,000',
   },
   creativeTrendAdapter: {
     title: 'ตัวปรับเทรนด์ครีเอทีฟ',
@@ -3740,6 +3788,8 @@ export const thMessages = {
     copied: 'คัดลอกแล้ว',
     error: 'การปรับเทรนด์ล้มเหลว',
     dryRunNotice: 'โหมดจำลอง — ใช้การปรับจากเทมเพลต',
+    contentPh: 'เช่น ดูเซรั่มวิตามินซีใหม่ของเราสำหรับผิวที่เปล่งปลั่ง',
+    brandNamePh: 'เช่น GlowUp Skincare',
   },
   adCreativeSequencer: {
     title: 'ตัวจัดลำดับครีเอทีฟโฆษณา',
@@ -3791,6 +3841,9 @@ export const thMessages = {
     copied: 'คัดลอกแล้ว',
     error: 'การสร้างเรื่องล้มเหลว',
     dryRunNotice: 'โหมดจำลอง — ใช้เรื่องจากเทมเพลต',
+    brandNamePh: 'เช่น GlowUp',
+    audiencePh: 'เช่น ความแท้จริง, การเสริมพลัง, ความยั่งยืน',
+    productPh: 'เช่น แอปสกินแคร์ที่ใช้ AI เพื่อปรับกิจวัรให้เป็นส่วนตัว',
   },
   adLocalizationAdapter: {
     title: 'ตัวปรับโฆษณาให้เป็นภาษาท้องถิ่น',
@@ -3816,6 +3869,8 @@ export const thMessages = {
     copied: 'คัดลอกแล้ว',
     error: 'การปรับเป็นภาษาท้องถิ่นล้มเหลว',
     dryRunNotice: 'โหมดจำลอง — ใช้การปรับจากเทมเพลต',
+    contentPh: 'เช่น ดูสินค้าใหม่สุดเจ๋งของเรา — มันเปลี่ยนเกมเลย! ซื้อตอนนี้และประหยัด 20%!',
+    brandNamePh: 'เช่น GlowUp skincare',
   },
   creativePerformanceForecaster: {
     title: 'ตัวพยากรณ์ประสิทธิภาพครีเอทีฟ',
@@ -3845,6 +3900,7 @@ export const thMessages = {
     copied: 'คัดลอกแล้ว',
     error: 'การพยากรณ์ประสิทธิภาพล้มเหลว',
     dryRunNotice: 'โหมดจำลอง — ใช้การพยากรณ์จากเทมเพลต',
+    contentPh: 'เช่น วิดีโอ TikTok 15 วินาทีที่แสดงก่อน/หลังของคนที่ใช้เซรั่มวิตามินซีของเรา พร้อมฮุคใน 3 วินาทีแรกและ CTA ให้ซื้อตอนนี้',
   },
   adSentimentTuner: {
     title: 'ตัวปรับอารมณ์โฆษณา',
@@ -3868,6 +3924,7 @@ export const thMessages = {
     copied: 'คัดลอกแล้ว',
     error: 'การปรับอารมณ์ล้มเหลว',
     dryRunNotice: 'โหมดทดลอง — ใช้การปรับแม่แบบ',
+    contentPh: 'เช่น สินค้าใหม่ของเราช่วยคุณประหยัดเวลาและทำได้มากขึ้น',
   },
   creativeHookMatrixGenerator: {
     title: 'สร้างเมทริกซ์ฮุคสร้างสรรค์',
@@ -3915,6 +3972,7 @@ export const thMessages = {
     dryRunNotice: 'โหมดทดลอง — ใช้การหมุนเวียนแม่แบบ',
     credits: 'เครดิต',
     days: 'วัน',
+    contentPh: 'เช่น รับส่วนลด 50% สำหรับเซรั่มวิตามินซีขายดีของเราเฉพาะสัปดาห์นี้',
   },
   brandVoiceConsistencyChecker: {
     title: 'ตัวตรวจสอบความสอดคล้องเสียงแบรนด์',
@@ -3942,6 +4000,9 @@ export const thMessages = {
     copied: 'คัดลอกแล้ว',
     error: 'การตรวจสอบเสียงแบรนด์ล้มเหลว',
     dryRunNotice: 'โหมดทดลอง — ใช้การตรวจสอบแม่แบบ',
+    contentPh: 'เช่น โว้ยทุกคน! ดูสินค้าใหม่สุดเจ๋งของเรา LOL คุณจะต้องรักมัน!!!',
+    brandNamePh: 'เช่น Lumina Skincare',
+    contentPh2: 'เช่น เป็นมืออาชีพ อบอุ่น และสนับสนุนด้วยวิทยาศาสตร์ ใช้ภาษาที่ชัดเจนและเข้าถึงง่าย หลีกเลี่ยงคำแสลงและเครื่องหมายวรรคตอนที่มากเกินไป',
   },
   adPersonaMatcher: {
     title: 'ตัวจับคู่เปอร์โซน่าโฆษณา',
@@ -3962,6 +4023,8 @@ export const thMessages = {
     copied: 'คัดลอกแล้ว',
     error: 'การจับคู่เปอร์โซน่าล้มเหลว',
     dryRunNotice: 'โหมดทดลอง — ใช้การจับคู่แม่แบบ',
+    contentPh: 'เช่น ค้นพบอนาคตของสกินแคร์กับเซรั่มวิตามินซีของเรา...',
+    audiencePh: 'เช่น ผู้ที่ชื่นชอบความงามอายุ 18-25 ปี, แม่ลูกอ่อนยุ่ง 30-45, ผู้ซื้อที่ใส่ใจสิ่งแวดล้อม',
   },
   creativeConceptExpanderPro: {
     title: 'ตัวขยายแนวคิดครีเอทีฟ Pro',
@@ -3987,6 +4050,7 @@ export const thMessages = {
     copied: 'คัดลอกแล้ว',
     error: 'การขยายแนวคิดล้มเหลว',
     dryRunNotice: 'โหมดทดลอง — ใช้การขยายแม่แบบ',
+    contentPh: 'เช่น การเปลี่ยนแปลงก่อนและหลังที่แสดงผลลัพธ์จริงใน 30 วัน',
   },
   adCompetitiveIntelligence: {
     title: 'ข่าวกรองการแข่งขันโฆษณา',
@@ -4012,6 +4076,8 @@ export const thMessages = {
     copied: 'คัดลอกแล้ว',
     error: 'ข่าวกรองการแข่งขันล้มเหลว',
     dryRunNotice: 'โหมดทดลอง — ใช้ข่าวกรองแม่แบบ',
+    productPh: 'เช่น สกินแคร์, แอปฟิตเนส, ชุดอาหาร',
+    competitorsPh: 'เช่น Glossier, The Ordinary, CeraVe, Drunk Elephant',
   },
   creativeQualityScorer: {
     title: 'ตัวให้คะแนนคุณภาพครีเอทีฟ',
@@ -4057,6 +4123,7 @@ export const thMessages = {
     copied: 'คัดลอกแล้ว',
     error: 'การจับภาพเส้นทางอารมณ์ล้มเหลว',
     dryRunNotice: 'โหมดทดลอง — ใช้เส้นทางแม่แบบ',
+    contentPh: 'เช่น เบื่อผิวหมองคล้ำแล้วหรือยัง? เซรั่มวิตามินซีของเราช่วยผิวสว่างขึ้นในเพียง 7 วัน ลองใช้โดยไม่มีความเสี่ยงวันนี้!',
   },
   adAudienceResonancePredictor: {
     title: 'ตัวทำนายการสะท้อนผู้ชมโฆษณา',
@@ -4078,6 +4145,7 @@ export const thMessages = {
     copied: 'คัดลอกแล้ว',
     error: 'การทำนายการสะท้อนผู้ชมล้มเหลว',
     dryRunNotice: 'โหมดทดลอง — ใช้การสะท้อนแม่แบบ',
+    audiencePh: 'เช่น Gen Z, พ่อแม่ที่ยุ่ง, ผู้ที่ชื่นชอบฟิตเนส',
   },
   creativeFormatRecommender: {
     title: 'ตัวแนะนำรูปแบบครีเอทีฟ',
@@ -4122,6 +4190,7 @@ export const thMessages = {
     copied: 'คัดลอกแล้ว',
     error: 'การวิเคราะห์วงจรชีวิตล้มเหลว',
     dryRunNotice: 'โหมดทดลอง — ใช้วงจรชีวิตแม่แบบ',
+    contentPh: 'เช่น วิดีโอสไตล์ UGC 15 วินาทีที่แสดงการเปลี่ยนแปลงก่อน/หลังพร้อมฮุคที่แรงและ CTA ชัดเจน...',
   },
   adCreativeAbTestSimulator: {
     title: 'เครื่องจำลองการทดสอบ A/B โฆษณา',
@@ -4148,6 +4217,7 @@ export const thMessages = {
     copied: 'คัดลอกแล้ว',
     error: 'การจำลองการทดสอบ A/B ล้มเหลว',
     dryRunNotice: 'โหมดทดลอง — ใช้การจำลองแม่แบบ',
+    contentPh: 'เช่น ผิวเปล่งปลั่งใน 7 วัน เซรั่มวิตามินซีของเราพิสูจน์ทางคลินิกว่าช่วยผิวสว่างขึ้น...',
   },
   creativeVisualHierarchyAnalyzer: {
     title: 'ตัววิเคราะห์ลำดับชั้นภาพสร้างสรรค์',
@@ -4170,6 +4240,7 @@ export const thMessages = {
     copied: 'คัดลอกแล้ว',
     error: 'การวิเคราะห์ลำดับชั้นภาพล้มเหลว',
     dryRunNotice: 'โหมดทดลอง — ใช้การวิเคราะห์แม่แบบ',
+    contentPh: 'เช่น รูปภาพหลักที่ด้านบน (ความสูง 60%), พาดหัวโดดเด่นซ้อนทับกลางภาพ, ภาพผลิตภัณฑ์ที่มุมซ้ายล่าง, ปุ่ม CTA ที่มุมขวาล่างพร้อมความคมชัดสูง...',
   },
   adAudiencePainPointMapper: {
     title: 'ตัวจับคู้จุดปวดของผู้ชมโฆษณา',
@@ -4193,6 +4264,7 @@ export const thMessages = {
     frequency: 'ความถี่',
     emotionalImpact: 'ผลกระทบทางอารมณ์',
     addresses: 'จัดการ',
+    audiencePh: 'เช่น ผู้หญิงมืออาชีพที่ยุ่งอายุ 25-40 ปีที่กังวลเรื่องผิวชรา',
   },
   creativeMessagingFrameworkBuilder: {
     title: 'ตัวสร้างกรอบข้อความสร้างสรรค์',
@@ -4222,6 +4294,8 @@ export const thMessages = {
     evidence: 'หลักฐาน',
     do: 'ทำ',
     dont: 'ห้ามทำ',
+    contentPh: 'เช่น ช่วยผิวหมองคล้ำสว่างขึ้นในเพียง 7 วันด้วยวิตามินซีที่พิสูจน์ทางคลินิก — มีทดลองใช้โดยไม่มีความเสี่ยง',
+    audiencePh: 'เช่น ผู้หญิงอายุ 25-40 ที่กังวลเรื่องผิวหมองคล้ำและสัญญาณแห่งวัยก่อนวัยอันควร',
   },
   adCreativeBurnoutDetector: {
     title: 'ตัวตรวจจับภาวะเหนื่อยล้าของครีเอทีฟโฆษณา',
@@ -4245,6 +4319,7 @@ export const thMessages = {
     copied: 'คัดลอกแล้ว',
     error: 'การตรวจจับภาวะเหนื่อยล้าล้มเหลว',
     dryRunNotice: 'โหมดทดลอง — ใช้การวิเคราะห์แม่แบบ',
+    numberPh: 'เช่น 14',
   },
   creativeAdConceptSynthesizer: {
     title: 'ตัวสังเคราะห์แนวคิดโฆษณาสร้างสรรค์',
@@ -4294,6 +4369,7 @@ export const thMessages = {
     copied: 'คัดลอกแล้ว',
     error: 'การสร้างโปรไฟล์จิตรูปล้มเหลว',
     dryRunNotice: 'โหมดทดลอง — ใช้โปรไฟล์แม่แบบ',
+    audiencePh: 'เช่น ผู้หญิงอายุ 25-34 ปี, มืออาชีพในเมืองที่สนใจสุขภาพ',
   },
   creativeAdToneCalibrator: {
     title: 'ตัวปรับเทียบน้ำเสียงโฆษณาสร้างสรรค์',
@@ -4316,6 +4392,7 @@ export const thMessages = {
     copied: 'คัดลอกแล้ว',
     error: 'การปรับเทียบน้ำเสียงล้มเหลว',
     dryRunNotice: 'โหมดทดลอง — ใช้การปรับเทียบแม่แบบ',
+    contentPh: 'เช่น ซื้อเซรั่มวิตามินซีสุดยอดของเราวันนี้และเห็นผลใน 7 วัน!',
   },
   creativeAdFormatInnovator: {
     title: 'ผู้ริเริ่มรูปแบบโฆษณาสร้างสรรค์',
@@ -4339,6 +4416,7 @@ export const thMessages = {
     copied: 'คัดลอกแล้ว',
     error: 'การริเริ่มรูปแบบล้มเหลว',
     dryRunNotice: 'โหมดทดลอง — ใช้รูปแบบแม่แบบ',
+    contentPh: 'เช่น วิดีโอแนวตั้ง, คาร์ซูเวลรูปภาพ, โฆษณาสตอรี่, คลิปอินฟลูเอนเซอร์',
   },
   adCreativeStoryArcDesigner: {
     title: 'ผู้ออกแบบโครงเรื่องโฆษณาสร้างสรรค์',
@@ -4360,6 +4438,7 @@ export const thMessages = {
     copied: 'คัดลอกแล้ว',
     error: 'การออกแบบโครงเรื่องล้มเหลว',
     dryRunNotice: 'โหมดทดลอง — ใช้โครงเรื่องแม่แบบ',
+    contentPh: 'เช่น ผิวสว่างขึ้นในเพียง 7 วัน — โดยไม่มีความเสี่ยง',
   },
   creativeAdPersuasionStrategist: {
     title: 'ผู้วางกลยุทธ์การโน้มน้าวโฆษณาสร้างสรรค์',
@@ -4383,6 +4462,7 @@ export const thMessages = {
     dryRunNotice: 'โหมดทดลอง — ใช้กลยุทธ์แม่แบบ',
     effect: 'ผลกระทบ',
     principle: 'หลักการ',
+    contentPh: 'เช่น ส่งเสริมความท้าทายผิวเปล่งปลั่ง 7 วันพร้อมส่วนลดจำกัดเวลา...',
   },
   adCreativeHookTimingOptimizer: {
     title: 'ผู้เพิ่มประสิทธิภาพจังหวะฮุกโฆษณาสร้างสรรค์',
@@ -4408,6 +4488,8 @@ export const thMessages = {
     currentPlacement: 'ตำแหน่งปัจจุบัน',
     optimalWindow: 'หน้าต่างที่เหมาะสม',
     attentionCurve: 'เส้นโค้งความสนใจ',
+    contentPh: 'เช่น รู้ไหมว่า 90% ของคนเลิกทำเป้าหมายฟิตเนสภายในเดือนกุมภาพันธ์? นี่คือวิธีอยู่ใน 10%...',
+    productPh: 'เช่น แอปฟิตเนส DTC ขายสมาชิกติดตามนิสัย',
   },
   creativeAdMetaphorGenerator: {
     title: 'ตัวสร้างอุปมาโฆษณาสร้างสรรค์',
@@ -4430,6 +4512,7 @@ export const thMessages = {
     copied: 'คัดลอกแล้ว',
     error: 'การสร้างอุปมาล้มเหลว',
     dryRunNotice: 'โหมดทดลอง — ใช้อุปมาแม่แบบ',
+    benefitPh: 'เช่น ช่วยผิวหมองคล้ำสว่างขึ้นใน 7 วัน',
   },
   adCreativeSensoryEnhancer: {
     title: 'ตัวเพิ่มความรู้สึกโฆษณาสร้างสรรค์',
@@ -4473,6 +4556,8 @@ export const thMessages = {
     copied: 'คัดลอกแล้ว',
     error: 'การออกแบบจุดขัดจังหวะล้มเหลว',
     dryRunNotice: 'โหมดทดลอง — ใช้จุดขัดจังหวะแม่แบบ',
+    audiencePh: 'เช่น ผู้หญิง 25-34 ที่สนใจความงามสะอาด',
+    contentPh: 'เช่น โฆษณา TikTok 15 วินาทีที่เปิดด้วยเดโมสินค้าแล้วตามด้วยคำรับรอง...',
   },
   adCreativeSocialProofArchitect: {
     title: 'สถาปนิกหลักฐานทางสังคมโฆษณา',
@@ -4498,6 +4583,8 @@ export const thMessages = {
     dryRunNotice: 'โหมดทดลอง — ใช้สถาปัตยกรรมแม่แบบ',
     type: 'ประเภท',
     integration: 'การบูรณาการ',
+    audiencePh: 'เช่น ผู้หญิง 25-40 ที่สนใจสกินแคร์ต้านริ้วรอย',
+    audiencePh2: 'เช่น ส่งเสริมเซรั่มวิตามินซีใหม่ของเราโดยเน้นผลลัพธ์การผิวสว่างและการสร้างความน่าเชื่อถือ...',
   },
   adCreativeEmotionSequencer: {
     title: 'ผู้จัดลำดับอารมณ์โฆษณาครีเอทีฟ',
@@ -4627,6 +4714,7 @@ export const thMessages = {
     copied: 'คัดลอกแล้ว',
     error: 'การออกแบบ twist เรื่องเล่าล้มเหลว',
     dryRunNotice: 'โหมดทดลอง — ใช้ twist แม่แบบ',
+    contentPh: 'เช่น ผู้หญิงคนหนึ่งดิ้นรนกับผิวหมองคล้ำจนกระทั่งเธอค้นพบเซรั่มของเรา...',
   },
   adCreativeMemoryAnchorBuilder: {
     title: 'ผู้สร้างจุดยึดความจำโฆษณาครีเอทีฟ',
@@ -4777,6 +4865,7 @@ export const thMessages = {
     dryRunNotice: 'โหมดทดลอง — ใช้ลำดับชั้นแม่แบบ',
     direction: 'ทิศทาง',
     anchors: 'จุดยึด',
+    elementsPh: 'เช่น พาดหัว, รูปภาพสินค้า, โลโก้, ปุ่ม CTA, พื้นหลัง',
   },
   adCreativeSoundDesignStrategist: {
     title: 'ผู้วางกลยุทธ์การออกแบบเสียงโฆษณาครีเอทีฟ',
@@ -4799,6 +4888,7 @@ export const thMessages = {
     copied: 'คัดลอกแล้ว',
     error: 'กลยุทธ์การออกแบบเสียงล้มเหลว',
     dryRunNotice: 'โหมดทดลอง — ใช้การออกแบบเสียงแม่แบบ',
+    contentPh: 'เช่น กระตือรือร้น, สงบ, ลึกลับ, สนุกสนาน, ดราม่า, ให้กำลังใจ...',
   },
   creativeAdSurpriseElementDesigner: {
     title: 'ดีไซเนอร์องค์ประกอบเซอร์ไพรส์สำหรับโฆษณาครีเอทีฟ',
@@ -4823,6 +4913,7 @@ export const thMessages = {
     copied: 'คัดลอกแล้ว',
     error: 'การออกแบบองค์ประกอบเซอร์ไพรส์ล้มเหลว',
     dryRunNotice: 'โหมดทดลอง — ใช้องค์ประกอบเซอร์ไพรส์จากเทมเพลต',
+    audiencePh: 'เช่น ผู้ที่ชื่นชอบสกินแคร์ Gen Z อายุ 18-24 ปี',
   },
   adCreativeCallbackMemoryDesigner: {
     title: 'ดีไซเนอร์หน่วยความจำคอลแบ็กสำหรับโฆษณาครีเอทีฟ',
@@ -5263,6 +5354,7 @@ export const thMessages = {
     copied: 'คัดลอกแล้ว',
     error: 'การออกแบบแรงผลักดันทางสังคมล้มเหลว',
     dryRunNotice: 'โหมดทดลอง — ใช้แรงผลักดันทางสังคมจากเทมเพลต',
+    audiencePh: 'เช่น ร่วมกับผู้หญิงกว่า 50,000 คนที่เปลี่ยนผิวด้วยเซรั่มวิตามินซีของเรา...',
   },
   creativeAdValueLadderDesigner: {
     title: 'ดีไซเนอร์บันไดคุณค่าโฆษณาครีเอทีฟ',
@@ -5359,6 +5451,7 @@ export const thMessages = {
     copied: 'คัดลอกแล้ว',
     error: 'การออกแบบกรอบความขาดแคลนล้มเหลว',
     dryRunNotice: 'โหมดทดลอง — ใช้กรอบความขาดแคลนจากเทมเพลต',
+    contentPh: 'เช่น เหลือเพียง 50 ขวดของเซรั่มวิตามินซีรุ่นลิมิเต็ดของเรา...',
   },
   creativeAdIdentityAlignmentDesigner: {
     title: 'ดีไซเนอร์การจัดวางอัตลักษณ์โฆษณาครีเอทีฟ',
@@ -5407,6 +5500,7 @@ export const thMessages = {
     copied: 'คัดลอกแล้ว',
     error: 'การออกแบบกรอบการตอบแทนล้มเหลว',
     dryRunNotice: 'โหมดทดลอง — ใช้กรอบการตอบแทนจากเทมเพลต',
+    contentPh: 'เช่น เรากำลังมอบคอร์สสกินแคร์ 5 วันฟรีให้ชุมชนของเรา...',
   },
   adCreativePASFrameworkDesigner: {
     title: 'ดีไซเนอร์กรอบ PAS โฆษณาครีเอทีฟ',
@@ -5623,6 +5717,9 @@ export const thMessages = {
     copied: 'คัดลอกแล้ว',
     error: 'การออกแบบการเรียกร้องความกลัวล้มเหลว',
     dryRunNotice: 'โหมดทดลอง — ใช้การเรียกร้องความกลัวจากเทมเพลต',
+    productPh: 'เช่น แบรนด์ประกัน DTC ขายแผนคุ้มครองบ้าน',
+    contentPh: 'เช่น อย่าปล่อยให้เหตุการณ์ไม่คาดฝันทำลายทุกสิ่งที่คุณสร้างมา...',
+    audiencePh: 'เช่น เจ้าของบ้าน 35-55 ปีที่กังวลเรื่องการปกป้องสินทรัพย์',
   },
   creativeAdBelongingAppealDesigner: {
     title: 'ดีไซเนอร์การเรียกร้องความเป็นส่วนหนึ่งโฆษณาครีเอทีฟ',
@@ -5671,6 +5768,9 @@ export const thMessages = {
     copied: 'คัดลอกแล้ว',
     error: 'การออกแบบการเรียกร้องความขบขันล้มเหลว',
     dryRunNotice: 'โหมดทดลอง — ใช้การเรียกร้องความขบขันจากเทมเพลต',
+    productPh: 'เช่น แบรนด์ขนม DTC ขายป๊อปคอร์นเผ็ด',
+    contentPh: 'เช่น อยากของเผ็ดโดดเด่น? ป๊อปคอร์นเผ็ดของเรามันต่างออกไป...',
+    audiencePh: 'เช่น คนรุ่น Gen Z ที่ชอบขนม 18-24 ปีที่เลื่อน TikTok ตอนกลางคืน',
   },
   creativeAdFramingEffectDesigner: {
     title: 'ดีไซเนอร์เอฟเฟกต์การจัดกรอบโฆษณาครีเอทีฟ',
@@ -5719,6 +5819,7 @@ export const thMessages = {
     copied: 'คัดลอกแล้ว',
     error: 'การออกแบบการเรียกร้องความภาคภูมิใจล้มเหลว',
     dryRunNotice: 'โหมดทดลอง — ใช้การเรียกร้องความภาคภูมิใจจากเทมเพลต',
+    contentPh: 'เช่น คุณสมควรได้รับสิ่งนี้ — เซรั่มวิตามินซีของเราสำหรับคนที่ไม่ยอมเป๊ะ...',
   },
   creativeAdNostalgiaTriggerDesigner: {
     title: 'ดีไซเนอร์ทริกเกอร์ความคิดถึงโฆษณาครีเอทีฟ',
@@ -5887,6 +5988,7 @@ export const thMessages = {
     copied: 'คัดลอกแล้ว',
     error: 'การออกแบบการจัดกรอบการหลีกเลี่ยงการสูญเสียล้มเหลว',
     dryRunNotice: 'โหมดทดลอง — ใช้กรอบการหลีกเลี่ยงการสูญเสียจากเทมเพลต',
+    contentPh: 'เช่น ทุกวันที่คุณรอ ผิวของคุณจะชราและความเสียหายจะสะสม...',
   },
   adCreativeAnchoringEffectDesigner: {
     title: 'ดีไซเนอร์เอฟเฟกต์การยึดติดโฆษณาครีเอทีฟ',
@@ -5911,6 +6013,7 @@ export const thMessages = {
     copied: 'คัดลอกแล้ว',
     error: 'การออกแบบเอฟเฟกต์การยึดติดล้มเหลว',
     dryRunNotice: 'โหมดทดลอง — ใช้กรอบการยึดติดจากเทมเพลต',
+    contentPh: 'เช่น ราคาเดิม $199 ตอนนี้เพียง $89 สำหรับเซรั่มวิตามินซีของเรา...',
   },
   aidaFrameworkDesigner: {
     title: 'ตัวออกแบบเฟรมเวิร์ก AIDA',

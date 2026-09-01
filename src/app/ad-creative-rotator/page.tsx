@@ -123,7 +123,7 @@ export default function AdCreativeRotatorPage() {
               id="acrContent"
               value={baseContent}
               onChange={(e) => setBaseContent(e.target.value)}
-              placeholder="e.g., Get 50% off our best-selling vitamin C serum this week only."
+              placeholder={t('adCreativeRotator.contentPh')}
               rows={4}
               maxLength={2000}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent resize-y"

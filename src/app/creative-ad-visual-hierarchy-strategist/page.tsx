@@ -182,7 +182,7 @@ export default function CreativeAdVisualHierarchyStrategistPage() {
               type="text"
               value={visualElements}
               onChange={(e) => setVisualElements(e.target.value)}
-              placeholder="e.g., headline, product image, logo, cta button, background"
+              placeholder={t('creativeAdVisualHierarchyStrategist.elementsPh')}
               maxLength={2000}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
               disabled={loading}

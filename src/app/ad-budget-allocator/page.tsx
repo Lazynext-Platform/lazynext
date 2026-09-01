@@ -156,7 +156,7 @@ export default function AdBudgetAllocatorPage() {
                 type="text"
                 value={totalBudget}
                 onChange={(e) => setTotalBudget(e.target.value)}
-                placeholder="e.g., $10,000"
+                placeholder={t('adBudgetAllocator.contentPh')}
                 maxLength={100}
                 className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
                 disabled={loading}
