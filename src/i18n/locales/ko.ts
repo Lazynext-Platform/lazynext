@@ -215,7 +215,7 @@ export const koMessages = {
       generating: '생성 중…',
       failed: '실패 (환불됨)',
     },
-    common: { signIn: '로그인', signOut: '로그아웃', credits: '크레딧', creditsLower: '크레딧', language: '언어', switchLanguage: '언어 변경', currency: '통화', cookieConsent: '쿠키 동의', new: '신규', poweredBy: '제공', back: '← 돌아가기', backToLazynext: '← Lazynext', close: '닫기', errNetwork: '네트워크 오류. 연결을 확인하고 다시 시도해주세요.', errUnauthorized: '세션이 만료되었습니다. 다시 로그인해주세요.', errNotFound: '요청한 리소스를 찾을 수 없습니다.', errForbidden: '이 리소스에 접근할 권한이 없습니다.', errPaymentRequired: '크레딧이 부족합니다. 가격 페이지에서 충전해주세요.', errServer: '서버 오류. 나중에 다시 시도해주세요.', errGeneric: '문제가 발생했습니다. 다시 시도해주세요.', dismissError: '닫기', retry: '다시 시도', loadingDots: '로딩 중…', resultLabels: { headline: '헤드라인', body: '본문', cta: 'CTA', hook: '후크', reason: '이유', reasoning: '추론', description: '설명', scenario: '시나리오', sensoryDetails: '감각적 세부사항', emotionalPayoff: '감정적 보상', psychologicalPrinciple: '심리학적 원리', timing: '타이밍', frictionRemoval: '마찰 제거', whyNotTheOthers: '다른 것들이 아닌 이유', adCopy: '광고 문구', visualizationPrompt: '시각화 프롬프트', desiredOutcome: '원하는 결과' }, skipToContent: '콘텐츠로 건너뛰기' },
+    common: { signIn: '로그인', signOut: '로그아웃', credits: '크레딧', creditsLower: '크레딧', language: '언어', switchLanguage: '언어 변경', currency: '통화', cookieConsent: '쿠키 동의', new: '신규', poweredBy: '제공', back: '← 돌아가기', backToLazynext: '← Lazynext', close: '닫기', errNetwork: '네트워크 오류. 연결을 확인하고 다시 시도해주세요.', errUnauthorized: '세션이 만료되었습니다. 다시 로그인해주세요.', errNotFound: '요청한 리소스를 찾을 수 없습니다.', errForbidden: '이 리소스에 접근할 권한이 없습니다.', errPaymentRequired: '크레딧이 부족합니다. 가격 페이지에서 충전해주세요.', errServer: '서버 오류. 나중에 다시 시도해주세요.', errGeneric: '문제가 발생했습니다. 다시 시도해주세요.', dismissError: '닫기', retry: '다시 시도', loadingDots: '로딩 중…', resultLabels: { headline: '헤드라인', body: '본문', cta: 'CTA', hook: '후크', reason: '이유', reasoning: '추론', description: '설명', scenario: '시나리오', sensoryDetails: '감각적 세부사항', emotionalPayoff: '감정적 보상', psychologicalPrinciple: '심리학적 원리', timing: '타이밍', frictionRemoval: '마찰 제거', whyNotTheOthers: '다른 것들이 아닌 이유', adCopy: '광고 문구', visualizationPrompt: '시각화 프롬프트', desiredOutcome: '원하는 결과' }, skipToContent: '콘텐츠로 건너뛰기', phProduct: '예: 비타민 C 세럼을 판매하는 DTC 스킨케어 브랜드', phMessage: '예: 칙칙한 피부에 지치셨나요? 비타민 C 세럼이 7일 만에 피부를 밝게...', phAudience: '예: 스킨케어에 관심 있는 25-40세 여성' },
     userMenu: {
       account: '계정',
       signOut: '로그아웃',
@@ -1706,8 +1706,9 @@ export const koMessages = {
       fldSoundEffects: '효과음',
       fldPersuasionMechanisms: '설득 메커니즘',
       lblCta: 'CTA: ',
+      keyboardShortcuts: '키보드 단축키',
     },
-    admin: { title: '관리자 대시보드', subtitle: '사용자 관리 및 생성 모니터링', tabUsers: '사용자', tabCreations: '생성물', searchPlaceholder: '이메일로 검색…', search: '검색', creditsAdjust: '±N', reason: '사유', apply: '적용', filterAll: '전체', refresh: '새로고침', colUser: '사용자', colCredits: '크레딧', colCreations: '생성물', colJoined: '가입일', colAdjust: '조정', noUsers: '사용자가 없습니다.', colTemplate: '템플릿', colStatus: '상태', colPrompt: '프롬프트', colCost: '비용', colCreated: '생성일', colError: '오류', noCreations: '생성물이 없습니다.', creationMonitoring: '생성 모니터링', userManagement: '사용자 관리', accessDenied: '액세스가 거부되었습니다. 귀하의 이메일이 관리자 목록에 없습니다.' },
+    admin: { title: '관리자 대시보드', subtitle: '사용자 관리 및 생성 모니터링', tabUsers: '사용자', tabCreations: '생성물', searchPlaceholder: '이메일로 검색…', search: '검색', creditsAdjust: '±N', reason: '사유', apply: '적용', filterAll: '전체', refresh: '새로고침', colUser: '사용자', colCredits: '크레딧', colCreations: '생성물', colJoined: '가입일', colAdjust: '조정', noUsers: '사용자가 없습니다.', colTemplate: '템플릿', colStatus: '상태', colPrompt: '프롬프트', colCost: '비용', colCreated: '생성일', colError: '오류', noCreations: '생성물이 없습니다.', creationMonitoring: '생성 모니터링', userManagement: '사용자 관리', accessDenied: '액세스가 거부되었습니다. 귀하의 이메일이 관리자 목록에 없습니다.', creditAdjustAmount: '크레딧 조정 금액', creditAdjustReason: '크레딧 조정 사유' },
     adminFeedback: { title: '피드백 대시보드', subtitle: '사용자 피드백 요약 및 개별 항목', tabFeedback: '피드백', back: '관리자로 돌아가기', forbidden: '접근이 거부되었습니다. 이메일이 관리자 목록에 없습니다.', loadError: '피드백을 불러오지 못했습니다. 다시 시도해주세요.', empty: '아직 피드백이 없습니다.', summaryTitle: '기능별 요약', summaryCaption: '기능별 피드백 요약', entriesTitle: '개별 피드백', entriesCaption: '개별 피드백 항목', colFeature: '기능', colAvgRating: '평균 평점', colCount: '개수', colRating: '평점', colComment: '코멘트', colTimestamp: '시간', refresh: '새로고침' },
     reset: { title: '비밀번호 재설정', successMessage: '비밀번호가 변경되었습니다. 새 비밀번호로 로그인할 수 있습니다.', backToSignIn: '로그인으로 돌아가기', heading: '비밀번호 재설정', subtitle: '아래에 새 비밀번호를 입력하세요.', newPassword: '새 비밀번호 (최소 8자)', confirmPassword: '새 비밀번호 확인', resetting: '재설정 중…', reset: '비밀번호 재설정', backToSignIn2: '로그인으로 돌아가기', loading: '로딩 중…', errMismatch: '비밀번호가 일치하지 않습니다', errTooShort: '비밀번호는 최소 8자 이상이어야 합니다', errFailed: '비밀번호 재설정에 실패했습니다. 다시 시도해주세요.', errInvalidToken: '재설정 링크가 유효하지 않거나 만료되었습니다. 새로 요청해주세요.' },
     editor: {
@@ -1799,6 +1800,7 @@ export const koMessages = {
       tlDelete: '삭제',
       tlSaveFailed: '타임라인 저장 실패. 다시 시도해주세요.',
     loadingTimeline: '타임라인 로딩 중…',
+      keyboardShortcuts: '키보드 단축키',
     },
 
     briefIntelligence: {

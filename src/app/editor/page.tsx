@@ -1410,7 +1410,7 @@ export default function EditorPage() {
         <div
           role="dialog"
           aria-modal="true"
-          aria-label="Keyboard shortcuts"
+          aria-label={t('editor.keyboardShortcuts')}
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
           onClick={() => setShowHelp(false)}
         >

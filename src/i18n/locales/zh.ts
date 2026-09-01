@@ -215,7 +215,7 @@ export const zhMessages = {
       generating: '生成中…',
       failed: '失败(已退款)',
     },
-    common: { signIn: '登录', signOut: '退出登录', credits: '积分', creditsLower: '积分', language: '语言', switchLanguage: '切换语言', currency: '货币', cookieConsent: 'Cookie 同意', new: '新', poweredBy: '技术支持', back: '← 返回', backToLazynext: '← Lazynext', close: '关闭', errNetwork: '网络错误。请检查网络连接后重试。', errUnauthorized: '会话已过期，请重新登录。', errNotFound: '请求的资源未找到。', errForbidden: '您没有访问此资源的权限。', errPaymentRequired: '积分不足，请在定价页面充值。', errServer: '服务器错误，请稍后重试。', errGeneric: '出现问题，请重试。', dismissError: '关闭', retry: '重试', loadingDots: '加载中…', resultLabels: { headline: '标题', body: '正文', cta: 'CTA', hook: '钩子', reason: '原因', reasoning: '推理', description: '描述', scenario: '场景', sensoryDetails: '感官细节', emotionalPayoff: '情感回报', psychologicalPrinciple: '心理学原理', timing: '时机', frictionRemoval: '消除摩擦', whyNotTheOthers: '为何不选其他', adCopy: '广告文案', visualizationPrompt: '可视化提示', desiredOutcome: '期望结果' }, skipToContent: '跳到内容' },
+    common: { signIn: '登录', signOut: '退出登录', credits: '积分', creditsLower: '积分', language: '语言', switchLanguage: '切换语言', currency: '货币', cookieConsent: 'Cookie 同意', new: '新', poweredBy: '技术支持', back: '← 返回', backToLazynext: '← Lazynext', close: '关闭', errNetwork: '网络错误。请检查网络连接后重试。', errUnauthorized: '会话已过期，请重新登录。', errNotFound: '请求的资源未找到。', errForbidden: '您没有访问此资源的权限。', errPaymentRequired: '积分不足，请在定价页面充值。', errServer: '服务器错误，请稍后重试。', errGeneric: '出现问题，请重试。', dismissError: '关闭', retry: '重试', loadingDots: '加载中…', resultLabels: { headline: '标题', body: '正文', cta: 'CTA', hook: '钩子', reason: '原因', reasoning: '推理', description: '描述', scenario: '场景', sensoryDetails: '感官细节', emotionalPayoff: '情感回报', psychologicalPrinciple: '心理学原理', timing: '时机', frictionRemoval: '消除摩擦', whyNotTheOthers: '为何不选其他', adCopy: '广告文案', visualizationPrompt: '可视化提示', desiredOutcome: '期望结果' }, skipToContent: '跳到内容', phProduct: '例如，销售维生素C精华的DTC护肤品牌', phMessage: '例如，厌倦暗沉肌肤？我们的维生素C精华7天提亮...', phAudience: '例如，25-40岁对护肤感兴趣的女性' },
     userMenu: {
       account: '账户',
       signOut: '退出登录',
@@ -1706,8 +1706,9 @@ export const zhMessages = {
       fldSoundEffects: '音效',
       fldPersuasionMechanisms: '说服机制',
       lblCta: '行动号召：',
+      keyboardShortcuts: '键盘快捷键',
     },
-    admin: { title: '管理后台', subtitle: '用户管理与创作监控', tabUsers: '用户', tabCreations: '创作', searchPlaceholder: '按邮箱搜索…', search: '搜索', creditsAdjust: '±N', reason: '原因', apply: '应用', filterAll: '全部', refresh: '刷新', colUser: '用户', colCredits: '积分', colCreations: '创作', colJoined: '注册时间', colAdjust: '调整', noUsers: '未找到用户。', colTemplate: '模板', colStatus: '状态', colPrompt: '提示词', colCost: '消耗', colCreated: '创建时间', colError: '错误', noCreations: '未找到创作。', creationMonitoring: '创作监控', accessDenied: '访问被拒绝。您的邮箱不在管理员列表中。', userManagement: '用户管理' },
+    admin: { title: '管理后台', subtitle: '用户管理与创作监控', tabUsers: '用户', tabCreations: '创作', searchPlaceholder: '按邮箱搜索…', search: '搜索', creditsAdjust: '±N', reason: '原因', apply: '应用', filterAll: '全部', refresh: '刷新', colUser: '用户', colCredits: '积分', colCreations: '创作', colJoined: '注册时间', colAdjust: '调整', noUsers: '未找到用户。', colTemplate: '模板', colStatus: '状态', colPrompt: '提示词', colCost: '消耗', colCreated: '创建时间', colError: '错误', noCreations: '未找到创作。', creationMonitoring: '创作监控', accessDenied: '访问被拒绝。您的邮箱不在管理员列表中。', userManagement: '用户管理', creditAdjustAmount: '积分调整金额', creditAdjustReason: '积分调整原因' },
     adminFeedback: { title: '反馈仪表板', subtitle: '用户反馈摘要与条目', tabFeedback: '反馈', back: '返回管理后台', forbidden: '访问被拒绝。您的邮箱不在管理员列表中。', loadError: '加载反馈失败。请重试。', empty: '尚无反馈。', summaryTitle: '按功能汇总', summaryCaption: '按功能汇总反馈', entriesTitle: '单条反馈', entriesCaption: '单条反馈条目', colFeature: '功能', colAvgRating: '平均评分', colCount: '数量', colRating: '评分', colComment: '评论', colTimestamp: '时间', refresh: '刷新' },
     reset: { title: '密码已重置', successMessage: '您的密码已更改。现在可以使用新密码登录。', backToSignIn: '返回登录', heading: '重置密码', subtitle: '请在下方输入您的新密码。', newPassword: '新密码（至少 8 个字符）', confirmPassword: '确认新密码', resetting: '重置中…', reset: '重置密码', backToSignIn2: '返回登录', loading: '加载中…', errMismatch: '两次密码不一致', errTooShort: '密码至少需要 8 个字符', errFailed: '重置密码失败，请重试。', errInvalidToken: '重置链接无效或已过期，请重新申请。' },
     editor: {
@@ -1799,6 +1800,7 @@ export const zhMessages = {
       tlDelete: '删除',
       tlSaveFailed: '保存时间线失败，请重试。',
       loadingTimeline: '正在加载时间线…',
+      keyboardShortcuts: '键盘快捷键',
     },
 
     briefIntelligence: {

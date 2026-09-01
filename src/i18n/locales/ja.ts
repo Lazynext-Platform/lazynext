@@ -217,7 +217,7 @@ export const jaMessages = {
       generating: '生成中…',
       failed: '失敗(返金済み)',
     },
-    common: { signIn: 'ログイン', signOut: 'ログアウト', credits: 'クレジット', creditsLower: 'クレジット', language: '言語', switchLanguage: '言語を切り替え', currency: '通貨', cookieConsent: 'Cookie 同意', new: '新着', poweredBy: 'Powered by', back: '← 戻る', backToLazynext: '← Lazynext', close: '閉じる', errNetwork: 'ネットワークエラー。接続を確認して再試行してください。', errUnauthorized: 'セッションの有効期限が切れました。再度ログインしてください。', errNotFound: '要求されたリソースが見つかりませんでした。', errForbidden: 'このリソースにアクセスする権限がありません。', errPaymentRequired: 'クレジットが不足しています。料金ページでチャージしてください。', errServer: 'サーバーエラー。後でもう一度お試しください。', errGeneric: 'エラーが発生しました。再試行してください。', dismissError: '閉じる', retry: '再試行', loadingDots: '読み込み中…', resultLabels: { headline: '見出し', body: '本文', cta: 'CTA', hook: 'フック', reason: '理由', reasoning: '推論', description: '説明', scenario: 'シナリオ', sensoryDetails: '感覚的詳細', emotionalPayoff: '感情的報酬', psychologicalPrinciple: '心理的原理', timing: 'タイミング', frictionRemoval: '摩擦の除去', whyNotTheOthers: '他ではない理由', adCopy: '広告コピー', visualizationPrompt: 'ビジュアライゼーションプロンプト', desiredOutcome: '望ましい結果' }, skipToContent: 'コンテンツにスキップ' },
+    common: { signIn: 'ログイン', signOut: 'ログアウト', credits: 'クレジット', creditsLower: 'クレジット', language: '言語', switchLanguage: '言語を切り替え', currency: '通貨', cookieConsent: 'Cookie 同意', new: '新着', poweredBy: 'Powered by', back: '← 戻る', backToLazynext: '← Lazynext', close: '閉じる', errNetwork: 'ネットワークエラー。接続を確認して再試行してください。', errUnauthorized: 'セッションの有効期限が切れました。再度ログインしてください。', errNotFound: '要求されたリソースが見つかりませんでした。', errForbidden: 'このリソースにアクセスする権限がありません。', errPaymentRequired: 'クレジットが不足しています。料金ページでチャージしてください。', errServer: 'サーバーエラー。後でもう一度お試しください。', errGeneric: 'エラーが発生しました。再試行してください。', dismissError: '閉じる', retry: '再試行', loadingDots: '読み込み中…', resultLabels: { headline: '見出し', body: '本文', cta: 'CTA', hook: 'フック', reason: '理由', reasoning: '推論', description: '説明', scenario: 'シナリオ', sensoryDetails: '感覚的詳細', emotionalPayoff: '感情的報酬', psychologicalPrinciple: '心理的原理', timing: 'タイミング', frictionRemoval: '摩擦の除去', whyNotTheOthers: '他ではない理由', adCopy: '広告コピー', visualizationPrompt: 'ビジュアライゼーションプロンプト', desiredOutcome: '望ましい結果' }, skipToContent: 'コンテンツにスキップ', phProduct: '例：ビタミンCセラムを販売するDTCスキンケアブランド', phMessage: '例：くすみ肌に悩んでいませんか？私たちのビタミンCセラムは7日間で明るくします...', phAudience: '例：スキンケアに関心のある25-40歳の女性' },
     userMenu: {
       account: 'アカウント',
       signOut: 'サインアウト',
@@ -1708,8 +1708,9 @@ export const jaMessages = {
       fldSoundEffects: '効果音',
       fldPersuasionMechanisms: '説得メカニズム',
       lblCta: 'CTA：',
+      keyboardShortcuts: 'キーボードショートカット',
     },
-    admin: { title: '管理ダッシュボード', subtitle: 'ユーザー管理と作成監視', tabUsers: 'ユーザー', tabCreations: '作成', searchPlaceholder: 'メールで検索…', search: '検索', creditsAdjust: '±N', reason: '理由', apply: '適用', filterAll: 'すべて', refresh: '更新', colUser: 'ユーザー', colCredits: 'クレジット', colCreations: '作成', colJoined: '登録日', colAdjust: '調整', noUsers: 'ユーザーが見つかりません。', colTemplate: 'テンプレート', colStatus: 'ステータス', colPrompt: 'プロンプト', colCost: 'コスト', colCreated: '作成日', colError: 'エラー', noCreations: '作成が見つかりません。', creationMonitoring: '作成監視', userManagement: 'ユーザー管理', accessDenied: 'アクセスが拒否されました。あなたのメールは管理者リストにありません。' },
+    admin: { title: '管理ダッシュボード', subtitle: 'ユーザー管理と作成監視', tabUsers: 'ユーザー', tabCreations: '作成', searchPlaceholder: 'メールで検索…', search: '検索', creditsAdjust: '±N', reason: '理由', apply: '適用', filterAll: 'すべて', refresh: '更新', colUser: 'ユーザー', colCredits: 'クレジット', colCreations: '作成', colJoined: '登録日', colAdjust: '調整', noUsers: 'ユーザーが見つかりません。', colTemplate: 'テンプレート', colStatus: 'ステータス', colPrompt: 'プロンプト', colCost: 'コスト', colCreated: '作成日', colError: 'エラー', noCreations: '作成が見つかりません。', creationMonitoring: '作成監視', userManagement: 'ユーザー管理', accessDenied: 'アクセスが拒否されました。あなたのメールは管理者リストにありません。', creditAdjustAmount: 'クレジット調整額', creditAdjustReason: 'クレジット調整理由' },
     adminFeedback: { title: 'フィードバックダッシュボード', subtitle: 'ユーザーフィードバックの概要と個別エントリ', tabFeedback: 'フィードバック', back: '管理に戻る', forbidden: 'アクセスが拒否されました。メールが管理者リストにありません。', loadError: 'フィードバックの読み込みに失敗しました。再試行してください。', empty: 'まだフィードバックがありません。', summaryTitle: '機能別サマリー', summaryCaption: '機能別フィードバックサマリー', entriesTitle: '個別フィードバック', entriesCaption: '個別フィードバックエントリ', colFeature: '機能', colAvgRating: '平均評価', colCount: '件数', colRating: '評価', colComment: 'コメント', colTimestamp: '日時', refresh: '更新' },
     reset: { title: 'パスワードリセット', successMessage: 'パスワードが変更されました。新しいパスワードでログインできます。', backToSignIn: 'ログインに戻る', heading: 'パスワードリセット', subtitle: '以下に新しいパスワードを入力してください。', newPassword: '新しいパスワード（8 文字以上）', confirmPassword: '新しいパスワード（確認）', resetting: 'リセット中…', reset: 'パスワードをリセット', backToSignIn2: 'ログインに戻る', loading: '読み込み中…', errMismatch: 'パスワードが一致しません', errTooShort: 'パスワードは 8 文字以上で入力してください', errFailed: 'パスワードのリセットに失敗しました。もう一度お試しください。', errInvalidToken: 'リセットリンクが無効または期限切れです。再度申請してください。' },
     editor: {
@@ -1801,6 +1802,7 @@ export const jaMessages = {
       tlDelete: '削除',
       tlSaveFailed: 'タイムラインの保存に失敗しました。もう一度お試しください。',
     loadingTimeline: 'タイムラインを読み込み中…',
+      keyboardShortcuts: 'キーボードショートカット',
     },
 
     briefIntelligence: {

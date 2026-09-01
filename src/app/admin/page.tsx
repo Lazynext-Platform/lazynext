@@ -164,14 +164,14 @@ return (
                           <div className="flex items-center gap-1">
                             <input
                               type="number"
-                              aria-label="Credit adjustment amount"
+                              aria-label={t('admin.creditAdjustAmount')}
                               value={adjusting === u.id ? adjustAmount : ''}
                               onChange={(e) => { setAdjusting(u.id); setAdjustAmount(e.target.value); }}
                               placeholder={t('admin.creditsAdjust')}
                               className="w-16 rounded border border-line bg-hover px-2 py-1 text-xs text-fg outline-none focus:border-[#00b2fc]"
                             />
                             <input
-                              aria-label="Credit adjustment reason"
+                              aria-label={t('admin.creditAdjustReason')}
                               value={adjusting === u.id ? adjustReason : ''}
                               onChange={(e) => { setAdjusting(u.id); setAdjustReason(e.target.value); }}
                               placeholder={t('admin.reason')}

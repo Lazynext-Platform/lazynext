@@ -135,7 +135,7 @@ export default function CreativeAdEndowmentEffectDesignerPage() {
               type="text"
               value={productOrBrand}
               onChange={(e) => setProductOrBrand(e.target.value)}
-              placeholder="e.g., DTC skincare brand selling a vitamin C serum"
+              placeholder={t('common.phProduct')}
               maxLength={2000}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
               disabled={loading}
@@ -150,7 +150,7 @@ export default function CreativeAdEndowmentEffectDesignerPage() {
               id="caeedContent"
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              placeholder="e.g., Tired of dull skin? Our vitamin C serum brightens in just 7 days..."
+              placeholder={t('common.phMessage')}
               rows={4}
               maxLength={2000}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent resize-y"
@@ -167,7 +167,7 @@ export default function CreativeAdEndowmentEffectDesignerPage() {
               type="text"
               value={targetAudience}
               onChange={(e) => setTargetAudience(e.target.value)}
-              placeholder="e.g., Women 25-40 interested in skincare and wellness"
+              placeholder={t('common.phAudience')}
               maxLength={2000}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
               disabled={loading}

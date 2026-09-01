@@ -356,7 +356,7 @@ export default function TemplateLibraryPage() {
                 <button
                   onClick={() => setSelectedTemplate(null)}
                   className="text-fg-muted hover:text-fg text-xl"
-                  aria-label="Close"
+                  aria-label={t('common.close')}
                 >
                   ×
                 </button>
@@ -403,7 +403,7 @@ export default function TemplateLibraryPage() {
                 <button
                   onClick={() => setBuilderOpen(false)}
                   className="text-fg-muted hover:text-fg"
-                  aria-label="Close"
+                  aria-label={t('common.close')}
                 >
                   <X className="h-5 w-5" />
                 </button>
