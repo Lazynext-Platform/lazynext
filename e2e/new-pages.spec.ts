@@ -171,13 +171,14 @@ test.describe('Header Navigation Links', () => {
     await page.setViewportSize({ width: 1280, height: 800 });
     await page.goto('/');
     await page.waitForTimeout(1000);
-    // The primary nav should have links to Dashboard, Director, Ads, Performance
+    // The primary nav has 5 core links: Dashboard, Create, Optimize, Manage, Insights
     const nav = page.locator('nav[aria-label="Primary"]');
     await expect(nav).toBeVisible();
     await expect(nav.locator('a', { hasText: 'Dashboard' })).toBeVisible();
-    await expect(nav.locator('a', { hasText: 'Director' })).toBeVisible();
-    await expect(nav.locator('a', { hasText: 'Ads' })).toBeVisible();
-    await expect(nav.getByRole('link', { name: 'Performance', exact: true })).toBeVisible();
+    await expect(nav.locator('a', { hasText: 'Create' })).toBeVisible();
+    await expect(nav.locator('a', { hasText: 'Optimize' })).toBeVisible();
+    await expect(nav.locator('a', { hasText: 'Manage' })).toBeVisible();
+    await expect(nav.locator('a', { hasText: 'Insights' })).toBeVisible();
   });
 
   test('nav links are hidden on mobile (<768px)', async ({ page }) => {
@@ -189,27 +190,39 @@ test.describe('Header Navigation Links', () => {
     await expect(nav).toBeHidden();
   });
 
-  test('clicking Director nav link navigates to /creative-director', async ({ page }) => {
+  test('clicking Create nav link navigates to /creative-director', async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
     await page.goto('/');
     await page.waitForTimeout(1000);
-    await page.locator('nav[aria-label="Primary"] a', { hasText: 'Director' }).click();
+    await page.locator('nav[aria-label="Primary"] a', { hasText: 'Create' }).click();
     await expect(page).toHaveURL(/\/creative-director/);
   });
 
-  test('clicking Ads nav link navigates to /ads', async ({ page }) => {
+  test('clicking Manage nav link navigates to /ads', async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
     await page.goto('/');
     await page.waitForTimeout(1000);
-    await page.locator('nav[aria-label="Primary"] a', { hasText: 'Ads' }).click();
+    await page.locator('nav[aria-label="Primary"] a', { hasText: 'Manage' }).click();
     await expect(page).toHaveURL(/\/ads/);
   });
 
-  test('clicking Performance nav link navigates to /performance', async ({ page }) => {
+  test('clicking Optimize nav link navigates to /performance', async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
     await page.goto('/');
     await page.waitForTimeout(1000);
-    await page.locator('nav[aria-label="Primary"]').getByRole('link', { name: 'Performance', exact: true }).click();
+    await page.locator('nav[aria-label="Primary"]').getByRole('link', { name: 'Optimize', exact: true }).click();
     await expect(page).toHaveURL(/\/performance/);
+  });
+
+  test('Browse dropdown opens with category links', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 800 });
+    await page.goto('/');
+    await page.waitForTimeout(1000);
+    const browseBtn = page.locator('nav[aria-label="Primary"] button', { hasText: 'Browse' });
+    await browseBtn.click();
+    await page.waitForTimeout(500);
+    // Dropdown should be visible with category content
+    const dropdown = page.locator('nav[aria-label="Primary"] div.absolute.w-\\[640px\\]');
+    await expect(dropdown).toBeVisible();
   });
 });
