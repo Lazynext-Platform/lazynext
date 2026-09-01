@@ -168,7 +168,7 @@ export default function AdPerformancePredictorPage() {
       <main id="main-content" className="mx-auto max-w-5xl px-4 py-8 space-y-6" tabIndex={-1}>
         <header>
           <h1 className="text-2xl font-bold flex items-center gap-2">
-            <TrendingUp className="w-6 h-6" /> Ad Performance Predictor
+            <TrendingUp className="w-6 h-6" /> {t('adPerformancePredictor.title')}
           </h1>
           <p className="text-sm text-fg-muted mt-2">{t('adPerformancePredictor.subtitle')}</p>
         </header>
