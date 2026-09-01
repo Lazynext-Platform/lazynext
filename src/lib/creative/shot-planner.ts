@@ -10,6 +10,7 @@
  */
 import { atlasChat } from '@/lib/atlas';
 import { getLLMModel } from '@/lib/providers/model-helpers';
+import { isDryRun } from '@/lib/creative/toolkit';
 import type { PlanTier } from '@/lib/plan-tier';
 
 export const SHOT_PLANNER_COST = 7;
@@ -93,6 +94,7 @@ export interface VideoShotPlanResult {
   insights: string[];
   recommendations: string[];
   estimatedQualityScore: number; // 0-100
+  dryRun?: boolean;
 }
 
 // ── Lookup functions ──
@@ -202,6 +204,10 @@ export async function planVideoShots(params: {
   const style = params.productionStyle || 'lifestyle';
   const budget = params.budgetTier || 'low';
   const duration = params.targetDuration || 30;
+
+  if (isDryRun()) {
+    return { ...generateFallbackShotPlan(params, format, style, budget, duration), dryRun: true };
+  }
 
   const sys = `You are a video production planner for e-commerce ads. Create a detailed shot list from the provided creative content. Return JSON only.
 {
@@ -342,7 +348,7 @@ Source type: ${params.sourceType || 'script'}`;
       estimatedQualityScore: calculateQualityEstimate(shots, budget),
     };
   } catch {
-    return generateFallbackShotPlan(params, format, style, budget, duration);
+    return { ...generateFallbackShotPlan(params, format, style, budget, duration), dryRun: true };
   }
 }
 

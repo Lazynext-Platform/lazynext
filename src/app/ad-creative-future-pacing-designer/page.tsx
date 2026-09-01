@@ -50,14 +50,14 @@ export default function AdCreativeFuturePacingDesignerPage() {
         }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Generation failed');
+      if (!res.ok) throw new Error(data.error || t('futurePacingDesigner.error'));
       setResult(data.result as FuturePacingDesignerResult);
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
     } finally {
       setLoading(false);
     }
-  }, [productOrBrand, targetAudience, desiredOutcome]);
+  }, [productOrBrand, targetAudience, desiredOutcome, t]);
 
   const copyToClipboard = useCallback(async () => {
     if (!result) return;
@@ -75,13 +75,13 @@ export default function AdCreativeFuturePacingDesignerPage() {
     return (
       <div className="min-h-screen text-fg app-grid-bg bg-app">
         <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:rounded focus:bg-bg-card focus:px-3 focus:py-2 focus:text-sm focus:text-fg">
-          Skip to content
+          {t('futurePacingDesigner.skipToContent')}
         </a>
         <div className="mx-auto max-w-5xl px-4 py-8">
           <h1 className="text-2xl font-bold flex items-center gap-2">
-            <Sparkles className="w-6 h-6" /> Future-Pacing Designer
+            <Sparkles className="w-6 h-6" /> {t('futurePacingDesigner.title')}
           </h1>
-          <p className="text-sm text-fg-muted mt-2">Sign in to design copy that helps viewers mentally rehearse post-purchase outcomes.</p>
+          <p className="text-sm text-fg-muted mt-2">{t('futurePacingDesigner.signInPrompt')}</p>
         </div>
         <AuthModal open={true} onClose={() => {}} />
       </div>
@@ -91,22 +91,22 @@ export default function AdCreativeFuturePacingDesignerPage() {
   return (
     <div className="min-h-screen text-fg app-grid-bg bg-app">
       <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:rounded focus:bg-bg-card focus:px-3 focus:py-2 focus:text-sm focus:text-fg">
-        Skip to content
+        {t('futurePacingDesigner.skipToContent')}
       </a>
       <main id="main-content" className="mx-auto max-w-5xl px-4 py-8 space-y-6">
         <header>
           <h1 className="text-2xl font-bold flex items-center gap-2">
-            <Sparkles className="w-6 h-6" /> Future-Pacing Designer
+            <Sparkles className="w-6 h-6" /> {t('futurePacingDesigner.title')}
           </h1>
           <p className="text-sm text-fg-muted mt-2">
-            Design copy that helps viewers mentally rehearse their post-purchase future.
+            {t('futurePacingDesigner.subtitle')}
           </p>
         </header>
 
         <div className="space-y-4">
           <div>
             <label htmlFor="acfpdProduct" className="block text-sm font-medium mb-1">
-              Product or Brand
+              {t('futurePacingDesigner.productOrBrand')}
             </label>
             <input
               id="acfpdProduct"
@@ -122,7 +122,7 @@ export default function AdCreativeFuturePacingDesignerPage() {
 
           <div>
             <label htmlFor="acfpdAudience" className="block text-sm font-medium mb-1">
-              Target Audience
+              {t('futurePacingDesigner.targetAudience')}
             </label>
             <input
               id="acfpdAudience"
@@ -158,7 +158,7 @@ export default function AdCreativeFuturePacingDesignerPage() {
             className="rounded-lg bg-brand-accent px-4 py-2 text-sm font-medium text-white hover:opacity-90 disabled:opacity-50 flex items-center gap-2"
           >
             {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
-            {loading ? 'Generating...' : `Generate (${CREDIT_COST} credits)`}
+            {loading ? t('futurePacingDesigner.generating') : `${t('futurePacingDesigner.generate')} (${CREDIT_COST})`}
           </button>
         </div>
 
@@ -170,13 +170,13 @@ export default function AdCreativeFuturePacingDesignerPage() {
 
         {!loading && !result && !error && (
           <div className="rounded-lg border border-border bg-bg-card p-6 text-center text-sm text-fg-muted">
-            Fill in the fields above and generate to see your future-pacing copy.
+            {t('futurePacingDesigner.noResults')}
           </div>
         )}
 
         {loading && (
           <div className="rounded-lg border border-border bg-bg-card p-6 flex items-center justify-center gap-2 text-sm text-fg-muted">
-            <Loader2 className="w-4 h-4 animate-spin" /> Designing your future-pacing copy...
+            <Loader2 className="w-4 h-4 animate-spin" /> {t('futurePacingDesigner.generating')}
           </div>
         )}
 
@@ -184,7 +184,7 @@ export default function AdCreativeFuturePacingDesignerPage() {
           <div className="space-y-4">
             {result.dryRun && (
               <div role="status" className="rounded-lg bg-warning/10 border border-warning/30 px-3 py-2 text-sm text-warning">
-                Dry-run mode: showing sample content. Connect Atlas to generate real copy.
+                {t('futurePacingDesigner.dryRunNotice')}
               </div>
             )}
 
@@ -203,7 +203,7 @@ export default function AdCreativeFuturePacingDesignerPage() {
             {result.futureScenarios.length > 0 && (
               <div className="space-y-3">
                 <p className="text-sm font-medium flex items-center gap-1">
-                  <Clock className="w-4 h-4 text-brand-accent" /> Future Scenarios
+                  <Clock className="w-4 h-4 text-brand-accent" /> {t('futurePacingDesigner.pacingPathway')}
                 </p>
                 {result.futureScenarios.map((scenario: FutureScenario, i: number) => (
                   <div key={i} className="rounded-lg border border-border bg-bg-card p-4 space-y-2">
@@ -211,15 +211,15 @@ export default function AdCreativeFuturePacingDesignerPage() {
                       {scenario.timeframe}
                     </span>
                     <div>
-                      <p className="text-xs font-medium text-fg-muted mb-0.5">Scenario</p>
+                      <p className="text-xs font-medium text-fg-muted mb-0.5">{t('futurePacingDesigner.futureScenario')}</p>
                       <p className="text-sm text-fg">{scenario.scenario}</p>
                     </div>
                     <div>
-                      <p className="text-xs font-medium text-fg-muted mb-0.5">Sensory Details</p>
+                      <p className="text-xs font-medium text-fg-muted mb-0.5">{t('futurePacingDesigner.sensoryDetails')}</p>
                       <p className="text-sm text-fg">{scenario.sensoryDetails}</p>
                     </div>
                     <div>
-                      <p className="text-xs font-medium text-fg-muted mb-0.5">Emotional Payoff</p>
+                      <p className="text-xs font-medium text-fg-muted mb-0.5">{t('futurePacingDesigner.emotionalOutcome')}</p>
                       <p className="text-sm text-fg">{scenario.emotionalPayoff}</p>
                     </div>
                   </div>

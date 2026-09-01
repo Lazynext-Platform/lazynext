@@ -1740,10 +1740,10 @@ export default function CreativeStudioPage() {
                     onChange={(e) => setFormat(e.target.value)}
                     className="mt-1 w-full rounded-lg border border-line bg-app px-3 py-2 text-sm text-fg focus:border-[#00b2fc]/40 focus:outline-none"
                   >
-                    <option value="ugc">UGC</option>
-                    <option value="commercial">Commercial</option>
-                    <option value="drama">Drama</option>
-                    <option value="skit">Skit</option>
+                    <option value="ugc">{t('creativeStudio.adFormat.ugc')}</option>
+                    <option value="commercial">{t('creativeStudio.adFormat.commercial')}</option>
+                    <option value="drama">{t('creativeStudio.adFormat.drama')}</option>
+                    <option value="skit">{t('creativeStudio.adFormat.skit')}</option>
                   </select>
                 </div>
               </div>

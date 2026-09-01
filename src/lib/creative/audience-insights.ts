@@ -8,6 +8,7 @@
  */
 import { atlasChat } from '@/lib/atlas';
 import { getLLMModel } from '@/lib/providers/model-helpers';
+import { isDryRun } from '@/lib/creative/toolkit';
 import type { PlanTier } from '@/lib/plan-tier';
 
 export const AUDIENCE_INSIGHTS_COST = 7;
@@ -105,6 +106,7 @@ export interface AudienceInsightsResult {
   recommendations: string[];
   lookalikePotential: number;
   audienceFitScore: number;
+  dryRun?: boolean;
 }
 
 // ── Lookup functions ──
@@ -213,6 +215,10 @@ export async function generateAudienceInsights(params: {
   competitorAudience?: string;
   planTier: PlanTier;
 }): Promise<AudienceInsightsResult> {
+  if (isDryRun()) {
+    return { ...generateFallbackAudience(params), dryRun: true };
+  }
+
   const model = getLLMModel(params.planTier);
 
   const sys = `You are an audience research expert for e-commerce advertising. Analyze the product and generate detailed audience segments with demographics, interests, behaviors, and purchase intent scoring. Return JSON only.
@@ -299,7 +305,7 @@ Competitor audience: ${params.competitorAudience || 'N/A'}`;
       audienceFitScore: calculateAudienceFitScore(segments),
     };
   } catch {
-    return generateFallbackAudience(params);
+    return { ...generateFallbackAudience(params), dryRun: true };
   }
 }
 

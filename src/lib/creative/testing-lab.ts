@@ -14,6 +14,7 @@
  */
 import { atlasChat } from '@/lib/atlas';
 import { getLLMModel } from '@/lib/providers/model-helpers';
+import { isDryRun } from '@/lib/creative/toolkit';
 import type { PlanTier } from '@/lib/plan-tier';
 
 export const TESTING_LAB_COST = 5;
@@ -121,6 +122,7 @@ export interface TestResult {
     recommendation: string;
     expectedImpact: string;
   }>;
+  dryRun?: boolean;
 }
 
 export interface TestConfig {
@@ -1004,6 +1006,7 @@ export async function runTestAnalysis(request: {
   });
 
   // Try AI enhancement for insights (non-blocking, falls back to rule-based)
+  if (!isDryRun()) {
   try {
     const model = getLLMModel(request.planTier);
     const summary = variants
@@ -1032,6 +1035,7 @@ export async function runTestAnalysis(request: {
   } catch {
     // Fall through to rule-based insights
   }
+  }
 
   return {
     testId,
@@ -1052,5 +1056,6 @@ export async function runTestAnalysis(request: {
       testDuration,
     },
     recommendations,
+    dryRun: isDryRun(),
   };
 }

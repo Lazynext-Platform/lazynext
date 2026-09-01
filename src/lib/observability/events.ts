@@ -8,6 +8,8 @@
  * observability platforms.
  */
 
+import { logger } from '../logger';
+
 export type WorkflowEventType =
   | 'workflow.started'
   | 'workflow.completed'
@@ -56,17 +58,17 @@ export function emit(event: WorkflowEvent): void {
   for (const h of handlers) {
     try { h(event); } catch { /* handler errors are non-fatal */ }
   }
-  // Also log to console for development visibility
+  // Also log for development visibility
   if (process.env.NODE_ENV !== 'production') {
-    const parts: string[] = [event.type];
-    if (event.workflowId) parts.push(`wf=${event.workflowId}`);
-    if (event.stepName) parts.push(`step=${event.stepName}`);
-    if (event.providerId) parts.push(`provider=${event.providerId}`);
-    if (event.modelId) parts.push(`model=${event.modelId}`);
-    if (event.durationMs) parts.push(`${event.durationMs}ms`);
-    if (event.credits) parts.push(`${event.credits}cr`);
-    if (event.error) parts.push(`error=${event.error}`);
-    console.log(`[event] ${parts.join(' ')}`);
+    const meta: Record<string, unknown> = {};
+    if (event.workflowId) meta.workflowId = event.workflowId;
+    if (event.stepName) meta.stepName = event.stepName;
+    if (event.providerId) meta.providerId = event.providerId;
+    if (event.modelId) meta.modelId = event.modelId;
+    if (event.durationMs) meta.durationMs = event.durationMs;
+    if (event.credits) meta.credits = event.credits;
+    if (event.error) meta.error = event.error;
+    logger.info('workflow-event', event.type, meta);
   }
 }
 

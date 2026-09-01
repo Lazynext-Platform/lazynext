@@ -19,6 +19,7 @@ import {
   asStrArr,
   asObj,
   atlasGenerate,
+  isDryRun,
 } from '@/lib/creative/toolkit';
 import type { PlanTier } from '@/lib/plan-tier';
 import { safeFetchText, htmlToText, extractImageUrls, SSRFError } from '@/lib/brand/fetch';
@@ -53,6 +54,7 @@ export interface UrlToBriefResult {
   suggestedCtas: string[];
   visualDirection: string;
   toneRecommendation: string;
+  dryRun?: boolean;
 }
 
 // ── System prompt for the combined extraction + brief + suggestions flow ──
@@ -207,14 +209,68 @@ ${images.length ? `Product images found on page:\n${images.join('\n')}\n` : ''}
 Output the complete URL-to-brief JSON now (extraction + brief + suggestions).`;
 
   // 5. Call the LLM with the combined extraction + brief + suggestions prompt
-  const raw = await atlasGenerate(
-    URL_TO_BRIEF_SYS,
-    userPrompt,
-    planTier,
-  );
+  if (isDryRun()) {
+    return generateFallbackUrlToBrief(url, pageText);
+  }
 
-  // 6. Parse and validate the result
-  return parseUrlToBriefResult(raw);
+  try {
+    const raw = await atlasGenerate(
+      URL_TO_BRIEF_SYS,
+      userPrompt,
+      planTier,
+    );
+
+    // 6. Parse and validate the result
+    return { ...parseUrlToBriefResult(raw), dryRun: false };
+  } catch {
+    return generateFallbackUrlToBrief(url, pageText);
+  }
+}
+
+function generateFallbackUrlToBrief(url: string, pageText: string): UrlToBriefResult {
+  const extraction: ProductPageExtraction = {
+    productName: 'Sample Product',
+    brandName: 'Sample Brand',
+    description: 'A quality product extracted from the provided URL (dry-run mode).',
+    features: ['High-quality materials', 'Easy to use', 'Durable design'],
+    benefits: ['Saves time', 'Improves daily life', 'Great value'],
+    audience: 'General consumers',
+    price: '$29.99',
+    category: 'General',
+    positioning: 'A reliable solution for everyday needs.',
+    painPoints: ['Inefficient alternatives', 'High cost of competing products'],
+    usps: ['Unique design', 'Better value than competitors'],
+  };
+  const brief: CreativeBrief = {
+    objective: 'conversion',
+    platform: 'tiktok',
+    format: 'ugc',
+    audience: extraction.audience,
+    product: extraction.productName,
+    productName: extraction.productName,
+    offer: 'Special launch offer',
+    painPoint: extraction.painPoints[0] || 'Need for a better solution',
+    benefit: extraction.benefits[0] || 'Improves your daily life',
+    mechanism: 'Demonstrate the product solving the pain point',
+    proof: 'Customer testimonials and results',
+    angle: 'Problem-solution',
+    hook: 'Stop scrolling — this changes everything',
+    cta: 'Shop now',
+    visualDirection: 'Bright, energetic, product-focused',
+    soundDirection: 'Upbeat trending audio',
+    complianceConstraints: [],
+    language: 'en',
+  };
+  return {
+    extraction,
+    brief,
+    suggestedAngles: ['Problem-solution', 'Benefit-focused', 'Social proof'],
+    suggestedHooks: ['Question hook', 'Bold claim', 'Before-and-after'],
+    suggestedCtas: ['Shop now', 'Learn more', 'Try today'],
+    visualDirection: 'Clean, modern, product-centric',
+    toneRecommendation: 'Friendly and confident',
+    dryRun: true,
+  };
 }
 
 export { SSRFError } from '@/lib/brand/fetch';

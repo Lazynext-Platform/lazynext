@@ -1,4 +1,4 @@
-import { atlasChat, resolveModel } from '@/lib/creative/toolkit';
+import { atlasChat, resolveModel, isDryRun } from '@/lib/creative/toolkit';
 import type { PlanTier } from '@/lib/plan-tier';
 
 export const BUDGET_OPTIMIZER_COST = 6;
@@ -78,6 +78,7 @@ export interface OptimizationResult {
     expectedImpact: string;
     timeframe: string;
   }>;
+  dryRun?: boolean;
 }
 
 export interface OptimizationRequest {
@@ -353,7 +354,9 @@ export async function optimizeBudget(request: OptimizationRequest): Promise<Opti
     { priority: 'medium', recommendation: 'Refresh creatives on platforms with high frequency', expectedImpact: '+10-15% CTR', timeframe: '3-5 days' },
     { priority: 'low', recommendation: 'Test new audience segments on top-performing platforms', expectedImpact: '+5-10% reach', timeframe: '2-4 weeks' },
   ];
+  let usedDryRun = false;
 
+  if (!isDryRun()) {
   try {
     const model = resolveModel(planTier);
     const perfSummary = platformPerformance.map((p) => `${p.platform}: ROAS=${p.roas}, CPA=${p.cpa}, CTR=${p.ctr}, trend=${p.trend}`).join('; ');
@@ -375,7 +378,11 @@ export async function optimizeBudget(request: OptimizationRequest): Promise<Opti
       if (aiRecs.length > 0) recommendations = aiRecs;
     }
   } catch {
+    usedDryRun = true;
     // Fall through to defaults
+  }
+  } else {
+    usedDryRun = true;
   }
 
   const nextReview = new Date();
@@ -397,5 +404,6 @@ export async function optimizeBudget(request: OptimizationRequest): Promise<Opti
     },
     insights,
     recommendations,
+    dryRun: usedDryRun,
   };
 }

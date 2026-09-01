@@ -11,6 +11,7 @@
  */
 import { atlasChat } from '@/lib/atlas';
 import { getLLMModel } from '@/lib/providers/model-helpers';
+import { isDryRun } from '@/lib/creative/toolkit';
 import type { PlanTier } from '@/lib/plan-tier';
 
 export const CREATOR_KIT_COST = 6;
@@ -101,6 +102,7 @@ export interface CreatorKitResult {
   estimatedReach: string;
   estimatedEngagement: string;
   creatorTips: string[];
+  dryRun?: boolean;
 }
 
 // ── Lookup functions ──
@@ -216,6 +218,10 @@ export async function generateCreatorKit(params: {
   const platform = normalizePlatform(params.platform);
   const goal = normalizeGoal(params.campaignGoal);
 
+  if (isDryRun()) {
+    return { ...generateFallbackCreatorKit(params), dryRun: true };
+  }
+
   const sys = `You are an expert UGC creator campaign strategist for e-commerce brands. Build a complete, shareable Creator Campaign Kit that a human UGC creator can follow to produce on-brand, high-performing content. Return JSON only.
 {
   "kit": {
@@ -260,7 +266,7 @@ Brand guidelines: ${(params.brandGuidelines || '').slice(0, 1000)}`,
     const parsed = JSON.parse(raw);
     return normalizeKitResult(parsed, params);
   } catch {
-    return generateFallbackCreatorKit(params);
+    return { ...generateFallbackCreatorKit(params), dryRun: true };
   }
 }
 

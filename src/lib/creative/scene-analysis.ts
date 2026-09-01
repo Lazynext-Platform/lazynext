@@ -10,6 +10,7 @@
  */
 import { atlasChat } from '@/lib/atlas';
 import { getLLMModel } from '@/lib/providers/model-helpers';
+import { isDryRun } from '@/lib/creative/toolkit';
 import type { PlanTier } from '@/lib/plan-tier';
 
 export const SCENE_ANALYSIS_COST = 8;
@@ -138,6 +139,7 @@ export interface SceneAnalysisResult {
     estimatedEffort: 'low' | 'medium' | 'high';
   }>;
   insights: string[];
+  dryRun?: boolean;
 }
 
 // ── Lookup functions ──
@@ -247,6 +249,10 @@ export async function analyzeScenes(params: {
 }): Promise<SceneAnalysisResult> {
   const model = getLLMModel(params.planTier);
 
+  if (isDryRun()) {
+    return { ...generateFallbackSceneAnalysis(params), dryRun: true };
+  }
+
   const sys = `You are a video scene analysis expert for e-commerce ads. Decompose the provided content into discrete scenes/shots and analyze the visual, narrative, and persuasive structure. Return JSON only.
 {
   "scenes": [{
@@ -347,7 +353,7 @@ Adaptation goal: ${params.adaptationGoal || 'general improvement'}`;
       insights: Array.isArray(parsed.insights) ? parsed.insights.map(String) : [],
     };
   } catch {
-    return generateFallbackSceneAnalysis(params);
+    return { ...generateFallbackSceneAnalysis(params), dryRun: true };
   }
 }
 

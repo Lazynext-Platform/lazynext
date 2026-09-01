@@ -6,7 +6,7 @@ import assert from 'node:assert/strict';
  *
  * Verifies that logToolExecution and logProviderRouting emit valid JSON
  * with all required fields and a valid ISO 8601 timestamp. Output is
- * captured from console.log.
+ * captured from console.log (used by the structured logger internally).
  */
 import { logToolExecution, logProviderRouting } from '@/lib/telemetry';
 
@@ -38,13 +38,16 @@ describe('Telemetry — logToolExecution', () => {
     );
 
     const parsed = JSON.parse(output);
-    assert.equal(parsed.type, 'tool_execution');
-    assert.equal(parsed.tool, 'creative.generateBrief');
-    assert.equal(parsed.userId, 'user_123');
-    assert.equal(parsed.cost, 3);
-    assert.equal(parsed.durationMs, 1250);
-    assert.equal(parsed.success, true);
-    assert.ok(typeof parsed.timestamp === 'string');
+    // Logger wraps data in {ts, level, tag, message, meta}
+    assert.equal(parsed.tag, 'telemetry');
+    assert.equal(parsed.message, 'tool_execution');
+    const meta = parsed.meta;
+    assert.equal(meta.tool, 'creative.generateBrief');
+    assert.equal(meta.userId, 'user_123');
+    assert.equal(meta.cost, 3);
+    assert.equal(meta.durationMs, 1250);
+    assert.equal(meta.success, true);
+    assert.ok(typeof meta.timestamp === 'string');
   });
 
   it('includes error and model fields when provided', () => {
@@ -61,9 +64,10 @@ describe('Telemetry — logToolExecution', () => {
     );
 
     const parsed = JSON.parse(output);
-    assert.equal(parsed.success, false);
-    assert.equal(parsed.error, 'no_json_in_creative_output');
-    assert.equal(parsed.model, 'bytedance/doubao-seed-2.1-turbo-260628');
+    const meta = parsed.meta;
+    assert.equal(meta.success, false);
+    assert.equal(meta.error, 'no_json_in_creative_output');
+    assert.equal(meta.model, 'bytedance/doubao-seed-2.1-turbo-260628');
   });
 
   it('emits a valid ISO 8601 timestamp', () => {
@@ -78,10 +82,11 @@ describe('Telemetry — logToolExecution', () => {
     );
 
     const parsed = JSON.parse(output);
-    const ts = new Date(parsed.timestamp);
+    const meta = parsed.meta;
+    const ts = new Date(meta.timestamp);
     assert.ok(!isNaN(ts.getTime()), 'timestamp should parse to a valid Date');
-    assert.ok(parsed.timestamp.includes('T'), 'timestamp should be ISO 8601 format');
-    assert.ok(parsed.timestamp.endsWith('Z'), 'timestamp should be UTC (Z suffix)');
+    assert.ok(meta.timestamp.includes('T'), 'timestamp should be ISO 8601 format');
+    assert.ok(meta.timestamp.endsWith('Z'), 'timestamp should be UTC (Z suffix)');
   });
 });
 
@@ -97,12 +102,14 @@ describe('Telemetry — logProviderRouting', () => {
     );
 
     const parsed = JSON.parse(output);
-    assert.equal(parsed.type, 'provider_routing');
-    assert.equal(parsed.capability, 'text');
-    assert.equal(parsed.planTier, 'free');
-    assert.equal(parsed.selectedModel, 'bytedance/doubao-seed-2.1-turbo-260628');
-    assert.equal(parsed.fallback, false);
-    assert.ok(typeof parsed.timestamp === 'string');
+    assert.equal(parsed.tag, 'telemetry');
+    assert.equal(parsed.message, 'provider_routing');
+    const meta = parsed.meta;
+    assert.equal(meta.capability, 'text');
+    assert.equal(meta.planTier, 'free');
+    assert.equal(meta.selectedModel, 'bytedance/doubao-seed-2.1-turbo-260628');
+    assert.equal(meta.fallback, false);
+    assert.ok(typeof meta.timestamp === 'string');
   });
 
   it('records fallback=true when the default model is used', () => {
@@ -116,9 +123,10 @@ describe('Telemetry — logProviderRouting', () => {
     );
 
     const parsed = JSON.parse(output);
-    assert.equal(parsed.fallback, true);
-    assert.equal(parsed.capability, 'videoGeneration');
-    assert.equal(parsed.planTier, 'pro');
+    const meta = parsed.meta;
+    assert.equal(meta.fallback, true);
+    assert.equal(meta.capability, 'videoGeneration');
+    assert.equal(meta.planTier, 'pro');
   });
 
   it('emits a valid ISO 8601 timestamp', () => {
@@ -132,9 +140,10 @@ describe('Telemetry — logProviderRouting', () => {
     );
 
     const parsed = JSON.parse(output);
-    const ts = new Date(parsed.timestamp);
+    const meta = parsed.meta;
+    const ts = new Date(meta.timestamp);
     assert.ok(!isNaN(ts.getTime()), 'timestamp should parse to a valid Date');
-    assert.ok(parsed.timestamp.includes('T'), 'timestamp should be ISO 8601 format');
-    assert.ok(parsed.timestamp.endsWith('Z'), 'timestamp should be UTC (Z suffix)');
+    assert.ok(meta.timestamp.includes('T'), 'timestamp should be ISO 8601 format');
+    assert.ok(meta.timestamp.endsWith('Z'), 'timestamp should be UTC (Z suffix)');
   });
 });

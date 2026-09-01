@@ -56,14 +56,14 @@ export default function AdCreativeMentalAccountingDesignerPage() {
         }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Generation failed');
+      if (!res.ok) throw new Error(data.error || t('mentalAccountingDesigner.error'));
       setResult(data.result as MentalAccountingDesignerResult);
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
     } finally {
       setLoading(false);
     }
-  }, [productOrBrand, price, targetAudience]);
+  }, [productOrBrand, price, targetAudience, t]);
 
   const copyToClipboard = useCallback(async () => {
     if (!result) return;
@@ -81,13 +81,13 @@ export default function AdCreativeMentalAccountingDesignerPage() {
     return (
       <div className="min-h-screen text-fg app-grid-bg bg-app">
         <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:rounded focus:bg-bg-card focus:px-3 focus:py-2 focus:text-sm focus:text-fg">
-          Skip to content
+          {t('mentalAccountingDesigner.skipToContent')}
         </a>
         <div className="mx-auto max-w-5xl px-4 py-8">
           <h1 className="text-2xl font-bold flex items-center gap-2">
-            <Sparkles className="w-6 h-6" /> Mental Accounting Reframer
+            <Sparkles className="w-6 h-6" /> {t('mentalAccountingDesigner.title')}
           </h1>
-          <p className="text-sm text-fg-muted mt-2">Sign in to reframe your price using mental-budget categories.</p>
+          <p className="text-sm text-fg-muted mt-2">{t('mentalAccountingDesigner.signInPrompt')}</p>
         </div>
         <AuthModal open={true} onClose={() => {}} />
       </div>
@@ -97,22 +97,22 @@ export default function AdCreativeMentalAccountingDesignerPage() {
   return (
     <div className="min-h-screen text-fg app-grid-bg bg-app">
       <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:rounded focus:bg-bg-card focus:px-3 focus:py-2 focus:text-sm focus:text-fg">
-        Skip to content
+        {t('mentalAccountingDesigner.skipToContent')}
       </a>
       <main id="main-content" className="mx-auto max-w-5xl px-4 py-8 space-y-6">
         <header>
           <h1 className="text-2xl font-bold flex items-center gap-2">
-            <Sparkles className="w-6 h-6" /> Mental Accounting Reframer
+            <Sparkles className="w-6 h-6" /> {t('mentalAccountingDesigner.title')}
           </h1>
           <p className="text-sm text-fg-muted mt-2">
-            Reframe your price using mental-budget categories to make the purchase feel affordable.
+            {t('mentalAccountingDesigner.subtitle')}
           </p>
         </header>
 
         <div className="space-y-4">
           <div>
             <label htmlFor="acmadProduct" className="block text-sm font-medium mb-1">
-              Product or Brand
+              {t('mentalAccountingDesigner.productOrBrand')}
             </label>
             <input
               id="acmadProduct"
@@ -144,7 +144,7 @@ export default function AdCreativeMentalAccountingDesignerPage() {
 
           <div>
             <label htmlFor="acmadAudience" className="block text-sm font-medium mb-1">
-              Target Audience
+              {t('mentalAccountingDesigner.targetAudience')}
             </label>
             <input
               id="acmadAudience"
@@ -164,7 +164,7 @@ export default function AdCreativeMentalAccountingDesignerPage() {
             className="rounded-lg bg-brand-accent px-4 py-2 text-sm font-medium text-white hover:opacity-90 disabled:opacity-50 flex items-center gap-2"
           >
             {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
-            {loading ? 'Generating...' : `Generate (${CREDIT_COST} credits)`}
+            {loading ? t('mentalAccountingDesigner.generating') : `${t('mentalAccountingDesigner.generate')} (${CREDIT_COST})`}
           </button>
         </div>
 
@@ -176,13 +176,13 @@ export default function AdCreativeMentalAccountingDesignerPage() {
 
         {!loading && !result && !error && (
           <div className="rounded-lg border border-border bg-bg-card p-6 text-center text-sm text-fg-muted">
-            Fill in the fields above and generate to see your price reframes.
+            {t('mentalAccountingDesigner.noResults')}
           </div>
         )}
 
         {loading && (
           <div className="rounded-lg border border-border bg-bg-card p-6 flex items-center justify-center gap-2 text-sm text-fg-muted">
-            <Loader2 className="w-4 h-4 animate-spin" /> Reframing your price...
+            <Loader2 className="w-4 h-4 animate-spin" /> {t('mentalAccountingDesigner.generating')}
           </div>
         )}
 
@@ -190,7 +190,7 @@ export default function AdCreativeMentalAccountingDesignerPage() {
           <div className="space-y-4">
             {result.dryRun && (
               <div role="status" className="rounded-lg bg-warning/10 border border-warning/30 px-3 py-2 text-sm text-warning">
-                Dry-run mode: showing sample content. Connect Atlas to generate real reframes.
+                {t('mentalAccountingDesigner.dryRunNotice')}
               </div>
             )}
 
@@ -219,7 +219,7 @@ export default function AdCreativeMentalAccountingDesignerPage() {
             {result.reframes.length > 0 && (
               <div className="space-y-3">
                 <p className="text-sm font-medium flex items-center gap-1">
-                  <Calculator className="w-4 h-4 text-brand-accent" /> Price Reframes
+                  <Calculator className="w-4 h-4 text-brand-accent" /> {t('mentalAccountingDesigner.reframePathway')}
                 </p>
                 {result.reframes.map((reframe: MentalAccountingReframe, i: number) => (
                   <div key={i} className="rounded-lg border border-border bg-bg-card p-4 space-y-2">

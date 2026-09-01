@@ -12,6 +12,7 @@
  */
 import { atlasChat } from '@/lib/atlas';
 import { getLLMModel } from '@/lib/providers/model-helpers';
+import { isDryRun } from '@/lib/creative/toolkit';
 import type { PlanTier } from '@/lib/plan-tier';
 
 export const BRAND_CONCEPTS_COST = 10;
@@ -72,6 +73,7 @@ export interface BrandConceptsResult {
   recommendedConceptId: string;
   recommendationReason: string;
   crossConceptInsights: string[];
+  dryRun?: boolean;
 }
 
 // ── Lookup functions ──
@@ -348,6 +350,10 @@ export async function generateBrandConcepts(params: {
   const model = getLLMModel(params.planTier);
   const conceptCount = boundConceptCount(params.conceptCount);
 
+  if (isDryRun()) {
+    return { ...generateFallbackBrandConcepts(params), dryRun: true };
+  }
+
   const sys = `You are an expert e-commerce advertising creative director. Given a product URL or description, extract the brand identity and generate ${conceptCount} DIVERGENT ad concepts — each with a DIFFERENT emotional angle, hook, full script, and storyboard. The concepts must be maximally different from each other in tone, approach, and emotional trigger. Return JSON only.
 {
   "brand": {
@@ -433,7 +439,7 @@ Generate exactly ${conceptCount} concepts with distinct emotional triggers.`;
       crossConceptInsights,
     };
   } catch {
-    return generateFallbackBrandConcepts(params);
+    return { ...generateFallbackBrandConcepts(params), dryRun: true };
   }
 }
 

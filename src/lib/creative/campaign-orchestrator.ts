@@ -11,6 +11,7 @@
  */
 import { atlasChat } from '@/lib/atlas';
 import { getLLMModel } from '@/lib/providers/model-helpers';
+import { isDryRun } from '@/lib/creative/toolkit';
 import type { PlanTier } from '@/lib/plan-tier';
 
 export const CAMPAIGN_ORCHESTRATOR_COST = 10;
@@ -158,6 +159,7 @@ export interface CampaignOrchestrationResult {
   };
   insights: string[];
   recommendations: string[];
+  dryRun?: boolean;
 }
 
 // ── Lookup functions ──
@@ -253,6 +255,10 @@ export async function orchestrateCampaign(params: {
   // If we have existing state, advance to the next phase
   if (params.existingState) {
     return advanceCampaignPhase(params.existingState, model);
+  }
+
+  if (isDryRun()) {
+    return { ...generateFallbackCampaign(params, autonomy), dryRun: true };
   }
 
   // Otherwise, start a new campaign from goal_definition
@@ -376,7 +382,7 @@ Autonomy: ${autonomy}`;
       recommendations: campaign.nextActions,
     };
   } catch {
-    return generateFallbackCampaign(params, autonomy);
+    return { ...generateFallbackCampaign(params, autonomy), dryRun: true };
   }
 }
 

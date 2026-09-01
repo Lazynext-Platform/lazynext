@@ -11,6 +11,7 @@
  */
 import { atlasChat } from '@/lib/atlas';
 import { getLLMModel } from '@/lib/providers/model-helpers';
+import { isDryRun } from '@/lib/creative/toolkit';
 import type { PlanTier } from '@/lib/plan-tier';
 
 export const CLIP_EDITOR_COST = 4;
@@ -61,6 +62,7 @@ export interface ClipEditResult {
   description: string;
   affectedClipIds: string[];
   success: boolean;
+  dryRun?: boolean;
 }
 
 // ── Timecode utilities ──
@@ -676,7 +678,8 @@ export async function processClipCommand(input: {
     };
   }
 
-  // Fall back to AI-enhanced parsing
+  // Fall back to AI-enhanced parsing (skip in dry-run mode)
+  if (!isDryRun()) {
   try {
     const model = getLLMModel(planTier);
     const clipsContext = clips.map((c, i) => `Clip ${i + 1}: "${c.name}" (${c.type}, ${c.duration}s, ${formatTimecode(c.startTime)}-${formatTimecode(c.endTime)})`).join('\n');
@@ -727,6 +730,7 @@ Use 0-based indices for clipIndex, fromIndex, toIndex, indexA, indexB.`;
   } catch {
     // Fall through to fallback
   }
+  } // end if (!isDryRun())
 
   // Fallback: return unchanged clips
   return {
@@ -735,6 +739,7 @@ Use 0-based indices for clipIndex, fromIndex, toIndex, indexA, indexB.`;
     description: 'Could not parse command. Please try rephrasing.',
     affectedClipIds: [],
     success: false,
+    dryRun: true,
   };
 }
 

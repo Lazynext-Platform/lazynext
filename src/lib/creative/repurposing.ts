@@ -7,6 +7,7 @@
  */
 import { atlasChat } from '@/lib/atlas';
 import { getLLMModel } from '@/lib/providers/model-helpers';
+import { isDryRun } from '@/lib/creative/toolkit';
 import type { PlanTier } from '@/lib/plan-tier';
 
 export const REPURPOSING_COST = 6;
@@ -87,6 +88,7 @@ export interface RepurposeResult {
     adaptedContent: string;
     platformOptimizations: string[];
   }>;
+  dryRun?: boolean;
 }
 
 // ── Lookup functions ──
@@ -234,6 +236,10 @@ export async function repurposeCreative(params: {
   const targets = params.targetFormats.join(', ');
   const platforms = (params.platforms || ['meta', 'tiktok', 'instagram']).join(', ');
 
+  if (isDryRun()) {
+    return { ...generateFallbackRepurpose(params), dryRun: true };
+  }
+
   const sys = `You are a creative repurposing expert for e-commerce ads. Analyze the source creative content and generate repurposing plans for each target format. Return JSON only.
 {
   "plans": [{
@@ -303,7 +309,7 @@ Target formats: ${targets}. Platforms: ${platforms}. Brand context: ${params.bra
     };
   } catch {
     // Deterministic fallback
-    return generateFallbackRepurpose(params);
+    return { ...generateFallbackRepurpose(params), dryRun: true };
   }
 }
 

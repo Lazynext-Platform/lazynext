@@ -97,7 +97,7 @@ export default function BriefTemplateBuilderPage() {
     navigator.clipboard.writeText(lines.join('\n')).then(() => {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
-    });
+    }).catch(() => {});
   }, [result]);
 
   if (!session?.user) {

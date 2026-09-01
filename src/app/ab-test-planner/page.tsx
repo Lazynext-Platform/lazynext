@@ -70,7 +70,7 @@ export default function ABTestPlannerPage() {
     navigator.clipboard.writeText(text).then(() => {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
-    });
+    }).catch(() => {});
   }, [result]);
 
   if (!session?.user) {

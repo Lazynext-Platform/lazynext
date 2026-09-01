@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { CheckCircle2, XCircle, AlertCircle, RefreshCw, Activity, Cloud, Database } from 'lucide-react';
+import { useI18n } from '@/i18n/provider';
 
 type HealthCheck = { ok: boolean; latencyMs?: number; detail?: string };
 type HealthResponse = {
@@ -15,6 +16,7 @@ type HealthResponse = {
 };
 
 export default function StatusPage() {
+  const { t } = useI18n();
   const [health, setHealth] = useState<HealthResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -27,7 +29,7 @@ export default function StatusPage() {
       const data = await res.json();
       setHealth(data);
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Failed to fetch health');
+      setError(e instanceof Error ? e.message : t('statusPage.fetchError'));
     } finally {
       setLoading(false);
     }
@@ -38,12 +40,13 @@ export default function StatusPage() {
     // Auto-refresh every 30 seconds
     const interval = setInterval(fetchHealth, 30_000);
     return () => clearInterval(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const services = [
-    { key: 'atlas' as const, name: 'Atlas Cloud AI', icon: Activity, desc: 'LLM, image, and video generation' },
-    { key: 'r2' as const, name: 'Cloudflare R2', icon: Cloud, desc: 'Media storage' },
-    { key: 'd1' as const, name: 'Cloudflare D1', icon: Database, desc: 'Primary database' },
+    { key: 'atlas' as const, name: t('statusPage.atlasName'), icon: Activity, desc: t('statusPage.atlasDesc') },
+    { key: 'r2' as const, name: t('statusPage.r2Name'), icon: Cloud, desc: t('statusPage.r2Desc') },
+    { key: 'd1' as const, name: t('statusPage.d1Name'), icon: Database, desc: t('statusPage.d1Desc') },
   ];
 
   return (
@@ -52,10 +55,10 @@ export default function StatusPage() {
         <header className="space-y-2">
           <h1 className="text-2xl font-bold flex items-center gap-2">
             <Activity className="w-6 h-6 text-brand-accent" />
-            System Status
+            {t('statusPage.title')}
           </h1>
           <p className="text-sm text-fg-muted">
-            Real-time health of LazyNext services. Auto-refreshes every 30 seconds.
+            {t('statusPage.subtitle')}
           </p>
         </header>
 
@@ -73,11 +76,11 @@ export default function StatusPage() {
             )}
             <div>
               <p className="text-lg font-semibold">
-                {loading ? 'Checking...' : health?.status === 'healthy' ? 'All Systems Operational' : health?.status === 'degraded' ? 'Degraded Performance' : 'Status Unavailable'}
+                {loading ? t('statusPage.checking') : health?.status === 'healthy' ? t('statusPage.allOperational') : health?.status === 'degraded' ? t('statusPage.degraded') : t('statusPage.unavailable')}
               </p>
               {health?.timestamp && (
                 <p className="text-xs text-fg-faint">
-                  Last checked: {new Date(health.timestamp).toLocaleTimeString()}
+                  {t('statusPage.lastChecked')} {new Date(health.timestamp).toLocaleTimeString()}
                 </p>
               )}
             </div>
@@ -113,11 +116,11 @@ export default function StatusPage() {
                         )}
                         {check.ok ? (
                           <span className="flex items-center gap-1 text-xs font-medium text-success">
-                            <CheckCircle2 className="w-4 h-4" /> OK
+                            <CheckCircle2 className="w-4 h-4" /> {t('statusPage.ok')}
                           </span>
                         ) : (
                           <span className="flex items-center gap-1 text-xs font-medium text-danger">
-                            <XCircle className="w-4 h-4" /> Down
+                            <XCircle className="w-4 h-4" /> {t('statusPage.down')}
                           </span>
                         )}
                       </>
@@ -141,7 +144,7 @@ export default function StatusPage() {
           className="flex items-center gap-2 rounded-lg border border-line px-4 py-2 text-sm font-medium text-fg-muted hover:bg-hover transition disabled:opacity-50"
         >
           <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
-          Refresh
+          {t('statusPage.refresh')}
         </button>
       </main>
     </div>

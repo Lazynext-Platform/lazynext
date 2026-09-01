@@ -1,6 +1,7 @@
 import { withAtlas } from '@/lib/request-context';
 import { NextResponse } from 'next/server';
 import { auth } from '@/../auth';
+import type { Prisma } from '@prisma/client';
 import {
   SKILL_CHAIN_BUILDER_CREDIT_COST,
   BUILTIN_ENHANCED_CHAINS,
@@ -103,7 +104,7 @@ async function __byokPOST(req: Request) {
         userId: uid,
         workflowType: 'skill-chain-builder',
         status: 'running',
-        input: { chainId: chain.id, inputs, chainName: chain.name } as any,
+        input: { chainId: chain.id, inputs, chainName: chain.name } as Prisma.InputJsonValue,
       },
     });
   } catch (e) {
@@ -118,7 +119,7 @@ async function __byokPOST(req: Request) {
         where: { id: runId },
         data: {
           status: 'completed',
-          output: { result, chainId: chain.id } as any,
+          output: { result, chainId: chain.id } as unknown as Prisma.InputJsonValue,
           completedAt: new Date(),
         },
       });

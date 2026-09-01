@@ -205,7 +205,7 @@ async function __byokPOST(req: Request) {
     }
 
     // Execute all in_progress stages concurrently
-    const planTier = await getUserPlanTier(uid).catch(() => undefined as any);
+    const planTier = await getUserPlanTier(uid).catch(() => undefined);
     const stageResults = await Promise.allSettled(
       inProgressStages.map(async (stageName) => {
         await recordStep(state.pipelineId, stageName, 'running', { input: { productName: config.productName } }).catch(() => {});
@@ -279,7 +279,7 @@ async function __byokPOST(req: Request) {
     // Auto-advance loop: if the next stage has autoAdvance=true, execute it
     // immediately without waiting for a client request.
     const autoAdvanceDeadline = Date.now() + 75_000;
-    const autoAdvancePlanTier = await getUserPlanTier(uid).catch(() => undefined as any);
+    const autoAdvancePlanTier = await getUserPlanTier(uid).catch(() => undefined);
     while (state.status === 'running' && state.currentStage && state.currentStage !== 'completed') {
       const currentStageConfig = config.stages.find((s: any) => s.stage === state.currentStage);
       if (!currentStageConfig?.autoAdvance) break;

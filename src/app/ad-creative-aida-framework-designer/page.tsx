@@ -59,14 +59,14 @@ export default function AdCreativeAIDAFrameworkDesignerPage() {
         }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Generation failed');
+      if (!res.ok) throw new Error(data.error || t('aidaFrameworkDesigner.error'));
       setResult(data.result as AIDAFrameworkDesignerResult);
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
     } finally {
       setLoading(false);
     }
-  }, [productOrBrand, targetAudience, platform]);
+  }, [productOrBrand, targetAudience, platform, t]);
 
   const copyToClipboard = useCallback(async () => {
     if (!result) return;
@@ -236,15 +236,15 @@ export default function AdCreativeAIDAFrameworkDesignerPage() {
                   </div>
                   <div className="space-y-2">
                     <div>
-                      <p className="text-xs font-medium text-fg-muted mb-0.5">Copy</p>
+                      <p className="text-xs font-medium text-fg-muted mb-0.5">{t('aidaFrameworkDesigner.copy')}</p>
                       <p className="text-sm text-fg">{stage.copy}</p>
                     </div>
                     <div>
-                      <p className="text-xs font-medium text-fg-muted mb-0.5">Hook</p>
+                      <p className="text-xs font-medium text-fg-muted mb-0.5">{t('aidaFrameworkDesigner.attentionHook')}</p>
                       <p className="text-sm text-fg">{stage.hook}</p>
                     </div>
                     <div>
-                      <p className="text-xs font-medium text-fg-muted mb-0.5">CTA</p>
+                      <p className="text-xs font-medium text-fg-muted mb-0.5">{t('aidaFrameworkDesigner.actionTrigger')}</p>
                       <p className="text-sm text-fg">{stage.cta}</p>
                     </div>
                   </div>

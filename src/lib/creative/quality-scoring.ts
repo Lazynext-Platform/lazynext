@@ -13,6 +13,7 @@ import {
   atlasChat,
   resolveModel,
   extractJson,
+  isDryRun,
   asStr,
   asStrArr as toolkitAsStrArr,
   CREATIVE_TIMEOUT_MS,
@@ -75,6 +76,7 @@ export interface QualityScoringResult {
   assessment: QualityAssessment;
   insights: string[];
   actionItems: string[];
+  dryRun?: boolean;
 }
 
 // ── Constants ──
@@ -486,6 +488,10 @@ All text fields must be in English. Output ONLY the JSON object.`;
   userParts.push(`Benchmark type for comparison: ${benchmarkType}`);
   userParts.push('Output the quality scoring JSON now.');
 
+  if (isDryRun()) {
+    return { ...buildFallbackAssessment(creativeContent, benchmarkType), dryRun: true };
+  }
+
   let aiData: Record<string, unknown> = {};
   try {
     const raw = await atlasChat(
@@ -500,7 +506,7 @@ All text fields must be in English. Output ONLY the JSON object.`;
     aiData = extractJson(raw);
   } catch {
     // Fall through to deterministic fallback
-    return buildFallbackAssessment(creativeContent, benchmarkType);
+    return { ...buildFallbackAssessment(creativeContent, benchmarkType), dryRun: true };
   }
 
   try {
@@ -616,9 +622,10 @@ All text fields must be in English. Output ONLY the JSON object.`;
       },
       insights: finalInsights,
       actionItems: finalActionItems,
+      dryRun: false,
     };
   } catch {
     // If parsing fails, fall back to deterministic assessment
-    return buildFallbackAssessment(creativeContent, benchmarkType);
+    return { ...buildFallbackAssessment(creativeContent, benchmarkType), dryRun: true };
   }
 }

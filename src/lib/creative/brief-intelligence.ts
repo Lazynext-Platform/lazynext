@@ -1,6 +1,7 @@
 import {
   atlasChat,
   resolveModel,
+  isDryRun,
   asStr,
   asStrArr as toolkitAsStrArr,
   asNum,
@@ -78,6 +79,7 @@ export interface BriefIntelligenceResult {
     description: string;
     actionableRecommendation: string;
   }>;
+  dryRun?: boolean;
 }
 
 function asStrArr(v: unknown): string[] {
@@ -249,6 +251,8 @@ export async function analyzeBrief(request: {
   const model = resolveModel(request.planTier);
   const briefTypeStr = request.briefType || 'product_launch';
 
+  const dry = isDryRun();
+
   const sysPrompt = `You are an expert creative brief analyst and product positioning strategist.
 Analyze the product and generate a comprehensive creative brief intelligence report.
 Return ONLY valid JSON with this structure:
@@ -272,7 +276,34 @@ Competitor info: ${request.competitorInfo || 'N/A'}
 Brief type: ${briefTypeStr}`;
 
   let result: BriefIntelligenceResult;
-  try {
+  if (dry) {
+    // Dry-run: return template data without calling Atlas
+    const positioning: ProductPositioning = {
+      productName: request.productName,
+      category: 'General',
+      positioningStatement: `${request.productName} is a quality product for its target market.`,
+      targetMarket: 'General audience',
+      pricePositioning: 'value',
+      lifecycleStage: 'growth',
+    };
+    const usps: UniqueSellingProposition[] = [
+      { uspId: 'usp_1', category: 'quality', statement: 'High-quality product', evidence: 'Product quality', strength: 7, audienceResonance: 6, competitiveDifferentiation: 5 },
+    ];
+    result = {
+      positioning,
+      usps,
+      competitiveAdvantages: [],
+      briefScore: scoreBrief({ positioning, usps, keyMessages: [] }),
+      recommendedAngles: ['Problem-solution', 'Benefit-focused'],
+      recommendedHooks: ['Question hook', 'Bold claim'],
+      recommendedTones: ['Professional', 'Friendly'],
+      keyMessages: ['Quality you can trust'],
+      audiencePainPoints: ['Need for better solutions'],
+      emotionalTriggers: ['Trust', 'Confidence'],
+      insights: [],
+      dryRun: true,
+    };
+  } else try {
     const raw = await atlasChat(
       [{ role: 'system', content: sysPrompt }, { role: 'user', content: userPrompt }],
       model, 2000, 60000,
@@ -330,6 +361,7 @@ Brief type: ${briefTypeStr}`;
       audiencePainPoints: asStrArr(j.audiencePainPoints),
       emotionalTriggers: asStrArr(j.emotionalTriggers),
       insights,
+      dryRun: false,
     };
   } catch {
     // Fallback
@@ -356,6 +388,7 @@ Brief type: ${briefTypeStr}`;
       audiencePainPoints: ['Need for better solutions'],
       emotionalTriggers: ['Trust', 'Confidence'],
       insights: [],
+      dryRun: true,
     };
   }
 

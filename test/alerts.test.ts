@@ -45,8 +45,12 @@ describe('Alerts', () => {
     });
     assert.ok(logSpy.mock.calls.length > 0);
     const logged = logSpy.mock.calls[0].arguments[0] as string;
-    assert.ok(logged.includes('ALERT-CRITICAL'));
-    assert.ok(logged.includes('Test alert'));
+    const parsed = JSON.parse(logged);
+    // Logger wraps data in {ts, level, tag, message, meta}
+    assert.equal(parsed.tag, 'alert');
+    assert.equal(parsed.message, 'Test alert');
+    assert.equal(parsed.meta.level, 'critical');
+    assert.equal(parsed.meta.category, 'pipeline');
     logSpy.mock.restore();
   });
 
@@ -76,9 +80,13 @@ describe('Alerts', () => {
     const { alertPipelineFailed } = await import('../src/lib/observability/alerts.ts');
     await alertPipelineFailed('user1', 'pipe1', 'stage_failed', { stage: 'media_generation' });
     const logged = logSpy.mock.calls[0].arguments[0] as string;
-    assert.ok(logged.includes('ALERT-CRITICAL'));
-    assert.ok(logged.includes('pipe1'));
-    assert.ok(logged.includes('stage_failed'));
+    const parsed = JSON.parse(logged);
+    assert.equal(parsed.tag, 'alert');
+    assert.ok(parsed.message.includes('pipe1'));
+    assert.equal(parsed.meta.level, 'critical');
+    assert.equal(parsed.meta.category, 'pipeline');
+    assert.equal(parsed.meta.workflowId, 'pipe1');
+    assert.equal(parsed.meta.error, 'stage_failed');
     logSpy.mock.restore();
   });
 
@@ -88,8 +96,11 @@ describe('Alerts', () => {
     const { alertCreditError } = await import('../src/lib/observability/alerts.ts');
     await alertCreditError('user1', 'insufficient_credits');
     const logged = logSpy.mock.calls[0].arguments[0] as string;
-    assert.ok(logged.includes('ALERT-CRITICAL'));
-    assert.ok(logged.includes('credits'));
+    const parsed = JSON.parse(logged);
+    assert.equal(parsed.tag, 'alert');
+    assert.equal(parsed.meta.level, 'critical');
+    assert.equal(parsed.meta.category, 'credits');
+    assert.equal(parsed.meta.error, 'insufficient_credits');
     logSpy.mock.restore();
   });
 

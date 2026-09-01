@@ -8,7 +8,7 @@
  *
  * Credit cost: COMPLIANCE_COST (4 credits).
  */
-import { atlasChat, asStr, asStrArr as toolkitAsStrArr } from '@/lib/creative/toolkit';
+import { atlasChat, asStr, asStrArr as toolkitAsStrArr, isDryRun } from '@/lib/creative/toolkit';
 import { getLLMModel } from '@/lib/providers/model-helpers';
 import type { PlanTier } from '@/lib/plan-tier';
 
@@ -85,6 +85,7 @@ export interface ComplianceResult {
     affectedPlatforms: CompliancePlatform[];
   }>;
   checkedAt: string;
+  dryRun?: boolean;
 }
 
 export const COMPLIANCE_COST = 4;
@@ -972,10 +973,16 @@ export async function checkCompliance(
     contextualIssues: [],
     recommendations: [],
   };
+  let usedDryRun = false;
+  if (!isDryRun()) {
   try {
     semantic = await semanticAnalysis(request, platforms, planTier);
   } catch (e) {
+    usedDryRun = true;
     console.error('[compliance] semantic analysis failed, using rule-based only:', String(e));
+  }
+  } else {
+    usedDryRun = true;
   }
 
   // 4. Combine violations and warnings.
@@ -1078,5 +1085,6 @@ export async function checkCompliance(
     brandSafetyFlags,
     recommendations: ruleRecommendations,
     checkedAt: new Date().toISOString(),
+    dryRun: usedDryRun,
   };
 }

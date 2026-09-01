@@ -75,14 +75,14 @@ export default function AdCreativeChoiceSimplifierDesignerPage() {
         }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Generation failed');
+      if (!res.ok) throw new Error(data.error || t('choiceSimplifierDesigner.error'));
       setResult(data.result as ChoiceSimplifierDesignerResult);
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
     } finally {
       setLoading(false);
     }
-  }, [productOrBrand, targetAudience, options]);
+  }, [productOrBrand, targetAudience, options, t]);
 
   const copyToClipboard = useCallback(async () => {
     if (!result) return;
@@ -103,13 +103,13 @@ export default function AdCreativeChoiceSimplifierDesignerPage() {
     return (
       <div className="min-h-screen text-fg app-grid-bg bg-app">
         <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:rounded focus:bg-bg-card focus:px-3 focus:py-2 focus:text-sm focus:text-fg">
-          Skip to content
+          {t('choiceSimplifierDesigner.skipToContent')}
         </a>
         <div className="mx-auto max-w-5xl px-4 py-8">
           <h1 className="text-2xl font-bold flex items-center gap-2">
-            <Sparkles className="w-6 h-6" /> Choice Simplifier
+            <Sparkles className="w-6 h-6" /> {t('choiceSimplifierDesigner.title')}
           </h1>
-          <p className="text-sm text-fg-muted mt-2">Sign in to solve choice overload by recommending the one best option.</p>
+          <p className="text-sm text-fg-muted mt-2">{t('choiceSimplifierDesigner.signInPrompt')}</p>
         </div>
         <AuthModal open={true} onClose={() => {}} />
       </div>
@@ -119,22 +119,22 @@ export default function AdCreativeChoiceSimplifierDesignerPage() {
   return (
     <div className="min-h-screen text-fg app-grid-bg bg-app">
       <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:rounded focus:bg-bg-card focus:px-3 focus:py-2 focus:text-sm focus:text-fg">
-        Skip to content
+        {t('choiceSimplifierDesigner.skipToContent')}
       </a>
       <main id="main-content" className="mx-auto max-w-5xl px-4 py-8 space-y-6">
         <header>
           <h1 className="text-2xl font-bold flex items-center gap-2">
-            <Sparkles className="w-6 h-6" /> Choice Simplifier
+            <Sparkles className="w-6 h-6" /> {t('choiceSimplifierDesigner.title')}
           </h1>
           <p className="text-sm text-fg-muted mt-2">
-            Solve choice overload by recommending the one best option for your audience.
+            {t('choiceSimplifierDesigner.subtitle')}
           </p>
         </header>
 
         <div className="space-y-4">
           <div>
             <label htmlFor="accsdProduct" className="block text-sm font-medium mb-1">
-              Product or Brand
+              {t('choiceSimplifierDesigner.productOrBrand')}
             </label>
             <input
               id="accsdProduct"
@@ -150,7 +150,7 @@ export default function AdCreativeChoiceSimplifierDesignerPage() {
 
           <div>
             <label htmlFor="accsdAudience" className="block text-sm font-medium mb-1">
-              Target Audience
+              {t('choiceSimplifierDesigner.targetAudience')}
             </label>
             <input
               id="accsdAudience"
@@ -229,7 +229,7 @@ export default function AdCreativeChoiceSimplifierDesignerPage() {
             className="rounded-lg bg-brand-accent px-4 py-2 text-sm font-medium text-white hover:opacity-90 disabled:opacity-50 flex items-center gap-2"
           >
             {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
-            {loading ? 'Generating...' : `Generate (${CREDIT_COST} credits)`}
+            {loading ? t('choiceSimplifierDesigner.generating') : `${t('choiceSimplifierDesigner.generate')} (${CREDIT_COST})`}
           </button>
         </div>
 
@@ -241,13 +241,13 @@ export default function AdCreativeChoiceSimplifierDesignerPage() {
 
         {!loading && !result && !error && (
           <div className="rounded-lg border border-border bg-bg-card p-6 text-center text-sm text-fg-muted">
-            Add at least 2 options and generate to see your simplification recommendation.
+            {t('choiceSimplifierDesigner.noResults')}
           </div>
         )}
 
         {loading && (
           <div className="rounded-lg border border-border bg-bg-card p-6 flex items-center justify-center gap-2 text-sm text-fg-muted">
-            <Loader2 className="w-4 h-4 animate-spin" /> Simplifying your choices...
+            <Loader2 className="w-4 h-4 animate-spin" /> {t('choiceSimplifierDesigner.generating')}
           </div>
         )}
 
@@ -255,7 +255,7 @@ export default function AdCreativeChoiceSimplifierDesignerPage() {
           <div className="space-y-4">
             {result.dryRun && (
               <div role="status" className="rounded-lg bg-warning/10 border border-warning/30 px-3 py-2 text-sm text-warning">
-                Dry-run mode: showing sample content. Connect Atlas to generate real recommendations.
+                {t('choiceSimplifierDesigner.dryRunNotice')}
               </div>
             )}
 
@@ -273,7 +273,7 @@ export default function AdCreativeChoiceSimplifierDesignerPage() {
             {/* Recommended Option */}
             <div className="rounded-lg border border-brand-accent/30 bg-brand-accent/10 p-4 space-y-3">
               <p className="text-sm font-medium flex items-center gap-1">
-                <Target className="w-4 h-4 text-brand-accent" /> Recommended Option
+                <Target className="w-4 h-4 text-brand-accent" /> {t('choiceSimplifierDesigner.recommendedOption')}
               </p>
               <p className="text-lg font-bold text-fg">{result.recommendedOption.name}</p>
               <div>
@@ -297,7 +297,7 @@ export default function AdCreativeChoiceSimplifierDesignerPage() {
             {/* Simplification Copy */}
             <div className="rounded-lg border border-border bg-bg-card p-4 space-y-2">
               <p className="text-sm font-medium flex items-center gap-1">
-                <FileText className="w-4 h-4 text-warning" /> Simplification Copy
+                <FileText className="w-4 h-4 text-warning" /> {t('choiceSimplifierDesigner.simplificationPathway')}
               </p>
               <div>
                 <p className="text-xs font-medium text-fg-muted mb-0.5">Headline</p>
@@ -317,7 +317,7 @@ export default function AdCreativeChoiceSimplifierDesignerPage() {
             {result.decisionTree.length > 0 && (
               <div className="rounded-lg border border-border bg-bg-card p-4">
                 <p className="text-sm font-medium mb-2 flex items-center gap-1">
-                  <GitBranch className="w-4 h-4 text-brand-accent" /> Decision Tree
+                  <GitBranch className="w-4 h-4 text-brand-accent" /> {t('choiceSimplifierDesigner.simplificationPathway')}
                 </p>
                 <ul className="space-y-1.5">
                   {result.decisionTree.map((step, i) => (
@@ -333,7 +333,7 @@ export default function AdCreativeChoiceSimplifierDesignerPage() {
             {result.cognitiveLoadReduction && (
               <div className="rounded-lg border border-border bg-bg-card p-4 space-y-2">
                 <p className="text-sm font-medium flex items-center gap-1">
-                  <Brain className="w-4 h-4 text-success" /> Cognitive Load Reduction
+                  <Brain className="w-4 h-4 text-success" /> {t('choiceSimplifierDesigner.cognitiveLoad')}
                 </p>
                 <p className="text-sm text-fg">{result.cognitiveLoadReduction}</p>
               </div>

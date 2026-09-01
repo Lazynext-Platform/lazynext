@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { use } from 'react';
 import { FileText, Fish, Target, Sparkles, Package, Loader2, AlertCircle, Lock, Eye } from 'lucide-react';
+import { useI18n } from '@/i18n/provider';
 
 const TYPE_ICONS: Record<string, typeof FileText> = {
   creative_package: Package, brief: FileText, hooks: Fish,
@@ -38,6 +39,7 @@ function parseTags(data: unknown): string[] {
 }
 
 export default function SharePage({ params }: { params: Promise<{ token: string }> }) {
+  const { t } = useI18n();
   const { token } = use(params);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -63,14 +65,14 @@ export default function SharePage({ params }: { params: Promise<{ token: string 
         setLoading(false);
         return;
       }
-      if (res.status === 410) { setError('This share link has expired.'); setLoading(false); return; }
-      if (res.status === 404) { setError('Share link not found.'); setLoading(false); return; }
-      if (!res.ok) { setError(j.error || 'Failed to load'); setLoading(false); return; }
+      if (res.status === 410) { setError(t('share.expired')); setLoading(false); return; }
+      if (res.status === 404) { setError(t('share.notFound')); setLoading(false); return; }
+      if (!res.ok) { setError(j.error || t('share.failedToLoad')); setLoading(false); return; }
       setAsset(j.asset);
       setViews(j.views);
       setNeedPassword(false);
     } catch {
-      setError('Network error');
+      setError(t('share.networkError'));
     } finally {
       setLoading(false);
     }
@@ -90,19 +92,20 @@ export default function SharePage({ params }: { params: Promise<{ token: string 
           setLoading(false);
           return;
         }
-        if (res.status === 410) { setError('This share link has expired.'); setLoading(false); return; }
-        if (res.status === 404) { setError('Share link not found.'); setLoading(false); return; }
-        if (!res.ok) { setError(j.error || 'Failed to load'); setLoading(false); return; }
+        if (res.status === 410) { setError(t('share.expired')); setLoading(false); return; }
+        if (res.status === 404) { setError(t('share.notFound')); setLoading(false); return; }
+        if (!res.ok) { setError(j.error || t('share.failedToLoad')); setLoading(false); return; }
         setAsset(j.asset);
         setViews(j.views);
         setNeedPassword(false);
       } catch {
-        setError('Network error');
+        setError(t('share.networkError'));
       } finally {
         setLoading(false);
       }
     };
     doFetch();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
 
   const handlePasswordSubmit = (e: React.FormEvent) => {
@@ -115,7 +118,7 @@ export default function SharePage({ params }: { params: Promise<{ token: string 
   if (loading) {
     return (
       <div className="min-h-screen bg-app pb-safe flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-brand-accent" role="status" aria-label="Loading" />
+        <Loader2 className="h-8 w-8 animate-spin text-brand-accent" role="status" aria-label={t('share.loading')} />
       </div>
     );
   }
@@ -128,7 +131,7 @@ export default function SharePage({ params }: { params: Promise<{ token: string 
           <AlertCircle className="mx-auto mb-3 h-10 w-10 text-danger" />
           <p className="text-sm font-medium text-danger">{error}</p>
           <a href="/" className="mt-4 inline-block text-xs text-brand-accent hover:underline">
-            ← Back to Lazynext
+            {t('share.backToLazynext')}
           </a>
         </div>
       </div>
@@ -144,28 +147,28 @@ export default function SharePage({ params }: { params: Promise<{ token: string 
           className="max-w-md w-full rounded-2xl border border-line bg-surface p-6"
         >
           <Lock className="mx-auto mb-3 h-10 w-10 text-brand-accent" />
-          <h1 className="text-center text-lg font-bold text-fg">Password Required</h1>
+          <h1 className="text-center text-lg font-bold text-fg">{t('share.passwordRequired')}</h1>
           <p className="mt-1 text-center text-xs text-fg-faint">
-            This shared link requires a password to view.
+            {t('share.passwordSubtitle')}
           </p>
           <input
             type="password"
             value={password}
             onChange={(e) => { setPassword(e.target.value); setPasswordError(false); }}
-            placeholder="Enter password"
-            aria-label="Password"
+            placeholder={t('share.passwordPlaceholder')}
+            aria-label={t('share.passwordLabel')}
             className="mt-4 w-full rounded-xl border border-line bg-app px-4 py-2.5 text-sm text-fg placeholder:text-fg-placeholder focus:border-brand-accent focus:outline-none"
             autoFocus
           />
           {passwordError && (
-            <p role="alert" className="mt-2 text-xs text-danger">Incorrect password</p>
+            <p role="alert" className="mt-2 text-xs text-danger">{t('share.passwordError')}</p>
           )}
           <button
             type="submit"
             className="mt-4 w-full rounded-xl px-4 py-2.5 text-sm font-bold text-white"
             style={{ background: '#0064d9' }}
           >
-            View
+            {t('share.passwordSubmit')}
           </button>
         </form>
       </div>
@@ -192,9 +195,9 @@ export default function SharePage({ params }: { params: Promise<{ token: string 
         {/* Meta row */}
         <div className="mt-3 flex flex-wrap items-center gap-3 text-xs text-fg-faint">
           <span className="rounded bg-hover px-2 py-1 font-medium text-fg-faint">{asset.type}</span>
-          <span>Created {new Date(asset.createdAt).toLocaleDateString()}</span>
+          <span>{t('share.createdAt')} {new Date(asset.createdAt).toLocaleDateString()}</span>
           <span className="flex items-center gap-1">
-            <Eye className="h-3.5 w-3.5" /> {views} views
+            <Eye className="h-3.5 w-3.5" /> {views} {t('share.views')}
           </span>
         </div>
 
@@ -216,7 +219,7 @@ export default function SharePage({ params }: { params: Promise<{ token: string 
         {/* Metadata */}
         {meta && (
           <div className="mt-6">
-            <h2 className="text-sm font-bold text-fg">Details</h2>
+            <h2 className="text-sm font-bold text-fg">{t('share.details')}</h2>
             <pre className="mt-2 max-h-[60vh] overflow-auto whitespace-pre-wrap rounded-2xl border border-line bg-surface p-4 text-xs text-fg-faint">
               {JSON.stringify(meta, null, 2)}
             </pre>
@@ -226,7 +229,7 @@ export default function SharePage({ params }: { params: Promise<{ token: string 
         {/* Footer */}
         <div className="mt-8 border-t border-line pt-4">
           <a href="/" className="text-xs text-brand-accent hover:underline">
-            ← Back to Lazynext
+            {t('share.backToLazynext')}
           </a>
         </div>
       </div>

@@ -52,14 +52,14 @@ export default function AdCreativeImplementationIntentionDesignerPage() {
         }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Generation failed');
+      if (!res.ok) throw new Error(data.error || t('implementationIntentionDesigner.error'));
       setResult(data.result as ImplementationIntentionDesignerResult);
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
     } finally {
       setLoading(false);
     }
-  }, [productOrBrand, targetAudience, desiredAction, context]);
+  }, [productOrBrand, targetAudience, desiredAction, context, t]);
 
   const copyToClipboard = useCallback(async () => {
     if (!result) return;
@@ -77,13 +77,13 @@ export default function AdCreativeImplementationIntentionDesignerPage() {
     return (
       <div className="min-h-screen text-fg app-grid-bg bg-app">
         <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:rounded focus:bg-bg-card focus:px-3 focus:py-2 focus:text-sm focus:text-fg">
-          Skip to content
+          {t('implementationIntentionDesigner.skipToContent')}
         </a>
         <div className="mx-auto max-w-5xl px-4 py-8">
           <h1 className="text-2xl font-bold flex items-center gap-2">
-            <Sparkles className="w-6 h-6" /> Implementation-Intention Designer
+            <Sparkles className="w-6 h-6" /> {t('implementationIntentionDesigner.title')}
           </h1>
-          <p className="text-sm text-fg-muted mt-2">Sign in to build if-then action plans that turn intent into purchase.</p>
+          <p className="text-sm text-fg-muted mt-2">{t('implementationIntentionDesigner.signInPrompt')}</p>
         </div>
         <AuthModal open={true} onClose={() => {}} />
       </div>
@@ -93,22 +93,22 @@ export default function AdCreativeImplementationIntentionDesignerPage() {
   return (
     <div className="min-h-screen text-fg app-grid-bg bg-app">
       <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:rounded focus:bg-bg-card focus:px-3 focus:py-2 focus:text-sm focus:text-fg">
-        Skip to content
+        {t('implementationIntentionDesigner.skipToContent')}
       </a>
       <main id="main-content" className="mx-auto max-w-5xl px-4 py-8 space-y-6">
         <header>
           <h1 className="text-2xl font-bold flex items-center gap-2">
-            <Sparkles className="w-6 h-6" /> Implementation-Intention Designer
+            <Sparkles className="w-6 h-6" /> {t('implementationIntentionDesigner.title')}
           </h1>
           <p className="text-sm text-fg-muted mt-2">
-            Build &quot;if-then&quot; action plans that turn viewer intent into purchase.
+            {t('implementationIntentionDesigner.subtitle')}
           </p>
         </header>
 
         <div className="space-y-4">
           <div>
             <label htmlFor="aciidProduct" className="block text-sm font-medium mb-1">
-              Product or Brand
+              {t('implementationIntentionDesigner.productOrBrand')}
             </label>
             <input
               id="aciidProduct"
@@ -124,7 +124,7 @@ export default function AdCreativeImplementationIntentionDesignerPage() {
 
           <div>
             <label htmlFor="aciidAudience" className="block text-sm font-medium mb-1">
-              Target Audience
+              {t('implementationIntentionDesigner.targetAudience')}
             </label>
             <input
               id="aciidAudience"
@@ -176,7 +176,7 @@ export default function AdCreativeImplementationIntentionDesignerPage() {
             className="rounded-lg bg-brand-accent px-4 py-2 text-sm font-medium text-white hover:opacity-90 disabled:opacity-50 flex items-center gap-2"
           >
             {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
-            {loading ? 'Generating...' : `Generate (${CREDIT_COST} credits)`}
+            {loading ? t('implementationIntentionDesigner.generating') : `${t('implementationIntentionDesigner.generate')} (${CREDIT_COST})`}
           </button>
         </div>
 
@@ -188,13 +188,13 @@ export default function AdCreativeImplementationIntentionDesignerPage() {
 
         {!loading && !result && !error && (
           <div className="rounded-lg border border-border bg-bg-card p-6 text-center text-sm text-fg-muted">
-            Fill in the fields above and generate to see your if-then plans.
+            {t('implementationIntentionDesigner.noResults')}
           </div>
         )}
 
         {loading && (
           <div className="rounded-lg border border-border bg-bg-card p-6 flex items-center justify-center gap-2 text-sm text-fg-muted">
-            <Loader2 className="w-4 h-4 animate-spin" /> Building your if-then plans...
+            <Loader2 className="w-4 h-4 animate-spin" /> {t('implementationIntentionDesigner.generating')}
           </div>
         )}
 
@@ -202,7 +202,7 @@ export default function AdCreativeImplementationIntentionDesignerPage() {
           <div className="space-y-4">
             {result.dryRun && (
               <div role="status" className="rounded-lg bg-warning/10 border border-warning/30 px-3 py-2 text-sm text-warning">
-                Dry-run mode: showing sample content. Connect Atlas to generate real plans.
+                {t('implementationIntentionDesigner.dryRunNotice')}
               </div>
             )}
 
@@ -231,16 +231,16 @@ export default function AdCreativeImplementationIntentionDesignerPage() {
             {result.ifThenPlans.length > 0 && (
               <div className="space-y-3">
                 <p className="text-sm font-medium flex items-center gap-1">
-                  <GitBranch className="w-4 h-4 text-brand-accent" /> If-Then Plans
+                  <GitBranch className="w-4 h-4 text-brand-accent" /> {t('implementationIntentionDesigner.actionPlan')}
                 </p>
                 {result.ifThenPlans.map((plan: IfThenPlan, i: number) => (
                   <div key={i} className="rounded-lg border border-border bg-bg-card p-4 space-y-2">
                     <div>
-                      <p className="text-xs font-medium text-fg-muted mb-0.5">IF (Trigger)</p>
+                      <p className="text-xs font-medium text-fg-muted mb-0.5">{t('implementationIntentionDesigner.ifTrigger')}</p>
                       <p className="text-sm text-fg">{plan.trigger}</p>
                     </div>
                     <div>
-                      <p className="text-xs font-medium text-fg-muted mb-0.5">THEN (Action)</p>
+                      <p className="text-xs font-medium text-fg-muted mb-0.5">{t('implementationIntentionDesigner.thenAction')}</p>
                       <p className="text-sm text-fg">{plan.action}</p>
                     </div>
                     <div>
@@ -279,7 +279,7 @@ export default function AdCreativeImplementationIntentionDesignerPage() {
             {result.commitmentDevice && (
               <div className="rounded-lg border border-border bg-bg-card p-4 space-y-2">
                 <p className="text-sm font-medium flex items-center gap-1">
-                  <Lock className="w-4 h-4 text-success" /> Commitment Device
+                  <Lock className="w-4 h-4 text-success" /> {t('implementationIntentionDesigner.commitmentDevice')}
                 </p>
                 <p className="text-sm text-fg">{result.commitmentDevice}</p>
               </div>

@@ -30,6 +30,7 @@ import type {
   DeviceBreakdown,
   PublishOptions,
 } from './types';
+import { logger } from '../logger';
 
 /**
  * Safety margin applied when validating a new daily budget against a
@@ -79,7 +80,7 @@ export const googleAds: AdPlatformProvider = {
   },
 
   async pauseCampaign(campaignId: string): Promise<void> {
-    console.log(`[google] pauseCampaign: ${campaignId}`);
+    logger.info('google', 'pauseCampaign', { campaignId });
   },
 
   async getMetrics(campaignId: string): Promise<CampaignMetrics> {

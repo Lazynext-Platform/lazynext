@@ -14,6 +14,7 @@ import {
   extractJson,
   asStr,
   asStrArr,
+  isDryRun,
   CREATIVE_TIMEOUT_MS,
   CREATIVE_MAX_TOKENS,
 } from '@/lib/creative/toolkit';
@@ -177,6 +178,7 @@ export interface BrandVoiceResult {
     recommendation: string;
     expectedImpact: string;
   }>;
+  dryRun?: boolean;
 }
 
 // ── Constants ──
@@ -740,6 +742,8 @@ export async function analyzeBrandVoice(request: {
 
   // Try AI-enhanced profile extraction
   let aiProfile: Record<string, unknown> = {};
+  let usedDryRun = false;
+  if (!isDryRun()) {
   try {
     const parts: string[] = [
       `Brand name: ${brandName}`,
@@ -761,7 +765,11 @@ export async function analyzeBrandVoice(request: {
     );
     aiProfile = extractJson(raw);
   } catch {
+    usedDryRun = true;
     // Fall through to heuristic training result
+  }
+  } else {
+    usedDryRun = true;
   }
 
   // Merge AI + heuristic into final profile
@@ -890,5 +898,6 @@ export async function analyzeBrandVoice(request: {
     autoCorrections,
     insights,
     recommendations,
+    dryRun: usedDryRun,
   };
 }

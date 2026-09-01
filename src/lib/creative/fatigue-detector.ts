@@ -1,5 +1,6 @@
 import { atlasChat } from '@/lib/atlas';
 import { getLLMModel } from '@/lib/providers/model-helpers';
+import { isDryRun } from '@/lib/creative/toolkit';
 import type { PlanTier } from '@/lib/plan-tier';
 
 export const FATIGUE_COST = 5;
@@ -102,6 +103,7 @@ export interface FatigueReport {
     expectedImpact: string;
     timeframe: string;
   }>;
+  dryRun?: boolean;
 }
 
 const SIGNAL_WEIGHTS: Record<FatigueSignal, number> = {
@@ -494,7 +496,8 @@ export async function detectFatigue(creatives: CreativeMetrics[], planTier?: Pla
     timeframe: 'Ongoing',
   });
 
-  // Try AI enhancement
+  // Try AI enhancement (skip in dry-run mode)
+  if (!isDryRun()) {
   try {
     const model = getLLMModel(planTier);
     const summary = analyses.map((a) => `${a.creativeName} (${a.platform}): score=${a.fatigueScore}, level=${a.fatigueLevel}, signals=${a.activeSignals.map((s) => s.signal).join(',')}`).join('; ');
@@ -505,6 +508,7 @@ export async function detectFatigue(creatives: CreativeMetrics[], planTier?: Pla
     // We could parse AI response but for now we keep rule-based insights
   } catch {
     // Fall through to rule-based
+  }
   }
 
   return {
@@ -520,5 +524,6 @@ export async function detectFatigue(creatives: CreativeMetrics[], planTier?: Pla
     rotationSchedule,
     insights,
     recommendations,
+    dryRun: isDryRun(),
   };
 }

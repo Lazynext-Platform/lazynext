@@ -13,6 +13,7 @@ import {
   atlasChat,
   resolveModel,
   extractJson,
+  isDryRun,
   asStr,
   asNum,
   asStrArr,
@@ -109,6 +110,7 @@ export interface NarrativeAdResult {
   }>;
   script: string; // full script text
   adaptationNotes: string; // notes for adapting to different platforms
+  dryRun?: boolean;
 }
 
 // ── Narrative structures ──
@@ -366,11 +368,16 @@ export async function generateNarrativeAd(
   }
   parts.push('Output the narrative ad JSON now.');
 
-  const raw = await atlasChat(
-    [{ role: 'system', content: NARRATIVE_SYS_PROMPT }, { role: 'user', content: parts.join('\n') }],
-    resolveModel(planTier), CREATIVE_MAX_TOKENS, CREATIVE_TIMEOUT_MS,
-  );
-  const j = extractJson(raw);
+  if (isDryRun()) {
+    return generateFallbackNarrative(request, structure, genre, targetDuration);
+  }
+
+  try {
+    const raw = await atlasChat(
+      [{ role: 'system', content: NARRATIVE_SYS_PROMPT }, { role: 'user', content: parts.join('\n') }],
+      resolveModel(planTier), CREATIVE_MAX_TOKENS, CREATIVE_TIMEOUT_MS,
+    );
+    const j = extractJson(raw);
 
   // ── Characters ──
   const characters: NarrativeCharacter[] = (Array.isArray(j.characters) ? j.characters : [])
@@ -478,5 +485,100 @@ export async function generateNarrativeAd(
     storyboard,
     script: asStr(j.script),
     adaptationNotes: asStr(j.adaptationNotes),
+    dryRun: false,
+  };
+  } catch {
+    return generateFallbackNarrative(request, structure, genre, targetDuration);
+  }
+}
+
+function generateFallbackNarrative(
+  request: NarrativeAdRequest,
+  structure: { type: string; name: string; description: string; acts: number } | undefined,
+  genre: { type: string; name: string; description: string } | undefined,
+  targetDuration: number,
+): NarrativeAdResult {
+  const characters: NarrativeCharacter[] = [
+    {
+      name: 'Alex',
+      role: 'protagonist',
+      description: 'A relatable customer struggling with the problem the product solves.',
+      motivation: 'Wants a better solution that actually works.',
+      arc: 'Discovers the product and transforms their experience.',
+      personalityTraits: ['curious', 'skeptical', 'practical'],
+    },
+  ];
+  const scenes: NarrativeScene[] = [
+    {
+      act: 1,
+      sceneNumber: 1,
+      title: 'The Problem',
+      description: `Alex struggles with the issue ${request.productName} solves.`,
+      characters: ['Alex'],
+      setting: 'Everyday environment',
+      mood: 'frustrated',
+      durationSec: Math.round(targetDuration * 0.3),
+      visualDirection: 'Close-up on frustrated expression',
+      cameraAngle: 'eye-level',
+      transitionTo: 'cut',
+    },
+    {
+      act: 2,
+      sceneNumber: 2,
+      title: 'The Discovery',
+      description: `Alex discovers ${request.productName}.`,
+      characters: ['Alex'],
+      setting: 'Home',
+      mood: 'hopeful',
+      durationSec: Math.round(targetDuration * 0.4),
+      voiceover: 'Introducing ' + request.productName,
+      visualDirection: 'Product reveal shot',
+      cameraAngle: 'low-angle',
+      transitionTo: 'cut',
+    },
+    {
+      act: 3,
+      sceneNumber: 3,
+      title: 'The Resolution',
+      description: `Alex's life is improved thanks to ${request.productName}.`,
+      characters: ['Alex'],
+      setting: 'Outdoors',
+      mood: 'joyful',
+      durationSec: Math.round(targetDuration * 0.3),
+      voiceover: 'Experience the difference today.',
+      visualDirection: 'Wide shot of happy outcome',
+      cameraAngle: 'eye-level',
+      transitionTo: 'fade',
+    },
+  ];
+  return {
+    structure: request.structure,
+    genre: request.genre,
+    title: `${request.productName} — A ${genre?.name ?? request.genre} Story`,
+    logline: `A customer discovers ${request.productName} and transforms their daily life.`,
+    characters,
+    scenes,
+    totalDurationSec: targetDuration,
+    theme: 'Transformation through discovery',
+    moral: 'The right solution changes everything.',
+    emotionalJourney: [
+      { timeSec: 0, emotion: 'frustration', intensity: 70 },
+      { timeSec: Math.round(targetDuration * 0.4), emotion: 'hope', intensity: 60 },
+      { timeSec: Math.round(targetDuration * 0.7), emotion: 'joy', intensity: 85 },
+    ],
+    productIntegration: {
+      placement: 'Second act reveal',
+      revealType: 'Problem-solution transition',
+      ctaPlacement: 'Final scene voiceover',
+      brandMentions: [request.brandName || request.productName],
+    },
+    storyboard: scenes.map((s) => ({
+      sceneNumber: s.sceneNumber,
+      visualDescription: s.visualDirection,
+      durationSec: s.durationSec,
+    })),
+    script: `SCENE 1: ${scenes[0].description}\nSCENE 2: ${scenes[1].description}\nSCENE 3: ${scenes[2].description}`,
+    adaptationNotes: 'Adapt pacing and tone for each platform. Shorten to 15s for Stories; extend to 90s for YouTube.',
+    dryRun: true,
   };
 }

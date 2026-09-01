@@ -12,6 +12,7 @@ import {
   atlasChat,
   resolveModel,
   extractJson,
+  isDryRun,
   asStr,
   asStrArr as toolkitAsStrArr,
   CREATIVE_TIMEOUT_MS,
@@ -147,6 +148,7 @@ export interface PersonaEngineResult {
     ctaStyle: string;
     formatRecommendation: string;
   }>;
+  dryRun?: boolean;
 }
 
 // ── Credit cost ──
@@ -424,13 +426,18 @@ export async function generatePersonas(request: {
   }
   parts.push('Output the persona engine JSON now.');
 
-  const raw = await atlasChat(
-    [{ role: 'system', content: PERSONA_SYS }, { role: 'user', content: parts.join('\n') }],
-    resolveModel(request.planTier),
-    PERSONA_MAX_TOKENS,
-    CREATIVE_TIMEOUT_MS,
-  );
-  const j = extractJson(raw);
+  if (isDryRun()) {
+    return generateFallbackPersonas(request, count);
+  }
+
+  try {
+    const raw = await atlasChat(
+      [{ role: 'system', content: PERSONA_SYS }, { role: 'user', content: parts.join('\n') }],
+      resolveModel(request.planTier),
+      PERSONA_MAX_TOKENS,
+      CREATIVE_TIMEOUT_MS,
+    );
+    const j = extractJson(raw);
 
   const personas: Persona[] = (Array.isArray(j.personas) ? j.personas : [])
     .slice(0, 5)
@@ -467,6 +474,89 @@ export async function generatePersonas(request: {
     targetingRecommendations,
     insights,
     creativeAdaptations,
+    dryRun: false,
+  };
+  } catch {
+    return generateFallbackPersonas(request, count);
+  }
+}
+
+function generateFallbackPersonas(
+  request: { productName: string; productDescription?: string; market?: string },
+  count: number,
+): PersonaEngineResult {
+  const personas: Persona[] = ([
+    {
+      personaId: 'persona_1',
+      name: 'Practical Penny',
+      archetype: 'decision_maker' as PersonaArchetype,
+      tagline: 'Value-driven and practical',
+      description: 'A budget-conscious decision maker who values practical solutions.',
+      demographics: { ageRange: { min: 30, max: 45 }, gender: 'female' as const, incomeLevel: 'middle' as const, education: 'bachelors' as const, location: 'urban' as const },
+      psychographics: { values: ['practicality', 'reliability'], interests: ['efficiency', 'value', 'reviews'], lifestyle: ['busy professional'], personalityTraits: ['analytical', 'cautious'], attitudes: ['skeptical'], opinions: ['value over flash'] },
+      painPoints: [{ painId: 'pp_1', category: 'functional' as const, description: 'Wastes time on ineffective solutions', severity: 7, frequency: 'weekly' as const }],
+      channelAffinities: [{ channel: 'facebook' as ChannelPreference, affinity: 80, preferredContent: ['video' as ContentPreference], bestTimeToReach: 'evening', avgSessionDuration: 20 }],
+      buyingBehavior: { motivation: 'price' as BuyingMotivation, researchDepth: 'moderate' as const, decisionSpeed: 'considered' as const, priceSensitivity: 7, brandLoyalty: 5, reviewReliance: 8, socialProofReliance: 7 },
+      keyMessages: ['Save time and money', 'Proven results'],
+      preferredTone: ['professional', 'friendly'],
+      preferredFormats: ['video' as ContentPreference, 'image' as ContentPreference],
+      objections: [{ objection: 'Price too high', rebuttal: 'Long-term savings justify the cost' }],
+      successStories: ['Value-focused brands with clear ROI messaging'],
+      createdAt: new Date().toISOString(),
+    },
+    {
+      personaId: 'persona_2',
+      name: 'Trendsetter Tom',
+      archetype: 'influencer' as PersonaArchetype,
+      tagline: 'Always ahead of the curve',
+      description: 'An early adopter who loves trying new products before others.',
+      demographics: { ageRange: { min: 22, max: 35 }, gender: 'male' as const, incomeLevel: 'upper_middle' as const, education: 'bachelors' as const, location: 'urban' as const },
+      psychographics: { values: ['innovation', 'status'], interests: ['trends', 'technology', 'social media'], lifestyle: ['social and active'], personalityTraits: ['adventurous', 'social'], attitudes: ['open-minded'], opinions: ['new is better'] },
+      painPoints: [{ painId: 'pp_2', category: 'social' as const, description: 'FOMO on the latest products', severity: 5, frequency: 'daily' as const }],
+      channelAffinities: [{ channel: 'tiktok' as ChannelPreference, affinity: 90, preferredContent: ['video' as ContentPreference], bestTimeToReach: 'late_night', avgSessionDuration: 45 }],
+      buyingBehavior: { motivation: 'innovation' as BuyingMotivation, researchDepth: 'minimal' as const, decisionSpeed: 'impulse' as const, priceSensitivity: 4, brandLoyalty: 3, reviewReliance: 5, socialProofReliance: 8 },
+      keyMessages: ['Be the first to try', 'Stay ahead of trends'],
+      preferredTone: ['playful', 'casual'],
+      preferredFormats: ['video' as ContentPreference, 'interactive' as ContentPreference],
+      objections: [{ objection: 'Unproven product', rebuttal: 'Early adopters get the best results' }],
+      successStories: ['Trendy brands with viral marketing'],
+      createdAt: new Date().toISOString(),
+    },
+  ] as Persona[]).slice(0, count);
+
+  return {
+    personas,
+    overlaps: computeAllOverlaps(personas),
+    targetingRecommendations: [
+      {
+        platform: 'facebook',
+        audienceSize: 500000,
+        targetingCriteria: ['Lookalike audiences', 'Interest: shopping'],
+        lookalikePotential: 70,
+        estimatedCpm: 8.5,
+        bestAdFormats: ['video', 'carousel'],
+        recommended: true,
+        reasoning: 'Practical Penny responds well to value-focused Facebook ads.',
+      },
+    ],
+    insights: [
+      {
+        insightId: 'insight_1',
+        type: 'audience_insight',
+        title: 'Value messaging resonates across personas',
+        description: 'Both personas respond to clear value propositions.',
+        actionableRecommendation: 'Lead with value in ad creatives for this product.',
+      },
+    ],
+    creativeAdaptations: personas.map((p) => ({
+      personaId: p.personaId,
+      personaName: p.name,
+      hookStyle: 'Question-based hook',
+      toneStyle: 'Conversational',
+      ctaStyle: 'Soft CTA',
+      formatRecommendation: '15-30s vertical video',
+    })),
+    dryRun: true,
   };
 }
 

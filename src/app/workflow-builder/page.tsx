@@ -657,18 +657,18 @@ export default function WorkflowBuilderPage() {
                   <div>
                     <label className="text-xs text-fg-muted" htmlFor="ctx-content">{t('workflowBuilder.field.contentType')}</label>
                     <select id="ctx-content" value={execCtx.contentType || ''} onChange={(e) => setExecCtx({ ...execCtx, contentType: e.target.value })} className="w-full text-xs rounded border border-border bg-input px-2 py-1">
-                      <option value="video">Video</option>
-                      <option value="image">Image</option>
-                      <option value="carousel">Carousel</option>
+                      <option value="video">{t('workflowBuilder.contentType.video')}</option>
+                      <option value="image">{t('workflowBuilder.contentType.image')}</option>
+                      <option value="carousel">{t('workflowBuilder.contentType.carousel')}</option>
                     </select>
                   </div>
                   <div>
                     <label className="text-xs text-fg-muted" htmlFor="ctx-budget">{t('workflowBuilder.field.budgetTier')}</label>
                     <select id="ctx-budget" value={execCtx.budgetTier || ''} onChange={(e) => setExecCtx({ ...execCtx, budgetTier: e.target.value as 'free' | 'starter' | 'pro' | 'elite' })} className="w-full text-xs rounded border border-border bg-input px-2 py-1">
-                      <option value="free">Free</option>
-                      <option value="starter">Starter</option>
-                      <option value="pro">Pro</option>
-                      <option value="elite">Elite</option>
+                      <option value="free">{t('pricing.packFree')}</option>
+                      <option value="starter">{t('pricing.packStarter')}</option>
+                      <option value="pro">{t('pricing.packPro')}</option>
+                      <option value="elite">{t('pricing.packElite')}</option>
                     </select>
                   </div>
                   <div className="flex items-center gap-2">

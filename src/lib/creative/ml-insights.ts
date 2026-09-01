@@ -1,4 +1,4 @@
-import { atlasChat, resolveModel } from '@/lib/creative/toolkit';
+import { atlasChat, resolveModel, isDryRun } from '@/lib/creative/toolkit';
 import type { PlanTier } from '@/lib/plan-tier';
 import { prisma } from '@/lib/prisma';
 
@@ -82,6 +82,7 @@ export interface MLInsightsResult {
   insights: MLInsight[];
   predictiveFactors: PredictiveFactor[];
   recommendations: MLRecommendation[];
+  dryRun?: boolean;
 }
 
 const ML_INSIGHTS_SYS = `You are a creative performance analyst. Analyze creative ad performance data and identify patterns, element attribution, clusters, and actionable insights. Return a JSON object matching the MLInsightsResult structure with fields: analysisDate, totalCreativesAnalyzed, topPerformersCount, bottomPerformersCount, elementAttribution (array of {elementId, elementType, elementValue, impactScore -100 to 100, confidenceInterval {low, high}, sampleSize, recommendation}), performancePatterns (array of {patternId, name, description, elements, frequency, avgPerformance, confidenceScore 0-100, examples}), creativeClusters (array of {clusterId, name, description, memberCount, avgPerformance, commonElements, distinguishingFeatures, recommendedActions}), insights (array of {insightId, type "strength"|"weakness"|"opportunity"|"threat", title, description, evidence, confidenceScore 0-100, actionableRecommendation}), predictiveFactors (array of {factor, importance 0-100, description, optimalRange}), recommendations (array of {priority "high"|"medium"|"low", category, recommendation, expectedImpact, implementation}). Output ONLY the JSON.`;
@@ -385,6 +386,7 @@ export async function analyzeCreativePerformance(
   const predictiveFactors = calculatePredictiveFactors(attributions);
 
   // Use AI to enhance insights if plan tier supports it
+  if (!isDryRun()) {
   try {
     const model = resolveModel(planTier);
     const summary = `Analyzed ${creatives.length} creatives. Top elements: ${attributions.slice(0, 3).map((a) => `${a.elementType}:${a.elementValue}(${a.impactScore})`).join(', ')}. Patterns: ${patterns.length}. Clusters: ${clusters.length}.`;
@@ -419,10 +421,12 @@ export async function analyzeCreativePerformance(
           { priority: 'medium' as const, category: 'Content Pacing', recommendation: 'Match pacing to platform audience preferences', expectedImpact: '+10-15% retention', implementation: 'Analyze cluster performance by pacing' },
           { priority: 'low' as const, category: 'CTA Optimization', recommendation: 'Test alternative CTA styles', expectedImpact: '+5-10% conversion', implementation: 'A/B test top vs bottom CTA types' },
         ],
+        dryRun: false,
       };
     }
   } catch {
     // Fall through to default
+  }
   }
 
   return {
@@ -440,5 +444,6 @@ export async function analyzeCreativePerformance(
       { priority: 'medium', category: 'Content Pacing', recommendation: 'Match pacing to platform audience preferences', expectedImpact: '+10-15% retention', implementation: 'Analyze cluster performance by pacing' },
       { priority: 'low', category: 'CTA Optimization', recommendation: 'Test alternative CTA styles', expectedImpact: '+5-10% conversion', implementation: 'A/B test top vs bottom CTA types' },
     ],
+    dryRun: true,
   };
 }

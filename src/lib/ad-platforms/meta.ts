@@ -23,6 +23,7 @@ import type {
   TimeSeriesPoint,
   PublishOptions,
 } from './types';
+import { logger } from '../logger';
 
 /**
  * Safety margin applied when validating a new daily budget against a
@@ -76,7 +77,7 @@ export const metaAds: AdPlatformProvider = {
 
   async pauseCampaign(campaignId: string): Promise<void> {
     // Real implementation: POST with status=PAUSED
-    console.log(`[meta] pauseCampaign: ${campaignId}`);
+    logger.info('meta', 'pauseCampaign', { campaignId });
   },
 
   async getMetrics(campaignId: string): Promise<CampaignMetrics> {

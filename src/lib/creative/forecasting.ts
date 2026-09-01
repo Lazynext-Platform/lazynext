@@ -12,6 +12,7 @@ import {
   atlasChat,
   resolveModel,
   extractJson,
+  isDryRun,
   asStr,
   asStrArr as toolkitAsStrArr,
   asNum,
@@ -134,6 +135,7 @@ export interface ForecastResult {
     timeframe: string;
   }>;
   modelAccuracy: number; // 0-100, based on historical data availability
+  dryRun?: boolean;
 }
 
 // ── Constants & metadata ──
@@ -797,7 +799,9 @@ export async function generateForecast(request: {
   let insights: ForecastResult['insights'] = [];
   let recommendations: ForecastResult['recommendations'] = [];
   let audienceFitScores = baseFitScores;
+  let usedDryRun = false;
 
+  if (!isDryRun()) {
   try {
     const model = resolveModel(request.planTier);
     const parts: string[] = [
@@ -883,7 +887,11 @@ export async function generateForecast(request: {
       });
     }
   } catch {
+    usedDryRun = true;
     // Fall through to defaults — forecasting is still usable without LLM enrichment.
+  }
+  } else {
+    usedDryRun = true;
   }
 
   // ── Default insights if none provided ──
@@ -918,6 +926,7 @@ export async function generateForecast(request: {
     insights,
     recommendations,
     modelAccuracy,
+    dryRun: usedDryRun,
   };
 }
 

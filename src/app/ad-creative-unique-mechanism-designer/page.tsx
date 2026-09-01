@@ -242,15 +242,15 @@ export default function AdCreativeUniqueMechanismDesignerPage() {
                 <FileText className="w-4 h-4 text-warning" /> Ad Copy
               </p>
               <div>
-                <p className="text-xs font-medium text-fg-muted mb-0.5">Headline</p>
+                <p className="text-xs font-medium text-fg-muted mb-0.5">{t('uniqueMechanismDesigner.mechanismName')}</p>
                 <p className="text-sm text-fg">{result.adCopy.headline}</p>
               </div>
               <div>
-                <p className="text-xs font-medium text-fg-muted mb-0.5">Body</p>
+                <p className="text-xs font-medium text-fg-muted mb-0.5">{t('uniqueMechanismDesigner.howItWorks')}</p>
                 <p className="text-sm text-fg">{result.adCopy.body}</p>
               </div>
               <div>
-                <p className="text-xs font-medium text-fg-muted mb-0.5">CTA</p>
+                <p className="text-xs font-medium text-fg-muted mb-0.5">{t('uniqueMechanismDesigner.competitiveEdge')}</p>
                 <p className="text-sm text-fg">{result.adCopy.cta}</p>
               </div>
             </div>

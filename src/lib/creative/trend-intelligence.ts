@@ -7,6 +7,7 @@
  */
 import { atlasChat } from '@/lib/atlas';
 import { getLLMModel } from '@/lib/providers/model-helpers';
+import { isDryRun } from '@/lib/creative/toolkit';
 import type { PlanTier } from '@/lib/plan-tier';
 
 export const TREND_INTELLIGENCE_COST = 6;
@@ -102,6 +103,7 @@ export interface TrendIntelligenceResult {
     bestDayOfWeek: string;
     trendingWindow: string;
   };
+  dryRun?: boolean;
 }
 
 // ── Lookup functions ──
@@ -194,6 +196,10 @@ export async function generateTrendIntelligence(params: {
 }): Promise<TrendIntelligenceResult> {
   const model = getLLMModel(params.planTier);
   const platforms = (params.platforms || ['meta', 'tiktok', 'instagram']).join(', ');
+
+  if (isDryRun()) {
+    return { ...generateFallbackTrends(params), dryRun: true };
+  }
 
   const sys = `You are a trend intelligence analyst for e-commerce advertising. Identify current trends, opportunities, and seasonal events relevant to the product niche. Return JSON only.
 {
@@ -299,7 +305,7 @@ Timeframe: ${params.timeframe || 'short_term'}`;
       },
     };
   } catch {
-    return generateFallbackTrends(params);
+    return { ...generateFallbackTrends(params), dryRun: true };
   }
 }
 

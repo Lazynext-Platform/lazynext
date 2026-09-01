@@ -14,6 +14,8 @@
  *   ALERT_WEBHOOK_SECRET — Optional secret token sent as Authorization header
  */
 
+import { logger } from '../logger';
+
 export interface AlertEvent {
   level: 'critical' | 'warning' | 'info';
   category: 'pipeline' | 'credits' | 'provider' | 'auth' | 'system';
@@ -37,9 +39,8 @@ export async function sendAlert(event: AlertEvent): Promise<void> {
   };
 
   if (!webhookUrl) {
-    // No webhook configured — log to console as a structured alert
-    const prefix = event.level === 'critical' ? '[ALERT-CRITICAL]' : event.level === 'warning' ? '[ALERT-WARNING]' : '[ALERT-INFO]';
-    console.log(JSON.stringify({ ...payload, prefix }));
+    // No webhook configured — log as a structured alert
+    logger.info('alert', event.message, payload);
     return;
   }
 

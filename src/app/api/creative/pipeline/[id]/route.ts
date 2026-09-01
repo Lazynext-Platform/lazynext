@@ -41,7 +41,7 @@ async function loadPipeline(uid: string, id: string): Promise<PipelineState | nu
     if (state && typeof state === 'object' && 'pipelineId' in state) {
       const parsed = state as PipelineState;
       // Sync the DB version onto the state for optimistic locking
-      parsed.version = (run as any).version ?? parsed.version ?? 0;
+      parsed.version = run.version ?? parsed.version ?? 0;
       return parsed;
     }
   } catch {
@@ -221,7 +221,7 @@ async function __byokPOST(req: Request, { params }: { params: Promise<{ id: stri
         }
 
         // Execute all in_progress stages (concurrently for parallel stages)
-        const planTier = await getUserPlanTier(uid).catch(() => undefined as any);
+        const planTier = await getUserPlanTier(uid).catch(() => undefined);
         const stageResults = await Promise.allSettled(
           inProgressStages.map(async (stageName) => {
             await recordStep(state.pipelineId, stageName, 'running').catch(() => {});
@@ -292,7 +292,7 @@ async function __byokPOST(req: Request, { params }: { params: Promise<{ id: stri
       // immediately without waiting for a client request. Bounded by time to
       // avoid exceeding the worker maxDuration.
       const autoAdvanceDeadline = Date.now() + 75_000; // 75s budget for auto-advance chain
-      const autoAdvancePlanTier = await getUserPlanTier(uid).catch(() => undefined as any);
+      const autoAdvancePlanTier = await getUserPlanTier(uid).catch(() => undefined);
       let autoAdvanceCount = 0;
       while (state.status === 'running' && state.currentStage && state.currentStage !== 'completed') {
         // Check if the current stage has autoAdvance enabled
@@ -485,7 +485,7 @@ async function __byokPOST(req: Request, { params }: { params: Promise<{ id: stri
             stage: stage as PipelineStage,
             config: state.config,
             context: ctx,
-            planTier: await getUserPlanTier(uid).catch(() => undefined as any),
+            planTier: await getUserPlanTier(uid).catch(() => undefined),
             userId: uid,
           });
           const stageIdx = state.stageResults.findIndex((r) => r.stage === stage);
@@ -503,7 +503,7 @@ async function __byokPOST(req: Request, { params }: { params: Promise<{ id: stri
 
           // Auto-advance after successful retry (same loop as 'advance' case)
           const retryDeadline = Date.now() + 75_000;
-          const retryPlanTier = await getUserPlanTier(uid).catch(() => undefined as any);
+          const retryPlanTier = await getUserPlanTier(uid).catch(() => undefined);
           while (state.status === 'running' && state.currentStage && state.currentStage !== 'completed') {
             const currentStageConfig = state.config.stages.find((s: any) => s.stage === state.currentStage);
             if (!currentStageConfig?.autoAdvance) break;
@@ -633,7 +633,7 @@ async function __byokPOST(req: Request, { params }: { params: Promise<{ id: stri
           stage: 'publish',
           config: state.config,
           context: ctx,
-          planTier: await getUserPlanTier(uid).catch(() => undefined as any),
+          planTier: await getUserPlanTier(uid).catch(() => undefined),
           userId: uid,
         });
         const stageIdx = state.stageResults.findIndex((r) => r.stage === 'publish');

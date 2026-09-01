@@ -59,14 +59,14 @@ export default function AdCreativePainOfPayingDesignerPage() {
         }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Generation failed');
+      if (!res.ok) throw new Error(data.error || t('painOfPayingDesigner.error'));
       setResult(data.result as PainOfPayingDesignerResult);
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
     } finally {
       setLoading(false);
     }
-  }, [productOrBrand, price, targetAudience, paymentFrictionPoints]);
+  }, [productOrBrand, price, targetAudience, paymentFrictionPoints, t]);
 
   const copyToClipboard = useCallback(async () => {
     if (!result) return;
@@ -84,13 +84,13 @@ export default function AdCreativePainOfPayingDesignerPage() {
     return (
       <div className="min-h-screen text-fg app-grid-bg bg-app">
         <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:rounded focus:bg-bg-card focus:px-3 focus:py-2 focus:text-sm focus:text-fg">
-          Skip to content
+          {t('painOfPayingDesigner.skipToContent')}
         </a>
         <div className="mx-auto max-w-5xl px-4 py-8">
           <h1 className="text-2xl font-bold flex items-center gap-2">
-            <Sparkles className="w-6 h-6" /> Pain-of-Paying Smoother
+            <Sparkles className="w-6 h-6" /> {t('painOfPayingDesigner.title')}
           </h1>
-          <p className="text-sm text-fg-muted mt-2">Sign in to reduce the psychological friction of the payment moment.</p>
+          <p className="text-sm text-fg-muted mt-2">{t('painOfPayingDesigner.signInPrompt')}</p>
         </div>
         <AuthModal open={true} onClose={() => {}} />
       </div>
@@ -100,22 +100,22 @@ export default function AdCreativePainOfPayingDesignerPage() {
   return (
     <div className="min-h-screen text-fg app-grid-bg bg-app">
       <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:rounded focus:bg-bg-card focus:px-3 focus:py-2 focus:text-sm focus:text-fg">
-        Skip to content
+        {t('painOfPayingDesigner.skipToContent')}
       </a>
       <main id="main-content" className="mx-auto max-w-5xl px-4 py-8 space-y-6">
         <header>
           <h1 className="text-2xl font-bold flex items-center gap-2">
-            <Sparkles className="w-6 h-6" /> Pain-of-Paying Smoother
+            <Sparkles className="w-6 h-6" /> {t('painOfPayingDesigner.title')}
           </h1>
           <p className="text-sm text-fg-muted mt-2">
-            Reduce the psychological friction of the payment moment with proven strategies.
+            {t('painOfPayingDesigner.subtitle')}
           </p>
         </header>
 
         <div className="space-y-4">
           <div>
             <label htmlFor="acppdProduct" className="block text-sm font-medium mb-1">
-              Product or Brand
+              {t('painOfPayingDesigner.productOrBrand')}
             </label>
             <input
               id="acppdProduct"
@@ -147,7 +147,7 @@ export default function AdCreativePainOfPayingDesignerPage() {
 
           <div>
             <label htmlFor="acppdAudience" className="block text-sm font-medium mb-1">
-              Target Audience
+              {t('painOfPayingDesigner.targetAudience')}
             </label>
             <input
               id="acppdAudience"
@@ -183,7 +183,7 @@ export default function AdCreativePainOfPayingDesignerPage() {
             className="rounded-lg bg-brand-accent px-4 py-2 text-sm font-medium text-white hover:opacity-90 disabled:opacity-50 flex items-center gap-2"
           >
             {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
-            {loading ? 'Generating...' : `Generate (${CREDIT_COST} credits)`}
+            {loading ? t('painOfPayingDesigner.generating') : `${t('painOfPayingDesigner.generate')} (${CREDIT_COST})`}
           </button>
         </div>
 
@@ -195,13 +195,13 @@ export default function AdCreativePainOfPayingDesignerPage() {
 
         {!loading && !result && !error && (
           <div className="rounded-lg border border-border bg-bg-card p-6 text-center text-sm text-fg-muted">
-            Fill in the fields above and generate to see your pain-of-paying strategies.
+            {t('painOfPayingDesigner.noResults')}
           </div>
         )}
 
         {loading && (
           <div className="rounded-lg border border-border bg-bg-card p-6 flex items-center justify-center gap-2 text-sm text-fg-muted">
-            <Loader2 className="w-4 h-4 animate-spin" /> Smoothing the pain of paying...
+            <Loader2 className="w-4 h-4 animate-spin" /> {t('painOfPayingDesigner.generating')}
           </div>
         )}
 
@@ -209,7 +209,7 @@ export default function AdCreativePainOfPayingDesignerPage() {
           <div className="space-y-4">
             {result.dryRun && (
               <div role="status" className="rounded-lg bg-warning/10 border border-warning/30 px-3 py-2 text-sm text-warning">
-                Dry-run mode: showing sample content. Connect Atlas to generate real strategies.
+                {t('painOfPayingDesigner.dryRunNotice')}
               </div>
             )}
 
@@ -238,7 +238,7 @@ export default function AdCreativePainOfPayingDesignerPage() {
             {result.strategies.length > 0 && (
               <div className="space-y-3">
                 <p className="text-sm font-medium flex items-center gap-1">
-                  <Shield className="w-4 h-4 text-brand-accent" /> Strategies
+                  <Shield className="w-4 h-4 text-brand-accent" /> {t('painOfPayingDesigner.smootherPathway')}
                 </p>
                 {result.strategies.map((strategy: PainOfPayingStrategy, i: number) => (
                   <div key={i} className="rounded-lg border border-border bg-bg-card p-4 space-y-2">

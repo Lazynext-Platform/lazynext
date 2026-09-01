@@ -7,6 +7,15 @@ import { deductCredits, refundCredits } from '@/lib/credits';
 import { getUserPlanTier } from '@/lib/plan-tier';
 import { randomUUID } from 'crypto';
 import { prisma } from '@/lib/prisma';
+import type { Prisma } from '@prisma/client';
+
+/** Error thrown by executeChain when a step fails, carrying partial results and context. */
+interface ChainStepError extends Error {
+  stepIndex?: number;
+  skillId?: string;
+  completedResults?: SkillExecutionResult[];
+  remainingSteps?: number;
+}
 
 export const maxDuration = 60;
 
@@ -56,7 +65,7 @@ async function __byokPOST(req: Request) {
         userId: uid,
         workflowType: 'skill-chain',
         status: 'running',
-        input: { chainId, inputs, chainName: chain.name } as any,
+        input: { chainId, inputs, chainName: chain.name } as Prisma.InputJsonValue,
       },
     });
   } catch (e) {
@@ -73,7 +82,7 @@ async function __byokPOST(req: Request) {
         where: { id: runId },
         data: {
           status: 'completed',
-          output: { results, finalOutput, chainId } as any,
+          output: { results, finalOutput, chainId } as unknown as Prisma.InputJsonValue,
           completedAt: new Date(),
         },
       });
@@ -84,8 +93,8 @@ async function __byokPOST(req: Request) {
     return NextResponse.json({ results, finalOutput, runId });
   } catch (e) {
     // Partial-failure handling: refund only the credits for unexecuted steps
-    const completedResults = (e as any)?.completedResults as SkillExecutionResult[] | undefined;
-    const remainingSteps = (e as any)?.remainingSteps as number | undefined;
+    const completedResults = (e as ChainStepError)?.completedResults;
+    const remainingSteps = (e as ChainStepError)?.remainingSteps;
     const message = e instanceof Error ? e.message : String(e);
     console.error(`[creative/skills/chain] execute ${chainId} error:`, message);
 
@@ -110,7 +119,7 @@ async function __byokPOST(req: Request) {
         data: {
           status: 'failed',
           error: message,
-          output: completedResults ? { partialResults: completedResults, chainId } as any : undefined,
+          output: completedResults ? { partialResults: completedResults, chainId } as unknown as Prisma.InputJsonValue : undefined,
           completedAt: new Date(),
         },
       });
@@ -124,8 +133,8 @@ async function __byokPOST(req: Request) {
         error: 'chain_step_failed',
         runId,
         partialResults: completedResults,
-        failedAtStep: (e as any)?.stepIndex,
-        failedSkillId: (e as any)?.skillId,
+        failedAtStep: (e as ChainStepError)?.stepIndex,
+        failedSkillId: (e as ChainStepError)?.skillId,
       }, { status: 500 });
     }
 
