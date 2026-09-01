@@ -1021,6 +1021,9 @@ export const idMessages = {
       autoDeploySimulated: 'Deploy Disimulasikan',
       autoDeployed: 'Dideploy ke Platform Iklan',
       autoDeployFailed: 'Deploy gagal',
+      tikTok: 'TikTok',
+      instagram: 'Instagram',
+      viralAnalysis: 'Analisis Viral',
     },
     ads: {
       title: 'Kampanye iklan',
@@ -1163,6 +1166,8 @@ export const idMessages = {
       noteLabel: 'Catatan persetujuan',
       signInRequired: 'Silakan masuk untuk melihat antrian persetujuan Anda.',
       signIn: 'Masuk',
+      loadError: 'Gagal memuat persetujuan',
+      actionError: 'Tindakan gagal',
     },
     abTestResults: {
       title: 'Hasil A/B Test',
@@ -2350,6 +2355,7 @@ export const idMessages = {
     creditUsage: 'Penggunaan Kredit per Kategori',
     topCreatives: 'Kreatif Teratas',
     noData: 'Tidak ada data',
+    notEnoughData: 'Data tidak cukup',
     creditProjection: 'Proyeksi Kredit',
     spent30d: 'Dihabiskan (30h)',
     dailyAvg: 'Rata-rata Harian',
@@ -2664,6 +2670,11 @@ export const idMessages = {
     brief: 'Brief',
     script: 'Skrip',
     storyboard: 'Storyboard',
+    brandName: 'Nama Merek',
+    tone: 'Nada (dipisahkan koma)',
+    voice: 'Suara',
+    visual: 'Visual',
+    messaging: 'Pesan',
   },
   smartCalendar: {
     title: 'Kalender Pintar',
@@ -3785,6 +3796,8 @@ export const idMessages = {
     copied: 'Disalin',
     error: 'Rotasi kreatif gagal',
     dryRunNotice: 'Mode uji-coba — menggunakan rotasi templat',
+    credits: 'kredit',
+    days: 'hari',
   },
   brandVoiceConsistencyChecker: {
     title: 'Pemeriksa Konsistensi Suara Merek',

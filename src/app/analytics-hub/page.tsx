@@ -87,7 +87,8 @@ function MiniBarChart({ data, max, color }: { data: Array<{ label: string; value
 }
 
 function Sparkline({ data, color }: { data: number[]; color: string }) {
-  if (data.length < 2) return <div className="h-12 flex items-center text-xs text-fg-muted">Not enough data</div>;
+  const { t } = useI18n();
+  if (data.length < 2) return <div className="h-12 flex items-center text-xs text-fg-muted">{t('analyticsHub.notEnoughData')}</div>;
   const max = Math.max(...data, 1);
   const min = Math.min(...data, 0);
   const range = max - min || 1;

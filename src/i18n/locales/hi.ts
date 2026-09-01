@@ -1040,6 +1040,9 @@ export const hiMessages = {
       autoDeploySimulated: 'तैनाती सिमुलेटेड',
       autoDeployed: 'विज्ञापन प्लेटफ़ॉर्म पर तैनात',
       autoDeployFailed: 'तैनाती विफल',
+      tikTok: 'TikTok',
+      instagram: 'Instagram',
+      viralAnalysis: 'वायरल विश्लेषण',
     },
     ads: {
       title: 'विज्ञापन अभियान',
@@ -1184,6 +1187,8 @@ export const hiMessages = {
       noteLabel: 'स्वीकृति टिप्पणी',
       signInRequired: 'अपनी स्वीकृति कतार देखने के लिए कृपया साइन इन करें।',
       signIn: 'साइन इन',
+      loadError: 'अनुमोदन लोड करने में विफल',
+      actionError: 'कार्रवाई विफल',
     },
     abTestResults: {
       title: 'A/B परीक्षण परिणाम',
@@ -2371,6 +2376,7 @@ export const hiMessages = {
     creditUsage: 'श्रेणी अनुसार क्रेडिट उपयोग',
     topCreatives: 'शीर्ष रचनाएं',
     noData: 'कोई डेटा उपलब्ध नहीं',
+    notEnoughData: 'पर्याप्त डेटा नहीं',
     creditProjection: 'क्रेडिट अनुमान',
     spent30d: 'खर्च (30 दिन)',
     dailyAvg: 'दैनिक औसत खर्च',
@@ -2685,6 +2691,11 @@ export const hiMessages = {
     brief: 'ब्रीफ',
     script: 'स्क्रिप्ट',
     storyboard: 'स्टोरीबोर्ड',
+    brandName: 'ब्रांड नाम',
+    tone: 'टोन (कॉमा से अलग)',
+    voice: 'आवाज़',
+    visual: 'दृश्य',
+    messaging: 'संदेश',
   },
   smartCalendar: {
     title: 'स्मार्ट कैलेंडर',
@@ -3806,6 +3817,8 @@ export const hiMessages = {
     copied: 'कॉपी हो गया',
     error: 'क्रिएटिव रोटेशन विफल',
     dryRunNotice: 'ड्राई-रन मोड — टेम्पलेट रोटेशन का उपयोग',
+    credits: 'क्रेडिट',
+    days: 'दिन',
   },
   brandVoiceConsistencyChecker: {
     title: 'ब्रांड आवाज़ संगतता जांचकर्ता',

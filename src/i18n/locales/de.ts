@@ -1040,6 +1040,9 @@ export const deMessages = {
       autoDeploySimulated: 'Deployment simuliert',
       autoDeployed: 'Auf Werbeplattform bereitgestellt',
       autoDeployFailed: 'Deployment fehlgeschlagen',
+      tikTok: 'TikTok',
+      instagram: 'Instagram',
+      viralAnalysis: 'Viral-Analyse',
     },
     ads: {
       title: 'Anzeigenkampagnen',
@@ -1184,6 +1187,8 @@ export const deMessages = {
       noteLabel: 'Genehmigungsnotiz',
       signInRequired: 'Bitte melden Sie sich an, um Ihre Genehmigungswarteschlange anzuzeigen.',
       signIn: 'Anmelden',
+      loadError: 'Genehmigungen konnten nicht geladen werden',
+      actionError: 'Aktion fehlgeschlagen',
     },
     abTestResults: {
       title: 'A/B-Test Ergebnisse',
@@ -2371,6 +2376,7 @@ export const deMessages = {
     creditUsage: 'Credit-Nutzung nach Kategorie',
     topCreatives: 'Top-Kreatives',
     noData: 'Keine Daten verfügbar',
+    notEnoughData: 'Nicht genügend Daten',
     creditProjection: 'Credit-Prognose',
     spent30d: 'Ausgegeben (30T)',
     dailyAvg: 'Tägliche Durchschnittsausgaben',
@@ -2685,6 +2691,11 @@ export const deMessages = {
     brief: 'Briefing',
     script: 'Skript',
     storyboard: 'Storyboard',
+    brandName: 'Markenname',
+    tone: 'Tonalität (kommagetrennt)',
+    voice: 'Stimme',
+    visual: 'Visuell',
+    messaging: 'Messaging',
   },
   smartCalendar: {
     title: 'Intelligenter Kalender',
@@ -3806,6 +3817,8 @@ export const deMessages = {
     copied: 'Kopiert',
     error: 'Kreativ-Rotation fehlgeschlagen',
     dryRunNotice: 'Dry-Run-Modus — Vorlage-Rotation verwendet',
+    credits: 'Credits',
+    days: 'Tage',
   },
   brandVoiceConsistencyChecker: {
     title: 'Markenstimme-Konsistenz-Prüfer',

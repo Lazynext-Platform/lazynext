@@ -1043,6 +1043,9 @@ export const thMessages = {
       autoDeploySimulated: 'การปรับใช้ถูกจำลอง',
       autoDeployed: 'ปรับใช้ไปยังแพลตฟอร์มโฆษณา',
       autoDeployFailed: 'การปรับใช้ล้มเหลว',
+      tikTok: 'TikTok',
+      instagram: 'Instagram',
+      viralAnalysis: 'การวิเคราะห์ไวรัล',
     },
     ads: {
       title: 'แคมเปญโฆษณา',
@@ -1185,6 +1188,8 @@ export const thMessages = {
       noteLabel: 'หมายเหตุการอนุมัติ',
       signInRequired: 'กรุณาลงชื่อเข้าใช้เพื่อดูคิวการอนุมัติของคุณ',
       signIn: 'ลงชื่อเข้าใช้',
+      loadError: 'โหลดการอนุมัติล้มเหลว',
+      actionError: 'การดำเนินการล้มเหลว',
     },
     abTestResults: {
       title: 'ผล A/B Test',
@@ -2372,6 +2377,7 @@ export const thMessages = {
     creditUsage: 'การใช้เครดิตตามหมวดหมู่',
     topCreatives: 'ครีเอทีฟยอดนิยม',
     noData: 'ไม่มีข้อมูล',
+    notEnoughData: 'ข้อมูลไม่เพียงพอ',
     creditProjection: 'คาดการณ์เครดิต',
     spent30d: 'ใช้จ่าย (30 วัน)',
     dailyAvg: 'ค่าใช้จ่ายเฉลี่ยต่อวัน',
@@ -2686,6 +2692,11 @@ export const thMessages = {
     brief: 'บรีฟ',
     script: 'สคริปต์',
     storyboard: 'สตอรีบอร์ด',
+    brandName: 'ชื่อแบรนด์',
+    tone: 'น้ำเสียง (คั่นด้วยจุลภาค)',
+    voice: 'เสียง',
+    visual: 'ภาพ',
+    messaging: 'การสื่อสาร',
   },
   smartCalendar: {
     title: 'ปฏิทินอัจฉริยะ',
@@ -3807,6 +3818,8 @@ export const thMessages = {
     copied: 'คัดลอกแล้ว',
     error: 'การหมุนเวียนครีเอทีฟล้มเหลว',
     dryRunNotice: 'โหมดทดลอง — ใช้การหมุนเวียนแม่แบบ',
+    credits: 'เครดิต',
+    days: 'วัน',
   },
   brandVoiceConsistencyChecker: {
     title: 'ตัวตรวจสอบความสอดคล้องเสียงแบรนด์',

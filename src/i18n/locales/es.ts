@@ -1042,6 +1042,9 @@ export const esMessages = {
       autoDeploySimulated: 'Despliegue Simulado',
       autoDeployed: 'Desplegado a Plataforma',
       autoDeployFailed: 'Despliegue fallido',
+      tikTok: 'TikTok',
+      instagram: 'Instagram',
+      viralAnalysis: 'Análisis viral',
     },
     ads: {
       title: 'Campañas publicitarias',
@@ -1186,6 +1189,8 @@ export const esMessages = {
       noteLabel: 'Nota de aprobación',
       signInRequired: 'Inicia sesión para ver tu cola de aprobación.',
       signIn: 'Iniciar sesión',
+      loadError: 'Error al cargar aprobaciones',
+      actionError: 'Error en la acción',
     },
     abTestResults: {
       title: 'Resultados A/B',
@@ -2373,6 +2378,7 @@ export const esMessages = {
     creditUsage: 'Uso de Créditos por Categoría',
     topCreatives: 'Mejores Creatividades',
     noData: 'Sin datos disponibles',
+    notEnoughData: 'Datos insuficientes',
     creditProjection: 'Proyección de Créditos',
     spent30d: 'Gastado (30d)',
     dailyAvg: 'Gasto Diario Promedio',
@@ -2687,6 +2693,11 @@ export const esMessages = {
     brief: 'Brief',
     script: 'Guion',
     storyboard: 'Storyboard',
+    brandName: 'Nombre de la marca',
+    tone: 'Tono (separado por comas)',
+    voice: 'Voz',
+    visual: 'Visual',
+    messaging: 'Mensajería',
   },
   smartCalendar: {
     title: 'Calendario Inteligente',
@@ -3808,6 +3819,8 @@ export const esMessages = {
     copied: 'Copiado',
     error: 'Rotación de creatividades fallida',
     dryRunNotice: 'Modo de prueba — usando rotación de plantilla',
+    credits: 'créditos',
+    days: 'días',
   },
   brandVoiceConsistencyChecker: {
     title: 'Comprobador de Consistencia de Voz de Marca',

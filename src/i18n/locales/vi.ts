@@ -1043,6 +1043,9 @@ export const viMessages = {
       autoDeploySimulated: 'Triển Khai Đã Mô Phỏng',
       autoDeployed: 'Đã Triển Khai Lên Nền Tảng',
       autoDeployFailed: 'Triển khai thất bại',
+      tikTok: 'TikTok',
+      instagram: 'Instagram',
+      viralAnalysis: 'Phân tích Viral',
     },
     ads: {
       title: 'Chiến dịch quảng cáo',
@@ -1186,6 +1189,8 @@ export const viMessages = {
       noteLabel: 'Ghi chú phê duyệt',
       signInRequired: 'Vui lòng đăng nhập để xem hàng đợi phê duyệt.',
       signIn: 'Đăng nhập',
+      loadError: 'Tải phê duyệt thất bại',
+      actionError: 'Thao tác thất bại',
     },
     abTestResults: {
       title: 'Kết quả A/B Test',
@@ -2373,6 +2378,7 @@ export const viMessages = {
     creditUsage: 'Sử dụng Tín dụng theo Danh mục',
     topCreatives: 'Sáng tạo Hàng đầu',
     noData: 'Không có dữ liệu',
+    notEnoughData: 'Không đủ dữ liệu',
     creditProjection: 'Dự phóng Tín dụng',
     spent30d: 'Đã chi (30 ngày)',
     dailyAvg: 'Chi tiêu TB Ngày',
@@ -2687,6 +2693,11 @@ export const viMessages = {
     brief: 'Tóm tắt',
     script: 'Kịch bản',
     storyboard: 'Storyboard',
+    brandName: 'Tên thương hiệu',
+    tone: 'Giọng điệu (phân tách bằng dấu phẩy)',
+    voice: 'Giọng nói',
+    visual: 'Hình ảnh',
+    messaging: 'Thông điệp',
   },
   smartCalendar: {
     title: 'Lịch thông minh',
@@ -3808,6 +3819,8 @@ export const viMessages = {
     copied: 'Đã sao chép',
     error: 'Xoay sáng tạo thất bại',
     dryRunNotice: 'Chế độ thử nghiệm — sử dụng xoay mẫu',
+    credits: 'tín dụng',
+    days: 'ngày',
   },
   brandVoiceConsistencyChecker: {
     title: 'Trình Kiểm tra Nhất quán Giọng Thương hiệu',

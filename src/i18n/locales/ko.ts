@@ -1040,6 +1040,9 @@ export const koMessages = {
       autoDeploySimulated: '배포 시뮬레이션 완료',
       autoDeployed: '광고 플랫폼에 배포됨',
       autoDeployFailed: '배포 실패',
+      tikTok: 'TikTok',
+      instagram: 'Instagram',
+      viralAnalysis: '바이럴 분석',
     },
     ads: {
       title: '광고 캠페인',
@@ -1184,6 +1187,8 @@ export const koMessages = {
       noteLabel: '승인 메모',
       signInRequired: '승인 대기열을 보려면 로그인하세요.',
       signIn: '로그인',
+      loadError: '승인을 불러오지 못했습니다',
+      actionError: '작업에 실패했습니다',
     },
     abTestResults: {
       title: 'A/B 테스트 결과',
@@ -2371,6 +2376,7 @@ export const koMessages = {
     creditUsage: '카테고리별 크레딧 사용',
     topCreatives: '최고 크리에이티브',
     noData: '데이터 없음',
+    notEnoughData: '데이터가 부족합니다',
     creditProjection: '크레딧 예측',
     spent30d: '30일 지출',
     dailyAvg: '일평균 지출',
@@ -2685,6 +2691,11 @@ export const koMessages = {
     brief: '브리프',
     script: '스크립트',
     storyboard: '스토리보드',
+    brandName: '브랜드 이름',
+    tone: '톤 (쉼표로 구분)',
+    voice: '보이스',
+    visual: '비주얼',
+    messaging: '메시지',
   },
   smartCalendar: {
     title: '스마트 캘린더',
@@ -3806,6 +3817,8 @@ export const koMessages = {
     copied: '복사됨',
     error: '크리에이티브 로테이션 실패',
     dryRunNotice: '드라이런 모드 — 템플릿 로테이션 사용',
+    credits: '크레딧',
+    days: '일',
   },
   brandVoiceConsistencyChecker: {
     title: '브랜드 보이스 일관성 검사기',

@@ -50,7 +50,7 @@ export default function ApprovalQueuePage() {
       const j = await res.json();
       setItems(j);
     } catch {
-      setError('Failed to load approvals');
+      setError(t('approvals.loadError'));
     } finally {
       setLoading(false);
     }
@@ -84,7 +84,7 @@ export default function ApprovalQueuePage() {
       setNote('');
       setShowNote(null);
     } catch {
-      setError('Action failed');
+      setError(t('approvals.actionError'));
     } finally {
       setActionLoading(null);
     }

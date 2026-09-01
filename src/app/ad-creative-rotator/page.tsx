@@ -204,7 +204,7 @@ export default function AdCreativeRotatorPage() {
             className="rounded-lg bg-brand-accent px-4 py-2 text-sm font-medium text-white hover:opacity-90 disabled:opacity-50 flex items-center gap-2"
           >
             {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
-            {loading ? t('adCreativeRotator.rotating') : `${t('adCreativeRotator.rotate')} (${CREDIT_COST} credits)`}
+            {loading ? t('adCreativeRotator.rotating') : `${t('adCreativeRotator.rotate')} (${CREDIT_COST} ${t('adCreativeRotator.credits')})`}
           </button>
         </div>
 
@@ -288,7 +288,7 @@ export default function AdCreativeRotatorPage() {
                     </div>
                     <div className="flex items-center gap-1.5">
                       <span className="text-fg-muted">{t('adCreativeRotator.estimatedLifespan')}:</span>
-                      <span className="font-medium">{variation.estimatedLifespanDays} days</span>
+                      <span className="font-medium">{variation.estimatedLifespanDays} {t('adCreativeRotator.days')}</span>
                     </div>
                   </div>
                 </div>

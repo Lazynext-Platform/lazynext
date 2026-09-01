@@ -343,8 +343,8 @@ export default function CreativeDirectorPage() {
                 onChange={(e) => setPlatform(e.target.value)}
                 className="mt-1 w-full rounded-lg border border-line bg-app px-3 py-2 text-sm text-fg outline-none focus:border-brand-accent"
               >
-                <option value="tiktok">TikTok</option>
-                <option value="instagram">Instagram</option>
+                <option value="tiktok">{t('director.tikTok')}</option>
+                <option value="instagram">{t('director.instagram')}</option>
                 <option value="youtube">YouTube</option>
                 <option value="facebook">Facebook</option>
               </select>
@@ -757,7 +757,7 @@ export default function CreativeDirectorPage() {
           onClick={() => setViralAnalysisOpen(true)}
           className="flex items-center gap-1.5 rounded-lg border border-brand-accent/30 bg-brand-accent/10 px-4 py-2 text-sm font-bold text-brand-accent"
         >
-          Viral Analysis
+          {t('director.viralAnalysis')}
         </button>
       </div>
       <DeepReferenceAnalysisModal

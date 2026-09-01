@@ -1040,6 +1040,9 @@ export const arMessages = {
       autoDeploySimulated: 'تمت محاكاة النشر',
       autoDeployed: 'تم النشر على منصة الإعلانات',
       autoDeployFailed: 'فشل النشر',
+      tikTok: 'TikTok',
+      instagram: 'Instagram',
+      viralAnalysis: 'تحليل فيروسي',
     },
     ads: {
       title: 'حملات إعلانية',
@@ -1184,6 +1187,8 @@ export const arMessages = {
       noteLabel: 'ملاحظة الموافقة',
       signInRequired: 'يرجى تسجيل الدخول لعرض قائمة الموافقات الخاصة بك.',
       signIn: 'تسجيل الدخول',
+      loadError: 'فشل تحميل الموافقات',
+      actionError: 'فشل الإجراء',
     },
     abTestResults: {
       title: 'نتائج اختبار A/B',
@@ -2371,6 +2376,7 @@ export const arMessages = {
     creditUsage: 'استخدام الرصيد حسب الفئة',
     topCreatives: 'أفضل الإبداعات',
     noData: 'لا توجد بيانات',
+    notEnoughData: 'بيانات غير كافية',
     creditProjection: 'توقعات الرصيد',
     spent30d: 'الإنفاق (30 يوم)',
     dailyAvg: 'متوسط الإنفاق اليومي',
@@ -2685,6 +2691,11 @@ export const arMessages = {
     brief: 'الموجز',
     script: 'النص',
     storyboard: 'لوحة القصة',
+    brandName: 'اسم العلامة التجارية',
+    tone: 'النبرة (مفصولة بفواصل)',
+    voice: 'الصوت',
+    visual: 'المرئي',
+    messaging: 'الرسائل',
   },
   smartCalendar: {
     title: 'التقويم الذكي',
@@ -3806,6 +3817,8 @@ export const arMessages = {
     copied: 'تم النسخ',
     error: 'فشل تدوير الإبداعات',
     dryRunNotice: 'وضع التجربة — استخدام تدوير من القوالب',
+    credits: 'ائتمانات',
+    days: 'أيام',
   },
   brandVoiceConsistencyChecker: {
     title: 'مدقق اتساق صوت العلامة',

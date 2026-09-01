@@ -1042,6 +1042,9 @@ export const jaMessages = {
       autoDeploySimulated: 'デプロイシミュレート済み',
       autoDeployed: '広告プラットフォームにデプロイ済み',
       autoDeployFailed: 'デプロイ失敗',
+      tikTok: 'TikTok',
+      instagram: 'Instagram',
+      viralAnalysis: 'バイラル分析',
     },
     ads: {
       title: '広告キャンペーン',
@@ -1186,6 +1189,8 @@ export const jaMessages = {
       noteLabel: '承認メモ',
       signInRequired: '承認キューを表示するにはサインインしてください。',
       signIn: 'サインイン',
+      loadError: '承認の読み込みに失敗しました',
+      actionError: '操作に失敗しました',
     },
     abTestResults: {
       title: 'A/Bテスト結果',
@@ -2373,6 +2378,7 @@ export const jaMessages = {
     creditUsage: 'カテゴリ別クレジット使用量',
     topCreatives: 'トップクリエイティブ',
     noData: 'データがありません',
+    notEnoughData: 'データが不足しています',
     creditProjection: 'クレジット予測',
     spent30d: '30日間の支出',
     dailyAvg: '日均支出',
@@ -2687,6 +2693,11 @@ export const jaMessages = {
     brief: 'ブリーフ',
     script: 'スクリプト',
     storyboard: 'ストーリーボード',
+    brandName: 'ブランド名',
+    tone: 'トーン（カンマ区切り）',
+    voice: 'ボイス',
+    visual: 'ビジュアル',
+    messaging: 'メッセージング',
   },
   smartCalendar: {
     title: 'スマートカレンダー',
@@ -3808,6 +3819,8 @@ export const jaMessages = {
     copied: 'コピーしました',
     error: 'クリエイティブローテーションに失敗しました',
     dryRunNotice: 'ドライランモード — テンプレートローテーションを使用',
+    credits: 'クレジット',
+    days: '日',
   },
   brandVoiceConsistencyChecker: {
     title: 'ブランドボイス一貫性チェッカー',

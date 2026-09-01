@@ -122,11 +122,11 @@ export default function BrandGuardrailsPage() {
             <h2 className="text-lg font-semibold">{t('brandGuardrails.brandKit')}</h2>
             <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label htmlFor="bgBrandName" className="block text-sm font-medium mb-1">Brand Name</label>
+                <label htmlFor="bgBrandName" className="block text-sm font-medium mb-1">{t('brandGuardrails.brandName')}</label>
                 <input id="bgBrandName" type="text" value={brandName} onChange={(e) => setBrandName(e.target.value)} placeholder="e.g., Acme" className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
               </div>
               <div>
-                <label htmlFor="bgTone" className="block text-sm font-medium mb-1">Tone (comma-separated)</label>
+                <label htmlFor="bgTone" className="block text-sm font-medium mb-1">{t('brandGuardrails.tone')}</label>
                 <input id="bgTone" type="text" value={tone} onChange={(e) => setTone(e.target.value)} placeholder="e.g., playful, professional" className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
               </div>
               <div>
@@ -200,15 +200,15 @@ export default function BrandGuardrailsPage() {
               </div>
               <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div>
-                  <div className="flex justify-between text-xs mb-1"><span>Voice</span><span className={scoreColor(result.voiceConsistency)}>{result.voiceConsistency}</span></div>
+                  <div className="flex justify-between text-xs mb-1"><span>{t('brandGuardrails.voice')}</span><span className={scoreColor(result.voiceConsistency)}>{result.voiceConsistency}</span></div>
                   <ProgressBar value={result.voiceConsistency} />
                 </div>
                 <div>
-                  <div className="flex justify-between text-xs mb-1"><span>Visual</span><span className={scoreColor(result.visualConsistency)}>{result.visualConsistency}</span></div>
+                  <div className="flex justify-between text-xs mb-1"><span>{t('brandGuardrails.visual')}</span><span className={scoreColor(result.visualConsistency)}>{result.visualConsistency}</span></div>
                   <ProgressBar value={result.visualConsistency} />
                 </div>
                 <div>
-                  <div className="flex justify-between text-xs mb-1"><span>Messaging</span><span className={scoreColor(result.messagingConsistency)}>{result.messagingConsistency}</span></div>
+                  <div className="flex justify-between text-xs mb-1"><span>{t('brandGuardrails.messaging')}</span><span className={scoreColor(result.messagingConsistency)}>{result.messagingConsistency}</span></div>
                   <ProgressBar value={result.messagingConsistency} />
                 </div>
               </div>

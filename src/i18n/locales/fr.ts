@@ -1040,6 +1040,9 @@ export const frMessages = {
       autoDeploySimulated: 'Déploiement Simulé',
       autoDeployed: 'Déployé sur la Plateforme',
       autoDeployFailed: 'Échec du déploiement',
+      tikTok: 'TikTok',
+      instagram: 'Instagram',
+      viralAnalysis: 'Analyse virale',
     },
     ads: {
       title: 'Campagnes publicitaires',
@@ -1184,6 +1187,8 @@ export const frMessages = {
       noteLabel: 'Note d\'approbation',
       signInRequired: 'Veuillez vous connecter pour voir votre file d\'approbation.',
       signIn: 'Se connecter',
+      loadError: 'Échec du chargement des approbations',
+      actionError: 'Échec de l\'action',
     },
     abTestResults: {
       title: 'Résultats A/B',
@@ -2371,6 +2376,7 @@ export const frMessages = {
     creditUsage: 'Utilisation des Crédits par Catégorie',
     topCreatives: 'Meilleurs Créatifs',
     noData: 'Aucune donnée disponible',
+    notEnoughData: 'Données insuffisantes',
     creditProjection: 'Projection de Crédits',
     spent30d: 'Dépensé (30j)',
     dailyAvg: 'Dépense Quotidienne Moyenne',
@@ -2685,6 +2691,11 @@ export const frMessages = {
     brief: 'Brief',
     script: 'Script',
     storyboard: 'Storyboard',
+    brandName: 'Nom de la marque',
+    tone: 'Ton (séparé par des virgules)',
+    voice: 'Voix',
+    visual: 'Visuel',
+    messaging: 'Messagerie',
   },
   smartCalendar: {
     title: 'Calendrier intelligent',
@@ -3806,6 +3817,8 @@ export const frMessages = {
     copied: 'Copié',
     error: 'Rotation des créatifs échouée',
     dryRunNotice: 'Mode test — utilisation d\'une rotation modèle',
+    credits: 'crédits',
+    days: 'jours',
   },
   brandVoiceConsistencyChecker: {
     title: 'Vérificateur de Cohérence de Voix de Marque',

@@ -1040,6 +1040,9 @@ export const zhMessages = {
       autoDeploySimulated: '部署已模拟',
       autoDeployed: '已部署到广告平台',
       autoDeployFailed: '部署失败',
+      tikTok: 'TikTok',
+      instagram: 'Instagram',
+      viralAnalysis: '病毒式分析',
     },
     ads: {
       title: '广告活动',
@@ -1184,6 +1187,8 @@ export const zhMessages = {
       noteLabel: '审批备注',
       signInRequired: '请登录以查看您的审批队列。',
       signIn: '登录',
+      loadError: '加载审批失败',
+      actionError: '操作失败',
     },
     abTestResults: {
       title: 'A/B测试结果',
@@ -2371,6 +2376,7 @@ export const zhMessages = {
     creditUsage: '按类别的积分使用',
     topCreatives: '表现最佳的创意',
     noData: '暂无数据',
+    notEnoughData: '数据不足',
     creditProjection: '积分预测',
     spent30d: '30天花费',
     dailyAvg: '日均花费',
@@ -2685,6 +2691,11 @@ export const zhMessages = {
     brief: '简报',
     script: '脚本',
     storyboard: '分镜板',
+    brandName: '品牌名称',
+    tone: '语调（逗号分隔）',
+    voice: '声音',
+    visual: '视觉',
+    messaging: '信息',
   },
   smartCalendar: {
     title: '智能日历',
@@ -3806,6 +3817,8 @@ export const zhMessages = {
     copied: '已复制',
     error: '创意轮换失败',
     dryRunNotice: '试运行模式 — 使用模板轮换',
+    credits: '积分',
+    days: '天',
   },
   brandVoiceConsistencyChecker: {
     title: '品牌语调一致性检查器',
