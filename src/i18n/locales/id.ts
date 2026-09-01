@@ -187,6 +187,7 @@ export const idMessages = {
       welcome: 'Selamat datang kembali',
       quickCreate: 'Buat', recentWork: 'Pekerjaan terbaru', yourAssets: 'Aset Anda',
       featuredApps: 'Featured Apps',
+      recentlyUsed: 'Recently Used',
       credits: 'Kredit', buyCredits: 'Beli kredit',
       noWork: 'Belum ada pekerjaan — buat iklan pertama Anda.', noAssets: 'Belum ada aset — tambahkan produk, avatar, atau kit merek.',
       viewAll: 'Lihat semua', startNow: 'Mulai sekarang',

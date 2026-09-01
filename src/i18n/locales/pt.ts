@@ -184,6 +184,7 @@ export const ptMessages = {
       welcome: 'Bem-vindo de volta',
       quickCreate: 'Criar', recentWork: 'Trabalho recente', yourAssets: 'Seus ativos',
       featuredApps: 'Featured Apps',
+      recentlyUsed: 'Recently Used',
       credits: 'Créditos', buyCredits: 'Comprar créditos',
       noWork: 'Sem trabalho ainda — crie seu primeiro anúncio.', noAssets: 'Sem ativos ainda — adicione um produto, avatar ou kit de marca.',
       viewAll: 'Ver tudo', startNow: 'Começar agora',

@@ -186,6 +186,7 @@ export const esMessages = {
       welcome: 'Bienvenido de nuevo',
       quickCreate: 'Crear', recentWork: 'Trabajo reciente', yourAssets: 'Tus recursos',
       featuredApps: 'Featured Apps',
+      recentlyUsed: 'Recently Used',
       credits: 'Créditos', buyCredits: 'Comprar créditos',
       noWork: 'Sin trabajo aún — crea tu primer anuncio.', noAssets: 'Sin recursos aún — añade un producto, avatar o kit de marca.',
       viewAll: 'Ver todo', startNow: 'Empezar ahora',

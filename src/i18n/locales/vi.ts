@@ -187,6 +187,7 @@ export const viMessages = {
       welcome: 'Chào mừng trở lại',
       quickCreate: 'Tạo', recentWork: 'Công việc gần đây', yourAssets: 'Tài sản của bạn',
       featuredApps: 'Featured Apps',
+      recentlyUsed: 'Recently Used',
       credits: 'Tín dụng', buyCredits: 'Mua tín dụng',
       noWork: 'Chưa có công việc — tạo quảng cáo đầu tiên.', noAssets: 'Chưa có tài sản — thêm sản phẩm, avatar hoặc bộ thương hiệu.',
       viewAll: 'Xem tất cả', startNow: 'Bắt đầu ngay',

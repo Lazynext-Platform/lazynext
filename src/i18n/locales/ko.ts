@@ -184,6 +184,7 @@ export const koMessages = {
       welcome: '다시 오신 것을 환영합니다',
       quickCreate: '만들기', recentWork: '최근 작업', yourAssets: '내 에셋',
       featuredApps: 'Featured Apps',
+      recentlyUsed: 'Recently Used',
       credits: '크레딧', buyCredits: '크레딧 구매',
       noWork: '아직 작업이 없습니다 — 첫 광고를 만드세요.', noAssets: '아직 에셋이 없습니다 — 제품, 아바타 또는 브랜드 키트를 추가하세요.',
       viewAll: '전체 보기', startNow: '지금 시작',

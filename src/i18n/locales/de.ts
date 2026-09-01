@@ -184,6 +184,7 @@ export const deMessages = {
       welcome: 'Willkommen zurück',
       quickCreate: 'Erstellen', recentWork: 'Letzte Arbeiten', yourAssets: 'Ihre Assets',
       featuredApps: 'Featured Apps',
+      recentlyUsed: 'Recently Used',
       credits: 'Credits', buyCredits: 'Credits kaufen',
       noWork: 'Noch keine Arbeiten — erstellen Sie Ihre erste Anzeige.', noAssets: 'Noch keine Assets — fügen Sie ein Produkt, Avatar oder Brand Kit hinzu.',
       viewAll: 'Alle ansehen', startNow: 'Jetzt starten',

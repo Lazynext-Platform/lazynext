@@ -187,6 +187,7 @@ export const thMessages = {
       welcome: 'ยินดีต้อนรับกลับ',
       quickCreate: 'สร้าง', recentWork: 'งานล่าสุด', yourAssets: 'สินทรัพย์ของคุณ',
       featuredApps: 'Featured Apps',
+      recentlyUsed: 'Recently Used',
       credits: 'เครดิต', buyCredits: 'ซื้อเครดิต',
       noWork: 'ยังไม่มีงาน — สร้างโฆษณาแรกของคุณ', noAssets: 'ยังไม่มีสินทรัพย์ — เพิ่มสินค้า อวตาร หรือชุดแบรนด์',
       viewAll: 'ดูทั้งหมด', startNow: 'เริ่มเลย',

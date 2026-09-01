@@ -11,6 +11,7 @@ import { HistoryButton } from '@/components/HistoryButton';
 import { FeatureSearch } from '@/components/FeatureSearch';
 import { NAV_CATEGORIES } from '@/config/navCategories';
 import { appTitle } from '@/config/appCatalog';
+import { trackAppVisit } from '@/lib/recent-apps';
 
 // All pages use the unified immersive dark shell with a single sticky header.
 const LOCALE_RE = /^\/(en|zh|ja|es|ko|pt|fr|de|ar|hi|vi|th|id)(?=\/|$)/;
@@ -31,8 +32,16 @@ export function Shell({ children }: { children: React.ReactNode }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const browseRef = useRef<HTMLDivElement>(null);
 
-  // Close dropdowns on route change
-  useEffect(() => { setBrowseOpen(false); setMobileOpen(false); }, [p]);
+  // Close dropdowns on route change + track recently visited apps
+  useEffect(() => {
+    setBrowseOpen(false);
+    setMobileOpen(false);
+    // Track app visits (skip non-app routes)
+    const slug = p.replace(/^\//, '').split('/')[0];
+    if (slug && !['api', '_next', 'dashboard', 'pricing', 'assets', 'settings', 'my-work', 'admin', 'auth'].includes(slug)) {
+      trackAppVisit(slug, appTitle(slug, 'en'));
+    }
+  }, [p]);
 
   // Close browse dropdown on outside click
   useEffect(() => {

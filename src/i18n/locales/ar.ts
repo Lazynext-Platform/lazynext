@@ -184,6 +184,7 @@ export const arMessages = {
       welcome: 'مرحباً بعودتك',
       quickCreate: 'إنشاء', recentWork: 'العمل الأخير', yourAssets: 'أصولك',
       featuredApps: 'Featured Apps',
+      recentlyUsed: 'Recently Used',
       credits: 'الرصيد', buyCredits: 'شراء الرصيد',
       noWork: 'لا يوجد عمل بعد — أنشئ إعلانك الأول.', noAssets: 'لا توجد أصول بعد — أضف منتجاً أو شخصية أو هوية علامة.',
       viewAll: 'عرض الكل', startNow: 'ابدأ الآن',

@@ -231,6 +231,7 @@ export const enMessages = {
       welcome: 'Welcome back',
       quickCreate: 'Create',
       featuredApps: 'Featured Apps',
+      recentlyUsed: 'Recently Used',
       recentWork: 'Recent work',
       yourAssets: 'Your assets',
       credits: 'Credits',

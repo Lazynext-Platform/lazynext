@@ -184,6 +184,7 @@ export const frMessages = {
       welcome: 'Bon retour',
       quickCreate: 'Créer', recentWork: 'Travail récent', yourAssets: 'Vos ressources',
       featuredApps: 'Featured Apps',
+      recentlyUsed: 'Recently Used',
       credits: 'Crédits', buyCredits: 'Acheter des crédits',
       noWork: 'Pas encore de travail — créez votre première publicité.', noAssets: 'Pas encore de ressources — ajoutez un produit, avatar ou kit de marque.',
       viewAll: 'Voir tout', startNow: 'Commencer maintenant',

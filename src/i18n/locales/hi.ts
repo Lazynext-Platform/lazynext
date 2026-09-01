@@ -184,6 +184,7 @@ export const hiMessages = {
       welcome: 'वापसी पर स्वागत है',
       quickCreate: 'बनाएं', recentWork: 'हाल का काम', yourAssets: 'आपकी संपत्तियाँ',
       featuredApps: 'Featured Apps',
+      recentlyUsed: 'Recently Used',
       credits: 'क्रेडिट', buyCredits: 'क्रेडिट खरीदें',
       noWork: 'अभी कोई काम नहीं — अपना पहला विज्ञापन बनाएं।', noAssets: 'अभी कोई संपत्ति नहीं — उत्पाद, अवतार या ब्रांड किट जोड़ें।',
       viewAll: 'सभी देखें', startNow: 'अभी शुरू करें',

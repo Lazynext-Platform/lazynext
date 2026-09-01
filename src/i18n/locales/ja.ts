@@ -186,6 +186,7 @@ export const jaMessages = {
       welcome: 'おかえりなさい',
       quickCreate: '作成', recentWork: '最近の作品', yourAssets: 'あなたのアセット',
       featuredApps: 'Featured Apps',
+      recentlyUsed: 'Recently Used',
       credits: 'クレジット', buyCredits: 'クレジット購入',
       noWork: 'まだ作品がありません — 最初の広告を作成しましょう。', noAssets: 'まだアセットがありません — プロダクト、アバター、ブランドキットを追加してください。',
       viewAll: 'すべて表示', startNow: '今すぐ始める',

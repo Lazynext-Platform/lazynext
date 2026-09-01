@@ -6,7 +6,7 @@ import { useSession } from 'next-auth/react';
 import {
   Clapperboard, Coins, Boxes, FolderOpen, ArrowRight, Loader2,
   TrendingDown, TrendingUp, BarChart3, Trophy, Calendar, Film, Play,
-  Sparkles, Video, Drama, Mic, Star,
+  Sparkles, Video, Drama, Mic, Star, Clock,
 } from 'lucide-react';
 import { useI18n } from '@/i18n/provider';
 import { formatNumber, formatDateTime } from '@/lib/i18n-format';
@@ -406,6 +406,9 @@ export default function DashboardPage() {
           </div>
         </div>
 
+        {/* Recently used — tracked in localStorage */}
+        <RecentlyUsed t={t} />
+
         {/* Quick create — categorized with search */}
         <div className="mb-10">
           <h2 className="mb-4 text-lg font-bold text-fg">{t('dashboard.quickCreate')}</h2>
@@ -490,6 +493,61 @@ export default function DashboardPage() {
             </div>
           )}
         </div>
+      </div>
+    </div>
+  );
+}
+
+/** Recently Used section — tracks visited features in localStorage and shows quick links. */
+function RecentlyUsed({ t }: { t: (k: string) => string }) {
+  const [recent, setRecent] = useState<{ slug: string; title: string; visitedAt: number }[]>([]);
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem('lazynext-recent-apps');
+      if (raw) setRecent(JSON.parse(raw).slice(0, 6));
+    } catch { /* ignore */ }
+  }, []);
+
+  // Listen for changes (other tabs / same tab updates)
+  useEffect(() => {
+    const handler = () => {
+      try {
+        const raw = localStorage.getItem('lazynext-recent-apps');
+        if (raw) setRecent(JSON.parse(raw).slice(0, 6));
+      } catch { /* ignore */ }
+    };
+    window.addEventListener('storage', handler);
+    window.addEventListener('lazynext-recent-updated', handler);
+    return () => {
+      window.removeEventListener('storage', handler);
+      window.removeEventListener('lazynext-recent-updated', handler);
+    };
+  }, []);
+
+  if (recent.length === 0) return null;
+
+  return (
+    <div className="mb-10">
+      <h2 className="mb-4 flex items-center gap-2 text-lg font-bold text-fg">
+        <Clock className="h-5 w-5 text-brand-accent" />
+        {t('dashboard.recentlyUsed') || 'Recently Used'}
+      </h2>
+      <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6">
+        {recent.map((item) => (
+          <Link
+            key={item.slug}
+            href={`/${item.slug}`}
+            className="group rounded-xl border border-line bg-surface p-3 transition hover:border-[#00b2fc]/40"
+          >
+            <div className="truncate text-xs font-medium text-fg group-hover:text-[#00b2fc] transition">
+              {item.title}
+            </div>
+            <div className="mt-1 text-[10px] text-fg-faint">
+              {new Date(item.visitedAt).toLocaleDateString()}
+            </div>
+          </Link>
+        ))}
       </div>
     </div>
   );

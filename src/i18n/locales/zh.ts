@@ -184,6 +184,7 @@ export const zhMessages = {
       welcome: '欢迎回来',
       quickCreate: '创建', recentWork: '最近作品', yourAssets: '你的素材',
       featuredApps: 'Featured Apps',
+      recentlyUsed: 'Recently Used',
       credits: '积分', buyCredits: '购买积分',
       noWork: '还没有作品 — 创建你的第一个广告。', noAssets: '还没有素材 — 添加产品、数字人或品牌套件。',
       viewAll: '查看全部', startNow: '立即开始',
