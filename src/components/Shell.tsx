@@ -30,6 +30,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
   const p = raw.replace(LOCALE_RE, '') || '/';
   const [browseOpen, setBrowseOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [shortcutsOpen, setShortcutsOpen] = useState(false);
   const browseRef = useRef<HTMLDivElement>(null);
 
   // Close dropdowns on route change + track recently visited apps
@@ -55,14 +56,27 @@ export function Shell({ children }: { children: React.ReactNode }) {
   }, []);
 
   // Keyboard shortcuts: g+d=dashboard, g+p=pricing, g+a=assets, g+w=my-work
+  // ? shows shortcuts help, Escape closes overlays
   useEffect(() => {
     let gPressed = false;
     let gTimer: ReturnType<typeof setTimeout> | null = null;
     const handler = (e: KeyboardEvent) => {
+      // Escape closes shortcuts overlay
+      if (e.key === 'Escape') {
+        setShortcutsOpen(false);
+        return;
+      }
       // Skip if typing in an input/textarea or if modifier keys are pressed
       const target = e.target as HTMLElement;
       if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable) return;
       if (e.metaKey || e.ctrlKey || e.altKey) return;
+
+      // ? opens shortcuts help
+      if (e.key === '?' || (e.key === '/' && e.shiftKey)) {
+        e.preventDefault();
+        setShortcutsOpen(prev => !prev);
+        return;
+      }
 
       if (e.key === 'g' && !gPressed) {
         gPressed = true;
@@ -176,7 +190,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
             {/* Mobile menu button */}
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
-              className="md:hidden flex items-center justify-center w-8 h-8 rounded-lg text-fg-faint hover:bg-hover"
+              className="md:hidden flex items-center justify-center w-8 h-8 rounded-lg text-fg-faint hover:bg-hover relative z-10 shrink-0"
               aria-label="Menu"
             >
               {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -185,9 +199,11 @@ export function Shell({ children }: { children: React.ReactNode }) {
 
           {/* Right: toolbar */}
           <nav aria-label="Toolbar" className="flex min-w-0 items-center justify-end gap-1 sm:gap-1.5 md:gap-2">
-            <HistoryButton />
+            <div className="hidden sm:flex items-center gap-1 sm:gap-1.5">
+              <HistoryButton />
+              <LangToggle />
+            </div>
             <CreditBadge />
-            <LangToggle />
             <UserMenu />
           </nav>
         </div>
@@ -245,6 +261,11 @@ export function Shell({ children }: { children: React.ReactNode }) {
                   </div>
                 </div>
               ))}
+              {/* Mobile-only toolbar items (hidden from top bar on <sm) */}
+              <div className="flex items-center justify-between gap-2 pt-2 border-t border-line">
+                <HistoryButton />
+                <LangToggle />
+              </div>
               <Link
                 href="/dashboard"
                 className="block text-center text-xs text-brand-accent hover:underline pt-2"
@@ -258,6 +279,70 @@ export function Shell({ children }: { children: React.ReactNode }) {
       <main id="main-content" tabIndex={-1}>
         {children}
       </main>
+
+      {/* Keyboard shortcuts overlay */}
+      {shortcutsOpen && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm"
+          onClick={() => setShortcutsOpen(false)}
+          role="dialog"
+          aria-label="Keyboard shortcuts"
+        >
+          <div
+            className="mx-4 w-full max-w-md rounded-2xl border border-line bg-popover p-6 shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="text-base font-semibold text-fg">Keyboard Shortcuts</h2>
+              <button
+                onClick={() => setShortcutsOpen(false)}
+                className="rounded-lg p-1 text-fg-faint hover:bg-hover"
+                aria-label="Close"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+            <div className="space-y-2 text-sm">
+              <div className="flex items-center justify-between">
+                <span className="text-fg-secondary">Search features</span>
+                <kbd className="rounded bg-elevated px-2 py-0.5 text-xs font-mono text-fg-muted">Cmd+K</kbd>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-fg-secondary">Dashboard</span>
+                <kbd className="rounded bg-elevated px-2 py-0.5 text-xs font-mono text-fg-muted">g d</kbd>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-fg-secondary">Pricing</span>
+                <kbd className="rounded bg-elevated px-2 py-0.5 text-xs font-mono text-fg-muted">g p</kbd>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-fg-secondary">Assets</span>
+                <kbd className="rounded bg-elevated px-2 py-0.5 text-xs font-mono text-fg-muted">g a</kbd>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-fg-secondary">My Work</span>
+                <kbd className="rounded bg-elevated px-2 py-0.5 text-xs font-mono text-fg-muted">g w</kbd>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-fg-secondary">Settings</span>
+                <kbd className="rounded bg-elevated px-2 py-0.5 text-xs font-mono text-fg-muted">g s</kbd>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-fg-secondary">Creative Director</span>
+                <kbd className="rounded bg-elevated px-2 py-0.5 text-xs font-mono text-fg-muted">g c</kbd>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-fg-secondary">Show this help</span>
+                <kbd className="rounded bg-elevated px-2 py-0.5 text-xs font-mono text-fg-muted">?</kbd>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-fg-secondary">Close overlays</span>
+                <kbd className="rounded bg-elevated px-2 py-0.5 text-xs font-mono text-fg-muted">Esc</kbd>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
