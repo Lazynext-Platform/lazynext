@@ -24,11 +24,11 @@ const CREDIT_COST = 3;
 
 const PLATFORMS = ['tiktok', 'instagram', 'youtube', 'facebook'] as const;
 
-const STAGE_META: { key: keyof AIDAFrameworkDesignerResult['framework']; label: string; icon: typeof Eye; color: string }[] = [
-  { key: 'attention', label: 'Attention', icon: Eye, color: 'bg-brand-accent/20 text-brand-accent border-brand-accent/30' },
-  { key: 'interest', label: 'Interest', icon: Heart, color: 'bg-success/20 text-success border-success/30' },
-  { key: 'desire', label: 'Desire', icon: Flame, color: 'bg-warning/20 text-warning border-warning/30' },
-  { key: 'action', label: 'Action', icon: MousePointerClick, color: 'bg-danger/20 text-danger border-danger/30' },
+const STAGE_META: { key: keyof AIDAFrameworkDesignerResult['framework']; labelKey: string; icon: typeof Eye; color: string }[] = [
+  { key: 'attention', labelKey: 'aidaFrameworkDesigner.attentionCopy', icon: Eye, color: 'bg-brand-accent/20 text-brand-accent border-brand-accent/30' },
+  { key: 'interest', labelKey: 'aidaFrameworkDesigner.interestCopy', icon: Heart, color: 'bg-success/20 text-success border-success/30' },
+  { key: 'desire', labelKey: 'aidaFrameworkDesigner.desireCopy', icon: Flame, color: 'bg-warning/20 text-warning border-warning/30' },
+  { key: 'action', labelKey: 'aidaFrameworkDesigner.actionCopy', icon: MousePointerClick, color: 'bg-danger/20 text-danger border-danger/30' },
 ];
 
 export default function AdCreativeAIDAFrameworkDesignerPage() {
@@ -84,13 +84,13 @@ export default function AdCreativeAIDAFrameworkDesignerPage() {
     return (
       <div className="min-h-screen text-fg app-grid-bg bg-app">
         <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:rounded focus:bg-bg-card focus:px-3 focus:py-2 focus:text-sm focus:text-fg">
-          Skip to content
+          {t('aidaFrameworkDesigner.skipToContent')}
         </a>
         <div className="mx-auto max-w-5xl px-4 py-8">
           <h1 className="text-2xl font-bold flex items-center gap-2">
-            <Sparkles className="w-6 h-6" /> AIDA Framework Designer
+            <Sparkles className="w-6 h-6" /> {t('aidaFrameworkDesigner.title')}
           </h1>
-          <p className="text-sm text-fg-muted mt-2">Sign in to design Attention → Interest → Desire → Action copy frameworks.</p>
+          <p className="text-sm text-fg-muted mt-2">{t('aidaFrameworkDesigner.signInPrompt')}</p>
         </div>
         <AuthModal open={true} onClose={() => {}} />
       </div>
@@ -100,22 +100,22 @@ export default function AdCreativeAIDAFrameworkDesignerPage() {
   return (
     <div className="min-h-screen text-fg app-grid-bg bg-app">
       <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:rounded focus:bg-bg-card focus:px-3 focus:py-2 focus:text-sm focus:text-fg">
-        Skip to content
+        {t('aidaFrameworkDesigner.skipToContent')}
       </a>
       <main id="main-content" className="mx-auto max-w-5xl px-4 py-8 space-y-6">
         <header>
           <h1 className="text-2xl font-bold flex items-center gap-2">
-            <Sparkles className="w-6 h-6" /> AIDA Framework Designer
+            <Sparkles className="w-6 h-6" /> {t('aidaFrameworkDesigner.title')}
           </h1>
           <p className="text-sm text-fg-muted mt-2">
-            Generate Attention → Interest → Desire → Action copy for your ad creative.
+            {t('aidaFrameworkDesigner.subtitle')}
           </p>
         </header>
 
         <div className="space-y-4">
           <div>
             <label htmlFor="acafdProduct" className="block text-sm font-medium mb-1">
-              Product or Brand
+              {t('aidaFrameworkDesigner.productOrBrand')}
             </label>
             <input
               id="acafdProduct"
@@ -131,7 +131,7 @@ export default function AdCreativeAIDAFrameworkDesignerPage() {
 
           <div>
             <label htmlFor="acafdAudience" className="block text-sm font-medium mb-1">
-              Target Audience
+              {t('aidaFrameworkDesigner.targetAudience')}
             </label>
             <input
               id="acafdAudience"
@@ -146,7 +146,7 @@ export default function AdCreativeAIDAFrameworkDesignerPage() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-2">Platform</label>
+            <label className="block text-sm font-medium mb-2">{t('aidaFrameworkDesigner.platform')}</label>
             <div className="flex flex-wrap gap-2">
               <button
                 type="button"
@@ -184,7 +184,7 @@ export default function AdCreativeAIDAFrameworkDesignerPage() {
             className="rounded-lg bg-brand-accent px-4 py-2 text-sm font-medium text-white hover:opacity-90 disabled:opacity-50 flex items-center gap-2"
           >
             {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
-            {loading ? 'Generating...' : `Generate (${CREDIT_COST} credits)`}
+            {loading ? t('aidaFrameworkDesigner.generating') : `${t('aidaFrameworkDesigner.generate')} (${CREDIT_COST})`}
           </button>
         </div>
 
@@ -196,13 +196,13 @@ export default function AdCreativeAIDAFrameworkDesignerPage() {
 
         {!loading && !result && !error && (
           <div className="rounded-lg border border-border bg-bg-card p-6 text-center text-sm text-fg-muted">
-            Fill in the fields above and generate to see your AIDA framework.
+            {t('aidaFrameworkDesigner.noResults')}
           </div>
         )}
 
         {loading && (
           <div className="rounded-lg border border-border bg-bg-card p-6 flex items-center justify-center gap-2 text-sm text-fg-muted">
-            <Loader2 className="w-4 h-4 animate-spin" /> Generating your AIDA framework...
+            <Loader2 className="w-4 h-4 animate-spin" /> {t('aidaFrameworkDesigner.generating')}
           </div>
         )}
 
@@ -210,7 +210,7 @@ export default function AdCreativeAIDAFrameworkDesignerPage() {
           <div className="space-y-4">
             {result.dryRun && (
               <div role="status" className="rounded-lg bg-warning/10 border border-warning/30 px-3 py-2 text-sm text-warning">
-                Dry-run mode: showing sample content. Connect Atlas to generate real copy.
+                {t('aidaFrameworkDesigner.dryRunNotice')}
               </div>
             )}
 
@@ -221,17 +221,17 @@ export default function AdCreativeAIDAFrameworkDesignerPage() {
                 className="rounded-lg border border-border px-3 py-1.5 text-xs font-medium text-fg-muted hover:bg-hover flex items-center gap-2"
               >
                 {copied ? <Check className="w-3.5 h-3.5 text-success" /> : <Copy className="w-3.5 h-3.5" />}
-                {copied ? 'Copied' : 'Copy JSON'}
+                {copied ? t('aidaFrameworkDesigner.copied') : t('aidaFrameworkDesigner.copy')}
               </button>
             </div>
 
-            {STAGE_META.map(({ key, label, icon: Icon, color }) => {
+            {STAGE_META.map(({ key, labelKey, icon: Icon, color }) => {
               const stage: AIDAStage = result.framework[key];
               return (
                 <div key={key} className="rounded-lg border border-border bg-bg-card p-4 space-y-3">
                   <div className="flex items-center gap-2">
                     <span className={`inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full border ${color}`}>
-                      <Icon className="w-3 h-3" /> {label}
+                      <Icon className="w-3 h-3" /> {t(labelKey)}
                     </span>
                   </div>
                   <div className="space-y-2">

@@ -49,14 +49,14 @@ export default function AdCreativeUniqueMechanismDesignerPage() {
         }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Generation failed');
+      if (!res.ok) throw new Error(data.error || t('uniqueMechanismDesigner.error'));
       setResult(data.result as UniqueMechanismDesignerResult);
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
     } finally {
       setLoading(false);
     }
-  }, [productOrBrand, productDescription, targetAudience]);
+  }, [productOrBrand, productDescription, targetAudience, t]);
 
   const copyToClipboard = useCallback(async () => {
     if (!result) return;
@@ -74,13 +74,13 @@ export default function AdCreativeUniqueMechanismDesignerPage() {
     return (
       <div className="min-h-screen text-fg app-grid-bg bg-app">
         <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:rounded focus:bg-bg-card focus:px-3 focus:py-2 focus:text-sm focus:text-fg">
-          Skip to content
+          {t('uniqueMechanismDesigner.skipToContent')}
         </a>
         <div className="mx-auto max-w-5xl px-4 py-8">
           <h1 className="text-2xl font-bold flex items-center gap-2">
-            <Sparkles className="w-6 h-6" /> Unique Mechanism Designer
+            <Sparkles className="w-6 h-6" /> {t('uniqueMechanismDesigner.title')}
           </h1>
-          <p className="text-sm text-fg-muted mt-2">Sign in to identify and articulate your product&apos;s unique mechanism of action.</p>
+          <p className="text-sm text-fg-muted mt-2">{t('uniqueMechanismDesigner.signInPrompt')}</p>
         </div>
         <AuthModal open={true} onClose={() => {}} />
       </div>
@@ -90,22 +90,22 @@ export default function AdCreativeUniqueMechanismDesignerPage() {
   return (
     <div className="min-h-screen text-fg app-grid-bg bg-app">
       <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:rounded focus:bg-bg-card focus:px-3 focus:py-2 focus:text-sm focus:text-fg">
-        Skip to content
+        {t('uniqueMechanismDesigner.skipToContent')}
       </a>
       <main id="main-content" className="mx-auto max-w-5xl px-4 py-8 space-y-6">
         <header>
           <h1 className="text-2xl font-bold flex items-center gap-2">
-            <Sparkles className="w-6 h-6" /> Unique Mechanism Designer
+            <Sparkles className="w-6 h-6" /> {t('uniqueMechanismDesigner.title')}
           </h1>
           <p className="text-sm text-fg-muted mt-2">
-            Identify and articulate the unique mechanism of action behind your product.
+            {t('uniqueMechanismDesigner.subtitle')}
           </p>
         </header>
 
         <div className="space-y-4">
           <div>
             <label htmlFor="acumdProduct" className="block text-sm font-medium mb-1">
-              Product or Brand
+              {t('uniqueMechanismDesigner.productOrBrand')}
             </label>
             <input
               id="acumdProduct"
@@ -121,7 +121,7 @@ export default function AdCreativeUniqueMechanismDesignerPage() {
 
           <div>
             <label htmlFor="acumdDesc" className="block text-sm font-medium mb-1">
-              Product Description
+              {t('uniqueMechanismDesigner.productOrBrand')}
             </label>
             <textarea
               id="acumdDesc"
@@ -137,7 +137,7 @@ export default function AdCreativeUniqueMechanismDesignerPage() {
 
           <div>
             <label htmlFor="acumdAudience" className="block text-sm font-medium mb-1">
-              Target Audience
+              {t('uniqueMechanismDesigner.targetAudience')}
             </label>
             <input
               id="acumdAudience"
@@ -157,7 +157,7 @@ export default function AdCreativeUniqueMechanismDesignerPage() {
             className="rounded-lg bg-brand-accent px-4 py-2 text-sm font-medium text-white hover:opacity-90 disabled:opacity-50 flex items-center gap-2"
           >
             {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
-            {loading ? 'Generating...' : `Generate (${CREDIT_COST} credits)`}
+            {loading ? t('uniqueMechanismDesigner.generating') : `${t('uniqueMechanismDesigner.generate')} (${CREDIT_COST})`}
           </button>
         </div>
 
@@ -169,13 +169,13 @@ export default function AdCreativeUniqueMechanismDesignerPage() {
 
         {!loading && !result && !error && (
           <div className="rounded-lg border border-border bg-bg-card p-6 text-center text-sm text-fg-muted">
-            Fill in the fields above and generate to identify your unique mechanism.
+            {t('uniqueMechanismDesigner.noResults')}
           </div>
         )}
 
         {loading && (
           <div className="rounded-lg border border-border bg-bg-card p-6 flex items-center justify-center gap-2 text-sm text-fg-muted">
-            <Loader2 className="w-4 h-4 animate-spin" /> Identifying your unique mechanism...
+            <Loader2 className="w-4 h-4 animate-spin" /> {t('uniqueMechanismDesigner.generating')}
           </div>
         )}
 
@@ -183,7 +183,7 @@ export default function AdCreativeUniqueMechanismDesignerPage() {
           <div className="space-y-4">
             {result.dryRun && (
               <div role="status" className="rounded-lg bg-warning/10 border border-warning/30 px-3 py-2 text-sm text-warning">
-                Dry-run mode: showing sample content. Connect Atlas to generate real content.
+                {t('uniqueMechanismDesigner.dryRunNotice')}
               </div>
             )}
 
@@ -194,7 +194,7 @@ export default function AdCreativeUniqueMechanismDesignerPage() {
                 className="rounded-lg border border-border px-3 py-1.5 text-xs font-medium text-fg-muted hover:bg-hover flex items-center gap-2"
               >
                 {copied ? <Check className="w-3.5 h-3.5 text-success" /> : <Copy className="w-3.5 h-3.5" />}
-                {copied ? 'Copied' : 'Copy JSON'}
+                {copied ? t('uniqueMechanismDesigner.copied') : t('uniqueMechanismDesigner.copy')}
               </button>
             </div>
 
@@ -202,19 +202,19 @@ export default function AdCreativeUniqueMechanismDesignerPage() {
             <div className="rounded-lg border border-border bg-bg-card p-4 space-y-3">
               <div className="flex items-center gap-2">
                 <Atom className="w-4 h-4 text-brand-accent" />
-                <span className="text-sm font-medium">Unique Mechanism</span>
+                <span className="text-sm font-medium">{t('uniqueMechanismDesigner.mechanism')}</span>
               </div>
               <div className="space-y-2">
                 <div>
-                  <p className="text-xs font-medium text-fg-muted mb-0.5">Name</p>
+                  <p className="text-xs font-medium text-fg-muted mb-0.5">{t('uniqueMechanismDesigner.mechanismName')}</p>
                   <p className="text-sm text-fg font-medium">{result.mechanism.name}</p>
                 </div>
                 <div>
-                  <p className="text-xs font-medium text-fg-muted mb-0.5">Description</p>
+                  <p className="text-xs font-medium text-fg-muted mb-0.5">{t('uniqueMechanismDesigner.howItWorks')}</p>
                   <p className="text-sm text-fg">{result.mechanism.description}</p>
                 </div>
                 <div>
-                  <p className="text-xs font-medium text-fg-muted mb-0.5">Scientific Basis</p>
+                  <p className="text-xs font-medium text-fg-muted mb-0.5">{t('uniqueMechanismDesigner.competitiveEdge')}</p>
                   <p className="text-sm text-fg">{result.mechanism.scientificBasis}</p>
                 </div>
               </div>
@@ -224,7 +224,7 @@ export default function AdCreativeUniqueMechanismDesignerPage() {
             {result.differentiationPoints.length > 0 && (
               <div className="rounded-lg border border-border bg-bg-card p-4">
                 <p className="text-sm font-medium mb-2 flex items-center gap-1">
-                  <GitCompare className="w-4 h-4 text-success" /> Differentiation Points
+                  <GitCompare className="w-4 h-4 text-success" /> {t('uniqueMechanismDesigner.differentiation')}
                 </p>
                 <ul className="space-y-1.5">
                   {result.differentiationPoints.map((point, i) => (
@@ -259,7 +259,7 @@ export default function AdCreativeUniqueMechanismDesignerPage() {
             {result.proofElements.length > 0 && (
               <div className="rounded-lg border border-border bg-bg-card p-4">
                 <p className="text-sm font-medium mb-2 flex items-center gap-1">
-                  <ShieldCheck className="w-4 h-4 text-brand-accent" /> Proof Elements
+                  <ShieldCheck className="w-4 h-4 text-brand-accent" /> {t('uniqueMechanismDesigner.proofPoints')}
                 </p>
                 <ul className="space-y-1.5">
                   {result.proofElements.map((proof, i) => (

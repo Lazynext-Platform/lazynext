@@ -21,7 +21,6 @@ import type {
   HierarchyLayer,
   AttentionWeight,
   FocalPoint,
-  LayerType,
   Priority,
 } from '@/lib/creative/creative-ad-visual-hierarchy-strategist';
 
