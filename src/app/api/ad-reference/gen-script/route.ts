@@ -3,11 +3,12 @@ import { NextResponse } from 'next/server';
 import { auth } from '@/../auth';
 import { atlasChat } from '@/lib/atlas';
 import { mediaToDataUri } from '@/lib/lazynext-studio/r2';
+import { getLLMModel } from '@/lib/providers/model-helpers';
 
 export const maxDuration = 60;
 
 // When user checked change voice but didn't fill in script, auto-generates a UGC spoken dialogue. Multimodal sees product image → dialogue matches real product; language follows description.
-const MODEL = process.env.MK_EXPAND_MODEL || 'google/gemini-2.5-flash';
+const MODEL = process.env.MK_EXPAND_MODEL || process.env.CREATIVE_MODEL || getLLMModel();
 type Part = { type: 'text'; text: string } | { type: 'image_url'; image_url: { url: string } };
 
 async function __byokPOST(req: Request) {

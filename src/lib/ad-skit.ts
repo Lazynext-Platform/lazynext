@@ -13,7 +13,7 @@
 import { atlasChat, type SubmitResult } from '@/lib/atlas';
 import { atlasImage } from '@/lib/providers/atlas-image';
 import { atlasVideo } from '@/lib/providers/atlas-video';
-import { getImageModel, getVideoModel } from '@/lib/providers/model-helpers';
+import { getImageModel, getVideoModel, getLLMModel } from '@/lib/providers/model-helpers';
 import type { PlanTier } from '@/lib/plan-tier';
 
 export const AD_SKIT_TEMPLATE_ID = 'ad-skit';
@@ -22,7 +22,7 @@ export const PLAN_MODELS = [
   { key: 'deepseek-ai/deepseek-v4-pro', label: 'DeepSeek V4 Pro' },
   { key: 'zai-org/glm-5.2', label: 'GLM-5.2' },
 ] as const;
-export const DEFAULT_PLAN_MODEL = 'deepseek-ai/deepseek-v4-pro';
+export const DEFAULT_PLAN_MODEL = process.env.CREATIVE_MODEL || getLLMModel();
 
 /** Resolve ad-skit image model, respecting plan-tier routing. */
 export function getAdSkitImageModel(planTier?: PlanTier): string {

@@ -8,7 +8,7 @@ import type { PlanTier } from '@/lib/plan-tier';
 // gemini 26s but written/stilted tone (user review: "script is terrible"); deepseek 35s slightly rough; glm 65s+ broken JSON.
 // Old 502 root cause was old prompt's verbose output causing ~53s occasional timeout on CF side; new prompt output is concise (~2.5k chars, 30s), gpt-5.5 back as primary, gemini as fallback.
 export const DRAMA_SCRIPT_MODEL = process.env.DRAMA_MODEL || 'openai/gpt-5.5';
-export const DRAMA_SCRIPT_FALLBACK_MODEL = process.env.DRAMA_FALLBACK_MODEL || 'google/gemini-2.5-flash';
+export const DRAMA_SCRIPT_FALLBACK_MODEL = process.env.DRAMA_FALLBACK_MODEL || process.env.CREATIVE_MODEL || getLLMModel();
 
 /** Resolve drama script model, respecting env override and plan-tier routing. */
 export function getDramaScriptModel(planTier?: PlanTier): string {
@@ -201,7 +201,7 @@ export async function draftScript(input: ScriptInput): Promise<DramaScript> {
   // Quality-first primary model; on occasional 502/timeout (Atlas gateway fluctuation), degrade to faster and more stable gemini fallback.
   // Sum of two timeouts < Worker 120s: primary ~68s (tested 53s is enough) + fallback 44s = 112s.
   const attempts = [
-    { model: DRAMA_SCRIPT_MODEL, timeout: Math.min(SCRIPT_TIMEOUT_MS, 58_000) },
+    { model: getDramaScriptModel(), timeout: Math.min(SCRIPT_TIMEOUT_MS, 58_000) },
     { model: DRAMA_SCRIPT_FALLBACK_MODEL, timeout: 50_000 },
   ];
   let lastErr: unknown;
