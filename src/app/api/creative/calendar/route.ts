@@ -28,75 +28,80 @@ export async function GET(req: Request) {
   const monthStart = new Date(year, month, 1);
   const monthEnd = new Date(year, month + 1, 0, 23, 59, 59);
 
-  // Fetch ad campaigns in the month range
-  const campaigns = await prisma.adCampaign.findMany({
-    where: {
-      userId: uid,
-      createdAt: { gte: monthStart, lte: monthEnd },
-    },
-    orderBy: { createdAt: 'asc' },
-  });
-
-  // Fetch creative assets in the month range
-  const assets = await prisma.asset.findMany({
-    where: {
-      userId: uid,
-      createdAt: { gte: monthStart, lte: monthEnd },
-      type: { in: ['creative_package', 'brief', 'script', 'storyboard'] },
-    },
-    orderBy: { createdAt: 'asc' },
-  });
-
-  // Build calendar entries
-  const entries: Array<{
-    date: string;
-    type: 'campaign' | 'creative';
-    name: string;
-    platform?: string;
-    status?: string;
-    id: string;
-  }> = [];
-
-  for (const c of campaigns) {
-    entries.push({
-      date: c.createdAt.toISOString().slice(0, 10),
-      type: 'campaign',
-      name: c.name,
-      platform: c.platform,
-      status: c.status,
-      id: c.id,
+  try {
+    // Fetch ad campaigns in the month range
+    const campaigns = await prisma.adCampaign.findMany({
+      where: {
+        userId: uid,
+        createdAt: { gte: monthStart, lte: monthEnd },
+      },
+      orderBy: { createdAt: 'asc' },
     });
-  }
 
-  for (const a of assets) {
-    entries.push({
-      date: a.createdAt.toISOString().slice(0, 10),
-      type: 'creative',
-      name: a.name,
-      id: a.id,
+    // Fetch creative assets in the month range
+    const assets = await prisma.asset.findMany({
+      where: {
+        userId: uid,
+        createdAt: { gte: monthStart, lte: monthEnd },
+        type: { in: ['creative_package', 'brief', 'script', 'storyboard'] },
+      },
+      orderBy: { createdAt: 'asc' },
     });
+
+    // Build calendar entries
+    const entries: Array<{
+      date: string;
+      type: 'campaign' | 'creative';
+      name: string;
+      platform?: string;
+      status?: string;
+      id: string;
+    }> = [];
+
+    for (const c of campaigns) {
+      entries.push({
+        date: c.createdAt.toISOString().slice(0, 10),
+        type: 'campaign',
+        name: c.name,
+        platform: c.platform,
+        status: c.status,
+        id: c.id,
+      });
+    }
+
+    for (const a of assets) {
+      entries.push({
+        date: a.createdAt.toISOString().slice(0, 10),
+        type: 'creative',
+        name: a.name,
+        id: a.id,
+      });
+    }
+
+    // Sort by date
+    entries.sort((a, b) => a.date.localeCompare(b.date));
+
+    // Upcoming: campaigns with active/pending status in the next 7 days
+    const sevenDaysFromNow = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+    const upcoming = entries.filter(e =>
+      e.type === 'campaign' &&
+      (e.status === 'active' || e.status === 'pending_approval') &&
+      e.date >= now.toISOString().slice(0, 10) &&
+      e.date <= sevenDaysFromNow.toISOString().slice(0, 10)
+    );
+
+    return NextResponse.json({
+      month: `${year}-${String(month + 1).padStart(2, '0')}`,
+      entries,
+      upcoming,
+      stats: {
+        totalCampaigns: campaigns.length,
+        totalCreatives: assets.length,
+        activeCampaigns: campaigns.filter(c => c.status === 'active').length,
+      },
+    });
+  } catch {
+    // D1 cold-start — return empty data
+    return NextResponse.json({ entries: [], upcoming: [] });
   }
-
-  // Sort by date
-  entries.sort((a, b) => a.date.localeCompare(b.date));
-
-  // Upcoming: campaigns with active/pending status in the next 7 days
-  const sevenDaysFromNow = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
-  const upcoming = entries.filter(e =>
-    e.type === 'campaign' &&
-    (e.status === 'active' || e.status === 'pending_approval') &&
-    e.date >= now.toISOString().slice(0, 10) &&
-    e.date <= sevenDaysFromNow.toISOString().slice(0, 10)
-  );
-
-  return NextResponse.json({
-    month: `${year}-${String(month + 1).padStart(2, '0')}`,
-    entries,
-    upcoming,
-    stats: {
-      totalCampaigns: campaigns.length,
-      totalCreatives: assets.length,
-      activeCampaigns: campaigns.filter(c => c.status === 'active').length,
-    },
-  });
 }

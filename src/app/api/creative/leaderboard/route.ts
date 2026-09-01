@@ -25,58 +25,63 @@ export async function GET(req: Request) {
   const limit = Math.min(parseInt(url.searchParams.get('limit') || '10'), 20);
 
   const where = { userId: uid, ...(platform ? { platform } : {}) };
-  const records = await prisma.creativePerformance.findMany({
-    where,
-    orderBy: [{ roas: 'desc' }, { ctr: 'desc' }],
-    take: limit,
-  });
+  try {
+    const records = await prisma.creativePerformance.findMany({
+      where,
+      orderBy: [{ roas: 'desc' }, { ctr: 'desc' }],
+      take: limit,
+    });
 
-  // Summary
-  const allRecords = await prisma.creativePerformance.findMany({ where: { userId: uid } });
-  const totalImpressions = allRecords.reduce((s, r) => s + r.impressions, 0);
-  const totalClicks = allRecords.reduce((s, r) => s + r.clicks, 0);
-  const totalConversions = allRecords.reduce((s, r) => s + r.conversions, 0);
-  const totalSpend = allRecords.reduce((s, r) => s + r.spend, 0);
-  const totalRevenue = allRecords.reduce((s, r) => s + r.revenue, 0);
-  const avgCtr = allRecords.length > 0 ? allRecords.reduce((s, r) => s + r.ctr, 0) / allRecords.length : 0;
-  const avgRoas = allRecords.length > 0 ? allRecords.reduce((s, r) => s + r.roas, 0) / allRecords.length : 0;
+    // Summary
+    const allRecords = await prisma.creativePerformance.findMany({ where: { userId: uid } });
+    const totalImpressions = allRecords.reduce((s, r) => s + r.impressions, 0);
+    const totalClicks = allRecords.reduce((s, r) => s + r.clicks, 0);
+    const totalConversions = allRecords.reduce((s, r) => s + r.conversions, 0);
+    const totalSpend = allRecords.reduce((s, r) => s + r.spend, 0);
+    const totalRevenue = allRecords.reduce((s, r) => s + r.revenue, 0);
+    const avgCtr = allRecords.length > 0 ? allRecords.reduce((s, r) => s + r.ctr, 0) / allRecords.length : 0;
+    const avgRoas = allRecords.length > 0 ? allRecords.reduce((s, r) => s + r.roas, 0) / allRecords.length : 0;
 
-  // By platform
-  const platforms = ['meta', 'google'];
-  const byPlatform: Record<string, { count: number; avgRoas: number }> = {};
-  for (const p of platforms) {
-    const pRecords = allRecords.filter(r => r.platform === p);
-    byPlatform[p] = {
-      count: pRecords.length,
-      avgRoas: pRecords.length > 0 ? pRecords.reduce((s, r) => s + r.roas, 0) / pRecords.length : 0,
-    };
+    // By platform
+    const platforms = ['meta', 'google'];
+    const byPlatform: Record<string, { count: number; avgRoas: number }> = {};
+    for (const p of platforms) {
+      const pRecords = allRecords.filter(r => r.platform === p);
+      byPlatform[p] = {
+        count: pRecords.length,
+        avgRoas: pRecords.length > 0 ? pRecords.reduce((s, r) => s + r.roas, 0) / pRecords.length : 0,
+      };
+    }
+
+    return NextResponse.json({
+      entries: records.map(r => ({
+        creationId: r.creationId,
+        platform: r.platform,
+        hookType: r.hookType,
+        angleName: r.angleName,
+        impressions: r.impressions,
+        clicks: r.clicks,
+        conversions: r.conversions,
+        spend: r.spend,
+        revenue: r.revenue,
+        ctr: r.ctr,
+        cvr: r.cvr,
+        roas: r.roas,
+        recordedAt: r.recordedAt.toISOString(),
+      })),
+      summary: {
+        totalImpressions,
+        totalClicks,
+        totalConversions,
+        totalSpend,
+        totalRevenue,
+        avgCtr: Math.round(avgCtr * 10000) / 10000,
+        avgRoas: Math.round(avgRoas * 100) / 100,
+      },
+      byPlatform,
+    });
+  } catch {
+    // D1 cold-start — return empty data
+    return NextResponse.json({ entries: [], summary: {}, byPlatform: {} });
   }
-
-  return NextResponse.json({
-    entries: records.map(r => ({
-      creationId: r.creationId,
-      platform: r.platform,
-      hookType: r.hookType,
-      angleName: r.angleName,
-      impressions: r.impressions,
-      clicks: r.clicks,
-      conversions: r.conversions,
-      spend: r.spend,
-      revenue: r.revenue,
-      ctr: r.ctr,
-      cvr: r.cvr,
-      roas: r.roas,
-      recordedAt: r.recordedAt.toISOString(),
-    })),
-    summary: {
-      totalImpressions,
-      totalClicks,
-      totalConversions,
-      totalSpend,
-      totalRevenue,
-      avgCtr: Math.round(avgCtr * 10000) / 10000,
-      avgRoas: Math.round(avgRoas * 100) / 100,
-    },
-    byPlatform,
-  });
 }

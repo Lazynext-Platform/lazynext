@@ -7,11 +7,16 @@ export const dynamic = 'force-dynamic';
 export async function GET() {
   const session = await auth();
   if (!session?.user?.id) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
-  const brandKits = await prisma.brandKit.findMany({
-    where: { userId: session.user.id },
-    orderBy: { createdAt: 'desc' },
-  });
-  return NextResponse.json({ brandKits });
+  try {
+    const brandKits = await prisma.brandKit.findMany({
+      where: { userId: session.user.id },
+      orderBy: { createdAt: 'desc' },
+    });
+    return NextResponse.json({ brandKits });
+  } catch {
+    // D1 cold-start — return empty data
+    return NextResponse.json({ brandKits: [] });
+  }
 }
 
 export async function POST(req: Request) {

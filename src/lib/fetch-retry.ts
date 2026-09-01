@@ -10,8 +10,8 @@
  */
 
 const RETRYABLE_STATUS = new Set([500, 502, 503, 504]);
-const DEFAULT_DELAY_MS = 300;
-const DEFAULT_MAX_RETRIES = 1;
+const DEFAULT_DELAY_MS = 500;
+const DEFAULT_MAX_RETRIES = 2;
 
 export async function fetchWithRetry(
   input: string | URL | Request,
