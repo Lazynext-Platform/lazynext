@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, Sparkles, BarChart3, Megaphone, Radar, ChevronDown, Menu, X } from 'lucide-react';
+import { LayoutDashboard, Sparkles, BarChart3, Megaphone, Radar, ChevronDown, Menu, X, Keyboard } from 'lucide-react';
 import { UserMenu } from '@/components/UserMenu';
 import { LangToggle } from '@/components/LangToggle';
 import { CreditBadge } from '@/components/CreditBadge';
@@ -203,6 +203,14 @@ export function Shell({ children }: { children: React.ReactNode }) {
               <HistoryButton />
               <LangToggle />
             </div>
+            <button
+              onClick={() => setShortcutsOpen(true)}
+              className="flex items-center justify-center w-8 h-8 rounded-lg text-fg-faint hover:bg-hover hover:text-fg transition"
+              aria-label="Keyboard shortcuts"
+              title="Keyboard shortcuts (?)"
+            >
+              <Keyboard className="w-4 h-4" />
+            </button>
             <CreditBadge />
             <UserMenu />
           </nav>
