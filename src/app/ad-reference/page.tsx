@@ -141,6 +141,7 @@ export default function AdReferencePage() {
   const [extraNote, setExtraNote] = useState('');
   const [newVoice, setNewVoice] = useState(false);
   const [script, setScript] = useState('');
+  const [scriptDryRun, setScriptDryRun] = useState(false);
   const [voiceId, setVoiceId] = useState(VOICES[0].id);
   const [busy, setBusy] = useState<string | null>(null);
   const [step, setStep] = useState<Step>('idle');
@@ -331,6 +332,7 @@ export default function AdReferencePage() {
             const gs = await postJson('/api/ad-reference/gen-script', { productNote, extraNote, productUrl: product?.url || '', avatarUrl: avatar?.url || '' });
             text = (gs.script || '').trim();
             if (text) setScript(text); // backfill text box: user can see and re-edit the auto-generated dialogue
+            setScriptDryRun(!!gs.dryRun);
           } catch { /* dialogue generation failure skips voiceover, doesn't block overall output */ }
         }
         if (text.length >= 4) {
@@ -450,7 +452,12 @@ export default function AdReferencePage() {
               </label>
               {newVoice && (
                 <div className="mt-3 space-y-2">
-                  <textarea value={script} onChange={(e) => setScript(e.target.value)} rows={3} maxLength={600}
+                  {scriptDryRun && script && (
+                    <div role="status" className="rounded-lg bg-amber-500/10 border border-amber-500/30 px-3 py-2 text-xs text-amber-600 dark:text-amber-400">
+                      Sample script: AI generation is currently unavailable. This is a placeholder — edit it manually or try again later.
+                    </div>
+                  )}
+                  <textarea value={script} onChange={(e) => { setScript(e.target.value); setScriptDryRun(false); }} rows={3} maxLength={600}
                     aria-label={t('adRef.newScript')}
                     placeholder={t('adRef.newScript')}
                     className="w-full rounded-lg bg-surface border border-line px-3 py-2 text-sm text-fg placeholder:text-fg-placeholder outline-none focus:border-line-strong resize-none" />
