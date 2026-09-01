@@ -1016,6 +1016,55 @@ npm run cf:deploy # Deploy to Cloudflare Workers
 - Nav overflow entries: 141 total (was 119)
 - Production deployment version ID: cb7067d5-0855-4d8a-8f5d-da54e7f7407e
 
+### TT30-Series: Platform Consolidation, UX/Nav Overhaul, Performance Hardening
+
+**Phase B — Feature Quality Audit:**
+- Verified 5 apparent slug/import mismatches were naming inconsistencies, not broken imports
+- Confirmed `prompts.ts` and `workflow-conditions.ts` are used (not dead code)
+- Verified all 180 creative libraries contain prompt-injection guard language
+- Added product-brief accessibility: skip-to-content link, semantic `<main>` landmark,
+  `skipToContent` i18n key in all 13 locales
+
+**Phase 1-3 — Shared Toolkit + Library Consolidation:**
+- Created `src/lib/creative/toolkit.ts` centralizing: `resolveModel`, `isDryRun`,
+  `extractJson`, `asStr`, `asNum`, `asObj`, `asStrArr`, `isString`, `atlasGenerate`,
+  `atlasChat`, `CREATIVE_MODEL`, `CREATIVE_MAX_TOKENS`, `CREATIVE_TIMEOUT_MS`
+- Migrated 155 of 181 creative libraries to the toolkit
+- 16 libraries retain custom helper variants where behavior differs (e.g. `extractJson`
+  returning `{}` on failure vs toolkit throwing, `asNum` using `Math.round` vs `parseFloat`)
+- No public exports, API contracts, credit costs, or dry-run behavior changed
+- Commits: `b972192`, `57367c6`
+
+**Phase A — UX/Navigation Overhaul:**
+- Replaced 181-link flat header nav with 5 primary items (Dashboard, Create, Optimize,
+  Manage, Insights) + "Browse" dropdown
+- Browse dropdown shows all 13 categories with top 6 apps each + embedded feature search
+- Mobile hamburger menu with categorized feature list
+- Created `src/config/navCategories.ts` (13 categories), `src/components/FeatureSearch.tsx`
+  (Cmd+K shortcut, fuzzy search), `src/components/CategorizedAppGrid.tsx` (collapsible
+  category sections, search integration)
+- Replaced flat 159-tile dashboard Quick Create grid with `CategorizedAppGrid`
+- All legacy routes preserved — no routes removed
+- Commit: `e582b6c`
+
+**Phase C — Performance Hardening:**
+- Removed unused 159-entry `APPS` array + 100+ icon imports from dashboard (down to 12)
+- Production build verified: 207 pages, 205 API routes, all compile successfully
+- Largest per-page chunk: 84KB (creative-studio); total chunks: 9.7MB
+- `optimizePackageImports: ['lucide-react']` already in `next.config.mjs`
+- Commit: `93b2842`
+
+**Phase D — TT30 Research:**
+- All 84 research repos fully exhausted — every viable idea implemented in prior series
+- Remaining repos are license-prohibited (AGPL), GPU-required, redundant, or low-quality
+- No new prompt-only pages added
+
+**Verification:**
+- TypeScript: 0 errors
+- ESLint: 0 errors
+- Unit tests: 6188 passing, 0 failing, 342 suites
+- Production build: success
+
 ## Production-Only Testing (Cannot Be Verified Locally)
 
 The following items require production infrastructure, external credentials, or
