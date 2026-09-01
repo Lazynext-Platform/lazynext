@@ -266,7 +266,7 @@ export default function AdCreativeChoiceSimplifierDesignerPage() {
                 className="rounded-lg border border-border px-3 py-1.5 text-xs font-medium text-fg-muted hover:bg-hover flex items-center gap-2"
               >
                 {copied ? <Check className="w-3.5 h-3.5 text-success" /> : <Copy className="w-3.5 h-3.5" />}
-                {copied ? 'Copied' : 'Copy JSON'}
+                {copied ? t('choiceSimplifierDesigner.copied') : t('choiceSimplifierDesigner.copy')}
               </button>
             </div>
 
