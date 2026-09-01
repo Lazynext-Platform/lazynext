@@ -172,90 +172,19 @@ npm run cf:deploy # Deploy to Cloudflare Workers
 - ADRs 001-142 in `docs/adr/` document all major architecture decisions
 - Cross-feature handoffs: Brand Concepts → Creator Kits (query-param pre-fill),
   Brand Concepts → Shot Planner (script pre-fill), Clip Editor → Media Service Boundary (ASR/TTS)
-- Dashboard "Quick Create" grid includes all production apps and the 145 newest features
-  (Creator Kits, Brand Concepts, Clip Editor, Media Services, Product Brief, Reference Remix,
-  Multi-Concept, Meta Safety, Google Safety, Performance Loop, Viral Analyzer, Skill Chains,
-  Brand Guardrails, Smart Calendar, Competitor Watch, Ad Copy Generator, Hook Library,
-  Brief Template Builder, Ad Script Writer, Audience Persona Generator, Creative Variant Matrix,
-  Ad Concept Merger, Brief Analyzer, Ad Format Optimizer, Mood Board Generator,
-  Ad Performance Predictor, Creative A/B Test Planner, Creative Hook Tester, Trend Spotter,
-  Brand Voice Analyzer, Ad Caption Generator, Ad Headline Generator, Creative Angle Finder,
-  Ad Timing Optimizer, Creative Fatigue Detector, Ad CTA Optimizer, Creative Concept Expander,
-  Ad Story Generator, Ad Color Palette Generator, Ad Thumbnail Generator, Ad Font Pairing
-  Generator, Ad Hashtag Generator, Creative Scene Generator, Ad Music Mood Matcher,
-  Ad Voiceover Script Generator, Creative Brief Generator, Ad Placement Strategist,
-  Ad A/B Test Name Generator, Creative Hook Revamp Generator, Ad Audience Segment Builder,
-  Creative Concept Validator, Ad Emotion Analyzer, Creative Format Converter, Ad Budget
-  Allocator, Creative Trend Adapter, Ad Creative Sequencer, Brand Story Architect,
-  Ad Localization Adapter, Creative Performance Forecaster, Ad Sentiment Tuner,
-  Creative Hook Matrix Generator, Ad Creative Rotator, Brand Voice Consistency Checker,
-  Ad Persona Matcher, Creative Concept Expander Pro, Ad Competitive Intelligence,
-  Creative Quality Scorer, Ad Audience Resonance Predictor, Creative Format Recommender,
-  Ad Creative Lifecycle Manager, Creative Sentiment Journey Mapper,
-  Ad Creative A/B Test Simulator, Creative Visual Hierarchy Analyzer,
-  Ad Audience Pain Point Mapper, Creative Messaging Framework Builder,
-  Ad Creative Burnout Detector, Creative Ad Concept Synthesizer,
-  Ad Audience Psychographic Profiler, Creative Ad Tone Calibrator,
-  Creative Ad Format Innovator, Ad Creative Story Arc Designer,
-  Creative Ad Persuasion Strategist, Ad Creative Hook Timing Optimizer,
-  Creative Ad Metaphor Generator, Ad Creative Sensory Enhancer,
-  Creative Ad Pattern Interrupt Designer, Ad Creative Social Proof Architect,
-  Creative Ad Anticipation Builder, Ad Creative Contrast Amplifier,
-  Creative Ad Micro-Moment Designer, Ad Creative Emotion Sequencer,
-  Creative Ad Narrative Twist Designer, Ad Creative Memory Anchor Builder,
-  Creative Ad Tension Release Strategist, Ad Creative Sensory Contrast Designer,
-  Creative Ad Curiosity Gap Designer, Ad Creative Rhythm Pacing Optimizer,
-  Creative Ad Visual Hierarchy Strategist, Ad Creative Sound Design Strategist,
-  Creative Ad Surprise Element Designer, Ad Creative Callback Memory Designer,
-  Creative Ad Climax Architect, Ad Creative Pacing Variability Designer,
-  Creative Ad Foreshadowing Designer, Ad Creative Emotional Pivot Designer,
-  Creative Ad Resolution Designer, Ad Creative Viewer Reward Designer,
-  Ad Creative Trust Accelerator Designer, Creative Ad Urgency Catalyst Designer,
-  Ad Creative Social Momentum Designer, Creative Ad Value Ladder Designer,
-  Ad Creative Objection Neutralizer Designer, Creative Ad Micro-Commitment Designer,
-  Ad Creative Scarcity Frame Designer, Creative Ad Identity Alignment Designer)
-- Nav header includes links to all feature pages (visible lg+); the 141 newest features
-  (Product Brief, Reference Remix, Multi-Concept, Meta Safety, Google Safety, Performance Loop,
-  Viral Analyzer, Skill Chains, Brand Guardrails, Smart Calendar, Competitor Watch, Ad Copy
-  Generator, Hook Library, Brief Template Builder, Ad Script Writer, Audience Persona Generator,
-  Creative Variant Matrix, Ad Concept Merger, Brief Analyzer, Ad Format Optimizer, Mood Board
-  Generator, Ad Performance Predictor, Creative A/B Test Planner, Creative Hook Tester,
-  Trend Spotter, Brand Voice Analyzer, Ad Caption Generator, Ad Headline Generator,
-  Creative Angle Finder, Ad Timing Optimizer, Creative Fatigue Detector, Ad CTA Optimizer,
-  Creative Concept Expander, Ad Story Generator, Ad Color Palette Generator, Ad Thumbnail
-  Generator, Ad Font Pairing Generator, Ad Hashtag Generator, Creative Scene Generator,
-  Ad Music Mood Matcher, Ad Voiceover Script Generator, Creative Brief Generator,
-  Ad Placement Strategist, Ad A/B Test Name Generator, Creative Hook Revamp Generator,
-  Ad Audience Segment Builder, Creative Concept Validator, Ad Emotion Analyzer, Creative
-  Format Converter, Ad Budget Allocator, Creative Trend Adapter, Ad Creative Sequencer,
-  Brand Story Architect, Ad Localization Adapter, Creative Performance Forecaster,
-  Ad Sentiment Tuner, Creative Hook Matrix Generator, Ad Creative Rotator,
-  Brand Voice Consistency Checker, Ad Persona Matcher, Creative Concept Expander Pro,
-  Ad Competitive Intelligence, Creative Quality Scorer, Ad Audience Resonance Predictor,
-  Creative Format Recommender, Ad Creative Lifecycle Manager,
-  Creative Sentiment Journey Mapper, Ad Creative A/B Test Simulator,
-  Creative Visual Hierarchy Analyzer, Ad Audience Pain Point Mapper,
-  Creative Messaging Framework Builder, Ad Creative Burnout Detector,
-  Creative Ad Concept Synthesizer, Ad Audience Psychographic Profiler,
-  Creative Ad Tone Calibrator, Creative Ad Format Innovator,
-  Ad Creative Story Arc Designer, Creative Ad Persuasion Strategist,
-  Ad Creative Hook Timing Optimizer, Creative Ad Metaphor Generator,
-  Ad Creative Sensory Enhancer, Creative Ad Pattern Interrupt Designer,
-  Ad Creative Social Proof Architect, Creative Ad Anticipation Builder,
-  Ad Creative Contrast Amplifier, Creative Ad Micro-Moment Designer,
-  Ad Creative Emotion Sequencer, Creative Ad Narrative Twist Designer,
-  Ad Creative Memory Anchor Builder, Creative Ad Tension Release Strategist,
-  Ad Creative Sensory Contrast Designer, Creative Ad Curiosity Gap Designer,
-  Ad Creative Rhythm Pacing Optimizer, Creative Ad Visual Hierarchy Strategist,
-  Ad Creative Sound Design Strategist, Creative Ad Surprise Element Designer,
-  Ad Creative Callback Memory Designer, Creative Ad Climax Architect,
-  Ad Creative Pacing Variability Designer, Creative Ad Foreshadowing Designer,
-  Ad Creative Emotional Pivot Designer, Creative Ad Resolution Designer,
-  Ad Creative Viewer Reward Designer, Ad Creative Trust Accelerator Designer,
-  Creative Ad Urgency Catalyst Designer, Ad Creative Social Momentum Designer,
-  Creative Ad Value Ladder Designer, Ad Creative Objection Neutralizer Designer,
-  Creative Ad Micro-Commitment Designer, Ad Creative Scarcity Frame Designer,
-  Creative Ad Identity Alignment Designer) are in the overflow nav
+- Dashboard uses `CategorizedAppGrid` (`src/components/CategorizedAppGrid.tsx`) with 13
+  collapsible category sections, integrated feature search, and category filter tabs.
+  Categories are defined in `src/config/navCategories.ts`. All ~158 features are discoverable
+  via search or category browsing. The previous flat "Quick Create" grid (159 tiles) has been
+  replaced.
+- Shell nav (`src/components/Shell.tsx`) uses 5 primary nav items (Dashboard, Create, Optimize,
+  Manage, Insights) plus a "Browse" dropdown with all 13 categories and embedded feature search
+  (`src/components/FeatureSearch.tsx`, Cmd+K shortcut). A mobile hamburger menu provides
+  categorized access on narrow screens. The previous 181-link flat header nav has been replaced.
+- Shared creative toolkit (`src/lib/creative/toolkit.ts`) centralizes model resolution, dry-run
+  detection, JSON extraction, value coercion (asStr/asNum/asObj/asStrArr), and Atlas
+  generation/chat access. 155 of 181 creative libraries use the toolkit; 16 retain custom
+  helper variants where behavior differs (e.g. extractJson returning {} on failure vs throwing).
 
 ### JJ-Series: Research-Derived Creative Capabilities
 - Product Page → Ad Brief (`/product-brief`): URL/product extraction → brand/product brief →
