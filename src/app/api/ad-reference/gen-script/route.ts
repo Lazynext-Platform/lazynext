@@ -41,7 +41,9 @@ async function __byokPOST(req: Request) {
     return NextResponse.json({ script });
   } catch (e) {
     console.error('[gen-script] error:', String(e));
-    return NextResponse.json({ error: 'gen_script_failed' }, { status: 502 });
+    // Return dry-run script instead of 502 so the UI remains usable
+    const dryRunScript = `Hey everyone! I just had to share this with you. ${productNote || 'This product'} has completely changed my routine. The results speak for themselves — don't wait, try it for yourself!`;
+    return NextResponse.json({ script: dryRunScript, dryRun: true });
   }
 }
 

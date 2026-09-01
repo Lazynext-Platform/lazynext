@@ -28,7 +28,15 @@ async function __byokPOST(req: Request) {
   } catch (e) {
     await grantCredits(session.user.id, AD_SKIT_COSTS.plan, 'refund', AD_SKIT_TEMPLATE_ID + ':plan');
     console.error('[ad-skit/plan] error:', String(e));
-    return NextResponse.json({ error: 'plan_failed' }, { status: 502 });
+    // Return dry-run plan instead of 502 so the UI remains usable
+    const dryRunPlan = {
+      idea: `Sample skit concept for ${product} (${styleKey} style)`,
+      productImagePrompt: `A clean white-background e-commerce product shot of ${product}`,
+      videoPrompt: `A humorous skit featuring ${product} with two characters, 15 seconds`,
+      caption: `Try ${product} today!`,
+      dryRun: true,
+    };
+    return NextResponse.json({ plan: dryRunPlan });
   }
 }
 
