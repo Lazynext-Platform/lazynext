@@ -22,11 +22,6 @@ import type { PlanTier } from '@/lib/plan-tier';
 // ── Credit cost ──
 export const UGC_COST = 4;
 
-function resolveCreativeModel(planTier?: PlanTier): string {
-  if (process.env.CREATIVE_MODEL) return process.env.CREATIVE_MODEL;
-  return getLLMModel(planTier);
-}
-
 // ── Types ──
 
 export type UgcFormatType =
@@ -99,22 +94,10 @@ export interface UgcAdResult {
   audioNotes: string;
 }
 
-// ── Helpers (mirrors intelligence.ts) ──
-
-function extractJson(raw: string): Record<string, unknown> {
-  const s = raw.trim().replace(/^```(?:json)?/i, '').replace(/```$/, '').trim();
-  const a = s.indexOf('{');
-  const b = s.lastIndexOf('}');
-  if (a < 0 || b < 0) throw new Error('no_json_in_ugc_output');
-  return JSON.parse(s.slice(a, b + 1)) as Record<string, unknown>;
-}
-
-function asStr(v: unknown, fallback = ''): string {
-  return typeof v === 'string' && v.trim() ? v.trim() : fallback;
-}
+// ── Helpers ──
 
 function asStrArr(v: unknown): string[] {
-  return Array.isArray(v) ? v.map((x) => asStr(x)).filter(Boolean).slice(0, 30) : [];
+  return toolkitAsStrArr(v, 30);
 }
 
 function asNum(v: unknown, fallback: number, min: number, max: number): number {
@@ -704,7 +687,7 @@ export async function generateUgcAd(
 
   const raw = await atlasChat(
     [{ role: 'system', content: UGC_SYS_PROMPT }, { role: 'user', content: parts.join('\n') }],
-    resolveCreativeModel(planTier), CREATIVE_MAX_TOKENS, CREATIVE_TIMEOUT_MS,
+    resolveModel(planTier), CREATIVE_MAX_TOKENS, CREATIVE_TIMEOUT_MS,
   );
   const j = extractJson(raw);
 

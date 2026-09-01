@@ -8,7 +8,7 @@
  *
  * Credit cost: COMPLIANCE_COST (4 credits).
  */
-import { atlasChat } from '@/lib/atlas';
+import { atlasChat, asStr, asStrArr as toolkitAsStrArr } from '@/lib/creative/toolkit';
 import { getLLMModel } from '@/lib/providers/model-helpers';
 import type { PlanTier } from '@/lib/plan-tier';
 
@@ -553,12 +553,8 @@ function extractJson(raw: string): Record<string, unknown> {
   }
 }
 
-function asStr(v: unknown, fallback = ''): string {
-  return typeof v === 'string' && v.trim() ? v.trim() : fallback;
-}
-
 function asStrArr(v: unknown): string[] {
-  return Array.isArray(v) ? v.map((x) => asStr(x)).filter(Boolean).slice(0, 50) : [];
+  return toolkitAsStrArr(v, 50);
 }
 
 function asNum(v: unknown, fallback: number, min: number, max: number): number {

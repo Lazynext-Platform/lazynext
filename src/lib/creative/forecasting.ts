@@ -8,8 +8,16 @@
  * All functions use the existing atlasChat() from src/lib/atlas.ts — no new LLM
  * dependency. Credit cost is defined per forecast and exported for the route to charge.
  */
-import { atlasChat } from '@/lib/atlas';
-import { getLLMModel } from '@/lib/providers/model-helpers';
+import {
+  atlasChat,
+  resolveModel,
+  extractJson,
+  asStr,
+  asStrArr as toolkitAsStrArr,
+  asNum,
+  CREATIVE_TIMEOUT_MS,
+  CREATIVE_MAX_TOKENS,
+} from '@/lib/creative/toolkit';
 import type { PlanTier } from '@/lib/plan-tier';
 
 // ── Credit cost per forecast ──
@@ -130,16 +138,6 @@ export interface ForecastResult {
 
 // ── Constants & metadata ──
 
-const FORECAST_MODEL = process.env.CREATIVE_MODEL || getLLMModel();
-const FORECAST_TIMEOUT_MS = Number(process.env.CREATIVE_TIMEOUT_MS || 90_000);
-const FORECAST_MAX_TOKENS = Number(process.env.CREATIVE_MAX_TOKENS || 6000);
-
-/** Resolve the forecasting LLM model for a given plan tier. */
-function resolveForecastModel(planTier?: PlanTier): string {
-  if (process.env.CREATIVE_MODEL) return process.env.CREATIVE_MODEL;
-  return getLLMModel(planTier);
-}
-
 const HORIZON_DAYS: Record<ForecastHorizon, number> = {
   '7d': 7,
   '14d': 14,
@@ -164,14 +162,6 @@ const SCENARIO_PROBABILITIES: Record<ScenarioType, number> = {
 
 // ── Helpers ──
 
-function extractJson(raw: string): Record<string, unknown> {
-  const s = raw.trim().replace(/^```(?:json)?/i, '').replace(/```$/, '').trim();
-  const a = s.indexOf('{');
-  const b = s.lastIndexOf('}');
-  if (a < 0 || b < 0) throw new Error('no_json_in_forecast_output');
-  return JSON.parse(s.slice(a, b + 1)) as Record<string, unknown>;
-}
-
 function extractJsonArray(raw: string): unknown[] {
   const s = raw.trim().replace(/^```(?:json)?/i, '').replace(/```$/, '').trim();
   const a = s.indexOf('[');
@@ -180,17 +170,8 @@ function extractJsonArray(raw: string): unknown[] {
   return JSON.parse(s.slice(a, b + 1)) as unknown[];
 }
 
-function asStr(v: unknown, fallback = ''): string {
-  return typeof v === 'string' && v.trim() ? v.trim() : fallback;
-}
-
 function asStrArr(v: unknown): string[] {
-  return Array.isArray(v) ? v.map((x) => asStr(x)).filter(Boolean).slice(0, 20) : [];
-}
-
-function asNum(v: unknown, fallback: number, min: number, max: number): number {
-  const n = Number(v);
-  return Number.isFinite(n) ? Math.max(min, Math.min(max, n)) : fallback;
+  return toolkitAsStrArr(v, 20);
 }
 
 function round2(n: number): number {
@@ -818,7 +799,7 @@ export async function generateForecast(request: {
   let audienceFitScores = baseFitScores;
 
   try {
-    const model = resolveForecastModel(request.planTier);
+    const model = resolveModel(request.planTier);
     const parts: string[] = [
       `Creative description: ${request.creativeDescription}`,
     ];
@@ -846,7 +827,7 @@ export async function generateForecast(request: {
 
     const raw = await atlasChat(
       [{ role: 'system', content: FORECAST_SYS }, { role: 'user', content: parts.join('\n') }],
-      model, FORECAST_MAX_TOKENS, FORECAST_TIMEOUT_MS,
+      model, CREATIVE_MAX_TOKENS, CREATIVE_TIMEOUT_MS,
     );
     const j = extractJson(raw);
 

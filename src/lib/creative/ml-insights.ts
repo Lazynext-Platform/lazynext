@@ -1,5 +1,4 @@
-import { atlasChat } from '@/lib/atlas';
-import { getLLMModel } from '@/lib/providers/model-helpers';
+import { atlasChat, resolveModel } from '@/lib/creative/toolkit';
 import type { PlanTier } from '@/lib/plan-tier';
 import { prisma } from '@/lib/prisma';
 
@@ -387,7 +386,7 @@ export async function analyzeCreativePerformance(
 
   // Use AI to enhance insights if plan tier supports it
   try {
-    const model = getLLMModel(planTier);
+    const model = resolveModel(planTier);
     const summary = `Analyzed ${creatives.length} creatives. Top elements: ${attributions.slice(0, 3).map((a) => `${a.elementType}:${a.elementValue}(${a.impactScore})`).join(', ')}. Patterns: ${patterns.length}. Clusters: ${clusters.length}.`;
     const aiResponse = await atlasChat(
       [{ role: 'system', content: ML_INSIGHTS_SYS }, { role: 'user', content: `Creative performance summary: ${summary}\n\nGenerate detailed ML insights JSON with recommendations.` }],
