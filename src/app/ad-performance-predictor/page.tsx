@@ -182,7 +182,7 @@ export default function AdPerformancePredictorPage() {
               id="appBrief"
               value={briefOrConcept}
               onChange={(e) => setBriefOrConcept(e.target.value)}
-              placeholder="Paste your creative brief or ad concept here... (e.g., 'A 15-second TikTok showing a remote worker struggling with noise, then discovering our noise-cancelling headphones with a bold hook in the first 3 seconds')"
+              placeholder={t('adPerformancePredictor.briefPh')}
               rows={6}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent resize-y"
               disabled={loading}

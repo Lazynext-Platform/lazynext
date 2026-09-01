@@ -218,7 +218,7 @@ export const thMessages = {
       generating: 'กำลังสร้าง…',
       failed: 'ล้มเหลว (คืนเครดิตแล้ว)',
     },
-    common: { signIn: 'เข้าสู่ระบบ', signOut: 'ออกจากระบบ', credits: 'เครดิต', creditsLower: 'เครดิต', language: 'ภาษา', switchLanguage: 'เปลี่ยนภาษา', currency: 'สกุลเงิน', cookieConsent: 'ยินยอมคุกกี้', new: 'ใหม่', poweredBy: 'ขับเคลื่อนโดย', back: '← ย้อนกลับ', backToLazynext: '← Lazynext', close: 'ปิด', errNetwork: 'ข้อผิดพลาดเครือข่าย กรุณาตรวจสอบการเชื่อมต่อแล้วลองอีกครั้ง', errUnauthorized: 'เซสชันหมดอายุแล้ว กรุณาเข้าสู่ระบบอีกครั้ง', errNotFound: 'ไม่พบทรัพยากรที่ร้องขอ', errForbidden: 'คุณไม่มีสิทธิ์เข้าถึงทรัพยากรนี้', errPaymentRequired: 'เครดิตไม่เพียงพอ กรุณาเติมที่หน้าราคา', errServer: 'ข้อผิดพลาดเซิร์ฟเวอร์ กรุณาลองอีกครั้งในภายหลัง', errGeneric: 'เกิดข้อผิดพลาด กรุณาลองอีกครั้ง', dismissError: 'ปิด', retry: 'ลองอีกครั้ง', loadingDots: 'กำลังโหลด…', resultLabels: { headline: 'พาดหัว', body: 'เนื้อหา', cta: 'CTA', hook: 'เบ็ด', reason: 'เหตุผล', reasoning: 'เหตุผล', description: 'คำอธิบาย', scenario: 'สถานการณ์', sensoryDetails: 'รายละเอียดทางประสาทสัมผัส', emotionalPayoff: 'ผลตอบแทนทางอารมณ์', psychologicalPrinciple: 'หลักการทางจิตวิทยา', timing: 'จังหวะ', frictionRemoval: 'การขจัดอุปสรรค', whyNotTheOthers: 'ทำไมไม่ใช่ตัวเลือกอื่น', adCopy: 'ข้อความโฆษณา', visualizationPrompt: 'พร้อมต์การแสดงภาพ', desiredOutcome: 'ผลลัพธ์ที่ต้องการ' }, skipToContent: 'ข้ามไปยังเนื้อหา', phProduct: 'เช่น แบรนด์สกินแคร์ DTC ที่ขายเซรั่มวิตามินซี', phMessage: 'เช่น เบื่อผิวหมองคล้ำ? เซรั่มวิตามินซีของเราให้ผิวสว่างใน 7 วัน...', phAudience: 'เช่น ผู้หญิง 25-40 ปี ที่สนใจสกินแคร์' },
+    common: { signIn: 'เข้าสู่ระบบ', signOut: 'ออกจากระบบ', credits: 'เครดิต', creditsLower: 'เครดิต', language: 'ภาษา', switchLanguage: 'เปลี่ยนภาษา', currency: 'สกุลเงิน', cookieConsent: 'ยินยอมคุกกี้', new: 'ใหม่', poweredBy: 'ขับเคลื่อนโดย', back: '← ย้อนกลับ', backToLazynext: '← Lazynext', close: 'ปิด', errNetwork: 'ข้อผิดพลาดเครือข่าย กรุณาตรวจสอบการเชื่อมต่อแล้วลองอีกครั้ง', errUnauthorized: 'เซสชันหมดอายุแล้ว กรุณาเข้าสู่ระบบอีกครั้ง', errNotFound: 'ไม่พบทรัพยากรที่ร้องขอ', errForbidden: 'คุณไม่มีสิทธิ์เข้าถึงทรัพยากรนี้', errPaymentRequired: 'เครดิตไม่เพียงพอ กรุณาเติมที่หน้าราคา', errServer: 'ข้อผิดพลาดเซิร์ฟเวอร์ กรุณาลองอีกครั้งในภายหลัง', errGeneric: 'เกิดข้อผิดพลาด กรุณาลองอีกครั้ง', dismissError: 'ปิด', retry: 'ลองอีกครั้ง', loadingDots: 'กำลังโหลด…', resultLabels: { headline: 'พาดหัว', body: 'เนื้อหา', cta: 'CTA', hook: 'เบ็ด', reason: 'เหตุผล', reasoning: 'เหตุผล', description: 'คำอธิบาย', scenario: 'สถานการณ์', sensoryDetails: 'รายละเอียดทางประสาทสัมผัส', emotionalPayoff: 'ผลตอบแทนทางอารมณ์', psychologicalPrinciple: 'หลักการทางจิตวิทยา', timing: 'จังหวะ', frictionRemoval: 'การขจัดอุปสรรค', whyNotTheOthers: 'ทำไมไม่ใช่ตัวเลือกอื่น', adCopy: 'ข้อความโฆษณา', visualizationPrompt: 'พร้อมต์การแสดงภาพ', desiredOutcome: 'ผลลัพธ์ที่ต้องการ' }, skipToContent: 'ข้ามไปยังเนื้อหา', phProduct: 'เช่น แบรนด์สกินแคร์ DTC ที่ขายเซรั่มวิตามินซี', phMessage: 'เช่น เบื่อผิวหมองคล้ำ? เซรั่มวิตามินซีของเราให้ผิวสว่างใน 7 วัน...', phAudience: 'เช่น ผู้หญิง 25-40 ปี ที่สนใจสกินแคร์', phAudienceCleanBeauty: 'เช่น ผู้หญิง 25-40 ปี ที่สนใจคลีนบิวตี้', phAudienceCleanBeautyOpt: 'เช่น ผู้หญิง 25-40 ปี ที่สนใจคลีนบิวตี้ (ไม่บังคับ)', phAudienceSelfCare: 'เช่น ผู้หญิง 25-40 ปี ที่สนใจสกินแคร์และการดูแลตัวเอง', phAudienceConcern: 'เช่น ผู้หญิง 25-40 ปี ที่กังวลเรื่องริ้วรอย', phMillennial: 'เช่น ผู้ที่ชื่นชอบสกินแคร์รุ่นมิลเลนเนียล', phAcme: 'เช่น Acme', phAcmeHeadphones: 'เช่น หูฟังตัดเสียงรบกวน Acme', phTone: 'เช่น สนุกสนาน กล้าแสดงออก', phToneProfessional: 'เช่น สนุกสนาน มืออาชีพ', phToneLuxurious: 'เช่น สนุกสนาน กล้าแสดงออก หรูหรา (ไม่บังคับ)', phKeywords: 'เช่น คุณภาพ ราคาประหยัด', phColors: 'เช่น #FF0000, #00B2FC', phFonts: 'เช่น Inter, Roboto', phUrl: 'https://...', phOptional: 'ไม่บังคับ', phOptionalPercent: 'ไม่บังคับ %', phOptionalDollar: 'ไม่บังคับ $', ph50: '50' },
     userMenu: {
       account: 'บัญชี',
       signOut: 'ออกจากระบบ',
@@ -1056,6 +1056,11 @@ export const thMessages = {
       tikTok: 'TikTok',
       instagram: 'Instagram',
       viralAnalysis: 'การวิเคราะห์ไวรัล',
+      productDescPh: 'ชื่อสินค้า คุณสมบัติหลัก ประโยชน์ ราคา...',
+      productNamePh: 'เช่น Glow Serum',
+      productUrlPh: 'https://shop.example.com/product',
+      brandUrlPh: 'https://brand.example.com',
+      creditBudgetPh: '50',
     },
     ads: {
       title: 'แคมเปญโฆษณา',
@@ -1453,6 +1458,8 @@ export const thMessages = {
       launchSuccess: "เริ่มทดสอบสำเร็จ!",
       launchError: "เริ่มทดสอบล้มเหลว",
       baseline: "พื้นฐาน",
+      baseCreativePh: 'อธิบายครีเอทีฟพื้นฐานที่คุณต้องการทดสอบ (ฮุก, CTA, สไตล์ภาพ, มุม)...',
+      metricGoalPh: 'เช่น เพิ่ม CTR 20%',
     },
     smartAssets: {
       title: "คลัง Asset อัจฉริยะ",
@@ -2729,6 +2736,14 @@ export const thMessages = {
     colors: 'สี (คั่นด้วยจุลภาค)',
     fonts: 'ฟอนต์ (คั่นด้วยจุลภาค)',
     briefPlaceholder: 'วางบรีฟสร้างสรรค์...',
+    scriptPh: 'วางสคริปต์ (ไม่บังคับ)...',
+    storyboardPh: 'วางสตอรีบอร์ด (ไม่บังคับ)...',
+    brandNamePh: 'เช่น Acme',
+    tonePh: 'เช่น สนุกสนาน มืออาชีพ',
+    keywordsPh: 'เช่น คุณภาพ ราคาประหยัด',
+    forbiddenPh: 'เช่น ถูก หลอกลวง',
+    colorsPh: 'เช่น #FF0000, #00B2FC',
+    fontsPh: 'เช่น Inter, Roboto',
     fix: 'แก้ไข:',
   },
   smartCalendar: {
@@ -2806,6 +2821,7 @@ export const thMessages = {
     expectedImpact: 'ผลกระทบที่คาดหวัง:',
     timeframe: 'กรอบเวลา:',
     action: 'การดำเนินการ:',
+    brandKitPh: 'วางแบรนด์คิตหรือแถลงการณ์วางตำแหน่ง (ไม่บังคับ)',
   },
   adCopyGenerator: {
     title: 'ตัวสร้างข้อความโฆษณา',
@@ -2998,6 +3014,7 @@ export const thMessages = {
       error: "การวิเคราะห์ล้มเหลว",
       fix: "แก้ไข",
       dryRunNotice: "โหมดทดลอง — ใช้การวิเคราะห์แบบฮิวริสติก",
+      briefPh: 'วางครีเอทีฟบรีฟที่นี่... (ขั้นต่ำ 50 ตัวอักษร)',
   },
   adFormatOptimizer: {
       title: "เครื่องมือเพิ่มประสิทธิภาพรูปแบบโฆษณา",
@@ -3079,6 +3096,7 @@ export const thMessages = {
     confidence: 'ความมั่นใจ',
     benchmark: 'เกณฑ์อ้างอิง',
     rationale: 'เหตุผล',
+    briefPh: 'วางครีเอทีฟบรีฟหรือแนวคิดโฆษณาที่นี่...',
   },
   abTestPlannerV2: {
     title: "ตัววางแผน A/B Test สร้างสรรค์",
@@ -3172,6 +3190,7 @@ export const thMessages = {
     copied: 'คัดลอกแล้ว',
     error: 'การวิเคราะห์ล้มเหลว',
     dryRunNotice: 'โหมดทดลอง — ใช้การวิเคราะห์แบบฮิวริสติก',
+    sampleContentPh: 'วาง 100+ ตัวอักษรของเนื้อหาแบรนด์ของคุณ — สำเนาเว็บไซต์ คำบรรยายโฆษณา โพสต์โซเชียล อีเมล…',
   },
   adCaptionGenerator: {
     title: 'สร้างคำบรรยายโฆษณา',

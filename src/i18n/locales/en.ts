@@ -1139,6 +1139,11 @@ export const enMessages = {
       tikTok: 'TikTok',
       instagram: 'Instagram',
       viralAnalysis: 'Viral Analysis',
+      productDescPh: 'Product name, key features, benefits, price...',
+      productNamePh: 'e.g. Glow Serum',
+      productUrlPh: 'https://shop.example.com/product',
+      brandUrlPh: 'https://brand.example.com',
+      creditBudgetPh: '50',
     },
     ads: {
       title: 'Ad Campaigns',
@@ -1590,6 +1595,8 @@ export const enMessages = {
       launchSuccess: 'Test launched successfully!',
       launchError: 'Failed to launch test',
       baseline: 'Baseline',
+      baseCreativePh: 'Describe the base creative you want to test (hook, CTA, visual style, angle)...',
+      metricGoalPh: 'e.g., increase CTR by 20%',
     },
     smartAssets: {
       title: 'Smart Asset Library',
@@ -3374,6 +3381,14 @@ export const enMessages = {
     colors: 'Colors (comma-separated)',
     fonts: 'Fonts (comma-separated)',
     briefPlaceholder: 'Paste the creative brief...',
+    scriptPh: 'Paste the script (optional)...',
+    storyboardPh: 'Paste the storyboard (optional)...',
+    brandNamePh: 'e.g., Acme',
+    tonePh: 'e.g., playful, professional',
+    keywordsPh: 'e.g., quality, affordable',
+    forbiddenPh: 'e.g., cheap, scam',
+    colorsPh: 'e.g., #FF0000, #00B2FC',
+    fontsPh: 'e.g., Inter, Roboto',
     fix: 'Fix:',
   },
   smartCalendar: {
@@ -3451,6 +3466,7 @@ export const enMessages = {
     expectedImpact: 'Expected impact:',
     timeframe: 'Timeframe:',
     action: 'Action:',
+    brandKitPh: 'Paste your brand kit or positioning statement (optional)',
   },
   adCopyGenerator: {
     title: 'Ad Copy Generator',
@@ -3643,6 +3659,7 @@ export const enMessages = {
     error: 'Analysis failed',
     fix: 'Fix',
     dryRunNotice: 'Dry-run mode — using heuristic analysis',
+    briefPh: 'Paste your creative brief here... (minimum 50 characters)',
   },
   adFormatOptimizer: {
     title: 'Ad Format Optimizer',
@@ -3724,6 +3741,7 @@ export const enMessages = {
     rationale: 'Rationale',
     copy: 'Copy',
     error: 'Prediction failed',
+    briefPh: "Paste your creative brief or ad concept here... (e.g., 'A 15-second TikTok showing a remote worker struggling with noise, then discovering our noise-cancelling headphones with a bold hook in the first 3 seconds')",
   },
   abTestPlannerV2: {
     title: 'Creative A/B Test Planner',
@@ -3817,6 +3835,7 @@ export const enMessages = {
     copied: 'Copied',
     error: 'Analysis failed',
     dryRunNotice: 'Dry-run mode — using heuristic analysis',
+    sampleContentPh: "Paste 100+ characters of your brand's content — website copy, ad captions, social posts, emails…",
   },
   adCaptionGenerator: {
     title: 'Ad Caption Generator',

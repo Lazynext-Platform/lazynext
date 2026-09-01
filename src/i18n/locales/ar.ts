@@ -215,7 +215,7 @@ export const arMessages = {
       generating: 'جارٍ الإنشاء…',
       failed: 'فشل (تم الاسترداد)',
     },
-    common: { signIn: 'تسجيل الدخول', signOut: 'تسجيل الخروج', credits: 'الرصيد', creditsLower: 'ائتمانات', language: 'اللغة', switchLanguage: 'تبديل اللغة', currency: 'العملة', cookieConsent: 'موافقة ملفات تعريف الارتباط', new: 'جديد', poweredBy: 'مدعوم من', back: '→ رجوع', backToLazynext: '→ Lazynext', close: 'إغلاق', errNetwork: 'خطأ في الشبكة. تحقق من اتصالك وحاول مرة أخرى.', errUnauthorized: 'انتهت صلاحية جلستك. يرجى تسجيل الدخول مرة أخرى.', errNotFound: 'لم يتم العثور على المورد المطلوب.', errForbidden: 'ليس لديك صلاحية الوصول إلى هذا المورد.', errPaymentRequired: 'رصيد غير كافٍ. يرجى الشحن في صفحة الأسعار.', errServer: 'خطأ في الخادم. حاول مرة أخرى لاحقًا.', errGeneric: 'حدث خطأ ما. حاول مرة أخرى.', dismissError: 'إغلاق', retry: 'إعادة المحاولة', loadingDots: 'جارٍ التحميل…', resultLabels: { headline: 'العنوان الرئيسي', body: 'النص', cta: 'CTA', hook: 'الخطاف', reason: 'السبب', reasoning: 'التفكير', description: 'الوصف', scenario: 'السيناريو', sensoryDetails: 'التفاصيل الحسية', emotionalPayoff: 'المكافأة العاطفية', psychologicalPrinciple: 'المبدأ النفسي', timing: 'التوقيت', frictionRemoval: 'إزالة الاحتكاك', whyNotTheOthers: 'لماذا ليس الآخرون', adCopy: 'نص الإعلان', visualizationPrompt: 'موجز التصور', desiredOutcome: 'النتيجة المرغوبة' }, skipToContent: 'تخطي إلى المحتوى', phProduct: 'مثال: علامة تجارية مباشرة للمسته تبيع سيروم فيتامين C', phMessage: 'مثال: هل سئمت من البشرة الباهتة؟ سيروم فيتامين C لدينا يفتحها في 7 أيام فقط...', phAudience: 'مثال: نساء 25-40 مهتمات بالعناية بالبشرة' },
+    common: { signIn: 'تسجيل الدخول', signOut: 'تسجيل الخروج', credits: 'الرصيد', creditsLower: 'ائتمانات', language: 'اللغة', switchLanguage: 'تبديل اللغة', currency: 'العملة', cookieConsent: 'موافقة ملفات تعريف الارتباط', new: 'جديد', poweredBy: 'مدعوم من', back: '→ رجوع', backToLazynext: '→ Lazynext', close: 'إغلاق', errNetwork: 'خطأ في الشبكة. تحقق من اتصالك وحاول مرة أخرى.', errUnauthorized: 'انتهت صلاحية جلستك. يرجى تسجيل الدخول مرة أخرى.', errNotFound: 'لم يتم العثور على المورد المطلوب.', errForbidden: 'ليس لديك صلاحية الوصول إلى هذا المورد.', errPaymentRequired: 'رصيد غير كافٍ. يرجى الشحن في صفحة الأسعار.', errServer: 'خطأ في الخادم. حاول مرة أخرى لاحقًا.', errGeneric: 'حدث خطأ ما. حاول مرة أخرى.', dismissError: 'إغلاق', retry: 'إعادة المحاولة', loadingDots: 'جارٍ التحميل…', resultLabels: { headline: 'العنوان الرئيسي', body: 'النص', cta: 'CTA', hook: 'الخطاف', reason: 'السبب', reasoning: 'التفكير', description: 'الوصف', scenario: 'السيناريو', sensoryDetails: 'التفاصيل الحسية', emotionalPayoff: 'المكافأة العاطفية', psychologicalPrinciple: 'المبدأ النفسي', timing: 'التوقيت', frictionRemoval: 'إزالة الاحتكاك', whyNotTheOthers: 'لماذا ليس الآخرون', adCopy: 'نص الإعلان', visualizationPrompt: 'موجز التصور', desiredOutcome: 'النتيجة المرغوبة' }, skipToContent: 'تخطي إلى المحتوى', phProduct: 'مثال: علامة تجارية مباشرة للمسته تبيع سيروم فيتامين C', phMessage: 'مثال: هل سئمت من البشرة الباهتة؟ سيروم فيتامين C لدينا يفتحها في 7 أيام فقط...', phAudience: 'مثال: نساء 25-40 مهتمات بالعناية بالبشرة', phAudienceCleanBeauty: 'مثال: نساء 25-40 مهتمات بالمنتجات الطبيعية للعناية بالبشرة', phAudienceCleanBeautyOpt: 'مثال: نساء 25-40 مهتمات بالمنتجات الطبيعية للعناية بالبشرة (اختياري)', phAudienceSelfCare: 'مثال: نساء 25-40 مهتمات بالعناية بالبشرة والذات', phAudienceConcern: 'مثال: نساء 25-40 قلقات بشأن شيخوخة البشرة', phMillennial: 'مثال: عشاق العناية بالبشرة من جيل الألفية', phAcme: 'مثال: أكمي', phAcmeHeadphones: 'مثال: سماعات أكمي المانعة للضوضاء', phTone: 'مثال: مرحة، جريئة', phToneProfessional: 'مثال: مرحة، احترافية', phToneLuxurious: 'مثال: مرحة، جريئة، فاخرة (اختياري)', phKeywords: 'مثال: جودة، بأسعار معقولة', phColors: 'مثال: #FF0000, #00B2FC', phFonts: 'مثال: Inter, Roboto', phUrl: 'https://...', phOptional: 'اختياري', phOptionalPercent: 'اختياري %', phOptionalDollar: 'اختياري $', ph50: '50' },
     userMenu: {
       account: 'الحساب',
       signOut: 'تسجيل الخروج',
@@ -1053,6 +1053,11 @@ export const arMessages = {
       tikTok: 'TikTok',
       instagram: 'Instagram',
       viralAnalysis: 'تحليل فيروسي',
+      productDescPh: 'اسم المنتج، الميزات الرئيسية، الفوائد، السعر...',
+      productNamePh: 'مثال: سيروم التألق',
+      productUrlPh: 'https://shop.example.com/product',
+      brandUrlPh: 'https://brand.example.com',
+      creditBudgetPh: '50',
     },
     ads: {
       title: 'حملات إعلانية',
@@ -1452,6 +1457,8 @@ export const arMessages = {
       launchSuccess: "تم بدء الاختبار بنجاح!",
       launchError: "فشل بدء الاختبار",
       baseline: "الأساس",
+      baseCreativePh: 'صفف الإبداع الأساسي الذي تريد اختباره (هوك، CTA، نمط بصري، زاوية)...',
+      metricGoalPh: 'مثال: زيادة CTR بنسبة 20%',
     },
     smartAssets: {
       title: "مكتبة الأصول الذكية",
@@ -2728,6 +2735,14 @@ export const arMessages = {
     colors: 'الألوان (مفصولة بفواصل)',
     fonts: 'الخطوط (مفصولة بفواصل)',
     briefPlaceholder: 'الصق الموجز الإبداعي...',
+    scriptPh: 'الصق النص (اختياري)...',
+    storyboardPh: 'الصق القصة المصورة (اختياري)...',
+    brandNamePh: 'مثال: أكمي',
+    tonePh: 'مثال: مرحة، احترافية',
+    keywordsPh: 'مثال: جودة، بأسعار معقولة',
+    forbiddenPh: 'مثال: رخيص، احتيال',
+    colorsPh: 'مثال: #FF0000, #00B2FC',
+    fontsPh: 'مثال: Inter, Roboto',
     fix: 'إصلاح:',
   },
   smartCalendar: {
@@ -2805,6 +2820,7 @@ export const arMessages = {
     expectedImpact: 'الأثر المتوقع:',
     timeframe: 'الإطار الزمني:',
     action: 'الإجراء:',
+    brandKitPh: 'الصق مجموعة العلامة التجارية أو بيان التموضع (اختياري)',
   },
   adCopyGenerator: {
     title: 'مولّد نصوص الإعلانات',
@@ -2997,6 +3013,7 @@ export const arMessages = {
       error: "فشل التحليل",
       fix: "إصلاح",
       dryRunNotice: "وضع التجربة — استخدام التحليل الاستدلالي",
+      briefPh: 'الصق ملخصك الإبداعي هنا... (الحد الأدنى 50 حرفًا)',
   },
   adFormatOptimizer: {
       title: "مُحسِّن صيغ الإعلان",
@@ -3078,6 +3095,7 @@ export const arMessages = {
     confidence: 'الثقة',
     benchmark: 'المعيار',
     rationale: 'المبرر',
+    briefPh: 'الصق ملخصك الإبداعي أو مفهوم الإعلان هنا...',
   },
   abTestPlannerV2: {
     title: "مخطط اختبارات A/B الإبداعية",
@@ -3171,6 +3189,7 @@ export const arMessages = {
     copied: 'تم النسخ',
     error: 'فشل التحليل',
     dryRunNotice: 'وضع التجربة — استخدام تحليل استدلالي',
+    sampleContentPh: 'الصق أكثر من 100 حرف من محتوى علامتك التجارية — نسخ الموقع، تعليقات الإعلانات، منشورات التواصل، رسائل البريد…',
   },
   adCaptionGenerator: {
     title: 'مولّد تعليقات الإعلانات',

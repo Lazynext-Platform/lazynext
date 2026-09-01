@@ -159,7 +159,7 @@ export default function HookLibraryPage() {
             <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <label htmlFor="hlProduct" className="block text-sm font-medium mb-1">{t('hookLibrary.productContext')}</label>
-                <input id="hlProduct" type="text" value={productOrBrand} onChange={(e) => setProductOrBrand(e.target.value)} placeholder="e.g., Acme noise-cancelling headphones" className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
+                <input id="hlProduct" type="text" value={productOrBrand} onChange={(e) => setProductOrBrand(e.target.value)} placeholder={t('common.phAcmeHeadphones')} className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
               </div>
               <div>
                 <label htmlFor="hlAudience" className="block text-sm font-medium mb-1">{t('hookLibrary.audience')}</label>

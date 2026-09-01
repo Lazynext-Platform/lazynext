@@ -236,11 +236,11 @@ export default function AdScriptWriterPage() {
             <div className="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div>
                 <label htmlFor="aswBrandName" className="block text-sm font-medium mb-1">{t('adScriptWriter.brandName')}</label>
-                <input id="aswBrandName" type="text" value={brandName} onChange={(e) => setBrandName(e.target.value)} placeholder="e.g., Acme" className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
+                <input id="aswBrandName" type="text" value={brandName} onChange={(e) => setBrandName(e.target.value)} placeholder={t('common.phAcme')} className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
               </div>
               <div>
                 <label htmlFor="aswTone" className="block text-sm font-medium mb-1">{t('adScriptWriter.tone')}</label>
-                <input id="aswTone" type="text" value={tone} onChange={(e) => setTone(e.target.value)} placeholder="e.g., playful, bold" className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
+                <input id="aswTone" type="text" value={tone} onChange={(e) => setTone(e.target.value)} placeholder={t('common.phTone')} className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
               </div>
               <div>
                 <label htmlFor="aswKeywords" className="block text-sm font-medium mb-1">{t('adScriptWriter.keywords')}</label>

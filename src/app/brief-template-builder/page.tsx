@@ -139,7 +139,7 @@ export default function BriefTemplateBuilderPage() {
             <div className="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div>
                 <label htmlFor="btbBrandName" className="block text-sm font-medium mb-1">{t('briefTemplateBuilder.brandName')}</label>
-                <input id="btbBrandName" type="text" value={brandName} onChange={(e) => setBrandName(e.target.value)} placeholder="e.g., Acme" className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
+                <input id="btbBrandName" type="text" value={brandName} onChange={(e) => setBrandName(e.target.value)} placeholder={t('common.phAcme')} className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
               </div>
               <div>
                 <label htmlFor="btbTone" className="block text-sm font-medium mb-1">{t('briefTemplateBuilder.brandTone')}</label>

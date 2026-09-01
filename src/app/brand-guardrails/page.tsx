@@ -123,27 +123,27 @@ export default function BrandGuardrailsPage() {
             <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <label htmlFor="bgBrandName" className="block text-sm font-medium mb-1">{t('brandGuardrails.brandName')}</label>
-                <input id="bgBrandName" type="text" value={brandName} onChange={(e) => setBrandName(e.target.value)} placeholder="e.g., Acme" className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
+                <input id="bgBrandName" type="text" value={brandName} onChange={(e) => setBrandName(e.target.value)} placeholder={t('brandGuardrails.brandNamePh')} className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
               </div>
               <div>
                 <label htmlFor="bgTone" className="block text-sm font-medium mb-1">{t('brandGuardrails.tone')}</label>
-                <input id="bgTone" type="text" value={tone} onChange={(e) => setTone(e.target.value)} placeholder="e.g., playful, professional" className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
+                <input id="bgTone" type="text" value={tone} onChange={(e) => setTone(e.target.value)} placeholder={t('brandGuardrails.tonePh')} className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
               </div>
               <div>
                 <label htmlFor="bgKeywords" className="block text-sm font-medium mb-1">{t('brandGuardrails.keywords')}</label>
-                <input id="bgKeywords" type="text" value={keywords} onChange={(e) => setKeywords(e.target.value)} placeholder="e.g., quality, affordable" className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
+                <input id="bgKeywords" type="text" value={keywords} onChange={(e) => setKeywords(e.target.value)} placeholder={t('brandGuardrails.keywordsPh')} className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
               </div>
               <div>
                 <label htmlFor="bgForbidden" className="block text-sm font-medium mb-1">{t('brandGuardrails.forbiddenWords')}</label>
-                <input id="bgForbidden" type="text" value={forbiddenWords} onChange={(e) => setForbiddenWords(e.target.value)} placeholder="e.g., cheap, scam" className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
+                <input id="bgForbidden" type="text" value={forbiddenWords} onChange={(e) => setForbiddenWords(e.target.value)} placeholder={t('brandGuardrails.forbiddenPh')} className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
               </div>
               <div>
                 <label htmlFor="bgColors" className="block text-sm font-medium mb-1">{t('brandGuardrails.colors')}</label>
-                <input id="bgColors" type="text" value={colors} onChange={(e) => setColors(e.target.value)} placeholder="e.g., #FF0000, #00B2FC" className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
+                <input id="bgColors" type="text" value={colors} onChange={(e) => setColors(e.target.value)} placeholder={t('brandGuardrails.colorsPh')} className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
               </div>
               <div>
                 <label htmlFor="bgFonts" className="block text-sm font-medium mb-1">{t('brandGuardrails.fonts')}</label>
-                <input id="bgFonts" type="text" value={fonts} onChange={(e) => setFonts(e.target.value)} placeholder="e.g., Inter, Roboto" className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
+                <input id="bgFonts" type="text" value={fonts} onChange={(e) => setFonts(e.target.value)} placeholder={t('brandGuardrails.fontsPh')} className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
               </div>
             </div>
           </div>
@@ -157,11 +157,11 @@ export default function BrandGuardrailsPage() {
               </div>
               <div>
                 <label htmlFor="bgScript" className="block text-sm font-medium mb-1">{t('brandGuardrails.script')}</label>
-                <textarea id="bgScript" value={script} onChange={(e) => setScript(e.target.value)} placeholder="Paste the script (optional)..." rows={4} className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent resize-y" disabled={loading} />
+                <textarea id="bgScript" value={script} onChange={(e) => setScript(e.target.value)} placeholder={t('brandGuardrails.scriptPh')} rows={4} className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent resize-y" disabled={loading} />
               </div>
               <div>
                 <label htmlFor="bgStoryboard" className="block text-sm font-medium mb-1">{t('brandGuardrails.storyboard')}</label>
-                <textarea id="bgStoryboard" value={storyboard} onChange={(e) => setStoryboard(e.target.value)} placeholder="Paste the storyboard (optional)..." rows={4} className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent resize-y" disabled={loading} />
+                <textarea id="bgStoryboard" value={storyboard} onChange={(e) => setStoryboard(e.target.value)} placeholder={t('brandGuardrails.storyboardPh')} rows={4} className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent resize-y" disabled={loading} />
               </div>
             </div>
           </div>

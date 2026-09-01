@@ -174,7 +174,7 @@ export default function BriefAnalyzerPage() {
               id="baBrief"
               value={briefText}
               onChange={(e) => setBriefText(e.target.value)}
-              placeholder="Paste your creative brief here... (minimum 50 characters)"
+              placeholder={t('briefAnalyzer.briefPh')}
               rows={10}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent resize-y"
               disabled={loading}

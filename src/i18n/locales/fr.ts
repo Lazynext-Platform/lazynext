@@ -215,7 +215,7 @@ export const frMessages = {
       generating: 'Génération…',
       failed: 'Échec (remboursé)',
     },
-    common: { signIn: 'Se connecter', signOut: 'Déconnexion', credits: 'Crédits', creditsLower: 'crédits', language: 'Langue', switchLanguage: 'Changer de langue', currency: 'Devise', cookieConsent: 'Consentement aux cookies', new: 'NOUVEAU', poweredBy: 'Propulsé par', back: '← Retour', backToLazynext: '← Lazynext', close: "Fermer", errNetwork: 'Erreur réseau. Vérifiez votre connexion et réessayez.', errUnauthorized: 'Votre session a expiré. Veuillez vous reconnecter.', errNotFound: 'La ressource demandée est introuvable.', errForbidden: "Vous n'avez pas accès à cette ressource.", errPaymentRequired: 'Crédits insuffisants. Rechargez sur la page des tarifs.', errServer: 'Erreur du serveur. Veuillez réessayer plus tard.', errGeneric: 'Une erreur est survenue. Veuillez réessayer.', dismissError: 'Fermer', retry: 'Réessayer', loadingDots: 'Chargement…', resultLabels: { headline: 'Titre', body: 'Corps', cta: 'CTA', hook: 'Accroche', reason: 'Raison', reasoning: 'Raisonnement', description: 'Description', scenario: 'Scénario', sensoryDetails: 'Détails Sensoriels', emotionalPayoff: 'Récompense Émotionnelle', psychologicalPrinciple: 'Principe Psychologique', timing: 'Moment', frictionRemoval: 'Élimination des Frictions', whyNotTheOthers: 'Pourquoi Pas les Autres', adCopy: 'Texte Publicitaire', visualizationPrompt: 'Prompt de Visualisation', desiredOutcome: 'Résultat Souhaité' }, skipToContent: 'Aller au contenu', phProduct: 'ex. marque DTC de soins de peau vendant un sérum à la vitamine C', phMessage: 'ex. Fatiguée de la peau terne? Notre sérum à la vitamine C éclaircit en 7 jours...', phAudience: 'ex. Femmes 25-40 intéressées par les soins de la peau' },
+    common: { signIn: 'Se connecter', signOut: 'Déconnexion', credits: 'Crédits', creditsLower: 'crédits', language: 'Langue', switchLanguage: 'Changer de langue', currency: 'Devise', cookieConsent: 'Consentement aux cookies', new: 'NOUVEAU', poweredBy: 'Propulsé par', back: '← Retour', backToLazynext: '← Lazynext', close: "Fermer", errNetwork: 'Erreur réseau. Vérifiez votre connexion et réessayez.', errUnauthorized: 'Votre session a expiré. Veuillez vous reconnecter.', errNotFound: 'La ressource demandée est introuvable.', errForbidden: "Vous n'avez pas accès à cette ressource.", errPaymentRequired: 'Crédits insuffisants. Rechargez sur la page des tarifs.', errServer: 'Erreur du serveur. Veuillez réessayer plus tard.', errGeneric: 'Une erreur est survenue. Veuillez réessayer.', dismissError: 'Fermer', retry: 'Réessayer', loadingDots: 'Chargement…', resultLabels: { headline: 'Titre', body: 'Corps', cta: 'CTA', hook: 'Accroche', reason: 'Raison', reasoning: 'Raisonnement', description: 'Description', scenario: 'Scénario', sensoryDetails: 'Détails Sensoriels', emotionalPayoff: 'Récompense Émotionnelle', psychologicalPrinciple: 'Principe Psychologique', timing: 'Moment', frictionRemoval: 'Élimination des Frictions', whyNotTheOthers: 'Pourquoi Pas les Autres', adCopy: 'Texte Publicitaire', visualizationPrompt: 'Prompt de Visualisation', desiredOutcome: 'Résultat Souhaité' }, skipToContent: 'Aller au contenu', phProduct: 'ex. marque DTC de soins de peau vendant un sérum à la vitamine C', phMessage: 'ex. Fatiguée de la peau terne? Notre sérum à la vitamine C éclaircit en 7 jours...', phAudience: 'ex. Femmes 25-40 intéressées par les soins de la peau', phAudienceCleanBeauty: 'ex. Femmes 25-40 intéressées par la clean beauty', phAudienceCleanBeautyOpt: 'ex. femmes 25-40 intéressées par la clean beauty (facultatif)', phAudienceSelfCare: 'ex. Femmes 25-40 intéressées par les soins de la peau et le bien-être', phAudienceConcern: 'ex. Femmes 25-40 préoccupées par le vieillissement de la peau', phMillennial: 'ex. passionnées de skincare milléniales', phAcme: 'ex. Acme', phAcmeHeadphones: 'ex. Casque anti-bruit Acme', phTone: 'ex. ludique, audacieux', phToneProfessional: 'ex. ludique, professionnel', phToneLuxurious: 'ex. ludique, audacieux, luxueux (facultatif)', phKeywords: 'ex. qualité, abordable', phColors: 'ex. #FF0000, #00B2FC', phFonts: 'ex. Inter, Roboto', phUrl: 'https://...', phOptional: 'facultatif', phOptionalPercent: 'facultatif %', phOptionalDollar: 'facultatif $', ph50: '50' },
     userMenu: {
       account: 'Compte',
       signOut: 'Se déconnecter',
@@ -1053,6 +1053,11 @@ export const frMessages = {
       tikTok: 'TikTok',
       instagram: 'Instagram',
       viralAnalysis: 'Analyse virale',
+      productDescPh: 'Nom du produit, caractéristiques clés, avantages, prix...',
+      productNamePh: 'ex. Sérum Glow',
+      productUrlPh: 'https://shop.example.com/product',
+      brandUrlPh: 'https://brand.example.com',
+      creditBudgetPh: '50',
     },
     ads: {
       title: 'Campagnes publicitaires',
@@ -1452,6 +1457,8 @@ export const frMessages = {
       launchSuccess: "Test lancé avec succès !",
       launchError: "Échec du lancement du test",
       baseline: "Référence",
+      baseCreativePh: 'Décrivez le créatif de base que vous voulez tester (hook, CTA, style visuel, angle)...',
+      metricGoalPh: 'ex., augmenter le CTR de 20%',
     },
     smartAssets: {
       title: "Bibliothèque Intelligente d'Assets",
@@ -2728,6 +2735,14 @@ export const frMessages = {
     colors: 'Couleurs (séparées par des virgules)',
     fonts: 'Polices (séparées par des virgules)',
     briefPlaceholder: 'Collez le brief créatif...',
+    scriptPh: 'Collez le script (facultatif)...',
+    storyboardPh: 'Collez le storyboard (facultatif)...',
+    brandNamePh: 'ex., Acme',
+    tonePh: 'ex., ludique, professionnel',
+    keywordsPh: 'ex., qualité, abordable',
+    forbiddenPh: 'ex., bon marché, arnaque',
+    colorsPh: 'ex., #FF0000, #00B2FC',
+    fontsPh: 'ex., Inter, Roboto',
     fix: 'Corriger:',
   },
   smartCalendar: {
@@ -2805,6 +2820,7 @@ export const frMessages = {
     expectedImpact: 'Impact attendu:',
     timeframe: 'Délai:',
     action: 'Action:',
+    brandKitPh: 'Collez votre brand kit ou déclaration de positionnement (facultatif)',
   },
   adCopyGenerator: {
     title: 'Générateur de Textes Publicitaires',
@@ -2997,6 +3013,7 @@ export const frMessages = {
       error: "Analyse échouée",
       fix: "Corriger",
       dryRunNotice: "Mode test — analyse heuristique utilisée",
+      briefPh: 'Collez votre brief créatif ici... (minimum 50 caractères)',
   },
   adFormatOptimizer: {
       title: "Optimiseur de Formats Publicitaires",
@@ -3078,6 +3095,7 @@ export const frMessages = {
     confidence: 'Confiance',
     benchmark: 'Benchmark',
     rationale: 'Justification',
+    briefPh: 'Collez votre brief créatif ou concept publicitaire ici...',
   },
   abTestPlannerV2: {
     title: "Planificateur de Tests A/B Créatifs",
@@ -3171,6 +3189,7 @@ export const frMessages = {
     copied: 'Copié',
     error: 'Analyse échouée',
     dryRunNotice: 'Mode test — utilisation d\'une analyse heuristique',
+    sampleContentPh: 'Collez 100+ caractères du contenu de votre marque — copie de site, légendes publicitaires, posts sociaux, emails…',
   },
   adCaptionGenerator: {
     title: 'Générateur de Légendes Publicitaires',

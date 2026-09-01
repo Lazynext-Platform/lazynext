@@ -215,7 +215,7 @@ export const koMessages = {
       generating: '생성 중…',
       failed: '실패 (환불됨)',
     },
-    common: { signIn: '로그인', signOut: '로그아웃', credits: '크레딧', creditsLower: '크레딧', language: '언어', switchLanguage: '언어 변경', currency: '통화', cookieConsent: '쿠키 동의', new: '신규', poweredBy: '제공', back: '← 돌아가기', backToLazynext: '← Lazynext', close: '닫기', errNetwork: '네트워크 오류. 연결을 확인하고 다시 시도해주세요.', errUnauthorized: '세션이 만료되었습니다. 다시 로그인해주세요.', errNotFound: '요청한 리소스를 찾을 수 없습니다.', errForbidden: '이 리소스에 접근할 권한이 없습니다.', errPaymentRequired: '크레딧이 부족합니다. 가격 페이지에서 충전해주세요.', errServer: '서버 오류. 나중에 다시 시도해주세요.', errGeneric: '문제가 발생했습니다. 다시 시도해주세요.', dismissError: '닫기', retry: '다시 시도', loadingDots: '로딩 중…', resultLabels: { headline: '헤드라인', body: '본문', cta: 'CTA', hook: '후크', reason: '이유', reasoning: '추론', description: '설명', scenario: '시나리오', sensoryDetails: '감각적 세부사항', emotionalPayoff: '감정적 보상', psychologicalPrinciple: '심리학적 원리', timing: '타이밍', frictionRemoval: '마찰 제거', whyNotTheOthers: '다른 것들이 아닌 이유', adCopy: '광고 문구', visualizationPrompt: '시각화 프롬프트', desiredOutcome: '원하는 결과' }, skipToContent: '콘텐츠로 건너뛰기', phProduct: '예: 비타민 C 세럼을 판매하는 DTC 스킨케어 브랜드', phMessage: '예: 칙칙한 피부에 지치셨나요? 비타민 C 세럼이 7일 만에 피부를 밝게...', phAudience: '예: 스킨케어에 관심 있는 25-40세 여성' },
+    common: { signIn: '로그인', signOut: '로그아웃', credits: '크레딧', creditsLower: '크레딧', language: '언어', switchLanguage: '언어 변경', currency: '통화', cookieConsent: '쿠키 동의', new: '신규', poweredBy: '제공', back: '← 돌아가기', backToLazynext: '← Lazynext', close: '닫기', errNetwork: '네트워크 오류. 연결을 확인하고 다시 시도해주세요.', errUnauthorized: '세션이 만료되었습니다. 다시 로그인해주세요.', errNotFound: '요청한 리소스를 찾을 수 없습니다.', errForbidden: '이 리소스에 접근할 권한이 없습니다.', errPaymentRequired: '크레딧이 부족합니다. 가격 페이지에서 충전해주세요.', errServer: '서버 오류. 나중에 다시 시도해주세요.', errGeneric: '문제가 발생했습니다. 다시 시도해주세요.', dismissError: '닫기', retry: '다시 시도', loadingDots: '로딩 중…', resultLabels: { headline: '헤드라인', body: '본문', cta: 'CTA', hook: '후크', reason: '이유', reasoning: '추론', description: '설명', scenario: '시나리오', sensoryDetails: '감각적 세부사항', emotionalPayoff: '감정적 보상', psychologicalPrinciple: '심리학적 원리', timing: '타이밍', frictionRemoval: '마찰 제거', whyNotTheOthers: '다른 것들이 아닌 이유', adCopy: '광고 문구', visualizationPrompt: '시각화 프롬프트', desiredOutcome: '원하는 결과' }, skipToContent: '콘텐츠로 건너뛰기', phProduct: '예: 비타민 C 세럼을 판매하는 DTC 스킨케어 브랜드', phMessage: '예: 칙칙한 피부에 지치셨나요? 비타민 C 세럼이 7일 만에 피부를 밝게...', phAudience: '예: 스킨케어에 관심 있는 25-40세 여성', phAudienceCleanBeauty: '예: 클린 뷰티에 관심 있는 25-40세 여성', phAudienceCleanBeautyOpt: '예: 클린 뷰티에 관심 있는 25-40세 여성 (선택 사항)', phAudienceSelfCare: '예: 스킨케어와 셀프케어에 관심 있는 25-40세 여성', phAudienceConcern: '예: 피부 노화가 걱정되는 25-40세 여성', phMillennial: '예: 밀레니얼 스킨케어 매니아', phAcme: '예: Acme', phAcmeHeadphones: '예: Acme 노이즈 캔슬링 헤드폰', phTone: '예: 장난스러운, 대담한', phToneProfessional: '예: 장난스러운, 전문적인', phToneLuxurious: '예: 장난스러운, 대담한, 럭셔리 (선택 사항)', phKeywords: '예: 품질, 저렴한', phColors: '예: #FF0000, #00B2FC', phFonts: '예: Inter, Roboto', phUrl: 'https://...', phOptional: '선택 사항', phOptionalPercent: '선택 사항 %', phOptionalDollar: '선택 사항 $', ph50: '50' },
     userMenu: {
       account: '계정',
       signOut: '로그아웃',
@@ -1053,6 +1053,11 @@ export const koMessages = {
       tikTok: 'TikTok',
       instagram: 'Instagram',
       viralAnalysis: '바이럴 분석',
+      productDescPh: '제품명, 주요 특징, 혜택, 가격...',
+      productNamePh: '예: Glow Serum',
+      productUrlPh: 'https://shop.example.com/product',
+      brandUrlPh: 'https://brand.example.com',
+      creditBudgetPh: '50',
     },
     ads: {
       title: '광고 캠페인',
@@ -1452,6 +1457,8 @@ export const koMessages = {
       launchSuccess: "테스트가 성공적으로 시작되었습니다!",
       launchError: "테스트 시작 실패",
       baseline: "기준선",
+      baseCreativePh: '테스트할 기본 크리에이티브를 설명하세요 (훅, CTA, 비주얼 스타일, 앵글)...',
+      metricGoalPh: '예: CTR 20% 향상',
     },
     smartAssets: {
       title: "스마트 자산 라이브러리",
@@ -2728,6 +2735,14 @@ export const koMessages = {
     colors: '색상 (쉼표로 구분)',
     fonts: '글꼴 (쉼표로 구분)',
     briefPlaceholder: '크리에이티브 브리프를 붙여넣기...',
+    scriptPh: '스크립트 붙여넣기 (선택 사항)...',
+    storyboardPh: '스토리보드 붙여넣기 (선택 사항)...',
+    brandNamePh: '예: Acme',
+    tonePh: '예: 장난스러운, 전문적인',
+    keywordsPh: '예: 품질, 저렴한',
+    forbiddenPh: '예: 싼, 사기',
+    colorsPh: '예: #FF0000, #00B2FC',
+    fontsPh: '예: Inter, Roboto',
     fix: '수정:',
   },
   smartCalendar: {
@@ -2805,6 +2820,7 @@ export const koMessages = {
     expectedImpact: '예상 영향:',
     timeframe: '기간:',
     action: '액션:',
+    brandKitPh: '브랜드 키트 또는 포지셔닝 선언문 붙여넣기 (선택 사항)',
   },
   adCopyGenerator: {
     title: '광고 카피 생성기',
@@ -2997,6 +3013,7 @@ export const koMessages = {
       error: "분석 실패",
       fix: "수정",
       dryRunNotice: "드라이런 모드 — 휴리스틱 분석 사용",
+      briefPh: '여기에 크리에이티브 브리프를 붙여넣으세요... (최소 50자)',
   },
   adFormatOptimizer: {
       title: "광고 포맷 최적화기",
@@ -3078,6 +3095,7 @@ export const koMessages = {
     confidence: '신뢰도',
     benchmark: '벤치마크',
     rationale: '근거',
+    briefPh: '여기에 크리에이티브 브리프 또는 광고 콘셉트를 붙여넣으세요...',
   },
   abTestPlannerV2: {
     title: "크리에이티브 A/B 테스트 플래너",
@@ -3171,6 +3189,7 @@ export const koMessages = {
     copied: '복사됨',
     error: '분석 실패',
     dryRunNotice: '드라이런 모드 — 휴리스틱 분석 사용',
+    sampleContentPh: '브랜드 콘텐츠의 100자 이상을 붙여넣으세요 — 웹사이트 카피, 광고 캡션, 소셜 게시물, 이메일…',
   },
   adCaptionGenerator: {
     title: '광고 캡션 생성기',

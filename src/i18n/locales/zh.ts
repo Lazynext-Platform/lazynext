@@ -215,7 +215,7 @@ export const zhMessages = {
       generating: '生成中…',
       failed: '失败(已退款)',
     },
-    common: { signIn: '登录', signOut: '退出登录', credits: '积分', creditsLower: '积分', language: '语言', switchLanguage: '切换语言', currency: '货币', cookieConsent: 'Cookie 同意', new: '新', poweredBy: '技术支持', back: '← 返回', backToLazynext: '← Lazynext', close: '关闭', errNetwork: '网络错误。请检查网络连接后重试。', errUnauthorized: '会话已过期，请重新登录。', errNotFound: '请求的资源未找到。', errForbidden: '您没有访问此资源的权限。', errPaymentRequired: '积分不足，请在定价页面充值。', errServer: '服务器错误，请稍后重试。', errGeneric: '出现问题，请重试。', dismissError: '关闭', retry: '重试', loadingDots: '加载中…', resultLabels: { headline: '标题', body: '正文', cta: 'CTA', hook: '钩子', reason: '原因', reasoning: '推理', description: '描述', scenario: '场景', sensoryDetails: '感官细节', emotionalPayoff: '情感回报', psychologicalPrinciple: '心理学原理', timing: '时机', frictionRemoval: '消除摩擦', whyNotTheOthers: '为何不选其他', adCopy: '广告文案', visualizationPrompt: '可视化提示', desiredOutcome: '期望结果' }, skipToContent: '跳到内容', phProduct: '例如，销售维生素C精华的DTC护肤品牌', phMessage: '例如，厌倦暗沉肌肤？我们的维生素C精华7天提亮...', phAudience: '例如，25-40岁对护肤感兴趣的女性' },
+    common: { signIn: '登录', signOut: '退出登录', credits: '积分', creditsLower: '积分', language: '语言', switchLanguage: '切换语言', currency: '货币', cookieConsent: 'Cookie 同意', new: '新', poweredBy: '技术支持', back: '← 返回', backToLazynext: '← Lazynext', close: '关闭', errNetwork: '网络错误。请检查网络连接后重试。', errUnauthorized: '会话已过期，请重新登录。', errNotFound: '请求的资源未找到。', errForbidden: '您没有访问此资源的权限。', errPaymentRequired: '积分不足，请在定价页面充值。', errServer: '服务器错误，请稍后重试。', errGeneric: '出现问题，请重试。', dismissError: '关闭', retry: '重试', loadingDots: '加载中…', resultLabels: { headline: '标题', body: '正文', cta: 'CTA', hook: '钩子', reason: '原因', reasoning: '推理', description: '描述', scenario: '场景', sensoryDetails: '感官细节', emotionalPayoff: '情感回报', psychologicalPrinciple: '心理学原理', timing: '时机', frictionRemoval: '消除摩擦', whyNotTheOthers: '为何不选其他', adCopy: '广告文案', visualizationPrompt: '可视化提示', desiredOutcome: '期望结果' }, skipToContent: '跳到内容', phProduct: '例如，销售维生素C精华的DTC护肤品牌', phMessage: '例如，厌倦暗沉肌肤？我们的维生素C精华7天提亮...', phAudience: '例如，25-40岁对护肤感兴趣的女性', phAudienceCleanBeauty: '例如，25-40岁对纯净美容感兴趣的女性', phAudienceCleanBeautyOpt: '例如，25-40岁对纯净美容感兴趣的女性（可选）', phAudienceSelfCare: '例如，25-40岁对护肤和自我护理感兴趣的女性', phAudienceConcern: '例如，25-40岁担心皮肤老化的女性', phMillennial: '例如，千禧一代护肤爱好者', phAcme: '例如，Acme', phAcmeHeadphones: '例如，Acme降噪耳机', phTone: '例如，活泼、大胆', phToneProfessional: '例如，活泼、专业', phToneLuxurious: '例如，活泼、大胆、奢华（可选）', phKeywords: '例如，品质、实惠', phColors: '例如，#FF0000, #00B2FC', phFonts: '例如，Inter, Roboto', phUrl: 'https://...', phOptional: '可选', phOptionalPercent: '可选 %', phOptionalDollar: '可选 $', ph50: '50' },
     userMenu: {
       account: '账户',
       signOut: '退出登录',
@@ -1053,6 +1053,11 @@ export const zhMessages = {
       tikTok: 'TikTok',
       instagram: 'Instagram',
       viralAnalysis: '病毒式分析',
+      productDescPh: '产品名称、主要特点、优势、价格...',
+      productNamePh: '例如 Glow Serum',
+      productUrlPh: 'https://shop.example.com/product',
+      brandUrlPh: 'https://brand.example.com',
+      creditBudgetPh: '50',
     },
     ads: {
       title: '广告活动',
@@ -1452,6 +1457,8 @@ export const zhMessages = {
       launchSuccess: "测试启动成功！",
       launchError: "启动测试失败",
       baseline: "基线",
+      baseCreativePh: '描述您要测试的基础创意（钩子、CTA、视觉风格、角度）...',
+      metricGoalPh: '例如，提高CTR 20%',
     },
     smartAssets: {
       title: "智能素材库",
@@ -2728,6 +2735,14 @@ export const zhMessages = {
     colors: '颜色（逗号分隔）',
     fonts: '字体（逗号分隔）',
     briefPlaceholder: '粘贴创意简报...',
+    scriptPh: '粘贴脚本（可选）...',
+    storyboardPh: '粘贴分镜（可选）...',
+    brandNamePh: '例如，Acme',
+    tonePh: '例如，活泼、专业',
+    keywordsPh: '例如，品质、实惠',
+    forbiddenPh: '例如，廉价、骗局',
+    colorsPh: '例如，#FF0000, #00B2FC',
+    fontsPh: '例如，Inter, Roboto',
     fix: '修复:',
   },
   smartCalendar: {
@@ -2805,6 +2820,7 @@ export const zhMessages = {
     expectedImpact: '预期影响:',
     timeframe: '时间范围:',
     action: '行动:',
+    brandKitPh: '粘贴您的品牌套件或定位声明（可选）',
   },
   adCopyGenerator: {
     title: '广告文案生成器',
@@ -2997,6 +3013,7 @@ export const zhMessages = {
       error: "分析失败",
       fix: "修复",
       dryRunNotice: "试运行模式 — 使用启发式分析",
+      briefPh: '在此粘贴您的创意简报...（最少50个字符）',
   },
   adFormatOptimizer: {
       title: "广告格式优化器",
@@ -3065,6 +3082,7 @@ export const zhMessages = {
     bestPostingTime: "最佳发布时间",
     copy: "复制",
     error: "预测失败",
+    briefPh: '在此粘贴您的创意简报或广告概念...',
   },
   abTestPlannerV2: {
     title: "创意 A/B 测试规划器",
@@ -3161,6 +3179,7 @@ export const zhMessages = {
     copied: '已复制',
     error: '分析失败',
     dryRunNotice: '试运行模式 — 使用启发式分析',
+    sampleContentPh: '粘贴100+字符的品牌内容 — 网站文案、广告说明、社交帖子、邮件…',
   },
   adCaptionGenerator: {
     title: '广告文案生成器',

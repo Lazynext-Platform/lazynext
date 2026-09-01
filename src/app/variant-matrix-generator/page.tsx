@@ -146,7 +146,7 @@ export default function VariantMatrixGeneratorPage() {
               type="text"
               value={productOrBrand}
               onChange={(e) => setProductOrBrand(e.target.value)}
-              placeholder="e.g., Acme noise-cancelling headphones"
+              placeholder={t('common.phAcmeHeadphones')}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
               disabled={loading}
             />

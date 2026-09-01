@@ -218,7 +218,7 @@ export const viMessages = {
       generating: 'Đang tạo…',
       failed: 'Thất bại (đã hoàn tiền)',
     },
-    common: { signIn: 'Đăng nhập', signOut: 'Đăng xuất', credits: 'Tín dụng', creditsLower: 'tín dụng', language: 'Ngôn ngữ', switchLanguage: 'Chuyển ngôn ngữ', currency: 'Tiền tệ', cookieConsent: 'Đồng ý cookie', new: 'MỚI', poweredBy: 'Cung cấp bởi', back: '← Quay lại', backToLazynext: '← Lazynext', close: 'Đóng', errNetwork: 'Lỗi mạng. Vui lòng kiểm tra kết nối và thử lại.', errUnauthorized: 'Phiên của bạn đã hết hạn. Vui lòng đăng nhập lại.', errNotFound: 'Không tìm thấy tài nguyên được yêu cầu.', errForbidden: 'Bạn không có quyền truy cập tài nguyên này.', errPaymentRequired: 'Không đủ tín dụng. Vui lòng nạp tại trang giá.', errServer: 'Lỗi máy chủ. Vui lòng thử lại sau.', errGeneric: 'Đã xảy ra lỗi. Vui lòng thử lại.', dismissError: 'Đóng', retry: 'Thử lại', loadingDots: 'Đang tải…', resultLabels: { headline: 'Tiêu đề', body: 'Nội dung', cta: 'CTA', hook: 'Móc câu', reason: 'Lý do', reasoning: 'Lập luận', description: 'Mô tả', scenario: 'Kịch bản', sensoryDetails: 'Chi tiết Cảm quan', emotionalPayoff: 'Phần thưởng Cảm xúc', psychologicalPrinciple: 'Nguyên lý Tâm lý', timing: 'Thời điểm', frictionRemoval: 'Giảm Ma sát', whyNotTheOthers: 'Tại sao Không phải cái Khác', adCopy: 'Văn bản Quảng cáo', visualizationPrompt: 'Lệnh Hiển thị', desiredOutcome: 'Kết quả Mong muốn' }, skipToContent: 'Bỏ qua đến nội dung', phProduct: 'vd., thương hiệu DTC chăm sóc da bán serum vitamin C', phMessage: 'vd., Mệt mỏi với làn da xỉn màu? Serum vitamin C của chúng tôi làm sáng trong 7 ngày...', phAudience: 'vd., Phụ nữ 25-40 quan tâm đến chăm sóc da' },
+    common: { signIn: 'Đăng nhập', signOut: 'Đăng xuất', credits: 'Tín dụng', creditsLower: 'tín dụng', language: 'Ngôn ngữ', switchLanguage: 'Chuyển ngôn ngữ', currency: 'Tiền tệ', cookieConsent: 'Đồng ý cookie', new: 'MỚI', poweredBy: 'Cung cấp bởi', back: '← Quay lại', backToLazynext: '← Lazynext', close: 'Đóng', errNetwork: 'Lỗi mạng. Vui lòng kiểm tra kết nối và thử lại.', errUnauthorized: 'Phiên của bạn đã hết hạn. Vui lòng đăng nhập lại.', errNotFound: 'Không tìm thấy tài nguyên được yêu cầu.', errForbidden: 'Bạn không có quyền truy cập tài nguyên này.', errPaymentRequired: 'Không đủ tín dụng. Vui lòng nạp tại trang giá.', errServer: 'Lỗi máy chủ. Vui lòng thử lại sau.', errGeneric: 'Đã xảy ra lỗi. Vui lòng thử lại.', dismissError: 'Đóng', retry: 'Thử lại', loadingDots: 'Đang tải…', resultLabels: { headline: 'Tiêu đề', body: 'Nội dung', cta: 'CTA', hook: 'Móc câu', reason: 'Lý do', reasoning: 'Lập luận', description: 'Mô tả', scenario: 'Kịch bản', sensoryDetails: 'Chi tiết Cảm quan', emotionalPayoff: 'Phần thưởng Cảm xúc', psychologicalPrinciple: 'Nguyên lý Tâm lý', timing: 'Thời điểm', frictionRemoval: 'Giảm Ma sát', whyNotTheOthers: 'Tại sao Không phải cái Khác', adCopy: 'Văn bản Quảng cáo', visualizationPrompt: 'Lệnh Hiển thị', desiredOutcome: 'Kết quả Mong muốn' }, skipToContent: 'Bỏ qua đến nội dung', phProduct: 'vd., thương hiệu DTC chăm sóc da bán serum vitamin C', phMessage: 'vd., Mệt mỏi với làn da xỉn màu? Serum vitamin C của chúng tôi làm sáng trong 7 ngày...', phAudience: 'vd., Phụ nữ 25-40 quan tâm đến chăm sóc da', phAudienceCleanBeauty: 'vd., Phụ nữ 25-40 quan tâm đến clean beauty', phAudienceCleanBeautyOpt: 'vd., phụ nữ 25-40 quan tâm đến clean beauty (tùy chọn)', phAudienceSelfCare: 'vd., Phụ nữ 25-40 quan tâm đến chăm sóc da và bản thân', phAudienceConcern: 'vd., Phụ nữ 25-40 lo lắng về lão hóa da', phMillennial: 'vd., người yêu skincare thế hệ millennials', phAcme: 'vd., Acme', phAcmeHeadphones: 'vd., Tai nghe chống ồn Acme', phTone: 'vd., vui nhộn, táo bạo', phToneProfessional: 'vd., vui nhộn, chuyên nghiệp', phToneLuxurious: 'vd., vui nhộn, táo bạo, sang trọng (tùy chọn)', phKeywords: 'vd., chất lượng, phải chăng', phColors: 'vd., #FF0000, #00B2FC', phFonts: 'vd., Inter, Roboto', phUrl: 'https://...', phOptional: 'tùy chọn', phOptionalPercent: 'tùy chọn %', phOptionalDollar: 'tùy chọn $', ph50: '50' },
     userMenu: {
       account: 'Tài khoản',
       signOut: 'Đăng xuất',
@@ -1056,6 +1056,11 @@ export const viMessages = {
       tikTok: 'TikTok',
       instagram: 'Instagram',
       viralAnalysis: 'Phân tích Viral',
+      productDescPh: 'Tên sản phẩm, tính năng chính, lợi ích, giá...',
+      productNamePh: 'vd. Glow Serum',
+      productUrlPh: 'https://shop.example.com/product',
+      brandUrlPh: 'https://brand.example.com',
+      creditBudgetPh: '50',
     },
     ads: {
       title: 'Chiến dịch quảng cáo',
@@ -1454,6 +1459,8 @@ export const viMessages = {
       launchSuccess: "Thử nghiệm bắt đầu thành công!",
       launchError: "Bắt đầu thất bại",
       baseline: "Cơ sở",
+      baseCreativePh: 'Mô tả sáng tạo cơ sở bạn muốn kiểm tra (hook, CTA, phong cách hình ảnh, góc tiếp cận)...',
+      metricGoalPh: 'vd., tăng CTR 20%',
     },
     smartAssets: {
       title: "Thư Viện Asset Thông Minh",
@@ -2730,6 +2737,14 @@ export const viMessages = {
     colors: 'Màu sắc (phân tách bằng dấu phẩy)',
     fonts: 'Phông chữ (phân tách bằng dấu phẩy)',
     briefPlaceholder: 'Dán tóm tắt sáng tạo...',
+    scriptPh: 'Dán kịch bản (tùy chọn)...',
+    storyboardPh: 'Dán storyboard (tùy chọn)...',
+    brandNamePh: 'vd., Acme',
+    tonePh: 'vd., vui nhộn, chuyên nghiệp',
+    keywordsPh: 'vd., chất lượng, phải chăng',
+    forbiddenPh: 'vd., rẻ, lừa đảo',
+    colorsPh: 'vd., #FF0000, #00B2FC',
+    fontsPh: 'vd., Inter, Roboto',
     fix: 'Sửa:',
   },
   smartCalendar: {
@@ -2807,6 +2822,7 @@ export const viMessages = {
     expectedImpact: 'Tác động kỳ vọng:',
     timeframe: 'Khung thời gian:',
     action: 'Hành động:',
+    brandKitPh: 'Dán brand kit hoặc tuyên bố định vị của bạn (tùy chọn)',
   },
   adCopyGenerator: {
     title: 'Trình tạo Nội dung Quảng cáo',
@@ -2999,6 +3015,7 @@ export const viMessages = {
       error: "Phân tích thất bại",
       fix: "Sửa",
       dryRunNotice: "Chế độ thử nghiệm — sử dụng phân tích heuristic",
+      briefPh: 'Dán brief sáng tạo của bạn tại đây... (tối thiểu 50 ký tự)',
   },
   adFormatOptimizer: {
       title: "Trình Tối Ưu Định Dạng Quảng Cáo",
@@ -3067,6 +3084,7 @@ export const viMessages = {
     bestPostingTime: "Thời gian đăng tốt nhất",
     copy: "Sao chép",
     error: "Dự đoán thất bại",
+    briefPh: 'Dán brief sáng tạo hoặc ý tưởng quảng cáo của bạn tại đây...',
   },
   abTestPlannerV2: {
     title: "Trình lập kế hoạch A/B Test sáng tạo",
@@ -3163,6 +3181,7 @@ export const viMessages = {
     copied: 'Đã sao chép',
     error: 'Phân tích thất bại',
     dryRunNotice: 'Chế độ thử nghiệm — sử dụng phân tích heuristic',
+    sampleContentPh: 'Dán 100+ ký tự nội dung thương hiệu của bạn — văn bản trang web, chú thích quảng cáo, bài đăng mạng xã hội, email…',
   },
   adCaptionGenerator: {
     title: 'Trình Tạo Chú thích Quảng cáo',

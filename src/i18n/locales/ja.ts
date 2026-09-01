@@ -217,7 +217,7 @@ export const jaMessages = {
       generating: '生成中…',
       failed: '失敗(返金済み)',
     },
-    common: { signIn: 'ログイン', signOut: 'ログアウト', credits: 'クレジット', creditsLower: 'クレジット', language: '言語', switchLanguage: '言語を切り替え', currency: '通貨', cookieConsent: 'Cookie 同意', new: '新着', poweredBy: 'Powered by', back: '← 戻る', backToLazynext: '← Lazynext', close: '閉じる', errNetwork: 'ネットワークエラー。接続を確認して再試行してください。', errUnauthorized: 'セッションの有効期限が切れました。再度ログインしてください。', errNotFound: '要求されたリソースが見つかりませんでした。', errForbidden: 'このリソースにアクセスする権限がありません。', errPaymentRequired: 'クレジットが不足しています。料金ページでチャージしてください。', errServer: 'サーバーエラー。後でもう一度お試しください。', errGeneric: 'エラーが発生しました。再試行してください。', dismissError: '閉じる', retry: '再試行', loadingDots: '読み込み中…', resultLabels: { headline: '見出し', body: '本文', cta: 'CTA', hook: 'フック', reason: '理由', reasoning: '推論', description: '説明', scenario: 'シナリオ', sensoryDetails: '感覚的詳細', emotionalPayoff: '感情的報酬', psychologicalPrinciple: '心理的原理', timing: 'タイミング', frictionRemoval: '摩擦の除去', whyNotTheOthers: '他ではない理由', adCopy: '広告コピー', visualizationPrompt: 'ビジュアライゼーションプロンプト', desiredOutcome: '望ましい結果' }, skipToContent: 'コンテンツにスキップ', phProduct: '例：ビタミンCセラムを販売するDTCスキンケアブランド', phMessage: '例：くすみ肌に悩んでいませんか？私たちのビタミンCセラムは7日間で明るくします...', phAudience: '例：スキンケアに関心のある25-40歳の女性' },
+    common: { signIn: 'ログイン', signOut: 'ログアウト', credits: 'クレジット', creditsLower: 'クレジット', language: '言語', switchLanguage: '言語を切り替え', currency: '通貨', cookieConsent: 'Cookie 同意', new: '新着', poweredBy: 'Powered by', back: '← 戻る', backToLazynext: '← Lazynext', close: '閉じる', errNetwork: 'ネットワークエラー。接続を確認して再試行してください。', errUnauthorized: 'セッションの有効期限が切れました。再度ログインしてください。', errNotFound: '要求されたリソースが見つかりませんでした。', errForbidden: 'このリソースにアクセスする権限がありません。', errPaymentRequired: 'クレジットが不足しています。料金ページでチャージしてください。', errServer: 'サーバーエラー。後でもう一度お試しください。', errGeneric: 'エラーが発生しました。再試行してください。', dismissError: '閉じる', retry: '再試行', loadingDots: '読み込み中…', resultLabels: { headline: '見出し', body: '本文', cta: 'CTA', hook: 'フック', reason: '理由', reasoning: '推論', description: '説明', scenario: 'シナリオ', sensoryDetails: '感覚的詳細', emotionalPayoff: '感情的報酬', psychologicalPrinciple: '心理的原理', timing: 'タイミング', frictionRemoval: '摩擦の除去', whyNotTheOthers: '他ではない理由', adCopy: '広告コピー', visualizationPrompt: 'ビジュアライゼーションプロンプト', desiredOutcome: '望ましい結果' }, skipToContent: 'コンテンツにスキップ', phProduct: '例：ビタミンCセラムを販売するDTCスキンケアブランド', phMessage: '例：くすみ肌に悩んでいませんか？私たちのビタミンCセラムは7日間で明るくします...', phAudience: '例：スキンケアに関心のある25-40歳の女性', phAudienceCleanBeauty: '例：クリーンビューティーに関心のある25-40歳の女性', phAudienceCleanBeautyOpt: '例：クリーンビューティーに関心のある25-40歳の女性（任意）', phAudienceSelfCare: '例：スキンケアとセルフケアに関心のある25-40歳の女性', phAudienceConcern: '例：肌の加齢が気になる25-40歳の女性', phMillennial: '例：ミレニアル世代のスキンケア愛好家', phAcme: '例：Acme', phAcmeHeadphones: '例：Acmeノイズキャンセリングヘッドホン', phTone: '例：遊び心のある、大胆な', phToneProfessional: '例：遊び心のある、プロフェッショナル', phToneLuxurious: '例：遊び心のある、大胆な、豪華（任意）', phKeywords: '例：品質、手頃', phColors: '例：#FF0000, #00B2FC', phFonts: '例：Inter, Roboto', phUrl: 'https://...', phOptional: '任意', phOptionalPercent: '任意 %', phOptionalDollar: '任意 $', ph50: '50' },
     userMenu: {
       account: 'アカウント',
       signOut: 'サインアウト',
@@ -1055,6 +1055,11 @@ export const jaMessages = {
       tikTok: 'TikTok',
       instagram: 'Instagram',
       viralAnalysis: 'バイラル分析',
+      productDescPh: '製品名、主な特徴、メリット、価格...',
+      productNamePh: '例：Glow Serum',
+      productUrlPh: 'https://shop.example.com/product',
+      brandUrlPh: 'https://brand.example.com',
+      creditBudgetPh: '50',
     },
     ads: {
       title: '広告キャンペーン',
@@ -1454,6 +1459,8 @@ export const jaMessages = {
       launchSuccess: "テストが正常に開始されました！",
       launchError: "テストの開始に失敗しました",
       baseline: "ベースライン",
+      baseCreativePh: 'テストしたいベースクリエイティブを説明してください（フック、CTA、ビジュアルスタイル、アングル）...',
+      metricGoalPh: '例：CTRを20%向上',
     },
     smartAssets: {
       title: "スマートアセットライブラリ",
@@ -2730,6 +2737,14 @@ export const jaMessages = {
     colors: 'カラー（カンマ区切り）',
     fonts: 'フォント（カンマ区切り）',
     briefPlaceholder: 'クリエイティブブリーフを貼り付け...',
+    scriptPh: 'スクリプトを貼り付け（任意）...',
+    storyboardPh: 'ストーリーボードを貼り付け（任意）...',
+    brandNamePh: '例：Acme',
+    tonePh: '例：遊び心のある、プロフェッショナル',
+    keywordsPh: '例：品質、手頃',
+    forbiddenPh: '例：安っぽい、詐欺',
+    colorsPh: '例：#FF0000, #00B2FC',
+    fontsPh: '例：Inter, Roboto',
     fix: '修正:',
   },
   smartCalendar: {
@@ -2807,6 +2822,7 @@ export const jaMessages = {
     expectedImpact: '期待される影響:',
     timeframe: '期間:',
     action: 'アクション:',
+    brandKitPh: 'ブランドキットまたはポジショニングステートメントを貼り付け（任意）',
   },
   adCopyGenerator: {
     title: '広告コピー生成ツール',
@@ -2999,6 +3015,7 @@ export const jaMessages = {
       error: "分析に失敗",
       fix: "修正",
       dryRunNotice: "ドライランモード — ヒューリスティック分析を使用",
+      briefPh: 'ここにクリエイティブブリーフを貼り付け...（最低50文字）',
   },
   adFormatOptimizer: {
       title: "広告フォーマット最適化",
@@ -3080,6 +3097,7 @@ export const jaMessages = {
     confidence: '信頼度',
     benchmark: 'ベンチマーク',
     rationale: '根拠',
+    briefPh: 'ここにクリエイティブブリーフまたは広告コンセプトを貼り付け...',
   },
   abTestPlannerV2: {
     title: "クリエイティブA/Bテストプランナー",
@@ -3173,6 +3191,7 @@ export const jaMessages = {
     copied: 'コピーしました',
     error: '分析に失敗しました',
     dryRunNotice: 'ドライランモード — ヒューリスティック分析を使用',
+    sampleContentPh: 'ブランドコンテンツの100文字以上を貼り付け — ウェブコピー、広告キャプション、ソーシャル投稿、メール…',
   },
   adCaptionGenerator: {
     title: '広告キャプション生成器',

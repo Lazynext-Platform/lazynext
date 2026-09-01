@@ -143,7 +143,7 @@ export default function BrandVoiceAnalyzerPage() {
               id="bvSample"
               value={sampleContent}
               onChange={(e) => setSampleContent(e.target.value)}
-              placeholder="Paste 100+ characters of your brand's content — website copy, ad captions, social posts, emails…"
+              placeholder={t('brandVoiceAnalyzer.sampleContentPh')}
               rows={8}
               maxLength={10000}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent resize-y"

@@ -298,7 +298,7 @@ export default function CreativeDirectorPage() {
                 type="url"
                 value={productUrl}
                 onChange={(e) => setProductUrl(e.target.value)}
-                placeholder="https://shop.example.com/product"
+                placeholder={t('director.productUrlPh')}
                 className="mt-1 w-full rounded-lg border border-line bg-app px-3 py-2 text-sm text-fg outline-none focus:border-brand-accent"
               />
             </div>
@@ -309,7 +309,7 @@ export default function CreativeDirectorPage() {
                 type="url"
                 value={brandUrl}
                 onChange={(e) => setBrandUrl(e.target.value)}
-                placeholder="https://brand.example.com"
+                placeholder={t('director.brandUrlPh')}
                 className="mt-1 w-full rounded-lg border border-line bg-app px-3 py-2 text-sm text-fg outline-none focus:border-brand-accent"
               />
             </div>
@@ -319,7 +319,7 @@ export default function CreativeDirectorPage() {
                 id="product-text"
                 value={productText}
                 onChange={(e) => setProductText(e.target.value)}
-                placeholder="Product name, key features, benefits, price..."
+                placeholder={t('director.productDescPh')}
                 rows={3}
                 className="mt-1 w-full rounded-lg border border-line bg-app px-3 py-2 text-sm text-fg outline-none focus:border-brand-accent"
               />
@@ -331,7 +331,7 @@ export default function CreativeDirectorPage() {
                 type="text"
                 value={productName}
                 onChange={(e) => setProductName(e.target.value)}
-                placeholder="e.g. Glow Serum"
+                placeholder={t('director.productNamePh')}
                 className="mt-1 w-full rounded-lg border border-line bg-app px-3 py-2 text-sm text-fg outline-none focus:border-brand-accent"
               />
             </div>
@@ -636,7 +636,7 @@ export default function CreativeDirectorPage() {
                   type="number"
                   value={autoDeployBudget}
                   onChange={e => setAutoDeployBudget(e.target.value)}
-                  placeholder="50"
+                  placeholder={t('director.creditBudgetPh')}
                   min="1"
                   className="mt-1 w-full rounded-lg border border-line bg-app px-3 py-2 text-sm text-fg placeholder:text-fg-faint/50 focus:border-brand-accent focus:outline-none"
                 />

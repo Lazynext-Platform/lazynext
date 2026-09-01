@@ -215,7 +215,7 @@ export const hiMessages = {
       generating: 'जनरेट हो रहा है…',
       failed: 'विफल (वापसी)',
     },
-    common: { signIn: 'साइन इन', signOut: 'साइन आउट', credits: 'क्रेडिट', creditsLower: 'क्रेडिट', language: 'भाषा', switchLanguage: 'भाषा बदलें', currency: 'मुद्रा', cookieConsent: 'कुकी सहमति', new: 'नया', poweredBy: 'द्वारा संचालित', back: '← वापस', backToLazynext: '← Lazynext', close: 'बंद करें', errNetwork: 'नेटवर्क त्रुटि। अपना कनेक्शन जांचें और पुनः प्रयास करें।', errUnauthorized: 'आपका सत्र समाप्त हो गया है। कृपया पुनः साइन इन करें।', errNotFound: 'अनुरोधित संसाधन नहीं मिला।', errForbidden: 'आपके पास इस संसाधन तक पहुंच की अनुमति नहीं है।', errPaymentRequired: 'पर्याप्त क्रेडिट नहीं हैं। कृपया मूल्य पृष्ठ पर टॉप अप करें।', errServer: 'सर्वर त्रुटि। कृपया बाद में पुनः प्रयास करें।', errGeneric: 'कुछ गलत हो गया। कृपया पुनः प्रयास करें।', dismissError: 'बंद करें', retry: 'पुनः प्रयास करें', loadingDots: 'लोड हो रहा है…', resultLabels: { headline: 'शीर्षक', body: 'मुख्य भाग', cta: 'CTA', hook: 'हुक', reason: 'कारण', reasoning: 'तर्क', description: 'विवरण', scenario: 'परिदृश्य', sensoryDetails: 'संवेदी विवरण', emotionalPayoff: 'भावनात्मक लाभ', psychologicalPrinciple: 'मनोवैज्ञानिक सिद्धांत', timing: 'समय', frictionRemoval: 'घर्षण हटाना', whyNotTheOthers: 'अन्य क्यों नहीं', adCopy: 'विज्ञापन पाठ', visualizationPrompt: 'विज़ुअलाइज़ेशन प्रॉम्प्ट', desiredOutcome: 'वांछित परिणाम' }, skipToContent: 'सामग्री पर जाएं', phProduct: 'उदा., विटामिन सी सीरम बेचने वाला डीटीसी स्किनकेयर ब्रांड', phMessage: 'उदा., दमकती त्वचा से थक गए हैं? हमारा विटामिन सी सीरम 7 दिनों में चमक देता है...', phAudience: 'उदा., 25-40 की महिलाएं जो स्किनकेयर में रुचि रखती हैं' },
+    common: { signIn: 'साइन इन', signOut: 'साइन आउट', credits: 'क्रेडिट', creditsLower: 'क्रेडिट', language: 'भाषा', switchLanguage: 'भाषा बदलें', currency: 'मुद्रा', cookieConsent: 'कुकी सहमति', new: 'नया', poweredBy: 'द्वारा संचालित', back: '← वापस', backToLazynext: '← Lazynext', close: 'बंद करें', errNetwork: 'नेटवर्क त्रुटि। अपना कनेक्शन जांचें और पुनः प्रयास करें।', errUnauthorized: 'आपका सत्र समाप्त हो गया है। कृपया पुनः साइन इन करें।', errNotFound: 'अनुरोधित संसाधन नहीं मिला।', errForbidden: 'आपके पास इस संसाधन तक पहुंच की अनुमति नहीं है।', errPaymentRequired: 'पर्याप्त क्रेडिट नहीं हैं। कृपया मूल्य पृष्ठ पर टॉप अप करें।', errServer: 'सर्वर त्रुटि। कृपया बाद में पुनः प्रयास करें।', errGeneric: 'कुछ गलत हो गया। कृपया पुनः प्रयास करें।', dismissError: 'बंद करें', retry: 'पुनः प्रयास करें', loadingDots: 'लोड हो रहा है…', resultLabels: { headline: 'शीर्षक', body: 'मुख्य भाग', cta: 'CTA', hook: 'हुक', reason: 'कारण', reasoning: 'तर्क', description: 'विवरण', scenario: 'परिदृश्य', sensoryDetails: 'संवेदी विवरण', emotionalPayoff: 'भावनात्मक लाभ', psychologicalPrinciple: 'मनोवैज्ञानिक सिद्धांत', timing: 'समय', frictionRemoval: 'घर्षण हटाना', whyNotTheOthers: 'अन्य क्यों नहीं', adCopy: 'विज्ञापन पाठ', visualizationPrompt: 'विज़ुअलाइज़ेशन प्रॉम्प्ट', desiredOutcome: 'वांछित परिणाम' }, skipToContent: 'सामग्री पर जाएं', phProduct: 'उदा., विटामिन सी सीरम बेचने वाला डीटीसी स्किनकेयर ब्रांड', phMessage: 'उदा., दमकती त्वचा से थक गए हैं? हमारा विटामिन सी सीरम 7 दिनों में चमक देता है...', phAudience: 'उदा., 25-40 की महिलाएं जो स्किनकेयर में रुचि रखती हैं', phAudienceCleanBeauty: 'उदा., 25-40 की महिलाएं जो क्लीन ब्यूटी में रुचि रखती हैं', phAudienceCleanBeautyOpt: 'उदा., 25-40 की महिलाएं जो क्लीन ब्यूटी में रुचि रखती हैं (वैकल्पिक)', phAudienceSelfCare: 'उदा., 25-40 की महिलाएं जो स्किनकेयर और सेल्फ-केयर में रुचि रखती हैं', phAudienceConcern: 'उदा., 25-40 की महिलाएं जो त्वचा की उम्र बढ़ने को लेकर चिंतित हैं', phMillennial: 'उदा., मिलेनियल स्किनकेयर उत्साही', phAcme: 'उदा., एक्मे', phAcmeHeadphones: 'उदा., एक्मे नॉइज़-कैंसलिंग हेडफ़ोन', phTone: 'उदा., चंचल, साहसी', phToneProfessional: 'उदा., चंचल, पेशेवर', phToneLuxurious: 'उदा., चंचल, साहसी, भव्य (वैकल्पिक)', phKeywords: 'उदा., गुणवत्ता, किफ़ायती', phColors: 'उदा., #FF0000, #00B2FC', phFonts: 'उदा., Inter, Roboto', phUrl: 'https://...', phOptional: 'वैकल्पिक', phOptionalPercent: 'वैकल्पिक %', phOptionalDollar: 'वैकल्पिक $', ph50: '50' },
     userMenu: {
       account: 'खाता',
       signOut: 'साइन आउट',
@@ -1053,6 +1053,11 @@ export const hiMessages = {
       tikTok: 'TikTok',
       instagram: 'Instagram',
       viralAnalysis: 'वायरल विश्लेषण',
+      productDescPh: 'उत्पाद का नाम, मुख्य विशेषताएं, लाभ, कीमत...',
+      productNamePh: 'उदा. ग्लो सीरम',
+      productUrlPh: 'https://shop.example.com/product',
+      brandUrlPh: 'https://brand.example.com',
+      creditBudgetPh: '50',
     },
     ads: {
       title: 'विज्ञापन अभियान',
@@ -1452,6 +1457,8 @@ export const hiMessages = {
       launchSuccess: "टेस्ट सफलतापूर्वक शुरू हुआ!",
       launchError: "टेस्ट शुरू करने में विफल",
       baseline: "आधार रेखा",
+      baseCreativePh: 'उस बेस क्रिएटिव का वर्णन करें जिसे आप टेस्ट करना चाहते हैं (हुक, CTA, विज़ुअल स्टाइल, एंगल)...',
+      metricGoalPh: 'उदा., CTR को 20% बढ़ाएं',
     },
     smartAssets: {
       title: "स्मार्ट एसेट लाइब्रेरी",
@@ -2728,6 +2735,14 @@ export const hiMessages = {
     colors: 'रंग (कॉमा से अलग)',
     fonts: 'फ़ॉन्ट (कॉमा से अलग)',
     briefPlaceholder: 'रचनात्मक संक्षिप्त विवरण पेस्ट करें...',
+    scriptPh: 'स्क्रिप्ट पेस्ट करें (वैकल्पिक)...',
+    storyboardPh: 'स्टोरीबोर्ड पेस्ट करें (वैकल्पिक)...',
+    brandNamePh: 'उदा., एक्मे',
+    tonePh: 'उदा., चंचल, पेशेवर',
+    keywordsPh: 'उदा., गुणवत्ता, किफ़ायती',
+    forbiddenPh: 'उदा., सस्ता, धोखा',
+    colorsPh: 'उदा., #FF0000, #00B2FC',
+    fontsPh: 'उदा., Inter, Roboto',
     fix: 'सुधार:',
   },
   smartCalendar: {
@@ -2805,6 +2820,7 @@ export const hiMessages = {
     expectedImpact: 'अपेक्षित प्रभाव:',
     timeframe: 'समय सीमा:',
     action: 'कार्रवाई:',
+    brandKitPh: 'अपना ब्रांड किट या पोज़िशनिंग स्टेटमेंट पेस्ट करें (वैकल्पिक)',
   },
   adCopyGenerator: {
     title: 'विज्ञापन कॉपी जनरेटर',
@@ -2997,6 +3013,7 @@ export const hiMessages = {
       error: "एनालिसिस विफल",
       fix: "ठीक करें",
       dryRunNotice: "ड्राई-रन मोड — ह्यूरिस्टिक एनालिसिस का उपयोग",
+      briefPh: 'अपना क्रिएटिव ब्रीफ यहां पेस्ट करें... (न्यूनतम 50 अक्षर)',
   },
   adFormatOptimizer: {
       title: "विज्ञापन फॉर्मेट ऑप्टिमाइज़र",
@@ -3078,6 +3095,7 @@ export const hiMessages = {
     confidence: 'आत्मविश्वास',
     benchmark: 'बेंचमार्क',
     rationale: 'तर्क',
+    briefPh: 'अपना क्रिएटिव ब्रीफ या विज्ञापन कॉन्सेप्ट यहां पेस्ट करें...',
   },
   abTestPlannerV2: {
     title: "रचनात्मक A/B टेस्ट प्लानर",
@@ -3171,6 +3189,7 @@ export const hiMessages = {
     copied: 'कॉपी हो गया',
     error: 'विश्लेषण विफल',
     dryRunNotice: 'ड्राई-रन मोड — ह्यूरिस्टिक विश्लेषण का उपयोग',
+    sampleContentPh: 'अपने ब्रांड की सामग्री के 100+ अक्षर पेस्ट करें — वेबसाइट कॉपी, विज्ञापन कैप्शन, सोशल पोस्ट, ईमेल…',
   },
   adCaptionGenerator: {
     title: 'विज्ञापन कैप्शन जनरेटर',

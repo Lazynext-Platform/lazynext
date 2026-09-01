@@ -632,7 +632,7 @@ export default function EditorPage() {
                   type="url"
                   value={videoUrl}
                   onChange={(e) => setVideoUrl(e.target.value)}
-                  placeholder="https://..."
+                  placeholder={t('common.phUrl')}
                   className="flex-1 rounded-lg border border-border bg-bg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
                   aria-label={t('editor.trTitle')}
                 />
@@ -674,7 +674,7 @@ export default function EditorPage() {
                   type="url"
                   value={ocrImageUrl}
                   onChange={(e) => setOcrImageUrl(e.target.value)}
-                  placeholder="https://..."
+                  placeholder={t('common.phUrl')}
                   className="flex-1 rounded-lg border border-border bg-bg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
                   aria-label={t('editor.ocrTitle')}
                 />

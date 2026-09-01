@@ -218,7 +218,7 @@ export const idMessages = {
       generating: 'Membuat…',
       failed: 'Gagal (dikembalikan)',
     },
-    common: { signIn: 'Masuk', signOut: 'Keluar', credits: 'Kredit', creditsLower: 'kredit', language: 'Bahasa', switchLanguage: 'Ganti bahasa', currency: 'Mata uang', cookieConsent: 'Persetujuan cookie', new: 'BARU', poweredBy: 'Didukung oleh', back: '← Kembali', backToLazynext: '← Lazynext', close: 'Tutup', errNetwork: 'Kesalahan jaringan. Periksa koneksi Anda dan coba lagi.', errUnauthorized: 'Sesi Anda telah berakhir. Silakan masuk lagi.', errNotFound: 'Sumber daya yang diminta tidak ditemukan.', errForbidden: 'Anda tidak memiliki akses ke sumber daya ini.', errPaymentRequired: 'Kredit tidak cukup. Silakan isi ulang di halaman harga.', errServer: 'Kesalahan server. Coba lagi nanti.', errGeneric: 'Terjadi kesalahan. Coba lagi.', dismissError: 'Tutup', retry: 'Coba lagi', loadingDots: 'Memuat…', resultLabels: { headline: 'Judul', body: 'Isi', cta: 'CTA', hook: 'Pengait', reason: 'Alasan', reasoning: 'Penalaran', description: 'Deskripsi', scenario: 'Skenario', sensoryDetails: 'Detail Sensorik', emotionalPayoff: 'Imbalan Emosional', psychologicalPrinciple: 'Prinsip Psikologis', timing: 'Waktu', frictionRemoval: 'Penghapusan Friksi', whyNotTheOthers: 'Mengapa Bukan yang Lain', adCopy: 'Teks Iklan', visualizationPrompt: 'Prompt Visualisasi', desiredOutcome: 'Hasil yang Diinginkan' }, skipToContent: 'Lewati ke konten', phProduct: 'mis. merek DTC skincare yang menjual serum vitamin C', phMessage: 'mis. Lelah dengan kulit kusam? Serum vitamin C kami mencerahkan dalam 7 hari...', phAudience: 'mis. Wanita 25-40 yang tertarik dengan skincare' },
+    common: { signIn: 'Masuk', signOut: 'Keluar', credits: 'Kredit', creditsLower: 'kredit', language: 'Bahasa', switchLanguage: 'Ganti bahasa', currency: 'Mata uang', cookieConsent: 'Persetujuan cookie', new: 'BARU', poweredBy: 'Didukung oleh', back: '← Kembali', backToLazynext: '← Lazynext', close: 'Tutup', errNetwork: 'Kesalahan jaringan. Periksa koneksi Anda dan coba lagi.', errUnauthorized: 'Sesi Anda telah berakhir. Silakan masuk lagi.', errNotFound: 'Sumber daya yang diminta tidak ditemukan.', errForbidden: 'Anda tidak memiliki akses ke sumber daya ini.', errPaymentRequired: 'Kredit tidak cukup. Silakan isi ulang di halaman harga.', errServer: 'Kesalahan server. Coba lagi nanti.', errGeneric: 'Terjadi kesalahan. Coba lagi.', dismissError: 'Tutup', retry: 'Coba lagi', loadingDots: 'Memuat…', resultLabels: { headline: 'Judul', body: 'Isi', cta: 'CTA', hook: 'Pengait', reason: 'Alasan', reasoning: 'Penalaran', description: 'Deskripsi', scenario: 'Skenario', sensoryDetails: 'Detail Sensorik', emotionalPayoff: 'Imbalan Emosional', psychologicalPrinciple: 'Prinsip Psikologis', timing: 'Waktu', frictionRemoval: 'Penghapusan Friksi', whyNotTheOthers: 'Mengapa Bukan yang Lain', adCopy: 'Teks Iklan', visualizationPrompt: 'Prompt Visualisasi', desiredOutcome: 'Hasil yang Diinginkan' }, skipToContent: 'Lewati ke konten', phProduct: 'mis. merek DTC skincare yang menjual serum vitamin C', phMessage: 'mis. Lelah dengan kulit kusam? Serum vitamin C kami mencerahkan dalam 7 hari...', phAudience: 'mis. Wanita 25-40 yang tertarik dengan skincare', phAudienceCleanBeauty: 'mis., Wanita 25-40 yang tertarik pada clean beauty', phAudienceCleanBeautyOpt: 'mis., wanita 25-40 yang tertarik pada clean beauty (opsional)', phAudienceSelfCare: 'mis., Wanita 25-40 yang tertarik pada skincare dan self-care', phAudienceConcern: 'mis., Wanita 25-40 yang khawatir tentang penuaan kulit', phMillennial: 'mis., penggemar skincare milenial', phAcme: 'mis., Acme', phAcmeHeadphones: 'mis., Headphone peredam bising Acme', phTone: 'mis., ceria, berani', phToneProfessional: 'mis., ceria, profesional', phToneLuxurious: 'mis., ceria, berani, mewah (opsional)', phKeywords: 'mis., kualitas, terjangkau', phColors: 'mis., #FF0000, #00B2FC', phFonts: 'mis., Inter, Roboto', phUrl: 'https://...', phOptional: 'opsional', phOptionalPercent: 'opsional %', phOptionalDollar: 'opsional $', ph50: '50' },
     userMenu: {
       account: 'Akun',
       signOut: 'Keluar',
@@ -1034,6 +1034,11 @@ export const idMessages = {
       tikTok: 'TikTok',
       instagram: 'Instagram',
       viralAnalysis: 'Analisis Viral',
+      productDescPh: 'Nama produk, fitur utama, manfaat, harga...',
+      productNamePh: 'mis. Glow Serum',
+      productUrlPh: 'https://shop.example.com/product',
+      brandUrlPh: 'https://brand.example.com',
+      creditBudgetPh: '50',
     },
     ads: {
       title: 'Kampanye iklan',
@@ -1431,6 +1436,8 @@ export const idMessages = {
       launchSuccess: "Tes berhasil dimulai!",
       launchError: "Gagal memulai tes",
       baseline: "Baseline",
+      baseCreativePh: 'Deskripsikan kreatif dasar yang ingin Anda uji (hook, CTA, gaya visual, sudut)...',
+      metricGoalPh: 'mis., tingkatkan CTR sebesar 20%',
     },
     smartAssets: {
       title: "Perpustakaan Asset Pintar",
@@ -2707,6 +2714,14 @@ export const idMessages = {
     colors: 'Warna (dipisahkan koma)',
     fonts: 'Font (dipisahkan koma)',
     briefPlaceholder: 'Tempel brief kreatif...',
+    scriptPh: 'Tempel skrip (opsional)...',
+    storyboardPh: 'Tempel storyboard (opsional)...',
+    brandNamePh: 'mis., Acme',
+    tonePh: 'mis., ceria, profesional',
+    keywordsPh: 'mis., kualitas, terjangkau',
+    forbiddenPh: 'mis., murah, penipuan',
+    colorsPh: 'mis., #FF0000, #00B2FC',
+    fontsPh: 'mis., Inter, Roboto',
     fix: 'Perbaiki:',
   },
   smartCalendar: {
@@ -2784,6 +2799,7 @@ export const idMessages = {
     expectedImpact: 'Dampak yang diharapkan:',
     timeframe: 'Jangka waktu:',
     action: 'Tindakan:',
+    brandKitPh: 'Tempel brand kit atau pernyataan positioning Anda (opsional)',
   },
   adCopyGenerator: {
     title: 'Generator Salinan Iklan',
@@ -2976,6 +2992,7 @@ export const idMessages = {
       error: "Analisis gagal",
       fix: "Perbaiki",
       dryRunNotice: "Mode uji-coba — menggunakan analisis heuristik",
+      briefPh: 'Tempel brief kreatif Anda di sini... (minimum 50 karakter)',
   },
   adFormatOptimizer: {
       title: "Pengoptimal Format Iklan",
@@ -3057,6 +3074,7 @@ export const idMessages = {
     confidence: 'Keyakinan',
     benchmark: 'Benchmark',
     rationale: 'Rasional',
+    briefPh: 'Tempel brief kreatif atau konsep iklan Anda di sini...',
   },
   abTestPlannerV2: {
     title: "Perencana A/B Test Kreatif",
@@ -3150,6 +3168,7 @@ export const idMessages = {
     copied: 'Disalin',
     error: 'Analisis gagal',
     dryRunNotice: 'Mode uji-coba — menggunakan analisis heuristik',
+    sampleContentPh: 'Tempel 100+ karakter konten merek Anda — salinan situs web, caption iklan, postingan sosial, email…',
   },
   adCaptionGenerator: {
     title: 'Generator Kapsi Iklan',

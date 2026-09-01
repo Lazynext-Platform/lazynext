@@ -131,11 +131,11 @@ export default function AdCopyGeneratorPage() {
             <div className="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div>
                 <label htmlFor="acgBrandName" className="block text-sm font-medium mb-1">{t('adCopyGenerator.brandName')}</label>
-                <input id="acgBrandName" type="text" value={brandName} onChange={(e) => setBrandName(e.target.value)} placeholder="e.g., Acme" className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
+                <input id="acgBrandName" type="text" value={brandName} onChange={(e) => setBrandName(e.target.value)} placeholder={t('common.phAcme')} className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
               </div>
               <div>
                 <label htmlFor="acgTone" className="block text-sm font-medium mb-1">{t('adCopyGenerator.tone')}</label>
-                <input id="acgTone" type="text" value={tone} onChange={(e) => setTone(e.target.value)} placeholder="e.g., playful, bold" className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
+                <input id="acgTone" type="text" value={tone} onChange={(e) => setTone(e.target.value)} placeholder={t('common.phTone')} className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
               </div>
               <div>
                 <label htmlFor="acgKeywords" className="block text-sm font-medium mb-1">{t('adCopyGenerator.keywords')}</label>

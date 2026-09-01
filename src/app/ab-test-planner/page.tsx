@@ -106,7 +106,7 @@ export default function ABTestPlannerPage() {
               onChange={(e) => setBaseCreative(e.target.value)}
               rows={5}
               maxLength={5000}
-              placeholder="Describe the base creative you want to test (hook, CTA, visual style, angle)..."
+              placeholder={t('abTestPlanner.baseCreativePh')}
               className="w-full rounded-lg border border-border bg-bg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
               disabled={loading}
             />
@@ -135,7 +135,7 @@ export default function ABTestPlannerPage() {
                 value={goal}
                 onChange={(e) => setGoal(e.target.value)}
                 maxLength={500}
-                placeholder="e.g., increase CTR by 20%"
+                placeholder={t('abTestPlanner.metricGoalPh')}
                 className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
                 disabled={loading}
               />

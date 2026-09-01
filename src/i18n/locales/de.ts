@@ -215,7 +215,7 @@ export const deMessages = {
       generating: 'Generierung…',
       failed: 'Fehlgeschlagen (erstattet)',
     },
-    common: { signIn: 'Anmelden', signOut: 'Abmelden', credits: 'Guthaben', creditsLower: 'Credits', language: 'Sprache', switchLanguage: 'Sprache wechseln', currency: 'Währung', cookieConsent: 'Cookie-Einwilligung', new: 'NEU', poweredBy: 'Unterstützt von', back: '← Zurück', backToLazynext: '← Lazynext', close: 'Schließen', errNetwork: 'Netzwerkfehler. Überprüfen Sie Ihre Verbindung und versuchen Sie es erneut.', errUnauthorized: 'Ihre Sitzung ist abgelaufen. Bitte melden Sie sich erneut an.', errNotFound: 'Die angeforderte Ressource wurde nicht gefunden.', errForbidden: 'Sie haben keinen Zugriff auf diese Ressource.', errPaymentRequired: 'Nicht genügend Guthaben. Bitte auf der Preisseite aufladen.', errServer: 'Serverfehler. Bitte versuchen Sie es später erneut.', errGeneric: 'Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut.', dismissError: 'Schließen', retry: 'Erneut versuchen', loadingDots: 'Laden…', resultLabels: { headline: 'Überschrift', body: 'Textkörper', cta: 'CTA', hook: 'Aufhänger', reason: 'Grund', reasoning: 'Begründung', description: 'Beschreibung', scenario: 'Szenario', sensoryDetails: 'Sinnliche Details', emotionalPayoff: 'Emotionale Belohnung', psychologicalPrinciple: 'Psychologisches Prinzip', timing: 'Zeitpunkt', frictionRemoval: 'Reibungsverringerung', whyNotTheOthers: 'Warum nicht die anderen', adCopy: 'Werbetext', visualizationPrompt: 'Visualisierungs-Prompt', desiredOutcome: 'Gewünschtes Ergebnis' }, skipToContent: 'Zum Inhalt springen', phProduct: 'z.B. DTC-Skincare-Marke, die ein Vitamin-C-Serum verkauft', phMessage: 'z.B. Müde von matter Haut? Unser Vitamin-C-Serum hellt sie in nur 7 Tagen auf...', phAudience: 'z.B. Frauen 25-40, die an Skincare interessiert sind' },
+    common: { signIn: 'Anmelden', signOut: 'Abmelden', credits: 'Guthaben', creditsLower: 'Credits', language: 'Sprache', switchLanguage: 'Sprache wechseln', currency: 'Währung', cookieConsent: 'Cookie-Einwilligung', new: 'NEU', poweredBy: 'Unterstützt von', back: '← Zurück', backToLazynext: '← Lazynext', close: 'Schließen', errNetwork: 'Netzwerkfehler. Überprüfen Sie Ihre Verbindung und versuchen Sie es erneut.', errUnauthorized: 'Ihre Sitzung ist abgelaufen. Bitte melden Sie sich erneut an.', errNotFound: 'Die angeforderte Ressource wurde nicht gefunden.', errForbidden: 'Sie haben keinen Zugriff auf diese Ressource.', errPaymentRequired: 'Nicht genügend Guthaben. Bitte auf der Preisseite aufladen.', errServer: 'Serverfehler. Bitte versuchen Sie es später erneut.', errGeneric: 'Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut.', dismissError: 'Schließen', retry: 'Erneut versuchen', loadingDots: 'Laden…', resultLabels: { headline: 'Überschrift', body: 'Textkörper', cta: 'CTA', hook: 'Aufhänger', reason: 'Grund', reasoning: 'Begründung', description: 'Beschreibung', scenario: 'Szenario', sensoryDetails: 'Sinnliche Details', emotionalPayoff: 'Emotionale Belohnung', psychologicalPrinciple: 'Psychologisches Prinzip', timing: 'Zeitpunkt', frictionRemoval: 'Reibungsverringerung', whyNotTheOthers: 'Warum nicht die anderen', adCopy: 'Werbetext', visualizationPrompt: 'Visualisierungs-Prompt', desiredOutcome: 'Gewünschtes Ergebnis' }, skipToContent: 'Zum Inhalt springen', phProduct: 'z.B. DTC-Skincare-Marke, die ein Vitamin-C-Serum verkauft', phMessage: 'z.B. Müde von matter Haut? Unser Vitamin-C-Serum hellt sie in nur 7 Tagen auf...', phAudience: 'z.B. Frauen 25-40, die an Skincare interessiert sind', phAudienceCleanBeauty: 'z.B. Frauen 25-40, die an Clean Beauty interessiert sind', phAudienceCleanBeautyOpt: 'z.B. Frauen 25-40, die an Clean Beauty interessiert sind (optional)', phAudienceSelfCare: 'z.B. Frauen 25-40, die an Skincare und Self-Care interessiert sind', phAudienceConcern: 'z.B. Frauen 25-40, die sich um Hautalterung sorgen', phMillennial: 'z.B. Millennial-Skincare-Enthusiasten', phAcme: 'z.B. Acme', phAcmeHeadphones: 'z.B. Acme Noise-Cancelling-Kopfhörer', phTone: 'z.B. verspielt, mutig', phToneProfessional: 'z.B. verspielt, professionell', phToneLuxurious: 'z.B. verspielt, mutig, luxuriös (optional)', phKeywords: 'z.B. Qualität, erschwinglich', phColors: 'z.B. #FF0000, #00B2FC', phFonts: 'z.B. Inter, Roboto', phUrl: 'https://...', phOptional: 'optional', phOptionalPercent: 'optional %', phOptionalDollar: 'optional $', ph50: '50' },
     userMenu: {
       account: 'Konto',
       signOut: 'Abmelden',
@@ -1053,6 +1053,11 @@ export const deMessages = {
       tikTok: 'TikTok',
       instagram: 'Instagram',
       viralAnalysis: 'Viral-Analyse',
+      productDescPh: 'Produktname, Hauptmerkmale, Vorteile, Preis...',
+      productNamePh: 'z.B. Glow Serum',
+      productUrlPh: 'https://shop.example.com/product',
+      brandUrlPh: 'https://brand.example.com',
+      creditBudgetPh: '50',
     },
     ads: {
       title: 'Anzeigenkampagnen',
@@ -1452,6 +1457,8 @@ export const deMessages = {
       launchSuccess: "Test erfolgreich gestartet!",
       launchError: "Fehler beim Starten des Tests",
       baseline: "Baseline",
+      baseCreativePh: 'Beschreiben Sie die Basiskreation, die Sie testen möchten (Hook, CTA, visueller Stil, Winkel)...',
+      metricGoalPh: 'z.B. CTR um 20% steigern',
     },
     smartAssets: {
       title: "Smart Asset-Bibliothek",
@@ -2728,6 +2735,14 @@ export const deMessages = {
     colors: 'Farben (kommagetrennt)',
     fonts: 'Schriftarten (kommagetrennt)',
     briefPlaceholder: 'Kreativ-Briefing einfügen...',
+    scriptPh: 'Skript einfügen (optional)...',
+    storyboardPh: 'Storyboard einfügen (optional)...',
+    brandNamePh: 'z.B. Acme',
+    tonePh: 'z.B. verspielt, professionell',
+    keywordsPh: 'z.B. Qualität, erschwinglich',
+    forbiddenPh: 'z.B. billig, Betrug',
+    colorsPh: 'z.B. #FF0000, #00B2FC',
+    fontsPh: 'z.B. Inter, Roboto',
     fix: 'Beheben:',
   },
   smartCalendar: {
@@ -2805,6 +2820,7 @@ export const deMessages = {
     expectedImpact: 'Erwartete Auswirkung:',
     timeframe: 'Zeitraum:',
     action: 'Aktion:',
+    brandKitPh: 'Fügen Sie Ihr Brand Kit oder Positionierungsstatement ein (optional)',
   },
   adCopyGenerator: {
     title: 'Anzeigentext-Generator',
@@ -2997,6 +3013,7 @@ export const deMessages = {
       error: "Analyse fehlgeschlagen",
       fix: "Korrigieren",
       dryRunNotice: "Dry-Run-Modus — heuristische Analyse verwendet",
+      briefPh: 'Fügen Sie hier Ihr Creative Brief ein... (mindestens 50 Zeichen)',
   },
   adFormatOptimizer: {
       title: "Anzeigenformat-Optimierer",
@@ -3078,6 +3095,7 @@ export const deMessages = {
     confidence: 'Konfidenz',
     benchmark: 'Benchmark',
     rationale: 'Begründung',
+    briefPh: 'Fügen Sie hier Ihren Creative Brief oder Anzeigenkonzept ein...',
   },
   abTestPlannerV2: {
     title: "Kreativer A/B-Test-Planer",
@@ -3171,6 +3189,7 @@ export const deMessages = {
     copied: 'Kopiert',
     error: 'Analyse fehlgeschlagen',
     dryRunNotice: 'Dry-Run-Modus — heuristische Analyse verwendet',
+    sampleContentPh: 'Fügen Sie 100+ Zeichen Ihres Markeninhalts ein — Website-Texte, Ad-Captions, Social Posts, E-Mails…',
   },
   adCaptionGenerator: {
     title: 'Werbe-Caption-Generator',
