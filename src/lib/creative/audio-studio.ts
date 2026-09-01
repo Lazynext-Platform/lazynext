@@ -12,8 +12,15 @@
  * delivery instructions (prosody cues) so the prompt engineering pipeline is
  * exercised end-to-end.
  */
-import { atlasChat } from '@/lib/atlas';
-import { getLLMModel } from '@/lib/providers/model-helpers';
+import {
+  atlasChat,
+  resolveModel,
+  extractJson,
+  asStr,
+  isString,
+  isDryRun,
+  CREATIVE_TIMEOUT_MS,
+} from '@/lib/creative/toolkit';
 import type { PlanTier } from '@/lib/plan-tier';
 
 // ── Types ──
@@ -335,20 +342,9 @@ const MUSIC_MOOD_META: Array<{ mood: MusicMood; name: string; description: strin
   { mood: 'luxurious', name: 'Luxurious', description: 'Elegant, premium tracks for high-end brand ads.' },
 ];
 
-// ── Model resolution ──
+// ── Model config ──
 
-const AUDIO_STUDIO_MODEL = process.env.CREATIVE_MODEL || getLLMModel();
-const AUDIO_STUDIO_TIMEOUT_MS = Number(process.env.CREATIVE_TIMEOUT_MS || 90_000);
 const AUDIO_STUDIO_MAX_TOKENS = Number(process.env.CREATIVE_MAX_TOKENS || 4000);
-
-/**
- * Resolve the LLM model for a given plan tier.
- * Falls back to the module-level AUDIO_STUDIO_MODEL (which respects the CREATIVE_MODEL env override).
- */
-function resolveModel(planTier?: PlanTier): string {
-  if (process.env.CREATIVE_MODEL) return process.env.CREATIVE_MODEL;
-  return getLLMModel(planTier);
-}
 
 // ── Helpers ──
 
@@ -372,27 +368,6 @@ const VALID_MOODS: ReadonlySet<MusicMood> = new Set([
 ]);
 const VALID_FORMATS: ReadonlySet<AudioFormat> = new Set(['mp3', 'wav', 'ogg', 'aac']);
 
-function isString(v: unknown): v is string {
-  return typeof v === 'string';
-}
-
-function asStr(v: unknown, fallback = ''): string {
-  return typeof v === 'string' && v.trim() ? v.trim() : fallback;
-}
-
-function asNum(v: unknown, fallback: number, min: number, max: number): number {
-  const n = Math.round(Number(v));
-  return Number.isFinite(n) ? Math.max(min, Math.min(max, n)) : fallback;
-}
-
-function extractJson(raw: string): Record<string, unknown> {
-  const s = raw.trim().replace(/^```(?:json)?/i, '').replace(/```$/, '').trim();
-  const a = s.indexOf('{');
-  const b = s.lastIndexOf('}');
-  if (a < 0 || b < 0) throw new Error('no_json_in_audio_studio_output');
-  return JSON.parse(s.slice(a, b + 1)) as Record<string, unknown>;
-}
-
 function clampPitch(p: unknown): number {
   const n = Number(p);
   if (!Number.isFinite(n)) return 1.0;
@@ -403,13 +378,6 @@ function clampSpeed(p: unknown): number {
   const n = Number(p);
   if (!Number.isFinite(n)) return 1.0;
   return Math.max(0.5, Math.min(2.0, n));
-}
-
-/** True when running against the local mock Atlas server (or no real key configured). */
-function isDryRun(): boolean {
-  const base = process.env.ATLASCLOUD_BASE || '';
-  if (base.includes('localhost') || base.includes('127.0.0.1')) return true;
-  return !process.env.ATLASCLOUD_API_KEY;
 }
 
 /**
@@ -497,7 +465,7 @@ Return JSON: { "delivery": string, "notes": string }`;
       [{ role: 'system', content: TTS_SYS }, { role: 'user', content: userPrompt }],
       resolveModel(planTier),
       AUDIO_STUDIO_MAX_TOKENS,
-      AUDIO_STUDIO_TIMEOUT_MS,
+      CREATIVE_TIMEOUT_MS,
     );
     const j = extractJson(raw);
     return {

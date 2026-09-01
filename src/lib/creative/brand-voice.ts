@@ -8,8 +8,15 @@
  * All AI calls use the existing atlasChat() from src/lib/atlas.ts.
  * Credit cost is defined per analysis and exported for the route layer.
  */
-import { atlasChat } from '@/lib/atlas';
-import { getLLMModel } from '@/lib/providers/model-helpers';
+import {
+  atlasChat,
+  resolveModel,
+  extractJson,
+  asStr,
+  asStrArr,
+  CREATIVE_TIMEOUT_MS,
+  CREATIVE_MAX_TOKENS,
+} from '@/lib/creative/toolkit';
 import type { PlanTier } from '@/lib/plan-tier';
 
 export const BRAND_VOICE_COST = 6;
@@ -174,10 +181,6 @@ export interface BrandVoiceResult {
 
 // ── Constants ──
 
-const CREATIVE_MODEL = process.env.CREATIVE_MODEL || getLLMModel();
-const CREATIVE_TIMEOUT_MS = Number(process.env.CREATIVE_TIMEOUT_MS || 90_000);
-const CREATIVE_MAX_TOKENS = Number(process.env.CREATIVE_MAX_TOKENS || 6000);
-
 const VALID_TONES: VoiceTone[] = [
   'professional', 'casual', 'friendly', 'authoritative', 'playful',
   'inspirational', 'urgent', 'empathetic', 'luxurious', 'technical',
@@ -206,32 +209,6 @@ const VALID_VISUAL_RULES: VisualStyleRule[] = [
 ];
 
 // ── Helpers ──
-
-function resolveCreativeModel(planTier?: PlanTier): string {
-  if (process.env.CREATIVE_MODEL) return process.env.CREATIVE_MODEL;
-  return getLLMModel(planTier);
-}
-
-function extractJson(raw: string): Record<string, unknown> {
-  const s = raw.trim().replace(/^```(?:json)?/i, '').replace(/```$/, '').trim();
-  const a = s.indexOf('{');
-  const b = s.lastIndexOf('}');
-  if (a < 0 || b < 0) throw new Error('no_json_in_brand_voice_output');
-  return JSON.parse(s.slice(a, b + 1)) as Record<string, unknown>;
-}
-
-function asStr(v: unknown, fallback = ''): string {
-  return typeof v === 'string' && v.trim() ? v.trim() : fallback;
-}
-
-function asStrArr(v: unknown): string[] {
-  return Array.isArray(v) ? v.map((x) => asStr(x)).filter(Boolean).slice(0, 30) : [];
-}
-
-function asNum(v: unknown, fallback: number, min: number, max: number): number {
-  const n = Math.round(Number(v));
-  return Number.isFinite(n) ? Math.max(min, Math.min(max, n)) : fallback;
-}
 
 function asTone(v: unknown): VoiceTone | undefined {
   const s = asStr(v);
@@ -780,7 +757,7 @@ export async function analyzeBrandVoice(request: {
         role: 'system',
         content: 'You are a brand voice analyst. Analyze the brand and return JSON with: voiceTones (array from: professional,casual,friendly,authoritative,playful,inspirational,urgent,empathetic,luxurious,technical), voiceAttributes (array from: formal,informal,serious,humorous,respectful,irreverent,warm,cool,direct,subtle,active,passive,simple,sophisticated), messagingPillars (array from: value_proposition,social_proof,authority,scarcity,urgency,community,innovation,trust,quality,sustainability), vocabulary ({preferred:[],avoided:[],signature:[]}), styleRules (array of {type,description,mandatory}), doList ([]), dontList ([]), brandPersonality ([]), audienceTone (string). Output ONLY JSON.',
       }, { role: 'user', content: parts.join('\n') }],
-      resolveCreativeModel(planTier), CREATIVE_MAX_TOKENS, CREATIVE_TIMEOUT_MS,
+      resolveModel(planTier), CREATIVE_MAX_TOKENS, CREATIVE_TIMEOUT_MS,
     );
     aiProfile = extractJson(raw);
   } catch {
@@ -795,14 +772,14 @@ export async function analyzeBrandVoice(request: {
     voiceAttributes: asAttributeArr(aiProfile.voiceAttributes).length > 0 ? asAttributeArr(aiProfile.voiceAttributes) : training.extractedAttributes,
     messagingPillars: asPillarArr(aiProfile.messagingPillars).length > 0 ? asPillarArr(aiProfile.messagingPillars) : training.extractedPillars,
     vocabulary: {
-      preferred: asStrArr((aiProfile.vocabulary as Record<string, unknown>)?.preferred).length > 0
-        ? asStrArr((aiProfile.vocabulary as Record<string, unknown>)?.preferred)
+      preferred: asStrArr((aiProfile.vocabulary as Record<string, unknown>)?.preferred, 30).length > 0
+        ? asStrArr((aiProfile.vocabulary as Record<string, unknown>)?.preferred, 30)
         : training.extractedVocabulary.preferred,
-      avoided: asStrArr((aiProfile.vocabulary as Record<string, unknown>)?.avoided).length > 0
-        ? asStrArr((aiProfile.vocabulary as Record<string, unknown>)?.avoided)
+      avoided: asStrArr((aiProfile.vocabulary as Record<string, unknown>)?.avoided, 30).length > 0
+        ? asStrArr((aiProfile.vocabulary as Record<string, unknown>)?.avoided, 30)
         : training.extractedVocabulary.avoided,
-      signature: asStrArr((aiProfile.vocabulary as Record<string, unknown>)?.signature).length > 0
-        ? asStrArr((aiProfile.vocabulary as Record<string, unknown>)?.signature)
+      signature: asStrArr((aiProfile.vocabulary as Record<string, unknown>)?.signature, 30).length > 0
+        ? asStrArr((aiProfile.vocabulary as Record<string, unknown>)?.signature, 30)
         : training.extractedVocabulary.signature,
     },
     styleRules: Array.isArray(aiProfile.styleRules)
@@ -810,7 +787,7 @@ export async function analyzeBrandVoice(request: {
           ruleId: `rule_${i}`,
           type: asVisualRule(r.type) || 'color_palette',
           description: asStr(r.description),
-          examples: asStrArr(r.examples),
+          examples: asStrArr(r.examples, 30),
           mandatory: typeof r.mandatory === 'boolean' ? r.mandatory : false,
         }))
       : training.detectedStyleRules.map((r, i) => ({
@@ -820,10 +797,10 @@ export async function analyzeBrandVoice(request: {
           examples: [],
           mandatory: false,
         })),
-    doList: asStrArr(aiProfile.doList).length > 0 ? asStrArr(aiProfile.doList) : ['Use consistent tone', 'Reinforce messaging pillars'],
-    dontList: asStrArr(aiProfile.dontList).length > 0 ? asStrArr(aiProfile.dontList) : ['Use avoided vocabulary', 'Mix conflicting tones'],
+    doList: asStrArr(aiProfile.doList, 30).length > 0 ? asStrArr(aiProfile.doList, 30) : ['Use consistent tone', 'Reinforce messaging pillars'],
+    dontList: asStrArr(aiProfile.dontList, 30).length > 0 ? asStrArr(aiProfile.dontList, 30) : ['Use avoided vocabulary', 'Mix conflicting tones'],
     audienceTone: asStr(aiProfile.audienceTone, training.audienceTone),
-    brandPersonality: asStrArr(aiProfile.brandPersonality).length > 0 ? asStrArr(aiProfile.brandPersonality) : training.brandPersonality,
+    brandPersonality: asStrArr(aiProfile.brandPersonality, 30).length > 0 ? asStrArr(aiProfile.brandPersonality, 30) : training.brandPersonality,
     createdAt: new Date().toISOString(),
   };
 

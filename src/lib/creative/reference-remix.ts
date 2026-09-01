@@ -16,16 +16,19 @@
  * All AI generation uses the existing atlasChat() from src/lib/atlas.ts — no
  * new LLM dependency. Credit cost is exported for the API route to charge.
  */
-import { atlasChat } from '@/lib/atlas';
-import { getLLMModel } from '@/lib/providers/model-helpers';
+import {
+  isDryRun,
+  extractJson,
+  asStr,
+  asNum,
+  asObj,
+  asStrArr,
+  atlasGenerate,
+} from '@/lib/creative/toolkit';
 import type { PlanTier } from '@/lib/plan-tier';
 
 // ── Credit cost ──
 export const REFERENCE_REMIX_CREDIT_COST = 4;
-
-const CREATIVE_MODEL = process.env.CREATIVE_MODEL || getLLMModel();
-const CREATIVE_TIMEOUT_MS = Number(process.env.CREATIVE_TIMEOUT_MS || 90_000);
-const CREATIVE_MAX_TOKENS = Number(process.env.CREATIVE_MAX_TOKENS || 6000);
 
 // ── Types ──
 
@@ -139,48 +142,6 @@ Output ONLY valid JSON — no explanation, no markdown. Use this exact schema:
 }
 
 Be specific and evidence-based. Cite actual moments from the reference. The generationPrompt must be a self-contained video generation prompt (not a meta-description). Output the reference remix JSON now.`;
-
-// ── Helpers (self-contained, mirrors product-image.ts patterns) ──
-
-function isDryRun(): boolean {
-  const base = process.env.ATLASCLOUD_BASE || '';
-  if (base.includes('localhost') || base.includes('127.0.0.1')) return true;
-  return !process.env.ATLASCLOUD_API_KEY;
-}
-
-/**
- * Resolve the LLM model for a given plan tier.
- * Falls back to the module-level CREATIVE_MODEL (which respects the CREATIVE_MODEL env override).
- */
-function resolveModel(planTier?: PlanTier): string {
-  if (process.env.CREATIVE_MODEL) return process.env.CREATIVE_MODEL;
-  return getLLMModel(planTier);
-}
-
-function extractJson(raw: string): Record<string, unknown> {
-  const s = raw.trim().replace(/^```(?:json)?/i, '').replace(/```$/, '').trim();
-  const a = s.indexOf('{');
-  const b = s.lastIndexOf('}');
-  if (a < 0 || b < 0) throw new Error('no_json_in_reference_remix_output');
-  return JSON.parse(s.slice(a, b + 1)) as Record<string, unknown>;
-}
-
-function asStr(v: unknown, fallback = ''): string {
-  return typeof v === 'string' && v.trim() ? v.trim() : fallback;
-}
-
-function asArr(v: unknown): string[] {
-  return Array.isArray(v) ? v.map((x) => asStr(x)).filter(Boolean).slice(0, 30) : [];
-}
-
-function asNum(v: unknown, fallback: number, min: number, max: number): number {
-  const n = Number(v);
-  return Number.isFinite(n) ? Math.max(min, Math.min(max, n)) : fallback;
-}
-
-function asObj(v: unknown): Record<string, unknown> {
-  return v && typeof v === 'object' ? (v as Record<string, unknown>) : {};
-}
 
 // ── Validation ──
 
@@ -326,11 +287,10 @@ Change elements: ${change}
 
 Extract the evidence, analyze what works and why, then produce a remix brief with a ready-for-generation prompt. Output the reference remix JSON now.`;
 
-  const raw = await atlasChat(
-    [{ role: 'system', content: REFERENCE_REMIX_SYS }, { role: 'user', content: userPrompt }],
-    resolveModel(planTier),
-    CREATIVE_MAX_TOKENS,
-    CREATIVE_TIMEOUT_MS,
+  const raw = await atlasGenerate(
+    REFERENCE_REMIX_SYS,
+    userPrompt,
+    planTier,
   );
   const j = extractJson(raw);
 
@@ -357,14 +317,14 @@ Extract the evidence, analyze what works and why, then produce a remix brief wit
   });
   const evidence: EvidenceExtraction = {
     hooks,
-    angles: asArr(ev.angles),
+    angles: asStrArr(ev.angles, 30),
     pacing: {
       avgSceneDuration: asNum(pa.avgSceneDuration, 3, 0, 120),
       totalScenes: Math.max(0, Math.round(asNum(pa.totalScenes, 5, 0, 200))),
       rhythmDescription: asStr(pa.rhythmDescription),
     },
     visualStyle: {
-      colorPalette: asArr(vs.colorPalette),
+      colorPalette: asStrArr(vs.colorPalette, 30),
       cameraStyle: asStr(vs.cameraStyle),
       editingStyle: asStr(vs.editingStyle),
       textOverlayStyle: asStr(vs.textOverlayStyle),
@@ -380,12 +340,12 @@ Extract the evidence, analyze what works and why, then produce a remix brief wit
   // ── Analysis ──
   const an = asObj(j.analysis);
   const analysis: CreativeAnalysis = {
-    whatWorks: asArr(an.whatWorks),
-    whatDoesnt: asArr(an.whatDoesnt),
-    whyItWorks: asArr(an.whyItWorks),
+    whatWorks: asStrArr(an.whatWorks, 30),
+    whatDoesnt: asStrArr(an.whatDoesnt, 30),
+    whyItWorks: asStrArr(an.whyItWorks, 30),
     targetAudienceFit: asStr(an.targetAudienceFit),
-    platformOptimization: asArr(an.platformOptimization),
-    performancePredictors: asArr(an.performancePredictors),
+    platformOptimization: asStrArr(an.platformOptimization, 30),
+    performancePredictors: asStrArr(an.performancePredictors, 30),
   };
 
   // ── Remix brief ──

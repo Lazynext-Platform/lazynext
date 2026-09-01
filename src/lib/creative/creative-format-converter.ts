@@ -18,16 +18,14 @@
  */
 import type { PlanTier } from '@/lib/plan-tier';
 import {
-  resolveModel,
   isDryRun,
   extractJson,
   asStr,
   asNum,
+  asStrArr,
   isString,
+  atlasGenerate,
   CREATIVE_MODEL,
-  atlasChat,
-  CREATIVE_MAX_TOKENS,
-  CREATIVE_TIMEOUT_MS,
 } from '@/lib/creative/toolkit';
 
 // ── Credit cost ──
@@ -75,13 +73,6 @@ export const MAX_CONTENT_LENGTH = 2000;
 export const MAX_PRODUCT_LENGTH = 2000;
 
 // ── Helpers (self-contained, mirrors ad-hashtag-generator.ts patterns) ──
-
-function asStrArray(v: unknown, fallback: string[]): string[] {
-  if (Array.isArray(v)) {
-    return v.map((x) => asStr(x, '')).filter((s) => s.length > 0);
-  }
-  return fallback;
-}
 
 function asAdFormat(v: unknown, fallback: AdFormat): AdFormat {
   const s = asStr(v, fallback as string) as AdFormat;
@@ -323,11 +314,11 @@ function parseConversionJson(
   input: CreativeFormatConverterInput,
 ): FormatConverterResult {
   const convertedContent = asStr(j.convertedContent, '');
-  const formatNotes = asStrArray(j.formatNotes, ['Converted content between formats.']);
-  const adaptations = asStrArray(j.adaptations, ['Adapted for the target format.']);
+  const formatNotes = asStrArr(j.formatNotes, ['Converted content between formats.']);
+  const adaptations = asStrArr(j.adaptations, ['Adapted for the target format.']);
   const characterCount = asNum(j.characterCount, 0, 0, 100000);
   const estimatedDuration = asStr(j.estimatedDuration, '15-30 seconds');
-  const platformOptimizations = asStrArray(j.platformOptimizations, []);
+  const platformOptimizations = asStrArr(j.platformOptimizations, []);
 
   // If the LLM returned nothing usable, fall back to dry-run.
   if (!convertedContent) {
@@ -398,11 +389,10 @@ export async function convertFormat(
   const userPrompt = buildUserPrompt(input);
 
   try {
-    const raw = await atlasChat(
-      [{ role: 'system', content: CREATIVE_FORMAT_CONVERTER_SYS }, { role: 'user', content: userPrompt }],
-      resolveModel(planTier),
-      CREATIVE_MAX_TOKENS,
-      CREATIVE_TIMEOUT_MS,
+    const raw = await atlasGenerate(
+      CREATIVE_FORMAT_CONVERTER_SYS,
+      userPrompt,
+      planTier,
     );
     const j = extractJson(raw);
     return parseConversionJson(j, input);

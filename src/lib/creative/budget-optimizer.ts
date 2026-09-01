@@ -1,5 +1,4 @@
-import { atlasChat } from '@/lib/atlas';
-import { getLLMModel } from '@/lib/providers/model-helpers';
+import { atlasChat, resolveModel } from '@/lib/creative/toolkit';
 import type { PlanTier } from '@/lib/plan-tier';
 
 export const BUDGET_OPTIMIZER_COST = 6;
@@ -356,7 +355,7 @@ export async function optimizeBudget(request: OptimizationRequest): Promise<Opti
   ];
 
   try {
-    const model = getLLMModel(planTier);
+    const model = resolveModel(planTier);
     const perfSummary = platformPerformance.map((p) => `${p.platform}: ROAS=${p.roas}, CPA=${p.cpa}, CTR=${p.ctr}, trend=${p.trend}`).join('; ');
     const aiResponse = await atlasChat(
       [{ role: 'system', content: OPTIMIZATION_SYS }, { role: 'user', content: `Goal: ${goal}\nBudget: ${totalBudget}\nPerformance: ${perfSummary}\n\nGenerate strategic insights and recommendations JSON.` }],

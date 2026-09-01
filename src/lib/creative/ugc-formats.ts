@@ -8,16 +8,19 @@
  * All generation uses the existing atlasChat() from src/lib/atlas.ts — no new
  * LLM dependency. Credit cost is exported as UGC_COST for the route layer.
  */
-import { atlasChat } from '@/lib/atlas';
-import { getLLMModel } from '@/lib/providers/model-helpers';
+import {
+  atlasChat,
+  resolveModel,
+  extractJson,
+  asStr,
+  asStrArr as toolkitAsStrArr,
+  CREATIVE_TIMEOUT_MS,
+  CREATIVE_MAX_TOKENS,
+} from '@/lib/creative/toolkit';
 import type { PlanTier } from '@/lib/plan-tier';
 
 // ── Credit cost ──
 export const UGC_COST = 4;
-
-const CREATIVE_MODEL = process.env.CREATIVE_MODEL || getLLMModel();
-const CREATIVE_TIMEOUT_MS = Number(process.env.CREATIVE_TIMEOUT_MS || 90_000);
-const CREATIVE_MAX_TOKENS = Number(process.env.CREATIVE_MAX_TOKENS || 6000);
 
 function resolveCreativeModel(planTier?: PlanTier): string {
   if (process.env.CREATIVE_MODEL) return process.env.CREATIVE_MODEL;

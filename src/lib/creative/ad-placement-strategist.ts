@@ -17,17 +17,15 @@
  */
 import type { PlanTier } from '@/lib/plan-tier';
 import {
-  resolveModel,
   isDryRun,
   extractJson,
   asStr,
   asNum,
   asObj,
+  asStrArr,
   isString,
   CREATIVE_MODEL,
-  atlasChat,
-  CREATIVE_MAX_TOKENS,
-  CREATIVE_TIMEOUT_MS,
+  atlasGenerate,
 } from '@/lib/creative/toolkit';
 
 // ── Credit cost ──
@@ -80,15 +78,6 @@ export const VALID_GOALS: string[] = ['awareness', 'engagement', 'conversions', 
 export const MAX_PRODUCT_LENGTH = 2000;
 export const MAX_AUDIENCE_LENGTH = 1000;
 export const DEFAULT_BUDGET: BudgetLevel = 'medium';
-
-// ── Helpers (self-contained, mirrors ad-hashtag-generator.ts patterns) ──
-
-function asStrArray(v: unknown): string[] {
-  if (Array.isArray(v)) {
-    return v.map((x) => asStr(x, '')).filter((s) => s.length > 0);
-  }
-  return [];
-}
 
 function asPriority(v: unknown): Priority {
   const s = asStr(v, 'medium') as Priority;
@@ -363,7 +352,7 @@ function parseStrategyJson(
       placements,
       budgetAllocation: asStr(strategyObj.budgetAllocation, 'Balance budget across top-performing placements.'),
       timeline: asStr(strategyObj.timeline, '6 weeks: strategy, production, setup, live campaign'),
-      risks: asStrArray(strategyObj.risks).length > 0 ? asStrArray(strategyObj.risks) : ['Ad fatigue — rotate creative regularly'],
+      risks: asStrArr(strategyObj.risks).length > 0 ? asStrArr(strategyObj.risks) : ['Ad fatigue — rotate creative regularly'],
     },
     dryRun: false,
   };
@@ -423,12 +412,7 @@ export async function generatePlacementStrategy(
   const userPrompt = buildUserPrompt(input);
 
   try {
-    const raw = await atlasChat(
-      [{ role: 'system', content: AD_PLACEMENT_STRATEGIST_SYS }, { role: 'user', content: userPrompt }],
-      resolveModel(planTier),
-      CREATIVE_MAX_TOKENS,
-      CREATIVE_TIMEOUT_MS,
-    );
+    const raw = await atlasGenerate(AD_PLACEMENT_STRATEGIST_SYS, userPrompt, planTier);
     const j = extractJson(raw);
     return parseStrategyJson(j, input);
   } catch {

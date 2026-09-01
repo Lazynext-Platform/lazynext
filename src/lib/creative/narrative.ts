@@ -9,25 +9,20 @@
  * All generation uses the existing atlasChat() from src/lib/atlas.ts — no new
  * LLM dependency. Credit cost is exported as NARRATIVE_COST for the route layer.
  */
-import { atlasChat } from '@/lib/atlas';
-import { getLLMModel } from '@/lib/providers/model-helpers';
+import {
+  atlasChat,
+  resolveModel,
+  extractJson,
+  asStr,
+  asNum,
+  asStrArr,
+  CREATIVE_MAX_TOKENS,
+  CREATIVE_TIMEOUT_MS,
+} from '@/lib/creative/toolkit';
 import type { PlanTier } from '@/lib/plan-tier';
 
 // ── Credit cost ──
 export const NARRATIVE_COST = 5;
-
-const CREATIVE_MODEL = process.env.CREATIVE_MODEL || getLLMModel();
-const CREATIVE_TIMEOUT_MS = Number(process.env.CREATIVE_TIMEOUT_MS || 90_000);
-const CREATIVE_MAX_TOKENS = Number(process.env.CREATIVE_MAX_TOKENS || 6000);
-
-/**
- * Resolve the creative LLM model for a given plan tier.
- * Falls back to the module-level CREATIVE_MODEL (which respects the CREATIVE_MODEL env override).
- */
-function resolveCreativeModel(planTier?: PlanTier): string {
-  if (process.env.CREATIVE_MODEL) return process.env.CREATIVE_MODEL;
-  return getLLMModel(planTier);
-}
 
 // ── Types ──
 
@@ -225,29 +220,6 @@ export const GENRES: Array<{ type: Genre; name: string; description: string }> =
   },
 ];
 
-// ── Helpers (mirrors intelligence.ts / ugc-formats.ts) ──
-
-function extractJson(raw: string): Record<string, unknown> {
-  const s = raw.trim().replace(/^```(?:json)?/i, '').replace(/```$/, '').trim();
-  const a = s.indexOf('{');
-  const b = s.lastIndexOf('}');
-  if (a < 0 || b < 0) throw new Error('no_json_in_narrative_output');
-  return JSON.parse(s.slice(a, b + 1)) as Record<string, unknown>;
-}
-
-function asStr(v: unknown, fallback = ''): string {
-  return typeof v === 'string' && v.trim() ? v.trim() : fallback;
-}
-
-function asStrArr(v: unknown): string[] {
-  return Array.isArray(v) ? v.map((x) => asStr(x)).filter(Boolean).slice(0, 30) : [];
-}
-
-function asNum(v: unknown, fallback: number, min: number, max: number): number {
-  const n = Math.round(Number(v));
-  return Number.isFinite(n) ? Math.max(min, Math.min(max, n)) : fallback;
-}
-
 // ── Validation ──
 
 const VALID_STRUCTURES: NarrativeStructure[] = NARRATIVE_STRUCTURES.map((s) => s.type);
@@ -396,7 +368,7 @@ export async function generateNarrativeAd(
 
   const raw = await atlasChat(
     [{ role: 'system', content: NARRATIVE_SYS_PROMPT }, { role: 'user', content: parts.join('\n') }],
-    resolveCreativeModel(planTier), CREATIVE_MAX_TOKENS, CREATIVE_TIMEOUT_MS,
+    resolveModel(planTier), CREATIVE_MAX_TOKENS, CREATIVE_TIMEOUT_MS,
   );
   const j = extractJson(raw);
 
@@ -415,7 +387,7 @@ export async function generateNarrativeAd(
         description: asStr(o.description),
         motivation: asStr(o.motivation),
         arc: asStr(o.arc),
-        personalityTraits: asStrArr(o.personalityTraits),
+        personalityTraits: asStrArr(o.personalityTraits, 30),
       };
     })
     .filter((c) => c.name);
@@ -441,7 +413,7 @@ export async function generateNarrativeAd(
         sceneNumber: asNum(o.sceneNumber, idx + 1, 1, 99),
         title: asStr(o.title, `Scene ${idx + 1}`),
         description: asStr(o.description),
-        characters: asStrArr(o.characters),
+        characters: asStrArr(o.characters, 30),
         setting: asStr(o.setting),
         mood: asStr(o.mood),
         durationSec: asNum(o.durationSec, 5, 2, 60),
@@ -501,7 +473,7 @@ export async function generateNarrativeAd(
       placement: asStr(pi.placement),
       revealType: asStr(pi.revealType),
       ctaPlacement: asStr(pi.ctaPlacement),
-      brandMentions: asStrArr(pi.brandMentions),
+      brandMentions: asStrArr(pi.brandMentions, 30),
     },
     storyboard,
     script: asStr(j.script),

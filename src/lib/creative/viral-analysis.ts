@@ -9,16 +9,17 @@
  * intelligence.ts, types.ts, or prompts.ts. All types, helpers, and the
  * system prompt live here.
  */
-import { atlasChat } from '@/lib/atlas';
-import { getLLMModel } from '@/lib/providers/model-helpers';
 import type { PlanTier } from '@/lib/plan-tier';
+import {
+  atlasGenerate,
+  extractJson,
+  asStr,
+  asNum,
+  asStrArr,
+} from '@/lib/creative/toolkit';
 
 // ── Credit cost ──
 export const VIRAL_ANALYSIS_COST = 6;
-
-const CREATIVE_MODEL = process.env.CREATIVE_MODEL || getLLMModel();
-const CREATIVE_TIMEOUT_MS = Number(process.env.CREATIVE_TIMEOUT_MS || 90_000);
-const CREATIVE_MAX_TOKENS = Number(process.env.CREATIVE_MAX_TOKENS || 6000);
 
 // ── Types ──
 
@@ -211,27 +212,6 @@ Be specific and evidence-based. Cite actual moments from the content. Output the
 
 // ── Helpers (self-contained, mirrors intelligence.ts patterns) ──
 
-function extractJson(raw: string): Record<string, unknown> {
-  const s = raw.trim().replace(/^```(?:json)?/i, '').replace(/```$/, '').trim();
-  const a = s.indexOf('{');
-  const b = s.lastIndexOf('}');
-  if (a < 0 || b < 0) throw new Error('no_json_in_viral_output');
-  return JSON.parse(s.slice(a, b + 1)) as Record<string, unknown>;
-}
-
-function asStr(v: unknown, fallback = ''): string {
-  return typeof v === 'string' && v.trim() ? v.trim() : fallback;
-}
-
-function asStrArr(v: unknown): string[] {
-  return Array.isArray(v) ? v.map((x) => asStr(x)).filter(Boolean).slice(0, 20) : [];
-}
-
-function asNum(v: unknown, fallback: number, min: number, max: number): number {
-  const n = Math.round(Number(v));
-  return Number.isFinite(n) ? Math.max(min, Math.min(max, n)) : fallback;
-}
-
 function asNumArr(v: unknown, max: number): number[] {
   return Array.isArray(v)
     ? v.map((x) => asNum(x, 0, 0, max)).filter((n) => n > 0).slice(0, 30)
@@ -256,13 +236,6 @@ export function getShareabilityLevel(score: number): ShareabilityLevel {
   return 'low';
 }
 
-// ── Model resolution (plan-tier aware) ──
-
-function resolveCreativeModel(planTier?: PlanTier): string {
-  if (process.env.CREATIVE_MODEL) return process.env.CREATIVE_MODEL;
-  return getLLMModel(planTier);
-}
-
 // ── Main analysis function ──
 
 /**
@@ -282,9 +255,8 @@ ${transcript ? `Transcript:\n${transcript.slice(0, 5000)}\n` : ''}
 
 Score every virality factor, map the emotional journey, analyze pacing, assess trend alignment, evaluate viral mechanics (loopability, rewatchability, comment/share/save bait), identify audience psychology, and suggest viral-optimized variants. Output the viral analysis JSON now.`;
 
-  const raw = await atlasChat(
-    [{ role: 'system', content: VIRAL_ANALYSIS_SYS }, { role: 'user', content: userPrompt }],
-    resolveCreativeModel(planTier), CREATIVE_MAX_TOKENS, CREATIVE_TIMEOUT_MS,
+  const raw = await atlasGenerate(
+    VIRAL_ANALYSIS_SYS, userPrompt, planTier,
   );
   const j = extractJson(raw);
 

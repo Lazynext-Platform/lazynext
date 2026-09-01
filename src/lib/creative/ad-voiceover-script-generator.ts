@@ -18,17 +18,15 @@
  */
 import type { PlanTier } from '@/lib/plan-tier';
 import {
-  resolveModel,
   isDryRun,
   extractJson,
   asStr,
   asNum,
   asObj,
+  asStrArr,
   isString,
   CREATIVE_MODEL,
-  atlasChat,
-  CREATIVE_MAX_TOKENS,
-  CREATIVE_TIMEOUT_MS,
+  atlasGenerate,
 } from '@/lib/creative/toolkit';
 
 // ── Credit cost ──
@@ -96,15 +94,6 @@ export const MAX_AUDIENCE_LENGTH = 1000;
 export const MIN_DURATION = 10;
 export const MAX_DURATION = 120;
 export const DEFAULT_DURATION = 30;
-
-// ── Helpers (self-contained, mirrors ad-hashtag-generator.ts patterns) ──
-
-function asStrArray(v: unknown): string[] {
-  if (Array.isArray(v)) {
-    return v.map((x) => asStr(x, '')).filter((s) => s.length > 0);
-  }
-  return [];
-}
 
 function asBool(v: unknown, fallback: boolean): boolean {
   return typeof v === 'boolean' ? v : fallback;
@@ -400,7 +389,7 @@ function parseScriptJson(
       text: asStr(o.text, 'Voiceover segment text'),
       timing: asNum(o.timing, 5, 1, 300),
       direction: asStr(o.direction, 'Natural delivery'),
-      emphasis: asStrArray(o.emphasis),
+      emphasis: asStrArr(o.emphasis),
       pauseAfter: asNum(o.pauseAfter, 0, 0, 10),
     };
   }).filter((s) => s.text);
@@ -482,12 +471,7 @@ export async function generateVoiceoverScript(
   const userPrompt = buildUserPrompt(input);
 
   try {
-    const raw = await atlasChat(
-      [{ role: 'system', content: AD_VOICEOVER_SCRIPT_GENERATOR_SYS }, { role: 'user', content: userPrompt }],
-      resolveModel(planTier),
-      CREATIVE_MAX_TOKENS,
-      CREATIVE_TIMEOUT_MS,
-    );
+    const raw = await atlasGenerate(AD_VOICEOVER_SCRIPT_GENERATOR_SYS, userPrompt, planTier);
     const j = extractJson(raw);
     return parseScriptJson(j, input);
   } catch {

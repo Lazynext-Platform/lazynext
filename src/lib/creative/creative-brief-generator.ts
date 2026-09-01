@@ -19,17 +19,15 @@
  */
 import type { PlanTier } from '@/lib/plan-tier';
 import {
-  resolveModel,
   isDryRun,
   extractJson,
   asStr,
   asNum,
   asObj,
+  asStrArr,
   isString,
   CREATIVE_MODEL,
-  atlasChat,
-  CREATIVE_MAX_TOKENS,
-  CREATIVE_TIMEOUT_MS,
+  atlasGenerate,
 } from '@/lib/creative/toolkit';
 
 // ── Credit cost ──
@@ -77,15 +75,6 @@ export const VALID_BUDGETS: BudgetLevel[] = ['low', 'medium', 'high'];
 export const MAX_PRODUCT_LENGTH = 2000;
 export const MAX_GOAL_LENGTH = 500;
 export const MAX_AUDIENCE_LENGTH = 1000;
-
-// ── Helpers (self-contained, mirrors ad-hashtag-generator.ts patterns) ──
-
-function asStrArray(v: unknown): string[] {
-  if (Array.isArray(v)) {
-    return v.map((x) => asStr(x, '')).filter((s) => s.length > 0);
-  }
-  return [];
-}
 
 // ── Validation ──
 
@@ -265,12 +254,12 @@ function parseBriefJson(
     targetAudience: asStr(briefObj.targetAudience, 'A broad audience of potential customers.'),
     keyMessage: asStr(briefObj.keyMessage, 'Discover the difference today.'),
     tone: asStr(briefObj.tone, 'Confident, approachable, and engaging'),
-    deliverables: asStrArray(briefObj.deliverables).length > 0 ? asStrArray(briefObj.deliverables) : ['3 short-form videos', '5 social media posts'],
+    deliverables: asStrArr(briefObj.deliverables).length > 0 ? asStrArr(briefObj.deliverables) : ['3 short-form videos', '5 social media posts'],
     timeline: asStr(briefObj.timeline, '4 weeks: 1 week creative development, 2 weeks production, 1 week review and launch'),
     budgetGuidance: asStr(briefObj.budgetGuidance, 'Balance paid production with organic content.'),
-    successMetrics: asStrArray(briefObj.successMetrics).length > 0 ? asStrArray(briefObj.successMetrics) : ['1M+ impressions', '5%+ engagement rate'],
+    successMetrics: asStrArr(briefObj.successMetrics).length > 0 ? asStrArr(briefObj.successMetrics) : ['1M+ impressions', '5%+ engagement rate'],
     creativeDirection: asStr(briefObj.creativeDirection, 'Lead with a strong hook. Showcase the product in real-world contexts. End with a clear call to action.'),
-    platformRecommendations: asStrArray(briefObj.platformRecommendations).length > 0 ? asStrArray(briefObj.platformRecommendations) : ['TikTok — short-form video', 'Instagram — visual showcases'],
+    platformRecommendations: asStrArr(briefObj.platformRecommendations).length > 0 ? asStrArr(briefObj.platformRecommendations) : ['TikTok — short-form video', 'Instagram — visual showcases'],
   };
 
   // If the LLM returned an empty title, fall back to dry-run brief.
@@ -337,12 +326,7 @@ export async function generateCreativeBrief(
   const userPrompt = buildUserPrompt(input);
 
   try {
-    const raw = await atlasChat(
-      [{ role: 'system', content: CREATIVE_BRIEF_GENERATOR_SYS }, { role: 'user', content: userPrompt }],
-      resolveModel(planTier),
-      CREATIVE_MAX_TOKENS,
-      CREATIVE_TIMEOUT_MS,
-    );
+    const raw = await atlasGenerate(CREATIVE_BRIEF_GENERATOR_SYS, userPrompt, planTier);
     const j = extractJson(raw);
     return parseBriefJson(j, input);
   } catch {

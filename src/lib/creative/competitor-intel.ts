@@ -8,8 +8,17 @@
  * Uses the existing atlasChat() from src/lib/atlas.ts — no new LLM dependency.
  * Credit cost: COMPETITOR_INTEL_COST (8 credits).
  */
-import { atlasChat } from '@/lib/atlas';
-import { getLLMModel } from '@/lib/providers/model-helpers';
+import {
+  atlasChat,
+  resolveModel,
+  extractJson,
+  asStr,
+  asStrArr as toolkitAsStrArr,
+  asNum,
+  CREATIVE_MODEL,
+  CREATIVE_TIMEOUT_MS,
+  CREATIVE_MAX_TOKENS,
+} from '@/lib/creative/toolkit';
 import type { PlanTier } from '@/lib/plan-tier';
 
 // ── Types ──
@@ -125,36 +134,14 @@ export interface AnalyzeCompetitorsRequest {
 export const COMPETITOR_INTEL_COST = 8;
 
 // ── Model resolution ──
-const COMPETITOR_INTEL_MODEL = process.env.CREATIVE_MODEL || getLLMModel();
-const COMPETITOR_INTEL_TIMEOUT_MS = Number(process.env.CREATIVE_TIMEOUT_MS || 90_000);
-const COMPETITOR_INTEL_MAX_TOKENS = Number(process.env.CREATIVE_MAX_TOKENS || 6000);
+const COMPETITOR_INTEL_MODEL = CREATIVE_MODEL;
+const COMPETITOR_INTEL_TIMEOUT_MS = CREATIVE_TIMEOUT_MS;
+const COMPETITOR_INTEL_MAX_TOKENS = CREATIVE_MAX_TOKENS;
 
-function resolveModel(planTier?: PlanTier): string {
-  if (process.env.CREATIVE_MODEL) return process.env.CREATIVE_MODEL;
-  return getLLMModel(planTier);
-}
-
-// ── Helpers (local copies matching intelligence.ts) ──
-
-function extractJson(raw: string): Record<string, unknown> {
-  const s = raw.trim().replace(/^```(?:json)?/i, '').replace(/```$/, '').trim();
-  const a = s.indexOf('{');
-  const b = s.lastIndexOf('}');
-  if (a < 0 || b < 0) throw new Error('no_json_in_competitor_intel_output');
-  return JSON.parse(s.slice(a, b + 1)) as Record<string, unknown>;
-}
-
-function asStr(v: unknown, fallback = ''): string {
-  return typeof v === 'string' && v.trim() ? v.trim() : fallback;
-}
+// ── Helpers ──
 
 function asStrArr(v: unknown): string[] {
-  return Array.isArray(v) ? v.map((x) => asStr(x)).filter(Boolean).slice(0, 30) : [];
-}
-
-function asNum(v: unknown, fallback: number, min: number, max: number): number {
-  const n = Number(v);
-  return Number.isFinite(n) ? Math.max(min, Math.min(max, n)) : fallback;
+  return toolkitAsStrArr(v, 30);
 }
 
 function asNumRaw(v: unknown, fallback: number): number {

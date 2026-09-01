@@ -16,17 +16,15 @@
  */
 import type { PlanTier } from '@/lib/plan-tier';
 import {
-  resolveModel,
   isDryRun,
   extractJson,
   asStr,
   asNum,
   asObj,
+  asStrArr,
   isString,
   CREATIVE_MODEL,
-  atlasChat,
-  CREATIVE_MAX_TOKENS,
-  CREATIVE_TIMEOUT_MS,
+  atlasGenerate,
 } from '@/lib/creative/toolkit';
 
 // ── Credit cost ──
@@ -86,15 +84,6 @@ export const MAX_DURATION = 120;
 export const MIN_COUNT = 1;
 export const MAX_COUNT = 6;
 export const DEFAULT_COUNT = 3;
-
-// ── Helpers (self-contained, mirrors ad-hashtag-generator.ts patterns) ──
-
-function asStrArray(v: unknown): string[] {
-  if (Array.isArray(v)) {
-    return v.map((x) => asStr(x, '')).filter((s) => s.length > 0);
-  }
-  return [];
-}
 
 function asBool(v: unknown, fallback: boolean): boolean {
   return typeof v === 'boolean' ? v : fallback;
@@ -536,7 +525,7 @@ function parseRecommendationsJson(
       mood: asStr(o.mood, 'Energetic'),
       tempoBPM: asNum(o.tempoBPM, 120, 40, 220),
       energyLevel: asNum(o.energyLevel, 5, 1, 10),
-      instruments: asStrArray(o.instruments).length > 0 ? asStrArray(o.instruments) : ['synth', 'drums'],
+      instruments: asStrArr(o.instruments).length > 0 ? asStrArr(o.instruments) : ['synth', 'drums'],
       description: asStr(o.description, 'A fitting music track for your ad.'),
       bestForScene: asStr(o.bestForScene, 'General ad content'),
       licenseType: asStr(o.licenseType, 'royalty-free'),
@@ -616,12 +605,7 @@ export async function generateMusicRecommendations(
   const userPrompt = buildUserPrompt(input);
 
   try {
-    const raw = await atlasChat(
-      [{ role: 'system', content: AD_MUSIC_MOOD_MATCHER_SYS }, { role: 'user', content: userPrompt }],
-      resolveModel(planTier),
-      CREATIVE_MAX_TOKENS,
-      CREATIVE_TIMEOUT_MS,
-    );
+    const raw = await atlasGenerate(AD_MUSIC_MOOD_MATCHER_SYS, userPrompt, planTier);
     const j = extractJson(raw);
     return parseRecommendationsJson(j, input);
   } catch {

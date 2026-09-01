@@ -8,8 +8,14 @@
  * Uses the existing atlasChat() from src/lib/atlas.ts — no new LLM dependency.
  * Credit cost: PERSONA_COST (6 credits).
  */
-import { atlasChat } from '@/lib/atlas';
-import { getLLMModel } from '@/lib/providers/model-helpers';
+import {
+  atlasChat,
+  resolveModel,
+  extractJson,
+  asStr,
+  asStrArr as toolkitAsStrArr,
+  CREATIVE_TIMEOUT_MS,
+} from '@/lib/creative/toolkit';
 import type { PlanTier } from '@/lib/plan-tier';
 
 // ── Types ──
@@ -146,8 +152,6 @@ export interface PersonaEngineResult {
 // ── Credit cost ──
 export const PERSONA_COST = 6;
 
-const PERSONA_MODEL = process.env.CREATIVE_MODEL || getLLMModel();
-const PERSONA_TIMEOUT_MS = Number(process.env.CREATIVE_TIMEOUT_MS || 90_000);
 const PERSONA_MAX_TOKENS = Number(process.env.CREATIVE_MAX_TOKENS || 8000);
 
 // ── Archetype / channel metadata ──
@@ -172,22 +176,10 @@ const CHANNELS: Array<{ channel: ChannelPreference; name: string; description: s
   { channel: 'display', name: 'Display', description: 'Programmatic banner and native placements for awareness.' },
 ];
 
-// ── Helpers (mirror creative/intelligence.ts) ──
-
-function extractJson(raw: string): Record<string, unknown> {
-  const s = raw.trim().replace(/^```(?:json)?/i, '').replace(/```$/, '').trim();
-  const a = s.indexOf('{');
-  const b = s.lastIndexOf('}');
-  if (a < 0 || b < 0) throw new Error('no_json_in_persona_output');
-  return JSON.parse(s.slice(a, b + 1)) as Record<string, unknown>;
-}
-
-function asStr(v: unknown, fallback = ''): string {
-  return typeof v === 'string' && v.trim() ? v.trim() : fallback;
-}
+// ── Helpers ──
 
 function asStrArr(v: unknown): string[] {
-  return Array.isArray(v) ? v.map((x) => asStr(x)).filter(Boolean).slice(0, 30) : [];
+  return toolkitAsStrArr(v, 30);
 }
 
 function asNum(v: unknown, fallback: number, min: number, max: number): number {
@@ -272,13 +264,6 @@ Return ONLY valid JSON matching this shape:
   "insights": [ { "insightId": "ins_1", "type": "audience_insight", "title": "...", "description": "...", "actionableRecommendation": "..." } ],
   "creativeAdaptations": [ { "personaId": "p_1", "personaName": "...", "hookStyle": "...", "toneStyle": "...", "ctaStyle": "...", "formatRecommendation": "..." } ]
 }`;
-
-// ── Model resolution ──
-
-function resolvePersonaModel(planTier?: PlanTier): string {
-  if (process.env.CREATIVE_MODEL) return process.env.CREATIVE_MODEL;
-  return getLLMModel(planTier);
-}
 
 // ── Parsing ──
 
@@ -441,9 +426,9 @@ export async function generatePersonas(request: {
 
   const raw = await atlasChat(
     [{ role: 'system', content: PERSONA_SYS }, { role: 'user', content: parts.join('\n') }],
-    resolvePersonaModel(request.planTier),
+    resolveModel(request.planTier),
     PERSONA_MAX_TOKENS,
-    PERSONA_TIMEOUT_MS,
+    CREATIVE_TIMEOUT_MS,
   );
   const j = extractJson(raw);
 

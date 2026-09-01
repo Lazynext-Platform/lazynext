@@ -17,17 +17,15 @@
  */
 import type { PlanTier } from '@/lib/plan-tier';
 import {
-  resolveModel,
   isDryRun,
   extractJson,
   asStr,
   asNum,
   asObj,
+  asStrArr,
   isString,
   CREATIVE_MODEL,
-  atlasChat,
-  CREATIVE_MAX_TOKENS,
-  CREATIVE_TIMEOUT_MS,
+  atlasGenerate,
 } from '@/lib/creative/toolkit';
 
 // ── Credit cost ──
@@ -88,12 +86,6 @@ export const MAX_VARIATION_COUNT = 10;
 export const DEFAULT_VARIATION_COUNT = 5;
 export const MIN_SCORE = 0;
 export const MAX_SCORE = 100;
-
-// ── Helpers (self-contained, mirrors ad-hashtag-generator.ts patterns) ──
-
-function asStrArray(v: unknown): string[] {
-  return Array.isArray(v) ? v.map((x) => asStr(x)).filter((s) => s) : [];
-}
 
 function asVariationType(v: unknown): VariationType {
   const s = asStr(v, 'hook') as VariationType;
@@ -348,7 +340,7 @@ function parseRotationJson(
     const o = asObj(item);
     return {
       week: asNum(o.week, idx + 1, 1, 52),
-      variationIds: asStrArray(o.variationIds),
+      variationIds: asStrArr(o.variationIds),
       strategy: asStr(o.strategy, 'Rotate variations to maintain engagement'),
     };
   }).filter((s) => s.variationIds.length > 0);
@@ -358,7 +350,7 @@ function parseRotationJson(
     rotationSchedule: rotationSchedule.length > 0 ? rotationSchedule : dryRunRotation(input).rotationSchedule,
     fatigueAnalysis: asStr(rotationRaw.fatigueAnalysis, 'Moderate fatigue risk detected. Rotate weekly.'),
     diversificationScore: asNum(rotationRaw.diversificationScore, 70, MIN_SCORE, MAX_SCORE),
-    recommendations: asStrArray(rotationRaw.recommendations),
+    recommendations: asStrArr(rotationRaw.recommendations),
   };
 
   return {
@@ -422,12 +414,7 @@ export async function rotateCreatives(
   const userPrompt = buildUserPrompt(input);
 
   try {
-    const raw = await atlasChat(
-      [{ role: 'system', content: AD_CREATIVE_ROTATOR_SYS }, { role: 'user', content: userPrompt }],
-      resolveModel(planTier),
-      CREATIVE_MAX_TOKENS,
-      CREATIVE_TIMEOUT_MS,
-    );
+    const raw = await atlasGenerate(AD_CREATIVE_ROTATOR_SYS, userPrompt, planTier);
     const j = extractJson(raw);
     return parseRotationJson(j, input);
   } catch {

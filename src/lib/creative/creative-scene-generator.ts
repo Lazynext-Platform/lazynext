@@ -18,17 +18,15 @@
  */
 import type { PlanTier } from '@/lib/plan-tier';
 import {
-  resolveModel,
   isDryRun,
   extractJson,
   asStr,
   asNum,
   asObj,
+  asStrArr,
   isString,
+  atlasGenerate,
   CREATIVE_MODEL,
-  atlasChat,
-  CREATIVE_MAX_TOKENS,
-  CREATIVE_TIMEOUT_MS,
 } from '@/lib/creative/toolkit';
 
 // ── Credit cost ──
@@ -102,13 +100,6 @@ function asCameraAngle(v: unknown): CameraAngle {
 function asLighting(v: unknown): Lighting {
   const s = asStr(v, 'natural') as Lighting;
   return VALID_LIGHTING.includes(s) ? s : 'natural';
-}
-
-function asStringArray(v: unknown): string[] {
-  if (Array.isArray(v)) {
-    return v.map((x) => asStr(x, '')).filter((s) => s.length > 0);
-  }
-  return [];
 }
 
 // ── Validation ──
@@ -649,7 +640,7 @@ function parseScenesJson(
       cameraAngle: asCameraAngle(o.cameraAngle),
       lighting: asLighting(o.lighting),
       setting: asStr(o.setting, 'A scene setting for the ad video.'),
-      props: asStringArray(o.props).length > 0 ? asStringArray(o.props) : ['product'],
+      props: asStrArr(o.props).length > 0 ? asStrArr(o.props) : ['product'],
       actorNotes: asStr(o.actorNotes, 'Actor performs naturally with the product.'),
       dialogue: asStr(o.dialogue, ''),
       duration: asNum(o.duration, 5, 1, 60),
@@ -737,11 +728,10 @@ export async function generateScenes(
   const userPrompt = buildUserPrompt(input);
 
   try {
-    const raw = await atlasChat(
-      [{ role: 'system', content: CREATIVE_SCENE_GENERATOR_SYS }, { role: 'user', content: userPrompt }],
-      resolveModel(planTier),
-      CREATIVE_MAX_TOKENS,
-      CREATIVE_TIMEOUT_MS,
+    const raw = await atlasGenerate(
+      CREATIVE_SCENE_GENERATOR_SYS,
+      userPrompt,
+      planTier,
     );
     const j = extractJson(raw);
     return parseScenesJson(j, input);

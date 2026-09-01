@@ -18,17 +18,15 @@
  */
 import type { PlanTier } from '@/lib/plan-tier';
 import {
-  resolveModel,
   isDryRun,
   extractJson,
   asStr,
   asNum,
   asObj,
+  asStrArr,
   isString,
+  atlasGenerate,
   CREATIVE_MODEL,
-  atlasChat,
-  CREATIVE_MAX_TOKENS,
-  CREATIVE_TIMEOUT_MS,
 } from '@/lib/creative/toolkit';
 
 // ── Credit cost ──
@@ -82,10 +80,6 @@ export const MIN_SCORE = 0;
 export const MAX_SCORE = 100;
 
 // ── Helpers (self-contained, mirrors ad-hashtag-generator.ts patterns) ──
-
-function asStrArray(v: unknown): string[] {
-  return Array.isArray(v) ? v.map((x) => asStr(x)).filter((s) => s) : [];
-}
 
 function asRecord(v: unknown): Record<string, number> {
   if (v && typeof v === 'object' && !Array.isArray(v)) {
@@ -385,16 +379,16 @@ function parseMatrixJson(
 
   const matrix: HookMatrix = {
     hooks,
-    emotionalTriggers: asStrArray(matrixRaw.emotionalTriggers).length > 0
-      ? asStrArray(matrixRaw.emotionalTriggers)
+    emotionalTriggers: asStrArr(matrixRaw.emotionalTriggers).length > 0
+      ? asStrArr(matrixRaw.emotionalTriggers)
       : [...new Set(hooks.map((h) => h.emotionalTrigger))],
-    topPicks: asStrArray(matrixRaw.topPicks).length > 0
-      ? asStrArray(matrixRaw.topPicks)
+    topPicks: asStrArr(matrixRaw.topPicks).length > 0
+      ? asStrArr(matrixRaw.topPicks)
       : [...hooks].sort((a, b) => b.predictedScore - a.predictedScore).slice(0, 3).map((h) => h.id),
     platformDistribution: Object.keys(asRecord(matrixRaw.platformDistribution)).length > 0
       ? asRecord(matrixRaw.platformDistribution)
       : hooks.reduce((acc, h) => { acc[h.platform] = (acc[h.platform] || 0) + 1; return acc; }, {} as Record<string, number>),
-    recommendations: asStrArray(matrixRaw.recommendations),
+    recommendations: asStrArr(matrixRaw.recommendations),
   };
 
   return {
@@ -458,11 +452,10 @@ export async function generateHookMatrix(
   const userPrompt = buildUserPrompt(input);
 
   try {
-    const raw = await atlasChat(
-      [{ role: 'system', content: CREATIVE_HOOK_MATRIX_GENERATOR_SYS }, { role: 'user', content: userPrompt }],
-      resolveModel(planTier),
-      CREATIVE_MAX_TOKENS,
-      CREATIVE_TIMEOUT_MS,
+    const raw = await atlasGenerate(
+      CREATIVE_HOOK_MATRIX_GENERATOR_SYS,
+      userPrompt,
+      planTier,
     );
     const j = extractJson(raw);
     return parseMatrixJson(j, input);

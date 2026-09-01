@@ -18,17 +18,15 @@
  */
 import type { PlanTier } from '@/lib/plan-tier';
 import {
-  resolveModel,
   isDryRun,
   extractJson,
   asStr,
   asNum,
   asObj,
+  asStrArr,
   isString,
   CREATIVE_MODEL,
-  atlasChat,
-  CREATIVE_MAX_TOKENS,
-  CREATIVE_TIMEOUT_MS,
+  atlasGenerate,
 } from '@/lib/creative/toolkit';
 
 // ── Credit cost ──
@@ -77,15 +75,6 @@ export const MAX_AUDIENCE_LENGTH = 1000;
 export const MIN_SEGMENT_COUNT = 2;
 export const MAX_SEGMENT_COUNT = 6;
 export const DEFAULT_SEGMENT_COUNT = 3;
-
-// ── Helpers (self-contained, mirrors ad-hashtag-generator.ts patterns) ──
-
-function asStrArray(v: unknown, fallback: string[]): string[] {
-  if (Array.isArray(v)) {
-    return v.map((x) => asStr(x, '')).filter((s) => s.length > 0);
-  }
-  return fallback;
-}
 
 // ── Validation ──
 
@@ -336,9 +325,9 @@ function parseSegmentsJson(
         location: asStr(demo.location, 'US'),
         income: asStr(demo.income, '$50K-$90K'),
       },
-      interests: asStrArray(o.interests, ['wellness', 'lifestyle']),
-      behaviors: asStrArray(o.behaviors, ['online shoppers']),
-      platformTargeting: asStrArray(o.platformTargeting, ['Interest targeting', 'Lookalike 1%']),
+      interests: asStrArr(o.interests, ['wellness', 'lifestyle']),
+      behaviors: asStrArr(o.behaviors, ['online shoppers']),
+      platformTargeting: asStrArr(o.platformTargeting, ['Interest targeting', 'Lookalike 1%']),
       estimatedReach: asStr(o.estimatedReach, '500K-2M'),
       recommendedAdFormat: asStr(o.recommendedAdFormat, 'Short-form video'),
       priority: asStr(o.priority, 'medium'),
@@ -418,12 +407,7 @@ export async function generateAudienceSegments(
   const userPrompt = buildUserPrompt(input);
 
   try {
-    const raw = await atlasChat(
-      [{ role: 'system', content: AD_AUDIENCE_SEGMENT_BUILDER_SYS }, { role: 'user', content: userPrompt }],
-      resolveModel(planTier),
-      CREATIVE_MAX_TOKENS,
-      CREATIVE_TIMEOUT_MS,
-    );
+    const raw = await atlasGenerate(AD_AUDIENCE_SEGMENT_BUILDER_SYS, userPrompt, planTier);
     const j = extractJson(raw);
     return parseSegmentsJson(j, input);
   } catch {

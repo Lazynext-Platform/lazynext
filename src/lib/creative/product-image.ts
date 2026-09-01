@@ -18,8 +18,15 @@
  * instructions (scene descriptions) for scene/lifestyle/multi-angle types so
  * the prompt engineering pipeline is exercised end-to-end.
  */
-import { atlasChat, submitGen, pollOnce } from '@/lib/atlas';
-import { getLLMModel } from '@/lib/providers/model-helpers';
+import { submitGen, pollOnce } from '@/lib/atlas';
+import {
+  isDryRun,
+  extractJson,
+  asStr,
+  asNum,
+  isString,
+  atlasGenerate,
+} from '@/lib/creative/toolkit';
 import type { PlanTier } from '@/lib/plan-tier';
 
 // ── Types ──
@@ -95,21 +102,6 @@ const ENHANCEMENT_META: Array<{
   { type: 'resize_crop', name: 'Resize & Crop', description: 'Resize and crop the image to exact dimensions for marketplace listings.' },
 ];
 
-// ── Model resolution ──
-
-const PRODUCT_IMAGE_MODEL = process.env.CREATIVE_MODEL || getLLMModel();
-const PRODUCT_IMAGE_TIMEOUT_MS = Number(process.env.CREATIVE_TIMEOUT_MS || 90_000);
-const PRODUCT_IMAGE_MAX_TOKENS = Number(process.env.CREATIVE_MAX_TOKENS || 4000);
-
-/**
- * Resolve the LLM model for a given plan tier.
- * Falls back to the module-level PRODUCT_IMAGE_MODEL (which respects the CREATIVE_MODEL env override).
- */
-function resolveModel(planTier?: PlanTier): string {
-  if (process.env.CREATIVE_MODEL) return process.env.CREATIVE_MODEL;
-  return getLLMModel(planTier);
-}
-
 // ── Helpers ──
 
 const VALID_TYPES: ReadonlySet<ImageEnhancementType> = new Set([
@@ -128,40 +120,12 @@ const VALID_FORMATS: ReadonlySet<'png' | 'jpg' | 'webp'> = new Set(['png', 'jpg'
 const LIFESTYLE_CONTEXTS = ['kitchen', 'office', 'outdoor', 'studio', 'retail', 'home'] as const;
 const ANGLE_TYPES = ['front', 'side', 'top', 'detail', 'lifestyle'] as const;
 
-function isString(v: unknown): v is string {
-  return typeof v === 'string';
-}
-
-function asStr(v: unknown, fallback = ''): string {
-  return typeof v === 'string' && v.trim() ? v.trim() : fallback;
-}
-
-function asNum(v: unknown, fallback: number, min: number, max: number): number {
-  const n = Math.round(Number(v));
-  return Number.isFinite(n) ? Math.max(min, Math.min(max, n)) : fallback;
-}
-
-function extractJson(raw: string): Record<string, unknown> {
-  const s = raw.trim().replace(/^```(?:json)?/i, '').replace(/```$/, '').trim();
-  const a = s.indexOf('{');
-  const b = s.lastIndexOf('}');
-  if (a < 0 || b < 0) throw new Error('no_json_in_product_image_output');
-  return JSON.parse(s.slice(a, b + 1)) as Record<string, unknown>;
-}
-
 function extractJsonArray(raw: string): unknown[] {
   const s = raw.trim().replace(/^```(?:json)?/i, '').replace(/```$/, '').trim();
   const a = s.indexOf('[');
   const b = s.lastIndexOf(']');
   if (a < 0 || b < 0) throw new Error('no_array_in_product_image_output');
   return JSON.parse(s.slice(a, b + 1)) as unknown[];
-}
-
-/** True when running against the local mock Atlas server (or no real key configured). */
-function isDryRun(): boolean {
-  const base = process.env.ATLASCLOUD_BASE || '';
-  if (base.includes('localhost') || base.includes('127.0.0.1')) return true;
-  return !process.env.ATLASCLOUD_API_KEY;
 }
 
 /**
@@ -212,11 +176,10 @@ async function generateSceneInstructions(
   parts.push('Return JSON: { "instruction": string, "notes": string }');
 
   try {
-    const raw = await atlasChat(
-      [{ role: 'system', content: PRODUCT_IMAGE_SYS }, { role: 'user', content: parts.join('\n') }],
-      resolveModel(planTier),
-      PRODUCT_IMAGE_MAX_TOKENS,
-      PRODUCT_IMAGE_TIMEOUT_MS,
+    const raw = await atlasGenerate(
+      PRODUCT_IMAGE_SYS,
+      parts.join('\n'),
+      planTier,
     );
     const j = extractJson(raw);
     const instruction = asStr(j.instruction);
@@ -250,11 +213,10 @@ Generate a short visual description for each of these product photo angles: ${AN
 Return a JSON array: [{ "angle": string, "description": string }]`;
 
   try {
-    const raw = await atlasChat(
-      [{ role: 'system', content: PRODUCT_IMAGE_SYS }, { role: 'user', content: userPrompt }],
-      resolveModel(planTier),
-      PRODUCT_IMAGE_MAX_TOKENS,
-      PRODUCT_IMAGE_TIMEOUT_MS,
+    const raw = await atlasGenerate(
+      PRODUCT_IMAGE_SYS,
+      userPrompt,
+      planTier,
     );
     const arr = extractJsonArray(raw);
     return ANGLE_TYPES.map((angle, idx) => {

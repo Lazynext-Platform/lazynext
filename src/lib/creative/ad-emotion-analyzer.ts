@@ -17,16 +17,14 @@
  */
 import type { PlanTier } from '@/lib/plan-tier';
 import {
-  resolveModel,
   isDryRun,
   extractJson,
   asStr,
   asNum,
+  asStrArr,
   isString,
   CREATIVE_MODEL,
-  atlasChat,
-  CREATIVE_MAX_TOKENS,
-  CREATIVE_TIMEOUT_MS,
+  atlasGenerate,
 } from '@/lib/creative/toolkit';
 
 // ── Credit cost ──
@@ -69,15 +67,6 @@ export interface EmotionAnalyzerResult {
 export const VALID_PLATFORMS: string[] = ['tiktok', 'instagram', 'youtube', 'facebook'];
 export const MAX_CONTENT_LENGTH = 2000;
 export const MAX_PRODUCT_LENGTH = 2000;
-
-// ── Helpers (self-contained, mirrors ad-hashtag-generator.ts patterns) ──
-
-function asStrArray(v: unknown, fallback: string[]): string[] {
-  if (Array.isArray(v)) {
-    return v.map((x) => asStr(x, '')).filter((s) => s.length > 0);
-  }
-  return fallback;
-}
 
 function asRecordNum(v: unknown, fallback: Record<string, number>): Record<string, number> {
   if (v && typeof v === 'object' && !Array.isArray(v)) {
@@ -306,12 +295,12 @@ function parseAnalysisJson(
   input: AdEmotionAnalyzerInput,
 ): EmotionAnalyzerResult {
   const overallEmotionalImpact = asNum(j.overallEmotionalImpact, 60, 0, 100);
-  const dominantEmotions = asStrArray(j.dominantEmotions, ['curiosity', 'excitement']);
+  const dominantEmotions = asStrArr(j.dominantEmotions, ['curiosity', 'excitement']);
   const emotionScores = asRecordNum(j.emotionScores, { curiosity: 60, excitement: 55 });
   const emotionalJourney = asStr(j.emotionalJourney, 'The ad builds curiosity and resolves with excitement.');
   const audienceResonance = asNum(j.audienceResonance, 6, 1, 10);
   const authenticity = asNum(j.authenticity, 6, 1, 10);
-  const recommendations = asStrArray(j.recommendations, ['Strengthen the emotional hook in the first 3 seconds.']);
+  const recommendations = asStrArr(j.recommendations, ['Strengthen the emotional hook in the first 3 seconds.']);
 
   // If the LLM returned nothing usable, fall back to dry-run.
   if (
@@ -387,12 +376,7 @@ export async function analyzeEmotions(
   const userPrompt = buildUserPrompt(input);
 
   try {
-    const raw = await atlasChat(
-      [{ role: 'system', content: AD_EMOTION_ANALYZER_SYS }, { role: 'user', content: userPrompt }],
-      resolveModel(planTier),
-      CREATIVE_MAX_TOKENS,
-      CREATIVE_TIMEOUT_MS,
-    );
+    const raw = await atlasGenerate(AD_EMOTION_ANALYZER_SYS, userPrompt, planTier);
     const j = extractJson(raw);
     return parseAnalysisJson(j, input);
   } catch {

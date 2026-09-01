@@ -18,7 +18,6 @@
  */
 import type { PlanTier } from '@/lib/plan-tier';
 import {
-  resolveModel,
   isDryRun,
   extractJson,
   asStr,
@@ -27,9 +26,7 @@ import {
   asStrArr,
   isString,
   CREATIVE_MODEL,
-  atlasChat,
-  CREATIVE_MAX_TOKENS,
-  CREATIVE_TIMEOUT_MS,
+  atlasGenerate,
 } from '@/lib/creative/toolkit';
 
 // ── Credit cost ──
@@ -447,12 +444,7 @@ export async function generatePersuasionStrategy(
   const userPrompt = buildUserPrompt(input);
 
   try {
-    const raw = await atlasChat(
-      [{ role: 'system', content: CREATIVE_AD_PERSUASION_STRATEGIST_SYS }, { role: 'user', content: userPrompt }],
-      resolveModel(planTier),
-      CREATIVE_MAX_TOKENS,
-      CREATIVE_TIMEOUT_MS,
-    );
+    const raw = await atlasGenerate(CREATIVE_AD_PERSUASION_STRATEGIST_SYS, userPrompt, planTier);
     const j = extractJson(raw);
     return parseStrategistJson(j, input);
   } catch {

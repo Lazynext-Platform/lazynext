@@ -16,8 +16,7 @@
  * Patterns mirror src/lib/creative/multi-concept.ts: isDryRun(), resolveModel(),
  * deterministic placeholder content in dry-run mode, and a credit-cost constant.
  */
-import { atlasChat } from '@/lib/atlas';
-import { getLLMModel } from '@/lib/providers/model-helpers';
+import { isDryRun } from '@/lib/creative/toolkit';
 import type { PlanTier } from '@/lib/plan-tier';
 import {
   type SkillChain,
@@ -89,23 +88,6 @@ export interface ChainExecutionResult {
   totalCreditsUsed: number;
   finalOutputs: Record<string, unknown>;
   branchPaths: string[];
-}
-
-// ── Model resolution ──
-
-const CHAIN_BUILDER_MAX_TOKENS = Number(process.env.CREATIVE_MAX_TOKENS || 6000);
-const CHAIN_BUILDER_TIMEOUT_MS = Number(process.env.CREATIVE_TIMEOUT_MS || 90_000);
-
-async function resolveCreativeModel(planTier?: PlanTier): Promise<string> {
-  if (process.env.CREATIVE_MODEL) return process.env.CREATIVE_MODEL;
-  return getLLMModel(planTier);
-}
-
-/** True when running against the local mock Atlas server (or no real key configured). */
-function isDryRun(): boolean {
-  const base = process.env.ATLASCLOUD_BASE || '';
-  if (base.includes('localhost') || base.includes('127.0.0.1')) return true;
-  return !process.env.ATLASCLOUD_API_KEY;
 }
 
 // ── Helpers ──

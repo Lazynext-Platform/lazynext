@@ -1,6 +1,6 @@
 // Auto-generated locale file for en
 export const enMessages = {
-    nav: { studio: 'Studio', podcast: 'Podcast', pricing: 'Pricing', myWork: 'My work', signIn: 'Sign in', settings: 'Settings', assets: 'Assets', dashboard: 'Dashboard', products: 'Products', avatars: 'Avatars', brandKits: 'Brand kits', editor: 'Editor' },
+    nav: { studio: 'Studio', podcast: 'Podcast', pricing: 'Pricing', myWork: 'My work', signIn: 'Sign in', settings: 'Settings', assets: 'Assets', dashboard: 'Dashboard', products: 'Products', avatars: 'Avatars', brandKits: 'Brand kits', editor: 'Editor', create: 'Create', optimize: 'Optimize', manage: 'Manage', insights: 'Insights', search: 'Search features', searchPlaceholder: 'Search features...', noResults: 'No features found', allCategories: 'All Categories' },
     sidebar: { apps: 'AI apps', studio: 'Image studio' },
     auth: {
       signInError: 'Sign-in failed or was cancelled. Please try again.',

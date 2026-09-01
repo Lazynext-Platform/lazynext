@@ -13,23 +13,19 @@
  * Reuses the SSRF-safe fetcher (src/lib/brand/fetch.ts) and the existing
  * atlasChat() LLM client. Uses plan-tier-aware model routing via getLLMModel().
  */
-import { atlasChat } from '@/lib/atlas';
-import { getLLMModel } from '@/lib/providers/model-helpers';
+import {
+  extractJson,
+  asStr,
+  asStrArr,
+  asObj,
+  atlasGenerate,
+} from '@/lib/creative/toolkit';
 import type { PlanTier } from '@/lib/plan-tier';
 import { safeFetchText, htmlToText, extractImageUrls, SSRFError } from '@/lib/brand/fetch';
 import type { CreativeBrief } from './types';
 
 // ── Credit cost for the full URL → Brief flow (URL fetch + AI extraction + brief generation) ──
 export const URL_TO_BRIEF_COST = 5;
-
-const URL_TO_BRIEF_MODEL = process.env.URL_TO_BRIEF_MODEL || '';
-const URL_TO_BRIEF_TIMEOUT_MS = Number(process.env.URL_TO_BRIEF_TIMEOUT_MS || 90_000);
-const URL_TO_BRIEF_MAX_TOKENS = Number(process.env.URL_TO_BRIEF_MAX_TOKENS || 6000);
-
-/** Resolve the extraction+brief LLM model, respecting env override and plan-tier routing. */
-function resolveModel(planTier?: PlanTier): string {
-  return URL_TO_BRIEF_MODEL || getLLMModel(planTier);
-}
 
 // ── Types ──
 
@@ -117,28 +113,6 @@ Rules:
 
 // ── Helpers ──
 
-function extractJson(raw: string): Record<string, unknown> {
-  const s = raw.trim().replace(/^```(?:json)?/i, '').replace(/```$/, '').trim();
-  const a = s.indexOf('{');
-  const b = s.lastIndexOf('}');
-  if (a < 0 || b < 0) throw new Error('no_json_in_url_to_brief_output');
-  return JSON.parse(s.slice(a, b + 1)) as Record<string, unknown>;
-}
-
-function asStr(v: unknown, fallback = ''): string {
-  return typeof v === 'string' && v.trim() ? v.trim() : fallback;
-}
-
-function asStrArr(v: unknown): string[] {
-  return Array.isArray(v) ? v.map((x) => asStr(x)).filter(Boolean).slice(0, 20) : [];
-}
-
-function asObj(v: unknown): Record<string, unknown> {
-  return v && typeof v === 'object' && !Array.isArray(v)
-    ? (v as Record<string, unknown>)
-    : {};
-}
-
 /**
  * Parse the raw LLM JSON output into a validated UrlToBriefResult.
  * Exported for testability.
@@ -151,14 +125,14 @@ export function parseUrlToBriefResult(raw: string): UrlToBriefResult {
     productName: asStr(extObj.productName),
     brandName: asStr(extObj.brandName) || undefined,
     description: asStr(extObj.description),
-    features: asStrArr(extObj.features),
-    benefits: asStrArr(extObj.benefits),
+    features: asStrArr(extObj.features, 20),
+    benefits: asStrArr(extObj.benefits, 20),
     audience: asStr(extObj.audience),
     price: asStr(extObj.price) || undefined,
     category: asStr(extObj.category) || undefined,
     positioning: asStr(extObj.positioning),
-    painPoints: asStrArr(extObj.painPoints),
-    usps: asStrArr(extObj.usps),
+    painPoints: asStrArr(extObj.painPoints, 20),
+    usps: asStrArr(extObj.usps, 20),
   };
 
   const briefObj = asObj(j.brief);
@@ -179,16 +153,16 @@ export function parseUrlToBriefResult(raw: string): UrlToBriefResult {
     cta: asStr(briefObj.cta),
     visualDirection: asStr(briefObj.visualDirection),
     soundDirection: asStr(briefObj.soundDirection),
-    complianceConstraints: asStrArr(briefObj.complianceConstraints),
+    complianceConstraints: asStrArr(briefObj.complianceConstraints, 20),
     language: asStr(briefObj.language, 'en'),
   };
 
   return {
     extraction,
     brief,
-    suggestedAngles: asStrArr(j.suggestedAngles).slice(0, 5),
-    suggestedHooks: asStrArr(j.suggestedHooks).slice(0, 5),
-    suggestedCtas: asStrArr(j.suggestedCtas).slice(0, 5),
+    suggestedAngles: asStrArr(j.suggestedAngles, 20).slice(0, 5),
+    suggestedHooks: asStrArr(j.suggestedHooks, 20).slice(0, 5),
+    suggestedCtas: asStrArr(j.suggestedCtas, 20).slice(0, 5),
     visualDirection: asStr(j.visualDirection),
     toneRecommendation: asStr(j.toneRecommendation),
   };
@@ -233,14 +207,10 @@ ${images.length ? `Product images found on page:\n${images.join('\n')}\n` : ''}
 Output the complete URL-to-brief JSON now (extraction + brief + suggestions).`;
 
   // 5. Call the LLM with the combined extraction + brief + suggestions prompt
-  const raw = await atlasChat(
-    [
-      { role: 'system', content: URL_TO_BRIEF_SYS },
-      { role: 'user', content: userPrompt },
-    ],
-    resolveModel(planTier),
-    URL_TO_BRIEF_MAX_TOKENS,
-    URL_TO_BRIEF_TIMEOUT_MS,
+  const raw = await atlasGenerate(
+    URL_TO_BRIEF_SYS,
+    userPrompt,
+    planTier,
   );
 
   // 6. Parse and validate the result

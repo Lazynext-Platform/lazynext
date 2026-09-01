@@ -17,17 +17,15 @@
  */
 import type { PlanTier } from '@/lib/plan-tier';
 import {
-  resolveModel,
   isDryRun,
   extractJson,
   asStr,
   asNum,
   asObj,
+  asStrArr,
   isString,
   CREATIVE_MODEL,
-  atlasChat,
-  CREATIVE_MAX_TOKENS,
-  CREATIVE_TIMEOUT_MS,
+  atlasGenerate,
 } from '@/lib/creative/toolkit';
 
 // ── Credit cost ──
@@ -76,15 +74,6 @@ export const VALID_PLATFORMS: string[] = ['tiktok', 'instagram', 'youtube', 'fac
 export const VALID_GOALS: CampaignGoal[] = ['awareness', 'engagement', 'conversions', 'traffic', 'app_installs'];
 export const MAX_PRODUCT_LENGTH = 2000;
 export const MAX_BUDGET_LENGTH = 100;
-
-// ── Helpers (self-contained, mirrors ad-hashtag-generator.ts patterns) ──
-
-function asStrArray(v: unknown, fallback: string[]): string[] {
-  if (Array.isArray(v)) {
-    return v.map((x) => asStr(x, '')).filter((s) => s.length > 0);
-  }
-  return fallback;
-}
 
 function asCampaignGoal(v: unknown): CampaignGoal {
   const s = asStr(v, 'awareness') as CampaignGoal;
@@ -393,8 +382,8 @@ function parseAllocationJson(
   }).filter((a) => a.platform && a.percentage > 0);
 
   const recommendedSplit = asStr(j.recommendedSplit, 'See platform allocations above.');
-  const optimizationNotes = asStrArray(j.optimizationNotes, ['Monitor performance daily and reallocate as needed.']);
-  const riskFactors = asStrArray(j.riskFactors, ['Creative fatigue may reduce performance over time.']);
+  const optimizationNotes = asStrArr(j.optimizationNotes, ['Monitor performance daily and reallocate as needed.']);
+  const riskFactors = asStrArr(j.riskFactors, ['Creative fatigue may reduce performance over time.']);
 
   // If the LLM returned nothing usable, fall back to dry-run.
   if (platformAllocations.length === 0) {
@@ -466,12 +455,7 @@ export async function allocateBudget(
   const userPrompt = buildUserPrompt(input);
 
   try {
-    const raw = await atlasChat(
-      [{ role: 'system', content: AD_BUDGET_ALLOCATOR_SYS }, { role: 'user', content: userPrompt }],
-      resolveModel(planTier),
-      CREATIVE_MAX_TOKENS,
-      CREATIVE_TIMEOUT_MS,
-    );
+    const raw = await atlasGenerate(AD_BUDGET_ALLOCATOR_SYS, userPrompt, planTier);
     const j = extractJson(raw);
     return parseAllocationJson(j, input);
   } catch {

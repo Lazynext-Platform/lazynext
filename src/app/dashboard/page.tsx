@@ -13,6 +13,7 @@ import { appTitle, appDesc, isFeatured } from '@/config/appCatalog';
 import { formatNumber, formatDateTime } from '@/lib/i18n-format';
 import { AuthModal } from '@/components/AuthModal';
 import { OnboardingModal } from '@/components/OnboardingModal';
+import { CategorizedAppGrid } from '@/components/CategorizedAppGrid';
 
 type App = { id: string; href: string; icon: typeof Clapperboard };
 const APPS: App[] = [
@@ -525,27 +526,10 @@ export default function DashboardPage() {
           </div>
         )}
 
-        {/* Quick create */}
+        {/* Quick create — categorized with search */}
         <div className="mb-10">
           <h2 className="mb-4 text-lg font-bold text-fg">{t('dashboard.quickCreate')}</h2>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {APPS.map((app) => {
-              const a = appText(app.id);
-              return (
-                <Link key={app.id} href={app.href}
-                  className="group rounded-2xl border border-line bg-surface p-5 transition hover:-translate-y-1 hover:border-[#00b2fc]/40 hover:bg-surface">
-                  <span className="flex h-10 w-10 items-center justify-center rounded-xl" style={{ background: 'rgba(0,178,252,0.15)', color: 'var(--color-brand-accent)' }}>
-                    <app.icon className="h-5 w-5" />
-                  </span>
-                  <h3 className="mt-3 text-sm font-bold">{appTitle(app.id, a.title, locale)}</h3>
-                  <p className="mt-1 line-clamp-2 text-xs text-fg-faint">{appDesc(app.id, a.description, locale)}</p>
-                  <div className="mt-3 flex items-center gap-1 text-xs font-medium opacity-0 transition group-hover:opacity-100" style={{ color: 'var(--color-brand-accent)' }}>
-                    {t('dashboard.startNow')} <ArrowRight className="h-3 w-3" />
-                  </div>
-                </Link>
-              );
-            })}
-          </div>
+          <CategorizedAppGrid />
         </div>
 
         {/* Recent work */}

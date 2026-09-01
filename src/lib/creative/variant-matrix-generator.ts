@@ -13,15 +13,12 @@
  */
 import type { PlanTier } from '@/lib/plan-tier';
 import {
-  resolveModel,
   isDryRun,
   extractJson,
   asStr,
   asNum,
   isString,
-  atlasChat,
-  CREATIVE_MAX_TOKENS,
-  CREATIVE_TIMEOUT_MS,
+  atlasGenerate,
 } from '@/lib/creative/toolkit';
 
 // ── Credit cost ──
@@ -311,11 +308,10 @@ export async function generateVariantMatrix(
   } else {
     const userPrompt = buildUserPrompt(input);
     try {
-      const raw = await atlasChat(
-        [{ role: 'system', content: VARIANT_MATRIX_GENERATOR_SYS }, { role: 'user', content: userPrompt }],
-        resolveModel(planTier),
-        CREATIVE_MAX_TOKENS,
-        CREATIVE_TIMEOUT_MS,
+      const raw = await atlasGenerate(
+        VARIANT_MATRIX_GENERATOR_SYS,
+        userPrompt,
+        planTier,
       );
       const j = extractJson(raw);
       variants = parseVariantsJson(j, input);

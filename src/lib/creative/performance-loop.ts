@@ -10,8 +10,14 @@
  * extractJson(), asStr()/asArr() helpers, a credit-cost constant, a validation
  * function, and deterministic placeholder content in dry-run mode.
  */
-import { atlasChat } from '@/lib/atlas';
-import { getLLMModel } from '@/lib/providers/model-helpers';
+import {
+  isDryRun,
+  extractJson,
+  asStr,
+  asNum,
+  isString,
+  atlasGenerate,
+} from '@/lib/creative/toolkit';
 import type { PlanTier } from '@/lib/plan-tier';
 import { getPerformanceSummary, getLearningsContext } from '@/lib/creative/learning';
 
@@ -58,54 +64,10 @@ export interface PerformanceLoopOutput {
 
 export const PERFORMANCE_LOOP_CREDIT_COST = 5;
 
-// ── Model resolution ──
-
-const PERFORMANCE_LOOP_MODEL = process.env.CREATIVE_MODEL || getLLMModel();
-const PERFORMANCE_LOOP_TIMEOUT_MS = Number(process.env.CREATIVE_TIMEOUT_MS || 90_000);
-const PERFORMANCE_LOOP_MAX_TOKENS = Number(process.env.CREATIVE_MAX_TOKENS || 6000);
-
-/**
- * Resolve the LLM model for a given plan tier.
- * Falls back to the module-level PERFORMANCE_LOOP_MODEL (which respects the
- * CREATIVE_MODEL env override).
- */
-function resolveModel(planTier?: PlanTier): string {
-  if (process.env.CREATIVE_MODEL) return process.env.CREATIVE_MODEL;
-  return getLLMModel(planTier);
-}
-
 // ── Helpers ──
-
-function isString(v: unknown): v is string {
-  return typeof v === 'string';
-}
-
-function asStr(v: unknown, fallback = ''): string {
-  return typeof v === 'string' && v.trim() ? v.trim() : fallback;
-}
 
 function asArr(v: unknown): unknown[] {
   return Array.isArray(v) ? v : [];
-}
-
-function asNum(v: unknown, fallback: number, min: number, max: number): number {
-  const n = Number(v);
-  return Number.isFinite(n) ? Math.max(min, Math.min(max, n)) : fallback;
-}
-
-function extractJson(raw: string): Record<string, unknown> {
-  const s = raw.trim().replace(/^```(?:json)?/i, '').replace(/```$/, '').trim();
-  const a = s.indexOf('{');
-  const b = s.lastIndexOf('}');
-  if (a < 0 || b < 0) throw new Error('no_json_in_performance_loop_output');
-  return JSON.parse(s.slice(a, b + 1)) as Record<string, unknown>;
-}
-
-/** True when running against the local mock Atlas server (or no real key configured). */
-function isDryRun(): boolean {
-  const base = process.env.ATLASCLOUD_BASE || '';
-  if (base.includes('localhost') || base.includes('127.0.0.1')) return true;
-  return !process.env.ATLASCLOUD_API_KEY;
 }
 
 // ── Validation ──
@@ -391,11 +353,10 @@ export async function generatePerformanceLoop(
   const userPrompt = buildUserPrompt(input, summary, learningsContext);
 
   try {
-    const raw = await atlasChat(
-      [{ role: 'system', content: PERFORMANCE_LOOP_SYS }, { role: 'user', content: userPrompt }],
-      resolveModel(planTier),
-      PERFORMANCE_LOOP_MAX_TOKENS,
-      PERFORMANCE_LOOP_TIMEOUT_MS,
+    const raw = await atlasGenerate(
+      PERFORMANCE_LOOP_SYS,
+      userPrompt,
+      planTier,
     );
     const j = extractJson(raw);
     return parseLoopJson(j, input, summary);

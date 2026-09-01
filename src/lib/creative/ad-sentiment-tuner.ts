@@ -18,17 +18,15 @@
  */
 import type { PlanTier } from '@/lib/plan-tier';
 import {
-  resolveModel,
   isDryRun,
   extractJson,
   asStr,
   asNum,
   asObj,
+  asStrArr,
   isString,
   CREATIVE_MODEL,
-  atlasChat,
-  CREATIVE_MAX_TOKENS,
-  CREATIVE_TIMEOUT_MS,
+  atlasGenerate,
 } from '@/lib/creative/toolkit';
 
 // ── Credit cost ──
@@ -93,12 +91,6 @@ export const MIN_SCORE = -100;
 export const MAX_SCORE = 100;
 export const MIN_ALIGNMENT = 1;
 export const MAX_ALIGNMENT = 10;
-
-// ── Helpers (self-contained, mirrors ad-hashtag-generator.ts patterns) ──
-
-function asStrArray(v: unknown): string[] {
-  return Array.isArray(v) ? v.map((x) => asStr(x)).filter((s) => s) : [];
-}
 
 function asWordChanges(v: unknown): WordChange[] {
   if (!Array.isArray(v)) return [];
@@ -437,10 +429,10 @@ function parseTuningJson(
     sentimentShift: typeof tuningRaw.sentimentShift === 'number'
       ? asNum(tuningRaw.sentimentShift, after.score - before.score, MIN_SCORE - MAX_SCORE, MAX_SCORE - MIN_SCORE)
       : after.score - before.score,
-    toneAdjustments: asStrArray(tuningRaw.toneAdjustments),
+    toneAdjustments: asStrArr(tuningRaw.toneAdjustments),
     wordChanges: asWordChanges(tuningRaw.wordChanges),
     audienceAlignment: asNum(tuningRaw.audienceAlignment, 5, MIN_ALIGNMENT, MAX_ALIGNMENT),
-    recommendations: asStrArray(tuningRaw.recommendations),
+    recommendations: asStrArr(tuningRaw.recommendations),
   };
 
   // If the LLM returned nothing usable, fall back to dry-run output.
@@ -508,12 +500,7 @@ export async function tuneSentiment(
   const userPrompt = buildUserPrompt(input);
 
   try {
-    const raw = await atlasChat(
-      [{ role: 'system', content: AD_SENTIMENT_TUNER_SYS }, { role: 'user', content: userPrompt }],
-      resolveModel(planTier),
-      CREATIVE_MAX_TOKENS,
-      CREATIVE_TIMEOUT_MS,
-    );
+    const raw = await atlasGenerate(AD_SENTIMENT_TUNER_SYS, userPrompt, planTier);
     const j = extractJson(raw);
     return parseTuningJson(j, input);
   } catch {

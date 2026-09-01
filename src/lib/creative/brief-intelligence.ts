@@ -1,5 +1,10 @@
-import { atlasChat } from '@/lib/atlas';
-import { getLLMModel } from '@/lib/providers/model-helpers';
+import {
+  atlasChat,
+  resolveModel,
+  asStr,
+  asStrArr as toolkitAsStrArr,
+  asNum,
+} from '@/lib/creative/toolkit';
 import type { PlanTier } from '@/lib/plan-tier';
 
 export const BRIEF_INTELLIGENCE_COST = 6;
@@ -75,18 +80,8 @@ export interface BriefIntelligenceResult {
   }>;
 }
 
-function asStr(v: unknown, fallback = ''): string {
-  return typeof v === 'string' && v.trim() ? v.trim() : fallback;
-}
-
 function asStrArr(v: unknown): string[] {
-  return Array.isArray(v) ? v.map((x) => asStr(x)).filter(Boolean).slice(0, 20) : [];
-}
-
-function asNum(v: unknown, fallback: number, min: number, max: number): number {
-  const n = typeof v === 'number' ? v : typeof v === 'string' ? parseFloat(v) : NaN;
-  if (isNaN(n)) return fallback;
-  return Math.max(min, Math.min(max, n));
+  return toolkitAsStrArr(v, 20);
 }
 
 function extractJson(raw: string): Record<string, unknown> {
@@ -251,7 +246,7 @@ export async function analyzeBrief(request: {
   existingCreatives?: Array<{ creativeId: string; content: string }>;
   planTier?: PlanTier;
 }): Promise<BriefIntelligenceResult> {
-  const model = getLLMModel(request.planTier);
+  const model = resolveModel(request.planTier);
   const briefTypeStr = request.briefType || 'product_launch';
 
   const sysPrompt = `You are an expert creative brief analyst and product positioning strategist.

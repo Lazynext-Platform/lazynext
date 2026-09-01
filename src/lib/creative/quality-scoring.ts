@@ -9,8 +9,15 @@
  * All AI calls use the existing atlasChat() from src/lib/atlas.ts.
  * Credit cost is defined per analysis and exported for the route layer.
  */
-import { atlasChat } from '@/lib/atlas';
-import { getLLMModel } from '@/lib/providers/model-helpers';
+import {
+  atlasChat,
+  resolveModel,
+  extractJson,
+  asStr,
+  asStrArr as toolkitAsStrArr,
+  CREATIVE_TIMEOUT_MS,
+  CREATIVE_MAX_TOKENS,
+} from '@/lib/creative/toolkit';
 import type { PlanTier } from '@/lib/plan-tier';
 
 export const QUALITY_SCORING_COST = 5;
@@ -72,10 +79,6 @@ export interface QualityScoringResult {
 
 // ── Constants ──
 
-const CREATIVE_MODEL = process.env.CREATIVE_MODEL || getLLMModel();
-const CREATIVE_TIMEOUT_MS = Number(process.env.CREATIVE_TIMEOUT_MS || 90_000);
-const CREATIVE_MAX_TOKENS = Number(process.env.CREATIVE_MAX_TOKENS || 6000);
-
 const ALL_DIMENSIONS: QualityDimension[] = [
   'attention',
   'persuasion',
@@ -120,25 +123,8 @@ const BENCHMARK_SCORES: Record<BenchmarkType, Record<QualityDimension, number>> 
 
 // ── Helpers ──
 
-function resolveCreativeModel(planTier?: PlanTier): string {
-  if (process.env.CREATIVE_MODEL) return process.env.CREATIVE_MODEL;
-  return getLLMModel(planTier);
-}
-
-function extractJson(raw: string): Record<string, unknown> {
-  const s = raw.trim().replace(/^```(?:json)?/i, '').replace(/```$/, '').trim();
-  const a = s.indexOf('{');
-  const b = s.lastIndexOf('}');
-  if (a < 0 || b < 0) throw new Error('no_json_in_quality_scoring_output');
-  return JSON.parse(s.slice(a, b + 1)) as Record<string, unknown>;
-}
-
-function asStr(v: unknown, fallback = ''): string {
-  return typeof v === 'string' && v.trim() ? v.trim() : fallback;
-}
-
 function asStrArr(v: unknown): string[] {
-  return Array.isArray(v) ? v.map((x) => asStr(x)).filter(Boolean).slice(0, 20) : [];
+  return toolkitAsStrArr(v, 20);
 }
 
 function asNum(v: unknown, fallback: number, min: number, max: number): number {
@@ -507,7 +493,7 @@ All text fields must be in English. Output ONLY the JSON object.`;
         { role: 'system', content: systemPrompt },
         { role: 'user', content: userParts.join('\n') },
       ],
-      resolveCreativeModel(planTier),
+      resolveModel(planTier),
       CREATIVE_MAX_TOKENS,
       CREATIVE_TIMEOUT_MS,
     );

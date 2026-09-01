@@ -15,22 +15,20 @@
  * isDryRun(), resolveModel(), extractJson(), asStr()/asNum() helpers, credit
  * cost constant, and a validation function.
  */
-import { atlasChat } from '@/lib/atlas';
-import { getLLMModel } from '@/lib/providers/model-helpers';
+import {
+  isDryRun,
+  extractJson,
+  asStr,
+  asNum,
+  asStrArr,
+  asObj,
+  isString,
+  atlasGenerate,
+} from '@/lib/creative/toolkit';
 import type { PlanTier } from '@/lib/plan-tier';
 
 // ── Credit cost for the full Product Brief flow ──
 export const PRODUCT_BRIEF_CREDIT_COST = 5;
-
-const PRODUCT_BRIEF_MODEL = process.env.CREATIVE_MODEL || '';
-const PRODUCT_BRIEF_TIMEOUT_MS = Number(process.env.CREATIVE_TIMEOUT_MS || 90_000);
-const PRODUCT_BRIEF_MAX_TOKENS = Number(process.env.CREATIVE_MAX_TOKENS || 6000);
-
-/** Resolve the LLM model for a given plan tier. Falls back to the env override or plan-tier routing. */
-function resolveModel(planTier?: PlanTier): string {
-  if (process.env.CREATIVE_MODEL) return process.env.CREATIVE_MODEL;
-  return PRODUCT_BRIEF_MODEL || getLLMModel(planTier);
-}
 
 // ── Types ──
 
@@ -101,44 +99,6 @@ export interface ProductBriefOutput {
 // ── Helpers ──
 
 const VALID_PLATFORMS: ReadonlySet<string> = new Set(['tiktok', 'instagram', 'youtube', 'facebook']);
-
-function isString(v: unknown): v is string {
-  return typeof v === 'string';
-}
-
-function asStr(v: unknown, fallback = ''): string {
-  return typeof v === 'string' && v.trim() ? v.trim() : fallback;
-}
-
-function asNum(v: unknown, fallback: number, min: number, max: number): number {
-  const n = Math.round(Number(v));
-  return Number.isFinite(n) ? Math.max(min, Math.min(max, n)) : fallback;
-}
-
-function asStrArr(v: unknown): string[] {
-  return Array.isArray(v) ? v.map((x) => asStr(x)).filter(Boolean).slice(0, 20) : [];
-}
-
-function asObj(v: unknown): Record<string, unknown> {
-  return v && typeof v === 'object' && !Array.isArray(v)
-    ? (v as Record<string, unknown>)
-    : {};
-}
-
-function extractJson(raw: string): Record<string, unknown> {
-  const s = raw.trim().replace(/^```(?:json)?/i, '').replace(/```$/, '').trim();
-  const a = s.indexOf('{');
-  const b = s.lastIndexOf('}');
-  if (a < 0 || b < 0) throw new Error('no_json_in_product_brief_output');
-  return JSON.parse(s.slice(a, b + 1)) as Record<string, unknown>;
-}
-
-/** True when running against the local mock Atlas server (or no real key configured). */
-function isDryRun(): boolean {
-  const base = process.env.ATLASCLOUD_BASE || '';
-  if (base.includes('localhost') || base.includes('127.0.0.1')) return true;
-  return !process.env.ATLASCLOUD_API_KEY;
-}
 
 // ── System prompt for the full product brief flow ──
 
@@ -312,7 +272,7 @@ export function parseProductBriefResult(raw: string): ProductBriefOutput {
     name: asStr(readObj.name),
     category: asStr(readObj.category),
     audience: asStr(readObj.audience),
-    keyBenefits: asStrArr(readObj.keyBenefits).slice(0, 5),
+    keyBenefits: asStrArr(readObj.keyBenefits, 20).slice(0, 5),
     positioning: asStr(readObj.positioning),
   };
 
@@ -370,7 +330,7 @@ export function parseProductBriefResult(raw: string): ProductBriefOutput {
   const generationPrompt = asStr(j.generationPrompt);
 
   // Compliance notes
-  const complianceNotes = asStrArr(j.complianceNotes);
+  const complianceNotes = asStrArr(j.complianceNotes, 20);
 
   return {
     productRead,
@@ -526,14 +486,10 @@ export async function generateProductBrief(
   const userPrompt = parts.join('\n');
 
   // 4. Call the LLM with the structured prompt
-  const raw = await atlasChat(
-    [
-      { role: 'system', content: PRODUCT_BRIEF_SYS },
-      { role: 'user', content: userPrompt },
-    ],
-    resolveModel(planTier),
-    PRODUCT_BRIEF_MAX_TOKENS,
-    PRODUCT_BRIEF_TIMEOUT_MS,
+  const raw = await atlasGenerate(
+    PRODUCT_BRIEF_SYS,
+    userPrompt,
+    planTier,
   );
 
   // 5. Parse and validate the result
