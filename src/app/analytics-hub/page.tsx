@@ -66,7 +66,8 @@ function StatCard({ icon: Icon, label, value, sublabel, trend }: {
 }
 
 function MiniBarChart({ data, max, color }: { data: Array<{ label: string; value: number }>; max: number; color: string }) {
-  if (data.length === 0) return <p className="text-sm text-fg-muted py-4">No data</p>;
+  const { t } = useI18n();
+  if (data.length === 0) return <p className="text-sm text-fg-muted py-4">{t('analyticsHub.noData')}</p>;
   return (
     <div className="space-y-1.5">
       {data.slice(0, 10).map((d) => (

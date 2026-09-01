@@ -21,6 +21,30 @@ export default {
 
   async scheduled(event, env, ctx) {
     const cronSecret = env.CRON_SECRET;
+
+    // --- Health monitoring ---
+    // Ping /api/health on every cron tick. If any service is degraded,
+    // log a warning so it shows up in Cloudflare Workers Logs / tail.
+    ctx.waitUntil(
+      (async () => {
+        try {
+          const healthReq = new Request("http://localhost/api/health", {
+            method: "GET",
+          });
+          const healthRes = await openNextHandler.fetch(healthReq, env, ctx);
+          const health = await healthRes.json();
+          if (health.status === "healthy") {
+            console.log(`[scheduled] health: healthy (atlas=${health.checks?.atlas?.latencyMs}ms r2=${health.checks?.r2?.latencyMs}ms d1=${health.checks?.d1?.ok})`);
+          } else {
+            console.warn(`[scheduled] health: DEGRADED — ${JSON.stringify(health.checks)}`);
+          }
+        } catch (e) {
+          console.error("[scheduled] health check failed:", String(e));
+        }
+      })()
+    );
+
+    // --- Scheduled post processing ---
     if (!cronSecret) {
       console.warn("[scheduled] CRON_SECRET not set — skipping scheduled post processing");
       return;
