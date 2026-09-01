@@ -130,7 +130,7 @@ export default function AudiencePersonaGeneratorPage() {
       <a href="#main-content" className="skip-link">{t('common.skipToContent')}</a>
       <main id="main-content" className="mx-auto max-w-5xl px-4 py-8 space-y-6" tabIndex={-1}>
         <header>
-          <h1 className="text-2xl font-bold flex items-center gap-2"><Users className="w-6 h-6" /> Audience Persona Generator</h1>
+          <h1 className="text-2xl font-bold flex items-center gap-2"><Users className="w-6 h-6" /> {t('audiencePersonaGenerator.title')}</h1>
           <p className="text-sm text-fg-muted mt-2">{t('audiencePersonaGenerator.subtitle')}</p>
         </header>
 
