@@ -215,7 +215,7 @@ export const arMessages = {
       generating: 'جارٍ الإنشاء…',
       failed: 'فشل (تم الاسترداد)',
     },
-    common: { signIn: 'تسجيل الدخول', signOut: 'تسجيل الخروج', credits: 'الرصيد', language: 'اللغة', switchLanguage: 'تبديل اللغة', currency: 'العملة', cookieConsent: 'موافقة ملفات تعريف الارتباط', new: 'جديد', poweredBy: 'مدعوم من', back: '→ رجوع', backToLazynext: '→ Lazynext', close: 'إغلاق', errNetwork: 'خطأ في الشبكة. تحقق من اتصالك وحاول مرة أخرى.', errUnauthorized: 'انتهت صلاحية جلستك. يرجى تسجيل الدخول مرة أخرى.', errNotFound: 'لم يتم العثور على المورد المطلوب.', errForbidden: 'ليس لديك صلاحية الوصول إلى هذا المورد.', errPaymentRequired: 'رصيد غير كافٍ. يرجى الشحن في صفحة الأسعار.', errServer: 'خطأ في الخادم. حاول مرة أخرى لاحقًا.', errGeneric: 'حدث خطأ ما. حاول مرة أخرى.', dismissError: 'إغلاق', retry: 'إعادة المحاولة', loadingDots: 'جارٍ التحميل…', resultLabels: { headline: 'العنوان الرئيسي', body: 'النص', cta: 'CTA', hook: 'الخطاف', reason: 'السبب', description: 'الوصف', scenario: 'السيناريو', sensoryDetails: 'التفاصيل الحسية', emotionalPayoff: 'المكافأة العاطفية', psychologicalPrinciple: 'المبدأ النفسي', timing: 'التوقيت', frictionRemoval: 'إزالة الاحتكاك', whyNotTheOthers: 'لماذا ليس الآخرون', adCopy: 'نص الإعلان', visualizationPrompt: 'موجز التصور', desiredOutcome: 'النتيجة المرغوبة' }, skipToContent: 'تخطي إلى المحتوى' },
+    common: { signIn: 'تسجيل الدخول', signOut: 'تسجيل الخروج', credits: 'الرصيد', creditsLower: 'ائتمانات', language: 'اللغة', switchLanguage: 'تبديل اللغة', currency: 'العملة', cookieConsent: 'موافقة ملفات تعريف الارتباط', new: 'جديد', poweredBy: 'مدعوم من', back: '→ رجوع', backToLazynext: '→ Lazynext', close: 'إغلاق', errNetwork: 'خطأ في الشبكة. تحقق من اتصالك وحاول مرة أخرى.', errUnauthorized: 'انتهت صلاحية جلستك. يرجى تسجيل الدخول مرة أخرى.', errNotFound: 'لم يتم العثور على المورد المطلوب.', errForbidden: 'ليس لديك صلاحية الوصول إلى هذا المورد.', errPaymentRequired: 'رصيد غير كافٍ. يرجى الشحن في صفحة الأسعار.', errServer: 'خطأ في الخادم. حاول مرة أخرى لاحقًا.', errGeneric: 'حدث خطأ ما. حاول مرة أخرى.', dismissError: 'إغلاق', retry: 'إعادة المحاولة', loadingDots: 'جارٍ التحميل…', resultLabels: { headline: 'العنوان الرئيسي', body: 'النص', cta: 'CTA', hook: 'الخطاف', reason: 'السبب', reasoning: 'التفكير', description: 'الوصف', scenario: 'السيناريو', sensoryDetails: 'التفاصيل الحسية', emotionalPayoff: 'المكافأة العاطفية', psychologicalPrinciple: 'المبدأ النفسي', timing: 'التوقيت', frictionRemoval: 'إزالة الاحتكاك', whyNotTheOthers: 'لماذا ليس الآخرون', adCopy: 'نص الإعلان', visualizationPrompt: 'موجز التصور', desiredOutcome: 'النتيجة المرغوبة' }, skipToContent: 'تخطي إلى المحتوى' },
     userMenu: {
       account: 'الحساب',
       signOut: 'تسجيل الخروج',
@@ -6096,6 +6096,8 @@ export const arMessages = {
     down: 'Down',
     refresh: 'تحديث',
     fetchError: 'فشل في جلب الحالة الصحية',
+    latencyMs: 'مللي ثانية',
+    noData: '—',
   },
   observability: {
     title: 'المراقبة',
@@ -6124,6 +6126,9 @@ export const arMessages = {
     totalUsers: 'إجمالي المستخدمين',
     newInRange: 'جديد',
     generatedAt: 'تم الإنشاء في:',
+    range24h: '٢٤س',
+    range7d: '٧ي',
+    range30d: '٣٠ي',
   },
 };
 

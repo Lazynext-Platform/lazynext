@@ -16,9 +16,9 @@ interface Metrics {
 }
 
 const RANGES = [
-  { id: '24h', label: '24h' },
-  { id: '7d', label: '7d' },
-  { id: '30d', label: '30d' },
+  { id: '24h' },
+  { id: '7d' },
+  { id: '30d' },
 ];
 
 export default function ObservabilityPage() {
@@ -86,7 +86,7 @@ export default function ObservabilityPage() {
                 style={range === r.id ? { background: '#0064d9' } : {}}
                 aria-pressed={range === r.id}
               >
-                {r.label}
+                {t(`observability.range${r.id}`)}
               </button>
             ))}
           </div>

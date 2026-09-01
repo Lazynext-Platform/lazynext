@@ -218,7 +218,7 @@ export const viMessages = {
       generating: 'Đang tạo…',
       failed: 'Thất bại (đã hoàn tiền)',
     },
-    common: { signIn: 'Đăng nhập', signOut: 'Đăng xuất', credits: 'Tín dụng', language: 'Ngôn ngữ', switchLanguage: 'Chuyển ngôn ngữ', currency: 'Tiền tệ', cookieConsent: 'Đồng ý cookie', new: 'MỚI', poweredBy: 'Cung cấp bởi', back: '← Quay lại', backToLazynext: '← Lazynext', close: 'Đóng', errNetwork: 'Lỗi mạng. Vui lòng kiểm tra kết nối và thử lại.', errUnauthorized: 'Phiên của bạn đã hết hạn. Vui lòng đăng nhập lại.', errNotFound: 'Không tìm thấy tài nguyên được yêu cầu.', errForbidden: 'Bạn không có quyền truy cập tài nguyên này.', errPaymentRequired: 'Không đủ tín dụng. Vui lòng nạp tại trang giá.', errServer: 'Lỗi máy chủ. Vui lòng thử lại sau.', errGeneric: 'Đã xảy ra lỗi. Vui lòng thử lại.', dismissError: 'Đóng', retry: 'Thử lại', loadingDots: 'Đang tải…', resultLabels: { headline: 'Tiêu đề', body: 'Nội dung', cta: 'CTA', hook: 'Móc câu', reason: 'Lý do', description: 'Mô tả', scenario: 'Kịch bản', sensoryDetails: 'Chi tiết Cảm quan', emotionalPayoff: 'Phần thưởng Cảm xúc', psychologicalPrinciple: 'Nguyên lý Tâm lý', timing: 'Thời điểm', frictionRemoval: 'Giảm Ma sát', whyNotTheOthers: 'Tại sao Không phải cái Khác', adCopy: 'Văn bản Quảng cáo', visualizationPrompt: 'Lệnh Hiển thị', desiredOutcome: 'Kết quả Mong muốn' }, skipToContent: 'Bỏ qua đến nội dung' },
+    common: { signIn: 'Đăng nhập', signOut: 'Đăng xuất', credits: 'Tín dụng', creditsLower: 'tín dụng', language: 'Ngôn ngữ', switchLanguage: 'Chuyển ngôn ngữ', currency: 'Tiền tệ', cookieConsent: 'Đồng ý cookie', new: 'MỚI', poweredBy: 'Cung cấp bởi', back: '← Quay lại', backToLazynext: '← Lazynext', close: 'Đóng', errNetwork: 'Lỗi mạng. Vui lòng kiểm tra kết nối và thử lại.', errUnauthorized: 'Phiên của bạn đã hết hạn. Vui lòng đăng nhập lại.', errNotFound: 'Không tìm thấy tài nguyên được yêu cầu.', errForbidden: 'Bạn không có quyền truy cập tài nguyên này.', errPaymentRequired: 'Không đủ tín dụng. Vui lòng nạp tại trang giá.', errServer: 'Lỗi máy chủ. Vui lòng thử lại sau.', errGeneric: 'Đã xảy ra lỗi. Vui lòng thử lại.', dismissError: 'Đóng', retry: 'Thử lại', loadingDots: 'Đang tải…', resultLabels: { headline: 'Tiêu đề', body: 'Nội dung', cta: 'CTA', hook: 'Móc câu', reason: 'Lý do', reasoning: 'Lập luận', description: 'Mô tả', scenario: 'Kịch bản', sensoryDetails: 'Chi tiết Cảm quan', emotionalPayoff: 'Phần thưởng Cảm xúc', psychologicalPrinciple: 'Nguyên lý Tâm lý', timing: 'Thời điểm', frictionRemoval: 'Giảm Ma sát', whyNotTheOthers: 'Tại sao Không phải cái Khác', adCopy: 'Văn bản Quảng cáo', visualizationPrompt: 'Lệnh Hiển thị', desiredOutcome: 'Kết quả Mong muốn' }, skipToContent: 'Bỏ qua đến nội dung' },
     userMenu: {
       account: 'Tài khoản',
       signOut: 'Đăng xuất',
@@ -6098,6 +6098,8 @@ export const viMessages = {
     down: 'Down',
     refresh: 'Làm mới',
     fetchError: 'Không thể lấy trạng thái',
+    latencyMs: 'ms',
+    noData: '—',
   },
   observability: {
     title: 'Khả năng quan sát',
@@ -6126,6 +6128,9 @@ export const viMessages = {
     totalUsers: 'Tổng Người dùng',
     newInRange: 'Mới',
     generatedAt: 'Tạo lúc:',
+    range24h: '24g',
+    range7d: '7n',
+    range30d: '30n',
   },
 };
 

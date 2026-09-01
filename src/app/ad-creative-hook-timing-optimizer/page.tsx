@@ -227,7 +227,7 @@ export default function AdCreativeHookTimingOptimizerPage() {
             className="rounded-lg bg-brand-accent px-4 py-2 text-sm font-medium text-white hover:opacity-90 disabled:opacity-50 flex items-center gap-2"
           >
             {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
-            {loading ? t('adCreativeHookTimingOptimizer.generating') : `${t('adCreativeHookTimingOptimizer.generate')} (${CREDIT_COST} credits)`}
+            {loading ? t('adCreativeHookTimingOptimizer.generating') : `${t('adCreativeHookTimingOptimizer.generate')} (${CREDIT_COST} ${t('common.creditsLower')})`}
           </button>
         </div>
 
@@ -309,7 +309,7 @@ export default function AdCreativeHookTimingOptimizerPage() {
                 <p><span className="font-medium text-fg">Current placement:</span> {result.timing.timingAnalysis.currentPlacement}</p>
                 <p><span className="font-medium text-fg">Optimal window:</span> {result.timing.timingAnalysis.optimalWindow}</p>
                 <p><span className="font-medium text-fg">Attention curve:</span> {result.timing.timingAnalysis.attentionCurve}</p>
-                <p><span className="font-medium text-fg">Reasoning:</span> {result.timing.timingAnalysis.reasoning}</p>
+                <p><span className="font-medium text-fg">{t('common.resultLabels.reasoning')}:</span> {result.timing.timingAnalysis.reasoning}</p>
               </div>
             </div>
 

@@ -241,7 +241,7 @@ export default function AdCreativePacingVariabilityDesignerPage() {
             {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
             {loading
               ? t('adCreativePacingVariabilityDesigner.generating')
-              : `${t('adCreativePacingVariabilityDesigner.generate')} (${CREDIT_COST} credits)`}
+              : `${t('adCreativePacingVariabilityDesigner.generate')} (${CREDIT_COST} ${t('common.creditsLower')})`}
           </button>
         </div>
 

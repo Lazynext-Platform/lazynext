@@ -683,7 +683,7 @@ export default function CreativeDirectorPage() {
                       <span className="text-fg-faint">
                         [{s.event}] {String(s.data.phase || s.data.name || s.data.message || '')}
                         {s.data.status ? ` — ${s.data.status}` : ''}
-                        {typeof s.data.totalSpent === 'number' ? ` (${s.data.totalSpent} credits)` : ''}
+                        {typeof s.data.totalSpent === 'number' ? ` (${s.data.totalSpent} ${t('common.creditsLower')})` : ''}
                       </span>
                     </div>
                   ))}

@@ -218,7 +218,7 @@ export const thMessages = {
       generating: 'กำลังสร้าง…',
       failed: 'ล้มเหลว (คืนเครดิตแล้ว)',
     },
-    common: { signIn: 'เข้าสู่ระบบ', signOut: 'ออกจากระบบ', credits: 'เครดิต', language: 'ภาษา', switchLanguage: 'เปลี่ยนภาษา', currency: 'สกุลเงิน', cookieConsent: 'ยินยอมคุกกี้', new: 'ใหม่', poweredBy: 'ขับเคลื่อนโดย', back: '← ย้อนกลับ', backToLazynext: '← Lazynext', close: 'ปิด', errNetwork: 'ข้อผิดพลาดเครือข่าย กรุณาตรวจสอบการเชื่อมต่อแล้วลองอีกครั้ง', errUnauthorized: 'เซสชันหมดอายุแล้ว กรุณาเข้าสู่ระบบอีกครั้ง', errNotFound: 'ไม่พบทรัพยากรที่ร้องขอ', errForbidden: 'คุณไม่มีสิทธิ์เข้าถึงทรัพยากรนี้', errPaymentRequired: 'เครดิตไม่เพียงพอ กรุณาเติมที่หน้าราคา', errServer: 'ข้อผิดพลาดเซิร์ฟเวอร์ กรุณาลองอีกครั้งในภายหลัง', errGeneric: 'เกิดข้อผิดพลาด กรุณาลองอีกครั้ง', dismissError: 'ปิด', retry: 'ลองอีกครั้ง', loadingDots: 'กำลังโหลด…', resultLabels: { headline: 'พาดหัว', body: 'เนื้อหา', cta: 'CTA', hook: 'เบ็ด', reason: 'เหตุผล', description: 'คำอธิบาย', scenario: 'สถานการณ์', sensoryDetails: 'รายละเอียดทางประสาทสัมผัส', emotionalPayoff: 'ผลตอบแทนทางอารมณ์', psychologicalPrinciple: 'หลักการทางจิตวิทยา', timing: 'จังหวะ', frictionRemoval: 'การขจัดอุปสรรค', whyNotTheOthers: 'ทำไมไม่ใช่ตัวเลือกอื่น', adCopy: 'ข้อความโฆษณา', visualizationPrompt: 'พร้อมต์การแสดงภาพ', desiredOutcome: 'ผลลัพธ์ที่ต้องการ' }, skipToContent: 'ข้ามไปยังเนื้อหา' },
+    common: { signIn: 'เข้าสู่ระบบ', signOut: 'ออกจากระบบ', credits: 'เครดิต', creditsLower: 'เครดิต', language: 'ภาษา', switchLanguage: 'เปลี่ยนภาษา', currency: 'สกุลเงิน', cookieConsent: 'ยินยอมคุกกี้', new: 'ใหม่', poweredBy: 'ขับเคลื่อนโดย', back: '← ย้อนกลับ', backToLazynext: '← Lazynext', close: 'ปิด', errNetwork: 'ข้อผิดพลาดเครือข่าย กรุณาตรวจสอบการเชื่อมต่อแล้วลองอีกครั้ง', errUnauthorized: 'เซสชันหมดอายุแล้ว กรุณาเข้าสู่ระบบอีกครั้ง', errNotFound: 'ไม่พบทรัพยากรที่ร้องขอ', errForbidden: 'คุณไม่มีสิทธิ์เข้าถึงทรัพยากรนี้', errPaymentRequired: 'เครดิตไม่เพียงพอ กรุณาเติมที่หน้าราคา', errServer: 'ข้อผิดพลาดเซิร์ฟเวอร์ กรุณาลองอีกครั้งในภายหลัง', errGeneric: 'เกิดข้อผิดพลาด กรุณาลองอีกครั้ง', dismissError: 'ปิด', retry: 'ลองอีกครั้ง', loadingDots: 'กำลังโหลด…', resultLabels: { headline: 'พาดหัว', body: 'เนื้อหา', cta: 'CTA', hook: 'เบ็ด', reason: 'เหตุผล', reasoning: 'เหตุผล', description: 'คำอธิบาย', scenario: 'สถานการณ์', sensoryDetails: 'รายละเอียดทางประสาทสัมผัส', emotionalPayoff: 'ผลตอบแทนทางอารมณ์', psychologicalPrinciple: 'หลักการทางจิตวิทยา', timing: 'จังหวะ', frictionRemoval: 'การขจัดอุปสรรค', whyNotTheOthers: 'ทำไมไม่ใช่ตัวเลือกอื่น', adCopy: 'ข้อความโฆษณา', visualizationPrompt: 'พร้อมต์การแสดงภาพ', desiredOutcome: 'ผลลัพธ์ที่ต้องการ' }, skipToContent: 'ข้ามไปยังเนื้อหา' },
     userMenu: {
       account: 'บัญชี',
       signOut: 'ออกจากระบบ',
@@ -6097,6 +6097,8 @@ export const thMessages = {
     down: 'Down',
     refresh: 'รีเฟรช',
     fetchError: 'ดึงข้อมูลสถานะล้มเหลว',
+    latencyMs: 'มิ.ล.',
+    noData: '—',
   },
   observability: {
     title: 'การสังเกตระบบ',
@@ -6125,6 +6127,9 @@ export const thMessages = {
     totalUsers: 'ผู้ใช้ทั้งหมด',
     newInRange: 'ใหม่',
     generatedAt: 'สร้างเมื่อ:',
+    range24h: '24ชม.',
+    range7d: '7วัน',
+    range30d: '30วัน',
   },
 };
 

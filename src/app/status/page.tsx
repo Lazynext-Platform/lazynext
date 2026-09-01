@@ -112,7 +112,7 @@ export default function StatusPage() {
                     {check ? (
                       <>
                         {check.latencyMs !== undefined && (
-                          <span className="text-xs text-fg-faint tabular-nums">{check.latencyMs}ms</span>
+                          <span className="text-xs text-fg-faint tabular-nums">{check.latencyMs}{t('statusPage.latencyMs')}</span>
                         )}
                         {check.ok ? (
                           <span className="flex items-center gap-1 text-xs font-medium text-success">
@@ -125,7 +125,7 @@ export default function StatusPage() {
                         )}
                       </>
                     ) : (
-                      <span className="text-xs text-fg-faint">—</span>
+                      <span className="text-xs text-fg-faint">{t('statusPage.noData')}</span>
                     )}
                   </div>
                 </div>

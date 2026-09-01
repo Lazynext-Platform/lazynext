@@ -17,10 +17,7 @@ export default function SkillsPage() {
     t('skills.subtitle') === 'skills.subtitle'
       ? 'Composable creative workflows — chain skills into end-to-end ad pipelines.'
       : t('skills.subtitle');
-  const signInPrompt =
-    t('skills.signInPrompt') === 'skills.signInPrompt'
-      ? 'Sign in to browse and run creative skills.'
-      : t('skills.signInPrompt');
+  const signInPrompt = t('skills.signInPrompt');
 
   return (
     <div className="min-h-screen text-fg bg-app">

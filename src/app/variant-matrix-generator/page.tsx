@@ -224,7 +224,7 @@ export default function VariantMatrixGeneratorPage() {
             {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
             {loading
               ? t('variantMatrixGenerator.generating')
-              : `${t('variantMatrixGenerator.generate')} (${CREDIT_COST} credits)`}
+              : `${t('variantMatrixGenerator.generate')} (${CREDIT_COST} ${t('common.creditsLower')})`}
           </button>
         </div>
 

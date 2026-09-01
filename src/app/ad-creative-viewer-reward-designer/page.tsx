@@ -220,7 +220,7 @@ export default function AdCreativeViewerRewardDesignerPage() {
             className="rounded-lg bg-brand-accent px-4 py-2 text-sm font-medium text-white hover:opacity-90 disabled:opacity-50 flex items-center gap-2"
           >
             {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
-            {loading ? t('adCreativeViewerRewardDesigner.generating') : `${t('adCreativeViewerRewardDesigner.generate')} (${CREDIT_COST} credits)`}
+            {loading ? t('adCreativeViewerRewardDesigner.generating') : `${t('adCreativeViewerRewardDesigner.generate')} (${CREDIT_COST} ${t('common.creditsLower')})`}
           </button>
         </div>
 
@@ -297,8 +297,8 @@ export default function AdCreativeViewerRewardDesignerPage() {
                     </div>
                     <p className="text-xs text-fg">{r.description}</p>
                     <p className="text-xs text-fg-muted"><span className="font-medium text-fg">{t('adCreativeViewerRewardDesigner.viewerAction') || 'Viewer action'}:</span> {r.viewerAction}</p>
-                    <p className="text-xs text-fg-muted"><span className="font-medium text-fg">{t('adCreativeViewerRewardDesigner.payoff') || 'Payoff'}:</span> {r.payoff}</p>
-                    <p className="text-xs text-fg-muted"><span className="font-medium text-fg">{t('adCreativeViewerRewardDesigner.timing') || 'Timing'}:</span> {r.timing}</p>
+                    <p className="text-xs text-fg-muted"><span className="font-medium text-fg">{t('common.resultLabels.emotionalPayoff')}:</span> {r.payoff}</p>
+                    <p className="text-xs text-fg-muted"><span className="font-medium text-fg">{t('common.resultLabels.timing')}:</span> {r.timing}</p>
                     <div className="h-1.5 rounded-full bg-bg-secondary overflow-hidden">
                       <div
                         className={`h-full rounded-full ${barColor(r.satisfactionLevel)}`}

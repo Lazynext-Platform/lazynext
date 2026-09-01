@@ -29,7 +29,7 @@ export default function UgcStudioPage() {
           <div className="text-5xl">🔐</div>
           <h1 className="text-2xl font-bold text-fg">{t('ugcStudio.title') || 'UGC Studio'}</h1>
           <p className="text-fg-faint">
-            {t('ugcStudio.signInPrompt') || 'Sign in to start creating UGC ads.'}
+            {t('ugcStudio.signInPrompt')}
           </p>
           <button
             onClick={() => setAuthOpen(true)}

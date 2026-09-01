@@ -215,7 +215,7 @@ export const hiMessages = {
       generating: 'जनरेट हो रहा है…',
       failed: 'विफल (वापसी)',
     },
-    common: { signIn: 'साइन इन', signOut: 'साइन आउट', credits: 'क्रेडिट', language: 'भाषा', switchLanguage: 'भाषा बदलें', currency: 'मुद्रा', cookieConsent: 'कुकी सहमति', new: 'नया', poweredBy: 'द्वारा संचालित', back: '← वापस', backToLazynext: '← Lazynext', close: 'बंद करें', errNetwork: 'नेटवर्क त्रुटि। अपना कनेक्शन जांचें और पुनः प्रयास करें।', errUnauthorized: 'आपका सत्र समाप्त हो गया है। कृपया पुनः साइन इन करें।', errNotFound: 'अनुरोधित संसाधन नहीं मिला।', errForbidden: 'आपके पास इस संसाधन तक पहुंच की अनुमति नहीं है।', errPaymentRequired: 'पर्याप्त क्रेडिट नहीं हैं। कृपया मूल्य पृष्ठ पर टॉप अप करें।', errServer: 'सर्वर त्रुटि। कृपया बाद में पुनः प्रयास करें।', errGeneric: 'कुछ गलत हो गया। कृपया पुनः प्रयास करें।', dismissError: 'बंद करें', retry: 'पुनः प्रयास करें', loadingDots: 'लोड हो रहा है…', resultLabels: { headline: 'शीर्षक', body: 'मुख्य भाग', cta: 'CTA', hook: 'हुक', reason: 'कारण', description: 'विवरण', scenario: 'परिदृश्य', sensoryDetails: 'संवेदी विवरण', emotionalPayoff: 'भावनात्मक लाभ', psychologicalPrinciple: 'मनोवैज्ञानिक सिद्धांत', timing: 'समय', frictionRemoval: 'घर्षण हटाना', whyNotTheOthers: 'अन्य क्यों नहीं', adCopy: 'विज्ञापन पाठ', visualizationPrompt: 'विज़ुअलाइज़ेशन प्रॉम्प्ट', desiredOutcome: 'वांछित परिणाम' } },
+    common: { signIn: 'साइन इन', signOut: 'साइन आउट', credits: 'क्रेडिट', creditsLower: 'क्रेडिट', language: 'भाषा', switchLanguage: 'भाषा बदलें', currency: 'मुद्रा', cookieConsent: 'कुकी सहमति', new: 'नया', poweredBy: 'द्वारा संचालित', back: '← वापस', backToLazynext: '← Lazynext', close: 'बंद करें', errNetwork: 'नेटवर्क त्रुटि। अपना कनेक्शन जांचें और पुनः प्रयास करें।', errUnauthorized: 'आपका सत्र समाप्त हो गया है। कृपया पुनः साइन इन करें।', errNotFound: 'अनुरोधित संसाधन नहीं मिला।', errForbidden: 'आपके पास इस संसाधन तक पहुंच की अनुमति नहीं है।', errPaymentRequired: 'पर्याप्त क्रेडिट नहीं हैं। कृपया मूल्य पृष्ठ पर टॉप अप करें।', errServer: 'सर्वर त्रुटि। कृपया बाद में पुनः प्रयास करें।', errGeneric: 'कुछ गलत हो गया। कृपया पुनः प्रयास करें।', dismissError: 'बंद करें', retry: 'पुनः प्रयास करें', loadingDots: 'लोड हो रहा है…', resultLabels: { headline: 'शीर्षक', body: 'मुख्य भाग', cta: 'CTA', hook: 'हुक', reason: 'कारण', reasoning: 'तर्क', description: 'विवरण', scenario: 'परिदृश्य', sensoryDetails: 'संवेदी विवरण', emotionalPayoff: 'भावनात्मक लाभ', psychologicalPrinciple: 'मनोवैज्ञानिक सिद्धांत', timing: 'समय', frictionRemoval: 'घर्षण हटाना', whyNotTheOthers: 'अन्य क्यों नहीं', adCopy: 'विज्ञापन पाठ', visualizationPrompt: 'विज़ुअलाइज़ेशन प्रॉम्प्ट', desiredOutcome: 'वांछित परिणाम' } },
     userMenu: {
       account: 'खाता',
       signOut: 'साइन आउट',
@@ -6096,6 +6096,8 @@ export const hiMessages = {
     down: 'Down',
     refresh: 'ताज़ा करें',
     fetchError: 'स्थिति प्राप्त करने में विफल',
+    latencyMs: 'मि.से.',
+    noData: '—',
   },
   observability: {
     title: 'ऑब्जर्वेबिलिटी',
@@ -6124,6 +6126,9 @@ export const hiMessages = {
     totalUsers: 'कुल उपयोगकर्ता',
     newInRange: 'नए',
     generatedAt: 'निर्मित:',
+    range24h: '24घ',
+    range7d: '7दि',
+    range30d: '30दि',
   },
 };
 

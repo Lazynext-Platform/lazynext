@@ -247,7 +247,7 @@ export default function AdPerformancePredictorPage() {
             {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
             {loading
               ? t('adPerformancePredictor.predicting')
-              : `${t('adPerformancePredictor.predict')} (${CREDIT_COST} credits)`}
+              : `${t('adPerformancePredictor.predict')} (${CREDIT_COST} ${t('common.creditsLower')})`}
           </button>
         </div>
 

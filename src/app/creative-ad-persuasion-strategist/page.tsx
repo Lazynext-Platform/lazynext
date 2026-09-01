@@ -214,7 +214,7 @@ export default function CreativeAdPersuasionStrategistPage() {
             className="rounded-lg bg-brand-accent px-4 py-2 text-sm font-medium text-white hover:opacity-90 disabled:opacity-50 flex items-center gap-2"
           >
             {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
-            {loading ? t('creativeAdPersuasionStrategist.generating') : `${t('creativeAdPersuasionStrategist.generate')} (${CREDIT_COST} credits)`}
+            {loading ? t('creativeAdPersuasionStrategist.generating') : `${t('creativeAdPersuasionStrategist.generate')} (${CREDIT_COST} ${t('common.creditsLower')})`}
           </button>
         </div>
 
@@ -319,7 +319,7 @@ export default function CreativeAdPersuasionStrategistPage() {
                       />
                     </div>
                     <p className="text-xs text-fg-muted">{tr.description}</p>
-                    <p className="text-xs text-fg-muted"><span className="font-medium text-brand-accent">Timing:</span> {tr.timing}</p>
+                    <p className="text-xs text-fg-muted"><span className="font-medium text-brand-accent">{t('common.resultLabels.timing')}:</span> {tr.timing}</p>
                   </div>
                 ))}
               </div>

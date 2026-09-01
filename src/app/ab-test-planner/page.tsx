@@ -193,7 +193,7 @@ export default function ABTestPlannerPage() {
             className="inline-flex items-center gap-2 rounded-lg bg-brand-accent px-4 py-2 text-sm font-semibold text-bg transition hover:bg-brand-accent/90 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
-            {loading ? t('abTestPlannerV2.planning') : `${t('abTestPlannerV2.plan')} (${CREDIT_COST} credits)`}
+            {loading ? t('abTestPlannerV2.planning') : `${t('abTestPlannerV2.plan')} (${CREDIT_COST} ${t('common.creditsLower')})`}
           </button>
         </div>
 

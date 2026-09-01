@@ -215,7 +215,7 @@ export const ptMessages = {
       generating: 'Gerando…',
       failed: 'Falhou (reembolsado)',
     },
-    common: { signIn: 'Entrar', signOut: 'Sair', credits: 'Créditos', language: 'Idioma', switchLanguage: 'Mudar idioma', currency: 'Moeda', cookieConsent: 'Consentimento de cookies', new: 'NOVO', poweredBy: 'Desenvolvido por', back: '← Voltar', backToLazynext: '← Lazynext', close: 'Fechar', errNetwork: 'Erro de rede. Verifique sua conexão e tente novamente.', errUnauthorized: 'Sua sessão expirou. Entre novamente.', errNotFound: 'O recurso solicitado não foi encontrado.', errForbidden: 'Você não tem acesso a este recurso.', errPaymentRequired: 'Créditos insuficientes. Recarregue na página de preços.', errServer: 'Erro do servidor. Tente novamente mais tarde.', errGeneric: 'Algo deu errado. Tente novamente.', dismissError: 'Fechar', retry: 'Tentar novamente', loadingDots: 'Carregando…', resultLabels: { headline: 'Título', body: 'Corpo', cta: 'CTA', hook: 'Gancho', reason: 'Razão', description: 'Descrição', scenario: 'Cenário', sensoryDetails: 'Detalhes Sensoriais', emotionalPayoff: 'Recompensa Emocional', psychologicalPrinciple: 'Princípio Psicológico', timing: 'Tempo', frictionRemoval: 'Remoção de Fricção', whyNotTheOthers: 'Por Que Não os Outros', adCopy: 'Texto do Anúncio', visualizationPrompt: 'Prompt de Visualização', desiredOutcome: 'Resultado Desejado' }, skipToContent: 'Pular para o conteúdo' },
+    common: { signIn: 'Entrar', signOut: 'Sair', credits: 'Créditos', creditsLower: 'créditos', language: 'Idioma', switchLanguage: 'Mudar idioma', currency: 'Moeda', cookieConsent: 'Consentimento de cookies', new: 'NOVO', poweredBy: 'Desenvolvido por', back: '← Voltar', backToLazynext: '← Lazynext', close: 'Fechar', errNetwork: 'Erro de rede. Verifique sua conexão e tente novamente.', errUnauthorized: 'Sua sessão expirou. Entre novamente.', errNotFound: 'O recurso solicitado não foi encontrado.', errForbidden: 'Você não tem acesso a este recurso.', errPaymentRequired: 'Créditos insuficientes. Recarregue na página de preços.', errServer: 'Erro do servidor. Tente novamente mais tarde.', errGeneric: 'Algo deu errado. Tente novamente.', dismissError: 'Fechar', retry: 'Tentar novamente', loadingDots: 'Carregando…', resultLabels: { headline: 'Título', body: 'Corpo', cta: 'CTA', hook: 'Gancho', reason: 'Razão', reasoning: 'Raciocínio', description: 'Descrição', scenario: 'Cenário', sensoryDetails: 'Detalhes Sensoriais', emotionalPayoff: 'Recompensa Emocional', psychologicalPrinciple: 'Princípio Psicológico', timing: 'Tempo', frictionRemoval: 'Remoção de Fricção', whyNotTheOthers: 'Por Que Não os Outros', adCopy: 'Texto do Anúncio', visualizationPrompt: 'Prompt de Visualização', desiredOutcome: 'Resultado Desejado' }, skipToContent: 'Pular para o conteúdo' },
     userMenu: {
       account: 'Conta',
       signOut: 'Sair',
@@ -6096,6 +6096,8 @@ export const ptMessages = {
     down: 'Down',
     refresh: 'Atualizar',
     fetchError: 'Falha ao buscar status',
+    latencyMs: 'ms',
+    noData: '—',
   },
   observability: {
     title: 'Observabilidade',
@@ -6124,6 +6126,9 @@ export const ptMessages = {
     totalUsers: 'Usuários Totais',
     newInRange: 'Novos',
     generatedAt: 'Gerado em:',
+    range24h: '24h',
+    range7d: '7d',
+    range30d: '30d',
   },
 };
 

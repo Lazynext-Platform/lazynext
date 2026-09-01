@@ -217,7 +217,7 @@ export const jaMessages = {
       generating: '生成中…',
       failed: '失敗(返金済み)',
     },
-    common: { signIn: 'ログイン', signOut: 'ログアウト', credits: 'クレジット', language: '言語', switchLanguage: '言語を切り替え', currency: '通貨', cookieConsent: 'Cookie 同意', new: '新着', poweredBy: 'Powered by', back: '← 戻る', backToLazynext: '← Lazynext', close: '閉じる', errNetwork: 'ネットワークエラー。接続を確認して再試行してください。', errUnauthorized: 'セッションの有効期限が切れました。再度ログインしてください。', errNotFound: '要求されたリソースが見つかりませんでした。', errForbidden: 'このリソースにアクセスする権限がありません。', errPaymentRequired: 'クレジットが不足しています。料金ページでチャージしてください。', errServer: 'サーバーエラー。後でもう一度お試しください。', errGeneric: 'エラーが発生しました。再試行してください。', dismissError: '閉じる', retry: '再試行', loadingDots: '読み込み中…', resultLabels: { headline: '見出し', body: '本文', cta: 'CTA', hook: 'フック', reason: '理由', description: '説明', scenario: 'シナリオ', sensoryDetails: '感覚的詳細', emotionalPayoff: '感情的報酬', psychologicalPrinciple: '心理的原理', timing: 'タイミング', frictionRemoval: '摩擦の除去', whyNotTheOthers: '他ではない理由', adCopy: '広告コピー', visualizationPrompt: 'ビジュアライゼーションプロンプト', desiredOutcome: '望ましい結果' }, skipToContent: 'コンテンツにスキップ' },
+    common: { signIn: 'ログイン', signOut: 'ログアウト', credits: 'クレジット', creditsLower: 'クレジット', language: '言語', switchLanguage: '言語を切り替え', currency: '通貨', cookieConsent: 'Cookie 同意', new: '新着', poweredBy: 'Powered by', back: '← 戻る', backToLazynext: '← Lazynext', close: '閉じる', errNetwork: 'ネットワークエラー。接続を確認して再試行してください。', errUnauthorized: 'セッションの有効期限が切れました。再度ログインしてください。', errNotFound: '要求されたリソースが見つかりませんでした。', errForbidden: 'このリソースにアクセスする権限がありません。', errPaymentRequired: 'クレジットが不足しています。料金ページでチャージしてください。', errServer: 'サーバーエラー。後でもう一度お試しください。', errGeneric: 'エラーが発生しました。再試行してください。', dismissError: '閉じる', retry: '再試行', loadingDots: '読み込み中…', resultLabels: { headline: '見出し', body: '本文', cta: 'CTA', hook: 'フック', reason: '理由', reasoning: '推論', description: '説明', scenario: 'シナリオ', sensoryDetails: '感覚的詳細', emotionalPayoff: '感情的報酬', psychologicalPrinciple: '心理的原理', timing: 'タイミング', frictionRemoval: '摩擦の除去', whyNotTheOthers: '他ではない理由', adCopy: '広告コピー', visualizationPrompt: 'ビジュアライゼーションプロンプト', desiredOutcome: '望ましい結果' }, skipToContent: 'コンテンツにスキップ' },
     userMenu: {
       account: 'アカウント',
       signOut: 'サインアウト',
@@ -6098,6 +6098,8 @@ export const jaMessages = {
     down: 'Down',
     refresh: '更新',
     fetchError: 'ヘルスステータスの取得に失敗しました',
+    latencyMs: 'ms',
+    noData: '—',
   },
   observability: {
     title: 'オブザーバビリティ',
@@ -6126,6 +6128,9 @@ export const jaMessages = {
     totalUsers: '総ユーザー数',
     newInRange: '新規',
     generatedAt: '生成日時:',
+    range24h: '24時間',
+    range7d: '7日',
+    range30d: '30日',
   },
 };
 

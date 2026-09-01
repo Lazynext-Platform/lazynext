@@ -215,7 +215,7 @@ export const deMessages = {
       generating: 'Generierung…',
       failed: 'Fehlgeschlagen (erstattet)',
     },
-    common: { signIn: 'Anmelden', signOut: 'Abmelden', credits: 'Guthaben', language: 'Sprache', switchLanguage: 'Sprache wechseln', currency: 'Währung', cookieConsent: 'Cookie-Einwilligung', new: 'NEU', poweredBy: 'Unterstützt von', back: '← Zurück', backToLazynext: '← Lazynext', close: 'Schließen', errNetwork: 'Netzwerkfehler. Überprüfen Sie Ihre Verbindung und versuchen Sie es erneut.', errUnauthorized: 'Ihre Sitzung ist abgelaufen. Bitte melden Sie sich erneut an.', errNotFound: 'Die angeforderte Ressource wurde nicht gefunden.', errForbidden: 'Sie haben keinen Zugriff auf diese Ressource.', errPaymentRequired: 'Nicht genügend Guthaben. Bitte auf der Preisseite aufladen.', errServer: 'Serverfehler. Bitte versuchen Sie es später erneut.', errGeneric: 'Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut.', dismissError: 'Schließen', retry: 'Erneut versuchen', loadingDots: 'Laden…', resultLabels: { headline: 'Überschrift', body: 'Textkörper', cta: 'CTA', hook: 'Aufhänger', reason: 'Grund', description: 'Beschreibung', scenario: 'Szenario', sensoryDetails: 'Sinnliche Details', emotionalPayoff: 'Emotionale Belohnung', psychologicalPrinciple: 'Psychologisches Prinzip', timing: 'Zeitpunkt', frictionRemoval: 'Reibungsverringerung', whyNotTheOthers: 'Warum nicht die anderen', adCopy: 'Werbetext', visualizationPrompt: 'Visualisierungs-Prompt', desiredOutcome: 'Gewünschtes Ergebnis' }, skipToContent: 'Zum Inhalt springen' },
+    common: { signIn: 'Anmelden', signOut: 'Abmelden', credits: 'Guthaben', creditsLower: 'Credits', language: 'Sprache', switchLanguage: 'Sprache wechseln', currency: 'Währung', cookieConsent: 'Cookie-Einwilligung', new: 'NEU', poweredBy: 'Unterstützt von', back: '← Zurück', backToLazynext: '← Lazynext', close: 'Schließen', errNetwork: 'Netzwerkfehler. Überprüfen Sie Ihre Verbindung und versuchen Sie es erneut.', errUnauthorized: 'Ihre Sitzung ist abgelaufen. Bitte melden Sie sich erneut an.', errNotFound: 'Die angeforderte Ressource wurde nicht gefunden.', errForbidden: 'Sie haben keinen Zugriff auf diese Ressource.', errPaymentRequired: 'Nicht genügend Guthaben. Bitte auf der Preisseite aufladen.', errServer: 'Serverfehler. Bitte versuchen Sie es später erneut.', errGeneric: 'Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut.', dismissError: 'Schließen', retry: 'Erneut versuchen', loadingDots: 'Laden…', resultLabels: { headline: 'Überschrift', body: 'Textkörper', cta: 'CTA', hook: 'Aufhänger', reason: 'Grund', reasoning: 'Begründung', description: 'Beschreibung', scenario: 'Szenario', sensoryDetails: 'Sinnliche Details', emotionalPayoff: 'Emotionale Belohnung', psychologicalPrinciple: 'Psychologisches Prinzip', timing: 'Zeitpunkt', frictionRemoval: 'Reibungsverringerung', whyNotTheOthers: 'Warum nicht die anderen', adCopy: 'Werbetext', visualizationPrompt: 'Visualisierungs-Prompt', desiredOutcome: 'Gewünschtes Ergebnis' }, skipToContent: 'Zum Inhalt springen' },
     userMenu: {
       account: 'Konto',
       signOut: 'Abmelden',
@@ -6096,6 +6096,8 @@ export const deMessages = {
     down: 'Down',
     refresh: 'Aktualisieren',
     fetchError: 'Statusabfrage fehlgeschlagen',
+    latencyMs: 'ms',
+    noData: '—',
   },
   observability: {
     title: 'Observability',
@@ -6124,6 +6126,9 @@ export const deMessages = {
     totalUsers: 'Gesamte Benutzer',
     newInRange: 'Neu',
     generatedAt: 'Erstellt am:',
+    range24h: '24h',
+    range7d: '7T',
+    range30d: '30T',
   },
 };
 

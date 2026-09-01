@@ -197,7 +197,7 @@ export default function MoodBoardGeneratorPage() {
             {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
             {loading
               ? t('moodBoardGenerator.generating')
-              : `${t('moodBoardGenerator.generate')} (${CREDIT_COST} credits)`}
+              : `${t('moodBoardGenerator.generate')} (${CREDIT_COST} ${t('common.creditsLower')})`}
           </button>
         </div>
 

@@ -232,7 +232,7 @@ export default function CreativeAdVisualHierarchyStrategistPage() {
             {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
             {loading
               ? t('creativeAdVisualHierarchyStrategist.generating')
-              : `${t('creativeAdVisualHierarchyStrategist.generate')} (${CREDIT_COST} credits)`}
+              : `${t('creativeAdVisualHierarchyStrategist.generate')} (${CREDIT_COST} ${t('common.creditsLower')})`}
           </button>
         </div>
 

@@ -222,7 +222,7 @@ export default function CreativeAdTransformationArcDesignerPage() {
             {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
             {loading
               ? t('creativeAdTransformationArcDesigner.generating')
-              : `${t('creativeAdTransformationArcDesigner.generate')} (${CREDIT_COST} credits)`}
+              : `${t('creativeAdTransformationArcDesigner.generate')} (${CREDIT_COST} ${t('common.creditsLower')})`}
           </button>
         </div>
 

@@ -212,7 +212,7 @@ export default function AdMusicMoodMatcherPage() {
             className="rounded-lg bg-brand-accent px-4 py-2 text-sm font-medium text-white hover:opacity-90 disabled:opacity-50 flex items-center gap-2"
           >
             {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
-            {loading ? t('adMusicMoodMatcher.generating') : `${t('adMusicMoodMatcher.generate')} (${CREDIT_COST} credits)`}
+            {loading ? t('adMusicMoodMatcher.generating') : `${t('adMusicMoodMatcher.generate')} (${CREDIT_COST} ${t('common.creditsLower')})`}
           </button>
         </div>
 

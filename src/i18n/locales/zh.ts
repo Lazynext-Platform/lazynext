@@ -215,7 +215,7 @@ export const zhMessages = {
       generating: '生成中…',
       failed: '失败(已退款)',
     },
-    common: { signIn: '登录', signOut: '退出登录', credits: '积分', language: '语言', switchLanguage: '切换语言', currency: '货币', cookieConsent: 'Cookie 同意', new: '新', poweredBy: '技术支持', back: '← 返回', backToLazynext: '← Lazynext', close: '关闭', errNetwork: '网络错误。请检查网络连接后重试。', errUnauthorized: '会话已过期，请重新登录。', errNotFound: '请求的资源未找到。', errForbidden: '您没有访问此资源的权限。', errPaymentRequired: '积分不足，请在定价页面充值。', errServer: '服务器错误，请稍后重试。', errGeneric: '出现问题，请重试。', dismissError: '关闭', retry: '重试', loadingDots: '加载中…', resultLabels: { headline: '标题', body: '正文', cta: 'CTA', hook: '钩子', reason: '原因', description: '描述', scenario: '场景', sensoryDetails: '感官细节', emotionalPayoff: '情感回报', psychologicalPrinciple: '心理学原理', timing: '时机', frictionRemoval: '消除摩擦', whyNotTheOthers: '为何不选其他', adCopy: '广告文案', visualizationPrompt: '可视化提示', desiredOutcome: '期望结果' }, skipToContent: '跳到内容' },
+    common: { signIn: '登录', signOut: '退出登录', credits: '积分', creditsLower: '积分', language: '语言', switchLanguage: '切换语言', currency: '货币', cookieConsent: 'Cookie 同意', new: '新', poweredBy: '技术支持', back: '← 返回', backToLazynext: '← Lazynext', close: '关闭', errNetwork: '网络错误。请检查网络连接后重试。', errUnauthorized: '会话已过期，请重新登录。', errNotFound: '请求的资源未找到。', errForbidden: '您没有访问此资源的权限。', errPaymentRequired: '积分不足，请在定价页面充值。', errServer: '服务器错误，请稍后重试。', errGeneric: '出现问题，请重试。', dismissError: '关闭', retry: '重试', loadingDots: '加载中…', resultLabels: { headline: '标题', body: '正文', cta: 'CTA', hook: '钩子', reason: '原因', reasoning: '推理', description: '描述', scenario: '场景', sensoryDetails: '感官细节', emotionalPayoff: '情感回报', psychologicalPrinciple: '心理学原理', timing: '时机', frictionRemoval: '消除摩擦', whyNotTheOthers: '为何不选其他', adCopy: '广告文案', visualizationPrompt: '可视化提示', desiredOutcome: '期望结果' }, skipToContent: '跳到内容' },
     userMenu: {
       account: '账户',
       signOut: '退出登录',
@@ -6096,6 +6096,8 @@ export const zhMessages = {
     down: 'Down',
     refresh: '刷新',
     fetchError: '获取健康状态失败',
+    latencyMs: 'ms',
+    noData: '—',
   },
   observability: {
     title: '可观测性',
@@ -6124,6 +6126,9 @@ export const zhMessages = {
     totalUsers: '总用户数',
     newInRange: '新增',
     generatedAt: '生成时间：',
+    range24h: '24小时',
+    range7d: '7天',
+    range30d: '30天',
   },
 };
 

@@ -260,7 +260,7 @@ export const enMessages = {
       colPlatform: 'Platform', colHook: 'Hook', colAngle: 'Angle', colImpressions: 'Impressions', colCtr: 'CTR', colRoas: 'ROAS', colRevenue: 'Revenue',
       statCampaigns: 'campaigns', statCreatives: 'creatives', statActive: 'active',
     },
-    common: { signIn: 'Sign in', signOut: 'Sign out', credits: 'Credits', language: 'Language', switchLanguage: 'Switch language', currency: 'Currency', cookieConsent: 'Cookie consent', new: 'NEW', poweredBy: 'Powered by', back: '← Back', backToLazynext: '← Lazynext', close: 'Close', errNetwork: 'Network error. Please check your connection and try again.', errUnauthorized: 'Your session has expired. Please sign in again.', errForbidden: 'You do not have access to this resource.', errNotFound: 'The requested resource was not found.', errPaymentRequired: 'Not enough credits. Please top up on the pricing page.', errServer: 'Server error. Please try again later.', errGeneric: 'Something went wrong. Please try again.', dismissError: 'Dismiss', retry: 'Retry', loadingDots: 'Loading…', resultLabels: { headline: 'Headline', body: 'Body', cta: 'CTA', hook: 'Hook', reason: 'Reason', description: 'Description', scenario: 'Scenario', sensoryDetails: 'Sensory Details', emotionalPayoff: 'Emotional Payoff', psychologicalPrinciple: 'Psychological Principle', timing: 'Timing', frictionRemoval: 'Friction Removal', whyNotTheOthers: 'Why Not the Others', adCopy: 'Ad Copy', visualizationPrompt: 'Visualization Prompt', desiredOutcome: 'Desired Outcome' }, skipToContent: 'Skip to content' },
+    common: { signIn: 'Sign in', signOut: 'Sign out', credits: 'Credits', creditsLower: 'credits', language: 'Language', switchLanguage: 'Switch language', currency: 'Currency', cookieConsent: 'Cookie consent', new: 'NEW', poweredBy: 'Powered by', back: '← Back', backToLazynext: '← Lazynext', close: 'Close', errNetwork: 'Network error. Please check your connection and try again.', errUnauthorized: 'Your session has expired. Please sign in again.', errForbidden: 'You do not have access to this resource.', errNotFound: 'The requested resource was not found.', errPaymentRequired: 'Not enough credits. Please top up on the pricing page.', errServer: 'Server error. Please try again later.', errGeneric: 'Something went wrong. Please try again.', dismissError: 'Dismiss', retry: 'Retry', loadingDots: 'Loading…', resultLabels: { headline: 'Headline', body: 'Body', cta: 'CTA', hook: 'Hook', reason: 'Reason', reasoning: 'Reasoning', description: 'Description', scenario: 'Scenario', sensoryDetails: 'Sensory Details', emotionalPayoff: 'Emotional Payoff', psychologicalPrinciple: 'Psychological Principle', timing: 'Timing', frictionRemoval: 'Friction Removal', whyNotTheOthers: 'Why Not the Others', adCopy: 'Ad Copy', visualizationPrompt: 'Visualization Prompt', desiredOutcome: 'Desired Outcome' }, skipToContent: 'Skip to content' },
     userMenu: {
       account: 'Account',
       signOut: 'Sign out',
@@ -6742,6 +6742,8 @@ export const enMessages = {
     down: 'Down',
     refresh: 'Refresh',
     fetchError: 'Failed to fetch health',
+    latencyMs: 'ms',
+    noData: '—',
   },
   observability: {
     title: 'Observability',
@@ -6770,6 +6772,9 @@ export const enMessages = {
     totalUsers: 'Total Users',
     newInRange: 'New',
     generatedAt: 'Generated at:',
+    range24h: '24h',
+    range7d: '7d',
+    range30d: '30d',
   },
 };
 

@@ -234,7 +234,7 @@ export default function CreativeAdCuriosityGapDesignerPage() {
             {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
             {loading
               ? t('creativeAdCuriosityGapDesigner.generating')
-              : `${t('creativeAdCuriosityGapDesigner.generate')} (${CREDIT_COST} credits)`}
+              : `${t('creativeAdCuriosityGapDesigner.generate')} (${CREDIT_COST} ${t('common.creditsLower')})`}
           </button>
         </div>
 

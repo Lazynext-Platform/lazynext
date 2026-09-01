@@ -231,7 +231,7 @@ export default function AdCreativeEmotionalPivotDesignerPage() {
             {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
             {loading
               ? t('adCreativeEmotionalPivotDesigner.generating')
-              : `${t('adCreativeEmotionalPivotDesigner.generate')} (${CREDIT_COST} credits)`}
+              : `${t('adCreativeEmotionalPivotDesigner.generate')} (${CREDIT_COST} ${t('common.creditsLower')})`}
           </button>
         </div>
 
