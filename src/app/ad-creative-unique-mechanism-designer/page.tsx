@@ -112,7 +112,7 @@ export default function AdCreativeUniqueMechanismDesignerPage() {
               type="text"
               value={productOrBrand}
               onChange={(e) => setProductOrBrand(e.target.value)}
-              placeholder="e.g., DTC skincare brand selling a vitamin C serum"
+              placeholder={t('uniqueMechanismDesigner.productOrBrandPh')}
               maxLength={2000}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
               disabled={loading}
@@ -121,13 +121,13 @@ export default function AdCreativeUniqueMechanismDesignerPage() {
 
           <div>
             <label htmlFor="acumdDesc" className="block text-sm font-medium mb-1">
-              {t('uniqueMechanismDesigner.productOrBrand')}
+              {t('uniqueMechanismDesigner.productDescription')}
             </label>
             <textarea
               id="acumdDesc"
               value={productDescription}
               onChange={(e) => setProductDescription(e.target.value)}
-              placeholder="e.g., A 15% L-ascorbic acid serum with a patented delivery system that penetrates deeper than standard formulas..."
+              placeholder={t('uniqueMechanismDesigner.productDescriptionPh')}
               rows={4}
               maxLength={4000}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent resize-y"
@@ -144,7 +144,7 @@ export default function AdCreativeUniqueMechanismDesignerPage() {
               type="text"
               value={targetAudience}
               onChange={(e) => setTargetAudience(e.target.value)}
-              placeholder="e.g., Women 25-40 interested in skincare and wellness"
+              placeholder={t('uniqueMechanismDesigner.targetAudiencePh')}
               maxLength={2000}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
               disabled={loading}

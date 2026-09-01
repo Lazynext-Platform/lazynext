@@ -129,7 +129,7 @@ export default function AdCreativeEmotionSequencerPage() {
               type="text"
               value={productOrBrand}
               onChange={(e) => setProductOrBrand(e.target.value)}
-              placeholder="e.g., DTC skincare brand selling a vitamin C serum"
+              placeholder={t('adCreativeEmotionSequencer.productOrBrandPh')}
               maxLength={2000}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
               disabled={loading}
@@ -144,7 +144,7 @@ export default function AdCreativeEmotionSequencerPage() {
               id="acesContent"
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              placeholder="e.g., Tired of dull skin? Our vitamin C serum brightens in just 7 days..."
+              placeholder={t('adCreativeEmotionSequencer.contentPh')}
               rows={4}
               maxLength={2000}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent resize-y"
@@ -161,7 +161,7 @@ export default function AdCreativeEmotionSequencerPage() {
               type="text"
               value={desiredJourney}
               onChange={(e) => setDesiredJourney(e.target.value)}
-              placeholder="e.g., curiosity → surprise → joy → trust"
+              placeholder={t('adCreativeEmotionSequencer.desiredJourneyPh')}
               maxLength={2000}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
               disabled={loading}
@@ -181,7 +181,7 @@ export default function AdCreativeEmotionSequencerPage() {
                 }`}
                 disabled={loading}
               >
-                any
+                {t('adCreativeEmotionSequencer.anyPlatform')}
               </button>
               {PLATFORMS.map((p) => (
                 <button
@@ -207,7 +207,7 @@ export default function AdCreativeEmotionSequencerPage() {
             className="rounded-lg bg-brand-accent px-4 py-2 text-sm font-medium text-white hover:opacity-90 disabled:opacity-50 flex items-center gap-2"
           >
             {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
-            {loading ? t('adCreativeEmotionSequencer.generating') : `${t('adCreativeEmotionSequencer.generate')} (${CREDIT_COST} credits)`}
+            {loading ? t('adCreativeEmotionSequencer.generating') : `${t('adCreativeEmotionSequencer.generate')} (${CREDIT_COST} ${t('adCreativeEmotionSequencer.credits')})`}
           </button>
         </div>
 
@@ -255,7 +255,7 @@ export default function AdCreativeEmotionSequencerPage() {
                 <Activity className="w-8 h-8 text-brand-accent" />
                 <div>
                   <p className="text-xs font-medium text-fg-muted">{t('adCreativeEmotionSequencer.resonanceScore')}</p>
-                  <p className={`text-3xl font-bold ${scoreColor(result.analysis.resonanceScore)}`}>{result.analysis.resonanceScore}<span className="text-sm text-fg-muted">/100</span></p>
+                  <p className={`text-3xl font-bold ${scoreColor(result.analysis.resonanceScore)}`}>{result.analysis.resonanceScore}<span className="text-sm text-fg-muted">{t('adCreativeEmotionSequencer.scoreMax')}</span></p>
                 </div>
               </div>
               <div className="mt-3 h-2 rounded-full bg-bg-secondary overflow-hidden">
@@ -290,23 +290,23 @@ export default function AdCreativeEmotionSequencerPage() {
                         />
                       </div>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                        <p className="text-xs text-fg-muted"><span className="font-medium text-fg">Trigger:</span> {beat.trigger}</p>
-                        <p className="text-xs text-fg-muted"><span className="font-medium text-fg">Duration:</span> {beat.duration}</p>
+                        <p className="text-xs text-fg-muted"><span className="font-medium text-fg">{t('adCreativeEmotionSequencer.trigger')}</span> {beat.trigger}</p>
+                        <p className="text-xs text-fg-muted"><span className="font-medium text-fg">{t('adCreativeEmotionSequencer.duration')}</span> {beat.duration}</p>
                       </div>
                     </div>
                   ))}
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 border-t border-border">
                   <div>
-                    <p className="text-xs font-medium text-fg-muted mb-1">Arc</p>
+                    <p className="text-xs font-medium text-fg-muted mb-1">{t('adCreativeEmotionSequencer.arc')}</p>
                     <p className="text-xs text-fg">{result.analysis.sequence.arc}</p>
                   </div>
                   <div>
-                    <p className="text-xs font-medium text-fg-muted mb-1">Climax</p>
+                    <p className="text-xs font-medium text-fg-muted mb-1">{t('adCreativeEmotionSequencer.climax')}</p>
                     <p className="text-xs text-fg">{result.analysis.sequence.climax}</p>
                   </div>
                   <div>
-                    <p className="text-xs font-medium text-fg-muted mb-1">Resolution</p>
+                    <p className="text-xs font-medium text-fg-muted mb-1">{t('adCreativeEmotionSequencer.resolution')}</p>
                     <p className="text-xs text-fg">{result.analysis.sequence.resolution}</p>
                   </div>
                 </div>

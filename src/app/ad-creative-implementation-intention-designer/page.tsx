@@ -115,7 +115,7 @@ export default function AdCreativeImplementationIntentionDesignerPage() {
               type="text"
               value={productOrBrand}
               onChange={(e) => setProductOrBrand(e.target.value)}
-              placeholder="e.g., DTC skincare brand selling a vitamin C serum"
+              placeholder={t('implementationIntentionDesigner.productOrBrandPh')}
               maxLength={2000}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
               disabled={loading}
@@ -131,7 +131,7 @@ export default function AdCreativeImplementationIntentionDesignerPage() {
               type="text"
               value={targetAudience}
               onChange={(e) => setTargetAudience(e.target.value)}
-              placeholder="e.g., Women 25-40 interested in skincare and wellness"
+              placeholder={t('implementationIntentionDesigner.targetAudiencePh')}
               maxLength={2000}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
               disabled={loading}
@@ -140,14 +140,14 @@ export default function AdCreativeImplementationIntentionDesignerPage() {
 
           <div>
             <label htmlFor="aciidAction" className="block text-sm font-medium mb-1">
-              Desired Action
+              {t('implementationIntentionDesigner.desiredAction')}
             </label>
             <input
               id="aciidAction"
               type="text"
               value={desiredAction}
               onChange={(e) => setDesiredAction(e.target.value)}
-              placeholder="e.g., Purchase the vitamin C serum from the website"
+              placeholder={t('implementationIntentionDesigner.desiredActionPh')}
               maxLength={2000}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
               disabled={loading}
@@ -156,13 +156,13 @@ export default function AdCreativeImplementationIntentionDesignerPage() {
 
           <div>
             <label htmlFor="aciidContext" className="block text-sm font-medium mb-1">
-              Context
+              {t('implementationIntentionDesigner.context')}
             </label>
             <textarea
               id="aciidContext"
               value={context}
               onChange={(e) => setContext(e.target.value)}
-              placeholder="e.g., Viewers are watching a TikTok ad during their evening scroll. They're interested but easily distracted and tend to bookmark things they never return to..."
+              placeholder={t('implementationIntentionDesigner.contextPh')}
               rows={4}
               maxLength={4000}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent resize-y"
@@ -222,7 +222,7 @@ export default function AdCreativeImplementationIntentionDesignerPage() {
               <div className="rounded-lg border border-brand-accent/30 bg-brand-accent/10 p-3 flex items-center gap-2">
                 <Star className="w-4 h-4 text-brand-accent flex-shrink-0" />
                 <span className="text-sm text-fg">
-                  Best plan: <span className="font-medium">{result.bestPlan.replace(/_/g, ' ')}</span>
+                  {t('implementationIntentionDesigner.bestPlan')} <span className="font-medium">{result.bestPlan.replace(/_/g, ' ')}</span>
                 </span>
               </div>
             )}

@@ -119,7 +119,7 @@ export default function AdCreativeMentalAccountingDesignerPage() {
               type="text"
               value={productOrBrand}
               onChange={(e) => setProductOrBrand(e.target.value)}
-              placeholder="e.g., DTC skincare brand selling a vitamin C serum"
+              placeholder={t('mentalAccountingDesigner.productOrBrandPh')}
               maxLength={2000}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
               disabled={loading}
@@ -128,14 +128,14 @@ export default function AdCreativeMentalAccountingDesignerPage() {
 
           <div>
             <label htmlFor="acmadPrice" className="block text-sm font-medium mb-1">
-              Price
+              {t('mentalAccountingDesigner.price')}
             </label>
             <input
               id="acmadPrice"
               type="text"
               value={price}
               onChange={(e) => setPrice(e.target.value)}
-              placeholder="e.g., $49"
+              placeholder={t('mentalAccountingDesigner.pricePh')}
               maxLength={200}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
               disabled={loading}
@@ -151,7 +151,7 @@ export default function AdCreativeMentalAccountingDesignerPage() {
               type="text"
               value={targetAudience}
               onChange={(e) => setTargetAudience(e.target.value)}
-              placeholder="e.g., Women 25-40 interested in skincare and wellness"
+              placeholder={t('mentalAccountingDesigner.targetAudiencePh')}
               maxLength={2000}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
               disabled={loading}
@@ -210,7 +210,7 @@ export default function AdCreativeMentalAccountingDesignerPage() {
               <div className="rounded-lg border border-brand-accent/30 bg-brand-accent/10 p-3 flex items-center gap-2">
                 <Star className="w-4 h-4 text-brand-accent flex-shrink-0" />
                 <span className="text-sm text-fg">
-                  Best reframe: <span className="font-medium">{result.bestReframe.replace(/_/g, ' ')}</span>
+                  {t('mentalAccountingDesigner.bestReframe')} <span className="font-medium">{result.bestReframe.replace(/_/g, ' ')}</span>
                 </span>
               </div>
             )}
@@ -227,15 +227,15 @@ export default function AdCreativeMentalAccountingDesignerPage() {
                       {reframe.type.replace(/_/g, ' ')}
                     </span>
                     <div>
-                      <p className="text-xs font-medium text-fg-muted mb-0.5">Frame</p>
+                      <p className="text-xs font-medium text-fg-muted mb-0.5">{t('mentalAccountingDesigner.frame')}</p>
                       <p className="text-sm text-fg">{reframe.frame}</p>
                     </div>
                     <div>
-                      <p className="text-xs font-medium text-fg-muted mb-0.5">Calculation</p>
+                      <p className="text-xs font-medium text-fg-muted mb-0.5">{t('mentalAccountingDesigner.calculation')}</p>
                       <p className="text-sm text-fg font-mono">{reframe.calculation}</p>
                     </div>
                     <div>
-                      <p className="text-xs font-medium text-fg-muted mb-0.5">Psychological Effect</p>
+                      <p className="text-xs font-medium text-fg-muted mb-0.5">{t('mentalAccountingDesigner.psychologicalEffect')}</p>
                       <p className="text-sm text-fg">{reframe.psychologicalEffect}</p>
                     </div>
                   </div>

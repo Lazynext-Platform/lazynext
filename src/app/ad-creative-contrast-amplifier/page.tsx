@@ -136,7 +136,7 @@ export default function AdCreativeContrastAmplifierPage() {
               type="text"
               value={productOrBrand}
               onChange={(e) => setProductOrBrand(e.target.value)}
-              placeholder="e.g., DTC skincare brand selling a vitamin C serum"
+              placeholder={t('adCreativeContrastAmplifier.productOrBrandPh')}
               maxLength={2000}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
               disabled={loading}
@@ -151,7 +151,7 @@ export default function AdCreativeContrastAmplifierPage() {
               id="accaContent"
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              placeholder="e.g., Tired of dull skin? Our vitamin C serum brightens in just 7 days..."
+              placeholder={t('adCreativeContrastAmplifier.contentPh')}
               rows={4}
               maxLength={2000}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent resize-y"
@@ -193,7 +193,7 @@ export default function AdCreativeContrastAmplifierPage() {
                 }`}
                 disabled={loading}
               >
-                any
+                {t('adCreativeContrastAmplifier.anyPlatform')}
               </button>
               {PLATFORMS.map((p) => (
                 <button
@@ -219,7 +219,7 @@ export default function AdCreativeContrastAmplifierPage() {
             className="rounded-lg bg-brand-accent px-4 py-2 text-sm font-medium text-white hover:opacity-90 disabled:opacity-50 flex items-center gap-2"
           >
             {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
-            {loading ? t('adCreativeContrastAmplifier.generating') : `${t('adCreativeContrastAmplifier.generate')} (${CREDIT_COST} credits)`}
+            {loading ? t('adCreativeContrastAmplifier.generating') : `${t('adCreativeContrastAmplifier.generate')} (${CREDIT_COST} ${t('adCreativeContrastAmplifier.credits')})`}
           </button>
         </div>
 
@@ -281,7 +281,7 @@ export default function AdCreativeContrastAmplifierPage() {
                   <div>
                     <p className="text-xs font-medium text-fg-muted">{t('adCreativeContrastAmplifier.contrastScore')}</p>
                     <p className={`text-3xl font-bold ${scoreColor(result.analysis.contrastScore)}`}>
-                      {result.analysis.contrastScore}<span className="text-sm text-fg-muted">/100</span>
+                      {result.analysis.contrastScore}<span className="text-sm text-fg-muted">{t('adCreativeContrastAmplifier.scoreMax')}</span>
                     </p>
                   </div>
                 </div>
@@ -310,11 +310,11 @@ export default function AdCreativeContrastAmplifierPage() {
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                       <div className="rounded border border-border bg-bg-card p-2">
-                        <p className="text-[10px] uppercase tracking-wide text-fg-muted mb-1">Before</p>
+                        <p className="text-[10px] uppercase tracking-wide text-fg-muted mb-1">{t('adCreativeContrastAmplifier.before')}</p>
                         <p className="text-xs text-fg">{el.before}</p>
                       </div>
                       <div className="rounded border border-border bg-bg-card p-2">
-                        <p className="text-[10px] uppercase tracking-wide text-fg-muted mb-1">After</p>
+                        <p className="text-[10px] uppercase tracking-wide text-fg-muted mb-1">{t('adCreativeContrastAmplifier.after')}</p>
                         <p className="text-xs text-fg">{el.after}</p>
                       </div>
                     </div>

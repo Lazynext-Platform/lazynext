@@ -122,7 +122,7 @@ export default function AdCreativePainOfPayingDesignerPage() {
               type="text"
               value={productOrBrand}
               onChange={(e) => setProductOrBrand(e.target.value)}
-              placeholder="e.g., DTC skincare brand selling a vitamin C serum"
+              placeholder={t('painOfPayingDesigner.productOrBrandPh')}
               maxLength={2000}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
               disabled={loading}
@@ -131,14 +131,14 @@ export default function AdCreativePainOfPayingDesignerPage() {
 
           <div>
             <label htmlFor="acppdPrice" className="block text-sm font-medium mb-1">
-              Price
+              {t('painOfPayingDesigner.price')}
             </label>
             <input
               id="acppdPrice"
               type="text"
               value={price}
               onChange={(e) => setPrice(e.target.value)}
-              placeholder="e.g., $49"
+              placeholder={t('painOfPayingDesigner.pricePh')}
               maxLength={200}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
               disabled={loading}
@@ -154,7 +154,7 @@ export default function AdCreativePainOfPayingDesignerPage() {
               type="text"
               value={targetAudience}
               onChange={(e) => setTargetAudience(e.target.value)}
-              placeholder="e.g., Women 25-40 interested in skincare and wellness"
+              placeholder={t('painOfPayingDesigner.targetAudiencePh')}
               maxLength={2000}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
               disabled={loading}
@@ -163,13 +163,13 @@ export default function AdCreativePainOfPayingDesignerPage() {
 
           <div>
             <label htmlFor="acppdFriction" className="block text-sm font-medium mb-1">
-              Payment Friction Points
+              {t('painOfPayingDesigner.paymentFrictionPoints')}
             </label>
             <textarea
               id="acppdFriction"
               value={paymentFrictionPoints}
               onChange={(e) => setPaymentFrictionPoints(e.target.value)}
-              placeholder="e.g., Viewers hesitate at $49 because they've been burned by skincare products before. They worry it won't work and they'll waste money..."
+              placeholder={t('painOfPayingDesigner.paymentFrictionPh')}
               rows={4}
               maxLength={4000}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent resize-y"
@@ -229,7 +229,7 @@ export default function AdCreativePainOfPayingDesignerPage() {
               <div className="rounded-lg border border-brand-accent/30 bg-brand-accent/10 p-3 flex items-center gap-2">
                 <Star className="w-4 h-4 text-brand-accent flex-shrink-0" />
                 <span className="text-sm text-fg">
-                  Best strategy: <span className="font-medium">{result.bestStrategy.replace(/_/g, ' ')}</span>
+                  {t('painOfPayingDesigner.bestStrategy')} <span className="font-medium">{result.bestStrategy.replace(/_/g, ' ')}</span>
                 </span>
               </div>
             )}

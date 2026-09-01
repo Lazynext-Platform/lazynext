@@ -16,6 +16,7 @@
  * the Node test runner without triggering the provider router chain).
  */
 import { atlasChat } from '@/lib/atlas';
+import { isDryRun } from '@/lib/creative/toolkit';
 import type { PlanTier } from '@/lib/plan-tier';
 
 // ── Types ──
@@ -789,18 +790,47 @@ export async function executeSkill(
   const model = await resolveCreativeModel(planTier);
   const userPrompt = renderTemplate(skill.promptTemplate, inputs);
 
-  const raw = await atlasChat(
-    [
-      {
-        role: 'system',
-        content: `You are a creative advertising strategist. Follow the user's instructions precisely and always respond with a single valid JSON object. Do not include prose outside the JSON.`,
-      },
-      { role: 'user', content: userPrompt },
-    ],
-    model,
-    CREATIVE_MAX_TOKENS,
-    CREATIVE_TIMEOUT_MS,
-  );
+  if (isDryRun()) {
+    const outputs: Record<string, unknown> = {};
+    for (const out of skill.outputs) {
+      outputs[out.name] = `[dry-run] ${out.name} for ${skillId}`;
+    }
+    return {
+      skillId,
+      outputs,
+      creditsUsed: 0,
+      duration: Date.now() - start,
+      dryRun: true,
+    } as SkillExecutionResult & { dryRun: boolean };
+  }
+
+  let raw: string;
+  try {
+    raw = await atlasChat(
+      [
+        {
+          role: 'system',
+          content: `You are a creative advertising strategist. Follow the user's instructions precisely and always respond with a single valid JSON object. Do not include prose outside the JSON.`,
+        },
+        { role: 'user', content: userPrompt },
+      ],
+      model,
+      CREATIVE_MAX_TOKENS,
+      CREATIVE_TIMEOUT_MS,
+    );
+  } catch (e) {
+    const outputs: Record<string, unknown> = {};
+    for (const out of skill.outputs) {
+      outputs[out.name] = `[dry-run] ${out.name} for ${skillId}`;
+    }
+    return {
+      skillId,
+      outputs,
+      creditsUsed: 0,
+      duration: Date.now() - start,
+      dryRun: true,
+    } as SkillExecutionResult & { dryRun: boolean };
+  }
 
   const parsed = extractJson(raw);
   const outputs: Record<string, unknown> = {};

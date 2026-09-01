@@ -141,7 +141,7 @@ export default function AdCreativeChoiceSimplifierDesignerPage() {
               type="text"
               value={productOrBrand}
               onChange={(e) => setProductOrBrand(e.target.value)}
-              placeholder="e.g., DTC skincare brand with 3 serum tiers"
+              placeholder={t('choiceSimplifierDesigner.productOrBrandPh')}
               maxLength={2000}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
               disabled={loading}
@@ -157,7 +157,7 @@ export default function AdCreativeChoiceSimplifierDesignerPage() {
               type="text"
               value={targetAudience}
               onChange={(e) => setTargetAudience(e.target.value)}
-              placeholder="e.g., Women 25-40 interested in skincare and wellness"
+              placeholder={t('choiceSimplifierDesigner.targetAudiencePh')}
               maxLength={2000}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
               disabled={loading}
@@ -167,20 +167,20 @@ export default function AdCreativeChoiceSimplifierDesignerPage() {
           {/* Options */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <label className="block text-sm font-medium">Options (min 2)</label>
+              <label className="block text-sm font-medium">{t('choiceSimplifierDesigner.options')}</label>
               <button
                 type="button"
                 onClick={addOption}
                 disabled={loading || options.length >= 20}
                 className="rounded-lg border border-border px-2.5 py-1 text-xs font-medium text-fg-muted hover:bg-hover flex items-center gap-1 disabled:opacity-50"
               >
-                <Plus className="w-3.5 h-3.5" /> Add Option
+                <Plus className="w-3.5 h-3.5" /> {t('choiceSimplifierDesigner.addOption')}
               </button>
             </div>
             {options.map((opt, i) => (
               <div key={i} className="rounded-lg border border-border bg-bg-card p-3 space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-medium text-fg-muted">Option {i + 1}</span>
+                  <span className="text-xs font-medium text-fg-muted">{t('choiceSimplifierDesigner.optionLabel', { n: i + 1 })}</span>
                   {options.length > 2 && (
                     <button
                       type="button"
@@ -196,7 +196,7 @@ export default function AdCreativeChoiceSimplifierDesignerPage() {
                   type="text"
                   value={opt.name}
                   onChange={(e) => updateOption(i, 'name', e.target.value)}
-                  placeholder="Option name (e.g., Starter Serum)"
+                  placeholder={t('choiceSimplifierDesigner.optionNamePh')}
                   maxLength={500}
                   className="w-full rounded-lg border border-border bg-bg-secondary px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
                   disabled={loading}
@@ -204,7 +204,7 @@ export default function AdCreativeChoiceSimplifierDesignerPage() {
                 <textarea
                   value={opt.description}
                   onChange={(e) => updateOption(i, 'description', e.target.value)}
-                  placeholder="Description (e.g., 10% vitamin C for beginners, gentle formula...)"
+                  placeholder={t('choiceSimplifierDesigner.optionDescriptionPh')}
                   rows={2}
                   maxLength={2000}
                   className="w-full rounded-lg border border-border bg-bg-secondary px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent resize-y"
@@ -214,7 +214,7 @@ export default function AdCreativeChoiceSimplifierDesignerPage() {
                   type="text"
                   value={opt.price}
                   onChange={(e) => updateOption(i, 'price', e.target.value)}
-                  placeholder="Price (e.g., $29)"
+                  placeholder={t('choiceSimplifierDesigner.optionPricePh')}
                   maxLength={200}
                   className="w-full rounded-lg border border-border bg-bg-secondary px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
                   disabled={loading}

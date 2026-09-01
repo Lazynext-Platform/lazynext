@@ -14,6 +14,7 @@ import {
   extractJson,
   asStr,
   asStrArr as toolkitAsStrArr,
+  isDryRun,
   CREATIVE_TIMEOUT_MS,
   CREATIVE_MAX_TOKENS,
 } from '@/lib/creative/toolkit';
@@ -685,10 +686,65 @@ export async function generateUgcAd(
   );
   parts.push('Output the UGC ad JSON now.');
 
-  const raw = await atlasChat(
-    [{ role: 'system', content: UGC_SYS_PROMPT }, { role: 'user', content: parts.join('\n') }],
-    resolveModel(planTier), CREATIVE_MAX_TOKENS, CREATIVE_TIMEOUT_MS,
-  );
+  if (isDryRun()) {
+    const scenes: UgcScene[] = template.structure.slice(0, 5).map((s, idx) => ({
+      sceneNumber: idx + 1,
+      durationSec: s.durationSec,
+      shotType: s.shotType,
+      description: `[dry-run] ${s.description}`,
+      textOverlay: undefined,
+      voiceover: undefined,
+      bRoll: undefined,
+    }));
+    return {
+      format: request.format,
+      platform: request.platform,
+      persona: request.persona,
+      scenes,
+      hookText: `[dry-run] Hook for ${request.format} UGC ad`,
+      scriptText: `[dry-run] Script for ${request.format} UGC ad`,
+      captionText: `[dry-run] Caption for ${request.format} UGC ad`,
+      hashtags,
+      callToAction: 'Link in bio',
+      estimatedDurationSec: scenes.reduce((sum, s) => sum + s.durationSec, 0) || targetDuration,
+      visualNotes: '[dry-run] Visual notes',
+      audioNotes: '[dry-run] Audio notes',
+      dryRun: true,
+    } as UgcAdResult & { dryRun: boolean };
+  }
+
+  let raw: string;
+  try {
+    raw = await atlasChat(
+      [{ role: 'system', content: UGC_SYS_PROMPT }, { role: 'user', content: parts.join('\n') }],
+      resolveModel(planTier), CREATIVE_MAX_TOKENS, CREATIVE_TIMEOUT_MS,
+    );
+  } catch {
+    const scenes: UgcScene[] = template.structure.slice(0, 5).map((s, idx) => ({
+      sceneNumber: idx + 1,
+      durationSec: s.durationSec,
+      shotType: s.shotType,
+      description: `[dry-run] ${s.description}`,
+      textOverlay: undefined,
+      voiceover: undefined,
+      bRoll: undefined,
+    }));
+    return {
+      format: request.format,
+      platform: request.platform,
+      persona: request.persona,
+      scenes,
+      hookText: `[dry-run] Hook for ${request.format} UGC ad`,
+      scriptText: `[dry-run] Script for ${request.format} UGC ad`,
+      captionText: `[dry-run] Caption for ${request.format} UGC ad`,
+      hashtags,
+      callToAction: 'Link in bio',
+      estimatedDurationSec: scenes.reduce((sum, s) => sum + s.durationSec, 0) || targetDuration,
+      visualNotes: '[dry-run] Visual notes',
+      audioNotes: '[dry-run] Audio notes',
+      dryRun: true,
+    } as UgcAdResult & { dryRun: boolean };
+  }
   const j = extractJson(raw);
 
   const scenes: UgcScene[] = (Array.isArray(j.scenes) ? j.scenes : [])

@@ -137,7 +137,7 @@ export default function AdCreativeHookStoryOfferDesignerPage() {
               type="text"
               value={productOrBrand}
               onChange={(e) => setProductOrBrand(e.target.value)}
-              placeholder="e.g., DTC skincare brand selling a vitamin C serum"
+              placeholder={t('hookStoryOfferDesigner.productOrBrandPh')}
               maxLength={2000}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
               disabled={loading}
@@ -153,7 +153,7 @@ export default function AdCreativeHookStoryOfferDesignerPage() {
               type="text"
               value={targetAudience}
               onChange={(e) => setTargetAudience(e.target.value)}
-              placeholder="e.g., Women 25-40 interested in skincare and wellness"
+              placeholder={t('hookStoryOfferDesigner.targetAudiencePh')}
               maxLength={2000}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
               disabled={loading}
@@ -173,7 +173,7 @@ export default function AdCreativeHookStoryOfferDesignerPage() {
                 }`}
                 disabled={loading}
               >
-                any
+                {t('hookStoryOfferDesigner.anyPlatform')}
               </button>
               {PLATFORMS.map((p) => (
                 <button

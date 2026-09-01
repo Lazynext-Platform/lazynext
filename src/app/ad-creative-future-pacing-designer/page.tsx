@@ -113,7 +113,7 @@ export default function AdCreativeFuturePacingDesignerPage() {
               type="text"
               value={productOrBrand}
               onChange={(e) => setProductOrBrand(e.target.value)}
-              placeholder="e.g., DTC skincare brand selling a vitamin C serum"
+              placeholder={t('futurePacingDesigner.productOrBrandPh')}
               maxLength={2000}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
               disabled={loading}
@@ -129,7 +129,7 @@ export default function AdCreativeFuturePacingDesignerPage() {
               type="text"
               value={targetAudience}
               onChange={(e) => setTargetAudience(e.target.value)}
-              placeholder="e.g., Women 25-40 interested in skincare and wellness"
+              placeholder={t('futurePacingDesigner.targetAudiencePh')}
               maxLength={2000}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
               disabled={loading}
@@ -138,14 +138,14 @@ export default function AdCreativeFuturePacingDesignerPage() {
 
           <div>
             <label htmlFor="acfpdOutcome" className="block text-sm font-medium mb-1">
-              Desired Outcome
+              {t('common.resultLabels.desiredOutcome')}
             </label>
             <input
               id="acfpdOutcome"
               type="text"
               value={desiredOutcome}
               onChange={(e) => setDesiredOutcome(e.target.value)}
-              placeholder="e.g., Brighter, more even skin tone within 2 weeks"
+              placeholder={t('futurePacingDesigner.desiredOutcomePh')}
               maxLength={2000}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
               disabled={loading}
@@ -249,7 +249,7 @@ export default function AdCreativeFuturePacingDesignerPage() {
             {/* Visualization Prompt */}
             <div className="rounded-lg border border-border bg-bg-card p-4 space-y-2">
               <p className="text-sm font-medium flex items-center gap-1">
-                <Brain className="w-4 h-4 text-success" /> Visualization Prompt
+                <Brain className="w-4 h-4 text-success" /> {t('common.resultLabels.visualizationPrompt')}
               </p>
               <p className="text-sm text-fg">{result.visualizationPrompt}</p>
             </div>
