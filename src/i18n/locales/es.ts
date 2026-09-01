@@ -209,6 +209,7 @@ export const esMessages = {
       upcomingDeployments: 'Despliegues Próximos (7 días)',
       calendarEmpty: 'Sin campañas ni creativos este mes.',
       colPlatform: 'Plataforma', colHook: 'Gancho', colAngle: 'Ángulo', colImpressions: 'Impresiones', colCtr: 'CTR', colRoas: 'ROAS', colRevenue: 'Ingresos',
+      statCampaigns: 'campañas', statCreatives: 'creativos', statActive: 'activos',
       title: 'Mis creaciones',
       empty: 'Aún no hay nada.',
       createFirst: 'Crea la primera',

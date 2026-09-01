@@ -56,15 +56,15 @@ export default function DashboardPage() {
     if (status !== 'authenticated') return;
     // Warm up the Worker/D1 connection before firing data requests
     warmupApi();
-    fetchWithRetry('/api/me').then((r) => r.json()).then((j) => setCredits(j.credits ?? 0)).catch(() => {});
+    fetchWithRetry('/api/me').then((r) => (r.ok ? r.json() : null)).then((j) => { if (j) setCredits(j.credits ?? 0); }).catch(() => {});
     fetchWithRetry('/api/creations', { cache: 'no-store' })
-      .then((r) => r.json())
+      .then((r) => (r.ok ? r.json() : { creations: [] }))
       .then((j) => setRecent(((j.creations || []) as Creation[]).slice(0, 4)))
       .catch(() => setRecent([]));
     Promise.all([
-      fetchWithRetry('/api/assets/products', { cache: 'no-store' }).then((r) => r.json()),
-      fetchWithRetry('/api/assets/avatars', { cache: 'no-store' }).then((r) => r.json()),
-      fetchWithRetry('/api/assets/brand-kits', { cache: 'no-store' }).then((r) => r.json()),
+      fetchWithRetry('/api/assets/products', { cache: 'no-store' }).then((r) => (r.ok ? r.json() : { products: [] })),
+      fetchWithRetry('/api/assets/avatars', { cache: 'no-store' }).then((r) => (r.ok ? r.json() : { avatars: [] })),
+      fetchWithRetry('/api/assets/brand-kits', { cache: 'no-store' }).then((r) => (r.ok ? r.json() : { brandKits: [] })),
     ])
       .then(([p, a, b]) => setCounts({
         products: (p.products || []).length,
@@ -73,16 +73,16 @@ export default function DashboardPage() {
       }))
       .catch(() => setCounts({ products: 0, avatars: 0, brandKits: 0 }));
     fetchWithRetry('/api/credits/analytics', { cache: 'no-store' })
-      .then((r) => r.json())
-      .then((j) => setAnalytics(j))
+      .then((r) => (r.ok ? r.json() : null))
+      .then((j) => { if (j) setAnalytics(j); })
       .catch(() => {});
     fetchWithRetry('/api/creative/leaderboard', { cache: 'no-store' })
-      .then((r) => r.json())
-      .then((j) => setLeaderboard(j))
+      .then((r) => (r.ok ? r.json() : null))
+      .then((j) => { if (j) setLeaderboard(j); })
       .catch(() => {});
     fetchWithRetry('/api/creative/calendar', { cache: 'no-store' })
-      .then((r) => r.json())
-      .then((j) => setCalendar(j))
+      .then((r) => (r.ok ? r.json() : null))
+      .then((j) => { if (j && j.stats) setCalendar(j); })
       .catch(() => {});
   }, [status]);
 
@@ -356,13 +356,15 @@ export default function DashboardPage() {
             )}
 
             {/* Stats */}
+            {calendar?.stats && (
             <div className="mt-3 flex gap-3 text-xs text-fg-faint">
-              <span>{calendar.stats.totalCampaigns} campaigns</span>
+              <span>{calendar.stats.totalCampaigns} {t('dashboard.statCampaigns')}</span>
               <span>·</span>
-              <span>{calendar.stats.totalCreatives} creatives</span>
+              <span>{calendar.stats.totalCreatives} {t('dashboard.statCreatives')}</span>
               <span>·</span>
-              <span className="text-success">{calendar.stats.activeCampaigns} active</span>
+              <span className="text-success">{calendar.stats.activeCampaigns} {t('dashboard.statActive')}</span>
             </div>
+            )}
           </div>
         )}
 

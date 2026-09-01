@@ -207,6 +207,7 @@ export const ptMessages = {
       upcomingDeployments: 'Implantações Próximas (7 dias)',
       calendarEmpty: 'Sem campanhas ou criativos este mês.',
       colPlatform: 'Plataforma', colHook: 'Gancho', colAngle: 'Ângulo', colImpressions: 'Impressões', colCtr: 'CTR', colRoas: 'ROAS', colRevenue: 'Receita',
+      statCampaigns: 'campanhas', statCreatives: 'criativos', statActive: 'ativos',
       title: 'Minhas criações',
       empty: 'Nada aqui ainda.',
       createFirst: 'Crie a primeira',

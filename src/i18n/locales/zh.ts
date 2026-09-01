@@ -207,6 +207,7 @@ export const zhMessages = {
       upcomingDeployments: '即将部署（7天内）',
       calendarEmpty: '本月无广告活动或创意。',
       colPlatform: '平台', colHook: '钩子', colAngle: '角度', colImpressions: '展示次数', colCtr: 'CTR', colRoas: 'ROAS', colRevenue: '收入',
+      statCampaigns: '活动', statCreatives: '创意', statActive: '进行中',
       title: '我的作品',
       empty: '还没有作品。',
       createFirst: '创作第一个',

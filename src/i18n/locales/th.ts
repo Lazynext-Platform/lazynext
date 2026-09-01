@@ -210,6 +210,7 @@ export const thMessages = {
       upcomingDeployments: 'การปรับใช้ที่กำลังจะมา (7 วัน)',
       calendarEmpty: 'ไม่มีแคมเปญหรือครีเอทีฟในเดือนนี้',
       colPlatform: 'แพลตฟอร์ม', colHook: 'เบ็ด', colAngle: 'มุม', colImpressions: 'การแสดงผล', colCtr: 'CTR', colRoas: 'ROAS', colRevenue: 'รายได้',
+      statCampaigns: 'แคมเปญ', statCreatives: 'ครีเอทีฟ', statActive: 'ใช้งานอยู่',
       title: 'ผลงานของฉัน',
       empty: 'ยังไม่มีอะไรที่นี่',
       createFirst: 'สร้างชิ้นแรกของคุณ',

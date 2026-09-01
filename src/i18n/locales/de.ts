@@ -207,6 +207,7 @@ export const deMessages = {
       upcomingDeployments: 'Bevorstehende Deployments (7 Tage)',
       calendarEmpty: 'Keine Kampagnen oder Kreatives in diesem Monat.',
       colPlatform: 'Plattform', colHook: 'Aufhänger', colAngle: 'Winkel', colImpressions: 'Impressionen', colCtr: 'CTR', colRoas: 'ROAS', colRevenue: 'Umsatz',
+      statCampaigns: 'Kampagnen', statCreatives: 'Kreativen', statActive: 'aktiv',
       title: 'Meine Kreationen',
       empty: 'Noch nichts hier.',
       createFirst: 'Erste erstellen',

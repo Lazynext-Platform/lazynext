@@ -207,6 +207,7 @@ export const frMessages = {
       upcomingDeployments: 'Déploiements à venir (7 jours)',
       calendarEmpty: 'Aucune campagne ni créatif ce mois-ci.',
       colPlatform: 'Plateforme', colHook: 'Accroche', colAngle: 'Angle', colImpressions: 'Impressions', colCtr: 'CTR', colRoas: 'ROAS', colRevenue: 'Revenu',
+      statCampaigns: 'campagnes', statCreatives: 'créatifs', statActive: 'actifs',
       title: 'Mes créations',
       empty: 'Rien ici pour l\'instant.',
       createFirst: 'Créer la première',

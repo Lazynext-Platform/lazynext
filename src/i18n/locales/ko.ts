@@ -207,6 +207,7 @@ export const koMessages = {
       upcomingDeployments: '예정된 배포 (7일)',
       calendarEmpty: '이번 달 캠페인이나 크리에이티브가 없습니다.',
       colPlatform: '플랫폼', colHook: '후크', colAngle: '앵글', colImpressions: '노출', colCtr: 'CTR', colRoas: 'ROAS', colRevenue: '수익',
+      statCampaigns: '캠페인', statCreatives: '크리에이티브', statActive: '활성',
       title: '내 작업',
       empty: '아직 아무것도 없습니다.',
       createFirst: '첫 작품 만들기',

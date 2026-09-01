@@ -207,6 +207,7 @@ export const hiMessages = {
       upcomingDeployments: 'आगामी तैनाती (7 दिन)',
       calendarEmpty: 'इस महीने कोई कैम्पेन या क्रिएटिव नहीं।',
       colPlatform: 'प्लेटफ़ॉर्म', colHook: 'हुक', colAngle: 'कोण', colImpressions: 'इम्प्रेशन', colCtr: 'CTR', colRoas: 'ROAS', colRevenue: 'राजस्व',
+      statCampaigns: 'कैम्पेन', statCreatives: 'क्रिएटिव', statActive: 'सक्रिय',
       title: 'मेरी क्रिएशन',
       empty: 'अभी यहां कुछ नहीं है।',
       createFirst: 'पहली बनाएं',

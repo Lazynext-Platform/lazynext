@@ -210,6 +210,7 @@ export const viMessages = {
       upcomingDeployments: 'Triển Khai Sắp Tới (7 ngày)',
       calendarEmpty: 'Không có chiến dịch hoặc sáng tạo trong tháng này.',
       colPlatform: 'Nền tảng', colHook: 'Móc câu', colAngle: 'Góc độ', colImpressions: 'Lượt hiển thị', colCtr: 'CTR', colRoas: 'ROAS', colRevenue: 'Doanh thu',
+      statCampaigns: 'chiến dịch', statCreatives: 'sáng tạo', statActive: 'đang hoạt động',
       title: 'Tác phẩm của tôi',
       empty: 'Chưa có gì ở đây.',
       createFirst: 'Tạo tác phẩm đầu tiên',

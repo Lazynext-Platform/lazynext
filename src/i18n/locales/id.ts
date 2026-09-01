@@ -210,6 +210,7 @@ export const idMessages = {
       upcomingDeployments: 'Deploy Mendatang (7 hari)',
       calendarEmpty: 'Tidak ada kampanye atau kreatif bulan ini.',
       colPlatform: 'Platform', colHook: 'Pengait', colAngle: 'Sudut', colImpressions: 'Tayangan', colCtr: 'CTR', colRoas: 'ROAS', colRevenue: 'Pendapatan',
+      statCampaigns: 'kampanye', statCreatives: 'kreatif', statActive: 'aktif',
       title: 'Karya saya',
       empty: 'Belum ada apa-apa di sini.',
       createFirst: 'Buat karya pertama kamu',

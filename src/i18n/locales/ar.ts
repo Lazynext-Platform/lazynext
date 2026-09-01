@@ -207,6 +207,7 @@ export const arMessages = {
       upcomingDeployments: 'النشر القادم (7 أيام)',
       calendarEmpty: 'لا توجد حملات أو إبداعيين هذا الشهر.',
       colPlatform: 'المنصة', colHook: 'الخطاف', colAngle: 'الزاوية', colImpressions: 'الظهور', colCtr: 'CTR', colRoas: 'ROAS', colRevenue: 'الإيرادات',
+      statCampaigns: 'حملات', statCreatives: 'إبداعيات', statActive: 'نشطة',
       title: 'إنشاءاتي',
       empty: 'لا يوجد شيء بعد.',
       createFirst: 'أنشئ الأول',

@@ -209,6 +209,7 @@ export const jaMessages = {
       upcomingDeployments: '今後のデプロイ（7日以内）',
       calendarEmpty: '今月はキャンペーンやクリエイティブがありません。',
       colPlatform: 'プラットフォーム', colHook: 'フック', colAngle: 'アングル', colImpressions: 'インプレッション', colCtr: 'CTR', colRoas: 'ROAS', colRevenue: '収益',
+      statCampaigns: 'キャンペーン', statCreatives: 'クリエイティブ', statActive: 'アクティブ',
       title: '作品一覧',
       empty: 'まだ作品がありません。',
       createFirst: '最初の作品を作る',
