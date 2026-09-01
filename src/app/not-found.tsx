@@ -4,7 +4,7 @@ import { LOCALES, type Locale, messages } from '@/i18n/messages';
 export default async function NotFound() {
   const localeCookie = (await cookies()).get('locale')?.value;
   const locale = ((LOCALES as readonly string[]).includes(localeCookie || '') ? localeCookie : 'en') as Locale;
-  const t = (messages[locale] as any)?.notFound || (messages.en as any).notFound;
+  const t = messages[locale]?.notFound || messages.en.notFound;
 
   return (
     <main className="min-h-screen flex items-center justify-center text-fg bg-app">

@@ -17,6 +17,7 @@ import {
   type PipelineConfig,
   type PipelineState,
   type PipelineStage,
+  type PipelineStageConfig,
 } from '@/lib/creative/pipeline';
 import { executeStage, initialContext, mergeStageResultIntoContext, type StageContext, PipelineStageError } from '@/lib/creative/pipeline-executor';
 import { startWorkflow, recordStep, completeWorkflow, failWorkflow } from '@/lib/workflow/engine';
@@ -123,7 +124,7 @@ async function __byokPOST(req: Request) {
     return NextResponse.json({ error: 'config_required' }, { status: 400 });
   }
   if (Array.isArray(config.stages)) {
-    config.stages = config.stages.map((s: any) => ({
+    config.stages = config.stages.map((s: PipelineStageConfig & { parallelWith?: string[] }) => ({
       stage: String(s.stage) as PipelineStage,
       enabled: s.enabled !== false,
       autoAdvance: s.autoAdvance !== false,
@@ -281,7 +282,7 @@ async function __byokPOST(req: Request) {
     const autoAdvanceDeadline = Date.now() + 75_000;
     const autoAdvancePlanTier = await getUserPlanTier(uid).catch(() => undefined);
     while (state.status === 'running' && state.currentStage && state.currentStage !== 'completed') {
-      const currentStageConfig = config.stages.find((s: any) => s.stage === state.currentStage);
+      const currentStageConfig = config.stages.find((s: PipelineStageConfig & { parallelWith?: string[] }) => s.stage === state.currentStage);
       if (!currentStageConfig?.autoAdvance) break;
       if (Date.now() > autoAdvanceDeadline) break;
 

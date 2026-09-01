@@ -15,6 +15,7 @@ import { fetchWithRetry } from '@/lib/fetch-retry';
 import { AuthModal } from '@/components/AuthModal';
 import { CostEstimator, type CostEstimateItem } from '@/components/CostEstimator';
 import { useKeyboardShortcuts } from '@/lib/use-keyboard-shortcuts';
+import type { PipelineState, PipelineStageResult } from '@/lib/creative/pipeline';
 
 // Code-split modals — only loaded when opened (reduces initial bundle by ~200KB)
 const BriefAssistantModal = dynamic(() => import('@/components/BriefAssistantModal').then(m => ({ default: m.BriefAssistantModal })), { ssr: false });
@@ -217,7 +218,7 @@ export default function CreativeStudioPage() {
   const [pipelineMode, setPipelineMode] = useState(false);
   const [pipelineRunning, setPipelineRunning] = useState(false);
   const [pipelineError, setPipelineError] = useState<string | null>(null);
-  const [pipelineState, setPipelineState] = useState<any>(null);
+  const [pipelineState, setPipelineState] = useState<PipelineState | null>(null);
 
   // Batch generation state
   const [batchMode, setBatchMode] = useState(false);
@@ -480,13 +481,13 @@ export default function CreativeStudioPage() {
 
       // Map pipeline stage results to UI state
       if (state.status === 'completed' || state.status === 'paused' || state.status === 'failed') {
-        const briefResult = state.stageResults.find((r: any) => r.stage === 'brief');
+        const briefResult = state.stageResults.find((r: PipelineStageResult) => r.stage === 'brief');
         if (briefResult?.output?.brief) {
           setBrief(briefResult.output.brief as CreativeBrief);
           setBriefStep('done');
           setChainStep(1);
         }
-        const scriptResult = state.stageResults.find((r: any) => r.stage === 'script');
+        const scriptResult = state.stageResults.find((r: PipelineStageResult) => r.stage === 'script');
         if (scriptResult?.output?.script) {
           setHooks(scriptResult.output.hooks as HookCandidate[] || []);
           setAngles(scriptResult.output.angles as CreativeAngle[] || []);
@@ -498,13 +499,13 @@ export default function CreativeStudioPage() {
           setAnglesStep('done');
           setChainStep(Math.max(chainStep, 4));
         }
-        const storyboardResult = state.stageResults.find((r: any) => r.stage === 'storyboard');
+        const storyboardResult = state.stageResults.find((r: PipelineStageResult) => r.stage === 'storyboard');
         if (storyboardResult?.output?.storyboard) {
           setStoryboard(storyboardResult.output.storyboard as StoryboardCandidate);
           setStoryboardStep('done');
           setChainStep(5);
         }
-        const scoreResult = state.stageResults.find((r: any) => r.stage === 'score');
+        const scoreResult = state.stageResults.find((r: PipelineStageResult) => r.stage === 'score');
         if (scoreResult?.output?.score) {
           setScore(scoreResult.output.score as CreativeScore);
           setScoreStep('done');
@@ -513,7 +514,7 @@ export default function CreativeStudioPage() {
       }
 
       if (state.status === 'failed') {
-        const failedStage = state.stageResults.find((r: any) => r.status === 'failed');
+        const failedStage = state.stageResults.find((r: PipelineStageResult) => r.status === 'failed');
         throw new Error(failedStage?.error || 'Pipeline failed');
       }
       if (state.status === 'completed') {
@@ -549,12 +550,12 @@ export default function CreativeStudioPage() {
       const state = json.state;
 
       // Map updated stage results to UI
-      const briefResult = state.stageResults.find((r: any) => r.stage === 'brief');
+      const briefResult = state.stageResults.find((r: PipelineStageResult) => r.stage === 'brief');
       if (briefResult?.output?.brief && !brief) {
         setBrief(briefResult.output.brief as CreativeBrief);
         setBriefStep('done');
       }
-      const scriptResult = state.stageResults.find((r: any) => r.stage === 'script');
+      const scriptResult = state.stageResults.find((r: PipelineStageResult) => r.stage === 'script');
       if (scriptResult?.output?.script && !script) {
         setHooks(scriptResult.output.hooks as HookCandidate[] || []);
         setAngles(scriptResult.output.angles as CreativeAngle[] || []);
@@ -565,12 +566,12 @@ export default function CreativeStudioPage() {
         setHooksStep('done');
         setAnglesStep('done');
       }
-      const storyboardResult = state.stageResults.find((r: any) => r.stage === 'storyboard');
+      const storyboardResult = state.stageResults.find((r: PipelineStageResult) => r.stage === 'storyboard');
       if (storyboardResult?.output?.storyboard && !storyboard) {
         setStoryboard(storyboardResult.output.storyboard as StoryboardCandidate);
         setStoryboardStep('done');
       }
-      const scoreResult = state.stageResults.find((r: any) => r.stage === 'score');
+      const scoreResult = state.stageResults.find((r: PipelineStageResult) => r.stage === 'score');
       if (scoreResult?.output?.score && !score) {
         setScore(scoreResult.output.score as CreativeScore);
         setScoreStep('done');
@@ -580,7 +581,7 @@ export default function CreativeStudioPage() {
         setChainStep(7);
         setChainRunning(false);
       } else if (state.status === 'failed') {
-        const failedStage = state.stageResults.find((r: any) => r.status === 'failed');
+        const failedStage = state.stageResults.find((r: PipelineStageResult) => r.status === 'failed');
         throw new Error(failedStage?.error || 'Pipeline failed');
       } else {
         setChainPaused(true);
@@ -669,12 +670,12 @@ export default function CreativeStudioPage() {
 
       // If pipeline completed, populate the UI with stage outputs
       if (state.status === 'completed') {
-        const briefResult = state.stageResults.find((r: any) => r.stage === 'brief');
+        const briefResult = state.stageResults.find((r: PipelineStageResult) => r.stage === 'brief');
         if (briefResult?.output?.brief) {
           setBrief(briefResult.output.brief as CreativeBrief);
           setBriefStep('done');
         }
-        const scriptResult = state.stageResults.find((r: any) => r.stage === 'script');
+        const scriptResult = state.stageResults.find((r: PipelineStageResult) => r.stage === 'script');
         if (scriptResult?.output?.script) {
           setHooks(scriptResult.output.hooks as HookCandidate[] || []);
           setAngles(scriptResult.output.angles as CreativeAngle[] || []);
@@ -683,12 +684,12 @@ export default function CreativeStudioPage() {
           setScript(scriptResult.output.script as ScriptCandidate);
           setScriptStep('done');
         }
-        const storyboardResult = state.stageResults.find((r: any) => r.stage === 'storyboard');
+        const storyboardResult = state.stageResults.find((r: PipelineStageResult) => r.stage === 'storyboard');
         if (storyboardResult?.output?.storyboard) {
           setStoryboard(storyboardResult.output.storyboard as StoryboardCandidate);
           setStoryboardStep('done');
         }
-        const scoreResult = state.stageResults.find((r: any) => r.stage === 'score');
+        const scoreResult = state.stageResults.find((r: PipelineStageResult) => r.stage === 'score');
         if (scoreResult?.output?.score) {
           setScore(scoreResult.output.score as CreativeScore);
           setScoreStep('done');
@@ -765,7 +766,7 @@ export default function CreativeStudioPage() {
     );
 
     const settled = await Promise.allSettled(promises);
-    const ok: any[] = [];
+    const ok: Array<{ kind: string; data: any }> = [];
     let failCount = 0;
     settled.forEach((s) => {
       if (s.status === 'fulfilled') {
@@ -1531,8 +1532,8 @@ export default function CreativeStudioPage() {
                     onChange={e => setAbPlatform(e.target.value as 'meta' | 'google')}
                     className="mt-1 w-full rounded-lg border border-line bg-app px-3 py-2 text-sm text-fg focus:border-brand-accent focus:outline-none"
                   >
-                    <option value="meta">Meta (Facebook/Instagram)</option>
-                    <option value="google">Google Ads</option>
+                    <option value="meta">{t('ads.platformMeta')}</option>
+                    <option value="google">{t('ads.platformGoogle')}</option>
                   </select>
                 </div>
                 <div>
@@ -1608,7 +1609,7 @@ export default function CreativeStudioPage() {
                         </span>
                         <span className="flex items-center gap-2">
                           {adSet.score !== undefined && (
-                            <span className="text-fg-faint">Score: {adSet.score}</span>
+                            <span className="text-fg-faint">{t('creativeStudio.batchScore')}: {adSet.score}</span>
                           )}
                           {adSet.error ? (
                             <span className="text-danger">{t('creativeStudio.abTestError')}</span>
@@ -2265,14 +2266,14 @@ export default function CreativeStudioPage() {
             className="rounded-lg bg-surface border border-line max-w-md w-full p-6"
             onClick={e => e.stopPropagation()}
           >
-            <h2 className="text-lg font-bold mb-4">Keyboard Shortcuts</h2>
+            <h2 className="text-lg font-bold mb-4">{t('creativeStudio.helpTitle')}</h2>
             <dl className="space-y-2 text-sm">
-              <div className="flex justify-between"><dt>Continue chain (when paused)</dt><dd><kbd className="kbd">Enter</kbd></dd></div>
-              <div className="flex justify-between"><dt>Stop chain (when running)</dt><dd><kbd className="kbd">Esc</kbd></dd></div>
-              <div className="flex justify-between"><dt>Toggle batch mode</dt><dd><kbd className="kbd">B</kbd></dd></div>
-              <div className="flex justify-between"><dt>Toggle chain mode</dt><dd><kbd className="kbd">C</kbd></dd></div>
-              <div className="flex justify-between"><dt>Show/hide this help</dt><dd><kbd className="kbd">?</kbd></dd></div>
-              <div className="flex justify-between"><dt>Close this dialog</dt><dd><kbd className="kbd">Esc</kbd></dd></div>
+              <div className="flex justify-between"><dt>{t('creativeStudio.helpContinueChain')}</dt><dd><kbd className="kbd">Enter</kbd></dd></div>
+              <div className="flex justify-between"><dt>{t('creativeStudio.helpStopChain')}</dt><dd><kbd className="kbd">Esc</kbd></dd></div>
+              <div className="flex justify-between"><dt>{t('creativeStudio.helpToggleBatch')}</dt><dd><kbd className="kbd">B</kbd></dd></div>
+              <div className="flex justify-between"><dt>{t('creativeStudio.helpToggleChain')}</dt><dd><kbd className="kbd">C</kbd></dd></div>
+              <div className="flex justify-between"><dt>{t('creativeStudio.helpShowHide')}</dt><dd><kbd className="kbd">?</kbd></dd></div>
+              <div className="flex justify-between"><dt>{t('creativeStudio.helpCloseDialog')}</dt><dd><kbd className="kbd">Esc</kbd></dd></div>
             </dl>
           </div>
         </div>

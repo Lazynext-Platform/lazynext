@@ -18,6 +18,7 @@ import {
   PIPELINE_COSTS,
   type PipelineState,
   type PipelineStage,
+  type PipelineStageConfig,
 } from '@/lib/creative/pipeline';
 import { executeStage, initialContext, mergeStageResultIntoContext, type StageContext, PipelineStageError } from '@/lib/creative/pipeline-executor';
 import { recordStep, completeWorkflow, failWorkflow } from '@/lib/workflow/engine';
@@ -186,7 +187,7 @@ async function __byokPOST(req: Request, { params }: { params: Promise<{ id: stri
       }
       const before = state.currentStage;
       // Use wave-based advancement if any stage has parallelWith configured
-      const hasParallel = state.config.stages.some((s: any) => s.parallelWith && s.parallelWith.length > 0);
+      const hasParallel = state.config.stages.some((s: PipelineStageConfig & { parallelWith?: string[] }) => s.parallelWith && s.parallelWith.length > 0);
       state = hasParallel ? advancePipelineWithWaves(state) : advancePipeline(state);
       // If we advanced to a new running stage, deduct its cost and execute it.
       if (state.currentStage && state.currentStage !== before && state.currentStage !== 'completed') {
@@ -296,7 +297,7 @@ async function __byokPOST(req: Request, { params }: { params: Promise<{ id: stri
       let autoAdvanceCount = 0;
       while (state.status === 'running' && state.currentStage && state.currentStage !== 'completed') {
         // Check if the current stage has autoAdvance enabled
-        const currentStageConfig = state.config.stages.find((s: any) => s.stage === state.currentStage);
+        const currentStageConfig = state.config.stages.find((s: PipelineStageConfig & { parallelWith?: string[] }) => s.stage === state.currentStage);
         if (!currentStageConfig?.autoAdvance) break;
         if (Date.now() > autoAdvanceDeadline) break;
 
@@ -494,7 +495,7 @@ async function __byokPOST(req: Request, { params }: { params: Promise<{ id: stri
             state.stageResults[stageIdx].artifacts = result.artifacts;
           }
           // Advance to mark the stage as completed and update totalCreditsUsed
-          const hasParallel = state.config.stages.some((s: any) => s.parallelWith && s.parallelWith.length > 0);
+          const hasParallel = state.config.stages.some((s: PipelineStageConfig & { parallelWith?: string[] }) => s.parallelWith && s.parallelWith.length > 0);
           state = hasParallel ? advancePipelineWithWaves(state) : advancePipeline(state);
           await recordStep(state.pipelineId, stage, 'completed', {
             output: result.output,
@@ -505,7 +506,7 @@ async function __byokPOST(req: Request, { params }: { params: Promise<{ id: stri
           const retryDeadline = Date.now() + 75_000;
           const retryPlanTier = await getUserPlanTier(uid).catch(() => undefined);
           while (state.status === 'running' && state.currentStage && state.currentStage !== 'completed') {
-            const currentStageConfig = state.config.stages.find((s: any) => s.stage === state.currentStage);
+            const currentStageConfig = state.config.stages.find((s: PipelineStageConfig & { parallelWith?: string[] }) => s.stage === state.currentStage);
             if (!currentStageConfig?.autoAdvance) break;
             if (Date.now() > retryDeadline) break;
 

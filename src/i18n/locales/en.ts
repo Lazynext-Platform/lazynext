@@ -260,7 +260,7 @@ export const enMessages = {
       colPlatform: 'Platform', colHook: 'Hook', colAngle: 'Angle', colImpressions: 'Impressions', colCtr: 'CTR', colRoas: 'ROAS', colRevenue: 'Revenue',
       statCampaigns: 'campaigns', statCreatives: 'creatives', statActive: 'active',
     },
-    common: { signIn: 'Sign in', signOut: 'Sign out', credits: 'Credits', creditsLower: 'credits', language: 'Language', switchLanguage: 'Switch language', currency: 'Currency', cookieConsent: 'Cookie consent', new: 'NEW', poweredBy: 'Powered by', back: '← Back', backToLazynext: '← Lazynext', close: 'Close', errNetwork: 'Network error. Please check your connection and try again.', errUnauthorized: 'Your session has expired. Please sign in again.', errForbidden: 'You do not have access to this resource.', errNotFound: 'The requested resource was not found.', errPaymentRequired: 'Not enough credits. Please top up on the pricing page.', errServer: 'Server error. Please try again later.', errGeneric: 'Something went wrong. Please try again.', dismissError: 'Dismiss', retry: 'Retry', loadingDots: 'Loading…', resultLabels: { headline: 'Headline', body: 'Body', cta: 'CTA', hook: 'Hook', reason: 'Reason', reasoning: 'Reasoning', description: 'Description', scenario: 'Scenario', sensoryDetails: 'Sensory Details', emotionalPayoff: 'Emotional Payoff', psychologicalPrinciple: 'Psychological Principle', timing: 'Timing', frictionRemoval: 'Friction Removal', whyNotTheOthers: 'Why Not the Others', adCopy: 'Ad Copy', visualizationPrompt: 'Visualization Prompt', desiredOutcome: 'Desired Outcome' }, skipToContent: 'Skip to content', phProduct: 'e.g., DTC skincare brand selling a vitamin C serum', phMessage: 'e.g., Tired of dull skin? Our vitamin C serum brightens in just 7 days...', phAudience: 'e.g., Women 25-40 interested in skincare and wellness' },
+    common: { signIn: 'Sign in', signOut: 'Sign out', credits: 'Credits', creditsLower: 'credits', language: 'Language', switchLanguage: 'Switch language', currency: 'Currency', cookieConsent: 'Cookie consent', new: 'NEW', poweredBy: 'Powered by', back: '← Back', backToLazynext: '← Lazynext', close: 'Close', actions: 'Actions', errNetwork: 'Network error. Please check your connection and try again.', errUnauthorized: 'Your session has expired. Please sign in again.', errForbidden: 'You do not have access to this resource.', errNotFound: 'The requested resource was not found.', errPaymentRequired: 'Not enough credits. Please top up on the pricing page.', errServer: 'Server error. Please try again later.', errGeneric: 'Something went wrong. Please try again.', dismissError: 'Dismiss', retry: 'Retry', loadingDots: 'Loading…', resultLabels: { headline: 'Headline', body: 'Body', cta: 'CTA', hook: 'Hook', reason: 'Reason', reasoning: 'Reasoning', description: 'Description', scenario: 'Scenario', sensoryDetails: 'Sensory Details', emotionalPayoff: 'Emotional Payoff', psychologicalPrinciple: 'Psychological Principle', timing: 'Timing', frictionRemoval: 'Friction Removal', whyNotTheOthers: 'Why Not the Others', adCopy: 'Ad Copy', visualizationPrompt: 'Visualization Prompt', desiredOutcome: 'Desired Outcome' }, skipToContent: 'Skip to content', phProduct: 'e.g., DTC skincare brand selling a vitamin C serum', phMessage: 'e.g., Tired of dull skin? Our vitamin C serum brightens in just 7 days...', phAudience: 'e.g., Women 25-40 interested in skincare and wellness' },
     userMenu: {
       account: 'Account',
       signOut: 'Sign out',
@@ -759,6 +759,13 @@ export const enMessages = {
       urlPh: 'https://yourbrand.com',
       urlPh2: 'https://shop.example.com/products/led-mask',
       urlPh3: 'https://example.com/reference-ad.mp4',
+      helpTitle: 'Keyboard Shortcuts',
+      helpContinueChain: 'Continue chain (when paused)',
+      helpStopChain: 'Stop chain (when running)',
+      helpToggleBatch: 'Toggle batch mode',
+      helpToggleChain: 'Toggle chain mode',
+      helpShowHide: 'Show/hide this help',
+      helpCloseDialog: 'Close this dialog',
     },
 
     costEstimate: {
@@ -1283,6 +1290,7 @@ export const enMessages = {
       diffOnlyInA: 'Only in A',
       diffOnlyInB: 'Only in B',
       diffBack: 'Back to Creative Assets',
+      metadata: 'Metadata',
     },
     share: {
       title: 'Shared Creative',
@@ -2438,6 +2446,19 @@ export const enMessages = {
       tlSaveFailed: 'Failed to save timeline. Please try again.',
       loadingTimeline: 'Loading timeline…',
       keyboardShortcuts: 'Keyboard shortcuts',
+      helpTitle: 'Keyboard Shortcuts',
+      helpSwitchRoughCut: 'Switch to Rough Cut',
+      helpSwitchSkills: 'Switch to Skills',
+      helpSwitchTimeline: 'Switch to Timeline',
+      helpGenerateRoughCut: 'Generate Rough Cut',
+      helpSaveTimeline: 'Save Timeline',
+      helpUndo: 'Undo',
+      helpRedo: 'Redo',
+      helpShowHide: 'Show/hide this help',
+      helpCloseDialog: 'Close this dialog',
+      undoHistoryAvailable: 'Undo history available',
+      undoLabel: 'Undo',
+      redoLabel: 'Redo',
     },
 
     briefIntelligence: {
@@ -4914,6 +4935,7 @@ export const enMessages = {
     error: 'Audience resonance prediction failed',
     dryRunNotice: 'Dry-run mode — using template resonance',
     audiencePh: 'e.g., Gen Z, busy parents, fitness enthusiasts',
+    commaSeparated: 'Comma- or newline-separated.',
   },
   creativeFormatRecommender: {
     title: 'Creative Format Recommender',

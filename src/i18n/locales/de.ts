@@ -215,7 +215,7 @@ export const deMessages = {
       generating: 'Generierung…',
       failed: 'Fehlgeschlagen (erstattet)',
     },
-    common: { signIn: 'Anmelden', signOut: 'Abmelden', credits: 'Guthaben', creditsLower: 'Credits', language: 'Sprache', switchLanguage: 'Sprache wechseln', currency: 'Währung', cookieConsent: 'Cookie-Einwilligung', new: 'NEU', poweredBy: 'Unterstützt von', back: '← Zurück', backToLazynext: '← Lazynext', close: 'Schließen', errNetwork: 'Netzwerkfehler. Überprüfen Sie Ihre Verbindung und versuchen Sie es erneut.', errUnauthorized: 'Ihre Sitzung ist abgelaufen. Bitte melden Sie sich erneut an.', errNotFound: 'Die angeforderte Ressource wurde nicht gefunden.', errForbidden: 'Sie haben keinen Zugriff auf diese Ressource.', errPaymentRequired: 'Nicht genügend Guthaben. Bitte auf der Preisseite aufladen.', errServer: 'Serverfehler. Bitte versuchen Sie es später erneut.', errGeneric: 'Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut.', dismissError: 'Schließen', retry: 'Erneut versuchen', loadingDots: 'Laden…', resultLabels: { headline: 'Überschrift', body: 'Textkörper', cta: 'CTA', hook: 'Aufhänger', reason: 'Grund', reasoning: 'Begründung', description: 'Beschreibung', scenario: 'Szenario', sensoryDetails: 'Sinnliche Details', emotionalPayoff: 'Emotionale Belohnung', psychologicalPrinciple: 'Psychologisches Prinzip', timing: 'Zeitpunkt', frictionRemoval: 'Reibungsverringerung', whyNotTheOthers: 'Warum nicht die anderen', adCopy: 'Werbetext', visualizationPrompt: 'Visualisierungs-Prompt', desiredOutcome: 'Gewünschtes Ergebnis' }, skipToContent: 'Zum Inhalt springen', phProduct: 'z.B. DTC-Skincare-Marke, die ein Vitamin-C-Serum verkauft', phMessage: 'z.B. Müde von matter Haut? Unser Vitamin-C-Serum hellt sie in nur 7 Tagen auf...', phAudience: 'z.B. Frauen 25-40, die an Skincare interessiert sind', phAudienceCleanBeauty: 'z.B. Frauen 25-40, die an Clean Beauty interessiert sind', phAudienceCleanBeautyOpt: 'z.B. Frauen 25-40, die an Clean Beauty interessiert sind (optional)', phAudienceSelfCare: 'z.B. Frauen 25-40, die an Skincare und Self-Care interessiert sind', phAudienceConcern: 'z.B. Frauen 25-40, die sich um Hautalterung sorgen', phMillennial: 'z.B. Millennial-Skincare-Enthusiasten', phAcme: 'z.B. Acme', phAcmeHeadphones: 'z.B. Acme Noise-Cancelling-Kopfhörer', phTone: 'z.B. verspielt, mutig', phToneProfessional: 'z.B. verspielt, professionell', phToneLuxurious: 'z.B. verspielt, mutig, luxuriös (optional)', phKeywords: 'z.B. Qualität, erschwinglich', phColors: 'z.B. #FF0000, #00B2FC', phFonts: 'z.B. Inter, Roboto', phUrl: 'https://...', phOptional: 'optional', phOptionalPercent: 'optional %', phOptionalDollar: 'optional $', ph50: '50' },
+    common: { signIn: 'Anmelden', signOut: 'Abmelden', credits: 'Guthaben', creditsLower: 'Credits', language: 'Sprache', switchLanguage: 'Sprache wechseln', currency: 'Währung', cookieConsent: 'Cookie-Einwilligung', new: 'NEU', poweredBy: 'Unterstützt von', back: '← Zurück', backToLazynext: '← Lazynext', close: 'Schließen', errNetwork: 'Netzwerkfehler. Überprüfen Sie Ihre Verbindung und versuchen Sie es erneut.', errUnauthorized: 'Ihre Sitzung ist abgelaufen. Bitte melden Sie sich erneut an.', errNotFound: 'Die angeforderte Ressource wurde nicht gefunden.', errForbidden: 'Sie haben keinen Zugriff auf diese Ressource.', errPaymentRequired: 'Nicht genügend Guthaben. Bitte auf der Preisseite aufladen.', errServer: 'Serverfehler. Bitte versuchen Sie es später erneut.', errGeneric: 'Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut.', dismissError: 'Schließen', retry: 'Erneut versuchen', loadingDots: 'Laden…', resultLabels: { headline: 'Überschrift', body: 'Textkörper', cta: 'CTA', hook: 'Aufhänger', reason: 'Grund', reasoning: 'Begründung', description: 'Beschreibung', scenario: 'Szenario', sensoryDetails: 'Sinnliche Details', emotionalPayoff: 'Emotionale Belohnung', psychologicalPrinciple: 'Psychologisches Prinzip', timing: 'Zeitpunkt', frictionRemoval: 'Reibungsverringerung', whyNotTheOthers: 'Warum nicht die anderen', adCopy: 'Werbetext', visualizationPrompt: 'Visualisierungs-Prompt', desiredOutcome: 'Gewünschtes Ergebnis' }, skipToContent: 'Zum Inhalt springen', phProduct: 'z.B. DTC-Skincare-Marke, die ein Vitamin-C-Serum verkauft', phMessage: 'z.B. Müde von matter Haut? Unser Vitamin-C-Serum hellt sie in nur 7 Tagen auf...', phAudience: 'z.B. Frauen 25-40, die an Skincare interessiert sind', phAudienceCleanBeauty: 'z.B. Frauen 25-40, die an Clean Beauty interessiert sind', phAudienceCleanBeautyOpt: 'z.B. Frauen 25-40, die an Clean Beauty interessiert sind (optional)', phAudienceSelfCare: 'z.B. Frauen 25-40, die an Skincare und Self-Care interessiert sind', phAudienceConcern: 'z.B. Frauen 25-40, die sich um Hautalterung sorgen', phMillennial: 'z.B. Millennial-Skincare-Enthusiasten', phAcme: 'z.B. Acme', phAcmeHeadphones: 'z.B. Acme Noise-Cancelling-Kopfhörer', phTone: 'z.B. verspielt, mutig', phToneProfessional: 'z.B. verspielt, professionell', phToneLuxurious: 'z.B. verspielt, mutig, luxuriös (optional)', phKeywords: 'z.B. Qualität, erschwinglich', phColors: 'z.B. #FF0000, #00B2FC', phFonts: 'z.B. Inter, Roboto', phUrl: 'https://...', phOptional: 'optional', phOptionalPercent: 'optional %', phOptionalDollar: 'optional $', ph50: '50' , actions: 'Aktionen'},
     userMenu: {
       account: 'Konto',
       signOut: 'Abmelden',
@@ -674,6 +674,20 @@ export const deMessages = {
       urlPh: 'https://yourbrand.com',
       urlPh2: 'https://shop.example.com/products/led-mask',
       urlPh3: 'https://example.com/reference-ad.mp4',
+
+      helpTitle: 'Tastenkürzel',
+
+      helpContinueChain: 'Kette fortsetzen (wenn pausiert)',
+
+      helpStopChain: 'Kette stoppen (wenn laufend)',
+
+      helpToggleBatch: 'Batch-Modus umschalten',
+
+      helpToggleChain: 'Ketten-Modus umschalten',
+
+      helpShowHide: 'Diese Hilfe anzeigen/verbergen',
+
+      helpCloseDialog: 'Diesen Dialog schließen',
     },
 
     costEstimate: {
@@ -1183,6 +1197,7 @@ export const deMessages = {
       diffOnlyInB: 'Nur in B',
       diffBack: 'Zurück zu Kreativen Assets',
       exportSelected: 'Auswahl Exportieren',
+      metadata: 'Metadaten',
     },
     share: {
       title: 'Geteiltes Kreativ',
@@ -1816,6 +1831,19 @@ export const deMessages = {
       tlSaveFailed: 'Speichern der Zeitleiste fehlgeschlagen. Bitte erneut versuchen.',
       loadingTimeline: 'Zeitleiste wird geladen…',
       keyboardShortcuts: 'Tastaturkürzel',
+      helpTitle: 'Tastenkürzel',
+      helpSwitchRoughCut: 'Zu Rough Cut wechseln',
+      helpSwitchSkills: 'Zu Skills wechseln',
+      helpSwitchTimeline: 'Zu Zeitleiste wechseln',
+      helpGenerateRoughCut: 'Rough Cut generieren',
+      helpSaveTimeline: 'Zeitleiste speichern',
+      helpUndo: 'Rückgängig',
+      helpRedo: 'Wiederholen',
+      helpShowHide: 'Diese Hilfe anzeigen/verbergen',
+      helpCloseDialog: 'Diesen Dialog schließen',
+      undoHistoryAvailable: 'Rückgängig-Verlauf verfügbar',
+      undoLabel: 'Rückgängig',
+      redoLabel: 'Wiederholen',
     },
 
     briefIntelligence: {
@@ -4145,6 +4173,7 @@ export const deMessages = {
     error: 'Publikumsresonanz-Vorhersage fehlgeschlagen',
     dryRunNotice: 'Dry-Run-Modus — Vorlage-Resonanz verwendet',
     audiencePh: 'z.B. Gen Z, beschäftigte Eltern, Fitness-Enthusiasten',
+    commaSeparated: 'Komma- oder zeilenumbruchgetrennt.',
   },
   creativeFormatRecommender: {
     title: 'Kreativformat-Empfehler',

@@ -217,7 +217,7 @@ export const jaMessages = {
       generating: '生成中…',
       failed: '失敗(返金済み)',
     },
-    common: { signIn: 'ログイン', signOut: 'ログアウト', credits: 'クレジット', creditsLower: 'クレジット', language: '言語', switchLanguage: '言語を切り替え', currency: '通貨', cookieConsent: 'Cookie 同意', new: '新着', poweredBy: 'Powered by', back: '← 戻る', backToLazynext: '← Lazynext', close: '閉じる', errNetwork: 'ネットワークエラー。接続を確認して再試行してください。', errUnauthorized: 'セッションの有効期限が切れました。再度ログインしてください。', errNotFound: '要求されたリソースが見つかりませんでした。', errForbidden: 'このリソースにアクセスする権限がありません。', errPaymentRequired: 'クレジットが不足しています。料金ページでチャージしてください。', errServer: 'サーバーエラー。後でもう一度お試しください。', errGeneric: 'エラーが発生しました。再試行してください。', dismissError: '閉じる', retry: '再試行', loadingDots: '読み込み中…', resultLabels: { headline: '見出し', body: '本文', cta: 'CTA', hook: 'フック', reason: '理由', reasoning: '推論', description: '説明', scenario: 'シナリオ', sensoryDetails: '感覚的詳細', emotionalPayoff: '感情的報酬', psychologicalPrinciple: '心理的原理', timing: 'タイミング', frictionRemoval: '摩擦の除去', whyNotTheOthers: '他ではない理由', adCopy: '広告コピー', visualizationPrompt: 'ビジュアライゼーションプロンプト', desiredOutcome: '望ましい結果' }, skipToContent: 'コンテンツにスキップ', phProduct: '例：ビタミンCセラムを販売するDTCスキンケアブランド', phMessage: '例：くすみ肌に悩んでいませんか？私たちのビタミンCセラムは7日間で明るくします...', phAudience: '例：スキンケアに関心のある25-40歳の女性', phAudienceCleanBeauty: '例：クリーンビューティーに関心のある25-40歳の女性', phAudienceCleanBeautyOpt: '例：クリーンビューティーに関心のある25-40歳の女性（任意）', phAudienceSelfCare: '例：スキンケアとセルフケアに関心のある25-40歳の女性', phAudienceConcern: '例：肌の加齢が気になる25-40歳の女性', phMillennial: '例：ミレニアル世代のスキンケア愛好家', phAcme: '例：Acme', phAcmeHeadphones: '例：Acmeノイズキャンセリングヘッドホン', phTone: '例：遊び心のある、大胆な', phToneProfessional: '例：遊び心のある、プロフェッショナル', phToneLuxurious: '例：遊び心のある、大胆な、豪華（任意）', phKeywords: '例：品質、手頃', phColors: '例：#FF0000, #00B2FC', phFonts: '例：Inter, Roboto', phUrl: 'https://...', phOptional: '任意', phOptionalPercent: '任意 %', phOptionalDollar: '任意 $', ph50: '50' },
+    common: { signIn: 'ログイン', signOut: 'ログアウト', credits: 'クレジット', creditsLower: 'クレジット', language: '言語', switchLanguage: '言語を切り替え', currency: '通貨', cookieConsent: 'Cookie 同意', new: '新着', poweredBy: 'Powered by', back: '← 戻る', backToLazynext: '← Lazynext', close: '閉じる', errNetwork: 'ネットワークエラー。接続を確認して再試行してください。', errUnauthorized: 'セッションの有効期限が切れました。再度ログインしてください。', errNotFound: '要求されたリソースが見つかりませんでした。', errForbidden: 'このリソースにアクセスする権限がありません。', errPaymentRequired: 'クレジットが不足しています。料金ページでチャージしてください。', errServer: 'サーバーエラー。後でもう一度お試しください。', errGeneric: 'エラーが発生しました。再試行してください。', dismissError: '閉じる', retry: '再試行', loadingDots: '読み込み中…', resultLabels: { headline: '見出し', body: '本文', cta: 'CTA', hook: 'フック', reason: '理由', reasoning: '推論', description: '説明', scenario: 'シナリオ', sensoryDetails: '感覚的詳細', emotionalPayoff: '感情的報酬', psychologicalPrinciple: '心理的原理', timing: 'タイミング', frictionRemoval: '摩擦の除去', whyNotTheOthers: '他ではない理由', adCopy: '広告コピー', visualizationPrompt: 'ビジュアライゼーションプロンプト', desiredOutcome: '望ましい結果' }, skipToContent: 'コンテンツにスキップ', phProduct: '例：ビタミンCセラムを販売するDTCスキンケアブランド', phMessage: '例：くすみ肌に悩んでいませんか？私たちのビタミンCセラムは7日間で明るくします...', phAudience: '例：スキンケアに関心のある25-40歳の女性', phAudienceCleanBeauty: '例：クリーンビューティーに関心のある25-40歳の女性', phAudienceCleanBeautyOpt: '例：クリーンビューティーに関心のある25-40歳の女性（任意）', phAudienceSelfCare: '例：スキンケアとセルフケアに関心のある25-40歳の女性', phAudienceConcern: '例：肌の加齢が気になる25-40歳の女性', phMillennial: '例：ミレニアル世代のスキンケア愛好家', phAcme: '例：Acme', phAcmeHeadphones: '例：Acmeノイズキャンセリングヘッドホン', phTone: '例：遊び心のある、大胆な', phToneProfessional: '例：遊び心のある、プロフェッショナル', phToneLuxurious: '例：遊び心のある、大胆な、豪華（任意）', phKeywords: '例：品質、手頃', phColors: '例：#FF0000, #00B2FC', phFonts: '例：Inter, Roboto', phUrl: 'https://...', phOptional: '任意', phOptionalPercent: '任意 %', phOptionalDollar: '任意 $', ph50: '50', actions: 'アクション' },
     userMenu: {
       account: 'アカウント',
       signOut: 'サインアウト',
@@ -676,6 +676,13 @@ export const jaMessages = {
       urlPh: 'https://yourbrand.com',
       urlPh2: 'https://shop.example.com/products/led-mask',
       urlPh3: 'https://example.com/reference-ad.mp4',
+      helpTitle: 'キーボードショートカット',
+      helpContinueChain: 'チェーンを続行（一時停止時）',
+      helpStopChain: 'チェーンを停止（実行中）',
+      helpToggleBatch: 'バッチモードの切り替え',
+      helpToggleChain: 'チェーンモードの切り替え',
+      helpShowHide: 'このヘルプの表示/非表示',
+      helpCloseDialog: 'このダイアログを閉じる',
     },
 
     costEstimate: {
@@ -1185,6 +1192,7 @@ export const jaMessages = {
       diffOnlyInB: 'Bのみ',
       diffBack: 'クリエイティブアセットに戻る',
       exportSelected: '選択をエクスポート',
+      metadata: 'メタデータ',
     },
     share: {
       title: '共有クリエイティブ',
@@ -1818,6 +1826,19 @@ export const jaMessages = {
       tlSaveFailed: 'タイムラインの保存に失敗しました。もう一度お試しください。',
     loadingTimeline: 'タイムラインを読み込み中…',
       keyboardShortcuts: 'キーボードショートカット',
+      helpTitle: 'キーボードショートカット',
+      helpSwitchRoughCut: 'ラフカットに切り替え',
+      helpSwitchSkills: 'スキルに切り替え',
+      helpSwitchTimeline: 'タイムラインに切り替え',
+      helpGenerateRoughCut: 'ラフカットを生成',
+      helpSaveTimeline: 'タイムラインを保存',
+      helpUndo: '元に戻す',
+      helpRedo: 'やり直し',
+      helpShowHide: 'このヘルプの表示/非表示',
+      helpCloseDialog: 'このダイアログを閉じる',
+      undoHistoryAvailable: '元に戻す履歴が利用可能',
+      undoLabel: '元に戻す',
+      redoLabel: 'やり直し',
     },
 
     briefIntelligence: {
@@ -4147,6 +4168,7 @@ export const jaMessages = {
     error: 'オーディエンス共鳴予測に失敗しました',
     dryRunNotice: 'ドライランモード — テンプレート共鳴を使用',
     audiencePh: '例：Z世代、忙しい親、フィットネス愛好家',
+    commaSeparated: 'カンマまたは改行区切り。',
   },
   creativeFormatRecommender: {
     title: 'クリエイティブフォーマットレコメンダー',

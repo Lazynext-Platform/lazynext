@@ -215,7 +215,7 @@ export const hiMessages = {
       generating: 'जनरेट हो रहा है…',
       failed: 'विफल (वापसी)',
     },
-    common: { signIn: 'साइन इन', signOut: 'साइन आउट', credits: 'क्रेडिट', creditsLower: 'क्रेडिट', language: 'भाषा', switchLanguage: 'भाषा बदलें', currency: 'मुद्रा', cookieConsent: 'कुकी सहमति', new: 'नया', poweredBy: 'द्वारा संचालित', back: '← वापस', backToLazynext: '← Lazynext', close: 'बंद करें', errNetwork: 'नेटवर्क त्रुटि। अपना कनेक्शन जांचें और पुनः प्रयास करें।', errUnauthorized: 'आपका सत्र समाप्त हो गया है। कृपया पुनः साइन इन करें।', errNotFound: 'अनुरोधित संसाधन नहीं मिला।', errForbidden: 'आपके पास इस संसाधन तक पहुंच की अनुमति नहीं है।', errPaymentRequired: 'पर्याप्त क्रेडिट नहीं हैं। कृपया मूल्य पृष्ठ पर टॉप अप करें।', errServer: 'सर्वर त्रुटि। कृपया बाद में पुनः प्रयास करें।', errGeneric: 'कुछ गलत हो गया। कृपया पुनः प्रयास करें।', dismissError: 'बंद करें', retry: 'पुनः प्रयास करें', loadingDots: 'लोड हो रहा है…', resultLabels: { headline: 'शीर्षक', body: 'मुख्य भाग', cta: 'CTA', hook: 'हुक', reason: 'कारण', reasoning: 'तर्क', description: 'विवरण', scenario: 'परिदृश्य', sensoryDetails: 'संवेदी विवरण', emotionalPayoff: 'भावनात्मक लाभ', psychologicalPrinciple: 'मनोवैज्ञानिक सिद्धांत', timing: 'समय', frictionRemoval: 'घर्षण हटाना', whyNotTheOthers: 'अन्य क्यों नहीं', adCopy: 'विज्ञापन पाठ', visualizationPrompt: 'विज़ुअलाइज़ेशन प्रॉम्प्ट', desiredOutcome: 'वांछित परिणाम' }, skipToContent: 'सामग्री पर जाएं', phProduct: 'उदा., विटामिन सी सीरम बेचने वाला डीटीसी स्किनकेयर ब्रांड', phMessage: 'उदा., दमकती त्वचा से थक गए हैं? हमारा विटामिन सी सीरम 7 दिनों में चमक देता है...', phAudience: 'उदा., 25-40 की महिलाएं जो स्किनकेयर में रुचि रखती हैं', phAudienceCleanBeauty: 'उदा., 25-40 की महिलाएं जो क्लीन ब्यूटी में रुचि रखती हैं', phAudienceCleanBeautyOpt: 'उदा., 25-40 की महिलाएं जो क्लीन ब्यूटी में रुचि रखती हैं (वैकल्पिक)', phAudienceSelfCare: 'उदा., 25-40 की महिलाएं जो स्किनकेयर और सेल्फ-केयर में रुचि रखती हैं', phAudienceConcern: 'उदा., 25-40 की महिलाएं जो त्वचा की उम्र बढ़ने को लेकर चिंतित हैं', phMillennial: 'उदा., मिलेनियल स्किनकेयर उत्साही', phAcme: 'उदा., एक्मे', phAcmeHeadphones: 'उदा., एक्मे नॉइज़-कैंसलिंग हेडफ़ोन', phTone: 'उदा., चंचल, साहसी', phToneProfessional: 'उदा., चंचल, पेशेवर', phToneLuxurious: 'उदा., चंचल, साहसी, भव्य (वैकल्पिक)', phKeywords: 'उदा., गुणवत्ता, किफ़ायती', phColors: 'उदा., #FF0000, #00B2FC', phFonts: 'उदा., Inter, Roboto', phUrl: 'https://...', phOptional: 'वैकल्पिक', phOptionalPercent: 'वैकल्पिक %', phOptionalDollar: 'वैकल्पिक $', ph50: '50' },
+    common: { signIn: 'साइन इन', signOut: 'साइन आउट', credits: 'क्रेडिट', creditsLower: 'क्रेडिट', language: 'भाषा', switchLanguage: 'भाषा बदलें', currency: 'मुद्रा', cookieConsent: 'कुकी सहमति', new: 'नया', poweredBy: 'द्वारा संचालित', back: '← वापस', backToLazynext: '← Lazynext', close: 'बंद करें', errNetwork: 'नेटवर्क त्रुटि। अपना कनेक्शन जांचें और पुनः प्रयास करें।', errUnauthorized: 'आपका सत्र समाप्त हो गया है। कृपया पुनः साइन इन करें।', errNotFound: 'अनुरोधित संसाधन नहीं मिला।', errForbidden: 'आपके पास इस संसाधन तक पहुंच की अनुमति नहीं है।', errPaymentRequired: 'पर्याप्त क्रेडिट नहीं हैं। कृपया मूल्य पृष्ठ पर टॉप अप करें।', errServer: 'सर्वर त्रुटि। कृपया बाद में पुनः प्रयास करें।', errGeneric: 'कुछ गलत हो गया। कृपया पुनः प्रयास करें।', dismissError: 'बंद करें', retry: 'पुनः प्रयास करें', loadingDots: 'लोड हो रहा है…', resultLabels: { headline: 'शीर्षक', body: 'मुख्य भाग', cta: 'CTA', hook: 'हुक', reason: 'कारण', reasoning: 'तर्क', description: 'विवरण', scenario: 'परिदृश्य', sensoryDetails: 'संवेदी विवरण', emotionalPayoff: 'भावनात्मक लाभ', psychologicalPrinciple: 'मनोवैज्ञानिक सिद्धांत', timing: 'समय', frictionRemoval: 'घर्षण हटाना', whyNotTheOthers: 'अन्य क्यों नहीं', adCopy: 'विज्ञापन पाठ', visualizationPrompt: 'विज़ुअलाइज़ेशन प्रॉम्प्ट', desiredOutcome: 'वांछित परिणाम' }, skipToContent: 'सामग्री पर जाएं', phProduct: 'उदा., विटामिन सी सीरम बेचने वाला डीटीसी स्किनकेयर ब्रांड', phMessage: 'उदा., दमकती त्वचा से थक गए हैं? हमारा विटामिन सी सीरम 7 दिनों में चमक देता है...', phAudience: 'उदा., 25-40 की महिलाएं जो स्किनकेयर में रुचि रखती हैं', phAudienceCleanBeauty: 'उदा., 25-40 की महिलाएं जो क्लीन ब्यूटी में रुचि रखती हैं', phAudienceCleanBeautyOpt: 'उदा., 25-40 की महिलाएं जो क्लीन ब्यूटी में रुचि रखती हैं (वैकल्पिक)', phAudienceSelfCare: 'उदा., 25-40 की महिलाएं जो स्किनकेयर और सेल्फ-केयर में रुचि रखती हैं', phAudienceConcern: 'उदा., 25-40 की महिलाएं जो त्वचा की उम्र बढ़ने को लेकर चिंतित हैं', phMillennial: 'उदा., मिलेनियल स्किनकेयर उत्साही', phAcme: 'उदा., एक्मे', phAcmeHeadphones: 'उदा., एक्मे नॉइज़-कैंसलिंग हेडफ़ोन', phTone: 'उदा., चंचल, साहसी', phToneProfessional: 'उदा., चंचल, पेशेवर', phToneLuxurious: 'उदा., चंचल, साहसी, भव्य (वैकल्पिक)', phKeywords: 'उदा., गुणवत्ता, किफ़ायती', phColors: 'उदा., #FF0000, #00B2FC', phFonts: 'उदा., Inter, Roboto', phUrl: 'https://...', phOptional: 'वैकल्पिक', phOptionalPercent: 'वैकल्पिक %', phOptionalDollar: 'वैकल्पिक $', ph50: '50' , actions: 'क्रियाएँ'},
     userMenu: {
       account: 'खाता',
       signOut: 'साइन आउट',
@@ -674,6 +674,20 @@ export const hiMessages = {
       urlPh: 'https://yourbrand.com',
       urlPh2: 'https://shop.example.com/products/led-mask',
       urlPh3: 'https://example.com/reference-ad.mp4',
+
+      helpTitle: 'कीबोर्ड शॉर्टकट',
+
+      helpContinueChain: 'चेन जारी रखें (जब रुका हुआ हो)',
+
+      helpStopChain: 'चेन रोकें (जब चल रही हो)',
+
+      helpToggleBatch: 'बैच मोड टॉगल करें',
+
+      helpToggleChain: 'चेन मोड टॉगल करें',
+
+      helpShowHide: 'इस सहायता को दिखाएं/छिपाएं',
+
+      helpCloseDialog: 'इस संवाद को बंद करें',
     },
 
     costEstimate: {
@@ -1183,6 +1197,7 @@ export const hiMessages = {
       diffOnlyInB: 'केवल B में',
       diffBack: 'रचनात्मक संपत्तियों पर वापस',
       exportSelected: 'चयनित निर्यात करें',
+      metadata: 'मेटाडेटा',
     },
     share: {
       title: 'साझा क्रिएटिव',
@@ -1816,6 +1831,19 @@ export const hiMessages = {
       tlSaveFailed: 'टाइमलाइन सहेजने में विफल। कृपया पुनः प्रयास करें।',
     loadingTimeline: 'टाइमलाइन लोड हो रहा है…',
       keyboardShortcuts: 'कीबोर्ड शॉर्टकट',
+      helpTitle: 'कीबोर्ड शॉर्टकट',
+      helpSwitchRoughCut: 'रफ कट पर स्विच करें',
+      helpSwitchSkills: 'स्किल्स पर स्विच करें',
+      helpSwitchTimeline: 'टाइमलाइन पर स्विच करें',
+      helpGenerateRoughCut: 'रफ कट जनरेट करें',
+      helpSaveTimeline: 'टाइमलाइन सहेजें',
+      helpUndo: 'पूर्ववत करें',
+      helpRedo: 'पुनः करें',
+      helpShowHide: 'इस सहायता को दिखाएं/छिपाएं',
+      helpCloseDialog: 'इस संवाद को बंद करें',
+      undoHistoryAvailable: 'पूर्ववत इतिहास उपलब्ध',
+      undoLabel: 'पूर्ववत करें',
+      redoLabel: 'पुनः करें',
     },
 
     briefIntelligence: {
@@ -4145,6 +4173,7 @@ export const hiMessages = {
     error: 'ऑडियंस रेज़ोनेंस भविष्यवाणी विफल',
     dryRunNotice: 'ड्राई-रन मोड — टेम्पलेट रेज़ोनेंस का उपयोग',
     audiencePh: 'उदा., Gen Z, व्यस्त माता-पिता, फिटनेस उत्साही',
+    commaSeparated: 'कॉमा या नई पंक्ति से विभाजित।',
   },
   creativeFormatRecommender: {
     title: 'क्रिएटिव फॉर्मेट रेकमेंडर',

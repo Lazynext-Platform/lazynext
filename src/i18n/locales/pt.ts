@@ -215,7 +215,7 @@ export const ptMessages = {
       generating: 'Gerando…',
       failed: 'Falhou (reembolsado)',
     },
-    common: { signIn: 'Entrar', signOut: 'Sair', credits: 'Créditos', creditsLower: 'créditos', language: 'Idioma', switchLanguage: 'Mudar idioma', currency: 'Moeda', cookieConsent: 'Consentimento de cookies', new: 'NOVO', poweredBy: 'Desenvolvido por', back: '← Voltar', backToLazynext: '← Lazynext', close: 'Fechar', errNetwork: 'Erro de rede. Verifique sua conexão e tente novamente.', errUnauthorized: 'Sua sessão expirou. Entre novamente.', errNotFound: 'O recurso solicitado não foi encontrado.', errForbidden: 'Você não tem acesso a este recurso.', errPaymentRequired: 'Créditos insuficientes. Recarregue na página de preços.', errServer: 'Erro do servidor. Tente novamente mais tarde.', errGeneric: 'Algo deu errado. Tente novamente.', dismissError: 'Fechar', retry: 'Tentar novamente', loadingDots: 'Carregando…', resultLabels: { headline: 'Título', body: 'Corpo', cta: 'CTA', hook: 'Gancho', reason: 'Razão', reasoning: 'Raciocínio', description: 'Descrição', scenario: 'Cenário', sensoryDetails: 'Detalhes Sensoriais', emotionalPayoff: 'Recompensa Emocional', psychologicalPrinciple: 'Princípio Psicológico', timing: 'Tempo', frictionRemoval: 'Remoção de Fricção', whyNotTheOthers: 'Por Que Não os Outros', adCopy: 'Texto do Anúncio', visualizationPrompt: 'Prompt de Visualização', desiredOutcome: 'Resultado Desejado' }, skipToContent: 'Pular para o conteúdo', phProduct: 'ex., marca DTC de skincare que vende um sérum de vitamina C', phMessage: 'ex., Cansada de pele opaca? Nosso sérum de vitamina C clareia em 7 dias...', phAudience: 'ex., Mulheres 25-40 interessadas em skincare', phAudienceCleanBeauty: 'ex., Mulheres 25-40 interessadas em clean beauty', phAudienceCleanBeautyOpt: 'ex., mulheres 25-40 interessadas em clean beauty (opcional)', phAudienceSelfCare: 'ex., Mulheres 25-40 interessadas em skincare e autocuidado', phAudienceConcern: 'ex., Mulheres 25-40 preocupadas com o envelhecimento da pele', phMillennial: 'ex., entusiastas millennial de skincare', phAcme: 'ex., Acme', phAcmeHeadphones: 'ex., Fones de ouvido com cancelamento de ruído Acme', phTone: 'ex., divertido, ousado', phToneProfessional: 'ex., divertido, profissional', phToneLuxurious: 'ex., divertido, ousado, luxuoso (opcional)', phKeywords: 'ex., qualidade, acessível', phColors: 'ex., #FF0000, #00B2FC', phFonts: 'ex., Inter, Roboto', phUrl: 'https://...', phOptional: 'opcional', phOptionalPercent: 'opcional %', phOptionalDollar: 'opcional $', ph50: '50' },
+    common: { signIn: 'Entrar', signOut: 'Sair', credits: 'Créditos', creditsLower: 'créditos', language: 'Idioma', switchLanguage: 'Mudar idioma', currency: 'Moeda', cookieConsent: 'Consentimento de cookies', new: 'NOVO', poweredBy: 'Desenvolvido por', back: '← Voltar', backToLazynext: '← Lazynext', close: 'Fechar', errNetwork: 'Erro de rede. Verifique sua conexão e tente novamente.', errUnauthorized: 'Sua sessão expirou. Entre novamente.', errNotFound: 'O recurso solicitado não foi encontrado.', errForbidden: 'Você não tem acesso a este recurso.', errPaymentRequired: 'Créditos insuficientes. Recarregue na página de preços.', errServer: 'Erro do servidor. Tente novamente mais tarde.', errGeneric: 'Algo deu errado. Tente novamente.', dismissError: 'Fechar', retry: 'Tentar novamente', loadingDots: 'Carregando…', resultLabels: { headline: 'Título', body: 'Corpo', cta: 'CTA', hook: 'Gancho', reason: 'Razão', reasoning: 'Raciocínio', description: 'Descrição', scenario: 'Cenário', sensoryDetails: 'Detalhes Sensoriais', emotionalPayoff: 'Recompensa Emocional', psychologicalPrinciple: 'Princípio Psicológico', timing: 'Tempo', frictionRemoval: 'Remoção de Fricção', whyNotTheOthers: 'Por Que Não os Outros', adCopy: 'Texto do Anúncio', visualizationPrompt: 'Prompt de Visualização', desiredOutcome: 'Resultado Desejado' }, skipToContent: 'Pular para o conteúdo', phProduct: 'ex., marca DTC de skincare que vende um sérum de vitamina C', phMessage: 'ex., Cansada de pele opaca? Nosso sérum de vitamina C clareia em 7 dias...', phAudience: 'ex., Mulheres 25-40 interessadas em skincare', phAudienceCleanBeauty: 'ex., Mulheres 25-40 interessadas em clean beauty', phAudienceCleanBeautyOpt: 'ex., mulheres 25-40 interessadas em clean beauty (opcional)', phAudienceSelfCare: 'ex., Mulheres 25-40 interessadas em skincare e autocuidado', phAudienceConcern: 'ex., Mulheres 25-40 preocupadas com o envelhecimento da pele', phMillennial: 'ex., entusiastas millennial de skincare', phAcme: 'ex., Acme', phAcmeHeadphones: 'ex., Fones de ouvido com cancelamento de ruído Acme', phTone: 'ex., divertido, ousado', phToneProfessional: 'ex., divertido, profissional', phToneLuxurious: 'ex., divertido, ousado, luxuoso (opcional)', phKeywords: 'ex., qualidade, acessível', phColors: 'ex., #FF0000, #00B2FC', phFonts: 'ex., Inter, Roboto', phUrl: 'https://...', phOptional: 'opcional', phOptionalPercent: 'opcional %', phOptionalDollar: 'opcional $', ph50: '50', actions: 'Ações' },
     userMenu: {
       account: 'Conta',
       signOut: 'Sair',
@@ -674,6 +674,13 @@ export const ptMessages = {
       urlPh: 'https://yourbrand.com',
       urlPh2: 'https://shop.example.com/products/led-mask',
       urlPh3: 'https://example.com/reference-ad.mp4',
+      helpTitle: 'Atalhos de teclado',
+      helpContinueChain: 'Continuar cadeia (quando pausado)',
+      helpStopChain: 'Parar cadeia (quando em execução)',
+      helpToggleBatch: 'Alternar modo em lote',
+      helpToggleChain: 'Alternar modo cadeia',
+      helpShowHide: 'Mostrar/ocultar esta ajuda',
+      helpCloseDialog: 'Fechar esta caixa de diálogo',
     },
 
     costEstimate: {
@@ -1183,6 +1190,7 @@ export const ptMessages = {
       diffOnlyInB: 'Apenas em B',
       diffBack: 'Voltar para Recursos Criativos',
       exportSelected: 'Exportar Selecionados',
+      metadata: 'Metadados',
     },
     share: {
       title: 'Criativo Compartilhado',
@@ -1816,6 +1824,19 @@ export const ptMessages = {
       tlSaveFailed: 'Falha ao salvar linha do tempo. Tente novamente.',
       loadingTimeline: 'Carregando linha do tempo…',
       keyboardShortcuts: 'Atalhos de teclado',
+      helpTitle: 'Atalhos de teclado',
+      helpSwitchRoughCut: 'Mudar para Rough Cut',
+      helpSwitchSkills: 'Mudar para Skills',
+      helpSwitchTimeline: 'Mudar para Timeline',
+      helpGenerateRoughCut: 'Gerar Rough Cut',
+      helpSaveTimeline: 'Salvar Timeline',
+      helpUndo: 'Desfazer',
+      helpRedo: 'Refazer',
+      helpShowHide: 'Mostrar/ocultar esta ajuda',
+      helpCloseDialog: 'Fechar esta caixa de diálogo',
+      undoHistoryAvailable: 'Histórico de desfazer disponível',
+      undoLabel: 'Desfazer',
+      redoLabel: 'Refazer',
     },
 
     briefIntelligence: {
@@ -4145,6 +4166,7 @@ export const ptMessages = {
     error: 'Predição de ressonância de audiência falhou',
     dryRunNotice: 'Modo de teste — usando ressonância de modelo',
     audiencePh: 'ex., Geração Z, pais ocupados, entusiastas de fitness',
+    commaSeparated: 'Separado por vírgula ou nova linha.',
   },
   creativeFormatRecommender: {
     title: 'Recomendador de Formato Criativo',

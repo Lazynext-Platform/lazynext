@@ -645,7 +645,7 @@ export default function CreativeAssetsPage() {
 
             {parseMetadata(preview.metadata) && (
               <div>
-                <p className="mb-1 text-xs font-medium text-fg-faint">Metadata</p>
+                <p className="mb-1 text-xs font-medium text-fg-faint">{t('cassets.metadata')}</p>
                 <pre className="max-h-60 overflow-auto whitespace-pre-wrap rounded-lg bg-app p-3 text-[11px] text-fg-faint">
                   {JSON.stringify(parseMetadata(preview.metadata), null, 2)}
                 </pre>

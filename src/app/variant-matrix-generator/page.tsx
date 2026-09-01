@@ -263,7 +263,7 @@ export default function VariantMatrixGeneratorPage() {
                     <th scope="col" className="px-3 py-2 text-left font-medium">{t('variantMatrixGenerator.colScore')}</th>
                     <th scope="col" className="px-3 py-2 text-left font-medium">{t('variantMatrixGenerator.colRationale')}</th>
                     <th scope="col" className="px-3 py-2 text-left font-medium">
-                      <span className="sr-only">Actions</span>
+                      <span className="sr-only">{t('common.actions')}</span>
                     </th>
                   </tr>
                 </thead>

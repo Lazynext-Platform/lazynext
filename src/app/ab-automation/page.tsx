@@ -216,8 +216,8 @@ export default function ABAutomationPage() {
                 onChange={(e) => setPlatform(e.target.value)}
                 className="w-full mt-1 rounded-md border border-border bg-input px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent"
               >
-                <option value="meta">Meta (Facebook/Instagram)</option>
-                <option value="google">Google Ads</option>
+                <option value="meta">{t('ads.platformMeta')}</option>
+                <option value="google">{t('ads.platformGoogle')}</option>
               </select>
             </div>
             <div>

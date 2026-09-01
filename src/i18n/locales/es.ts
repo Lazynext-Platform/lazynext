@@ -217,7 +217,7 @@ export const esMessages = {
       generating: 'Generando…',
       failed: 'Falló (reembolsado)',
     },
-    common: { signIn: 'Entrar', signOut: 'Cerrar sesión', credits: 'Créditos', creditsLower: 'créditos', language: 'Idioma', switchLanguage: 'Cambiar idioma', currency: 'Moneda', cookieConsent: 'Consentimiento de cookies', new: 'NUEVO', poweredBy: 'Desarrollado por', back: '← Volver', backToLazynext: '← Lazynext', close: 'Cerrar', errNetwork: 'Error de red. Compruebe su conexión e inténtelo de nuevo.', errUnauthorized: 'Su sesión ha expirado. Inicie sesión de nuevo.', errNotFound: 'El recurso solicitado no fue encontrado.', errForbidden: 'No tiene acceso a este recurso.', errPaymentRequired: 'No hay suficientes créditos. Recargue en la página de precios.', errServer: 'Error del servidor. Inténtelo más tarde.', errGeneric: 'Algo salió mal. Inténtelo de nuevo.', dismissError: 'Cerrar', retry: 'Reintentar', loadingDots: 'Cargando…', resultLabels: { headline: 'Titular', body: 'Cuerpo', cta: 'CTA', hook: 'Gancho', reason: 'Razón', reasoning: 'Razonamiento', description: 'Descripción', scenario: 'Escenario', sensoryDetails: 'Detalles Sensoriales', emotionalPayoff: 'Recompensa Emocional', psychologicalPrinciple: 'Principio Psicológico', timing: 'Momento', frictionRemoval: 'Eliminación de Fricción', whyNotTheOthers: 'Por Qué No los Otros', adCopy: 'Texto del Anuncio', visualizationPrompt: 'Prompt de Visualización', desiredOutcome: 'Resultado Deseado' }, skipToContent: 'Saltar al contenido', phProduct: 'ej., marca DTC de cuidado de la piel que vende un suero de vitamina C', phMessage: 'ej., ¿Cansada de la piel opaca? Nuestro suero de vitamina C ilumina en solo 7 días...', phAudience: 'ej., Mujeres 25-40 interesadas en el cuidado de la piel', phAudienceCleanBeauty: 'ej., Mujeres 25-40 interesadas en clean beauty', phAudienceCleanBeautyOpt: 'ej., mujeres 25-40 interesadas en clean beauty (opcional)', phAudienceSelfCare: 'ej., Mujeres 25-40 interesadas en skincare y autocuidado', phAudienceConcern: 'ej., Mujeres 25-40 preocupadas por el envejecimiento de la piel', phMillennial: 'ej., entusiastas millennials del skincare', phAcme: 'ej., Acme', phAcmeHeadphones: 'ej., Auriculares con cancelación de ruido Acme', phTone: 'ej., juguetón, audaz', phToneProfessional: 'ej., juguetón, profesional', phToneLuxurious: 'ej., juguetón, audaz, lujoso (opcional)', phKeywords: 'ej., calidad, asequible', phColors: 'ej., #FF0000, #00B2FC', phFonts: 'ej., Inter, Roboto', phUrl: 'https://...', phOptional: 'opcional', phOptionalPercent: 'opcional %', phOptionalDollar: 'opcional $', ph50: '50' },
+    common: { signIn: 'Entrar', signOut: 'Cerrar sesión', credits: 'Créditos', creditsLower: 'créditos', language: 'Idioma', switchLanguage: 'Cambiar idioma', currency: 'Moneda', cookieConsent: 'Consentimiento de cookies', new: 'NUEVO', poweredBy: 'Desarrollado por', back: '← Volver', backToLazynext: '← Lazynext', close: 'Cerrar', errNetwork: 'Error de red. Compruebe su conexión e inténtelo de nuevo.', errUnauthorized: 'Su sesión ha expirado. Inicie sesión de nuevo.', errNotFound: 'El recurso solicitado no fue encontrado.', errForbidden: 'No tiene acceso a este recurso.', errPaymentRequired: 'No hay suficientes créditos. Recargue en la página de precios.', errServer: 'Error del servidor. Inténtelo más tarde.', errGeneric: 'Algo salió mal. Inténtelo de nuevo.', dismissError: 'Cerrar', retry: 'Reintentar', loadingDots: 'Cargando…', resultLabels: { headline: 'Titular', body: 'Cuerpo', cta: 'CTA', hook: 'Gancho', reason: 'Razón', reasoning: 'Razonamiento', description: 'Descripción', scenario: 'Escenario', sensoryDetails: 'Detalles Sensoriales', emotionalPayoff: 'Recompensa Emocional', psychologicalPrinciple: 'Principio Psicológico', timing: 'Momento', frictionRemoval: 'Eliminación de Fricción', whyNotTheOthers: 'Por Qué No los Otros', adCopy: 'Texto del Anuncio', visualizationPrompt: 'Prompt de Visualización', desiredOutcome: 'Resultado Deseado' }, skipToContent: 'Saltar al contenido', phProduct: 'ej., marca DTC de cuidado de la piel que vende un suero de vitamina C', phMessage: 'ej., ¿Cansada de la piel opaca? Nuestro suero de vitamina C ilumina en solo 7 días...', phAudience: 'ej., Mujeres 25-40 interesadas en el cuidado de la piel', phAudienceCleanBeauty: 'ej., Mujeres 25-40 interesadas en clean beauty', phAudienceCleanBeautyOpt: 'ej., mujeres 25-40 interesadas en clean beauty (opcional)', phAudienceSelfCare: 'ej., Mujeres 25-40 interesadas en skincare y autocuidado', phAudienceConcern: 'ej., Mujeres 25-40 preocupadas por el envejecimiento de la piel', phMillennial: 'ej., entusiastas millennials del skincare', phAcme: 'ej., Acme', phAcmeHeadphones: 'ej., Auriculares con cancelación de ruido Acme', phTone: 'ej., juguetón, audaz', phToneProfessional: 'ej., juguetón, profesional', phToneLuxurious: 'ej., juguetón, audaz, lujoso (opcional)', phKeywords: 'ej., calidad, asequible', phColors: 'ej., #FF0000, #00B2FC', phFonts: 'ej., Inter, Roboto', phUrl: 'https://...', phOptional: 'opcional', phOptionalPercent: 'opcional %', phOptionalDollar: 'opcional $', ph50: '50' , actions: 'Acciones'},
     userMenu: {
       account: 'Cuenta',
       signOut: 'Cerrar sesión',
@@ -676,6 +676,20 @@ export const esMessages = {
       urlPh: 'https://yourbrand.com',
       urlPh2: 'https://shop.example.com/products/led-mask',
       urlPh3: 'https://example.com/reference-ad.mp4',
+
+      helpTitle: 'Atajos de teclado',
+
+      helpContinueChain: 'Continuar cadena (cuando está pausada)',
+
+      helpStopChain: 'Detener cadena (cuando está en ejecución)',
+
+      helpToggleBatch: 'Alternar modo por lotes',
+
+      helpToggleChain: 'Alternar modo cadena',
+
+      helpShowHide: 'Mostrar/ocultar esta ayuda',
+
+      helpCloseDialog: 'Cerrar este diálogo',
     },
 
     costEstimate: {
@@ -1185,6 +1199,7 @@ export const esMessages = {
       diffOnlyInB: 'Solo en B',
       diffBack: 'Volver a Recursos Creativos',
       exportSelected: 'Exportar Seleccionados',
+      metadata: 'Metadatos',
     },
     share: {
       title: 'Creativo Compartido',
@@ -1818,6 +1833,19 @@ export const esMessages = {
       tlSaveFailed: 'Error al guardar la línea de tiempo. Inténtalo de nuevo.',
       loadingTimeline: 'Cargando línea de tiempo…',
       keyboardShortcuts: 'Atajos de teclado',
+      helpTitle: 'Atajos de teclado',
+      helpSwitchRoughCut: 'Cambiar a Rough Cut',
+      helpSwitchSkills: 'Cambiar a Skills',
+      helpSwitchTimeline: 'Cambiar a Línea de tiempo',
+      helpGenerateRoughCut: 'Generar Rough Cut',
+      helpSaveTimeline: 'Guardar línea de tiempo',
+      helpUndo: 'Deshacer',
+      helpRedo: 'Rehacer',
+      helpShowHide: 'Mostrar/ocultar esta ayuda',
+      helpCloseDialog: 'Cerrar este diálogo',
+      undoHistoryAvailable: 'Historial de deshacer disponible',
+      undoLabel: 'Deshacer',
+      redoLabel: 'Rehacer',
     },
 
     briefIntelligence: {
@@ -4147,6 +4175,7 @@ export const esMessages = {
     error: 'Predicción de resonancia de audiencia fallida',
     dryRunNotice: 'Modo de prueba — usando resonancia de plantilla',
     audiencePh: 'ej., Gen Z, padres ocupados, entusiastas del fitness',
+    commaSeparated: 'Separado por comas o saltos de línea.',
   },
   creativeFormatRecommender: {
     title: 'Recomendador de Formato Creativo',

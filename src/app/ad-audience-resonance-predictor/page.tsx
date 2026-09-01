@@ -166,7 +166,7 @@ export default function AdAudienceResonancePredictorPage() {
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
               disabled={loading}
             />
-            <p className="text-xs text-fg-muted mt-1">Comma- or newline-separated.</p>
+            <p className="text-xs text-fg-muted mt-1">{t('adAudienceResonancePredictor.commaSeparated')}</p>
           </div>
 
           <div>

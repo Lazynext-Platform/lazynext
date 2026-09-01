@@ -218,7 +218,7 @@ export const thMessages = {
       generating: 'กำลังสร้าง…',
       failed: 'ล้มเหลว (คืนเครดิตแล้ว)',
     },
-    common: { signIn: 'เข้าสู่ระบบ', signOut: 'ออกจากระบบ', credits: 'เครดิต', creditsLower: 'เครดิต', language: 'ภาษา', switchLanguage: 'เปลี่ยนภาษา', currency: 'สกุลเงิน', cookieConsent: 'ยินยอมคุกกี้', new: 'ใหม่', poweredBy: 'ขับเคลื่อนโดย', back: '← ย้อนกลับ', backToLazynext: '← Lazynext', close: 'ปิด', errNetwork: 'ข้อผิดพลาดเครือข่าย กรุณาตรวจสอบการเชื่อมต่อแล้วลองอีกครั้ง', errUnauthorized: 'เซสชันหมดอายุแล้ว กรุณาเข้าสู่ระบบอีกครั้ง', errNotFound: 'ไม่พบทรัพยากรที่ร้องขอ', errForbidden: 'คุณไม่มีสิทธิ์เข้าถึงทรัพยากรนี้', errPaymentRequired: 'เครดิตไม่เพียงพอ กรุณาเติมที่หน้าราคา', errServer: 'ข้อผิดพลาดเซิร์ฟเวอร์ กรุณาลองอีกครั้งในภายหลัง', errGeneric: 'เกิดข้อผิดพลาด กรุณาลองอีกครั้ง', dismissError: 'ปิด', retry: 'ลองอีกครั้ง', loadingDots: 'กำลังโหลด…', resultLabels: { headline: 'พาดหัว', body: 'เนื้อหา', cta: 'CTA', hook: 'เบ็ด', reason: 'เหตุผล', reasoning: 'เหตุผล', description: 'คำอธิบาย', scenario: 'สถานการณ์', sensoryDetails: 'รายละเอียดทางประสาทสัมผัส', emotionalPayoff: 'ผลตอบแทนทางอารมณ์', psychologicalPrinciple: 'หลักการทางจิตวิทยา', timing: 'จังหวะ', frictionRemoval: 'การขจัดอุปสรรค', whyNotTheOthers: 'ทำไมไม่ใช่ตัวเลือกอื่น', adCopy: 'ข้อความโฆษณา', visualizationPrompt: 'พร้อมต์การแสดงภาพ', desiredOutcome: 'ผลลัพธ์ที่ต้องการ' }, skipToContent: 'ข้ามไปยังเนื้อหา', phProduct: 'เช่น แบรนด์สกินแคร์ DTC ที่ขายเซรั่มวิตามินซี', phMessage: 'เช่น เบื่อผิวหมองคล้ำ? เซรั่มวิตามินซีของเราให้ผิวสว่างใน 7 วัน...', phAudience: 'เช่น ผู้หญิง 25-40 ปี ที่สนใจสกินแคร์', phAudienceCleanBeauty: 'เช่น ผู้หญิง 25-40 ปี ที่สนใจคลีนบิวตี้', phAudienceCleanBeautyOpt: 'เช่น ผู้หญิง 25-40 ปี ที่สนใจคลีนบิวตี้ (ไม่บังคับ)', phAudienceSelfCare: 'เช่น ผู้หญิง 25-40 ปี ที่สนใจสกินแคร์และการดูแลตัวเอง', phAudienceConcern: 'เช่น ผู้หญิง 25-40 ปี ที่กังวลเรื่องริ้วรอย', phMillennial: 'เช่น ผู้ที่ชื่นชอบสกินแคร์รุ่นมิลเลนเนียล', phAcme: 'เช่น Acme', phAcmeHeadphones: 'เช่น หูฟังตัดเสียงรบกวน Acme', phTone: 'เช่น สนุกสนาน กล้าแสดงออก', phToneProfessional: 'เช่น สนุกสนาน มืออาชีพ', phToneLuxurious: 'เช่น สนุกสนาน กล้าแสดงออก หรูหรา (ไม่บังคับ)', phKeywords: 'เช่น คุณภาพ ราคาประหยัด', phColors: 'เช่น #FF0000, #00B2FC', phFonts: 'เช่น Inter, Roboto', phUrl: 'https://...', phOptional: 'ไม่บังคับ', phOptionalPercent: 'ไม่บังคับ %', phOptionalDollar: 'ไม่บังคับ $', ph50: '50' },
+    common: { signIn: 'เข้าสู่ระบบ', signOut: 'ออกจากระบบ', credits: 'เครดิต', creditsLower: 'เครดิต', language: 'ภาษา', switchLanguage: 'เปลี่ยนภาษา', currency: 'สกุลเงิน', cookieConsent: 'ยินยอมคุกกี้', new: 'ใหม่', poweredBy: 'ขับเคลื่อนโดย', back: '← ย้อนกลับ', backToLazynext: '← Lazynext', close: 'ปิด', errNetwork: 'ข้อผิดพลาดเครือข่าย กรุณาตรวจสอบการเชื่อมต่อแล้วลองอีกครั้ง', errUnauthorized: 'เซสชันหมดอายุแล้ว กรุณาเข้าสู่ระบบอีกครั้ง', errNotFound: 'ไม่พบทรัพยากรที่ร้องขอ', errForbidden: 'คุณไม่มีสิทธิ์เข้าถึงทรัพยากรนี้', errPaymentRequired: 'เครดิตไม่เพียงพอ กรุณาเติมที่หน้าราคา', errServer: 'ข้อผิดพลาดเซิร์ฟเวอร์ กรุณาลองอีกครั้งในภายหลัง', errGeneric: 'เกิดข้อผิดพลาด กรุณาลองอีกครั้ง', dismissError: 'ปิด', retry: 'ลองอีกครั้ง', loadingDots: 'กำลังโหลด…', resultLabels: { headline: 'พาดหัว', body: 'เนื้อหา', cta: 'CTA', hook: 'เบ็ด', reason: 'เหตุผล', reasoning: 'เหตุผล', description: 'คำอธิบาย', scenario: 'สถานการณ์', sensoryDetails: 'รายละเอียดทางประสาทสัมผัส', emotionalPayoff: 'ผลตอบแทนทางอารมณ์', psychologicalPrinciple: 'หลักการทางจิตวิทยา', timing: 'จังหวะ', frictionRemoval: 'การขจัดอุปสรรค', whyNotTheOthers: 'ทำไมไม่ใช่ตัวเลือกอื่น', adCopy: 'ข้อความโฆษณา', visualizationPrompt: 'พร้อมต์การแสดงภาพ', desiredOutcome: 'ผลลัพธ์ที่ต้องการ' }, skipToContent: 'ข้ามไปยังเนื้อหา', phProduct: 'เช่น แบรนด์สกินแคร์ DTC ที่ขายเซรั่มวิตามินซี', phMessage: 'เช่น เบื่อผิวหมองคล้ำ? เซรั่มวิตามินซีของเราให้ผิวสว่างใน 7 วัน...', phAudience: 'เช่น ผู้หญิง 25-40 ปี ที่สนใจสกินแคร์', phAudienceCleanBeauty: 'เช่น ผู้หญิง 25-40 ปี ที่สนใจคลีนบิวตี้', phAudienceCleanBeautyOpt: 'เช่น ผู้หญิง 25-40 ปี ที่สนใจคลีนบิวตี้ (ไม่บังคับ)', phAudienceSelfCare: 'เช่น ผู้หญิง 25-40 ปี ที่สนใจสกินแคร์และการดูแลตัวเอง', phAudienceConcern: 'เช่น ผู้หญิง 25-40 ปี ที่กังวลเรื่องริ้วรอย', phMillennial: 'เช่น ผู้ที่ชื่นชอบสกินแคร์รุ่นมิลเลนเนียล', phAcme: 'เช่น Acme', phAcmeHeadphones: 'เช่น หูฟังตัดเสียงรบกวน Acme', phTone: 'เช่น สนุกสนาน กล้าแสดงออก', phToneProfessional: 'เช่น สนุกสนาน มืออาชีพ', phToneLuxurious: 'เช่น สนุกสนาน กล้าแสดงออก หรูหรา (ไม่บังคับ)', phKeywords: 'เช่น คุณภาพ ราคาประหยัด', phColors: 'เช่น #FF0000, #00B2FC', phFonts: 'เช่น Inter, Roboto', phUrl: 'https://...', phOptional: 'ไม่บังคับ', phOptionalPercent: 'ไม่บังคับ %', phOptionalDollar: 'ไม่บังคับ $', ph50: '50', actions: 'การดำเนินการ' },
     userMenu: {
       account: 'บัญชี',
       signOut: 'ออกจากระบบ',
@@ -677,6 +677,13 @@ export const thMessages = {
       urlPh: 'https://yourbrand.com',
       urlPh2: 'https://shop.example.com/products/led-mask',
       urlPh3: 'https://example.com/reference-ad.mp4',
+      helpTitle: 'ทางลัดแป้นพิมพ์',
+      helpContinueChain: 'ดำเนินการลูกโซ่ต่อ (เมื่อหยุดชั่วคราว)',
+      helpStopChain: 'หยุดลูกโซ่ (เมื่อกำลังทำงาน)',
+      helpToggleBatch: 'สลับโหมดแบตช์',
+      helpToggleChain: 'สลับโหมดลูกโซ่',
+      helpShowHide: 'แสดง/ซ่อนความช่วยเหลือนี้',
+      helpCloseDialog: 'ปิดกล่องโต้ตอบนี้',
     },
 
     costEstimate: {
@@ -1184,6 +1191,7 @@ export const thMessages = {
       diffOnlyInA: 'มีเฉพาะใน A',
       diffOnlyInB: 'มีเฉพาะใน B',
       diffBack: 'กลับไปยังครีเอทีฟแอสเซท',
+      metadata: 'เมทาดาต้า',
     },
     share: {
       title: 'ครีเอทีฟที่แชร์',
@@ -1817,6 +1825,19 @@ export const thMessages = {
       tlSaveFailed: 'บันทึกไทม์ไลน์ล้มเหลว กรุณาลองอีกครั้ง',
       loadingTimeline: 'กำลังโหลดไทม์ไลน์…',
       keyboardShortcuts: 'ทางลัดแป้นพิมพ์',
+      helpTitle: 'ทางลัดแป้นพิมพ์',
+      helpSwitchRoughCut: 'สลับไปยัง Rough Cut',
+      helpSwitchSkills: 'สลับไปยังทักษะ',
+      helpSwitchTimeline: 'สลับไปยังไทม์ไลน์',
+      helpGenerateRoughCut: 'สร้าง Rough Cut',
+      helpSaveTimeline: 'บันทึกไทม์ไลน์',
+      helpUndo: 'ย้อนกลับ',
+      helpRedo: 'ทำซ้ำ',
+      helpShowHide: 'แสดง/ซ่อนความช่วยเหลือนี้',
+      helpCloseDialog: 'ปิดกล่องโต้ตอบนี้',
+      undoHistoryAvailable: 'ประวัติการย้อนกลับพร้อมใช้งาน',
+      undoLabel: 'ย้อนกลับ',
+      redoLabel: 'ทำซ้ำ',
     },
 
     briefIntelligence: {
@@ -4146,6 +4167,7 @@ export const thMessages = {
     error: 'การทำนายการสะท้อนผู้ชมล้มเหลว',
     dryRunNotice: 'โหมดทดลอง — ใช้การสะท้อนแม่แบบ',
     audiencePh: 'เช่น Gen Z, พ่อแม่ที่ยุ่ง, ผู้ที่ชื่นชอบฟิตเนส',
+    commaSeparated: 'คั่นด้วยจุลภาคหรือบรรทัดใหม่.',
   },
   creativeFormatRecommender: {
     title: 'ตัวแนะนำรูปแบบครีเอทีฟ',

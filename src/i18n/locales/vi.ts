@@ -218,7 +218,7 @@ export const viMessages = {
       generating: 'Đang tạo…',
       failed: 'Thất bại (đã hoàn tiền)',
     },
-    common: { signIn: 'Đăng nhập', signOut: 'Đăng xuất', credits: 'Tín dụng', creditsLower: 'tín dụng', language: 'Ngôn ngữ', switchLanguage: 'Chuyển ngôn ngữ', currency: 'Tiền tệ', cookieConsent: 'Đồng ý cookie', new: 'MỚI', poweredBy: 'Cung cấp bởi', back: '← Quay lại', backToLazynext: '← Lazynext', close: 'Đóng', errNetwork: 'Lỗi mạng. Vui lòng kiểm tra kết nối và thử lại.', errUnauthorized: 'Phiên của bạn đã hết hạn. Vui lòng đăng nhập lại.', errNotFound: 'Không tìm thấy tài nguyên được yêu cầu.', errForbidden: 'Bạn không có quyền truy cập tài nguyên này.', errPaymentRequired: 'Không đủ tín dụng. Vui lòng nạp tại trang giá.', errServer: 'Lỗi máy chủ. Vui lòng thử lại sau.', errGeneric: 'Đã xảy ra lỗi. Vui lòng thử lại.', dismissError: 'Đóng', retry: 'Thử lại', loadingDots: 'Đang tải…', resultLabels: { headline: 'Tiêu đề', body: 'Nội dung', cta: 'CTA', hook: 'Móc câu', reason: 'Lý do', reasoning: 'Lập luận', description: 'Mô tả', scenario: 'Kịch bản', sensoryDetails: 'Chi tiết Cảm quan', emotionalPayoff: 'Phần thưởng Cảm xúc', psychologicalPrinciple: 'Nguyên lý Tâm lý', timing: 'Thời điểm', frictionRemoval: 'Giảm Ma sát', whyNotTheOthers: 'Tại sao Không phải cái Khác', adCopy: 'Văn bản Quảng cáo', visualizationPrompt: 'Lệnh Hiển thị', desiredOutcome: 'Kết quả Mong muốn' }, skipToContent: 'Bỏ qua đến nội dung', phProduct: 'vd., thương hiệu DTC chăm sóc da bán serum vitamin C', phMessage: 'vd., Mệt mỏi với làn da xỉn màu? Serum vitamin C của chúng tôi làm sáng trong 7 ngày...', phAudience: 'vd., Phụ nữ 25-40 quan tâm đến chăm sóc da', phAudienceCleanBeauty: 'vd., Phụ nữ 25-40 quan tâm đến clean beauty', phAudienceCleanBeautyOpt: 'vd., phụ nữ 25-40 quan tâm đến clean beauty (tùy chọn)', phAudienceSelfCare: 'vd., Phụ nữ 25-40 quan tâm đến chăm sóc da và bản thân', phAudienceConcern: 'vd., Phụ nữ 25-40 lo lắng về lão hóa da', phMillennial: 'vd., người yêu skincare thế hệ millennials', phAcme: 'vd., Acme', phAcmeHeadphones: 'vd., Tai nghe chống ồn Acme', phTone: 'vd., vui nhộn, táo bạo', phToneProfessional: 'vd., vui nhộn, chuyên nghiệp', phToneLuxurious: 'vd., vui nhộn, táo bạo, sang trọng (tùy chọn)', phKeywords: 'vd., chất lượng, phải chăng', phColors: 'vd., #FF0000, #00B2FC', phFonts: 'vd., Inter, Roboto', phUrl: 'https://...', phOptional: 'tùy chọn', phOptionalPercent: 'tùy chọn %', phOptionalDollar: 'tùy chọn $', ph50: '50' },
+    common: { signIn: 'Đăng nhập', signOut: 'Đăng xuất', credits: 'Tín dụng', creditsLower: 'tín dụng', language: 'Ngôn ngữ', switchLanguage: 'Chuyển ngôn ngữ', currency: 'Tiền tệ', cookieConsent: 'Đồng ý cookie', new: 'MỚI', poweredBy: 'Cung cấp bởi', back: '← Quay lại', backToLazynext: '← Lazynext', close: 'Đóng', errNetwork: 'Lỗi mạng. Vui lòng kiểm tra kết nối và thử lại.', errUnauthorized: 'Phiên của bạn đã hết hạn. Vui lòng đăng nhập lại.', errNotFound: 'Không tìm thấy tài nguyên được yêu cầu.', errForbidden: 'Bạn không có quyền truy cập tài nguyên này.', errPaymentRequired: 'Không đủ tín dụng. Vui lòng nạp tại trang giá.', errServer: 'Lỗi máy chủ. Vui lòng thử lại sau.', errGeneric: 'Đã xảy ra lỗi. Vui lòng thử lại.', dismissError: 'Đóng', retry: 'Thử lại', loadingDots: 'Đang tải…', resultLabels: { headline: 'Tiêu đề', body: 'Nội dung', cta: 'CTA', hook: 'Móc câu', reason: 'Lý do', reasoning: 'Lập luận', description: 'Mô tả', scenario: 'Kịch bản', sensoryDetails: 'Chi tiết Cảm quan', emotionalPayoff: 'Phần thưởng Cảm xúc', psychologicalPrinciple: 'Nguyên lý Tâm lý', timing: 'Thời điểm', frictionRemoval: 'Giảm Ma sát', whyNotTheOthers: 'Tại sao Không phải cái Khác', adCopy: 'Văn bản Quảng cáo', visualizationPrompt: 'Lệnh Hiển thị', desiredOutcome: 'Kết quả Mong muốn' }, skipToContent: 'Bỏ qua đến nội dung', phProduct: 'vd., thương hiệu DTC chăm sóc da bán serum vitamin C', phMessage: 'vd., Mệt mỏi với làn da xỉn màu? Serum vitamin C của chúng tôi làm sáng trong 7 ngày...', phAudience: 'vd., Phụ nữ 25-40 quan tâm đến chăm sóc da', phAudienceCleanBeauty: 'vd., Phụ nữ 25-40 quan tâm đến clean beauty', phAudienceCleanBeautyOpt: 'vd., phụ nữ 25-40 quan tâm đến clean beauty (tùy chọn)', phAudienceSelfCare: 'vd., Phụ nữ 25-40 quan tâm đến chăm sóc da và bản thân', phAudienceConcern: 'vd., Phụ nữ 25-40 lo lắng về lão hóa da', phMillennial: 'vd., người yêu skincare thế hệ millennials', phAcme: 'vd., Acme', phAcmeHeadphones: 'vd., Tai nghe chống ồn Acme', phTone: 'vd., vui nhộn, táo bạo', phToneProfessional: 'vd., vui nhộn, chuyên nghiệp', phToneLuxurious: 'vd., vui nhộn, táo bạo, sang trọng (tùy chọn)', phKeywords: 'vd., chất lượng, phải chăng', phColors: 'vd., #FF0000, #00B2FC', phFonts: 'vd., Inter, Roboto', phUrl: 'https://...', phOptional: 'tùy chọn', phOptionalPercent: 'tùy chọn %', phOptionalDollar: 'tùy chọn $', ph50: '50', actions: 'Hành động' },
     userMenu: {
       account: 'Tài khoản',
       signOut: 'Đăng xuất',
@@ -677,6 +677,13 @@ export const viMessages = {
       urlPh: 'https://yourbrand.com',
       urlPh2: 'https://shop.example.com/products/led-mask',
       urlPh3: 'https://example.com/reference-ad.mp4',
+      helpTitle: 'Phím tắt bàn phím',
+      helpContinueChain: 'Tiếp tục chuỗi (khi tạm dừng)',
+      helpStopChain: 'Dừng chuỗi (khi đang chạy)',
+      helpToggleBatch: 'Chuyển đổi chế độ hàng loạt',
+      helpToggleChain: 'Chuyển đổi chế độ chuỗi',
+      helpShowHide: 'Hiển thị/ẩn trợ giúp này',
+      helpCloseDialog: 'Đóng hộp thoại này',
     },
 
     costEstimate: {
@@ -1185,6 +1192,7 @@ export const viMessages = {
       diffOnlyInB: 'Chỉ trong B',
       diffBack: 'Quay lại Tài sản Sáng tạo',
       exportSelected: 'Xuất đã chọn',
+      metadata: 'Siêu dữ liệu',
     },
     share: {
       title: 'Sáng Tạo Chia Sẻ',
@@ -1818,6 +1826,19 @@ export const viMessages = {
       tlSaveFailed: 'Lưu dòng thời gian thất bại. Vui lòng thử lại.',
       loadingTimeline: 'Đang tải dòng thời gian…',
       keyboardShortcuts: 'Phím tắt bàn phím',
+      helpTitle: 'Phím tắt bàn phím',
+      helpSwitchRoughCut: 'Chuyển sang Rough Cut',
+      helpSwitchSkills: 'Chuyển sang Skills',
+      helpSwitchTimeline: 'Chuyển sang Timeline',
+      helpGenerateRoughCut: 'Tạo Rough Cut',
+      helpSaveTimeline: 'Lưu Timeline',
+      helpUndo: 'Hoàn tác',
+      helpRedo: 'Làm lại',
+      helpShowHide: 'Hiển thị/ẩn trợ giúp này',
+      helpCloseDialog: 'Đóng hộp thoại này',
+      undoHistoryAvailable: 'Lịch sử hoàn tác có sẵn',
+      undoLabel: 'Hoàn tác',
+      redoLabel: 'Làm lại',
     },
 
     briefIntelligence: {
@@ -4137,6 +4158,7 @@ export const viMessages = {
     error: 'Dự đoán cộng hưởng khán giả thất bại',
     dryRunNotice: 'Chế độ thử nghiệm — sử dụng cộng hưởng mẫu',
     audiencePh: 'vd., Gen Z, cha mẹ bận rộn, người yêu fitness',
+    commaSeparated: 'Phân tách bằng dấu phẩy hoặc dòng mới.',
   },
   creativeFormatRecommender: {
     title: 'Trình Gợi ý Định dạng Sáng tạo',

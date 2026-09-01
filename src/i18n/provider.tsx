@@ -41,6 +41,8 @@ export function I18nProvider({ children, initialLocale }: { children: React.Reac
       setLoadedLocales(prev => new Set(prev).add(locale));
       setLocaleMessages(msgs);
       setLocaleAppMessages(appMsgs);
+    }).catch(() => {
+      // Fallback to English if locale load fails — keeps current state
     });
     return () => { cancelled = true; };
   }, [locale, loadedLocales]);

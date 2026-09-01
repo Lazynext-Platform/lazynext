@@ -215,7 +215,7 @@ export const zhMessages = {
       generating: '生成中…',
       failed: '失败(已退款)',
     },
-    common: { signIn: '登录', signOut: '退出登录', credits: '积分', creditsLower: '积分', language: '语言', switchLanguage: '切换语言', currency: '货币', cookieConsent: 'Cookie 同意', new: '新', poweredBy: '技术支持', back: '← 返回', backToLazynext: '← Lazynext', close: '关闭', errNetwork: '网络错误。请检查网络连接后重试。', errUnauthorized: '会话已过期，请重新登录。', errNotFound: '请求的资源未找到。', errForbidden: '您没有访问此资源的权限。', errPaymentRequired: '积分不足，请在定价页面充值。', errServer: '服务器错误，请稍后重试。', errGeneric: '出现问题，请重试。', dismissError: '关闭', retry: '重试', loadingDots: '加载中…', resultLabels: { headline: '标题', body: '正文', cta: 'CTA', hook: '钩子', reason: '原因', reasoning: '推理', description: '描述', scenario: '场景', sensoryDetails: '感官细节', emotionalPayoff: '情感回报', psychologicalPrinciple: '心理学原理', timing: '时机', frictionRemoval: '消除摩擦', whyNotTheOthers: '为何不选其他', adCopy: '广告文案', visualizationPrompt: '可视化提示', desiredOutcome: '期望结果' }, skipToContent: '跳到内容', phProduct: '例如，销售维生素C精华的DTC护肤品牌', phMessage: '例如，厌倦暗沉肌肤？我们的维生素C精华7天提亮...', phAudience: '例如，25-40岁对护肤感兴趣的女性', phAudienceCleanBeauty: '例如，25-40岁对纯净美容感兴趣的女性', phAudienceCleanBeautyOpt: '例如，25-40岁对纯净美容感兴趣的女性（可选）', phAudienceSelfCare: '例如，25-40岁对护肤和自我护理感兴趣的女性', phAudienceConcern: '例如，25-40岁担心皮肤老化的女性', phMillennial: '例如，千禧一代护肤爱好者', phAcme: '例如，Acme', phAcmeHeadphones: '例如，Acme降噪耳机', phTone: '例如，活泼、大胆', phToneProfessional: '例如，活泼、专业', phToneLuxurious: '例如，活泼、大胆、奢华（可选）', phKeywords: '例如，品质、实惠', phColors: '例如，#FF0000, #00B2FC', phFonts: '例如，Inter, Roboto', phUrl: 'https://...', phOptional: '可选', phOptionalPercent: '可选 %', phOptionalDollar: '可选 $', ph50: '50' },
+    common: { signIn: '登录', signOut: '退出登录', credits: '积分', creditsLower: '积分', language: '语言', switchLanguage: '切换语言', currency: '货币', cookieConsent: 'Cookie 同意', new: '新', poweredBy: '技术支持', back: '← 返回', backToLazynext: '← Lazynext', close: '关闭', errNetwork: '网络错误。请检查网络连接后重试。', errUnauthorized: '会话已过期，请重新登录。', errNotFound: '请求的资源未找到。', errForbidden: '您没有访问此资源的权限。', errPaymentRequired: '积分不足，请在定价页面充值。', errServer: '服务器错误，请稍后重试。', errGeneric: '出现问题，请重试。', dismissError: '关闭', retry: '重试', loadingDots: '加载中…', resultLabels: { headline: '标题', body: '正文', cta: 'CTA', hook: '钩子', reason: '原因', reasoning: '推理', description: '描述', scenario: '场景', sensoryDetails: '感官细节', emotionalPayoff: '情感回报', psychologicalPrinciple: '心理学原理', timing: '时机', frictionRemoval: '消除摩擦', whyNotTheOthers: '为何不选其他', adCopy: '广告文案', visualizationPrompt: '可视化提示', desiredOutcome: '期望结果' }, skipToContent: '跳到内容', phProduct: '例如，销售维生素C精华的DTC护肤品牌', phMessage: '例如，厌倦暗沉肌肤？我们的维生素C精华7天提亮...', phAudience: '例如，25-40岁对护肤感兴趣的女性', phAudienceCleanBeauty: '例如，25-40岁对纯净美容感兴趣的女性', phAudienceCleanBeautyOpt: '例如，25-40岁对纯净美容感兴趣的女性（可选）', phAudienceSelfCare: '例如，25-40岁对护肤和自我护理感兴趣的女性', phAudienceConcern: '例如，25-40岁担心皮肤老化的女性', phMillennial: '例如，千禧一代护肤爱好者', phAcme: '例如，Acme', phAcmeHeadphones: '例如，Acme降噪耳机', phTone: '例如，活泼、大胆', phToneProfessional: '例如，活泼、专业', phToneLuxurious: '例如，活泼、大胆、奢华（可选）', phKeywords: '例如，品质、实惠', phColors: '例如，#FF0000, #00B2FC', phFonts: '例如，Inter, Roboto', phUrl: 'https://...', phOptional: '可选', phOptionalPercent: '可选 %', phOptionalDollar: '可选 $', ph50: '50', actions: '操作' },
     userMenu: {
       account: '账户',
       signOut: '退出登录',
@@ -674,6 +674,13 @@ export const zhMessages = {
       urlPh: 'https://yourbrand.com',
       urlPh2: 'https://shop.example.com/products/led-mask',
       urlPh3: 'https://example.com/reference-ad.mp4',
+      helpTitle: '键盘快捷键',
+      helpContinueChain: '继续链（暂停时）',
+      helpStopChain: '停止链（运行时）',
+      helpToggleBatch: '切换批量模式',
+      helpToggleChain: '切换链模式',
+      helpShowHide: '显示/隐藏此帮助',
+      helpCloseDialog: '关闭此对话框',
     },
 
     costEstimate: {
@@ -1183,6 +1190,7 @@ export const zhMessages = {
       diffOnlyInB: '仅在B中',
       diffBack: '返回创意素材',
       exportSelected: '导出所选',
+      metadata: '元数据',
     },
     share: {
       title: '共享创意',
@@ -1816,6 +1824,19 @@ export const zhMessages = {
       tlSaveFailed: '保存时间线失败，请重试。',
       loadingTimeline: '正在加载时间线…',
       keyboardShortcuts: '键盘快捷键',
+      helpTitle: '键盘快捷键',
+      helpSwitchRoughCut: '切换到粗剪',
+      helpSwitchSkills: '切换到技能',
+      helpSwitchTimeline: '切换到时间线',
+      helpGenerateRoughCut: '生成粗剪',
+      helpSaveTimeline: '保存时间线',
+      helpUndo: '撤销',
+      helpRedo: '重做',
+      helpShowHide: '显示/隐藏此帮助',
+      helpCloseDialog: '关闭此对话框',
+      undoHistoryAvailable: '撤销历史可用',
+      undoLabel: '撤销',
+      redoLabel: '重做',
     },
 
     briefIntelligence: {
@@ -4135,6 +4156,7 @@ export const zhMessages = {
     error: '受众共鸣预测失败',
     dryRunNotice: '试运行模式 — 使用模板共鸣',
     audiencePh: '例如，Z世代、忙碌的父母、健身爱好者',
+    commaSeparated: '以逗号或换行符分隔。',
   },
   creativeFormatRecommender: {
     title: '创意格式推荐器',

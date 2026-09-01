@@ -215,7 +215,7 @@ export const koMessages = {
       generating: '생성 중…',
       failed: '실패 (환불됨)',
     },
-    common: { signIn: '로그인', signOut: '로그아웃', credits: '크레딧', creditsLower: '크레딧', language: '언어', switchLanguage: '언어 변경', currency: '통화', cookieConsent: '쿠키 동의', new: '신규', poweredBy: '제공', back: '← 돌아가기', backToLazynext: '← Lazynext', close: '닫기', errNetwork: '네트워크 오류. 연결을 확인하고 다시 시도해주세요.', errUnauthorized: '세션이 만료되었습니다. 다시 로그인해주세요.', errNotFound: '요청한 리소스를 찾을 수 없습니다.', errForbidden: '이 리소스에 접근할 권한이 없습니다.', errPaymentRequired: '크레딧이 부족합니다. 가격 페이지에서 충전해주세요.', errServer: '서버 오류. 나중에 다시 시도해주세요.', errGeneric: '문제가 발생했습니다. 다시 시도해주세요.', dismissError: '닫기', retry: '다시 시도', loadingDots: '로딩 중…', resultLabels: { headline: '헤드라인', body: '본문', cta: 'CTA', hook: '후크', reason: '이유', reasoning: '추론', description: '설명', scenario: '시나리오', sensoryDetails: '감각적 세부사항', emotionalPayoff: '감정적 보상', psychologicalPrinciple: '심리학적 원리', timing: '타이밍', frictionRemoval: '마찰 제거', whyNotTheOthers: '다른 것들이 아닌 이유', adCopy: '광고 문구', visualizationPrompt: '시각화 프롬프트', desiredOutcome: '원하는 결과' }, skipToContent: '콘텐츠로 건너뛰기', phProduct: '예: 비타민 C 세럼을 판매하는 DTC 스킨케어 브랜드', phMessage: '예: 칙칙한 피부에 지치셨나요? 비타민 C 세럼이 7일 만에 피부를 밝게...', phAudience: '예: 스킨케어에 관심 있는 25-40세 여성', phAudienceCleanBeauty: '예: 클린 뷰티에 관심 있는 25-40세 여성', phAudienceCleanBeautyOpt: '예: 클린 뷰티에 관심 있는 25-40세 여성 (선택 사항)', phAudienceSelfCare: '예: 스킨케어와 셀프케어에 관심 있는 25-40세 여성', phAudienceConcern: '예: 피부 노화가 걱정되는 25-40세 여성', phMillennial: '예: 밀레니얼 스킨케어 매니아', phAcme: '예: Acme', phAcmeHeadphones: '예: Acme 노이즈 캔슬링 헤드폰', phTone: '예: 장난스러운, 대담한', phToneProfessional: '예: 장난스러운, 전문적인', phToneLuxurious: '예: 장난스러운, 대담한, 럭셔리 (선택 사항)', phKeywords: '예: 품질, 저렴한', phColors: '예: #FF0000, #00B2FC', phFonts: '예: Inter, Roboto', phUrl: 'https://...', phOptional: '선택 사항', phOptionalPercent: '선택 사항 %', phOptionalDollar: '선택 사항 $', ph50: '50' },
+    common: { signIn: '로그인', signOut: '로그아웃', credits: '크레딧', creditsLower: '크레딧', language: '언어', switchLanguage: '언어 변경', currency: '통화', cookieConsent: '쿠키 동의', new: '신규', poweredBy: '제공', back: '← 돌아가기', backToLazynext: '← Lazynext', close: '닫기', errNetwork: '네트워크 오류. 연결을 확인하고 다시 시도해주세요.', errUnauthorized: '세션이 만료되었습니다. 다시 로그인해주세요.', errNotFound: '요청한 리소스를 찾을 수 없습니다.', errForbidden: '이 리소스에 접근할 권한이 없습니다.', errPaymentRequired: '크레딧이 부족합니다. 가격 페이지에서 충전해주세요.', errServer: '서버 오류. 나중에 다시 시도해주세요.', errGeneric: '문제가 발생했습니다. 다시 시도해주세요.', dismissError: '닫기', retry: '다시 시도', loadingDots: '로딩 중…', resultLabels: { headline: '헤드라인', body: '본문', cta: 'CTA', hook: '후크', reason: '이유', reasoning: '추론', description: '설명', scenario: '시나리오', sensoryDetails: '감각적 세부사항', emotionalPayoff: '감정적 보상', psychologicalPrinciple: '심리학적 원리', timing: '타이밍', frictionRemoval: '마찰 제거', whyNotTheOthers: '다른 것들이 아닌 이유', adCopy: '광고 문구', visualizationPrompt: '시각화 프롬프트', desiredOutcome: '원하는 결과' }, skipToContent: '콘텐츠로 건너뛰기', phProduct: '예: 비타민 C 세럼을 판매하는 DTC 스킨케어 브랜드', phMessage: '예: 칙칙한 피부에 지치셨나요? 비타민 C 세럼이 7일 만에 피부를 밝게...', phAudience: '예: 스킨케어에 관심 있는 25-40세 여성', phAudienceCleanBeauty: '예: 클린 뷰티에 관심 있는 25-40세 여성', phAudienceCleanBeautyOpt: '예: 클린 뷰티에 관심 있는 25-40세 여성 (선택 사항)', phAudienceSelfCare: '예: 스킨케어와 셀프케어에 관심 있는 25-40세 여성', phAudienceConcern: '예: 피부 노화가 걱정되는 25-40세 여성', phMillennial: '예: 밀레니얼 스킨케어 매니아', phAcme: '예: Acme', phAcmeHeadphones: '예: Acme 노이즈 캔슬링 헤드폰', phTone: '예: 장난스러운, 대담한', phToneProfessional: '예: 장난스러운, 전문적인', phToneLuxurious: '예: 장난스러운, 대담한, 럭셔리 (선택 사항)', phKeywords: '예: 품질, 저렴한', phColors: '예: #FF0000, #00B2FC', phFonts: '예: Inter, Roboto', phUrl: 'https://...', phOptional: '선택 사항', phOptionalPercent: '선택 사항 %', phOptionalDollar: '선택 사항 $', ph50: '50', actions: '액션' },
     userMenu: {
       account: '계정',
       signOut: '로그아웃',
@@ -674,6 +674,13 @@ export const koMessages = {
       urlPh: 'https://yourbrand.com',
       urlPh2: 'https://shop.example.com/products/led-mask',
       urlPh3: 'https://example.com/reference-ad.mp4',
+      helpTitle: '키보드 단축키',
+      helpContinueChain: '체인 계속 (일시정지 시)',
+      helpStopChain: '체인 중지 (실행 중)',
+      helpToggleBatch: '배치 모드 전환',
+      helpToggleChain: '체인 모드 전환',
+      helpShowHide: '이 도움말 표시/숨기기',
+      helpCloseDialog: '이 대화상자 닫기',
     },
 
     costEstimate: {
@@ -1183,6 +1190,7 @@ export const koMessages = {
       diffOnlyInB: 'B에만',
       diffBack: '크리에이티브 에셋으로 돌아가기',
       exportSelected: '선택 내보내기',
+      metadata: '메타데이터',
     },
     share: {
       title: '공유 크리에이티브',
@@ -1816,6 +1824,19 @@ export const koMessages = {
       tlSaveFailed: '타임라인 저장 실패. 다시 시도해주세요.',
     loadingTimeline: '타임라인 로딩 중…',
       keyboardShortcuts: '키보드 단축키',
+      helpTitle: '키보드 단축키',
+      helpSwitchRoughCut: '러프 컷으로 전환',
+      helpSwitchSkills: '스킬로 전환',
+      helpSwitchTimeline: '타임라인으로 전환',
+      helpGenerateRoughCut: '러프 컷 생성',
+      helpSaveTimeline: '타임라인 저장',
+      helpUndo: '실행 취소',
+      helpRedo: '다시 실행',
+      helpShowHide: '이 도움말 표시/숨기기',
+      helpCloseDialog: '이 대화상자 닫기',
+      undoHistoryAvailable: '실행 취소 기록 사용 가능',
+      undoLabel: '실행 취소',
+      redoLabel: '다시 실행',
     },
 
     briefIntelligence: {
@@ -4145,6 +4166,7 @@ export const koMessages = {
     error: '오디언스 공명 예측 실패',
     dryRunNotice: '드라이런 모드 — 템플릿 공명 사용',
     audiencePh: '예: Z세대, 바쁜 부모, 피트니스 애호가',
+    commaSeparated: '쉼표 또는 줄바꿈으로 구분.',
   },
   creativeFormatRecommender: {
     title: '크리에이티브 포맷 추천기',

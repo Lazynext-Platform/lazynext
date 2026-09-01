@@ -79,9 +79,9 @@ export const dryRunRender: VideoRenderProvider = {
 
 /** Map LazyNext's EDL to RendoBar's compose timeline schema. */
 function edlToRendoBarCompose(edl: EditDecisionList) {
-  const tracks: any[] = [{
+  const tracks: Array<{ clips: Array<Record<string, unknown>> }> = [{
     clips: edl.shots.map((shot, i) => {
-      const clip: any = {
+      const clip: Record<string, unknown> = {
         asset: { type: 'video', src: shot.mediaUrl || '' },
         start: edl.shots.slice(0, i).reduce((sum, s) => sum + s.durationSec, 0),
         length: shot.durationSec,

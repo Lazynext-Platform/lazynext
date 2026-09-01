@@ -63,7 +63,7 @@ function CreativeDiffContent() {
         <div className="mx-auto max-w-5xl px-4 py-6 sm:py-8">
           <div className="flex items-center gap-2 text-fg-faint">
             <Loader2 className="h-5 w-5 animate-spin text-brand-accent" />
-            <span className="text-sm">Loading comparison...</span>
+            <span className="text-sm">{t('common.loadingDots')}</span>
           </div>
         </div>
       </div>

@@ -154,7 +154,7 @@ export default function AdPerformancePredictorPage() {
         <a href="#main-content" className="skip-link">{t('common.skipToContent')}</a>
         <main id="main-content" className="mx-auto max-w-5xl px-4 py-16 text-center" tabIndex={-1}>
           <TrendingUp className="mx-auto mb-4 h-10 w-10 text-brand-accent" aria-hidden="true" />
-          <h1 className="text-2xl font-bold mb-2">Ad Performance Predictor</h1>
+          <h1 className="text-2xl font-bold mb-2">{t('adPerformancePredictor.title')}</h1>
           <p className="text-sm text-fg-faint mb-6">{t('adPerformancePredictor.signInPrompt')}</p>
         </main>
         <AuthModal open={true} onClose={() => {}} />

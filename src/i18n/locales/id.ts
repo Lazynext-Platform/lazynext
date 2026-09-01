@@ -218,7 +218,7 @@ export const idMessages = {
       generating: 'Membuat…',
       failed: 'Gagal (dikembalikan)',
     },
-    common: { signIn: 'Masuk', signOut: 'Keluar', credits: 'Kredit', creditsLower: 'kredit', language: 'Bahasa', switchLanguage: 'Ganti bahasa', currency: 'Mata uang', cookieConsent: 'Persetujuan cookie', new: 'BARU', poweredBy: 'Didukung oleh', back: '← Kembali', backToLazynext: '← Lazynext', close: 'Tutup', errNetwork: 'Kesalahan jaringan. Periksa koneksi Anda dan coba lagi.', errUnauthorized: 'Sesi Anda telah berakhir. Silakan masuk lagi.', errNotFound: 'Sumber daya yang diminta tidak ditemukan.', errForbidden: 'Anda tidak memiliki akses ke sumber daya ini.', errPaymentRequired: 'Kredit tidak cukup. Silakan isi ulang di halaman harga.', errServer: 'Kesalahan server. Coba lagi nanti.', errGeneric: 'Terjadi kesalahan. Coba lagi.', dismissError: 'Tutup', retry: 'Coba lagi', loadingDots: 'Memuat…', resultLabels: { headline: 'Judul', body: 'Isi', cta: 'CTA', hook: 'Pengait', reason: 'Alasan', reasoning: 'Penalaran', description: 'Deskripsi', scenario: 'Skenario', sensoryDetails: 'Detail Sensorik', emotionalPayoff: 'Imbalan Emosional', psychologicalPrinciple: 'Prinsip Psikologis', timing: 'Waktu', frictionRemoval: 'Penghapusan Friksi', whyNotTheOthers: 'Mengapa Bukan yang Lain', adCopy: 'Teks Iklan', visualizationPrompt: 'Prompt Visualisasi', desiredOutcome: 'Hasil yang Diinginkan' }, skipToContent: 'Lewati ke konten', phProduct: 'mis. merek DTC skincare yang menjual serum vitamin C', phMessage: 'mis. Lelah dengan kulit kusam? Serum vitamin C kami mencerahkan dalam 7 hari...', phAudience: 'mis. Wanita 25-40 yang tertarik dengan skincare', phAudienceCleanBeauty: 'mis., Wanita 25-40 yang tertarik pada clean beauty', phAudienceCleanBeautyOpt: 'mis., wanita 25-40 yang tertarik pada clean beauty (opsional)', phAudienceSelfCare: 'mis., Wanita 25-40 yang tertarik pada skincare dan self-care', phAudienceConcern: 'mis., Wanita 25-40 yang khawatir tentang penuaan kulit', phMillennial: 'mis., penggemar skincare milenial', phAcme: 'mis., Acme', phAcmeHeadphones: 'mis., Headphone peredam bising Acme', phTone: 'mis., ceria, berani', phToneProfessional: 'mis., ceria, profesional', phToneLuxurious: 'mis., ceria, berani, mewah (opsional)', phKeywords: 'mis., kualitas, terjangkau', phColors: 'mis., #FF0000, #00B2FC', phFonts: 'mis., Inter, Roboto', phUrl: 'https://...', phOptional: 'opsional', phOptionalPercent: 'opsional %', phOptionalDollar: 'opsional $', ph50: '50' },
+    common: { signIn: 'Masuk', signOut: 'Keluar', credits: 'Kredit', creditsLower: 'kredit', language: 'Bahasa', switchLanguage: 'Ganti bahasa', currency: 'Mata uang', cookieConsent: 'Persetujuan cookie', new: 'BARU', poweredBy: 'Didukung oleh', back: '← Kembali', backToLazynext: '← Lazynext', close: 'Tutup', errNetwork: 'Kesalahan jaringan. Periksa koneksi Anda dan coba lagi.', errUnauthorized: 'Sesi Anda telah berakhir. Silakan masuk lagi.', errNotFound: 'Sumber daya yang diminta tidak ditemukan.', errForbidden: 'Anda tidak memiliki akses ke sumber daya ini.', errPaymentRequired: 'Kredit tidak cukup. Silakan isi ulang di halaman harga.', errServer: 'Kesalahan server. Coba lagi nanti.', errGeneric: 'Terjadi kesalahan. Coba lagi.', dismissError: 'Tutup', retry: 'Coba lagi', loadingDots: 'Memuat…', resultLabels: { headline: 'Judul', body: 'Isi', cta: 'CTA', hook: 'Pengait', reason: 'Alasan', reasoning: 'Penalaran', description: 'Deskripsi', scenario: 'Skenario', sensoryDetails: 'Detail Sensorik', emotionalPayoff: 'Imbalan Emosional', psychologicalPrinciple: 'Prinsip Psikologis', timing: 'Waktu', frictionRemoval: 'Penghapusan Friksi', whyNotTheOthers: 'Mengapa Bukan yang Lain', adCopy: 'Teks Iklan', visualizationPrompt: 'Prompt Visualisasi', desiredOutcome: 'Hasil yang Diinginkan' }, skipToContent: 'Lewati ke konten', phProduct: 'mis. merek DTC skincare yang menjual serum vitamin C', phMessage: 'mis. Lelah dengan kulit kusam? Serum vitamin C kami mencerahkan dalam 7 hari...', phAudience: 'mis. Wanita 25-40 yang tertarik dengan skincare', phAudienceCleanBeauty: 'mis., Wanita 25-40 yang tertarik pada clean beauty', phAudienceCleanBeautyOpt: 'mis., wanita 25-40 yang tertarik pada clean beauty (opsional)', phAudienceSelfCare: 'mis., Wanita 25-40 yang tertarik pada skincare dan self-care', phAudienceConcern: 'mis., Wanita 25-40 yang khawatir tentang penuaan kulit', phMillennial: 'mis., penggemar skincare milenial', phAcme: 'mis., Acme', phAcmeHeadphones: 'mis., Headphone peredam bising Acme', phTone: 'mis., ceria, berani', phToneProfessional: 'mis., ceria, profesional', phToneLuxurious: 'mis., ceria, berani, mewah (opsional)', phKeywords: 'mis., kualitas, terjangkau', phColors: 'mis., #FF0000, #00B2FC', phFonts: 'mis., Inter, Roboto', phUrl: 'https://...', phOptional: 'opsional', phOptionalPercent: 'opsional %', phOptionalDollar: 'opsional $', ph50: '50' , actions: 'Tindakan'},
     userMenu: {
       account: 'Akun',
       signOut: 'Keluar',
@@ -677,6 +677,20 @@ export const idMessages = {
       urlPh: 'https://yourbrand.com',
       urlPh2: 'https://shop.example.com/products/led-mask',
       urlPh3: 'https://example.com/reference-ad.mp4',
+
+      helpTitle: 'Pintasan Keyboard',
+
+      helpContinueChain: 'Lanjutkan rantai (saat jeda)',
+
+      helpStopChain: 'Hentikan rantai (saat berjalan)',
+
+      helpToggleBatch: 'Alih mode batch',
+
+      helpToggleChain: 'Alih mode rantai',
+
+      helpShowHide: 'Tampilkan/sembunyikan bantuan ini',
+
+      helpCloseDialog: 'Tutup dialog ini',
     },
 
     costEstimate: {
@@ -1162,6 +1176,7 @@ export const idMessages = {
       diffOnlyInA: 'Hanya di A',
       diffOnlyInB: 'Hanya di B',
       diffBack: 'Kembali ke Aset Kreatif',
+      metadata: 'Metadata',
     },
     share: {
       title: 'Kreatif Dibagikan',
@@ -1795,6 +1810,19 @@ export const idMessages = {
       tlSaveFailed: 'Gagal menyimpan garis waktu. Silakan coba lagi.',
     loadingTimeline: 'Memuat linimasa…',
       keyboardShortcuts: 'Pintasan keyboard',
+      helpTitle: 'Pintasan Keyboard',
+      helpSwitchRoughCut: 'Beralih ke Rough Cut',
+      helpSwitchSkills: 'Beralih ke Skills',
+      helpSwitchTimeline: 'Beralih ke Timeline',
+      helpGenerateRoughCut: 'Buat Rough Cut',
+      helpSaveTimeline: 'Simpan Timeline',
+      helpUndo: 'Urungkan',
+      helpRedo: 'Ulangi',
+      helpShowHide: 'Tampilkan/sembunyikan bantuan ini',
+      helpCloseDialog: 'Tutup dialog ini',
+      undoHistoryAvailable: 'Riwayat urungkan tersedia',
+      undoLabel: 'Urungkan',
+      redoLabel: 'Ulangi',
     },
 
     briefIntelligence: {
@@ -4124,6 +4152,7 @@ export const idMessages = {
     error: 'Prediksi resonansi audiens gagal',
     dryRunNotice: 'Mode uji-coba — menggunakan resonansi templat',
     audiencePh: 'mis., Gen Z, orang tua sibuk, penggemar kebugaran',
+    commaSeparated: 'Dipisahkan dengan koma atau baris baru.',
   },
   creativeFormatRecommender: {
     title: 'Perekomendasi Format Kreatif',

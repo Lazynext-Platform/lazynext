@@ -67,14 +67,15 @@ export async function deductCredits(
     await prisma.creditLedger.create({
       data: { userId, delta: -amount, reason, ref, idempotencyKey },
     });
-  } catch (e: any) {
+  } catch (e: unknown) {
     // If the unique constraint on (userId, idempotencyKey) was violated, this
     // charge already happened in a previous request. Reverse the duplicate
     // deduction and return successfully (idempotent retry).
+    const err = e as { code?: string; message?: string };
     const isUniqueViolation =
-      e?.code === 'P2002' ||
-      String(e?.message || '').includes('UNIQUE constraint') ||
-      String(e?.message || '').includes('unique');
+      err?.code === 'P2002' ||
+      String(err?.message || '').includes('UNIQUE constraint') ||
+      String(err?.message || '').includes('unique');
     if (isUniqueViolation && idempotencyKey) {
       await prisma.user
         .update({ where: { id: userId }, data: { credits: { increment: amount } } })

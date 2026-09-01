@@ -16,7 +16,7 @@ export async function POST(req: Request) {
   if (!session?.user?.id) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
   const uid = session.user.id;
 
-  let body: any;
+  let body: unknown;
   try {
     body = await req.json();
   } catch {
@@ -91,7 +91,7 @@ export async function GET() {
 
     return NextResponse.json({
       feedback: feedback.map(f => {
-        let payload: any = {};
+        let payload: Record<string, unknown> = {};
         try { payload = JSON.parse(f.payloadJson || '{}'); } catch {}
         return {
           id: f.id,

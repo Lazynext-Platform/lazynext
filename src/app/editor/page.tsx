@@ -1311,7 +1311,7 @@ export default function EditorPage() {
                   currentTimeSec={tlPlayhead}
                 />
                 {canUndo && (
-                  <p className="text-xs text-fg-faint mt-2">Undo history available ({canUndo ? 'undo' : 'no'} / {canRedo ? 'redo' : 'no'})</p>
+                  <p className="text-xs text-fg-faint mt-2">{t('editor.undoHistoryAvailable')} ({canUndo ? t('editor.undoLabel').toLowerCase() : 'no'} / {canRedo ? t('editor.redoLabel').toLowerCase() : 'no'})</p>
                 )}
                 <pre className="rounded-lg border border-border bg-bg-card p-3 text-xs font-mono overflow-x-auto" role="status">
                   {JSON.stringify(timeline, null, 2)}
@@ -1323,17 +1323,17 @@ export default function EditorPage() {
                       onClick={undo}
                       disabled={!canUndo}
                       className="rounded-lg border border-line bg-app px-3 py-1.5 text-xs font-medium text-fg transition hover:bg-surface disabled:opacity-40"
-                      aria-label="Undo"
+                      aria-label={t('editor.undoLabel')}
                     >
-                      ↶ Undo
+                      ↶ {t('editor.undoLabel')}
                     </button>
                     <button
                       onClick={redo}
                       disabled={!canRedo}
                       className="rounded-lg border border-line bg-app px-3 py-1.5 text-xs font-medium text-fg transition hover:bg-surface disabled:opacity-40"
-                      aria-label="Redo"
+                      aria-label={t('editor.redoLabel')}
                     >
-                      ↷ Redo
+                      ↷ {t('editor.redoLabel')}
                     </button>
                   </div>
                   <button
@@ -1418,17 +1418,17 @@ export default function EditorPage() {
             className="rounded-lg bg-bg-card border border-border max-w-md w-full p-6"
             onClick={e => e.stopPropagation()}
           >
-            <h2 className="text-lg font-bold mb-4">Keyboard Shortcuts</h2>
+            <h2 className="text-lg font-bold mb-4">{t('editor.helpTitle')}</h2>
             <dl className="space-y-2 text-sm">
-              <div className="flex justify-between"><dt>Switch to Rough Cut</dt><dd><kbd className="kbd">1</kbd></dd></div>
-              <div className="flex justify-between"><dt>Switch to Skills</dt><dd><kbd className="kbd">2</kbd></dd></div>
-              <div className="flex justify-between"><dt>Switch to Timeline</dt><dd><kbd className="kbd">3</kbd></dd></div>
-              <div className="flex justify-between"><dt>Generate Rough Cut</dt><dd><kbd className="kbd">G</kbd></dd></div>
-              <div className="flex justify-between"><dt>Save Timeline</dt><dd><kbd className="kbd">S</kbd></dd></div>
-              <div className="flex justify-between"><dt>Undo</dt><dd><kbd className="kbd">Ctrl+Z</kbd></dd></div>
-              <div className="flex justify-between"><dt>Redo</dt><dd><kbd className="kbd">Ctrl+Shift+Z</kbd></dd></div>
-              <div className="flex justify-between"><dt>Show/hide this help</dt><dd><kbd className="kbd">?</kbd></dd></div>
-              <div className="flex justify-between"><dt>Close this dialog</dt><dd><kbd className="kbd">Esc</kbd></dd></div>
+              <div className="flex justify-between"><dt>{t('editor.helpSwitchRoughCut')}</dt><dd><kbd className="kbd">1</kbd></dd></div>
+              <div className="flex justify-between"><dt>{t('editor.helpSwitchSkills')}</dt><dd><kbd className="kbd">2</kbd></dd></div>
+              <div className="flex justify-between"><dt>{t('editor.helpSwitchTimeline')}</dt><dd><kbd className="kbd">3</kbd></dd></div>
+              <div className="flex justify-between"><dt>{t('editor.helpGenerateRoughCut')}</dt><dd><kbd className="kbd">G</kbd></dd></div>
+              <div className="flex justify-between"><dt>{t('editor.helpSaveTimeline')}</dt><dd><kbd className="kbd">S</kbd></dd></div>
+              <div className="flex justify-between"><dt>{t('editor.helpUndo')}</dt><dd><kbd className="kbd">Ctrl+Z</kbd></dd></div>
+              <div className="flex justify-between"><dt>{t('editor.helpRedo')}</dt><dd><kbd className="kbd">Ctrl+Shift+Z</kbd></dd></div>
+              <div className="flex justify-between"><dt>{t('editor.helpShowHide')}</dt><dd><kbd className="kbd">?</kbd></dd></div>
+              <div className="flex justify-between"><dt>{t('editor.helpCloseDialog')}</dt><dd><kbd className="kbd">Esc</kbd></dd></div>
             </dl>
           </div>
         </div>

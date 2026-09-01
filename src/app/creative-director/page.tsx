@@ -626,8 +626,8 @@ export default function CreativeDirectorPage() {
                   onChange={e => setAutoDeployPlatform(e.target.value as 'meta' | 'google')}
                   className="mt-1 w-full rounded-lg border border-line bg-app px-3 py-2 text-sm text-fg focus:border-brand-accent focus:outline-none"
                 >
-                  <option value="meta">Meta (Facebook/Instagram)</option>
-                  <option value="google">Google Ads</option>
+                  <option value="meta">{t('ads.platformMeta')}</option>
+                  <option value="google">{t('ads.platformGoogle')}</option>
                 </select>
               </div>
               <div>

@@ -52,7 +52,7 @@ export async function GET() {
     return NextResponse.json({
       templates: templates.map(t => {
         let stages: PipelineStage[] = [];
-        let workflow: { stages: any[]; flags: Record<string, unknown> } | undefined;
+        let workflow: { stages: Array<Record<string, unknown>>; flags: Record<string, unknown> } | undefined;
         try {
           const parsed = JSON.parse(t.payloadJson || '{}');
           if (Array.isArray(parsed.stages)) {
@@ -102,14 +102,14 @@ export async function POST(req: Request) {
   if (!session?.user?.id) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
   const uid = session.user.id;
 
-  let body: any;
+  let body: unknown;
   try {
     body = await req.json();
   } catch {
     return NextResponse.json({ error: 'invalid_json' }, { status: 400 });
   }
 
-  const { name, description, stages, teamId, workflow } = body as { name?: string; description?: string; stages?: PipelineStage[]; teamId?: string; workflow?: { stages: any[]; flags: Record<string, unknown> } };
+  const { name, description, stages, teamId, workflow } = body as { name?: string; description?: string; stages?: PipelineStage[]; teamId?: string; workflow?: { stages: Array<Record<string, unknown>>; flags: Record<string, unknown> } };
 
   // Validate name
   const trimmedName = typeof name === 'string' ? name.trim() : '';
@@ -148,10 +148,10 @@ export async function POST(req: Request) {
   }
 
   // Build payload — include both simple stages and optional workflow definition
-  const payload: { stages: PipelineStage[]; workflow?: { stages: any[]; flags: Record<string, unknown> } } = { stages: filteredStages };
+  const payload: { stages: PipelineStage[]; workflow?: { stages: Array<Record<string, unknown>>; flags: Record<string, unknown> } } = { stages: filteredStages };
   if (workflow && Array.isArray(workflow.stages) && workflow.stages.length > 0) {
     // Validate workflow stages
-    const validWfStages = workflow.stages.filter((s: any) =>
+    const validWfStages = workflow.stages.filter((s: Record<string, unknown>) =>
       s && typeof s.stage === 'string' && BUILDER_STAGES.includes(s.stage as PipelineStage)
     );
     if (validWfStages.length > 0) {
@@ -197,14 +197,14 @@ export async function PATCH(req: Request) {
   const id = url.searchParams.get('id');
   if (!id) return NextResponse.json({ error: 'id_required' }, { status: 400 });
 
-  let body: any;
+  let body: unknown;
   try {
     body = await req.json();
   } catch {
     return NextResponse.json({ error: 'invalid_json' }, { status: 400 });
   }
 
-  const action = body?.action;
+  const action = (body as { action?: string })?.action;
   if (action !== 'unshare') {
     return NextResponse.json({ error: 'unknown_action' }, { status: 400 });
   }

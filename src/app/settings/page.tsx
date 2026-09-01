@@ -66,7 +66,7 @@ export default function SettingsPage() {
 
           {/* Publishing platform connections */}
           {status === 'authenticated' && session?.user && (
-            <Suspense fallback={<div className="rounded-2xl border border-line bg-surface p-6"><p className="text-sm text-fg-faint">Loading…</p></div>}>
+            <Suspense fallback={<div className="rounded-2xl border border-line bg-surface p-6"><p className="text-sm text-fg-faint">{t('common.loadingDots')}</p></div>}>
               <PlatformConnectionsSection />
             </Suspense>
           )}
