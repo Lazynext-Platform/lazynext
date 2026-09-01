@@ -68,20 +68,23 @@ test.describe('Creative Assets Page', () => {
 });
 
 test.describe('Creative Assets Navigation', () => {
-  test('Assets nav link is visible on desktop', async ({ page }) => {
+  test('Assets page is reachable via direct navigation', async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
-    await page.goto('/');
-    await page.waitForTimeout(1000);
-    const nav = page.locator('nav[aria-label="Primary"]');
-    await expect(nav).toBeVisible();
-    await expect(nav.locator('a', { hasText: 'Assets' })).toBeVisible();
+    await page.goto('/creative-assets');
+    await expect(page).toHaveURL(/\/creative-assets/);
   });
 
-  test('clicking Assets nav link navigates to /creative-assets', async ({ page }) => {
+  test('clicking Assets link in Browse dropdown navigates to /creative-assets', async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
     await page.goto('/');
     await page.waitForTimeout(1000);
-    await page.locator('nav[aria-label="Primary"] a', { hasText: 'Assets' }).click();
+    // Open the Browse dropdown
+    await page.locator('nav[aria-label="Primary"] button', { hasText: 'Browse' }).click();
+    await page.waitForTimeout(500);
+    // Click the Assets link in the dropdown
+    const assetsLink = page.locator('a[href="/creative-assets"]').first();
+    await expect(assetsLink).toBeVisible();
+    await assetsLink.click();
     await expect(page).toHaveURL(/\/creative-assets/);
   });
 });
