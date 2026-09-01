@@ -4,13 +4,23 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { AlertCircle, CheckCircle2, Download, Film, ImagePlus, Loader2, Pencil, RefreshCw, Video, Wand2, X } from 'lucide-react';
 import { uploadDirectMediaIfSupported } from '@/lib/client-media-upload';
-import { composeAdReel } from '@/lib/compose-client';
 import { DRAMA_STYLES } from '@/lib/drama/prompt';
 import { videoCredits } from '@/lib/video-pricing';
 import { useI18n } from '@/i18n/provider';
 import { fetchWithRetry } from '@/lib/fetch-retry';
 import { AssetPicker } from '@/components/AssetPicker';
 import { useMounted } from '@/lib/use-mounted';
+
+// Lazy-load the FFmpeg Web Worker composition module — only needed when user
+// actually composes a video, not on page load.
+let _composeAdReel: typeof import('@/lib/compose-client')['composeAdReel'] | null = null;
+async function composeAdReel(...args: Parameters<typeof import('@/lib/compose-client')['composeAdReel']>) {
+  if (!_composeAdReel) {
+    const mod = await import('@/lib/compose-client');
+    _composeAdReel = mod.composeAdReel;
+  }
+  return _composeAdReel(...args);
+}
 
 // Visual specs unified with lazynext-studio: dark #131416 + cyan #0064d9 + Space Grotesk
 const ACCENT = '#0064d9';
