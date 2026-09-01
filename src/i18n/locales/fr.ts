@@ -2484,6 +2484,7 @@ export const frMessages = {
     title: 'Studio de Brief Produit',
     subtitle: 'Générez un brief produit complet : lecture du produit, angles créatifs, scripts, storyboard et notes de conformité.',
     signInPrompt: 'Connectez-vous pour générer un brief produit.',
+    skipToContent: 'Aller au contenu',
     productName: 'Nom du Produit',
     productUrl: 'URL du Produit (facultatif)',
     category: 'Catégorie',

@@ -17,16 +17,23 @@
  * constant, a validation function, and deterministic placeholder content in
  * dry-run mode.
  */
-import { atlasChat } from '@/lib/atlas';
-import { getLLMModel } from '@/lib/providers/model-helpers';
 import type { PlanTier } from '@/lib/plan-tier';
+import {
+  resolveModel,
+  isDryRun,
+  extractJson,
+  asStr,
+  asNum,
+  asObj,
+  isString,
+  CREATIVE_MODEL,
+  atlasChat,
+  CREATIVE_MAX_TOKENS,
+  CREATIVE_TIMEOUT_MS,
+} from '@/lib/creative/toolkit';
 
 // ── Credit cost ──
 export const CREATIVE_BRIEF_GENERATOR_CREDIT_COST = 4;
-
-const CREATIVE_MODEL = process.env.CREATIVE_MODEL || getLLMModel();
-const CREATIVE_TIMEOUT_MS = Number(process.env.CREATIVE_TIMEOUT_MS || 90_000);
-const CREATIVE_MAX_TOKENS = Number(process.env.CREATIVE_MAX_TOKENS || 6000);
 
 // ── Types ──
 
@@ -71,47 +78,13 @@ export const MAX_PRODUCT_LENGTH = 2000;
 export const MAX_GOAL_LENGTH = 500;
 export const MAX_AUDIENCE_LENGTH = 1000;
 
-// ── Model resolution (plan-tier aware) ──
-
-function resolveModel(planTier?: PlanTier): string {
-  if (process.env.CREATIVE_MODEL) return process.env.CREATIVE_MODEL;
-  return getLLMModel(planTier);
-}
-
 // ── Helpers (self-contained, mirrors ad-hashtag-generator.ts patterns) ──
-
-function isString(v: unknown): v is string {
-  return typeof v === 'string';
-}
-
-function asStr(v: unknown, fallback = ''): string {
-  return typeof v === 'string' && v.trim() ? v.trim() : fallback;
-}
-
-function asObj(v: unknown): Record<string, unknown> {
-  return v && typeof v === 'object' ? (v as Record<string, unknown>) : {};
-}
 
 function asStrArray(v: unknown): string[] {
   if (Array.isArray(v)) {
     return v.map((x) => asStr(x, '')).filter((s) => s.length > 0);
   }
   return [];
-}
-
-function extractJson(raw: string): Record<string, unknown> {
-  const s = raw.trim().replace(/^```(?:json)?/i, '').replace(/```$/, '').trim();
-  const a = s.indexOf('{');
-  const b = s.lastIndexOf('}');
-  if (a < 0 || b < 0) throw new Error('no_json_in_creative_brief_generator_output');
-  return JSON.parse(s.slice(a, b + 1)) as Record<string, unknown>;
-}
-
-/** True when running against the local mock Atlas server (or no real key configured). */
-function isDryRun(): boolean {
-  const base = process.env.ATLASCLOUD_BASE || '';
-  if (base.includes('localhost') || base.includes('127.0.0.1')) return true;
-  return !process.env.ATLASCLOUD_API_KEY;
 }
 
 // ── Validation ──

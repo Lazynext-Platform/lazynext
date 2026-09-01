@@ -2463,6 +2463,7 @@ export const idMessages = {
     title: 'Studio Brief Produk',
     subtitle: 'Buat brief produk lengkap: bacaan produk, sudut kreatif, skrip, storyboard, dan catatan kepatuhan.',
     signInPrompt: 'Masuk untuk membuat brief produk.',
+    skipToContent: 'Lewati ke konten',
     productName: 'Nama Produk',
     productUrl: 'URL Produk (opsional)',
     category: 'Kategori',

@@ -2484,6 +2484,7 @@ export const ptMessages = {
     title: 'Estúdio de Brief de Produto',
     subtitle: 'Gere um brief de produto completo: leitura do produto, ângulos criativos, roteiros, storyboard e notas de conformidade.',
     signInPrompt: 'Entre para gerar um brief de produto.',
+    skipToContent: 'Pular para o conteúdo',
     productName: 'Nome do Produto',
     productUrl: 'URL do Produto (opcional)',
     category: 'Categoria',

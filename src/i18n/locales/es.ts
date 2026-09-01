@@ -2486,6 +2486,7 @@ export const esMessages = {
     title: 'Estudio de Brief de Producto',
     subtitle: 'Genera un brief de producto completo: lectura del producto, ángulos creativos, guiones, storyboard y notas de cumplimiento.',
     signInPrompt: 'Inicia sesión para generar un brief de producto.',
+    skipToContent: 'Saltar al contenido',
     productName: 'Nombre del Producto',
     productUrl: 'URL del Producto (opcional)',
     category: 'Categoría',

@@ -2484,6 +2484,7 @@ export const koMessages = {
     title: '제품 브리프 스튜디오',
     subtitle: '완전한 제품 브리프 생성: 제품 분석, 크리에이티브 앵글, 스크립트, 스토리보드 및 컴플라이언스 노트.',
     signInPrompt: '제품 브리프를 생성하려면 로그인하세요.',
+    skipToContent: '콘텐츠로 건너뛰기',
     productName: '제품명',
     productUrl: '제품 URL (선택)',
     category: '카테고리',

@@ -16,16 +16,24 @@
  * constant, a validation function, and deterministic placeholder content in
  * dry-run mode.
  */
-import { atlasChat } from '@/lib/atlas';
-import { getLLMModel } from '@/lib/providers/model-helpers';
 import type { PlanTier } from '@/lib/plan-tier';
+import {
+  resolveModel,
+  isDryRun,
+  extractJson,
+  asStr,
+  asNum,
+  asObj,
+  asStrArr,
+  isString,
+  CREATIVE_MODEL,
+  atlasChat,
+  CREATIVE_MAX_TOKENS,
+  CREATIVE_TIMEOUT_MS,
+} from '@/lib/creative/toolkit';
 
 // ── Credit cost ──
 export const CREATIVE_AD_CONCEPT_SYNTHESIZER_CREDIT_COST = 5;
-
-const CREATIVE_MODEL = process.env.CREATIVE_MODEL || getLLMModel();
-const CREATIVE_TIMEOUT_MS = Number(process.env.CREATIVE_TIMEOUT_MS || 90_000);
-const CREATIVE_MAX_TOKENS = Number(process.env.CREATIVE_MAX_TOKENS || 6000);
 
 // ── Types ──
 
@@ -73,45 +81,6 @@ export const VALID_PLATFORMS: string[] = ['tiktok', 'instagram', 'youtube', 'fac
 export const MAX_CONCEPT_LENGTH = 2000;
 export const MAX_PRODUCT_LENGTH = 2000;
 export const MAX_CONCEPTS = 10;
-
-// ── Model resolution (plan-tier aware) ──
-
-function resolveModel(planTier?: PlanTier): string {
-  if (process.env.CREATIVE_MODEL) return process.env.CREATIVE_MODEL;
-  return getLLMModel(planTier);
-}
-
-// ── Helpers (self-contained, mirrors creative-quality-scorer.ts patterns) ──
-
-function isString(v: unknown): v is string {
-  return typeof v === 'string';
-}
-
-function asStr(v: unknown, fallback = ''): string {
-  return typeof v === 'string' && v.trim() ? v.trim() : fallback;
-}
-
-function asNum(v: unknown, fallback: number, min: number, max: number): number {
-  const n = Number(v);
-  return Number.isFinite(n) ? Math.max(min, Math.min(max, n)) : fallback;
-}
-
-function asObj(v: unknown): Record<string, unknown> {
-  return v && typeof v === 'object' ? (v as Record<string, unknown>) : {};
-}
-
-function asStrArr(v: unknown): string[] {
-  return Array.isArray(v)
-    ? v.map((x) => asStr(x, '')).filter((s) => s.length > 0)
-    : [];
-}
-
-/** True when running against the local mock Atlas server (or no real key configured). */
-function isDryRun(): boolean {
-  const base = process.env.ATLASCLOUD_BASE || '';
-  if (base.includes('localhost') || base.includes('127.0.0.1')) return true;
-  return !process.env.ATLASCLOUD_API_KEY;
-}
 
 /** Normalize the concepts input into a trimmed string array. */
 function normalizeConcepts(input: CreativeAdConceptSynthesizerInput): string[] {
@@ -446,14 +415,6 @@ export async function generateConceptSynthesis(
     // Fall back to deterministic heuristic synthesis on LLM failure.
     return dryRunOutput(input);
   }
-}
-
-function extractJson(raw: string): Record<string, unknown> {
-  const s = raw.trim().replace(/^```(?:json)?/i, '').replace(/```$/, '').trim();
-  const a = s.indexOf('{');
-  const b = s.lastIndexOf('}');
-  if (a < 0 || b < 0) throw new Error('no_json_in_creative_ad_concept_synthesizer_output');
-  return JSON.parse(s.slice(a, b + 1)) as Record<string, unknown>;
 }
 
 // Re-export model constant for potential introspection (unused but mirrors pattern).

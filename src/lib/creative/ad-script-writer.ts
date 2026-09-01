@@ -10,16 +10,21 @@
  * credit-cost constant, a validation function, and deterministic placeholder
  * content in dry-run mode.
  */
-import { atlasChat } from '@/lib/atlas';
-import { getLLMModel } from '@/lib/providers/model-helpers';
 import type { PlanTier } from '@/lib/plan-tier';
+import {
+  resolveModel,
+  isDryRun,
+  extractJson,
+  asStr,
+  asNum,
+  isString,
+  atlasChat,
+  CREATIVE_MAX_TOKENS,
+  CREATIVE_TIMEOUT_MS,
+} from '@/lib/creative/toolkit';
 
 // ── Credit cost ──
 export const AD_SCRIPT_WRITER_CREDIT_COST = 5;
-
-const CREATIVE_MODEL = process.env.CREATIVE_MODEL || getLLMModel();
-const CREATIVE_TIMEOUT_MS = Number(process.env.CREATIVE_TIMEOUT_MS || 90_000);
-const CREATIVE_MAX_TOKENS = Number(process.env.CREATIVE_MAX_TOKENS || 6000);
 
 // ── Types ──
 
@@ -104,49 +109,14 @@ If a brand kit is provided, match the brand tone, use the brand keywords natural
 
 // ── Helpers ──
 
-function isString(v: unknown): v is string {
-  return typeof v === 'string';
-}
-
-function asStr(v: unknown, fallback = ''): string {
-  return typeof v === 'string' && v.trim() ? v.trim() : fallback;
-}
-
-function asNum(v: unknown, fallback: number): number {
-  const n = typeof v === 'number' ? v : Number(v);
-  return Number.isFinite(n) && n > 0 ? Math.round(n) : fallback;
-}
-
 function asArr(v: unknown): unknown[] {
   return Array.isArray(v) ? v : [];
-}
-
-function extractJson(raw: string): Record<string, unknown> {
-  const s = raw.trim().replace(/^```(?:json)?/i, '').replace(/```$/, '').trim();
-  const a = s.indexOf('{');
-  const b = s.lastIndexOf('}');
-  if (a < 0 || b < 0) throw new Error('no_json_in_ad_script_output');
-  return JSON.parse(s.slice(a, b + 1)) as Record<string, unknown>;
 }
 
 function asPlatform(v: unknown): AdScriptPlatform {
   const s = asStr(v, 'tiktok');
   if (s === 'youtube' || s === 'instagram') return s;
   return 'tiktok';
-}
-
-// ── Model resolution (plan-tier aware) ──
-
-function resolveModel(planTier?: PlanTier): string {
-  if (process.env.CREATIVE_MODEL) return process.env.CREATIVE_MODEL;
-  return getLLMModel(planTier);
-}
-
-/** True when running against the local mock Atlas server (or no real key configured). */
-function isDryRun(): boolean {
-  const base = process.env.ATLASCLOUD_BASE || '';
-  if (base.includes('localhost') || base.includes('127.0.0.1')) return true;
-  return !process.env.ATLASCLOUD_API_KEY;
 }
 
 // ── Validation ──

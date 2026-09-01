@@ -3124,6 +3124,7 @@ export const enMessages = {
     title: 'Product Brief Studio',
     subtitle: 'Generate a complete product brief: product read, creative angles, scripts, storyboard, and compliance notes.',
     signInPrompt: 'Sign in to generate a product brief.',
+    skipToContent: 'Skip to content',
     productName: 'Product Name',
     productUrl: 'Product URL (optional)',
     category: 'Category',

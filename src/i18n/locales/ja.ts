@@ -2486,6 +2486,7 @@ export const jaMessages = {
     title: 'プロダクトブリーフスタジオ',
     subtitle: '完全なプロダクトブリーフを生成：製品読み解き、クリエイティブアングル、スクリプト、ストーリーボード、コンプライアンスメモ。',
     signInPrompt: 'プロダクトブリーフを生成するにはサインインしてください。',
+    skipToContent: 'コンテンツにスキップ',
     productName: '製品名',
     productUrl: '製品 URL（任意）',
     category: 'カテゴリ',

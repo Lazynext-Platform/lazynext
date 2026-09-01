@@ -2486,6 +2486,7 @@ export const viMessages = {
     title: 'Studio Tóm tắt Sản phẩm',
     subtitle: 'Tạo tóm tắt sản phẩm hoàn chỉnh: đọc sản phẩm, góc sáng tạo, kịch bản, storyboard, và ghi chú tuân thủ.',
     signInPrompt: 'Đăng nhập để tạo tóm tắt sản phẩm.',
+    skipToContent: 'Bỏ qua đến nội dung',
     productName: 'Tên sản phẩm',
     productUrl: 'URL sản phẩm (tùy chọn)',
     category: 'Danh mục',

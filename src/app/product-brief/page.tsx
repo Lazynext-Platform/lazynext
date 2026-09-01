@@ -13,10 +13,13 @@ export default function ProductBriefPage() {
   if (!session?.user) {
     return (
       <div className="min-h-screen text-fg app-grid-bg bg-app">
-        <div className="mx-auto max-w-5xl px-4 py-8">
+        <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:rounded focus:bg-bg-card focus:px-3 focus:py-2 focus:text-sm focus:text-fg">
+          {t('productBrief.skipToContent')}
+        </a>
+        <main id="main-content" className="mx-auto max-w-5xl px-4 py-8">
           <h1 className="text-2xl font-bold flex items-center gap-2"><FileText className="w-6 h-6" /> {t('productBrief.title')}</h1>
           <p className="text-sm text-fg-muted mt-2">{t('productBrief.signInPrompt')}</p>
-        </div>
+        </main>
         <AuthModal open={true} onClose={() => {}} />
       </div>
     );
@@ -24,13 +27,16 @@ export default function ProductBriefPage() {
 
   return (
     <div className="min-h-screen text-fg app-grid-bg bg-app">
-      <div className="mx-auto max-w-5xl px-4 py-8 space-y-6">
+      <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:rounded focus:bg-bg-card focus:px-3 focus:py-2 focus:text-sm focus:text-fg">
+        {t('productBrief.skipToContent')}
+      </a>
+      <main id="main-content" className="mx-auto max-w-5xl px-4 py-8 space-y-6">
         <header>
           <h1 className="text-2xl font-bold flex items-center gap-2"><FileText className="w-6 h-6" /> {t('productBrief.title')}</h1>
           <p className="text-sm text-fg-muted mt-2">{t('productBrief.subtitle')}</p>
         </header>
         <ProductBriefStudio />
-      </div>
+      </main>
     </div>
   );
 }

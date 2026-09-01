@@ -2484,6 +2484,7 @@ export const zhMessages = {
     title: '产品简报工作室',
     subtitle: '生成完整产品简报：产品解读、创意角度、脚本、分镜和合规备注。',
     signInPrompt: '登录以生成产品简报。',
+    skipToContent: '跳到内容',
     productName: '产品名称',
     productUrl: '产品 URL（可选）',
     category: '类别',

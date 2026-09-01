@@ -2484,6 +2484,7 @@ export const deMessages = {
     title: 'Produkt-Brief-Studio',
     subtitle: 'Generieren Sie einen vollständigen Produkt-Brief: Produktanalyse, kreative Winkel, Skripte, Storyboard und Compliance-Hinweise.',
     signInPrompt: 'Melden Sie sich an, um einen Produkt-Brief zu generieren.',
+    skipToContent: 'Zum Inhalt springen',
     productName: 'Produktname',
     productUrl: 'Produkt-URL (optional)',
     category: 'Kategorie',
