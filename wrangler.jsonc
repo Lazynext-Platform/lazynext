@@ -5,9 +5,7 @@
   "main": "worker-entry.mjs",
   "compatibility_date": "2026-08-01",
   "compatibility_flags": ["nodejs_compat", "no_handle_cross_request_promise_resolution"],
-  "r2_buckets": [
-    { "bucket_name": "lazynext-studio-media", "binding": "MEDIA_BUCKET" }
-  ],
+  "r2_buckets": [],
   "d1_databases": [
     { "binding": "DB", "database_name": "lazynext-db", "database_id": "2b14197d-49b0-4d11-85e4-821ba3648ae3" }
   ],
