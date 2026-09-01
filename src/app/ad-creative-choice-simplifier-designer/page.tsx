@@ -277,12 +277,12 @@ export default function AdCreativeChoiceSimplifierDesignerPage() {
               </p>
               <p className="text-lg font-bold text-fg">{result.recommendedOption.name}</p>
               <div>
-                <p className="text-xs font-medium text-fg-muted mb-0.5">Reason</p>
+                <p className="text-xs font-medium text-fg-muted mb-0.5">{t('common.resultLabels.reason')}</p>
                 <p className="text-sm text-fg">{result.recommendedOption.reason}</p>
               </div>
               {result.recommendedOption.whyNotOthers.length > 0 && (
                 <div>
-                  <p className="text-xs font-medium text-fg-muted mb-1">Why Not the Others</p>
+                  <p className="text-xs font-medium text-fg-muted mb-1">{t('common.resultLabels.whyNotTheOthers')}</p>
                   <ul className="space-y-1">
                     {result.recommendedOption.whyNotOthers.map((reason, i) => (
                       <li key={i} className="text-sm text-fg-muted flex items-start gap-2">
@@ -300,15 +300,15 @@ export default function AdCreativeChoiceSimplifierDesignerPage() {
                 <FileText className="w-4 h-4 text-warning" /> {t('choiceSimplifierDesigner.simplificationPathway')}
               </p>
               <div>
-                <p className="text-xs font-medium text-fg-muted mb-0.5">Headline</p>
+                <p className="text-xs font-medium text-fg-muted mb-0.5">{t('common.resultLabels.headline')}</p>
                 <p className="text-sm text-fg">{result.simplificationCopy.headline}</p>
               </div>
               <div>
-                <p className="text-xs font-medium text-fg-muted mb-0.5">Body</p>
+                <p className="text-xs font-medium text-fg-muted mb-0.5">{t('common.resultLabels.body')}</p>
                 <p className="text-sm text-fg">{result.simplificationCopy.body}</p>
               </div>
               <div>
-                <p className="text-xs font-medium text-fg-muted mb-0.5">CTA</p>
+                <p className="text-xs font-medium text-fg-muted mb-0.5">{t('common.resultLabels.cta')}</p>
                 <p className="text-sm text-fg">{result.simplificationCopy.cta}</p>
               </div>
             </div>

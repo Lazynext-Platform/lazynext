@@ -206,6 +206,7 @@ export const ptMessages = {
       contentCalendar: 'Calendário de Conteúdo',
       upcomingDeployments: 'Implantações Próximas (7 dias)',
       calendarEmpty: 'Sem campanhas ou criativos este mês.',
+      colPlatform: 'Plataforma', colHook: 'Gancho', colAngle: 'Ângulo', colImpressions: 'Impressões', colCtr: 'CTR', colRoas: 'ROAS', colRevenue: 'Receita',
       title: 'Minhas criações',
       empty: 'Nada aqui ainda.',
       createFirst: 'Crie a primeira',
@@ -213,7 +214,7 @@ export const ptMessages = {
       generating: 'Gerando…',
       failed: 'Falhou (reembolsado)',
     },
-    common: { signIn: 'Entrar', signOut: 'Sair', credits: 'Créditos', language: 'Idioma', switchLanguage: 'Mudar idioma', currency: 'Moeda', cookieConsent: 'Consentimento de cookies', new: 'NOVO', poweredBy: 'Desenvolvido por', back: '← Voltar', backToLazynext: '← Lazynext', close: 'Fechar', errNetwork: 'Erro de rede. Verifique sua conexão e tente novamente.', errUnauthorized: 'Sua sessão expirou. Entre novamente.', errNotFound: 'O recurso solicitado não foi encontrado.', errForbidden: 'Você não tem acesso a este recurso.', errPaymentRequired: 'Créditos insuficientes. Recarregue na página de preços.', errServer: 'Erro do servidor. Tente novamente mais tarde.', errGeneric: 'Algo deu errado. Tente novamente.', dismissError: 'Fechar', retry: 'Tentar novamente', loadingDots: 'Carregando…' },
+    common: { signIn: 'Entrar', signOut: 'Sair', credits: 'Créditos', language: 'Idioma', switchLanguage: 'Mudar idioma', currency: 'Moeda', cookieConsent: 'Consentimento de cookies', new: 'NOVO', poweredBy: 'Desenvolvido por', back: '← Voltar', backToLazynext: '← Lazynext', close: 'Fechar', errNetwork: 'Erro de rede. Verifique sua conexão e tente novamente.', errUnauthorized: 'Sua sessão expirou. Entre novamente.', errNotFound: 'O recurso solicitado não foi encontrado.', errForbidden: 'Você não tem acesso a este recurso.', errPaymentRequired: 'Créditos insuficientes. Recarregue na página de preços.', errServer: 'Erro do servidor. Tente novamente mais tarde.', errGeneric: 'Algo deu errado. Tente novamente.', dismissError: 'Fechar', retry: 'Tentar novamente', loadingDots: 'Carregando…', resultLabels: { headline: 'Título', body: 'Corpo', cta: 'CTA', hook: 'Gancho', reason: 'Razão', description: 'Descrição', scenario: 'Cenário', sensoryDetails: 'Detalhes Sensoriais', emotionalPayoff: 'Recompensa Emocional', psychologicalPrinciple: 'Princípio Psicológico', timing: 'Tempo', frictionRemoval: 'Remoção de Fricção', whyNotTheOthers: 'Por Que Não os Outros', adCopy: 'Texto do Anúncio', visualizationPrompt: 'Prompt de Visualização', desiredOutcome: 'Resultado Desejado' }, skipToContent: 'Pular para o conteúdo' },
     userMenu: {
       account: 'Conta',
       signOut: 'Sair',
@@ -2902,6 +2903,7 @@ export const ptMessages = {
       copied: "Copiado",
       noVariants: "Nenhuma variante gerada ainda. Insira um produto ou marca para começar.",
       error: "Geração de variantes falhou",
+      colHook: "Gancho", colAngle: "Ângulo", colFormat: "Formato", colPlatform: "Plataforma", colScore: "Pontuação", colRationale: "Justificativa",
   },
   adConceptMerger: {
       title: "Fusionador de Conceitos de Anúncio",

@@ -54,7 +54,7 @@ export default function ApprovalQueuePage() {
     } finally {
       setLoading(false);
     }
-  }, [status]);
+  }, [status, t]);
 
   useEffect(() => { load(); }, [load]);
 
@@ -88,7 +88,7 @@ export default function ApprovalQueuePage() {
     } finally {
       setActionLoading(null);
     }
-  }, [items, note, showNote]);
+  }, [items, note, showNote, t]);
 
   if (status === 'loading') {
     return (

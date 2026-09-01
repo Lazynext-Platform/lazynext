@@ -206,6 +206,7 @@ export const frMessages = {
       contentCalendar: 'Calendrier de Contenu',
       upcomingDeployments: 'Déploiements à venir (7 jours)',
       calendarEmpty: 'Aucune campagne ni créatif ce mois-ci.',
+      colPlatform: 'Plateforme', colHook: 'Accroche', colAngle: 'Angle', colImpressions: 'Impressions', colCtr: 'CTR', colRoas: 'ROAS', colRevenue: 'Revenu',
       title: 'Mes créations',
       empty: 'Rien ici pour l\'instant.',
       createFirst: 'Créer la première',
@@ -213,7 +214,7 @@ export const frMessages = {
       generating: 'Génération…',
       failed: 'Échec (remboursé)',
     },
-    common: { signIn: 'Se connecter', signOut: 'Déconnexion', credits: 'Crédits', language: 'Langue', switchLanguage: 'Changer de langue', currency: 'Devise', cookieConsent: 'Consentement aux cookies', new: 'NOUVEAU', poweredBy: 'Propulsé par', back: '← Retour', backToLazynext: '← Lazynext', close: "Fermer", errNetwork: 'Erreur réseau. Vérifiez votre connexion et réessayez.', errUnauthorized: 'Votre session a expiré. Veuillez vous reconnecter.', errNotFound: 'La ressource demandée est introuvable.', errForbidden: "Vous n'avez pas accès à cette ressource.", errPaymentRequired: 'Crédits insuffisants. Rechargez sur la page des tarifs.', errServer: 'Erreur du serveur. Veuillez réessayer plus tard.', errGeneric: 'Une erreur est survenue. Veuillez réessayer.', dismissError: 'Fermer', retry: 'Réessayer', loadingDots: 'Chargement…' },
+    common: { signIn: 'Se connecter', signOut: 'Déconnexion', credits: 'Crédits', language: 'Langue', switchLanguage: 'Changer de langue', currency: 'Devise', cookieConsent: 'Consentement aux cookies', new: 'NOUVEAU', poweredBy: 'Propulsé par', back: '← Retour', backToLazynext: '← Lazynext', close: "Fermer", errNetwork: 'Erreur réseau. Vérifiez votre connexion et réessayez.', errUnauthorized: 'Votre session a expiré. Veuillez vous reconnecter.', errNotFound: 'La ressource demandée est introuvable.', errForbidden: "Vous n'avez pas accès à cette ressource.", errPaymentRequired: 'Crédits insuffisants. Rechargez sur la page des tarifs.', errServer: 'Erreur du serveur. Veuillez réessayer plus tard.', errGeneric: 'Une erreur est survenue. Veuillez réessayer.', dismissError: 'Fermer', retry: 'Réessayer', loadingDots: 'Chargement…', resultLabels: { headline: 'Titre', body: 'Corps', cta: 'CTA', hook: 'Accroche', reason: 'Raison', description: 'Description', scenario: 'Scénario', sensoryDetails: 'Détails Sensoriels', emotionalPayoff: 'Récompense Émotionnelle', psychologicalPrinciple: 'Principe Psychologique', timing: 'Moment', frictionRemoval: 'Élimination des Frictions', whyNotTheOthers: 'Pourquoi Pas les Autres', adCopy: 'Texte Publicitaire', visualizationPrompt: 'Prompt de Visualisation', desiredOutcome: 'Résultat Souhaité' }, skipToContent: 'Aller au contenu' },
     userMenu: {
       account: 'Compte',
       signOut: 'Se déconnecter',
@@ -2902,6 +2903,7 @@ export const frMessages = {
       copied: "Copié",
       noVariants: "Aucune variante générée. Saisissez un produit ou une marque pour commencer.",
       error: "Génération de variantes échouée",
+      colHook: "Accroche", colAngle: "Angle", colFormat: "Format", colPlatform: "Plateforme", colScore: "Score", colRationale: "Justification",
   },
   adConceptMerger: {
       title: "Fusionneur de Concepts Publicitaires",

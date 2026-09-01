@@ -270,13 +270,13 @@ export default function DashboardPage() {
                     <thead>
                       <tr className="border-b border-line text-left text-fg-faint">
                         <th className="pb-2 pr-3 font-medium">#</th>
-                        <th className="pb-2 pr-3 font-medium">Platform</th>
-                        <th className="pb-2 pr-3 font-medium">Hook</th>
-                        <th className="pb-2 pr-3 font-medium">Angle</th>
-                        <th className="pb-2 pr-3 font-medium text-right">Impressions</th>
-                        <th className="pb-2 pr-3 font-medium text-right">CTR</th>
-                        <th className="pb-2 pr-3 font-medium text-right">ROAS</th>
-                        <th className="pb-2 pr-3 font-medium text-right">Revenue</th>
+                        <th className="pb-2 pr-3 font-medium">{t('dashboard.colPlatform')}</th>
+                        <th className="pb-2 pr-3 font-medium">{t('dashboard.colHook')}</th>
+                        <th className="pb-2 pr-3 font-medium">{t('dashboard.colAngle')}</th>
+                        <th className="pb-2 pr-3 font-medium text-right">{t('dashboard.colImpressions')}</th>
+                        <th className="pb-2 pr-3 font-medium text-right">{t('dashboard.colCtr')}</th>
+                        <th className="pb-2 pr-3 font-medium text-right">{t('dashboard.colRoas')}</th>
+                        <th className="pb-2 pr-3 font-medium text-right">{t('dashboard.colRevenue')}</th>
                       </tr>
                     </thead>
                     <tbody>

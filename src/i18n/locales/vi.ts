@@ -209,6 +209,7 @@ export const viMessages = {
       contentCalendar: 'Lịch Nội Dung',
       upcomingDeployments: 'Triển Khai Sắp Tới (7 ngày)',
       calendarEmpty: 'Không có chiến dịch hoặc sáng tạo trong tháng này.',
+      colPlatform: 'Nền tảng', colHook: 'Móc câu', colAngle: 'Góc độ', colImpressions: 'Lượt hiển thị', colCtr: 'CTR', colRoas: 'ROAS', colRevenue: 'Doanh thu',
       title: 'Tác phẩm của tôi',
       empty: 'Chưa có gì ở đây.',
       createFirst: 'Tạo tác phẩm đầu tiên',
@@ -216,7 +217,7 @@ export const viMessages = {
       generating: 'Đang tạo…',
       failed: 'Thất bại (đã hoàn tiền)',
     },
-    common: { signIn: 'Đăng nhập', signOut: 'Đăng xuất', credits: 'Tín dụng', language: 'Ngôn ngữ', switchLanguage: 'Chuyển ngôn ngữ', currency: 'Tiền tệ', cookieConsent: 'Đồng ý cookie', new: 'MỚI', poweredBy: 'Cung cấp bởi', back: '← Quay lại', backToLazynext: '← Lazynext', close: 'Đóng', errNetwork: 'Lỗi mạng. Vui lòng kiểm tra kết nối và thử lại.', errUnauthorized: 'Phiên của bạn đã hết hạn. Vui lòng đăng nhập lại.', errNotFound: 'Không tìm thấy tài nguyên được yêu cầu.', errForbidden: 'Bạn không có quyền truy cập tài nguyên này.', errPaymentRequired: 'Không đủ tín dụng. Vui lòng nạp tại trang giá.', errServer: 'Lỗi máy chủ. Vui lòng thử lại sau.', errGeneric: 'Đã xảy ra lỗi. Vui lòng thử lại.', dismissError: 'Đóng', retry: 'Thử lại', loadingDots: 'Đang tải…' },
+    common: { signIn: 'Đăng nhập', signOut: 'Đăng xuất', credits: 'Tín dụng', language: 'Ngôn ngữ', switchLanguage: 'Chuyển ngôn ngữ', currency: 'Tiền tệ', cookieConsent: 'Đồng ý cookie', new: 'MỚI', poweredBy: 'Cung cấp bởi', back: '← Quay lại', backToLazynext: '← Lazynext', close: 'Đóng', errNetwork: 'Lỗi mạng. Vui lòng kiểm tra kết nối và thử lại.', errUnauthorized: 'Phiên của bạn đã hết hạn. Vui lòng đăng nhập lại.', errNotFound: 'Không tìm thấy tài nguyên được yêu cầu.', errForbidden: 'Bạn không có quyền truy cập tài nguyên này.', errPaymentRequired: 'Không đủ tín dụng. Vui lòng nạp tại trang giá.', errServer: 'Lỗi máy chủ. Vui lòng thử lại sau.', errGeneric: 'Đã xảy ra lỗi. Vui lòng thử lại.', dismissError: 'Đóng', retry: 'Thử lại', loadingDots: 'Đang tải…', resultLabels: { headline: 'Tiêu đề', body: 'Nội dung', cta: 'CTA', hook: 'Móc câu', reason: 'Lý do', description: 'Mô tả', scenario: 'Kịch bản', sensoryDetails: 'Chi tiết Cảm quan', emotionalPayoff: 'Phần thưởng Cảm xúc', psychologicalPrinciple: 'Nguyên lý Tâm lý', timing: 'Thời điểm', frictionRemoval: 'Giảm Ma sát', whyNotTheOthers: 'Tại sao Không phải cái Khác', adCopy: 'Văn bản Quảng cáo', visualizationPrompt: 'Lệnh Hiển thị', desiredOutcome: 'Kết quả Mong muốn' }, skipToContent: 'Bỏ qua đến nội dung' },
     userMenu: {
       account: 'Tài khoản',
       signOut: 'Đăng xuất',
@@ -2904,6 +2905,7 @@ export const viMessages = {
       copied: "Đã sao chép",
       noVariants: "Chưa có biến thể. Nhập sản phẩm hoặc thương hiệu để bắt đầu.",
       error: "Tạo biến thể thất bại",
+      colHook: "Móc câu", colAngle: "Góc độ", colFormat: "Định dạng", colPlatform: "Nền tảng", colScore: "Điểm", colRationale: "Lý do",
   },
   adConceptMerger: {
       title: "Trình Gộp Khái Niệm Quảng Cáo",

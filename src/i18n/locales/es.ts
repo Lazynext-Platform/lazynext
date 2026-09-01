@@ -208,6 +208,7 @@ export const esMessages = {
       contentCalendar: 'Calendario de Contenido',
       upcomingDeployments: 'Despliegues Próximos (7 días)',
       calendarEmpty: 'Sin campañas ni creativos este mes.',
+      colPlatform: 'Plataforma', colHook: 'Gancho', colAngle: 'Ángulo', colImpressions: 'Impresiones', colCtr: 'CTR', colRoas: 'ROAS', colRevenue: 'Ingresos',
       title: 'Mis creaciones',
       empty: 'Aún no hay nada.',
       createFirst: 'Crea la primera',
@@ -215,7 +216,7 @@ export const esMessages = {
       generating: 'Generando…',
       failed: 'Falló (reembolsado)',
     },
-    common: { signIn: 'Entrar', signOut: 'Cerrar sesión', credits: 'Créditos', language: 'Idioma', switchLanguage: 'Cambiar idioma', currency: 'Moneda', cookieConsent: 'Consentimiento de cookies', new: 'NUEVO', poweredBy: 'Desarrollado por', back: '← Volver', backToLazynext: '← Lazynext', close: 'Cerrar', errNetwork: 'Error de red. Compruebe su conexión e inténtelo de nuevo.', errUnauthorized: 'Su sesión ha expirado. Inicie sesión de nuevo.', errNotFound: 'El recurso solicitado no fue encontrado.', errForbidden: 'No tiene acceso a este recurso.', errPaymentRequired: 'No hay suficientes créditos. Recargue en la página de precios.', errServer: 'Error del servidor. Inténtelo más tarde.', errGeneric: 'Algo salió mal. Inténtelo de nuevo.', dismissError: 'Cerrar', retry: 'Reintentar', loadingDots: 'Cargando…' },
+    common: { signIn: 'Entrar', signOut: 'Cerrar sesión', credits: 'Créditos', language: 'Idioma', switchLanguage: 'Cambiar idioma', currency: 'Moneda', cookieConsent: 'Consentimiento de cookies', new: 'NUEVO', poweredBy: 'Desarrollado por', back: '← Volver', backToLazynext: '← Lazynext', close: 'Cerrar', errNetwork: 'Error de red. Compruebe su conexión e inténtelo de nuevo.', errUnauthorized: 'Su sesión ha expirado. Inicie sesión de nuevo.', errNotFound: 'El recurso solicitado no fue encontrado.', errForbidden: 'No tiene acceso a este recurso.', errPaymentRequired: 'No hay suficientes créditos. Recargue en la página de precios.', errServer: 'Error del servidor. Inténtelo más tarde.', errGeneric: 'Algo salió mal. Inténtelo de nuevo.', dismissError: 'Cerrar', retry: 'Reintentar', loadingDots: 'Cargando…', resultLabels: { headline: 'Titular', body: 'Cuerpo', cta: 'CTA', hook: 'Gancho', reason: 'Razón', description: 'Descripción', scenario: 'Escenario', sensoryDetails: 'Detalles Sensoriales', emotionalPayoff: 'Recompensa Emocional', psychologicalPrinciple: 'Principio Psicológico', timing: 'Momento', frictionRemoval: 'Eliminación de Fricción', whyNotTheOthers: 'Por Qué No los Otros', adCopy: 'Texto del Anuncio', visualizationPrompt: 'Prompt de Visualización', desiredOutcome: 'Resultado Deseado' }, skipToContent: 'Saltar al contenido' },
     userMenu: {
       account: 'Cuenta',
       signOut: 'Cerrar sesión',
@@ -2904,6 +2905,7 @@ export const esMessages = {
       copied: "Copiado",
       noVariants: "Aún no se han generado variantes. Ingresa un producto o marca para comenzar.",
       error: "Generación de variantes falló",
+      colHook: "Gancho", colAngle: "Ángulo", colFormat: "Formato", colPlatform: "Plataforma", colScore: "Puntuación", colRationale: "Justificación",
   },
   adConceptMerger: {
       title: "Fusionador de Conceptos Publicitarios",

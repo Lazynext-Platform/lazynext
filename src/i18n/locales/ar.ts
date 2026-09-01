@@ -206,6 +206,7 @@ export const arMessages = {
       contentCalendar: 'تقويم المحتوى',
       upcomingDeployments: 'النشر القادم (7 أيام)',
       calendarEmpty: 'لا توجد حملات أو إبداعيين هذا الشهر.',
+      colPlatform: 'المنصة', colHook: 'الخطاف', colAngle: 'الزاوية', colImpressions: 'الظهور', colCtr: 'CTR', colRoas: 'ROAS', colRevenue: 'الإيرادات',
       title: 'إنشاءاتي',
       empty: 'لا يوجد شيء بعد.',
       createFirst: 'أنشئ الأول',
@@ -213,7 +214,7 @@ export const arMessages = {
       generating: 'جارٍ الإنشاء…',
       failed: 'فشل (تم الاسترداد)',
     },
-    common: { signIn: 'تسجيل الدخول', signOut: 'تسجيل الخروج', credits: 'الرصيد', language: 'اللغة', switchLanguage: 'تبديل اللغة', currency: 'العملة', cookieConsent: 'موافقة ملفات تعريف الارتباط', new: 'جديد', poweredBy: 'مدعوم من', back: '→ رجوع', backToLazynext: '→ Lazynext', close: 'إغلاق', errNetwork: 'خطأ في الشبكة. تحقق من اتصالك وحاول مرة أخرى.', errUnauthorized: 'انتهت صلاحية جلستك. يرجى تسجيل الدخول مرة أخرى.', errNotFound: 'لم يتم العثور على المورد المطلوب.', errForbidden: 'ليس لديك صلاحية الوصول إلى هذا المورد.', errPaymentRequired: 'رصيد غير كافٍ. يرجى الشحن في صفحة الأسعار.', errServer: 'خطأ في الخادم. حاول مرة أخرى لاحقًا.', errGeneric: 'حدث خطأ ما. حاول مرة أخرى.', dismissError: 'إغلاق', retry: 'إعادة المحاولة', loadingDots: 'جارٍ التحميل…' },
+    common: { signIn: 'تسجيل الدخول', signOut: 'تسجيل الخروج', credits: 'الرصيد', language: 'اللغة', switchLanguage: 'تبديل اللغة', currency: 'العملة', cookieConsent: 'موافقة ملفات تعريف الارتباط', new: 'جديد', poweredBy: 'مدعوم من', back: '→ رجوع', backToLazynext: '→ Lazynext', close: 'إغلاق', errNetwork: 'خطأ في الشبكة. تحقق من اتصالك وحاول مرة أخرى.', errUnauthorized: 'انتهت صلاحية جلستك. يرجى تسجيل الدخول مرة أخرى.', errNotFound: 'لم يتم العثور على المورد المطلوب.', errForbidden: 'ليس لديك صلاحية الوصول إلى هذا المورد.', errPaymentRequired: 'رصيد غير كافٍ. يرجى الشحن في صفحة الأسعار.', errServer: 'خطأ في الخادم. حاول مرة أخرى لاحقًا.', errGeneric: 'حدث خطأ ما. حاول مرة أخرى.', dismissError: 'إغلاق', retry: 'إعادة المحاولة', loadingDots: 'جارٍ التحميل…', resultLabels: { headline: 'العنوان الرئيسي', body: 'النص', cta: 'CTA', hook: 'الخطاف', reason: 'السبب', description: 'الوصف', scenario: 'السيناريو', sensoryDetails: 'التفاصيل الحسية', emotionalPayoff: 'المكافأة العاطفية', psychologicalPrinciple: 'المبدأ النفسي', timing: 'التوقيت', frictionRemoval: 'إزالة الاحتكاك', whyNotTheOthers: 'لماذا ليس الآخرون', adCopy: 'نص الإعلان', visualizationPrompt: 'موجز التصور', desiredOutcome: 'النتيجة المرغوبة' }, skipToContent: 'تخطي إلى المحتوى' },
     userMenu: {
       account: 'الحساب',
       signOut: 'تسجيل الخروج',
@@ -2902,6 +2903,7 @@ export const arMessages = {
       copied: "تم النسخ",
       noVariants: "لم يتم إنشاء متغيرات بعد. أدخل منتج أو علامة للبدء.",
       error: "فشل إنشاء المتغيرات",
+      colHook: "الخطاف", colAngle: "الزاوية", colFormat: "التنسيق", colPlatform: "المنصة", colScore: "الدرجة", colRationale: "السبب",
   },
   adConceptMerger: {
       title: "دمج مفاهيم الإعلان",

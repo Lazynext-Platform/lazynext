@@ -244,11 +244,11 @@ export default function AdCreativeImplementationIntentionDesignerPage() {
                       <p className="text-sm text-fg">{plan.action}</p>
                     </div>
                     <div>
-                      <p className="text-xs font-medium text-fg-muted mb-0.5">Timing</p>
+                      <p className="text-xs font-medium text-fg-muted mb-0.5">{t('common.resultLabels.timing')}</p>
                       <p className="text-sm text-fg">{plan.timing}</p>
                     </div>
                     <div>
-                      <p className="text-xs font-medium text-fg-muted mb-0.5">Friction Removal</p>
+                      <p className="text-xs font-medium text-fg-muted mb-0.5">{t('common.resultLabels.frictionRemoval')}</p>
                       <p className="text-sm text-fg">{plan.frictionRemoval}</p>
                     </div>
                   </div>
@@ -259,18 +259,18 @@ export default function AdCreativeImplementationIntentionDesignerPage() {
             {/* Ad Copy */}
             <div className="rounded-lg border border-border bg-bg-card p-4 space-y-2">
               <p className="text-sm font-medium flex items-center gap-1">
-                <FileText className="w-4 h-4 text-warning" /> Ad Copy
+                <FileText className="w-4 h-4 text-warning" /> {t('common.resultLabels.adCopy')}
               </p>
               <div>
-                <p className="text-xs font-medium text-fg-muted mb-0.5">Hook</p>
+                <p className="text-xs font-medium text-fg-muted mb-0.5">{t('common.resultLabels.hook')}</p>
                 <p className="text-sm text-fg">{result.adCopy.hook}</p>
               </div>
               <div>
-                <p className="text-xs font-medium text-fg-muted mb-0.5">Body</p>
+                <p className="text-xs font-medium text-fg-muted mb-0.5">{t('common.resultLabels.body')}</p>
                 <p className="text-sm text-fg">{result.adCopy.body}</p>
               </div>
               <div>
-                <p className="text-xs font-medium text-fg-muted mb-0.5">CTA</p>
+                <p className="text-xs font-medium text-fg-muted mb-0.5">{t('common.resultLabels.cta')}</p>
                 <p className="text-sm text-fg">{result.adCopy.cta}</p>
               </div>
             </div>

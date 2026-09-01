@@ -206,6 +206,7 @@ export const hiMessages = {
       contentCalendar: 'सामग्री कैलेंडर',
       upcomingDeployments: 'आगामी तैनाती (7 दिन)',
       calendarEmpty: 'इस महीने कोई कैम्पेन या क्रिएटिव नहीं।',
+      colPlatform: 'प्लेटफ़ॉर्म', colHook: 'हुक', colAngle: 'कोण', colImpressions: 'इम्प्रेशन', colCtr: 'CTR', colRoas: 'ROAS', colRevenue: 'राजस्व',
       title: 'मेरी क्रिएशन',
       empty: 'अभी यहां कुछ नहीं है।',
       createFirst: 'पहली बनाएं',
@@ -213,7 +214,7 @@ export const hiMessages = {
       generating: 'जनरेट हो रहा है…',
       failed: 'विफल (वापसी)',
     },
-    common: { signIn: 'साइन इन', signOut: 'साइन आउट', credits: 'क्रेडिट', language: 'भाषा', switchLanguage: 'भाषा बदलें', currency: 'मुद्रा', cookieConsent: 'कुकी सहमति', new: 'नया', poweredBy: 'द्वारा संचालित', back: '← वापस', backToLazynext: '← Lazynext', close: 'बंद करें', errNetwork: 'नेटवर्क त्रुटि। अपना कनेक्शन जांचें और पुनः प्रयास करें।', errUnauthorized: 'आपका सत्र समाप्त हो गया है। कृपया पुनः साइन इन करें।', errNotFound: 'अनुरोधित संसाधन नहीं मिला।', errForbidden: 'आपके पास इस संसाधन तक पहुंच की अनुमति नहीं है।', errPaymentRequired: 'पर्याप्त क्रेडिट नहीं हैं। कृपया मूल्य पृष्ठ पर टॉप अप करें।', errServer: 'सर्वर त्रुटि। कृपया बाद में पुनः प्रयास करें।', errGeneric: 'कुछ गलत हो गया। कृपया पुनः प्रयास करें।', dismissError: 'बंद करें', retry: 'पुनः प्रयास करें', loadingDots: 'लोड हो रहा है…' },
+    common: { signIn: 'साइन इन', signOut: 'साइन आउट', credits: 'क्रेडिट', language: 'भाषा', switchLanguage: 'भाषा बदलें', currency: 'मुद्रा', cookieConsent: 'कुकी सहमति', new: 'नया', poweredBy: 'द्वारा संचालित', back: '← वापस', backToLazynext: '← Lazynext', close: 'बंद करें', errNetwork: 'नेटवर्क त्रुटि। अपना कनेक्शन जांचें और पुनः प्रयास करें।', errUnauthorized: 'आपका सत्र समाप्त हो गया है। कृपया पुनः साइन इन करें।', errNotFound: 'अनुरोधित संसाधन नहीं मिला।', errForbidden: 'आपके पास इस संसाधन तक पहुंच की अनुमति नहीं है।', errPaymentRequired: 'पर्याप्त क्रेडिट नहीं हैं। कृपया मूल्य पृष्ठ पर टॉप अप करें।', errServer: 'सर्वर त्रुटि। कृपया बाद में पुनः प्रयास करें।', errGeneric: 'कुछ गलत हो गया। कृपया पुनः प्रयास करें।', dismissError: 'बंद करें', retry: 'पुनः प्रयास करें', loadingDots: 'लोड हो रहा है…', resultLabels: { headline: 'शीर्षक', body: 'मुख्य भाग', cta: 'CTA', hook: 'हुक', reason: 'कारण', description: 'विवरण', scenario: 'परिदृश्य', sensoryDetails: 'संवेदी विवरण', emotionalPayoff: 'भावनात्मक लाभ', psychologicalPrinciple: 'मनोवैज्ञानिक सिद्धांत', timing: 'समय', frictionRemoval: 'घर्षण हटाना', whyNotTheOthers: 'अन्य क्यों नहीं', adCopy: 'विज्ञापन पाठ', visualizationPrompt: 'विज़ुअलाइज़ेशन प्रॉम्प्ट', desiredOutcome: 'वांछित परिणाम' } },
     userMenu: {
       account: 'खाता',
       signOut: 'साइन आउट',
@@ -2902,6 +2903,7 @@ export const hiMessages = {
       copied: "कॉपी हो गया",
       noVariants: "अभी तक कोई वेरिएंट नहीं बना। शुरू करने के लिए उत्पाद या ब्रांड दर्ज करें।",
       error: "वेरिएंट निर्माण विफल",
+      colHook: "हुक", colAngle: "कोण", colFormat: "प्रारूप", colPlatform: "प्लेटफ़ॉर्म", colScore: "स्कोर", colRationale: "तर्क",
   },
   adConceptMerger: {
       title: "विज्ञापन कॉन्सेप्ट मर्जर",

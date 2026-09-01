@@ -206,6 +206,7 @@ export const koMessages = {
       contentCalendar: '콘텐츠 캘린더',
       upcomingDeployments: '예정된 배포 (7일)',
       calendarEmpty: '이번 달 캠페인이나 크리에이티브가 없습니다.',
+      colPlatform: '플랫폼', colHook: '후크', colAngle: '앵글', colImpressions: '노출', colCtr: 'CTR', colRoas: 'ROAS', colRevenue: '수익',
       title: '내 작업',
       empty: '아직 아무것도 없습니다.',
       createFirst: '첫 작품 만들기',
@@ -213,7 +214,7 @@ export const koMessages = {
       generating: '생성 중…',
       failed: '실패 (환불됨)',
     },
-    common: { signIn: '로그인', signOut: '로그아웃', credits: '크레딧', language: '언어', switchLanguage: '언어 변경', currency: '통화', cookieConsent: '쿠키 동의', new: '신규', poweredBy: '제공', back: '← 돌아가기', backToLazynext: '← Lazynext', close: '닫기', errNetwork: '네트워크 오류. 연결을 확인하고 다시 시도해주세요.', errUnauthorized: '세션이 만료되었습니다. 다시 로그인해주세요.', errNotFound: '요청한 리소스를 찾을 수 없습니다.', errForbidden: '이 리소스에 접근할 권한이 없습니다.', errPaymentRequired: '크레딧이 부족합니다. 가격 페이지에서 충전해주세요.', errServer: '서버 오류. 나중에 다시 시도해주세요.', errGeneric: '문제가 발생했습니다. 다시 시도해주세요.', dismissError: '닫기', retry: '다시 시도', loadingDots: '로딩 중…' },
+    common: { signIn: '로그인', signOut: '로그아웃', credits: '크레딧', language: '언어', switchLanguage: '언어 변경', currency: '통화', cookieConsent: '쿠키 동의', new: '신규', poweredBy: '제공', back: '← 돌아가기', backToLazynext: '← Lazynext', close: '닫기', errNetwork: '네트워크 오류. 연결을 확인하고 다시 시도해주세요.', errUnauthorized: '세션이 만료되었습니다. 다시 로그인해주세요.', errNotFound: '요청한 리소스를 찾을 수 없습니다.', errForbidden: '이 리소스에 접근할 권한이 없습니다.', errPaymentRequired: '크레딧이 부족합니다. 가격 페이지에서 충전해주세요.', errServer: '서버 오류. 나중에 다시 시도해주세요.', errGeneric: '문제가 발생했습니다. 다시 시도해주세요.', dismissError: '닫기', retry: '다시 시도', loadingDots: '로딩 중…', resultLabels: { headline: '헤드라인', body: '본문', cta: 'CTA', hook: '후크', reason: '이유', description: '설명', scenario: '시나리오', sensoryDetails: '감각적 세부사항', emotionalPayoff: '감정적 보상', psychologicalPrinciple: '심리학적 원리', timing: '타이밍', frictionRemoval: '마찰 제거', whyNotTheOthers: '다른 것들이 아닌 이유', adCopy: '광고 문구', visualizationPrompt: '시각화 프롬프트', desiredOutcome: '원하는 결과' }, skipToContent: '콘텐츠로 건너뛰기' },
     userMenu: {
       account: '계정',
       signOut: '로그아웃',
@@ -2902,6 +2903,7 @@ export const koMessages = {
       copied: "복사됨",
       noVariants: "아직 변형이 생성되지 않았습니다. 제품 또는 브랜드를 입력하세요.",
       error: "변형 생성 실패",
+      colHook: "후크", colAngle: "앵글", colFormat: "형식", colPlatform: "플랫폼", colScore: "점수", colRationale: "근거",
   },
   adConceptMerger: {
       title: "광고 콘셉트 병합기",

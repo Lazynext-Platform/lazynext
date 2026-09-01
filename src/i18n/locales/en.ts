@@ -257,8 +257,9 @@ export const enMessages = {
       contentCalendar: 'Content Calendar',
       upcomingDeployments: 'Upcoming Deployments (7 days)',
       calendarEmpty: 'No campaigns or creatives this month.',
+      colPlatform: 'Platform', colHook: 'Hook', colAngle: 'Angle', colImpressions: 'Impressions', colCtr: 'CTR', colRoas: 'ROAS', colRevenue: 'Revenue',
     },
-    common: { signIn: 'Sign in', signOut: 'Sign out', credits: 'Credits', language: 'Language', switchLanguage: 'Switch language', currency: 'Currency', cookieConsent: 'Cookie consent', new: 'NEW', poweredBy: 'Powered by', back: '← Back', backToLazynext: '← Lazynext', close: 'Close', errNetwork: 'Network error. Please check your connection and try again.', errUnauthorized: 'Your session has expired. Please sign in again.', errForbidden: 'You do not have access to this resource.', errNotFound: 'The requested resource was not found.', errPaymentRequired: 'Not enough credits. Please top up on the pricing page.', errServer: 'Server error. Please try again later.', errGeneric: 'Something went wrong. Please try again.', dismissError: 'Dismiss', retry: 'Retry', loadingDots: 'Loading…' },
+    common: { signIn: 'Sign in', signOut: 'Sign out', credits: 'Credits', language: 'Language', switchLanguage: 'Switch language', currency: 'Currency', cookieConsent: 'Cookie consent', new: 'NEW', poweredBy: 'Powered by', back: '← Back', backToLazynext: '← Lazynext', close: 'Close', errNetwork: 'Network error. Please check your connection and try again.', errUnauthorized: 'Your session has expired. Please sign in again.', errForbidden: 'You do not have access to this resource.', errNotFound: 'The requested resource was not found.', errPaymentRequired: 'Not enough credits. Please top up on the pricing page.', errServer: 'Server error. Please try again later.', errGeneric: 'Something went wrong. Please try again.', dismissError: 'Dismiss', retry: 'Retry', loadingDots: 'Loading…', resultLabels: { headline: 'Headline', body: 'Body', cta: 'CTA', hook: 'Hook', reason: 'Reason', description: 'Description', scenario: 'Scenario', sensoryDetails: 'Sensory Details', emotionalPayoff: 'Emotional Payoff', psychologicalPrinciple: 'Psychological Principle', timing: 'Timing', frictionRemoval: 'Friction Removal', whyNotTheOthers: 'Why Not the Others', adCopy: 'Ad Copy', visualizationPrompt: 'Visualization Prompt', desiredOutcome: 'Desired Outcome' }, skipToContent: 'Skip to content' },
     userMenu: {
       account: 'Account',
       signOut: 'Sign out',
@@ -3548,6 +3549,7 @@ export const enMessages = {
     copied: 'Copied',
     noVariants: 'No variants generated yet. Enter a product or brand to begin.',
     error: 'Variant generation failed',
+    colHook: 'Hook', colAngle: 'Angle', colFormat: 'Format', colPlatform: 'Platform', colScore: 'Score', colRationale: 'Rationale',
   },
   adConceptMerger: {
     title: 'Ad Concept Merger',

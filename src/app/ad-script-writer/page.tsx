@@ -140,7 +140,7 @@ export default function AdScriptWriterPage() {
   if (!session?.user) {
     return (
       <div className="min-h-screen text-fg app-grid-bg bg-app">
-        <a href="#main-content" className="skip-link">Skip to content</a>
+        <a href="#main-content" className="skip-link">{t('common.skipToContent')}</a>
         <main id="main-content" className="mx-auto max-w-5xl px-4 py-8" tabIndex={-1}>
           <h1 className="text-2xl font-bold flex items-center gap-2"><Clapperboard className="w-6 h-6" /> {t('adScriptWriter.title')}</h1>
           <p className="text-sm text-fg-muted mt-2">{t('adScriptWriter.signInPrompt')}</p>
@@ -166,7 +166,7 @@ export default function AdScriptWriterPage() {
 
   return (
     <div className="min-h-screen text-fg app-grid-bg bg-app">
-      <a href="#main-content" className="skip-link">Skip to content</a>
+      <a href="#main-content" className="skip-link">{t('common.skipToContent')}</a>
       <main id="main-content" className="mx-auto max-w-5xl px-4 py-8 space-y-6" tabIndex={-1}>
         <header>
           <h1 className="text-2xl font-bold flex items-center gap-2"><Clapperboard className="w-6 h-6" /> {t('adScriptWriter.title')}</h1>

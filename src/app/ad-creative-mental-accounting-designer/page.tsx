@@ -246,18 +246,18 @@ export default function AdCreativeMentalAccountingDesignerPage() {
             {/* Ad Copy */}
             <div className="rounded-lg border border-border bg-bg-card p-4 space-y-2">
               <p className="text-sm font-medium flex items-center gap-1">
-                <FileText className="w-4 h-4 text-warning" /> Ad Copy
+                <FileText className="w-4 h-4 text-warning" /> {t('common.resultLabels.adCopy')}
               </p>
               <div>
-                <p className="text-xs font-medium text-fg-muted mb-0.5">Headline</p>
+                <p className="text-xs font-medium text-fg-muted mb-0.5">{t('common.resultLabels.headline')}</p>
                 <p className="text-sm text-fg">{result.adCopy.headline}</p>
               </div>
               <div>
-                <p className="text-xs font-medium text-fg-muted mb-0.5">Body</p>
+                <p className="text-xs font-medium text-fg-muted mb-0.5">{t('common.resultLabels.body')}</p>
                 <p className="text-sm text-fg">{result.adCopy.body}</p>
               </div>
               <div>
-                <p className="text-xs font-medium text-fg-muted mb-0.5">CTA</p>
+                <p className="text-xs font-medium text-fg-muted mb-0.5">{t('common.resultLabels.cta')}</p>
                 <p className="text-sm text-fg">{result.adCopy.cta}</p>
               </div>
             </div>

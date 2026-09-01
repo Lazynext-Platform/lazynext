@@ -208,6 +208,7 @@ export const jaMessages = {
       contentCalendar: 'コンテンツカレンダー',
       upcomingDeployments: '今後のデプロイ（7日以内）',
       calendarEmpty: '今月はキャンペーンやクリエイティブがありません。',
+      colPlatform: 'プラットフォーム', colHook: 'フック', colAngle: 'アングル', colImpressions: 'インプレッション', colCtr: 'CTR', colRoas: 'ROAS', colRevenue: '収益',
       title: '作品一覧',
       empty: 'まだ作品がありません。',
       createFirst: '最初の作品を作る',
@@ -215,7 +216,7 @@ export const jaMessages = {
       generating: '生成中…',
       failed: '失敗(返金済み)',
     },
-    common: { signIn: 'ログイン', signOut: 'ログアウト', credits: 'クレジット', language: '言語', switchLanguage: '言語を切り替え', currency: '通貨', cookieConsent: 'Cookie 同意', new: '新着', poweredBy: 'Powered by', back: '← 戻る', backToLazynext: '← Lazynext', close: '閉じる', errNetwork: 'ネットワークエラー。接続を確認して再試行してください。', errUnauthorized: 'セッションの有効期限が切れました。再度ログインしてください。', errNotFound: '要求されたリソースが見つかりませんでした。', errForbidden: 'このリソースにアクセスする権限がありません。', errPaymentRequired: 'クレジットが不足しています。料金ページでチャージしてください。', errServer: 'サーバーエラー。後でもう一度お試しください。', errGeneric: 'エラーが発生しました。再試行してください。', dismissError: '閉じる', retry: '再試行', loadingDots: '読み込み中…' },
+    common: { signIn: 'ログイン', signOut: 'ログアウト', credits: 'クレジット', language: '言語', switchLanguage: '言語を切り替え', currency: '通貨', cookieConsent: 'Cookie 同意', new: '新着', poweredBy: 'Powered by', back: '← 戻る', backToLazynext: '← Lazynext', close: '閉じる', errNetwork: 'ネットワークエラー。接続を確認して再試行してください。', errUnauthorized: 'セッションの有効期限が切れました。再度ログインしてください。', errNotFound: '要求されたリソースが見つかりませんでした。', errForbidden: 'このリソースにアクセスする権限がありません。', errPaymentRequired: 'クレジットが不足しています。料金ページでチャージしてください。', errServer: 'サーバーエラー。後でもう一度お試しください。', errGeneric: 'エラーが発生しました。再試行してください。', dismissError: '閉じる', retry: '再試行', loadingDots: '読み込み中…', resultLabels: { headline: '見出し', body: '本文', cta: 'CTA', hook: 'フック', reason: '理由', description: '説明', scenario: 'シナリオ', sensoryDetails: '感覚的詳細', emotionalPayoff: '感情的報酬', psychologicalPrinciple: '心理的原理', timing: 'タイミング', frictionRemoval: '摩擦の除去', whyNotTheOthers: '他ではない理由', adCopy: '広告コピー', visualizationPrompt: 'ビジュアライゼーションプロンプト', desiredOutcome: '望ましい結果' }, skipToContent: 'コンテンツにスキップ' },
     userMenu: {
       account: 'アカウント',
       signOut: 'サインアウト',
@@ -2904,6 +2905,7 @@ export const jaMessages = {
       copied: "コピー済み",
       noVariants: "バリアントがまだ生成されていません。製品またはブランドを入力してください。",
       error: "バリアント生成に失敗",
+      colHook: "フック", colAngle: "アングル", colFormat: "フォーマット", colPlatform: "プラットフォーム", colScore: "スコア", colRationale: "理由",
   },
   adConceptMerger: {
       title: "広告コンセプト統合",

@@ -209,6 +209,7 @@ export const idMessages = {
       contentCalendar: 'Kalender Konten',
       upcomingDeployments: 'Deploy Mendatang (7 hari)',
       calendarEmpty: 'Tidak ada kampanye atau kreatif bulan ini.',
+      colPlatform: 'Platform', colHook: 'Pengait', colAngle: 'Sudut', colImpressions: 'Tayangan', colCtr: 'CTR', colRoas: 'ROAS', colRevenue: 'Pendapatan',
       title: 'Karya saya',
       empty: 'Belum ada apa-apa di sini.',
       createFirst: 'Buat karya pertama kamu',
@@ -216,7 +217,7 @@ export const idMessages = {
       generating: 'Membuat…',
       failed: 'Gagal (dikembalikan)',
     },
-    common: { signIn: 'Masuk', signOut: 'Keluar', credits: 'Kredit', language: 'Bahasa', switchLanguage: 'Ganti bahasa', currency: 'Mata uang', cookieConsent: 'Persetujuan cookie', new: 'BARU', poweredBy: 'Didukung oleh', back: '← Kembali', backToLazynext: '← Lazynext', close: 'Tutup', errNetwork: 'Kesalahan jaringan. Periksa koneksi Anda dan coba lagi.', errUnauthorized: 'Sesi Anda telah berakhir. Silakan masuk lagi.', errNotFound: 'Sumber daya yang diminta tidak ditemukan.', errForbidden: 'Anda tidak memiliki akses ke sumber daya ini.', errPaymentRequired: 'Kredit tidak cukup. Silakan isi ulang di halaman harga.', errServer: 'Kesalahan server. Coba lagi nanti.', errGeneric: 'Terjadi kesalahan. Coba lagi.', dismissError: 'Tutup', retry: 'Coba lagi', loadingDots: 'Memuat…' },
+    common: { signIn: 'Masuk', signOut: 'Keluar', credits: 'Kredit', language: 'Bahasa', switchLanguage: 'Ganti bahasa', currency: 'Mata uang', cookieConsent: 'Persetujuan cookie', new: 'BARU', poweredBy: 'Didukung oleh', back: '← Kembali', backToLazynext: '← Lazynext', close: 'Tutup', errNetwork: 'Kesalahan jaringan. Periksa koneksi Anda dan coba lagi.', errUnauthorized: 'Sesi Anda telah berakhir. Silakan masuk lagi.', errNotFound: 'Sumber daya yang diminta tidak ditemukan.', errForbidden: 'Anda tidak memiliki akses ke sumber daya ini.', errPaymentRequired: 'Kredit tidak cukup. Silakan isi ulang di halaman harga.', errServer: 'Kesalahan server. Coba lagi nanti.', errGeneric: 'Terjadi kesalahan. Coba lagi.', dismissError: 'Tutup', retry: 'Coba lagi', loadingDots: 'Memuat…', resultLabels: { headline: 'Judul', body: 'Isi', cta: 'CTA', hook: 'Pengait', reason: 'Alasan', description: 'Deskripsi', scenario: 'Skenario', sensoryDetails: 'Detail Sensorik', emotionalPayoff: 'Imbalan Emosional', psychologicalPrinciple: 'Prinsip Psikologis', timing: 'Waktu', frictionRemoval: 'Penghapusan Friksi', whyNotTheOthers: 'Mengapa Bukan yang Lain', adCopy: 'Teks Iklan', visualizationPrompt: 'Prompt Visualisasi', desiredOutcome: 'Hasil yang Diinginkan' }, skipToContent: 'Lewati ke konten' },
     userMenu: {
       account: 'Akun',
       signOut: 'Keluar',
@@ -2881,6 +2882,7 @@ export const idMessages = {
       copied: "Disalin",
       noVariants: "Belum ada varian. Masukkan produk atau merek untuk memulai.",
       error: "Pembuatan varian gagal",
+      colHook: "Pengait", colAngle: "Sudut", colFormat: "Format", colPlatform: "Platform", colScore: "Skor", colRationale: "Alasan",
   },
   adConceptMerger: {
       title: "Penggabung Konsep Iklan",

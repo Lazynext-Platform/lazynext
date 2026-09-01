@@ -256,12 +256,12 @@ export default function VariantMatrixGeneratorPage() {
                 <caption className="sr-only">{t('variantMatrixGenerator.title')}</caption>
                 <thead className="bg-bg/50 text-fg-muted">
                   <tr>
-                    <th scope="col" className="px-3 py-2 text-left font-medium">Hook</th>
-                    <th scope="col" className="px-3 py-2 text-left font-medium">Angle</th>
-                    <th scope="col" className="px-3 py-2 text-left font-medium">Format</th>
-                    <th scope="col" className="px-3 py-2 text-left font-medium">Platform</th>
-                    <th scope="col" className="px-3 py-2 text-left font-medium">Score</th>
-                    <th scope="col" className="px-3 py-2 text-left font-medium">Rationale</th>
+                    <th scope="col" className="px-3 py-2 text-left font-medium">{t('variantMatrixGenerator.colHook')}</th>
+                    <th scope="col" className="px-3 py-2 text-left font-medium">{t('variantMatrixGenerator.colAngle')}</th>
+                    <th scope="col" className="px-3 py-2 text-left font-medium">{t('variantMatrixGenerator.colFormat')}</th>
+                    <th scope="col" className="px-3 py-2 text-left font-medium">{t('variantMatrixGenerator.colPlatform')}</th>
+                    <th scope="col" className="px-3 py-2 text-left font-medium">{t('variantMatrixGenerator.colScore')}</th>
+                    <th scope="col" className="px-3 py-2 text-left font-medium">{t('variantMatrixGenerator.colRationale')}</th>
                     <th scope="col" className="px-3 py-2 text-left font-medium">
                       <span className="sr-only">Actions</span>
                     </th>

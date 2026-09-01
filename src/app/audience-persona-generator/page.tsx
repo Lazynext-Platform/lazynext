@@ -114,7 +114,7 @@ export default function AudiencePersonaGeneratorPage() {
   if (!session?.user) {
     return (
       <div className="min-h-screen text-fg app-grid-bg bg-app">
-        <a href="#main-content" className="skip-link">Skip to content</a>
+        <a href="#main-content" className="skip-link">{t('common.skipToContent')}</a>
         <main id="main-content" className="mx-auto max-w-5xl px-4 py-16 text-center" tabIndex={-1}>
           <Users className="mx-auto mb-4 h-10 w-10 text-brand-accent" aria-hidden="true" />
           <h1 className="text-2xl font-bold mb-2">Audience Persona Generator</h1>
@@ -127,7 +127,7 @@ export default function AudiencePersonaGeneratorPage() {
 
   return (
     <div className="min-h-screen text-fg app-grid-bg bg-app">
-      <a href="#main-content" className="skip-link">Skip to content</a>
+      <a href="#main-content" className="skip-link">{t('common.skipToContent')}</a>
       <main id="main-content" className="mx-auto max-w-5xl px-4 py-8 space-y-6" tabIndex={-1}>
         <header>
           <h1 className="text-2xl font-bold flex items-center gap-2"><Users className="w-6 h-6" /> Audience Persona Generator</h1>

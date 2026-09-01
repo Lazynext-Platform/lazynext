@@ -206,6 +206,7 @@ export const deMessages = {
       contentCalendar: 'Inhaltskalender',
       upcomingDeployments: 'Bevorstehende Deployments (7 Tage)',
       calendarEmpty: 'Keine Kampagnen oder Kreatives in diesem Monat.',
+      colPlatform: 'Plattform', colHook: 'Aufhänger', colAngle: 'Winkel', colImpressions: 'Impressionen', colCtr: 'CTR', colRoas: 'ROAS', colRevenue: 'Umsatz',
       title: 'Meine Kreationen',
       empty: 'Noch nichts hier.',
       createFirst: 'Erste erstellen',
@@ -213,7 +214,7 @@ export const deMessages = {
       generating: 'Generierung…',
       failed: 'Fehlgeschlagen (erstattet)',
     },
-    common: { signIn: 'Anmelden', signOut: 'Abmelden', credits: 'Guthaben', language: 'Sprache', switchLanguage: 'Sprache wechseln', currency: 'Währung', cookieConsent: 'Cookie-Einwilligung', new: 'NEU', poweredBy: 'Unterstützt von', back: '← Zurück', backToLazynext: '← Lazynext', close: 'Schließen', errNetwork: 'Netzwerkfehler. Überprüfen Sie Ihre Verbindung und versuchen Sie es erneut.', errUnauthorized: 'Ihre Sitzung ist abgelaufen. Bitte melden Sie sich erneut an.', errNotFound: 'Die angeforderte Ressource wurde nicht gefunden.', errForbidden: 'Sie haben keinen Zugriff auf diese Ressource.', errPaymentRequired: 'Nicht genügend Guthaben. Bitte auf der Preisseite aufladen.', errServer: 'Serverfehler. Bitte versuchen Sie es später erneut.', errGeneric: 'Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut.', dismissError: 'Schließen', retry: 'Erneut versuchen', loadingDots: 'Laden…' },
+    common: { signIn: 'Anmelden', signOut: 'Abmelden', credits: 'Guthaben', language: 'Sprache', switchLanguage: 'Sprache wechseln', currency: 'Währung', cookieConsent: 'Cookie-Einwilligung', new: 'NEU', poweredBy: 'Unterstützt von', back: '← Zurück', backToLazynext: '← Lazynext', close: 'Schließen', errNetwork: 'Netzwerkfehler. Überprüfen Sie Ihre Verbindung und versuchen Sie es erneut.', errUnauthorized: 'Ihre Sitzung ist abgelaufen. Bitte melden Sie sich erneut an.', errNotFound: 'Die angeforderte Ressource wurde nicht gefunden.', errForbidden: 'Sie haben keinen Zugriff auf diese Ressource.', errPaymentRequired: 'Nicht genügend Guthaben. Bitte auf der Preisseite aufladen.', errServer: 'Serverfehler. Bitte versuchen Sie es später erneut.', errGeneric: 'Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut.', dismissError: 'Schließen', retry: 'Erneut versuchen', loadingDots: 'Laden…', resultLabels: { headline: 'Überschrift', body: 'Textkörper', cta: 'CTA', hook: 'Aufhänger', reason: 'Grund', description: 'Beschreibung', scenario: 'Szenario', sensoryDetails: 'Sinnliche Details', emotionalPayoff: 'Emotionale Belohnung', psychologicalPrinciple: 'Psychologisches Prinzip', timing: 'Zeitpunkt', frictionRemoval: 'Reibungsverringerung', whyNotTheOthers: 'Warum nicht die anderen', adCopy: 'Werbetext', visualizationPrompt: 'Visualisierungs-Prompt', desiredOutcome: 'Gewünschtes Ergebnis' }, skipToContent: 'Zum Inhalt springen' },
     userMenu: {
       account: 'Konto',
       signOut: 'Abmelden',
@@ -2902,6 +2903,7 @@ export const deMessages = {
       copied: "Kopiert",
       noVariants: "Noch keine Varianten generiert. Geben Sie ein Produkt oder eine Marke ein.",
       error: "Variantengenerierung fehlgeschlagen",
+      colHook: "Aufhänger", colAngle: "Winkel", colFormat: "Format", colPlatform: "Plattform", colScore: "Score", colRationale: "Begründung",
   },
   adConceptMerger: {
       title: "Werbekonzept-Merger",

@@ -16,7 +16,7 @@ export default function CalendarPage() {
     return (
       <div className="min-h-screen bg-app">
         <AuthModal open={authOpen} onClose={() => setAuthOpen(false)} />
-        <a href="#main-content" className="skip-link">Skip to content</a>
+        <a href="#main-content" className="skip-link">{t('common.skipToContent')}</a>
         <main id="main-content" className="max-w-2xl mx-auto px-4 py-16 text-center" tabIndex={-1}>
           {status === 'loading' ? (
             <Loader2 className="mx-auto mb-4 h-8 w-8 animate-spin text-brand-accent" aria-hidden="true" />
@@ -39,7 +39,7 @@ export default function CalendarPage() {
   return (
     <div className="min-h-screen bg-app">
       <AuthModal open={authOpen} onClose={() => setAuthOpen(false)} />
-      <a href="#main-content" className="skip-link">Skip to content</a>
+      <a href="#main-content" className="skip-link">{t('common.skipToContent')}</a>
       <main id="main-content" className="max-w-6xl mx-auto px-4 py-8" tabIndex={-1}>
         <ContentCalendar />
       </main>
