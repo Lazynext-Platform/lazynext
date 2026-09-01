@@ -374,7 +374,7 @@ export default function ABAutomationPage() {
                     <caption className="sr-only">{t('abAutomation.variants')}</caption>
                     <thead>
                       <tr className="border-b border-border text-left text-xs text-fg-muted">
-                        <th scope="col" className="py-2 pr-3">Variant</th>
+                        <th scope="col" className="py-2 pr-3">{t('abAutomation.variant')}</th>
                         <th scope="col" className="py-2 pr-3 text-right"><span className="flex items-center justify-end gap-1"><Eye className="w-3 h-3" aria-hidden="true" /> <span className="sr-only">{t('abAutomation.impressions')}</span></span></th>
                         <th scope="col" className="py-2 pr-3 text-right"><span className="flex items-center justify-end gap-1"><MousePointerClick className="w-3 h-3" aria-hidden="true" /> <span className="sr-only">{t('abAutomation.clicks')}</span></span></th>
                         <th scope="col" className="py-2 pr-3 text-right"><span className="flex items-center justify-end gap-1"><Target className="w-3 h-3" aria-hidden="true" /> <span className="sr-only">{t('abAutomation.conversions')}</span></span></th>

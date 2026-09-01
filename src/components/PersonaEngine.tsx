@@ -291,7 +291,7 @@ export function PersonaEngine() {
             type="text"
             value={productName}
             onChange={(e) => setProductName(e.target.value)}
-            placeholder="e.g., Acme Protein Powder"
+            placeholder={t('personas.phProductName')}
             className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
             disabled={loading}
             aria-required="true"
@@ -304,7 +304,7 @@ export function PersonaEngine() {
             id="persona-desc"
             value={productDescription}
             onChange={(e) => setProductDescription(e.target.value)}
-            placeholder="Describe the product, key benefits, and positioning…"
+            placeholder={t('personas.phProductDescription')}
             rows={3}
             className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
             disabled={loading}
@@ -319,7 +319,7 @@ export function PersonaEngine() {
               type="text"
               value={market}
               onChange={(e) => setMarket(e.target.value)}
-              placeholder="e.g., DTC fitness supplements"
+              placeholder={t('personas.phMarket')}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
               disabled={loading}
             />

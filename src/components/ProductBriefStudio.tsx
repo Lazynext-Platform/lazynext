@@ -111,22 +111,22 @@ export function ProductBriefStudio() {
       <div className="space-y-4">
         <div>
           <label htmlFor="pbProductName" className="block text-sm font-medium mb-1">{t('productBrief.productName')}</label>
-          <input id="pbProductName" type="text" value={productName} onChange={(e) => setProductName(e.target.value)} placeholder="e.g., Glow Serum" className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
+          <input id="pbProductName" type="text" value={productName} onChange={(e) => setProductName(e.target.value)} placeholder={t('productBrief.phProductName')} className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
         </div>
 
         <div>
           <label htmlFor="pbProductUrl" className="block text-sm font-medium mb-1">{t('productBrief.productUrl')}</label>
-          <input id="pbProductUrl" type="url" value={productUrl} onChange={(e) => setProductUrl(e.target.value)} placeholder="https://..." className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
+          <input id="pbProductUrl" type="url" value={productUrl} onChange={(e) => setProductUrl(e.target.value)} placeholder={t('productBrief.phProductUrl')} className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
             <label htmlFor="pbCategory" className="block text-sm font-medium mb-1">{t('productBrief.category')}</label>
-            <input id="pbCategory" type="text" value={category} onChange={(e) => setCategory(e.target.value)} placeholder="e.g., Skincare" className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
+            <input id="pbCategory" type="text" value={category} onChange={(e) => setCategory(e.target.value)} placeholder={t('productBrief.phCategory')} className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
           </div>
           <div>
             <label htmlFor="pbAudience" className="block text-sm font-medium mb-1">{t('productBrief.audience')}</label>
-            <input id="pbAudience" type="text" value={audience} onChange={(e) => setAudience(e.target.value)} placeholder="e.g., Women 25-40" className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
+            <input id="pbAudience" type="text" value={audience} onChange={(e) => setAudience(e.target.value)} placeholder={t('productBrief.phAudience')} className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
           </div>
         </div>
 
@@ -146,33 +146,33 @@ export function ProductBriefStudio() {
           </div>
           <div>
             <label htmlFor="pbPrice" className="block text-sm font-medium mb-1">{t('productBrief.price')}</label>
-            <input id="pbPrice" type="text" value={price} onChange={(e) => setPrice(e.target.value)} placeholder="e.g., $29.99" className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
+            <input id="pbPrice" type="text" value={price} onChange={(e) => setPrice(e.target.value)} placeholder={t('productBrief.phPrice')} className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
           </div>
         </div>
 
         <div>
           <label htmlFor="pbBenefits" className="block text-sm font-medium mb-1">{t('productBrief.benefits')}</label>
-          <input id="pbBenefits" type="text" value={benefits} onChange={(e) => setBenefits(e.target.value)} placeholder="hydrates, brightens, anti-aging" className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
+          <input id="pbBenefits" type="text" value={benefits} onChange={(e) => setBenefits(e.target.value)} placeholder={t('productBrief.phBenefits')} className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
         </div>
 
         <div>
           <label htmlFor="pbPainPoints" className="block text-sm font-medium mb-1">{t('productBrief.painPoints')}</label>
-          <input id="pbPainPoints" type="text" value={painPoints} onChange={(e) => setPainPoints(e.target.value)} placeholder="dry skin, dullness, fine lines" className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
+          <input id="pbPainPoints" type="text" value={painPoints} onChange={(e) => setPainPoints(e.target.value)} placeholder={t('productBrief.phPainPoints')} className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
         </div>
 
         <div>
           <label htmlFor="pbProofPoints" className="block text-sm font-medium mb-1">{t('productBrief.proofPoints')}</label>
-          <input id="pbProofPoints" type="text" value={proofPoints} onChange={(e) => setProofPoints(e.target.value)} placeholder="dermatologist tested, 10k reviews" className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
+          <input id="pbProofPoints" type="text" value={proofPoints} onChange={(e) => setProofPoints(e.target.value)} placeholder={t('productBrief.phProofPoints')} className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
             <label htmlFor="pbOffer" className="block text-sm font-medium mb-1">{t('productBrief.offer')}</label>
-            <input id="pbOffer" type="text" value={offer} onChange={(e) => setOffer(e.target.value)} placeholder="e.g., Buy 1 Get 1 Free" className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
+            <input id="pbOffer" type="text" value={offer} onChange={(e) => setOffer(e.target.value)} placeholder={t('productBrief.phOffer')} className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
           </div>
           <div>
             <label htmlFor="pbTone" className="block text-sm font-medium mb-1">{t('productBrief.tone')}</label>
-            <input id="pbTone" type="text" value={tone} onChange={(e) => setTone(e.target.value)} placeholder="e.g., friendly, authoritative" className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
+            <input id="pbTone" type="text" value={tone} onChange={(e) => setTone(e.target.value)} placeholder={t('productBrief.phTone')} className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
           </div>
         </div>
 

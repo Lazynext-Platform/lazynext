@@ -241,7 +241,7 @@ export default function WorkflowBuilderPage() {
     setSaveMsg(null);
     try {
       // Save both the simple stages array (for backwards compat) and the full workflow definition
-      const payload: any = { stages };
+      const payload: Record<string, unknown> = { stages };
       if (advancedMode) {
         payload.workflow = { stages: stageConfigs, flags: {} };
       }
@@ -324,10 +324,10 @@ export default function WorkflowBuilderPage() {
 
     // If the template has a workflow definition (v2), load it with conditions/parallel
     if (template.workflow && Array.isArray(template.workflow.stages) && template.workflow.stages.length > 0) {
-      const wfConfigs: ConditionalStage[] = template.workflow.stages
-        .filter((s: any) => s && typeof s.stage === 'string' && ALL_STAGES.includes(s.stage as StageId))
-        .map((s: any) => ({
-          stage: s.stage as StageId,
+      const wfConfigs: ConditionalStage[] = (template.workflow.stages as ConditionalStage[])
+        .filter(s => s && typeof s.stage === 'string' && ALL_STAGES.includes(s.stage))
+        .map(s => ({
+          stage: s.stage,
           enabled: s.enabled !== false,
           condition: s.condition,
           parallelWith: s.parallelWith,

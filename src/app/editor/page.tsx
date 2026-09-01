@@ -707,7 +707,7 @@ export default function EditorPage() {
                     <p className="text-xs text-fg bg-bg rounded p-2 border border-border">{ocrResult.text}</p>
                   )}
                   {ocrResult.confidence !== undefined && (
-                    <p className="text-xs text-fg-muted">Confidence: {(ocrResult.confidence * 100).toFixed(0)}%</p>
+                    <p className="text-xs text-fg-muted">{t('editor.ocrConfidence')}: {(ocrResult.confidence * 100).toFixed(0)}%</p>
                   )}
                 </div>
               )}

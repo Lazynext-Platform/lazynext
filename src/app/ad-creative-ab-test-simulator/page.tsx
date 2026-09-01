@@ -62,7 +62,7 @@ function VariantCard({
           {label}
         </p>
         <div className="flex items-center gap-2">
-          <span className="text-xs font-medium text-fg-muted">predicted score</span>
+          <span className="text-xs font-medium text-fg-muted">{t('adCreativeAbTestSimulator.predictedScore')}</span>
           <span className={`text-lg font-bold ${scoreColor(variant.predictedScore)}`}>
             {variant.predictedScore}
             <span className="text-xs text-fg-muted">/100</span>
@@ -82,7 +82,7 @@ function VariantCard({
                 </span>
               </div>
               <div className="flex items-center justify-between mt-1">
-                <span className="text-xs text-fg-muted">confidence</span>
+                <span className="text-xs text-fg-muted">{t('adCreativeAbTestSimulator.confidence')}</span>
                 <span className="text-xs text-fg-muted">{m.confidence}%</span>
               </div>
               <div className="h-1 rounded-full bg-bg-app overflow-hidden mt-1">

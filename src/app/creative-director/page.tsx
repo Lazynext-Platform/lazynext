@@ -733,7 +733,7 @@ export default function CreativeDirectorPage() {
                       </span>
                     </div>
                     <p className="text-fg-faint">{autoResult.deployResult.campaignName}</p>
-                    <p className="text-fg-faint mt-1">Status: {autoResult.deployResult.status}</p>
+                    <p className="text-fg-faint mt-1">{t('director.status')}: {autoResult.deployResult.status}</p>
                   </div>
                 ) : (
                   <div className="rounded bg-surface p-3 text-xs text-danger">

@@ -305,7 +305,7 @@ export default function CreativeAdFormatInnovatorPage() {
                         <div key={j} className="rounded-lg border border-border bg-bg-secondary p-2.5 space-y-1">
                           <div className="flex items-center justify-between flex-wrap gap-2">
                             <span className="text-xs font-medium text-fg">{el.element}</span>
-                            <span className="text-xs text-fg-muted italic">from: {el.source}</span>
+                            <span className="text-xs text-fg-muted italic">{t('creativeAdFormatInnovator.from')}: {el.source}</span>
                           </div>
                           <p className="text-xs text-fg-muted">{el.innovation}</p>
                         </div>

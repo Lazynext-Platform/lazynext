@@ -766,7 +766,7 @@ export default function CreativeStudioPage() {
     );
 
     const settled = await Promise.allSettled(promises);
-    const ok: Array<{ kind: string; data: any }> = [];
+    const ok: Array<{ kind: string; data: unknown }> = [];
     let failCount = 0;
     settled.forEach((s) => {
       if (s.status === 'fulfilled') {

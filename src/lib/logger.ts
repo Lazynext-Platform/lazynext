@@ -36,11 +36,11 @@ export const logger = {
  * Wrap an async handler with error logging. If the handler throws,
  * the error is logged with the tag and re-thrown (or returns a 500 response).
  */
-export function withErrorLogging<T extends (...args: any[]) => Promise<any>>(
+export function withErrorLogging<T extends (...args: unknown[]) => Promise<unknown>>(
   tag: string,
   fn: T,
 ): T {
-  return (async (...args: any[]) => {
+  return (async (...args: unknown[]) => {
     try {
       return await fn(...args);
     } catch (e) {

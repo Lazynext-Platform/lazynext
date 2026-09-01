@@ -419,7 +419,7 @@ export function ContentCalendar() {
                           ))}
                           {cellEntries.length > 4 && (
                             <span className="text-[10px] text-fg-faint">
-                              +{cellEntries.length - 4} {t('calendar.more') || 'more'}
+                              +{cellEntries.length - 4} {t('calendar.more')}
                             </span>
                           )}
                         </div>
@@ -587,7 +587,7 @@ export function ContentCalendar() {
               )}
               {selected.budgetDaily != null && (
                 <div className="flex justify-between gap-2">
-                  <dt className="text-fg-faint">{t('calendar.budgetDaily') || 'Daily Budget'}</dt>
+                  <dt className="text-fg-faint">{t('calendar.budgetDaily')}</dt>
                   <dd className="font-medium text-fg">${selected.budgetDaily.toFixed(2)}</dd>
                 </div>
               )}

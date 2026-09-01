@@ -353,7 +353,7 @@ export default function CreativeAdTransformationArcDesignerPage() {
                     </div>
                     <p className="text-xs text-fg-muted">{stage.description}</p>
                     <p className="text-xs text-fg-muted">
-                      <span className="font-medium text-brand-accent">Emotional shift:</span>{' '}
+                      <span className="font-medium text-brand-accent">{t('creativeAdTransformationArcDesigner.emotionalShift')}:</span>{' '}
                       {stage.emotionalShift}
                     </p>
                   </div>

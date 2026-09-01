@@ -75,15 +75,15 @@ export function TestingLab() {
             {variants.map((v, i) => (
               <div key={i} className="rounded-lg border border-border bg-bg-card p-3 space-y-2">
                 <div className="flex items-center gap-2">
-                  <input type="text" placeholder="Variant name" value={v.variantName} onChange={(e) => updateVariant(i, 'variantName', e.target.value)} className="flex-1 rounded border border-border bg-bg-secondary px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
+                  <input type="text" placeholder={t('testingLab.phVariantName')} value={v.variantName} onChange={(e) => updateVariant(i, 'variantName', e.target.value)} className="flex-1 rounded border border-border bg-bg-secondary px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
                   {variants.length > 2 && <button onClick={() => removeVariant(i)} className="text-fg-muted hover:text-danger"><X className="w-4 h-4" /></button>}
                 </div>
                 <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
-                  <input type="number" placeholder="Impr" value={v.impressions} onChange={(e) => updateVariant(i, 'impressions', e.target.value)} className="rounded border border-border bg-bg-secondary px-2 py-1 text-xs focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
-                  <input type="number" placeholder="Clicks" value={v.clicks} onChange={(e) => updateVariant(i, 'clicks', e.target.value)} className="rounded border border-border bg-bg-secondary px-2 py-1 text-xs focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
-                  <input type="number" placeholder="Conv" value={v.conversions} onChange={(e) => updateVariant(i, 'conversions', e.target.value)} className="rounded border border-border bg-bg-secondary px-2 py-1 text-xs focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
-                  <input type="number" placeholder="Revenue" value={v.revenue} onChange={(e) => updateVariant(i, 'revenue', e.target.value)} className="rounded border border-border bg-bg-secondary px-2 py-1 text-xs focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
-                  <input type="number" placeholder="Spend" value={v.spend} onChange={(e) => updateVariant(i, 'spend', e.target.value)} className="rounded border border-border bg-bg-secondary px-2 py-1 text-xs focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
+                  <input type="number" placeholder={t('testingLab.phImpr')} value={v.impressions} onChange={(e) => updateVariant(i, 'impressions', e.target.value)} className="rounded border border-border bg-bg-secondary px-2 py-1 text-xs focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
+                  <input type="number" placeholder={t('testingLab.phClicks')} value={v.clicks} onChange={(e) => updateVariant(i, 'clicks', e.target.value)} className="rounded border border-border bg-bg-secondary px-2 py-1 text-xs focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
+                  <input type="number" placeholder={t('testingLab.phConv')} value={v.conversions} onChange={(e) => updateVariant(i, 'conversions', e.target.value)} className="rounded border border-border bg-bg-secondary px-2 py-1 text-xs focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
+                  <input type="number" placeholder={t('testingLab.phRevenue')} value={v.revenue} onChange={(e) => updateVariant(i, 'revenue', e.target.value)} className="rounded border border-border bg-bg-secondary px-2 py-1 text-xs focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
+                  <input type="number" placeholder={t('testingLab.phSpend')} value={v.spend} onChange={(e) => updateVariant(i, 'spend', e.target.value)} className="rounded border border-border bg-bg-secondary px-2 py-1 text-xs focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
                 </div>
               </div>
             ))}

@@ -99,7 +99,7 @@ export function MultiPlatformPublisher() {
             type="url"
             value={mediaUrl}
             onChange={(e) => setMediaUrl(e.target.value)}
-            placeholder="https://..."
+            placeholder={t('publish.phMediaUrl')}
             className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
             disabled={loading}
           />
@@ -144,7 +144,7 @@ export function MultiPlatformPublisher() {
             type="text"
             value={hashtags}
             onChange={(e) => setHashtags(e.target.value)}
-            placeholder="tag1, tag2, tag3"
+            placeholder={t('publish.phHashtags')}
             className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
             disabled={loading}
           />

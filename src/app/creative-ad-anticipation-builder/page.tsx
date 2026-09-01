@@ -332,7 +332,7 @@ export default function CreativeAdAnticipationBuilderPage() {
                       <span className="text-sm font-medium">{rev.strategy.replace(/_/g, ' ')}</span>
                       <span className="inline-flex items-center text-xs font-medium px-2 py-0.5 rounded-full border bg-bg-card text-fg-muted border-border">{rev.timing}</span>
                     </div>
-                    <p className="text-xs text-fg-muted"><span className="font-medium text-fg">Buildup:</span> {rev.buildup}</p>
+                    <p className="text-xs text-fg-muted"><span className="font-medium text-fg">{t('creativeAdAnticipationBuilder.buildup')}:</span> {rev.buildup}</p>
                     <p className="text-xs text-fg-muted"><span className="font-medium text-success">{t('creativeAdAnticipationBuilder.payoff')}:</span> {rev.payoff}</p>
                   </div>
                 ))}

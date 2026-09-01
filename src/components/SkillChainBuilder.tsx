@@ -192,7 +192,7 @@ export function SkillChainBuilder() {
                 type="text"
                 value={productName}
                 onChange={(e) => setProductName(e.target.value)}
-                placeholder="e.g., Glow Serum by Aura"
+                placeholder={t('skillChains.phProductName')}
                 className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
                 disabled={loading}
               />
@@ -206,7 +206,7 @@ export function SkillChainBuilder() {
                 type="text"
                 value={audience}
                 onChange={(e) => setAudience(e.target.value)}
-                placeholder="e.g., Women 25-40"
+                placeholder={t('skillChains.phAudience')}
                 className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
                 disabled={loading}
               />

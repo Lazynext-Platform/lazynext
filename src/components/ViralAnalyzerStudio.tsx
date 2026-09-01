@@ -91,7 +91,7 @@ export function ViralAnalyzerStudio() {
       <div className="space-y-4">
         <div>
           <label htmlFor="vaContentUrl" className="block text-sm font-medium mb-1">{t('viralAnalyzer.contentUrl')}</label>
-          <input id="vaContentUrl" type="url" value={contentUrl} onChange={(e) => setContentUrl(e.target.value)} placeholder="https://..." className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
+          <input id="vaContentUrl" type="url" value={contentUrl} onChange={(e) => setContentUrl(e.target.value)} placeholder={t('viralAnalyzer.phContentUrl')} className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -114,7 +114,7 @@ export function ViralAnalyzerStudio() {
           </div>
           <div>
             <label htmlFor="vaTargetAudience" className="block text-sm font-medium mb-1">{t('viralAnalyzer.targetAudience')}</label>
-            <input id="vaTargetAudience" type="text" value={targetAudience} onChange={(e) => setTargetAudience(e.target.value)} placeholder="e.g., Women 25-40" className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
+            <input id="vaTargetAudience" type="text" value={targetAudience} onChange={(e) => setTargetAudience(e.target.value)} placeholder={t('viralAnalyzer.phTargetAudience')} className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
           </div>
         </div>
 

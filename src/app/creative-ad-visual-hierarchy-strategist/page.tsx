@@ -319,8 +319,8 @@ export default function CreativeAdVisualHierarchyStrategistPage() {
                       </span>
                     </div>
                     <div className="flex items-center gap-3 flex-wrap text-xs text-fg-muted">
-                      <span>position: {layer.position}</span>
-                      <span>size: {layer.size}</span>
+                      <span>{t('creativeAdVisualHierarchyStrategist.position')}: {layer.position}</span>
+                      <span>{t('creativeAdVisualHierarchyStrategist.size')}: {layer.size}</span>
                       <span>z-index: {layer.z_index}</span>
                     </div>
                     <p className="text-xs text-fg-muted">{layer.description}</p>
@@ -379,8 +379,8 @@ export default function CreativeAdVisualHierarchyStrategistPage() {
                       <span className="text-xs text-fg-muted">{fp.position}</span>
                     </div>
                     <div className="flex items-center gap-3 flex-wrap text-xs text-fg-muted">
-                      <span>method: {fp.attractionMethod}</span>
-                      <span>retention: {fp.retentionTime}</span>
+                      <span>{t('creativeAdVisualHierarchyStrategist.method')}: {fp.attractionMethod}</span>
+                      <span>{t('creativeAdVisualHierarchyStrategist.retention')}: {fp.retentionTime}</span>
                     </div>
                   </div>
                 ))}

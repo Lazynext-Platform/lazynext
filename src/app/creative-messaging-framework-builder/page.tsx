@@ -268,7 +268,7 @@ export default function CreativeMessagingFrameworkBuilderPage() {
                     <div className="flex items-center justify-between flex-wrap gap-2">
                       <span className="text-sm font-medium">{p.pillar}</span>
                       <span className={`inline-flex items-center text-xs font-medium px-2 py-0.5 rounded-full border ${priorityColor(p.priority)}`}>
-                        {t('creativeMessagingFrameworkBuilder.priority') || 'priority'} {p.priority}/10
+                        {t('creativeMessagingFrameworkBuilder.priority')} {p.priority}/10
                       </span>
                     </div>
                     <p className="text-xs text-fg-muted">{p.description}</p>
@@ -289,7 +289,7 @@ export default function CreativeMessagingFrameworkBuilderPage() {
                     <div className="flex items-center justify-between flex-wrap gap-2">
                       <span className="text-xs font-medium text-fg-muted">{m.channel}</span>
                       <span className={`inline-flex items-center text-xs font-medium px-2 py-0.5 rounded-full border ${priorityColor(m.priority)}`}>
-                        {t('creativeMessagingFrameworkBuilder.priority') || 'priority'} {m.priority}/10
+                        {t('creativeMessagingFrameworkBuilder.priority')} {m.priority}/10
                       </span>
                     </div>
                     <p className="text-sm text-fg">{m.message}</p>

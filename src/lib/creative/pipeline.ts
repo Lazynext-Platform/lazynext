@@ -774,7 +774,7 @@ export function configFromTemplate(templateId: string, overrides: Partial<Pipeli
  * preserved via the `parallelWith` field on PipelineStageConfig.
  */
 export function configFromWorkflow(
-  workflow: { stages: Array<{ stage: string; enabled: boolean; condition?: any; parallelWith?: string[] }> },
+  workflow: { stages: Array<{ stage: string; enabled: boolean; condition?: { field: string; operator: string; value?: string }; parallelWith?: string[] }> },
   ctx: { platform?: string; contentType?: string; hasVoiceover?: boolean; hasMusic?: boolean; complianceRequired?: boolean; budgetTier?: string },
   base: Partial<PipelineConfig> = {},
 ): PipelineConfig | null {
@@ -892,7 +892,7 @@ export function advancePipelineWithWaves(state: PipelineState): PipelineState {
   if (nextStage) {
     // Check for parallel partners
     const stageConfig = next.config.stages.find((s) => s.stage === nextStage.stage);
-    const parallelPartners = (stageConfig as any)?.parallelWith as PipelineStage[] | undefined;
+    const parallelPartners = (stageConfig as PipelineStageConfig & { parallelWith?: PipelineStage[] })?.parallelWith;
 
     const wave: PipelineStage[] = [nextStage.stage];
     if (parallelPartners && parallelPartners.length > 0) {

@@ -466,7 +466,7 @@ function MusicTab() {
             min={1}
             value={durationSec}
             onChange={(e) => setDurationSec(e.target.value)}
-            placeholder="30"
+            placeholder={t('audioStudio.phDuration')}
             className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
             disabled={loading}
           />
@@ -481,7 +481,7 @@ function MusicTab() {
             min={0}
             value={bpmMin}
             onChange={(e) => setBpmMin(e.target.value)}
-            placeholder="60"
+            placeholder={t('audioStudio.phBpmMin')}
             className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
             disabled={loading}
           />
@@ -496,7 +496,7 @@ function MusicTab() {
             min={0}
             value={bpmMax}
             onChange={(e) => setBpmMax(e.target.value)}
-            placeholder="140"
+            placeholder={t('audioStudio.phBpmMax')}
             className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
             disabled={loading}
           />
@@ -512,7 +512,7 @@ function MusicTab() {
           type="text"
           value={genre}
           onChange={(e) => setGenre(e.target.value)}
-          placeholder="pop, electronic, orchestral..."
+          placeholder={t('audioStudio.phGenre')}
           className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
           disabled={loading}
         />
@@ -634,7 +634,7 @@ function MixTab() {
           type="url"
           value={voiceoverUrl}
           onChange={(e) => setVoiceoverUrl(e.target.value)}
-          placeholder="https://..."
+          placeholder={t('audioStudio.phVoiceoverUrl')}
           className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
           disabled={loading}
         />
@@ -649,7 +649,7 @@ function MixTab() {
           type="url"
           value={musicUrl}
           onChange={(e) => setMusicUrl(e.target.value)}
-          placeholder="https://..."
+          placeholder={t('audioStudio.phMusicUrl')}
           className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
           disabled={loading}
         />
@@ -711,7 +711,7 @@ function MixTab() {
             step={0.5}
             value={fadeInSec}
             onChange={(e) => setFadeInSec(e.target.value)}
-            placeholder="0"
+            placeholder={t('audioStudio.phFadeIn')}
             className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
             disabled={loading}
           />
@@ -728,7 +728,7 @@ function MixTab() {
             step={0.5}
             value={fadeOutSec}
             onChange={(e) => setFadeOutSec(e.target.value)}
-            placeholder="0"
+            placeholder={t('audioStudio.phFadeOut')}
             className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
             disabled={loading}
           />
@@ -745,7 +745,7 @@ function MixTab() {
             step={0.5}
             value={crossfadeSec}
             onChange={(e) => setCrossfadeSec(e.target.value)}
-            placeholder="0"
+            placeholder={t('audioStudio.phCrossfade')}
             className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
             disabled={loading}
           />

@@ -78,7 +78,7 @@ export function ProductImageStudio() {
             type="url"
             value={imageUrl}
             onChange={(e) => setImageUrl(e.target.value)}
-            placeholder="https://..."
+            placeholder={t('productImage.phImageUrl')}
             className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
             disabled={loading}
           />
@@ -113,7 +113,7 @@ export function ProductImageStudio() {
               id="sceneDesc"
               value={sceneDescription}
               onChange={(e) => setSceneDescription(e.target.value)}
-              placeholder="e.g., Modern minimalist studio with soft lighting..."
+              placeholder={t('productImage.phSceneDescription')}
               rows={2}
               className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
               disabled={loading}

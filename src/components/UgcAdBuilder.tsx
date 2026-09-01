@@ -171,16 +171,16 @@ export function UgcAdBuilder() {
         aria-label="UGC ad configuration"
         className="rounded-2xl border border-line bg-surface p-4 sm:p-6"
       >
-        <h2 className="text-base font-bold text-fg">{t('ugcStudio.configTitle') || 'Ad Configuration'}</h2>
+        <h2 className="text-base font-bold text-fg">{t('ugcStudio.configTitle')}</h2>
         <p className="mt-1 text-xs text-fg-faint">
-          {t('ugcStudio.configDesc') || 'Configure your UGC ad and generate a hook-first script.'}
+          {t('ugcStudio.configDesc')}
         </p>
 
         <div className="mt-4 space-y-5">
           {/* Product name */}
           <div>
             <label htmlFor="ugc-product-name" className="text-xs font-medium text-fg-faint">
-              {t('ugcStudio.productName') || 'Product name'} <span className="text-danger">*</span>
+              {t('ugcStudio.productName')} <span className="text-danger">*</span>
             </label>
             <input
               id="ugc-product-name"
@@ -188,7 +188,7 @@ export function UgcAdBuilder() {
               value={productName}
               onChange={(e) => setProductName(e.target.value)}
               maxLength={300}
-              placeholder="e.g. Glow Serum"
+              placeholder={t('ugcStudio.phProductName')}
               aria-required="true"
               className="mt-1 w-full rounded-lg border border-line bg-app px-3 py-2 text-sm text-fg placeholder:text-fg-placeholder focus:border-[#00b2fc]/40 focus:outline-none"
             />
@@ -197,7 +197,7 @@ export function UgcAdBuilder() {
           {/* Product description */}
           <div>
             <label htmlFor="ugc-product-desc" className="text-xs font-medium text-fg-faint">
-              {t('ugcStudio.productDescription') || 'Product description (optional)'}
+              {t('ugcStudio.productDescription')}
             </label>
             <textarea
               id="ugc-product-desc"
@@ -205,7 +205,7 @@ export function UgcAdBuilder() {
               onChange={(e) => setProductDescription(e.target.value)}
               maxLength={2000}
               rows={3}
-              placeholder="Briefly describe the product, what it does, and who it's for."
+              placeholder={t('ugcStudio.phProductDescription')}
               className="mt-1 w-full rounded-lg border border-line bg-app px-3 py-2 text-sm text-fg placeholder:text-fg-placeholder focus:border-[#00b2fc]/40 focus:outline-none resize-y"
             />
           </div>
@@ -214,7 +214,7 @@ export function UgcAdBuilder() {
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
               <label htmlFor="ugc-brand" className="text-xs font-medium text-fg-faint">
-                {t('ugcStudio.brandName') || 'Brand name (optional)'}
+                {t('ugcStudio.brandName')}
               </label>
               <input
                 id="ugc-brand"
@@ -227,7 +227,7 @@ export function UgcAdBuilder() {
             </div>
             <div>
               <label htmlFor="ugc-audience" className="text-xs font-medium text-fg-faint">
-                {t('ugcStudio.targetAudience') || 'Target audience (optional)'}
+                {t('ugcStudio.targetAudience')}
               </label>
               <input
                 id="ugc-audience"
@@ -235,7 +235,7 @@ export function UgcAdBuilder() {
                 value={targetAudience}
                 onChange={(e) => setTargetAudience(e.target.value)}
                 maxLength={300}
-                placeholder="e.g. Gen Z skincare lovers"
+                placeholder={t('ugcStudio.phTargetAudience')}
                 className="mt-1 w-full rounded-lg border border-line bg-app px-3 py-2 text-sm text-fg placeholder:text-fg-placeholder focus:border-[#00b2fc]/40 focus:outline-none"
               />
             </div>
@@ -244,14 +244,14 @@ export function UgcAdBuilder() {
           {/* Key benefits */}
           <div>
             <label htmlFor="ugc-benefits" className="text-xs font-medium text-fg-faint">
-              {t('ugcStudio.keyBenefits') || 'Key benefits (comma-separated, optional)'}
+              {t('ugcStudio.keyBenefits')}
             </label>
             <input
               id="ugc-benefits"
               type="text"
               value={keyBenefits}
               onChange={(e) => setKeyBenefits(e.target.value)}
-              placeholder="e.g. hydrates skin, reduces redness, fast-absorbing"
+              placeholder={t('ugcStudio.phKeyBenefits')}
               className="mt-1 w-full rounded-lg border border-line bg-app px-3 py-2 text-sm text-fg placeholder:text-fg-placeholder focus:border-[#00b2fc]/40 focus:outline-none"
             />
           </div>
@@ -259,7 +259,7 @@ export function UgcAdBuilder() {
           {/* Format type selector */}
           <div>
             <span className="text-xs font-medium text-fg-faint" id="ugc-format-label">
-              {t('ugcStudio.formatType') || 'Format type'}
+              {t('ugcStudio.formatType')}
             </span>
             <div
               role="radiogroup"
@@ -292,7 +292,7 @@ export function UgcAdBuilder() {
           {/* Platform selector */}
           <div>
             <span className="text-xs font-medium text-fg-faint" id="ugc-platform-label">
-              {t('ugcStudio.platform') || 'Platform'}
+              {t('ugcStudio.platform')}
             </span>
             <div
               role="radiogroup"
@@ -323,7 +323,7 @@ export function UgcAdBuilder() {
           {/* Persona selector */}
           <div>
             <span className="text-xs font-medium text-fg-faint" id="ugc-persona-label">
-              {t('ugcStudio.creatorPersona') || 'Creator persona'}
+              {t('ugcStudio.creatorPersona')}
             </span>
             <div
               role="radiogroup"
@@ -354,7 +354,7 @@ export function UgcAdBuilder() {
           {/* Duration slider */}
           <div>
             <label htmlFor="ugc-duration" className="flex items-center justify-between text-xs font-medium text-fg-faint">
-              <span>{t('ugcStudio.duration') || 'Duration'}</span>
+              <span>{t('ugcStudio.duration')}</span>
               <span className="text-fg">{durationSec}s</span>
             </label>
             <input
@@ -379,17 +379,17 @@ export function UgcAdBuilder() {
               disabled={isLoading || !productName.trim()}
               className="flex items-center gap-2 rounded-lg px-5 py-2.5 text-sm font-bold text-white disabled:opacity-50"
               style={{ background: '#0064d9' }}
-              aria-label={t('ugcStudio.generate') || 'Generate UGC Ad'}
+              aria-label={t('ugcStudio.generate')}
             >
               {isLoading ? (
                 <>
                   <Loader2 className="h-4 w-4 animate-spin" />
-                  {t('ugcStudio.generating') || 'Generating...'}
+                  {t('ugcStudio.generating')}
                 </>
               ) : (
                 <>
                   <Sparkles className="h-4 w-4" />
-                  {t('ugcStudio.generate') || 'Generate UGC Ad'} ({UGC_COST} {t('ugcStudio.credits') || 'credits'})
+                  {t('ugcStudio.generate')} ({UGC_COST} {t('ugcStudio.credits')})
                 </>
               )}
             </button>
@@ -401,7 +401,7 @@ export function UgcAdBuilder() {
       {step === 'error' && (
         <div role="alert" className="flex items-center gap-2 rounded-xl bg-danger/10 px-4 py-3 text-sm text-danger">
           <AlertCircle className="h-4 w-4 shrink-0" />
-          <span>{t('ugcStudio.errorPrefix') || 'Error'}: {error}</span>
+          <span>{t('ugcStudio.errorPrefix')}: {error}</span>
         </div>
       )}
 
@@ -409,7 +409,7 @@ export function UgcAdBuilder() {
       {isLoading && (
         <div role="status" className="flex items-center gap-3 rounded-xl border border-line bg-surface px-4 py-6 text-sm text-fg-faint">
           <Loader2 className="h-5 w-5 animate-spin" />
-          <span>{t('ugcStudio.loadingMessage') || 'Generating your UGC ad script... this can take up to 60 seconds.'}</span>
+          <span>{t('ugcStudio.loadingMessage')}</span>
         </div>
       )}
 
@@ -420,10 +420,10 @@ export function UgcAdBuilder() {
             <Video className="h-6 w-6" style={{ color: 'var(--color-brand-accent)' }} />
           </div>
           <p className="mt-3 text-sm font-medium text-fg">
-            {t('ugcStudio.emptyTitle') || 'Your UGC ad will appear here'}
+            {t('ugcStudio.emptyTitle')}
           </p>
           <p className="mt-1 text-xs text-fg-faint">
-            {t('ugcStudio.emptyDesc') || 'Fill in the product details above and click Generate to create a hook-first UGC script.'}
+            {t('ugcStudio.emptyDesc')}
           </p>
         </div>
       )}
@@ -441,16 +441,16 @@ export function UgcAdBuilder() {
                 <div className="flex items-center gap-2">
                   <Zap className="h-4 w-4" style={{ color: 'var(--color-brand-accent)' }} />
                   <h3 className="text-sm font-bold text-fg">
-                    {t('ugcStudio.hook') || 'Hook (first 3 seconds)'}
+                    {t('ugcStudio.hook')}
                   </h3>
                 </div>
                 <button
                   onClick={() => handleCopy('hook', result.hookText)}
                   className="flex items-center gap-1 rounded-lg px-2 py-1 text-xs text-fg-faint hover:bg-hover hover:text-fg"
-                  aria-label={t('ugcStudio.copyHook') || 'Copy hook'}
+                  aria-label={t('ugcStudio.copyHook')}
                 >
                   {copied === 'hook' ? <CheckCircle2 className="h-3.5 w-3.5 text-success" /> : <Copy className="h-3.5 w-3.5" />}
-                  {copied === 'hook' ? (t('common.copied') || 'Copied') : (t('common.copy') || 'Copy')}
+                  {copied === 'hook' ? t('common.copied') : t('common.copy')}
                 </button>
               </div>
               <p className="mt-2 text-base font-semibold text-fg">&ldquo;{result.hookText}&rdquo;</p>
@@ -463,10 +463,10 @@ export function UgcAdBuilder() {
             className="rounded-2xl border border-line bg-surface p-4 sm:p-5"
           >
             <h3 className="text-sm font-bold text-fg">
-              {t('ugcStudio.sceneBreakdown') || 'Scene-by-scene breakdown'}
+              {t('ugcStudio.sceneBreakdown')}
             </h3>
             <p className="mt-0.5 text-xs text-fg-faint">
-              {result.scenes.length} {t('ugcStudio.scenes') || 'scenes'} · {result.estimatedDurationSec}s · {result.platform}
+              {result.scenes.length} {t('ugcStudio.scenes')} · {result.estimatedDurationSec}s · {result.platform}
             </p>
             <ol className="mt-4 space-y-3">
               {result.scenes.map((scene) => (
@@ -489,19 +489,19 @@ export function UgcAdBuilder() {
                   <div className="mt-2 grid gap-1.5 text-xs">
                     {scene.textOverlay && (
                       <div className="flex gap-1.5">
-                        <span className="font-medium text-fg-faint">{t('ugcStudio.textOverlay') || 'Text'}:</span>
+                        <span className="font-medium text-fg-faint">{t('ugcStudio.textOverlay')}:</span>
                         <span className="text-fg">{scene.textOverlay}</span>
                       </div>
                     )}
                     {scene.voiceover && (
                       <div className="flex gap-1.5">
-                        <span className="font-medium text-fg-faint">{t('ugcStudio.voiceover') || 'VO'}:</span>
+                        <span className="font-medium text-fg-faint">{t('ugcStudio.voiceover')}:</span>
                         <span className="text-fg">{scene.voiceover}</span>
                       </div>
                     )}
                     {scene.bRoll && (
                       <div className="flex gap-1.5">
-                        <span className="font-medium text-fg-faint">{t('ugcStudio.bRoll') || 'B-roll'}:</span>
+                        <span className="font-medium text-fg-faint">{t('ugcStudio.bRoll')}:</span>
                         <span className="text-fg">{scene.bRoll}</span>
                       </div>
                     )}
@@ -519,15 +519,15 @@ export function UgcAdBuilder() {
             >
               <div className="flex items-center justify-between gap-2">
                 <h3 className="text-sm font-bold text-fg">
-                  {t('ugcStudio.fullScript') || 'Full script'}
+                  {t('ugcStudio.fullScript')}
                 </h3>
                 <button
                   onClick={() => handleCopy('script', result.scriptText)}
                   className="flex items-center gap-1 rounded-lg px-2 py-1 text-xs text-fg-faint hover:bg-hover hover:text-fg"
-                  aria-label={t('ugcStudio.copyScript') || 'Copy script'}
+                  aria-label={t('ugcStudio.copyScript')}
                 >
                   {copied === 'script' ? <CheckCircle2 className="h-3.5 w-3.5 text-success" /> : <Copy className="h-3.5 w-3.5" />}
-                  {copied === 'script' ? (t('common.copied') || 'Copied') : (t('common.copy') || 'Copy')}
+                  {copied === 'script' ? t('common.copied') : t('common.copy')}
                 </button>
               </div>
               <p className="mt-2 whitespace-pre-wrap text-sm text-fg">{result.scriptText}</p>
@@ -541,15 +541,15 @@ export function UgcAdBuilder() {
           >
             <div className="flex items-center justify-between gap-2">
               <h3 className="text-sm font-bold text-fg">
-                {t('ugcStudio.captionHashtags') || 'Caption & hashtags'}
+                {t('ugcStudio.captionHashtags')}
               </h3>
               <button
                 onClick={() => handleCopy('caption', `${result.captionText}\n\n${result.hashtags.map((h) => `#${h}`).join(' ')}`)}
                 className="flex items-center gap-1 rounded-lg px-2 py-1 text-xs text-fg-faint hover:bg-hover hover:text-fg"
-                aria-label={t('ugcStudio.copyCaption') || 'Copy caption'}
+                aria-label={t('ugcStudio.copyCaption')}
               >
                 {copied === 'caption' ? <CheckCircle2 className="h-3.5 w-3.5 text-success" /> : <Copy className="h-3.5 w-3.5" />}
-                {copied === 'caption' ? (t('common.copied') || 'Copied') : (t('common.copy') || 'Copy')}
+                {copied === 'caption' ? t('common.copied') : t('common.copy')}
               </button>
             </div>
             {result.captionText && (
@@ -577,7 +577,7 @@ export function UgcAdBuilder() {
               className="rounded-2xl border border-line bg-surface p-4 sm:p-5"
             >
               <h3 className="text-sm font-bold text-fg">
-                {t('ugcStudio.callToAction') || 'Call to action'}
+                {t('ugcStudio.callToAction')}
               </h3>
               <p className="mt-2 text-sm text-fg">{result.callToAction}</p>
             </section>
@@ -593,7 +593,7 @@ export function UgcAdBuilder() {
                 <div className="flex items-center gap-2">
                   <Video className="h-4 w-4 text-fg-faint" />
                   <h3 className="text-sm font-bold text-fg">
-                    {t('ugcStudio.visualNotes') || 'Visual notes'}
+                    {t('ugcStudio.visualNotes')}
                   </h3>
                 </div>
                 <p className="mt-2 text-sm text-fg-faint">{result.visualNotes}</p>
@@ -607,7 +607,7 @@ export function UgcAdBuilder() {
                 <div className="flex items-center gap-2">
                   <Music2 className="h-4 w-4 text-fg-faint" />
                   <h3 className="text-sm font-bold text-fg">
-                    {t('ugcStudio.audioNotes') || 'Audio notes'}
+                    {t('ugcStudio.audioNotes')}
                   </h3>
                 </div>
                 <p className="mt-2 text-sm text-fg-faint">{result.audioNotes}</p>

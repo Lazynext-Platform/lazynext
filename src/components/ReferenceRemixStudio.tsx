@@ -100,7 +100,7 @@ export function ReferenceRemixStudio() {
       <div className="space-y-4">
         <div>
           <label htmlFor="rrReferenceUrl" className="block text-sm font-medium mb-1">{t('referenceRemix.referenceUrl')}</label>
-          <input id="rrReferenceUrl" type="url" value={referenceUrl} onChange={(e) => setReferenceUrl(e.target.value)} placeholder="https://..." className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
+          <input id="rrReferenceUrl" type="url" value={referenceUrl} onChange={(e) => setReferenceUrl(e.target.value)} placeholder={t('referenceRemix.phReferenceUrl')} className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
         </div>
 
         <div>
@@ -115,11 +115,11 @@ export function ReferenceRemixStudio() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
             <label htmlFor="rrTargetProduct" className="block text-sm font-medium mb-1">{t('referenceRemix.targetProduct')}</label>
-            <input id="rrTargetProduct" type="text" value={targetProduct} onChange={(e) => setTargetProduct(e.target.value)} placeholder="e.g., Glow Serum" className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
+            <input id="rrTargetProduct" type="text" value={targetProduct} onChange={(e) => setTargetProduct(e.target.value)} placeholder={t('referenceRemix.phTargetProduct')} className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
           </div>
           <div>
             <label htmlFor="rrTargetAudience" className="block text-sm font-medium mb-1">{t('referenceRemix.targetAudience')}</label>
-            <input id="rrTargetAudience" type="text" value={targetAudience} onChange={(e) => setTargetAudience(e.target.value)} placeholder="e.g., Women 25-40" className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
+            <input id="rrTargetAudience" type="text" value={targetAudience} onChange={(e) => setTargetAudience(e.target.value)} placeholder={t('referenceRemix.phTargetAudience')} className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
           </div>
         </div>
 
@@ -135,12 +135,12 @@ export function ReferenceRemixStudio() {
 
         <div>
           <label htmlFor="rrPreserveElements" className="block text-sm font-medium mb-1">{t('referenceRemix.preserveElements')}</label>
-          <input id="rrPreserveElements" type="text" value={preserveElements} onChange={(e) => setPreserveElements(e.target.value)} placeholder="hook, pacing, visual style" className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
+          <input id="rrPreserveElements" type="text" value={preserveElements} onChange={(e) => setPreserveElements(e.target.value)} placeholder={t('referenceRemix.phPreserveElements')} className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
         </div>
 
         <div>
           <label htmlFor="rrChangeElements" className="block text-sm font-medium mb-1">{t('referenceRemix.changeElements')}</label>
-          <input id="rrChangeElements" type="text" value={changeElements} onChange={(e) => setChangeElements(e.target.value)} placeholder="product, audience, cta" className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
+          <input id="rrChangeElements" type="text" value={changeElements} onChange={(e) => setChangeElements(e.target.value)} placeholder={t('referenceRemix.phChangeElements')} className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
         </div>
 
         <button onClick={analyze} disabled={loading || !referenceUrl.trim()} className="rounded-lg bg-brand-accent px-4 py-2 text-sm font-medium text-white hover:opacity-90 disabled:opacity-50 flex items-center gap-2">

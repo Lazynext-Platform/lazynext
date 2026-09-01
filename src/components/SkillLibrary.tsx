@@ -390,7 +390,7 @@ export function SkillLibrary() {
                         type="text"
                         value={chainInputs['product'] || ''}
                         onChange={(e) => setChainInputs((p) => ({ ...p, product: e.target.value }))}
-                        placeholder="product"
+                        placeholder={tt('skills.phProduct', 'product')}
                         className="w-full rounded-lg border border-line bg-app px-3 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-[#00b2fc]"
                         aria-label="product"
                       />
@@ -398,7 +398,7 @@ export function SkillLibrary() {
                         type="text"
                         value={chainInputs['audience'] || ''}
                         onChange={(e) => setChainInputs((p) => ({ ...p, audience: e.target.value }))}
-                        placeholder="audience"
+                        placeholder={tt('skills.phAudience', 'audience')}
                         className="w-full rounded-lg border border-line bg-app px-3 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-[#00b2fc]"
                         aria-label="audience"
                       />
@@ -406,7 +406,7 @@ export function SkillLibrary() {
                         type="text"
                         value={chainInputs['platform'] || ''}
                         onChange={(e) => setChainInputs((p) => ({ ...p, platform: e.target.value }))}
-                        placeholder="platform"
+                        placeholder={tt('skills.phPlatform', 'platform')}
                         className="w-full rounded-lg border border-line bg-app px-3 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-[#00b2fc]"
                         aria-label="platform"
                       />

@@ -77,7 +77,7 @@ export function FeatureSearch({ placeholder, showShortcut = true, onSelect, clas
     setSelectedIndex(0);
   }, [results]);
 
-  const defaultPlaceholder = placeholder || t('nav.searchPlaceholder') || 'Search features... (⌘K)';
+  const defaultPlaceholder = placeholder || t('nav.searchPlaceholder');
 
   return (
     <div className={`relative ${className}`}>
@@ -96,7 +96,7 @@ export function FeatureSearch({ placeholder, showShortcut = true, onSelect, clas
           onKeyDown={handleKeyDown}
           placeholder={defaultPlaceholder}
           className="w-full rounded-lg border border-border bg-bg-card pl-9 pr-9 py-2 text-sm text-fg placeholder:text-fg-muted focus:outline-none focus:ring-2 focus:ring-brand-accent"
-          aria-label={t('nav.search') || 'Search features'}
+          aria-label={t('nav.search')}
           role="combobox"
           aria-expanded={isOpen}
           aria-controls="feature-search-results"
@@ -149,7 +149,7 @@ export function FeatureSearch({ placeholder, showShortcut = true, onSelect, clas
 
       {isOpen && query && results.length === 0 && (
         <div className="absolute top-full left-0 right-0 mt-1 rounded-lg border border-border bg-bg-card shadow-lg z-50 px-3 py-4 text-sm text-fg-muted text-center">
-          {t('nav.noResults') || 'No features found'}
+          {t('nav.noResults')}
         </div>
       )}
     </div>

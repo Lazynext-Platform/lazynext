@@ -305,7 +305,7 @@ export default function CreativeSentimentJourneyMapperPage() {
                         {tr.transitionQuality}
                       </span>
                     </div>
-                    <p className="text-xs text-fg-muted">Beat {tr.fromBeat} → Beat {tr.toBeat}</p>
+                    <p className="text-xs text-fg-muted">{t('creativeSentimentJourneyMapper.beatFromTo', { from: tr.fromBeat, to: tr.toBeat })}</p>
                   </div>
                 ))}
               </div>

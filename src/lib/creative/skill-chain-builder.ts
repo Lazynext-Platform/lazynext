@@ -31,6 +31,7 @@ import {
   estimateChainCredits,
   executeChain,
   executeSkill,
+  ChainStepError,
 } from '@/lib/creative/skill-library';
 
 // ── Credit cost ──
@@ -417,10 +418,13 @@ export async function executeEnhancedChain(
         : await executeSkill(step.skillId, stepInputs, planTier);
     } catch (e) {
       const msg = e instanceof Error ? e.message : String(e);
-      const err = new Error(`enhanced_chain_step_failed:${chain.id}:step${stepIndex}:${step.skillId}:${msg}`);
-      (err as any).stepIndex = stepIndex;
-      (err as any).skillId = step.skillId;
-      throw err;
+      throw new ChainStepError(
+        `enhanced_chain_step_failed:${chain.id}:step${stepIndex}:${step.skillId}:${msg}`,
+        stepIndex,
+        step.skillId,
+        [],
+        0,
+      );
     }
 
     totalCredits += result.creditsUsed;

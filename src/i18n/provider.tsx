@@ -4,8 +4,8 @@ import { createContext, useCallback, useContext, useEffect, useState } from 'rea
 import { LOCALES, RTL_LOCALES, type Locale, messages, appMessages, loadLocaleMessages } from './messages';
 
  
-function get(obj: any, path: string): any {
-  return path.split('.').reduce((o, k) => (o == null ? undefined : o[k]), obj);
+function get(obj: Record<string, unknown> | undefined, path: string): unknown {
+  return path.split('.').reduce<unknown>((o, k) => (o == null ? undefined : (o as Record<string, unknown>)[k]), obj);
 }
 
 interface Ctx {
@@ -88,11 +88,12 @@ export function I18nProvider({ children, initialLocale }: { children: React.Reac
 
   const t = useCallback(
     (key: string, vars?: Record<string, string | number>) => {
-      let s = get(localeMessages, key) ?? get(messages.en, key) ?? key;
-      if (typeof s === 'string' && vars) {
+      const raw = get(localeMessages, key) ?? get(messages.en, key) ?? key;
+      let s: string = typeof raw === 'string' ? raw : key;
+      if (vars) {
         for (const [k, v] of Object.entries(vars)) s = s.replace(`{${k}}`, String(v));
       }
-      return s as string;
+      return s;
     },
     [localeMessages],
   );

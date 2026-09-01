@@ -65,7 +65,7 @@ export function CompetitorIntelDashboard() {
       <div className="space-y-4">
         <div>
           <label htmlFor="market" className="block text-sm font-medium mb-1">{t('competitorIntel.market')}</label>
-          <input id="market" type="text" value={market} onChange={(e) => setMarket(e.target.value)} placeholder="e.g., DTC skincare" className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
+          <input id="market" type="text" value={market} onChange={(e) => setMarket(e.target.value)} placeholder={t('competitorIntel.phMarket')} className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
         </div>
 
         <div>
@@ -73,7 +73,7 @@ export function CompetitorIntelDashboard() {
           <div className="space-y-2">
             {competitorUrls.map((url, i) => (
               <div key={i} className="flex gap-2">
-                <input type="url" value={url} onChange={(e) => updateUrl(i, e.target.value)} placeholder="https://competitor.com" className="flex-1 rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
+                <input type="url" value={url} onChange={(e) => updateUrl(i, e.target.value)} placeholder={t('competitorIntel.phCompetitorUrl')} className="flex-1 rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
                 {competitorUrls.length > 1 && <button onClick={() => removeUrl(i)} className="text-fg-muted hover:text-danger"><X className="w-4 h-4" /></button>}
               </div>
             ))}

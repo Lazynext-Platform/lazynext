@@ -109,18 +109,18 @@ export function MultiConceptStudio() {
       <div className="space-y-4">
         <div>
           <label htmlFor="mcProductOrBrand" className="block text-sm font-medium mb-1">{t('multiConcept.productOrBrand')}</label>
-          <input id="mcProductOrBrand" type="text" value={productOrBrand} onChange={(e) => setProductOrBrand(e.target.value)} placeholder="e.g., Glow Serum by Aura" className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
+          <input id="mcProductOrBrand" type="text" value={productOrBrand} onChange={(e) => setProductOrBrand(e.target.value)} placeholder={t('multiConcept.phProductOrBrand')} className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
         </div>
 
         <div>
           <label htmlFor="mcProductUrl" className="block text-sm font-medium mb-1">{t('multiConcept.productUrl')}</label>
-          <input id="mcProductUrl" type="url" value={productUrl} onChange={(e) => setProductUrl(e.target.value)} placeholder="https://..." className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
+          <input id="mcProductUrl" type="url" value={productUrl} onChange={(e) => setProductUrl(e.target.value)} placeholder={t('multiConcept.phProductUrl')} className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <div>
             <label htmlFor="mcAudience" className="block text-sm font-medium mb-1">{t('multiConcept.audience')}</label>
-            <input id="mcAudience" type="text" value={audience} onChange={(e) => setAudience(e.target.value)} placeholder="e.g., Women 25-40" className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
+            <input id="mcAudience" type="text" value={audience} onChange={(e) => setAudience(e.target.value)} placeholder={t('multiConcept.phAudience')} className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
           </div>
           <div>
             <label htmlFor="mcPlatform" className="block text-sm font-medium mb-1">{t('multiConcept.platform')}</label>
@@ -140,15 +140,15 @@ export function MultiConceptStudio() {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <div>
             <label htmlFor="mcBrandName" className="block text-sm font-medium mb-1">{t('multiConcept.brandName')}</label>
-            <input id="mcBrandName" type="text" value={brandName} onChange={(e) => setBrandName(e.target.value)} placeholder="e.g., Aura" className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
+            <input id="mcBrandName" type="text" value={brandName} onChange={(e) => setBrandName(e.target.value)} placeholder={t('multiConcept.phBrandName')} className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
           </div>
           <div>
             <label htmlFor="mcBrandValues" className="block text-sm font-medium mb-1">{t('multiConcept.brandValues')}</label>
-            <input id="mcBrandValues" type="text" value={brandValues} onChange={(e) => setBrandValues(e.target.value)} placeholder="clean, effective, affordable" className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
+            <input id="mcBrandValues" type="text" value={brandValues} onChange={(e) => setBrandValues(e.target.value)} placeholder={t('multiConcept.phBrandValues')} className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
           </div>
           <div>
             <label htmlFor="mcBrandTone" className="block text-sm font-medium mb-1">{t('multiConcept.brandTone')}</label>
-            <input id="mcBrandTone" type="text" value={brandTone} onChange={(e) => setBrandTone(e.target.value)} placeholder="e.g., friendly, expert" className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
+            <input id="mcBrandTone" type="text" value={brandTone} onChange={(e) => setBrandTone(e.target.value)} placeholder={t('multiConcept.phBrandTone')} className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
           </div>
         </div>
 

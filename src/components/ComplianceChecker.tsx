@@ -113,7 +113,7 @@ export function ComplianceChecker() {
 
         <div>
           <label htmlFor="claims" className="block text-sm font-medium mb-1">{t('compliance.productClaims')}</label>
-          <input id="claims" type="text" value={productClaims} onChange={(e) => setProductClaims(e.target.value)} placeholder="best product, #1 rated, guaranteed results" className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
+          <input id="claims" type="text" value={productClaims} onChange={(e) => setProductClaims(e.target.value)} placeholder={t('compliance.phProductClaims')} className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
         </div>
 
         <button onClick={check} disabled={loading || !content.trim() || platforms.length === 0} className="rounded-lg bg-brand-accent px-4 py-2 text-sm font-medium text-white hover:opacity-90 disabled:opacity-50 flex items-center gap-2">

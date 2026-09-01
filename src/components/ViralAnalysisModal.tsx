@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useCallback } from 'react';
+import { useI18n } from '@/i18n/provider';
 import {
   Flame, X, Loader2, AlertCircle, Zap, Heart, Gauge, TrendingUp,
   Repeat, MessageCircle, Share2, Bookmark, Brain, Lightbulb, Sparkles,
@@ -96,6 +97,7 @@ interface ViralAnalysisModalProps {
 const COST = 6;
 
 export function ViralAnalysisModal({ open, onClose }: ViralAnalysisModalProps) {
+  const { t } = useI18n();
   const [url, setUrl] = useState('');
   const [transcript, setTranscript] = useState('');
   const [loading, setLoading] = useState(false);
@@ -179,7 +181,7 @@ export function ViralAnalysisModal({ open, onClose }: ViralAnalysisModalProps) {
             type="url"
             value={url}
             onChange={(e) => setUrl(e.target.value)}
-            placeholder="https://www.tiktok.com/@user/video/..."
+            placeholder={t('viralAnalysis.phUrl')}
             aria-label="Content URL to analyze"
             className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
             disabled={loading}
@@ -187,7 +189,7 @@ export function ViralAnalysisModal({ open, onClose }: ViralAnalysisModalProps) {
           <textarea
             value={transcript}
             onChange={(e) => setTranscript(e.target.value)}
-            placeholder="Optional transcript (improves analysis accuracy)"
+            placeholder={t('viralAnalysis.phTranscript')}
             aria-label="Optional transcript"
             rows={3}
             className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"

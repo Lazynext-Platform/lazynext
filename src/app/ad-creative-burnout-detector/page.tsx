@@ -336,7 +336,7 @@ export default function AdCreativeBurnoutDetectorPage() {
                       <span className="text-xs font-medium text-fg">{d.metric.replace(/_/g, ' ')}</span>
                       <span className="text-xs font-bold text-danger">-{d.predictedDecline}%</span>
                     </div>
-                    <p className="text-xs text-fg-muted">Trend: {d.currentTrend} · Timeframe: {d.timeframe}</p>
+                    <p className="text-xs text-fg-muted">{t('adCreativeBurnoutDetector.trend')}: {d.currentTrend} · {t('adCreativeBurnoutDetector.timeframe')}: {d.timeframe}</p>
                   </div>
                 ))}
               </div>

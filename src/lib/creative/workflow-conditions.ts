@@ -203,7 +203,7 @@ export function deserializeWorkflow(json: string): WorkflowDefinition {
       return { stages: [], flags: {} };
     }
     return {
-      stages: parsed.stages.filter((s: any) => s && typeof s.stage === 'string'),
+      stages: parsed.stages.filter((s: unknown) => s != null && typeof (s as Record<string, unknown>).stage === 'string'),
       flags: parsed.flags || {},
     };
   } catch {

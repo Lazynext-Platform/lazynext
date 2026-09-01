@@ -174,12 +174,12 @@ export function GoogleSafetyDashboard() {
 
         <div>
           <label htmlFor="gsAllowedActions" className="block text-sm font-medium mb-1">{t('googleSafety.allowedActions')}</label>
-          <input id="gsAllowedActions" type="text" value={allowedActions} onChange={(e) => setAllowedActions(e.target.value)} placeholder="create_campaign, update_budget, pause_campaign" className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={saving} />
+          <input id="gsAllowedActions" type="text" value={allowedActions} onChange={(e) => setAllowedActions(e.target.value)} placeholder={t('googleSafety.phAllowedActions')} className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={saving} />
         </div>
 
         <div>
           <label htmlFor="gsBlockedActions" className="block text-sm font-medium mb-1">{t('googleSafety.blockedActions')}</label>
-          <input id="gsBlockedActions" type="text" value={blockedActions} onChange={(e) => setBlockedActions(e.target.value)} placeholder="delete_campaign, delete_adgroup, delete_ad, delete_budget" className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={saving} />
+          <input id="gsBlockedActions" type="text" value={blockedActions} onChange={(e) => setBlockedActions(e.target.value)} placeholder={t('googleSafety.phBlockedActions')} className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={saving} />
         </div>
 
         <button onClick={save} disabled={saving} className="rounded-lg bg-brand-accent px-4 py-2 text-sm font-medium text-white hover:opacity-90 disabled:opacity-50 flex items-center gap-2">

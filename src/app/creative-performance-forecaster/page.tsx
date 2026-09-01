@@ -320,22 +320,22 @@ export default function CreativePerformanceForecasterPage() {
                 <div className="rounded-lg border border-border bg-bg-secondary px-3 py-2">
                   <div className="text-xs text-fg-muted">{t('creativePerformanceForecaster.predictedCTR')}</div>
                   <div className="text-sm font-medium">{formatRange(result.forecast.predictedCTR)}%</div>
-                  <div className="text-xs text-fg-muted">mid: {result.forecast.predictedCTR.mid}%</div>
+                  <div className="text-xs text-fg-muted">{t('creativePerformanceForecaster.mid')}: {result.forecast.predictedCTR.mid}%</div>
                 </div>
                 <div className="rounded-lg border border-border bg-bg-secondary px-3 py-2">
                   <div className="text-xs text-fg-muted">{t('creativePerformanceForecaster.predictedEngagement')}</div>
                   <div className="text-sm font-medium">{formatRange(result.forecast.predictedEngagement)}%</div>
-                  <div className="text-xs text-fg-muted">mid: {result.forecast.predictedEngagement.mid}%</div>
+                  <div className="text-xs text-fg-muted">{t('creativePerformanceForecaster.mid')}: {result.forecast.predictedEngagement.mid}%</div>
                 </div>
                 <div className="rounded-lg border border-border bg-bg-secondary px-3 py-2">
                   <div className="text-xs text-fg-muted">{t('creativePerformanceForecaster.predictedConversion')}</div>
                   <div className="text-sm font-medium">{formatRange(result.forecast.predictedConversion)}%</div>
-                  <div className="text-xs text-fg-muted">mid: {result.forecast.predictedConversion.mid}%</div>
+                  <div className="text-xs text-fg-muted">{t('creativePerformanceForecaster.mid')}: {result.forecast.predictedConversion.mid}%</div>
                 </div>
                 <div className="rounded-lg border border-border bg-bg-secondary px-3 py-2">
                   <div className="text-xs text-fg-muted">{t('creativePerformanceForecaster.predictedReach')}</div>
                   <div className="text-sm font-medium">{formatRange(result.forecast.predictedReach)}K</div>
-                  <div className="text-xs text-fg-muted">mid: {result.forecast.predictedReach.mid}K</div>
+                  <div className="text-xs text-fg-muted">{t('creativePerformanceForecaster.mid')}: {result.forecast.predictedReach.mid}K</div>
                 </div>
               </div>
             </div>

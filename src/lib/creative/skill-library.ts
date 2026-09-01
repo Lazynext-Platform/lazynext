@@ -21,6 +21,21 @@ import type { PlanTier } from '@/lib/plan-tier';
 
 // ── Types ──
 
+export class ChainStepError extends Error {
+  stepIndex: number;
+  skillId: string;
+  completedResults: unknown[];
+  remainingSteps: number;
+  constructor(message: string, stepIndex: number, skillId: string, completedResults: unknown[], remainingSteps: number) {
+    super(message);
+    this.name = 'ChainStepError';
+    this.stepIndex = stepIndex;
+    this.skillId = skillId;
+    this.completedResults = completedResults;
+    this.remainingSteps = remainingSteps;
+  }
+}
+
 export type SkillCategory =
   | 'hook'
   | 'angle'
@@ -896,12 +911,13 @@ export async function executeChain(
       // re-throw with context about which step failed, so the caller can
       // handle partial results and refund credits for unexecuted steps.
       const msg = e instanceof Error ? e.message : String(e);
-      const err = new Error(`chain_step_failed:${chainId}:step${stepIndex}:${step.skillId}:${msg}`);
-      (err as any).stepIndex = stepIndex;
-      (err as any).skillId = step.skillId;
-      (err as any).completedResults = results;
-      (err as any).remainingSteps = chain.steps.length - stepIndex - 1;
-      throw err;
+      throw new ChainStepError(
+        `chain_step_failed:${chainId}:step${stepIndex}:${step.skillId}:${msg}`,
+        stepIndex,
+        step.skillId,
+        results,
+        chain.steps.length - stepIndex - 1,
+      );
     }
   }
 

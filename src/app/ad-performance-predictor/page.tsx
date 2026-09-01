@@ -415,7 +415,7 @@ export default function AdPerformancePredictorPage() {
                         >
                           {f.impact}
                         </span>
-                        <span className="text-xs text-fg-muted">weight: {f.weight}</span>
+                        <span className="text-xs text-fg-muted">{t('adPerformancePredictor.weight')}: {f.weight}</span>
                       </div>
                       <p className="text-xs text-fg-muted">{f.detail}</p>
                     </div>

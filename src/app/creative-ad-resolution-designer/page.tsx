@@ -264,7 +264,7 @@ export default function CreativeAdResolutionDesignerPage() {
                 <p className="text-xs text-fg-muted">{result.design.structure.description}</p>
                 <div className="space-y-1">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs text-fg-muted">narrative completion</span>
+                    <span className="text-xs text-fg-muted">{t('creativeAdResolutionDesigner.narrativeCompletion')}</span>
                     <span className={`text-xs font-bold ${scoreColor(result.design.structure.narrativeCompletion)}`}>{result.design.structure.narrativeCompletion}/100</span>
                   </div>
                   <div className="h-1.5 rounded-full bg-bg-secondary overflow-hidden">
@@ -292,7 +292,7 @@ export default function CreativeAdResolutionDesignerPage() {
                 <p className="text-xs text-fg-muted">{result.design.closure.viewerFeeling}</p>
                 <div className="space-y-1">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs text-fg-muted">emotional depth</span>
+                    <span className="text-xs text-fg-muted">{t('creativeAdResolutionDesigner.emotionalDepth')}</span>
                     <span className={`text-xs font-bold ${scoreColor(result.design.closure.emotionalDepth)}`}>{result.design.closure.emotionalDepth}/100</span>
                   </div>
                   <div className="h-1.5 rounded-full bg-bg-secondary overflow-hidden">
@@ -320,7 +320,7 @@ export default function CreativeAdResolutionDesignerPage() {
                 <p className="text-xs text-fg-muted italic">&ldquo;{result.design.ctaBridge.transitionPhrase}&rdquo;</p>
                 <div className="space-y-1">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs text-fg-muted">naturalness</span>
+                    <span className="text-xs text-fg-muted">{t('creativeAdResolutionDesigner.naturalness')}</span>
                     <span className={`text-xs font-bold ${scoreColor(result.design.ctaBridge.naturalness)}`}>{result.design.ctaBridge.naturalness}/100</span>
                   </div>
                   <div className="h-1.5 rounded-full bg-bg-secondary overflow-hidden">

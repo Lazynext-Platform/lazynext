@@ -122,7 +122,7 @@ export function MediaServiceBoundary() {
             <label htmlFor="ms-url" className="block text-xs font-medium mb-1">{t('mediaService.mediaUrl')}</label>
             <input
               id="ms-url" type="url" value={inputUrl} onChange={(e) => setInputUrl(e.target.value)}
-              placeholder="https://example.com/media.mp4"
+              placeholder={t('mediaService.phMediaUrl')}
               className="w-full rounded-lg border border-border bg-bg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
               disabled={loading}
               aria-label={t('mediaService.mediaUrl')}

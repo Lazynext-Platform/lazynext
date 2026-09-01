@@ -256,7 +256,7 @@ export function ComplianceRulesSection() {
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="e.g. No health claims without disclaimer"
+              placeholder={t('compliance.phRuleTitle')}
               className="mt-1 w-full rounded-lg border border-line bg-surface px-3 py-2 text-sm text-fg"
             />
           </label>
@@ -265,7 +265,7 @@ export function ComplianceRulesSection() {
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="What this rule checks..."
+              placeholder={t('compliance.phRuleDescription')}
               rows={2}
               className="mt-1 w-full rounded-lg border border-line bg-surface px-3 py-2 text-sm text-fg"
             />
@@ -276,7 +276,7 @@ export function ComplianceRulesSection() {
               type="text"
               value={recommendation}
               onChange={(e) => setRecommendation(e.target.value)}
-              placeholder="How to fix..."
+              placeholder={t('compliance.phRecommendation')}
               className="mt-1 w-full rounded-lg border border-line bg-surface px-3 py-2 text-sm text-fg"
             />
           </label>
@@ -286,7 +286,7 @@ export function ComplianceRulesSection() {
               type="text"
               value={keywords}
               onChange={(e) => setKeywords(e.target.value)}
-              placeholder="cure, heal, guaranteed..."
+              placeholder={t('compliance.phKeywords')}
               className="mt-1 w-full rounded-lg border border-line bg-surface px-3 py-2 text-sm text-fg"
             />
           </label>

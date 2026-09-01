@@ -304,12 +304,12 @@ export default function AdCreativeSensoryEnhancerPage() {
                     <span className="text-xs font-medium text-fg">{enh.sense}</span>
                     <div className="flex items-start gap-2 flex-wrap">
                       <div className="flex-1 min-w-0">
-                        <p className="text-xs font-medium text-fg-muted mb-1">before</p>
+                        <p className="text-xs font-medium text-fg-muted mb-1">{t('adCreativeSensoryEnhancer.before')}</p>
                         <p className="text-xs text-fg-muted line-through">{enh.before}</p>
                       </div>
                       <ArrowRight className="w-4 h-4 text-brand-accent flex-shrink-0 mt-5" />
                       <div className="flex-1 min-w-0">
-                        <p className="text-xs font-medium text-fg-muted mb-1">after</p>
+                        <p className="text-xs font-medium text-fg-muted mb-1">{t('adCreativeSensoryEnhancer.after')}</p>
                         <p className="text-xs text-fg">{enh.after}</p>
                       </div>
                     </div>

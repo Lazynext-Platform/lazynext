@@ -174,12 +174,12 @@ export function MetaSafetyDashboard() {
 
         <div>
           <label htmlFor="msAllowedActions" className="block text-sm font-medium mb-1">{t('metaSafety.allowedActions')}</label>
-          <input id="msAllowedActions" type="text" value={allowedActions} onChange={(e) => setAllowedActions(e.target.value)} placeholder="update_budget, pause_ad, create_variant" className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={saving} />
+          <input id="msAllowedActions" type="text" value={allowedActions} onChange={(e) => setAllowedActions(e.target.value)} placeholder={t('metaSafety.phAllowedActions')} className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={saving} />
         </div>
 
         <div>
           <label htmlFor="msBlockedActions" className="block text-sm font-medium mb-1">{t('metaSafety.blockedActions')}</label>
-          <input id="msBlockedActions" type="text" value={blockedActions} onChange={(e) => setBlockedActions(e.target.value)} placeholder="delete_campaign, change_targeting" className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={saving} />
+          <input id="msBlockedActions" type="text" value={blockedActions} onChange={(e) => setBlockedActions(e.target.value)} placeholder={t('metaSafety.phBlockedActions')} className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={saving} />
         </div>
 
         <button onClick={save} disabled={saving} className="rounded-lg bg-brand-accent px-4 py-2 text-sm font-medium text-white hover:opacity-90 disabled:opacity-50 flex items-center gap-2">

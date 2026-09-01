@@ -220,7 +220,7 @@ export function VariantMatrix() {
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="Q3 TikTok hook test"
+              placeholder={t('variantMatrix.phMatrixName')}
               className="w-full rounded-lg border border-border bg-bg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#00b2fc]"
               disabled={loading}
             />
@@ -234,7 +234,7 @@ export function VariantMatrix() {
                 value={hooksText}
                 onChange={(e) => setHooksText(e.target.value)}
                 rows={3}
-                placeholder="Stop scrolling..., Did you know..., The truth about..."
+                placeholder={t('variantMatrix.phHooks')}
                 className="w-full rounded-lg border border-border bg-bg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#00b2fc]"
                 disabled={loading}
               />
@@ -247,7 +247,7 @@ export function VariantMatrix() {
                 value={anglesText}
                 onChange={(e) => setAnglesText(e.target.value)}
                 rows={3}
-                placeholder="Pain point, Social proof, Aspiration"
+                placeholder={t('variantMatrix.phAngles')}
                 className="w-full rounded-lg border border-border bg-bg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#00b2fc]"
                 disabled={loading}
               />
@@ -289,7 +289,7 @@ export function VariantMatrix() {
                 type="text"
                 value={platformsText}
                 onChange={(e) => setPlatformsText(e.target.value)}
-                placeholder="tiktok, instagram, youtube"
+                placeholder={t('variantMatrix.phPlatforms')}
                 className="w-full rounded-lg border border-border bg-bg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#00b2fc]"
                 disabled={loading}
               />
@@ -302,7 +302,7 @@ export function VariantMatrix() {
                 type="text"
                 value={tonesText}
                 onChange={(e) => setTonesText(e.target.value)}
-                placeholder="energetic, calm, humorous"
+                placeholder={t('variantMatrix.phTones')}
                 className="w-full rounded-lg border border-border bg-bg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#00b2fc]"
                 disabled={loading}
               />
@@ -317,7 +317,7 @@ export function VariantMatrix() {
               type="text"
               value={ctasText}
               onChange={(e) => setCtasText(e.target.value)}
-              placeholder="Shop now, Learn more, Sign up"
+              placeholder={t('variantMatrix.phCtas')}
               className="w-full rounded-lg border border-border bg-bg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#00b2fc]"
               disabled={loading}
             />

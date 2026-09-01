@@ -503,7 +503,7 @@ export function PipelineOrchestrator({ initialPipelineId }: { initialPipelineId?
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="Summer Glow Campaign"
+                  placeholder={t('pipeline.phCampaignName')}
                   className="input-base"
                 />
               </Field>
@@ -513,7 +513,7 @@ export function PipelineOrchestrator({ initialPipelineId }: { initialPipelineId?
                   type="text"
                   value={productName}
                   onChange={(e) => setProductName(e.target.value)}
-                  placeholder="Glow Serum"
+                  placeholder={t('pipeline.phProductName')}
                   className="input-base"
                 />
               </Field>
@@ -522,7 +522,7 @@ export function PipelineOrchestrator({ initialPipelineId }: { initialPipelineId?
                   id="pl-desc"
                   value={productDescription}
                   onChange={(e) => setProductDescription(e.target.value)}
-                  placeholder="A vitamin-C brightening serum for dull skin…"
+                  placeholder={t('pipeline.phProductDescription')}
                   rows={3}
                   className="input-base resize-none"
                 />
@@ -533,7 +533,7 @@ export function PipelineOrchestrator({ initialPipelineId }: { initialPipelineId?
                   type="text"
                   value={brandName}
                   onChange={(e) => setBrandName(e.target.value)}
-                  placeholder="Lumière"
+                  placeholder={t('pipeline.phBrandName')}
                   className="input-base"
                 />
               </Field>
@@ -543,7 +543,7 @@ export function PipelineOrchestrator({ initialPipelineId }: { initialPipelineId?
                   type="text"
                   value={targetAudience}
                   onChange={(e) => setTargetAudience(e.target.value)}
-                  placeholder="Women 25-34, skincare enthusiasts"
+                  placeholder={t('pipeline.phTargetAudience')}
                   className="input-base"
                 />
               </Field>

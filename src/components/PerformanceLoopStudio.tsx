@@ -80,18 +80,18 @@ export function PerformanceLoopStudio() {
       <div className="space-y-4">
         <div>
           <label htmlFor="plProductName" className="block text-sm font-medium mb-1">{t('performanceLoop.productName')}</label>
-          <input id="plProductName" type="text" value={productName} onChange={(e) => setProductName(e.target.value)} placeholder="e.g., Glow Serum by Aura" className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
+          <input id="plProductName" type="text" value={productName} onChange={(e) => setProductName(e.target.value)} placeholder={t('performanceLoop.phProductName')} className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
         </div>
 
         <div>
           <label htmlFor="plProductUrl" className="block text-sm font-medium mb-1">{t('performanceLoop.productUrl')}</label>
-          <input id="plProductUrl" type="url" value={productUrl} onChange={(e) => setProductUrl(e.target.value)} placeholder="https://..." className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
+          <input id="plProductUrl" type="url" value={productUrl} onChange={(e) => setProductUrl(e.target.value)} placeholder={t('performanceLoop.phProductUrl')} className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
             <label htmlFor="plAudience" className="block text-sm font-medium mb-1">{t('performanceLoop.audience')}</label>
-            <input id="plAudience" type="text" value={audience} onChange={(e) => setAudience(e.target.value)} placeholder="e.g., Women 25-40" className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
+            <input id="plAudience" type="text" value={audience} onChange={(e) => setAudience(e.target.value)} placeholder={t('performanceLoop.phAudience')} className="w-full rounded-lg border border-border bg-bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" disabled={loading} />
           </div>
           <div>
             <label htmlFor="plPlatform" className="block text-sm font-medium mb-1">{t('performanceLoop.platform')}</label>

@@ -41,7 +41,7 @@ export function CategorizedAppGrid({ excludeSlugs }: CategorizedAppGridProps) {
       return [{
         ...NAV_CATEGORIES[0],
         id: 'search-results',
-        label: t('nav.searchResults') || 'Search Results',
+        label: t('nav.searchResults'),
         icon: 'Search',
         apps: excludeSlugs ? results.filter((a) => !excludeSlugs.has(a.slug)) : results,
       }];
@@ -85,7 +85,7 @@ export function CategorizedAppGrid({ excludeSlugs }: CategorizedAppGridProps) {
             }`}
           >
             <LayoutGrid className="w-3.5 h-3.5 inline mr-1" />
-            {t('nav.allCategories') || 'All'}
+            {t('nav.allCategories')}
           </button>
           {NAV_CATEGORIES.map((cat) => {
             const Icon = ICON_MAP[cat.icon] || LayoutGrid;
@@ -139,7 +139,7 @@ export function CategorizedAppGrid({ excludeSlugs }: CategorizedAppGridProps) {
 
       {filteredCategories.length === 0 && (
         <div className="text-center py-12 text-fg-muted text-sm">
-          {t('nav.noResults') || 'No features found'}
+          {t('nav.noResults')}
         </div>
       )}
     </div>
