@@ -255,14 +255,14 @@ export default function AdAudiencePainPointMapperPage() {
                     </div>
                     <div className="grid grid-cols-2 gap-2">
                       <div>
-                        <p className="text-xs text-fg-muted">{t('adAudiencePainPointMapper.frequency') || 'Frequency'}</p>
+                        <p className="text-xs text-fg-muted">{t('adAudiencePainPointMapper.frequency')}</p>
                         <div className="h-1.5 rounded-full bg-bg-secondary overflow-hidden mt-1">
                           <div className="h-full rounded-full bg-brand-accent" style={{ width: `${pp.frequency}%` }} />
                         </div>
                         <p className="text-xs text-fg-muted mt-0.5">{pp.frequency}/100</p>
                       </div>
                       <div>
-                        <p className="text-xs text-fg-muted">{t('adAudiencePainPointMapper.emotionalImpact') || 'Emotional impact'}</p>
+                        <p className="text-xs text-fg-muted">{t('adAudiencePainPointMapper.emotionalImpact')}</p>
                         <div className="h-1.5 rounded-full bg-bg-secondary overflow-hidden mt-1">
                           <div className="h-full rounded-full bg-danger" style={{ width: `${pp.emotionalImpact}%` }} />
                         </div>
@@ -294,7 +294,7 @@ export default function AdAudiencePainPointMapperPage() {
                       />
                     </div>
                     <p className="text-xs text-fg-muted">
-                      <span className="font-medium text-brand-accent">{t('adAudiencePainPointMapper.addresses') || 'Addresses'}:</span> {ca.addressesPain}
+                      <span className="font-medium text-brand-accent">{t('adAudiencePainPointMapper.addresses')}:</span> {ca.addressesPain}
                     </p>
                     <p className="text-xs text-fg-muted">{ca.approach}</p>
                   </div>

@@ -296,7 +296,7 @@ export default function AdCreativeViewerRewardDesignerPage() {
                       <span className={`text-sm font-bold ${scoreColor(r.satisfactionLevel)}`}>{r.satisfactionLevel}/100</span>
                     </div>
                     <p className="text-xs text-fg">{r.description}</p>
-                    <p className="text-xs text-fg-muted"><span className="font-medium text-fg">{t('adCreativeViewerRewardDesigner.viewerAction') || 'Viewer action'}:</span> {r.viewerAction}</p>
+                    <p className="text-xs text-fg-muted"><span className="font-medium text-fg">{t('adCreativeViewerRewardDesigner.viewerAction')}:</span> {r.viewerAction}</p>
                     <p className="text-xs text-fg-muted"><span className="font-medium text-fg">{t('common.resultLabels.emotionalPayoff')}:</span> {r.payoff}</p>
                     <p className="text-xs text-fg-muted"><span className="font-medium text-fg">{t('common.resultLabels.timing')}:</span> {r.timing}</p>
                     <div className="h-1.5 rounded-full bg-bg-secondary overflow-hidden">
@@ -322,8 +322,8 @@ export default function AdCreativeViewerRewardDesignerPage() {
                       <span className="text-sm font-medium">{d.what}</span>
                       <span className={`text-sm font-bold ${scoreColor(d.discoveryJoy)}`}>{d.discoveryJoy}/100</span>
                     </div>
-                    <p className="text-xs text-fg-muted"><span className="font-medium text-fg">{t('adCreativeViewerRewardDesigner.when') || 'When'}:</span> {d.when}</p>
-                    <p className="text-xs text-fg-muted"><span className="font-medium text-fg">{t('adCreativeViewerRewardDesigner.howRevealed') || 'How revealed'}:</span> {d.howRevealed}</p>
+                    <p className="text-xs text-fg-muted"><span className="font-medium text-fg">{t('adCreativeViewerRewardDesigner.when')}:</span> {d.when}</p>
+                    <p className="text-xs text-fg-muted"><span className="font-medium text-fg">{t('adCreativeViewerRewardDesigner.howRevealed')}:</span> {d.howRevealed}</p>
                     <div className="h-1.5 rounded-full bg-bg-secondary overflow-hidden">
                       <div
                         className={`h-full rounded-full ${barColor(d.discoveryJoy)}`}
@@ -347,7 +347,7 @@ export default function AdCreativeViewerRewardDesignerPage() {
                       <span className="text-sm font-medium">{tr.trigger}</span>
                       <span className={`text-sm font-bold ${scoreColor(tr.intensity)}`}>{tr.intensity}/100</span>
                     </div>
-                    <p className="text-xs text-fg-muted"><span className="font-medium text-fg">{t('adCreativeViewerRewardDesigner.emotion') || 'Emotion'}:</span> {tr.emotion}</p>
+                    <p className="text-xs text-fg-muted"><span className="font-medium text-fg">{t('adCreativeViewerRewardDesigner.emotion')}:</span> {tr.emotion}</p>
                     <p className="text-xs text-fg-muted">{tr.viewerResponse}</p>
                     <div className="h-1.5 rounded-full bg-bg-secondary overflow-hidden">
                       <div
@@ -372,7 +372,7 @@ export default function AdCreativeViewerRewardDesignerPage() {
                       <span className="text-sm font-medium">{rw.incentive}</span>
                       <span className={`text-sm font-bold ${scoreColor(rw.rewatchValue)}`}>{rw.rewatchValue}/100</span>
                     </div>
-                    <p className="text-xs text-fg-muted"><span className="font-medium text-fg">{t('adCreativeViewerRewardDesigner.method') || 'Method'}:</span> {rw.method}</p>
+                    <p className="text-xs text-fg-muted"><span className="font-medium text-fg">{t('adCreativeViewerRewardDesigner.method')}:</span> {rw.method}</p>
                     <div className="h-1.5 rounded-full bg-bg-secondary overflow-hidden">
                       <div
                         className={`h-full rounded-full ${barColor(rw.rewatchValue)}`}

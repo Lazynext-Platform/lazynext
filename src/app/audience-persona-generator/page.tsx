@@ -117,7 +117,7 @@ export default function AudiencePersonaGeneratorPage() {
         <a href="#main-content" className="skip-link">{t('common.skipToContent')}</a>
         <main id="main-content" className="mx-auto max-w-5xl px-4 py-16 text-center" tabIndex={-1}>
           <Users className="mx-auto mb-4 h-10 w-10 text-brand-accent" aria-hidden="true" />
-          <h1 className="text-2xl font-bold mb-2">Audience Persona Generator</h1>
+          <h1 className="text-2xl font-bold mb-2">{t('audiencePersonaGenerator.title')}</h1>
           <p className="text-sm text-fg-faint mb-6">{t('audiencePersonaGenerator.signInPrompt')}</p>
         </main>
         <AuthModal open={true} onClose={() => {}} />

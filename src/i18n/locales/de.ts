@@ -1707,7 +1707,7 @@ export const deMessages = {
       fldPersuasionMechanisms: 'Überzeugungsmechanismen',
       lblCta: 'CTA: ',
     },
-    admin: { title: 'Admin-Dashboard', subtitle: 'Benutzerverwaltung und Erstellungsüberwachung', tabUsers: 'Benutzer', tabCreations: 'Erstellungen', searchPlaceholder: 'Nach E-Mail suchen…', search: 'Suchen', creditsAdjust: '±N', reason: 'Grund', apply: 'Anwenden', filterAll: 'Alle', refresh: 'Aktualisieren', colUser: 'Benutzer', colCredits: 'Guthaben', colCreations: 'Erstellungen', colJoined: 'Beigetreten', colAdjust: 'Anpassen', noUsers: 'Keine Benutzer gefunden.', colTemplate: 'Vorlage', colStatus: 'Status', colPrompt: 'Prompt', colCost: 'Kosten', colCreated: 'Erstellt', colError: 'Fehler', noCreations: 'Keine Erstellungen gefunden.', creationMonitoring: 'Erstellungsüberwachung', userManagement: 'Benutzerverwaltung' },
+    admin: { title: 'Admin-Dashboard', subtitle: 'Benutzerverwaltung und Erstellungsüberwachung', tabUsers: 'Benutzer', tabCreations: 'Erstellungen', searchPlaceholder: 'Nach E-Mail suchen…', search: 'Suchen', creditsAdjust: '±N', reason: 'Grund', apply: 'Anwenden', filterAll: 'Alle', refresh: 'Aktualisieren', colUser: 'Benutzer', colCredits: 'Guthaben', colCreations: 'Erstellungen', colJoined: 'Beigetreten', colAdjust: 'Anpassen', noUsers: 'Keine Benutzer gefunden.', colTemplate: 'Vorlage', colStatus: 'Status', colPrompt: 'Prompt', colCost: 'Kosten', colCreated: 'Erstellt', colError: 'Fehler', noCreations: 'Keine Erstellungen gefunden.', creationMonitoring: 'Erstellungsüberwachung', userManagement: 'Benutzerverwaltung', accessDenied: 'Zugriff verweigert. Ihre E-Mail ist nicht in der Admin-Liste.' },
     adminFeedback: { title: 'Feedback-Dashboard', subtitle: 'Feedback-Zusammenfassungen und einzelne Einträge', tabFeedback: 'Feedback', back: 'Zurück zum Admin', forbidden: 'Zugriff verweigert. Deine E-Mail ist nicht in der Admin-Liste.', loadError: 'Feedback konnte nicht geladen werden. Bitte erneut versuchen.', empty: 'Noch kein Feedback vorhanden.', summaryTitle: 'Zusammenfassung nach Funktion', summaryCaption: 'Feedback-Zusammenfassung nach Funktion', entriesTitle: 'Einzelne Einträge', entriesCaption: 'Einzelne Feedback-Einträge', colFeature: 'Funktion', colAvgRating: 'Ø Bewertung', colCount: 'Anzahl', colRating: 'Bewertung', colComment: 'Kommentar', colTimestamp: 'Zeitpunkt', refresh: 'Aktualisieren' },
     reset: { title: 'Passwort zurücksetzen', successMessage: 'Ihr Passwort wurde geändert. Sie können sich jetzt mit Ihrem neuen Passwort anmelden.', backToSignIn: 'Zurück zur Anmeldung', heading: 'Passwort zurücksetzen', subtitle: 'Geben Sie unten Ihr neues Passwort ein.', newPassword: 'Neues Passwort (min. 8 Zeichen)', confirmPassword: 'Neues Passwort bestätigen', resetting: 'Wird zurückgesetzt…', reset: 'Passwort zurücksetzen', backToSignIn2: 'Zurück zur Anmeldung', loading: 'Laden…', errMismatch: 'Passwörter stimmen nicht überein', errTooShort: 'Das Passwort muss mindestens 8 Zeichen lang sein', errFailed: 'Passwort konnte nicht zurückgesetzt werden. Bitte versuchen Sie es erneut.', errInvalidToken: 'Ungültiger oder abgelaufener Reset-Link. Bitte fordern Sie einen neuen an.' },
     editor: {
@@ -1798,6 +1798,7 @@ export const deMessages = {
       tlLoad: 'Laden',
       tlDelete: 'Löschen',
       tlSaveFailed: 'Speichern der Zeitleiste fehlgeschlagen. Bitte erneut versuchen.',
+      loadingTimeline: 'Zeitleiste wird geladen…',
     },
 
     briefIntelligence: {
@@ -3036,6 +3037,13 @@ export const deMessages = {
     brandPersonality: "Markenpersönlichkeit",
     copy: "Kopieren",
     noResults: "Noch kein Mood Board generiert. Geben Sie ein Produkt oder eine Marke ein, um zu beginnen.",
+    primary: 'Primär',
+    secondary: 'Sekundär',
+    accent: 'Akzent',
+    background: 'Hintergrund',
+    text: 'Text',
+    references: 'Referenzen',
+    brandHeadline: 'Ihre Markenüberschrift',
   },
   adPerformancePredictor: {
     title: "Anzeigenperformance-Vorhersager",
@@ -3062,6 +3070,12 @@ export const deMessages = {
     bestPostingTime: "Beste Veröffentlichungszeit",
     copy: "Kopieren",
     error: "Vorhersage fehlgeschlagen",
+    metric: 'Metrik',
+    predicted: 'Vorhergesagt',
+    score: 'Punktzahl',
+    confidence: 'Konfidenz',
+    benchmark: 'Benchmark',
+    rationale: 'Begründung',
   },
   abTestPlannerV2: {
     title: "Kreativer A/B-Test-Planer",
@@ -3635,6 +3649,7 @@ export const deMessages = {
     copied: 'Kopiert',
     error: 'Emotionsanalyse fehlgeschlagen',
     dryRunNotice: 'Simulationsmodus — Vorlagen-Analyse wird verwendet',
+    overallEmotionalImpact: 'Gesamte emotionale Wirkung',
   },
   creativeFormatConverter: {
     title: 'Kreativformat-Konverter',
@@ -4153,6 +4168,9 @@ export const deMessages = {
     copied: 'Kopiert',
     error: 'Zuordnung der Schmerzpunkte fehlgeschlagen',
     dryRunNotice: 'Dry-Run-Modus — Vorlagenzuordnung verwendet',
+    frequency: 'Häufigkeit',
+    emotionalImpact: 'Emotionale Wirkung',
+    addresses: 'Behandelt',
   },
   creativeMessagingFrameworkBuilder: {
     title: 'Ersteller des Messaging-Frameworks für Kreativen',
@@ -4176,6 +4194,12 @@ export const deMessages = {
     copied: 'Kopiert',
     error: 'Erstellung des Messaging-Frameworks fehlgeschlagen',
     dryRunNotice: 'Dry-Run-Modus — Vorlagenframework verwendet',
+    keyMessage: 'Kernbotschaft',
+    audience: 'Zielgruppe',
+    supports: 'Stützt',
+    evidence: 'Beweis',
+    do: 'Tu',
+    dont: 'Lass',
   },
   adCreativeBurnoutDetector: {
     title: 'Burnout-Detektor für Werbekreativen',
@@ -4335,6 +4359,8 @@ export const deMessages = {
     copied: 'Kopiert',
     error: 'Überzeugungsstrategie fehlgeschlagen',
     dryRunNotice: 'Dry-Run-Modus — Vorlagenstrategie verwendet',
+    effect: 'Effekt',
+    principle: 'Prinzip',
   },
   adCreativeHookTimingOptimizer: {
     title: 'Hook-Timing-Optimierer für Werbekreative',
@@ -4356,6 +4382,10 @@ export const deMessages = {
     copied: 'Kopiert',
     error: 'Hook-Timing-Optimierung fehlgeschlagen',
     dryRunNotice: 'Dry-Run-Modus — Vorlagen-Timing verwendet',
+    retentionRisk: 'Retention-Risiko',
+    currentPlacement: 'Aktuelle Platzierung',
+    optimalWindow: 'Optimales Fenster',
+    attentionCurve: 'Aufmerksamkeitskurve',
   },
   creativeAdMetaphorGenerator: {
     title: 'Generator für kreative Werbemetaphern',
@@ -4444,6 +4474,8 @@ export const deMessages = {
     copied: 'Kopiert',
     error: 'Architektur sozialer Beweise fehlgeschlagen',
     dryRunNotice: 'Dry-Run-Modus — Vorlagenarchitektur verwendet',
+    type: 'Typ',
+    integration: 'Integration',
   },
   adCreativeEmotionSequencer: {
     title: 'Emotions-Sequenzierer für Werbekreative',
@@ -4498,6 +4530,8 @@ export const deMessages = {
     copied: 'Kopiert',
     error: 'Antizipations-Bau fehlgeschlagen',
     dryRunNotice: 'Dry-Run-Modus — Vorlagen-Antizipation verwendet',
+    apply: 'Anwenden',
+    payoff: 'Belohnung',
   },
   adCreativeContrastAmplifier: {
     title: 'Kontrast-Verstärker für Werbekreative',
@@ -4615,6 +4649,10 @@ export const deMessages = {
     copied: 'Kopiert',
     error: 'Spannungs- und Entspannungsstrategie fehlgeschlagen',
     dryRunNotice: 'Dry-Run-Modus — Vorlagen-Spannungsstrategie verwendet',
+    buildup: 'Aufbau',
+    peak: 'Höhepunkt',
+    release: 'Entspannung',
+    trigger: 'Auslöser',
   },
   adCreativeSensoryContrastDesigner: {
     title: 'Designer für sensorische Kontraste in Werbekreativen',
@@ -4689,6 +4727,10 @@ export const deMessages = {
     copied: 'Kopiert',
     error: 'Rhythmus-Optimierung fehlgeschlagen',
     dryRunNotice: 'Dry-Run-Modus — Vorlagen-Rhythmus-Optimierung verwendet',
+    buildup: 'Aufbau',
+    drop: 'Drop',
+    transition: 'Übergang',
+    duration: 'Dauer',
   },
   creativeAdVisualHierarchyStrategist: {
     title: 'Stratege für visuelle Hierarchie in Werbekreativen',
@@ -4711,6 +4753,8 @@ export const deMessages = {
     copied: 'Kopiert',
     error: 'Strategie der visuellen Hierarchie fehlgeschlagen',
     dryRunNotice: 'Dry-Run-Modus — Vorlagen-Hierarchie verwendet',
+    direction: 'Richtung',
+    anchors: 'Anker',
   },
   adCreativeSoundDesignStrategist: {
     title: 'Stratege für Sound-Design in Werbekreativen',
@@ -4834,6 +4878,7 @@ export const deMessages = {
     copied: 'Kopiert',
     error: 'Pacing-Variabilitäts-Gestaltung fehlgeschlagen',
     dryRunNotice: 'Testmodus — verwende Vorlagen-Pacing-Variabilität',
+    energy: 'Energie',
   },
   creativeAdForeshadowingDesigner: {
     title: 'Designer von Foreshadowing-Elementen für Anzeigen',

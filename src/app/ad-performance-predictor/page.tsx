@@ -368,12 +368,12 @@ export default function AdPerformancePredictorPage() {
                   <table className="w-full text-sm">
                     <thead>
                       <tr className="text-left text-xs text-fg-muted border-b border-border">
-                        <th className="pb-2 pr-3 font-medium">Metric</th>
-                        <th className="pb-2 pr-3 font-medium">Predicted</th>
-                        <th className="pb-2 pr-3 font-medium">Score</th>
-                        <th className="pb-2 pr-3 font-medium">Confidence</th>
-                        <th className="pb-2 pr-3 font-medium">Benchmark</th>
-                        <th className="pb-2 font-medium">Rationale</th>
+                        <th className="pb-2 pr-3 font-medium">{t('adPerformancePredictor.metric')}</th>
+                        <th className="pb-2 pr-3 font-medium">{t('adPerformancePredictor.predicted')}</th>
+                        <th className="pb-2 pr-3 font-medium">{t('adPerformancePredictor.score')}</th>
+                        <th className="pb-2 pr-3 font-medium">{t('adPerformancePredictor.confidence')}</th>
+                        <th className="pb-2 pr-3 font-medium">{t('adPerformancePredictor.benchmark')}</th>
+                        <th className="pb-2 font-medium">{t('adPerformancePredictor.rationale')}</th>
                       </tr>
                     </thead>
                     <tbody>

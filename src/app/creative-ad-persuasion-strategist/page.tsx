@@ -275,7 +275,7 @@ export default function CreativeAdPersuasionStrategistPage() {
                       />
                     </div>
                     <p className="text-xs text-fg-muted">{p.application}</p>
-                    <p className="text-xs text-fg-muted"><span className="font-medium text-brand-accent">Effect:</span> {p.expectedEffect}</p>
+                    <p className="text-xs text-fg-muted"><span className="font-medium text-brand-accent">{t('creativeAdPersuasionStrategist.effect')}:</span> {p.expectedEffect}</p>
                   </div>
                 ))}
               </div>
@@ -293,7 +293,7 @@ export default function CreativeAdPersuasionStrategistPage() {
                       <span className="text-xs font-medium text-fg">{tech.technique}</span>
                       <span className={`inline-flex items-center text-xs font-medium px-2 py-0.5 rounded-full border ${STRENGTH_COLORS[tech.strength] || STRENGTH_COLORS.medium}`}>{tech.strength}</span>
                     </div>
-                    <p className="text-xs text-fg-muted"><span className="font-medium text-fg">Principle:</span> <span className="capitalize">{tech.principle}</span></p>
+                    <p className="text-xs text-fg-muted"><span className="font-medium text-fg">{t('creativeAdPersuasionStrategist.principle')}:</span> <span className="capitalize">{tech.principle}</span></p>
                     <p className="text-xs text-fg-muted">{tech.implementation}</p>
                   </div>
                 ))}

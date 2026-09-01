@@ -1707,7 +1707,7 @@ export const hiMessages = {
       fldPersuasionMechanisms: 'प्रेरणा तंत्र',
       lblCta: 'CTA: ',
     },
-    admin: { title: 'एडमिन डैशबोर्ड', subtitle: 'उपयोगकर्ता प्रबंधन और निर्माण निगरानी', tabUsers: 'उपयोगकर्ता', tabCreations: 'निर्माण', searchPlaceholder: 'ईमेल से खोजें…', search: 'खोजें', creditsAdjust: '±N', reason: 'कारण', apply: 'लागू करें', filterAll: 'सभी', refresh: 'रिफ्रेश', colUser: 'उपयोगकर्ता', colCredits: 'क्रेडिट', colCreations: 'निर्माण', colJoined: 'शामिल हुए', colAdjust: 'समायोजन', noUsers: 'कोई उपयोगकर्ता नहीं मिला।', colTemplate: 'टेम्पलेट', colStatus: 'स्थिति', colPrompt: 'प्रॉम्प्ट', colCost: 'लागत', colCreated: 'बनाया गया', colError: 'त्रुटि', noCreations: 'कोई निर्माण नहीं मिला।', creationMonitoring: 'निर्माण निगरानी', userManagement: 'उपयोगकर्ता प्रबंधन' },
+    admin: { title: 'एडमिन डैशबोर्ड', subtitle: 'उपयोगकर्ता प्रबंधन और निर्माण निगरानी', tabUsers: 'उपयोगकर्ता', tabCreations: 'निर्माण', searchPlaceholder: 'ईमेल से खोजें…', search: 'खोजें', creditsAdjust: '±N', reason: 'कारण', apply: 'लागू करें', filterAll: 'सभी', refresh: 'रिफ्रेश', colUser: 'उपयोगकर्ता', colCredits: 'क्रेडिट', colCreations: 'निर्माण', colJoined: 'शामिल हुए', colAdjust: 'समायोजन', noUsers: 'कोई उपयोगकर्ता नहीं मिला।', colTemplate: 'टेम्पलेट', colStatus: 'स्थिति', colPrompt: 'प्रॉम्प्ट', colCost: 'लागत', colCreated: 'बनाया गया', colError: 'त्रुटि', noCreations: 'कोई निर्माण नहीं मिला।', creationMonitoring: 'निर्माण निगरानी', userManagement: 'उपयोगकर्ता प्रबंधन', accessDenied: 'पहुंच अस्वीकृत। आपका ईमेल व्यवस्थापक सूची में नहीं है।' },
     adminFeedback: { title: 'प्रतिक्रिया डैशबोर्ड', subtitle: 'उपयोगकर्ता प्रतिक्रिया सारांश और व्यक्तिगत प्रविष्टियाँ', tabFeedback: 'प्रतिक्रिया', back: 'एडमिन पर वापस', forbidden: 'पहुँच अस्वीकृत। आपका ईमेल एडमिन सूची में नहीं है।', loadError: 'प्रतिक्रिया लोड करने में विफल। पुनः प्रयास करें।', empty: 'अभी तक कोई प्रतिक्रिया नहीं।', summaryTitle: 'सुविधा के अनुसार सारांश', summaryCaption: 'सुविधा के अनुसार प्रतिक्रिया सारांश', entriesTitle: 'व्यक्तिगत प्रविष्टियाँ', entriesCaption: 'व्यक्तिगत प्रतिक्रिया प्रविष्टियाँ', colFeature: 'सुविधा', colAvgRating: 'औसत रेटिंग', colCount: 'संख्या', colRating: 'रेटिंग', colComment: 'टिप्पणी', colTimestamp: 'समय', refresh: 'रिफ्रेश' },
     reset: { title: 'पासवर्ड रीसेट', successMessage: 'आपका पासवर्ड बदल दिया गया है। अब आप अपने नए पासवर्ड से साइन इन कर सकते हैं।', backToSignIn: 'साइन इन पर वापस जाएं', heading: 'पासवर्ड रीसेट करें', subtitle: 'नीचे अपना नया पासवर्ड दर्ज करें।', newPassword: 'नया पासवर्ड (न्यूनतम 8 अक्षर)', confirmPassword: 'नया पासवर्ड की पुष्टि करें', resetting: 'रीसेट हो रहा है…', reset: 'पासवर्ड रीसेट करें', backToSignIn2: 'साइन इन पर वापस जाएं', loading: 'लोड हो रहा है…', errMismatch: 'पासवर्ड मेल नहीं खाते', errTooShort: 'पासवर्ड कम से कम 8 अक्षर का होना चाहिए', errFailed: 'पासवर्ड रीसेट करने में विफल। कृपया पुनः प्रयास करें।', errInvalidToken: 'रीसेट लिंक अमान्य या समाप्त हो गया है। कृपया नया अनुरोध करें।' },
     editor: {
@@ -1798,6 +1798,7 @@ export const hiMessages = {
       tlLoad: 'लोड करें',
       tlDelete: 'हटाएं',
       tlSaveFailed: 'टाइमलाइन सहेजने में विफल। कृपया पुनः प्रयास करें।',
+    loadingTimeline: 'टाइमलाइन लोड हो रहा है…',
     },
 
     briefIntelligence: {
@@ -3036,6 +3037,13 @@ export const hiMessages = {
     brandPersonality: "ब्रांड व्यक्तित्व",
     copy: "कॉपी",
     noResults: "अभी तक कोई मूड बोर्ड नहीं बना है। शुरू करने के लिए उत्पाद या ब्रांड दर्ज करें।",
+    primary: 'प्राथमिक',
+    secondary: 'द्वितीयक',
+    accent: 'एक्सेंट',
+    background: 'पृष्ठभूमि',
+    text: 'पाठ',
+    references: 'संदर्भ',
+    brandHeadline: 'आपका ब्रांड शीर्षक',
   },
   adPerformancePredictor: {
     title: "विज्ञापन प्रदर्शन पूर्वानुमानकर्ता",
@@ -3062,6 +3070,12 @@ export const hiMessages = {
     bestPostingTime: "सर्वोत्तम पोस्टिंग समय",
     copy: "कॉपी",
     error: "अनुमान विफल",
+    metric: 'मेट्रिक',
+    predicted: 'पूर्वानुमानित',
+    score: 'स्कोर',
+    confidence: 'आत्मविश्वास',
+    benchmark: 'बेंचमार्क',
+    rationale: 'तर्क',
   },
   abTestPlannerV2: {
     title: "रचनात्मक A/B टेस्ट प्लानर",
@@ -3635,6 +3649,7 @@ export const hiMessages = {
     copied: 'कॉपी हो गया',
     error: 'भावना विश्लेषण विफल',
     dryRunNotice: 'ड्राई-रन मोड — टेम्पलेट विश्लेषण का उपयोग',
+    overallEmotionalImpact: 'समग्र भावनात्मक प्रभाव',
   },
   creativeFormatConverter: {
     title: 'क्रिएटिव फॉर्मेट कन्वर्टर',
@@ -4153,6 +4168,9 @@ export const hiMessages = {
     copied: 'कॉपी हो गया',
     error: 'पेन पॉइंट मैपिंग विफल',
     dryRunNotice: 'ड्राई-रन मोड — टेम्पलेट मैपिंग का उपयोग',
+    frequency: 'आवृत्ति',
+    emotionalImpact: 'भावनात्मक प्रभाव',
+    addresses: 'संबोधित करता है',
   },
   creativeMessagingFrameworkBuilder: {
     title: 'क्रिएटिव मैसेजिंग फ्रेमवर्क बिल्डर',
@@ -4176,6 +4194,12 @@ export const hiMessages = {
     copied: 'कॉपी हो गया',
     error: 'मैसेजिंग फ्रेमवर्क निर्माण विफल',
     dryRunNotice: 'ड्राई-रन मोड — टेम्पलेट फ्रेमवर्क का उपयोग',
+    keyMessage: 'मुख्य संदेश',
+    audience: 'दर्शक',
+    supports: 'समर्थन',
+    evidence: 'साक्ष्य',
+    do: 'करें',
+    dont: 'न करें',
   },
   adCreativeBurnoutDetector: {
     title: 'विज्ञापन क्रिएटिव बर्नआउट डिटेक्टर',
@@ -4335,6 +4359,8 @@ export const hiMessages = {
     copied: 'कॉपी हो गया',
     error: 'पर्सुएशन रणनीति विफल',
     dryRunNotice: 'ड्राई-रन मोड — टेम्पलेट रणनीति का उपयोग',
+    effect: 'प्रभाव',
+    principle: 'सिद्धांत',
   },
   adCreativeHookTimingOptimizer: {
     title: 'एड क्रिएटिव हुक टाइमिंग ऑप्टिमाइज़र',
@@ -4356,6 +4382,10 @@ export const hiMessages = {
     copied: 'कॉपी हो गया',
     error: 'हुक टाइमिंग ऑप्टिमाइज़ेशन विफल',
     dryRunNotice: 'ड्राई-रन मोड — टेम्पलेट टाइमिंग का उपयोग',
+    retentionRisk: 'प्रतिधारण जोखिम',
+    currentPlacement: 'वर्तमान स्थान',
+    optimalWindow: 'इष्टतम विंडो',
+    attentionCurve: 'ध्यान वक्र',
   },
   creativeAdMetaphorGenerator: {
     title: 'क्रिएटिव एड मेटाफ़ोर जनरेटर',
@@ -4444,6 +4474,8 @@ export const hiMessages = {
     copied: 'कॉपी हो गया',
     error: 'सोशल प्रूफ आर्किटेक्चर विफल',
     dryRunNotice: 'ड्राई-रन मोड — टेम्पलेट आर्किटेक्चर का उपयोग',
+    type: 'प्रकार',
+    integration: 'एकीकरण',
   },
   adCreativeEmotionSequencer: {
     title: 'एड क्रिएटिव इमोशन सीक्वेंसर',
@@ -4498,6 +4530,8 @@ export const hiMessages = {
     copied: 'कॉपी हो गया',
     error: 'प्रत्याशा निर्माण विफल',
     dryRunNotice: 'ड्राई-रन मोड — टेम्पलेट प्रत्याशा का उपयोग',
+    apply: 'लागू करें',
+    payoff: 'प्रतिफल',
   },
   adCreativeContrastAmplifier: {
     title: 'एड क्रिएटिव कंट्रास्ट एम्पलिफायर',
@@ -4615,6 +4649,10 @@ export const hiMessages = {
     copied: 'कॉपी हो गया',
     error: 'टेंशन रिलीज़ रणनीति विफल',
     dryRunNotice: 'ड्राई-रन मोड — टेम्पलेट टेंशन रणनीति का उपयोग',
+    buildup: 'निर्माण',
+    peak: 'चरम',
+    release: 'मुक्ति',
+    trigger: 'ट्रिगर',
   },
   adCreativeSensoryContrastDesigner: {
     title: 'एड क्रिएटिव सेंसरी कंट्रास्ट डिज़ाइनर',
@@ -4689,6 +4727,10 @@ export const hiMessages = {
     copied: 'कॉपी हो गया',
     error: 'रिदम ऑप्टिमाइज़ेशन विफल',
     dryRunNotice: 'ड्राई-रन मोड — टेम्पलेट रिदम ऑप्टिमाइज़ेशन का उपयोग',
+    buildup: 'निर्माण',
+    drop: 'गिरावट',
+    transition: 'संक्रमण',
+    duration: 'अवधि',
   },
   creativeAdVisualHierarchyStrategist: {
     title: 'क्रिएटिव एड विज़ुअल हायरार्की स्ट्रेटेजिस्ट',
@@ -4711,6 +4753,8 @@ export const hiMessages = {
     copied: 'कॉपी हो गया',
     error: 'विज़ुअल हायरार्की रणनीति विफल',
     dryRunNotice: 'ड्राई-रन मोड — टेम्पलेट हायरार्की का उपयोग',
+    direction: 'दिशा',
+    anchors: 'एंकर',
   },
   adCreativeSoundDesignStrategist: {
     title: 'एड क्रिएटिव साउंड डिज़ाइन स्ट्रेटेजिस्ट',
@@ -4834,6 +4878,7 @@ export const hiMessages = {
     copied: 'कॉपी हो गया',
     error: 'पेसिंग वैरिएबिलिटी डिजाइन विफल',
     dryRunNotice: 'ड्राई-रन मोड — टेम्पलेट पेसिंग वैरिएबिलिटी का उपयोग',
+    energy: 'ऊर्जा',
   },
   creativeAdForeshadowingDesigner: {
     title: 'क्रिएटिव एड फोरशैडोइंग डिजाइनर',

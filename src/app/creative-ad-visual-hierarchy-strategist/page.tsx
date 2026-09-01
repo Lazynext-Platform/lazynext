@@ -395,7 +395,7 @@ export default function CreativeAdVisualHierarchyStrategistPage() {
                   {t('creativeAdVisualHierarchyStrategist.visualFlow')}
                 </p>
                 <p className="text-xs text-fg-muted">
-                  <span className="font-medium text-fg">Direction:</span>{' '}
+                  <span className="font-medium text-fg">{t('creativeAdVisualHierarchyStrategist.direction')}:</span>{' '}
                   {result.strategy.visualFlow.direction}
                 </p>
                 {result.strategy.visualFlow.path.length > 0 && (
@@ -414,7 +414,7 @@ export default function CreativeAdVisualHierarchyStrategistPage() {
                 )}
                 {result.strategy.visualFlow.anchors.length > 0 && (
                   <p className="text-xs text-fg-muted">
-                    <span className="font-medium text-fg">Anchors:</span>{' '}
+                    <span className="font-medium text-fg">{t('creativeAdVisualHierarchyStrategist.anchors')}:</span>{' '}
                     {result.strategy.visualFlow.anchors.join(', ')}
                   </p>
                 )}

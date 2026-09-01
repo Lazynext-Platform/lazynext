@@ -1707,7 +1707,7 @@ export const zhMessages = {
       fldPersuasionMechanisms: '说服机制',
       lblCta: '行动号召：',
     },
-    admin: { title: '管理后台', subtitle: '用户管理与创作监控', tabUsers: '用户', tabCreations: '创作', searchPlaceholder: '按邮箱搜索…', search: '搜索', creditsAdjust: '±N', reason: '原因', apply: '应用', filterAll: '全部', refresh: '刷新', colUser: '用户', colCredits: '积分', colCreations: '创作', colJoined: '注册时间', colAdjust: '调整', noUsers: '未找到用户。', colTemplate: '模板', colStatus: '状态', colPrompt: '提示词', colCost: '消耗', colCreated: '创建时间', colError: '错误', noCreations: '未找到创作。', creationMonitoring: '创作监控', userManagement: '用户管理' },
+    admin: { title: '管理后台', subtitle: '用户管理与创作监控', tabUsers: '用户', tabCreations: '创作', searchPlaceholder: '按邮箱搜索…', search: '搜索', creditsAdjust: '±N', reason: '原因', apply: '应用', filterAll: '全部', refresh: '刷新', colUser: '用户', colCredits: '积分', colCreations: '创作', colJoined: '注册时间', colAdjust: '调整', noUsers: '未找到用户。', colTemplate: '模板', colStatus: '状态', colPrompt: '提示词', colCost: '消耗', colCreated: '创建时间', colError: '错误', noCreations: '未找到创作。', creationMonitoring: '创作监控', accessDenied: '访问被拒绝。您的邮箱不在管理员列表中。', userManagement: '用户管理' },
     adminFeedback: { title: '反馈仪表板', subtitle: '用户反馈摘要与条目', tabFeedback: '反馈', back: '返回管理后台', forbidden: '访问被拒绝。您的邮箱不在管理员列表中。', loadError: '加载反馈失败。请重试。', empty: '尚无反馈。', summaryTitle: '按功能汇总', summaryCaption: '按功能汇总反馈', entriesTitle: '单条反馈', entriesCaption: '单条反馈条目', colFeature: '功能', colAvgRating: '平均评分', colCount: '数量', colRating: '评分', colComment: '评论', colTimestamp: '时间', refresh: '刷新' },
     reset: { title: '密码已重置', successMessage: '您的密码已更改。现在可以使用新密码登录。', backToSignIn: '返回登录', heading: '重置密码', subtitle: '请在下方输入您的新密码。', newPassword: '新密码（至少 8 个字符）', confirmPassword: '确认新密码', resetting: '重置中…', reset: '重置密码', backToSignIn2: '返回登录', loading: '加载中…', errMismatch: '两次密码不一致', errTooShort: '密码至少需要 8 个字符', errFailed: '重置密码失败，请重试。', errInvalidToken: '重置链接无效或已过期，请重新申请。' },
     editor: {
@@ -1798,6 +1798,7 @@ export const zhMessages = {
       tlLoad: '加载',
       tlDelete: '删除',
       tlSaveFailed: '保存时间线失败，请重试。',
+      loadingTimeline: '正在加载时间线…',
     },
 
     briefIntelligence: {
@@ -3117,6 +3118,9 @@ export const zhMessages = {
     copied: '已复制',
     error: '钩子测试失败',
     dryRunNotice: '试运行模式 — 使用启发式评分',
+    brandHeadline: '您的品牌标题',
+    predicted: '预测',
+    benchmark: '基准',
   },
   trendSpotter: {
     title: '趋势发现器',
@@ -3635,6 +3639,7 @@ export const zhMessages = {
     copied: '已复制',
     error: '情感分析失败',
     dryRunNotice: '试运行模式 — 使用模板分析',
+    overallEmotionalImpact: '整体情感影响',
   },
   creativeFormatConverter: {
     title: '创意格式转换器',
@@ -4153,6 +4158,8 @@ export const zhMessages = {
     copied: '已复制',
     error: '痛点映射失败',
     dryRunNotice: '试运行模式 — 使用模板映射',
+    frequency: '频率',
+    addresses: '解决',
   },
   creativeMessagingFrameworkBuilder: {
     title: '创意信息框架构建器',
@@ -4176,6 +4183,9 @@ export const zhMessages = {
     copied: '已复制',
     error: '信息框架构建失败',
     dryRunNotice: '试运行模式 — 使用模板框架',
+    supports: '支持',
+    do: '做',
+    dont: '不要',
   },
   adCreativeBurnoutDetector: {
     title: '广告创意疲劳检测器',
@@ -4335,6 +4345,8 @@ export const zhMessages = {
     copied: '已复制',
     error: '说服策略失败',
     dryRunNotice: '试运行模式 — 使用模板策略',
+    effect: '效果',
+    principle: '原则',
   },
   adCreativeHookTimingOptimizer: {
     title: '广告创意钩子时机优化器',
@@ -4356,6 +4368,10 @@ export const zhMessages = {
     copied: '已复制',
     error: '钩子时机优化失败',
     dryRunNotice: '试运行模式 — 使用模板时机',
+    retentionRisk: '留存风险',
+    currentPlacement: '当前位置',
+    optimalWindow: '最佳窗口',
+    attentionCurve: '注意力曲线',
   },
   creativeAdMetaphorGenerator: {
     title: '创意广告隐喻生成器',
@@ -4444,6 +4460,7 @@ export const zhMessages = {
     copied: '已复制',
     error: '社会认同架构失败',
     dryRunNotice: '试运行模式 — 使用模板架构',
+    integration: '整合',
   },
   adCreativeEmotionSequencer: {
     title: '广告创意情感序列器',
@@ -4615,6 +4632,8 @@ export const zhMessages = {
     copied: '已复制',
     error: '张力释放策划失败',
     dryRunNotice: '试运行模式 — 使用模板张力策略',
+    peak: '高潮',
+    release: '释放',
   },
   adCreativeSensoryContrastDesigner: {
     title: '广告创意感官对比设计师',
@@ -4689,6 +4708,8 @@ export const zhMessages = {
     copied: '已复制',
     error: '节奏优化失败',
     dryRunNotice: '试运行模式 — 使用模板节奏优化',
+    buildup: '铺垫',
+    drop: '跌落',
   },
   creativeAdVisualHierarchyStrategist: {
     title: '创意广告视觉层次策略师',

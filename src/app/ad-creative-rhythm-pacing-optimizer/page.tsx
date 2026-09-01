@@ -299,7 +299,7 @@ export default function AdCreativeRhythmPacingOptimizerPage() {
                       />
                     </div>
                     <p className="text-xs text-fg-muted">{p.description}</p>
-                    <p className="text-xs text-fg-muted"><span className="font-medium text-fg">{t('adCreativeRhythmPacingOptimizer.duration') || 'Duration'}:</span> {p.duration}</p>
+                    <p className="text-xs text-fg-muted"><span className="font-medium text-fg">{t('adCreativeRhythmPacingOptimizer.duration')}:</span> {p.duration}</p>
                   </div>
                 ))}
               </div>
@@ -344,8 +344,8 @@ export default function AdCreativeRhythmPacingOptimizerPage() {
                       <span className="text-xs font-medium text-fg">{b.timing}</span>
                       <span className={`inline-flex items-center text-xs font-medium px-2 py-0.5 rounded-full border ${IMPACT_COLORS[b.impact] || IMPACT_COLORS.medium}`}>{b.impact}</span>
                     </div>
-                    <p className="text-xs text-fg-muted"><span className="font-medium text-fg">Buildup:</span> {b.buildup}</p>
-                    <p className="text-xs text-fg-muted"><span className="font-medium text-fg">Drop:</span> {b.drop}</p>
+                    <p className="text-xs text-fg-muted"><span className="font-medium text-fg">{t('adCreativeRhythmPacingOptimizer.buildup')}:</span> {b.buildup}</p>
+                    <p className="text-xs text-fg-muted"><span className="font-medium text-fg">{t('adCreativeRhythmPacingOptimizer.drop')}:</span> {b.drop}</p>
                   </div>
                 ))}
               </div>
@@ -363,7 +363,7 @@ export default function AdCreativeRhythmPacingOptimizerPage() {
                       <span className="text-xs font-medium text-fg">{tc.fromTempo} → {tc.toTempo}</span>
                       <span className="text-xs text-fg-muted">{tc.timing}</span>
                     </div>
-                    <p className="text-xs text-fg-muted"><span className="font-medium text-fg">Transition:</span> {tc.transition}</p>
+                    <p className="text-xs text-fg-muted"><span className="font-medium text-fg">{t('adCreativeRhythmPacingOptimizer.transition')}:</span> {tc.transition}</p>
                     <p className="text-xs text-fg-muted"><span className="font-medium text-fg">{t('common.resultLabels.reason')}:</span> {tc.reason}</p>
                   </div>
                 ))}

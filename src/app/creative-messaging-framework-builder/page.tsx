@@ -272,7 +272,7 @@ export default function CreativeMessagingFrameworkBuilderPage() {
                       </span>
                     </div>
                     <p className="text-xs text-fg-muted">{p.description}</p>
-                    <p className="text-xs text-fg"><span className="font-medium">{t('creativeMessagingFrameworkBuilder.keyMessage') || 'Key message'}:</span> {p.keyMessage}</p>
+                    <p className="text-xs text-fg"><span className="font-medium">{t('creativeMessagingFrameworkBuilder.keyMessage')}:</span> {p.keyMessage}</p>
                   </div>
                 ))}
               </div>
@@ -293,7 +293,7 @@ export default function CreativeMessagingFrameworkBuilderPage() {
                       </span>
                     </div>
                     <p className="text-sm text-fg">{m.message}</p>
-                    <p className="text-xs text-fg-muted"><span className="font-medium">{t('creativeMessagingFrameworkBuilder.audience') || 'Audience'}:</span> {m.audience}</p>
+                    <p className="text-xs text-fg-muted"><span className="font-medium">{t('creativeMessagingFrameworkBuilder.audience')}:</span> {m.audience}</p>
                   </div>
                 ))}
               </div>
@@ -308,8 +308,8 @@ export default function CreativeMessagingFrameworkBuilderPage() {
                 {result.framework.supportingPoints.map((s: SupportingPoint, i: number) => (
                   <div key={i} className="rounded-lg border border-border bg-bg-secondary p-3 space-y-1">
                     <p className="text-sm text-fg">{s.point}</p>
-                    <p className="text-xs text-fg-muted"><span className="font-medium">{t('creativeMessagingFrameworkBuilder.supports') || 'Supports'}:</span> {s.supportsMessage}</p>
-                    <p className="text-xs text-fg-muted"><span className="font-medium">{t('creativeMessagingFrameworkBuilder.evidence') || 'Evidence'}:</span> {s.evidence}</p>
+                    <p className="text-xs text-fg-muted"><span className="font-medium">{t('creativeMessagingFrameworkBuilder.supports')}:</span> {s.supportsMessage}</p>
+                    <p className="text-xs text-fg-muted"><span className="font-medium">{t('creativeMessagingFrameworkBuilder.evidence')}:</span> {s.evidence}</p>
                   </div>
                 ))}
               </div>
@@ -344,8 +344,8 @@ export default function CreativeMessagingFrameworkBuilderPage() {
                     <p className="text-sm font-medium">{g.attribute}</p>
                     <p className="text-xs text-fg-muted">{g.description}</p>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-1">
-                      <p className="text-xs text-success"><span className="font-medium">Do:</span> {g.do}</p>
-                      <p className="text-xs text-danger"><span className="font-medium">Don&apos;t:</span> {g.dont}</p>
+                      <p className="text-xs text-success"><span className="font-medium">{t('creativeMessagingFrameworkBuilder.do')}:</span> {g.do}</p>
+                      <p className="text-xs text-danger"><span className="font-medium">{t('creativeMessagingFrameworkBuilder.dont')}:</span> {g.dont}</p>
                     </div>
                   </div>
                 ))}

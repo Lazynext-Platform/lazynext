@@ -1707,7 +1707,7 @@ export const frMessages = {
       fldPersuasionMechanisms: 'Mécanismes de persuasion',
       lblCta: 'CTA : ',
     },
-    admin: { title: 'Tableau de bord administrateur', subtitle: 'Gestion des utilisateurs et suivi des créations', tabUsers: 'Utilisateurs', tabCreations: 'Créations', searchPlaceholder: 'Rechercher par email…', search: 'Rechercher', creditsAdjust: '±N', reason: 'raison', apply: 'Appliquer', filterAll: 'Tous', refresh: 'Actualiser', colUser: 'Utilisateur', colCredits: 'Crédits', colCreations: 'Créations', colJoined: 'Inscrit', colAdjust: 'Ajuster', noUsers: 'Aucun utilisateur trouvé.', colTemplate: 'Modèle', colStatus: 'Statut', colPrompt: 'Prompt', colCost: 'Coût', colCreated: 'Créé', colError: 'Erreur', noCreations: 'Aucune création trouvée.', creationMonitoring: 'Suivi des créations', userManagement: 'Gestion des utilisateurs' },
+    admin: { title: 'Tableau de bord administrateur', subtitle: 'Gestion des utilisateurs et suivi des créations', tabUsers: 'Utilisateurs', tabCreations: 'Créations', searchPlaceholder: 'Rechercher par email…', search: 'Rechercher', creditsAdjust: '±N', reason: 'raison', apply: 'Appliquer', filterAll: 'Tous', refresh: 'Actualiser', colUser: 'Utilisateur', colCredits: 'Crédits', colCreations: 'Créations', colJoined: 'Inscrit', colAdjust: 'Ajuster', noUsers: 'Aucun utilisateur trouvé.', colTemplate: 'Modèle', colStatus: 'Statut', colPrompt: 'Prompt', colCost: 'Coût', colCreated: 'Créé', colError: 'Erreur', noCreations: 'Aucune création trouvée.', creationMonitoring: 'Suivi des créations', userManagement: 'Gestion des utilisateurs', accessDenied: 'Accès refusé. Votre e-mail n\'est pas dans la liste des administrateurs.' },
     adminFeedback: { title: 'Tableau de bord des commentaires', subtitle: 'Résumés et entrées individuelles de commentaires', tabFeedback: 'Commentaires', back: "Retour à l'admin", forbidden: "Accès refusé. Votre e-mail n'est pas dans la liste des administrateurs.", loadError: 'Échec du chargement des commentaires. Veuillez réessayer.', empty: 'Aucun commentaire pour le moment.', summaryTitle: 'Résumé par fonctionnalité', summaryCaption: 'Résumé des commentaires par fonctionnalité', entriesTitle: 'Entrées individuelles', entriesCaption: 'Entrées individuelles de commentaires', colFeature: 'Fonctionnalité', colAvgRating: 'Note moyenne', colCount: 'Nombre', colRating: 'Note', colComment: 'Commentaire', colTimestamp: 'Date', refresh: 'Actualiser' },
     reset: { title: 'Réinitialisation du mot de passe', successMessage: 'Votre mot de passe a été modifié. Vous pouvez maintenant vous connecter avec votre nouveau mot de passe.', backToSignIn: 'Retour à la connexion', heading: 'Réinitialiser le mot de passe', subtitle: 'Saisissez votre nouveau mot de passe ci-dessous.', newPassword: 'Nouveau mot de passe (min. 8 caractères)', confirmPassword: 'Confirmer le nouveau mot de passe', resetting: 'Réinitialisation…', reset: 'Réinitialiser le mot de passe', backToSignIn2: 'Retour à la connexion', loading: 'Chargement…', errMismatch: 'Les mots de passe ne correspondent pas', errTooShort: 'Le mot de passe doit comporter au moins 8 caractères', errFailed: 'Échec de la réinitialisation du mot de passe. Veuillez réessayer.', errInvalidToken: 'Lien de réinitialisation invalide ou expiré. Veuillez en demander un nouveau.' },
     editor: {
@@ -1798,6 +1798,7 @@ export const frMessages = {
       tlLoad: 'Charger',
       tlDelete: 'Supprimer',
       tlSaveFailed: 'Échec de l\'enregistrement de la chronologie. Veuillez réessayer.',
+      loadingTimeline: 'Chargement de la chronologie…',
     },
 
     briefIntelligence: {
@@ -3036,6 +3037,13 @@ export const frMessages = {
     brandPersonality: "Personnalité de marque",
     copy: "Copier",
     noResults: "Aucun mood board généré pour le moment. Saisissez un produit ou une marque pour commencer.",
+    primary: 'Primaire',
+    secondary: 'Secondaire',
+    accent: 'Accent',
+    background: 'Arrière-plan',
+    text: 'Texte',
+    references: 'Références',
+    brandHeadline: 'Le titre de votre marque',
   },
   adPerformancePredictor: {
     title: "Prédicteur de Performance Publicitaire",
@@ -3062,6 +3070,12 @@ export const frMessages = {
     bestPostingTime: "Meilleur moment de publication",
     copy: "Copier",
     error: "Prédiction échouée",
+    metric: 'Métrique',
+    predicted: 'Prédit',
+    score: 'Score',
+    confidence: 'Confiance',
+    benchmark: 'Benchmark',
+    rationale: 'Justification',
   },
   abTestPlannerV2: {
     title: "Planificateur de Tests A/B Créatifs",
@@ -3635,6 +3649,7 @@ export const frMessages = {
     copied: 'Copié',
     error: 'Échec de l\'analyse des émotions',
     dryRunNotice: 'Mode simulation — utilisation d\'une analyse modèle',
+    overallEmotionalImpact: 'Impact émotionnel global',
   },
   creativeFormatConverter: {
     title: 'Convertisseur de Formats Créatifs',
@@ -4153,6 +4168,9 @@ export const frMessages = {
     copied: 'Copié',
     error: 'Cartographie des points de douleur échouée',
     dryRunNotice: 'Mode test — utilisation d\'une cartographie modèle',
+    frequency: 'Fréquence',
+    emotionalImpact: 'Impact émotionnel',
+    addresses: 'Traite',
   },
   creativeMessagingFrameworkBuilder: {
     title: 'Constructeur de Cadre de Messages Créatifs',
@@ -4176,6 +4194,12 @@ export const frMessages = {
     copied: 'Copié',
     error: 'Construction du cadre de messages échouée',
     dryRunNotice: 'Mode test — utilisation d\'un cadre modèle',
+    keyMessage: 'Message clé',
+    audience: 'Audience',
+    supports: 'Soutient',
+    evidence: 'Preuve',
+    do: 'Faire',
+    dont: 'Ne pas faire',
   },
   adCreativeBurnoutDetector: {
     title: 'Détecteur de Burnout Créatif Publicitaire',
@@ -4335,6 +4359,8 @@ export const frMessages = {
     copied: 'Copié',
     error: 'Stratégie de persuasion échouée',
     dryRunNotice: 'Mode test — utilisation d\'une stratégie modèle',
+    effect: 'Effet',
+    principle: 'Principe',
   },
   adCreativeHookTimingOptimizer: {
     title: 'Optimiseur de Timing des Hooks Créatifs Publicitaires',
@@ -4356,6 +4382,10 @@ export const frMessages = {
     copied: 'Copié',
     error: 'Optimisation du timing des hooks échouée',
     dryRunNotice: 'Mode test — utilisation d\'un timing modèle',
+    retentionRisk: 'Risque de rétention',
+    currentPlacement: 'Placement actuel',
+    optimalWindow: 'Fenêtre optimale',
+    attentionCurve: "Courbe d'attention",
   },
   creativeAdMetaphorGenerator: {
     title: 'Générateur de Métaphores Créatives Publicitaires',
@@ -4444,6 +4474,8 @@ export const frMessages = {
     copied: 'Copié',
     error: 'Architecture de preuve sociale échouée',
     dryRunNotice: 'Mode test — utilisation d\'une architecture modèle',
+    type: 'Type',
+    integration: 'Intégration',
   },
   adCreativeEmotionSequencer: {
     title: 'Séquenceur d\'Émotions de Créatif Publicitaire',

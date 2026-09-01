@@ -293,9 +293,9 @@ export default function AdCreativeSocialProofArchitectPage() {
                         {t('adCreativeSocialProofArchitect.expectedImpact')}: {s.expectedImpact}
                       </span>
                     </div>
-                    <p className="text-xs text-fg-muted"><span className="font-medium text-fg">Type:</span> {s.proofType.replace(/_/g, ' ')}</p>
+                    <p className="text-xs text-fg-muted"><span className="font-medium text-fg">{t('adCreativeSocialProofArchitect.type')}:</span> {s.proofType.replace(/_/g, ' ')}</p>
                     <p className="text-xs text-fg-muted">{s.implementation}</p>
-                    <p className="text-xs text-fg-muted"><span className="font-medium text-fg">Integration:</span> {s.integration}</p>
+                    <p className="text-xs text-fg-muted"><span className="font-medium text-fg">{t('adCreativeSocialProofArchitect.integration')}:</span> {s.integration}</p>
                   </div>
                 ))}
               </div>

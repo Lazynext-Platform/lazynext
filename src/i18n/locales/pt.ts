@@ -1707,7 +1707,7 @@ export const ptMessages = {
       fldPersuasionMechanisms: 'Mecanismos de persuasão',
       lblCta: 'CTA: ',
     },
-    admin: { title: 'Painel de administração', subtitle: 'Gestão de usuários e monitoramento de criações', tabUsers: 'Usuários', tabCreations: 'Criações', searchPlaceholder: 'Buscar por email…', search: 'Buscar', creditsAdjust: '±N', reason: 'motivo', apply: 'Aplicar', filterAll: 'Todos', refresh: 'Atualizar', colUser: 'Usuário', colCredits: 'Créditos', colCreations: 'Criações', colJoined: 'Cadastro', colAdjust: 'Ajustar', noUsers: 'Nenhum usuário encontrado.', colTemplate: 'Modelo', colStatus: 'Status', colPrompt: 'Prompt', colCost: 'Custo', colCreated: 'Criado', colError: 'Erro', noCreations: 'Nenhuma criação encontrada.', creationMonitoring: 'Monitoramento de criações', userManagement: 'Gestão de usuários' },
+    admin: { title: 'Painel de administração', subtitle: 'Gestão de usuários e monitoramento de criações', tabUsers: 'Usuários', tabCreations: 'Criações', searchPlaceholder: 'Buscar por email…', search: 'Buscar', creditsAdjust: '±N', reason: 'motivo', apply: 'Aplicar', filterAll: 'Todos', refresh: 'Atualizar', colUser: 'Usuário', colCredits: 'Créditos', colCreations: 'Criações', colJoined: 'Cadastro', colAdjust: 'Ajustar', noUsers: 'Nenhum usuário encontrado.', colTemplate: 'Modelo', colStatus: 'Status', colPrompt: 'Prompt', colCost: 'Custo', colCreated: 'Criado', colError: 'Erro', noCreations: 'Nenhuma criação encontrada.', creationMonitoring: 'Monitoramento de criações', userManagement: 'Gestão de usuários', accessDenied: 'Acesso negado. Seu e-mail não está na lista de administradores.' },
     adminFeedback: { title: 'Painel de feedback', subtitle: 'Resumos e entradas individuais de feedback', tabFeedback: 'Feedback', back: 'Voltar para Admin', forbidden: 'Acesso negado. Seu e-mail não está na lista de administradores.', loadError: 'Falha ao carregar feedback. Tente novamente.', empty: 'Nenhum feedback enviado ainda.', summaryTitle: 'Resumo por recurso', summaryCaption: 'Resumo de feedback por recurso', entriesTitle: 'Entradas individuais', entriesCaption: 'Entradas individuais de feedback', colFeature: 'Recurso', colAvgRating: 'Avaliação média', colCount: 'Quantidade', colRating: 'Avaliação', colComment: 'Comentário', colTimestamp: 'Data', refresh: 'Atualizar' },
     reset: { title: 'Redefinição de senha', successMessage: 'Sua senha foi alterada. Agora você pode entrar com sua nova senha.', backToSignIn: 'Voltar para entrar', heading: 'Redefinir senha', subtitle: 'Digite sua nova senha abaixo.', newPassword: 'Nova senha (mín. 8 caracteres)', confirmPassword: 'Confirmar nova senha', resetting: 'Redefinindo…', reset: 'Redefinir senha', backToSignIn2: 'Voltar para entrar', loading: 'Carregando…', errMismatch: 'As senhas não coincidem', errTooShort: 'A senha deve ter pelo menos 8 caracteres', errFailed: 'Falha ao redefinir a senha. Tente novamente.', errInvalidToken: 'Link de redefinição inválido ou expirado. Solicite um novo.' },
     editor: {
@@ -1798,6 +1798,7 @@ export const ptMessages = {
       tlLoad: 'Carregar',
       tlDelete: 'Excluir',
       tlSaveFailed: 'Falha ao salvar linha do tempo. Tente novamente.',
+      loadingTimeline: 'Carregando linha do tempo…',
     },
 
     briefIntelligence: {
@@ -3036,6 +3037,13 @@ export const ptMessages = {
     brandPersonality: "Personalidade da marca",
     copy: "Copiar",
     noResults: "Nenhum mood board gerado ainda. Insira um produto ou marca para começar.",
+    primary: 'Primário',
+    secondary: 'Secundário',
+    accent: 'Acento',
+    background: 'Fundo',
+    text: 'Texto',
+    references: 'Referências',
+    brandHeadline: 'Título da sua marca',
   },
   adPerformancePredictor: {
     title: "Previsor de Desempenho de Anúncios",
@@ -3062,6 +3070,12 @@ export const ptMessages = {
     bestPostingTime: "Melhor horário de publicação",
     copy: "Copiar",
     error: "Previsão falhou",
+    metric: 'Métrica',
+    predicted: 'Previsto',
+    score: 'Pontuação',
+    confidence: 'Confiança',
+    benchmark: 'Benchmark',
+    rationale: 'Justificativa',
   },
   abTestPlannerV2: {
     title: "Planejador de Testes A/B Criativos",
@@ -3635,6 +3649,7 @@ export const ptMessages = {
     copied: 'Copiado',
     error: 'Análise de emoções falhou',
     dryRunNotice: 'Modo simulado — usando análise de modelo',
+    overallEmotionalImpact: 'Impacto Emocional Geral',
   },
   creativeFormatConverter: {
     title: 'Conversor de Formatos Criativos',
@@ -4153,6 +4168,9 @@ export const ptMessages = {
     copied: 'Copiado',
     error: 'Mapeamento de pontos de dor falhou',
     dryRunNotice: 'Modo de teste — usando mapeamento de modelo',
+    frequency: 'Frequência',
+    emotionalImpact: 'Impacto emocional',
+    addresses: 'Aborda',
   },
   creativeMessagingFrameworkBuilder: {
     title: 'Construtor de Estrutura de Mensagens Criativas',
@@ -4176,6 +4194,12 @@ export const ptMessages = {
     copied: 'Copiado',
     error: 'Construção de estrutura de mensagens falhou',
     dryRunNotice: 'Modo de teste — usando estrutura de modelo',
+    keyMessage: 'Mensagem-chave',
+    audience: 'Audiência',
+    supports: 'Suporta',
+    evidence: 'Evidência',
+    do: 'Fazer',
+    dont: 'Não fazer',
   },
   adCreativeBurnoutDetector: {
     title: 'Detector de Burnout Criativo de Anúncios',
@@ -4335,6 +4359,8 @@ export const ptMessages = {
     copied: 'Copiado',
     error: 'Estratégia de persuasão falhou',
     dryRunNotice: 'Modo de teste — usando estratégia de modelo',
+    effect: 'Efeito',
+    principle: 'Princípio',
   },
   adCreativeHookTimingOptimizer: {
     title: 'Otimizador de Tempo de Hooks Criativos Publicitários',
@@ -4356,6 +4382,10 @@ export const ptMessages = {
     copied: 'Copiado',
     error: 'Otimização de tempo de hooks falhou',
     dryRunNotice: 'Modo de teste — usando tempo de modelo',
+    retentionRisk: 'Risco de retenção',
+    currentPlacement: 'Colocação atual',
+    optimalWindow: 'Janela ideal',
+    attentionCurve: 'Curva de atenção',
   },
   creativeAdMetaphorGenerator: {
     title: 'Gerador de Metáforas Criativas Publicitárias',
@@ -4444,6 +4474,8 @@ export const ptMessages = {
     copied: 'Copiado',
     error: 'Arquitetura de prova social falhou',
     dryRunNotice: 'Modo de teste — usando arquitetura de modelo',
+    type: 'Tipo',
+    integration: 'Integração',
   },
   adCreativeEmotionSequencer: {
     title: 'Sequenciador de Emoções de Criativo Publicitário',
@@ -4498,6 +4530,8 @@ export const ptMessages = {
     copied: 'Copiado',
     error: 'Construção de antecipação falhou',
     dryRunNotice: 'Modo de teste — usando antecipação de modelo',
+    apply: 'Aplicar',
+    payoff: 'Recompensa',
   },
   adCreativeContrastAmplifier: {
     title: 'Amplificador de Contraste de Criativo Publicitário',
@@ -4615,6 +4649,10 @@ export const ptMessages = {
     copied: 'Copiado',
     error: 'Estratégia de tensão e liberação falhou',
     dryRunNotice: 'Modo de teste — usando estratégia de tensão de modelo',
+    buildup: 'Acumulação',
+    peak: 'Pico',
+    release: 'Liberação',
+    trigger: 'Gatilho',
   },
   adCreativeSensoryContrastDesigner: {
     title: 'Designer de Contraste Sensorial de Criativo Publicitário',
@@ -4689,6 +4727,10 @@ export const ptMessages = {
     copied: 'Copiado',
     error: 'Otimização de ritmo falhou',
     dryRunNotice: 'Modo de teste — usando otimização de ritmo de modelo',
+    buildup: 'Acumulação',
+    drop: 'Queda',
+    transition: 'Transição',
+    duration: 'Duração',
   },
   creativeAdVisualHierarchyStrategist: {
     title: 'Estrategista de Hierarquia Visual de Criativo Publicitário',
@@ -4711,6 +4753,8 @@ export const ptMessages = {
     copied: 'Copiado',
     error: 'Estratégia de hierarquia visual falhou',
     dryRunNotice: 'Modo de teste — usando hierarquia de modelo',
+    direction: 'Direção',
+    anchors: 'Âncoras',
   },
   adCreativeSoundDesignStrategist: {
     title: 'Estrategista de Design de Som de Criativo Publicitário',
@@ -4834,6 +4878,7 @@ export const ptMessages = {
     copied: 'Copiado',
     error: 'Design de variabilidade de pacing falhou',
     dryRunNotice: 'Modo de teste — usando variabilidade de pacing de modelo',
+    energy: 'Energia',
   },
   creativeAdForeshadowingDesigner: {
     title: 'Designer de Elementos Foreshadowing para Anúncios Criativos',

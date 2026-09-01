@@ -336,7 +336,7 @@ export default function AdCreativePacingVariabilityDesignerPage() {
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="text-xs text-fg-muted w-14">Energy</span>
+                      <span className="text-xs text-fg-muted w-14">{t('adCreativePacingVariabilityDesigner.energy')}</span>
                       <div className="h-1.5 flex-1 rounded-full bg-bg-tertiary overflow-hidden">
                         <div
                           className={`h-full rounded-full ${energyBarColor(v.energy)}`}

@@ -1707,7 +1707,7 @@ export const arMessages = {
       fldPersuasionMechanisms: 'آليات الإقناع',
       lblCta: 'CTA: ',
     },
-    admin: { title: 'لوحة الإدارة', subtitle: 'إدارة المستخدمين ومراقبة الإنشائات', tabUsers: 'المستخدمون', tabCreations: 'الإنشائات', searchPlaceholder: 'البحث بالبريد الإلكتروني…', search: 'بحث', creditsAdjust: '±N', reason: 'السبب', apply: 'تطبيق', filterAll: 'الكل', refresh: 'تحديث', colUser: 'المستخدم', colCredits: 'الرصيد', colCreations: 'الإنشائات', colJoined: 'تاريخ الانضمام', colAdjust: 'تعديل', noUsers: 'لم يتم العثور على مستخدمين.', colTemplate: 'القالب', colStatus: 'الحالة', colPrompt: 'الوصف', colCost: 'التكلفة', colCreated: 'تاريخ الإنشاء', colError: 'خطأ', noCreations: 'لم يتم العثور على إنشائات.', creationMonitoring: 'مراقبة الإنشائات', userManagement: 'إدارة المستخدمين' },
+    admin: { title: 'لوحة الإدارة', subtitle: 'إدارة المستخدمين ومراقبة الإنشائات', tabUsers: 'المستخدمون', tabCreations: 'الإنشائات', searchPlaceholder: 'البحث بالبريد الإلكتروني…', search: 'بحث', creditsAdjust: '±N', reason: 'السبب', apply: 'تطبيق', filterAll: 'الكل', refresh: 'تحديث', colUser: 'المستخدم', colCredits: 'الرصيد', colCreations: 'الإنشائات', colJoined: 'تاريخ الانضمام', colAdjust: 'تعديل', noUsers: 'لم يتم العثور على مستخدمين.', colTemplate: 'القالب', colStatus: 'الحالة', colPrompt: 'الوصف', colCost: 'التكلفة', colCreated: 'تاريخ الإنشاء', colError: 'خطأ', noCreations: 'لم يتم العثور على إنشائات.', creationMonitoring: 'مراقبة الإنشائات', userManagement: 'إدارة المستخدمين', accessDenied: 'تم رفض الوصول. بريدك الإلكتروني غير موجود في قائمة المسؤولين.' },
     adminFeedback: { title: 'لوحة الملاحظات', subtitle: 'ملخصات الملاحظات والمدخلات الفردية', tabFeedback: 'الملاحظات', back: 'العودة إلى الإدارة', forbidden: 'تم رفض الوصول. بريدك الإلكتروني ليس في قائمة المسؤولين.', loadError: 'فشل تحميل الملاحظات. حاول مرة أخرى.', empty: 'لا توجد ملاحظات بعد.', summaryTitle: 'ملخص حسب الميزة', summaryCaption: 'ملخص الملاحظات حسب الميزة', entriesTitle: 'مدخلات فردية', entriesCaption: 'مدخلات الملاحظات الفردية', colFeature: 'الميزة', colAvgRating: 'متوسط التقييم', colCount: 'العدد', colRating: 'التقييم', colComment: 'تعليق', colTimestamp: 'الوقت', refresh: 'تحديث' },
     reset: { title: 'إعادة تعيين كلمة المرور', successMessage: 'تم تغيير كلمة المرور الخاصة بك. يمكنك الآن تسجيل الدخول بكلمة المرور الجديدة.', backToSignIn: 'العودة لتسجيل الدخول', heading: 'إعادة تعيين كلمة المرور', subtitle: 'أدخل كلمة المرور الجديدة أدناه.', newPassword: 'كلمة المرور الجديدة (8 أحرف على الأقل)', confirmPassword: 'تأكيد كلمة المرور الجديدة', resetting: 'جارٍ إعادة التعيين…', reset: 'إعادة تعيين كلمة المرور', backToSignIn2: 'العودة لتسجيل الدخول', loading: 'جارٍ التحميل…', errMismatch: 'كلمتا المرور غير متطابقتين', errTooShort: 'يجب أن تكون كلمة المرور 8 أحرف على الأقل', errFailed: 'فشل إعادة تعيين كلمة المرور. حاول مرة أخرى.', errInvalidToken: 'رابط إعادة التعيين غير صالح أو منتهي الصلاحية. يرجى طلب رابط جديد.' },
     editor: {
@@ -1798,6 +1798,7 @@ export const arMessages = {
       tlLoad: 'تحميل',
       tlDelete: 'حذف',
       tlSaveFailed: 'فشل حفظ الجدول الزمني. حاول مرة أخرى.',
+      loadingTimeline: 'جارٍ تحميل الجدول الزمني…',
     },
 
     briefIntelligence: {
@@ -3036,6 +3037,13 @@ export const arMessages = {
     brandPersonality: "شخصية العلامة التجارية",
     copy: "نسخ",
     noResults: "لم يتم إنشاء لوحة مزاج بعد. أدخل منتجًا أو علامة تجارية للبدء.",
+    primary: 'أساسي',
+    secondary: 'ثانوي',
+    accent: 'مميز',
+    background: 'الخلفية',
+    text: 'النص',
+    references: 'المراجع',
+    brandHeadline: 'عنوان علامتك التجارية',
   },
   adPerformancePredictor: {
     title: "متوقع أداء الإعلان",
@@ -3062,6 +3070,12 @@ export const arMessages = {
     bestPostingTime: "أفضل وقت للنشر",
     copy: "نسخ",
     error: "فشل التوقع",
+    metric: 'المقياس',
+    predicted: 'المتوقع',
+    score: 'الدرجة',
+    confidence: 'الثقة',
+    benchmark: 'المعيار',
+    rationale: 'المبرر',
   },
   abTestPlannerV2: {
     title: "مخطط اختبارات A/B الإبداعية",
@@ -3635,6 +3649,7 @@ export const arMessages = {
     copied: 'تم النسخ',
     error: 'فشل تحليل العواطف',
     dryRunNotice: 'وضع المحاكاة — استخدام تحليل من القوالب',
+    overallEmotionalImpact: 'التأثير العاطفي الإجمالي',
   },
   creativeFormatConverter: {
     title: 'محوّل تنسيقات الإبداع',
@@ -4153,6 +4168,9 @@ export const arMessages = {
     copied: 'تم النسخ',
     error: 'فشل ربط نقاط الألم',
     dryRunNotice: 'وضع التجربة — استخدام ربط من القوالب',
+    frequency: 'التكرار',
+    emotionalImpact: 'التأثير العاطفي',
+    addresses: 'يعالج',
   },
   creativeMessagingFrameworkBuilder: {
     title: 'منشئ إطار عمل الرسائل الإبداعية',
@@ -4176,6 +4194,12 @@ export const arMessages = {
     copied: 'تم النسخ',
     error: 'فشل بناء إطار عمل الرسائل',
     dryRunNotice: 'وضع التجربة — استخدام إطار عمل من القوالب',
+    keyMessage: 'الرسالة الرئيسية',
+    audience: 'الجمهور',
+    supports: 'يدعم',
+    evidence: 'الدليل',
+    do: 'افعل',
+    dont: 'لا تفعل',
   },
   adCreativeBurnoutDetector: {
     title: 'كاشف احتراق الإبداع الإعلاني',
@@ -4335,6 +4359,8 @@ export const arMessages = {
     copied: 'تم النسخ',
     error: 'فشل استراتيجية الإقناع',
     dryRunNotice: 'وضع التجربة — استخدام استراتيجية القوالب',
+    effect: 'التأثير',
+    principle: 'المبدأ',
   },
   adCreativeHookTimingOptimizer: {
     title: 'مُحسّن توقيت الخطاف للإعلان الإبداعي',
@@ -4356,6 +4382,10 @@ export const arMessages = {
     copied: 'تم النسخ',
     error: 'فشل تحسين توقيت الخطاف',
     dryRunNotice: 'وضع التجربة — استخدام توقيت القوالب',
+    retentionRisk: 'خطر الاحتفاظ',
+    currentPlacement: 'الموضع الحالي',
+    optimalWindow: 'النافذة المثلى',
+    attentionCurve: 'منحنى الانتباه',
   },
   creativeAdMetaphorGenerator: {
     title: 'مولّد الاستعارات الإبداعية للإعلان',
@@ -4444,6 +4474,8 @@ export const arMessages = {
     copied: 'تم النسخ',
     error: 'فشل هندسة الدليل الاجتماعي',
     dryRunNotice: 'وضع التجربة — استخدام هندسة القوالب',
+    type: 'النوع',
+    integration: 'التكامل',
   },
   adCreativeEmotionSequencer: {
     title: 'مُسلسِل المشاعر للإعلان الإبداعي',
@@ -4498,6 +4530,8 @@ export const arMessages = {
     copied: 'تم النسخ',
     error: 'فشل بناء الترقّب',
     dryRunNotice: 'وضع التجربة — استخدام ترقّب قوالب',
+    apply: 'تطبيق',
+    payoff: 'المكافأة',
   },
   adCreativeContrastAmplifier: {
     title: 'مُضخِّم التباين للإعلان الإبداعي',
@@ -4615,6 +4649,10 @@ export const arMessages = {
     copied: 'تم النسخ',
     error: 'فشل تخطيط التوتر والتفريغ',
     dryRunNotice: 'وضع التجربة — استخدام استراتيجية توتر قوالب',
+    buildup: 'التصاعد',
+    peak: 'الذروة',
+    release: 'التحرير',
+    trigger: 'المحفز',
   },
   adCreativeSensoryContrastDesigner: {
     title: 'مصمم التباين الحسي للإعلانات الإبداعية',
@@ -4689,6 +4727,10 @@ export const arMessages = {
     copied: 'تم النسخ',
     error: 'فشل تحسين الإيقاع',
     dryRunNotice: 'وضع التجربة — استخدام تحسين إيقاع قوالب',
+    buildup: 'التصاعد',
+    drop: 'الذروة',
+    transition: 'الانتقال',
+    duration: 'المدة',
   },
   creativeAdVisualHierarchyStrategist: {
     title: 'استراتيجي التسلسل الهرمي البصري للإعلانات الإبداعية',
@@ -4711,6 +4753,8 @@ export const arMessages = {
     copied: 'تم النسخ',
     error: 'فشل استراتيجية التسلسل الهرمي البصري',
     dryRunNotice: 'وضع التجربة — استخدام تسلسل هرمي قوالب',
+    direction: 'الاتجاه',
+    anchors: 'المراسي',
   },
   adCreativeSoundDesignStrategist: {
     title: 'استراتيجي تصميم الصوت للإعلانات الإبداعية',
@@ -4834,6 +4878,7 @@ export const arMessages = {
     copied: 'تم النسخ',
     error: 'فشل تصميم تباين الإيقاع',
     dryRunNotice: 'وضع التجربة — استخدام تباين إيقاع قوالب',
+    energy: 'الطاقة',
   },
   creativeAdForeshadowingDesigner: {
     title: 'مصمم عناصر التلميح الاستباقي للإعلانات الإبداعية',

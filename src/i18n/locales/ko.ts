@@ -1707,7 +1707,7 @@ export const koMessages = {
       fldPersuasionMechanisms: '설득 메커니즘',
       lblCta: 'CTA: ',
     },
-    admin: { title: '관리자 대시보드', subtitle: '사용자 관리 및 생성 모니터링', tabUsers: '사용자', tabCreations: '생성물', searchPlaceholder: '이메일로 검색…', search: '검색', creditsAdjust: '±N', reason: '사유', apply: '적용', filterAll: '전체', refresh: '새로고침', colUser: '사용자', colCredits: '크레딧', colCreations: '생성물', colJoined: '가입일', colAdjust: '조정', noUsers: '사용자가 없습니다.', colTemplate: '템플릿', colStatus: '상태', colPrompt: '프롬프트', colCost: '비용', colCreated: '생성일', colError: '오류', noCreations: '생성물이 없습니다.', creationMonitoring: '생성 모니터링', userManagement: '사용자 관리' },
+    admin: { title: '관리자 대시보드', subtitle: '사용자 관리 및 생성 모니터링', tabUsers: '사용자', tabCreations: '생성물', searchPlaceholder: '이메일로 검색…', search: '검색', creditsAdjust: '±N', reason: '사유', apply: '적용', filterAll: '전체', refresh: '새로고침', colUser: '사용자', colCredits: '크레딧', colCreations: '생성물', colJoined: '가입일', colAdjust: '조정', noUsers: '사용자가 없습니다.', colTemplate: '템플릿', colStatus: '상태', colPrompt: '프롬프트', colCost: '비용', colCreated: '생성일', colError: '오류', noCreations: '생성물이 없습니다.', creationMonitoring: '생성 모니터링', userManagement: '사용자 관리', accessDenied: '액세스가 거부되었습니다. 귀하의 이메일이 관리자 목록에 없습니다.' },
     adminFeedback: { title: '피드백 대시보드', subtitle: '사용자 피드백 요약 및 개별 항목', tabFeedback: '피드백', back: '관리자로 돌아가기', forbidden: '접근이 거부되었습니다. 이메일이 관리자 목록에 없습니다.', loadError: '피드백을 불러오지 못했습니다. 다시 시도해주세요.', empty: '아직 피드백이 없습니다.', summaryTitle: '기능별 요약', summaryCaption: '기능별 피드백 요약', entriesTitle: '개별 피드백', entriesCaption: '개별 피드백 항목', colFeature: '기능', colAvgRating: '평균 평점', colCount: '개수', colRating: '평점', colComment: '코멘트', colTimestamp: '시간', refresh: '새로고침' },
     reset: { title: '비밀번호 재설정', successMessage: '비밀번호가 변경되었습니다. 새 비밀번호로 로그인할 수 있습니다.', backToSignIn: '로그인으로 돌아가기', heading: '비밀번호 재설정', subtitle: '아래에 새 비밀번호를 입력하세요.', newPassword: '새 비밀번호 (최소 8자)', confirmPassword: '새 비밀번호 확인', resetting: '재설정 중…', reset: '비밀번호 재설정', backToSignIn2: '로그인으로 돌아가기', loading: '로딩 중…', errMismatch: '비밀번호가 일치하지 않습니다', errTooShort: '비밀번호는 최소 8자 이상이어야 합니다', errFailed: '비밀번호 재설정에 실패했습니다. 다시 시도해주세요.', errInvalidToken: '재설정 링크가 유효하지 않거나 만료되었습니다. 새로 요청해주세요.' },
     editor: {
@@ -1798,6 +1798,7 @@ export const koMessages = {
       tlLoad: '불러오기',
       tlDelete: '삭제',
       tlSaveFailed: '타임라인 저장 실패. 다시 시도해주세요.',
+    loadingTimeline: '타임라인 로딩 중…',
     },
 
     briefIntelligence: {
@@ -3036,6 +3037,13 @@ export const koMessages = {
     brandPersonality: "브랜드 개성",
     copy: "복사",
     noResults: "아직 생성된 무드보드가 없습니다. 제품 또는 브랜드를 입력하여 시작하세요.",
+    primary: '주요',
+    secondary: '보조',
+    accent: '악센트',
+    background: '배경',
+    text: '텍스트',
+    references: '참조',
+    brandHeadline: '브랜드 헤드라인',
   },
   adPerformancePredictor: {
     title: "광고 성과 예측기",
@@ -3062,6 +3070,12 @@ export const koMessages = {
     bestPostingTime: "최적 게시 시간",
     copy: "복사",
     error: "예측 실패",
+    metric: '지표',
+    predicted: '예측',
+    score: '점수',
+    confidence: '신뢰도',
+    benchmark: '벤치마크',
+    rationale: '근거',
   },
   abTestPlannerV2: {
     title: "크리에이티브 A/B 테스트 플래너",
@@ -3635,6 +3649,7 @@ export const koMessages = {
     copied: '복사됨',
     error: '감정 분석 실패',
     dryRunNotice: '드라이런 모드 — 템플릿 분석 사용 중',
+    overallEmotionalImpact: '전체 감정적 영향',
   },
   creativeFormatConverter: {
     title: '크리에이티브 포맷 변환기',
@@ -4153,6 +4168,9 @@ export const koMessages = {
     copied: '복사됨',
     error: '페인포인트 매핑 실패',
     dryRunNotice: '드라이런 모드 — 템플릿 매핑 사용',
+    frequency: '빈도',
+    emotionalImpact: '감정적 영향',
+    addresses: '해결',
   },
   creativeMessagingFrameworkBuilder: {
     title: '크리에이티브 메시징 프레임워크 빌더',
@@ -4176,6 +4194,12 @@ export const koMessages = {
     copied: '복사됨',
     error: '메시징 프레임워크 구축 실패',
     dryRunNotice: '드라이런 모드 — 템플릿 프레임워크 사용',
+    keyMessage: '핵심 메시지',
+    audience: '청중',
+    supports: '지원',
+    evidence: '증거',
+    do: '실행',
+    dont: '금지',
   },
   adCreativeBurnoutDetector: {
     title: '광고 크리에이티브 번아웃 감지기',
@@ -4335,6 +4359,8 @@ export const koMessages = {
     copied: '복사됨',
     error: '설득 전략 실패',
     dryRunNotice: '드라이런 모드 — 템플릿 전략 사용',
+    effect: '효과',
+    principle: '원리',
   },
   adCreativeHookTimingOptimizer: {
     title: '광고 크리에이티브 훅 타이밍 최적화기',
@@ -4356,6 +4382,10 @@ export const koMessages = {
     copied: '복사됨',
     error: '훅 타이밍 최적화 실패',
     dryRunNotice: '드라이런 모드 — 템플릿 타이밍 사용',
+    retentionRisk: '리텐션 위험',
+    currentPlacement: '현재 배치',
+    optimalWindow: '최적의 윈도우',
+    attentionCurve: '주목 곡선',
   },
   creativeAdMetaphorGenerator: {
     title: '크리에이티브 광고 메타포 생성기',
@@ -4444,6 +4474,8 @@ export const koMessages = {
     copied: '복사됨',
     error: '소셜 증명 설계 실패',
     dryRunNotice: '드라이런 모드 — 템플릿 설계 사용',
+    type: '유형',
+    integration: '통합',
   },
   adCreativeEmotionSequencer: {
     title: '광고 크리에이티브 감정 시퀀서',
@@ -4498,6 +4530,8 @@ export const koMessages = {
     copied: '복사됨',
     error: '기대감 구축 실패',
     dryRunNotice: '드라이런 모드 — 템플릿 기대감 사용',
+    apply: '적용',
+    payoff: '페이오프',
   },
   adCreativeContrastAmplifier: {
     title: '광고 크리에이티브 대비 증폭기',
@@ -4615,6 +4649,10 @@ export const koMessages = {
     copied: '복사됨',
     error: '텐션 릴리스 전략화 실패',
     dryRunNotice: '드라이런 모드 — 템플릿 텐션 전략 사용',
+    buildup: '빌드업',
+    peak: '피크',
+    release: '릴리스',
+    trigger: '트리거',
   },
   adCreativeSensoryContrastDesigner: {
     title: '광고 크리에이티브 감각 대비 디자이너',
@@ -4689,6 +4727,10 @@ export const koMessages = {
     copied: '복사됨',
     error: '리듬 최적화 실패',
     dryRunNotice: '드라이런 모드 — 템플릿 리듬 최적화 사용',
+    buildup: '빌드업',
+    drop: '드롭',
+    transition: '전환',
+    duration: '지속 시간',
   },
   creativeAdVisualHierarchyStrategist: {
     title: '크리에이티브 광고 비주얼 계층 전략가',
@@ -4711,6 +4753,8 @@ export const koMessages = {
     copied: '복사됨',
     error: '비주얼 계층 전략화 실패',
     dryRunNotice: '드라이런 모드 — 템플릿 계층 사용',
+    direction: '방향',
+    anchors: '앵커',
   },
   adCreativeSoundDesignStrategist: {
     title: '광고 크리에이티브 사운드 디자인 전략가',
@@ -4834,6 +4878,7 @@ export const koMessages = {
     copied: '복사됨',
     error: '페이싱 가변성 디자인 실패',
     dryRunNotice: '드라이런 모드 — 템플릿 페이싱 가변성 사용',
+    energy: '에너지',
   },
   creativeAdForeshadowingDesigner: {
     title: '크리에이티브 광고 복선 요소 디자이너',

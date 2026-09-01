@@ -1686,7 +1686,7 @@ export const idMessages = {
       fldPersuasionMechanisms: 'Mekanisme persuasi',
       lblCta: 'CTA: ',
     },
-    admin: { title: 'Dasbor Admin', subtitle: 'Manajemen pengguna dan pemantauan kreasi', tabUsers: 'Pengguna', tabCreations: 'Kreasi', searchPlaceholder: 'Cari berdasarkan email…', search: 'Cari', creditsAdjust: '±N', reason: 'alasan', apply: 'Terapkan', filterAll: 'Semua', refresh: 'Segarkan', colUser: 'Pengguna', colCredits: 'Kredit', colCreations: 'Kreasi', colJoined: 'Bergabung', colAdjust: 'Sesuaikan', noUsers: 'Tidak ada pengguna ditemukan.', colTemplate: 'Templat', colStatus: 'Status', colPrompt: 'Prompt', colCost: 'Biaya', colCreated: 'Dibuat', colError: 'Error', noCreations: 'Tidak ada kreasi ditemukan.', creationMonitoring: 'Pemantauan kreasi', userManagement: 'Manajemen pengguna' },
+    admin: { title: 'Dasbor Admin', subtitle: 'Manajemen pengguna dan pemantauan kreasi', tabUsers: 'Pengguna', tabCreations: 'Kreasi', searchPlaceholder: 'Cari berdasarkan email…', search: 'Cari', creditsAdjust: '±N', reason: 'alasan', apply: 'Terapkan', filterAll: 'Semua', refresh: 'Segarkan', colUser: 'Pengguna', colCredits: 'Kredit', colCreations: 'Kreasi', colJoined: 'Bergabung', colAdjust: 'Sesuaikan', noUsers: 'Tidak ada pengguna ditemukan.', colTemplate: 'Templat', colStatus: 'Status', colPrompt: 'Prompt', colCost: 'Biaya', colCreated: 'Dibuat', colError: 'Error', noCreations: 'Tidak ada kreasi ditemukan.', creationMonitoring: 'Pemantauan kreasi', userManagement: 'Manajemen pengguna', accessDenied: 'Akses ditolak. Email Anda tidak ada dalam daftar admin.' },
     adminFeedback: { title: 'Dasbor Umpan Balik', subtitle: 'Ringkasan umpan balik dan entri individual', tabFeedback: 'Umpan Balik', back: 'Kembali ke Admin', forbidden: 'Akses ditolak. Email Anda tidak ada dalam daftar admin.', loadError: 'Gagal memuat umpan balik. Coba lagi.', empty: 'Belum ada umpan balik.', summaryTitle: 'Ringkasan per fitur', summaryCaption: 'Ringkasan umpan balik per fitur', entriesTitle: 'Entri individual', entriesCaption: 'Entri umpan balik individual', colFeature: 'Fitur', colAvgRating: 'Rating rata-rata', colCount: 'Jumlah', colRating: 'Rating', colComment: 'Komentar', colTimestamp: 'Waktu', refresh: 'Segarkan' },
     reset: { title: 'Reset Kata Sandi', successMessage: 'Kata sandi Anda telah diubah. Anda sekarang dapat masuk dengan kata sandi baru.', backToSignIn: 'Kembali ke Masuk', heading: 'Reset Kata Sandi', subtitle: 'Masukkan kata sandi baru Anda di bawah.', newPassword: 'Kata sandi baru (min. 8 karakter)', confirmPassword: 'Konfirmasi kata sandi baru', resetting: 'Meriset…', reset: 'Reset Kata Sandi', backToSignIn2: 'Kembali ke masuk', loading: 'Memuat…', errMismatch: 'Kata sandi tidak cocok', errTooShort: 'Kata sandi harus minimal 8 karakter', errFailed: 'Gagal mereset kata sandi. Silakan coba lagi.', errInvalidToken: 'Tautan reset tidak valid atau kedaluwarsa. Silakan minta yang baru.' },
     editor: {
@@ -1777,6 +1777,7 @@ export const idMessages = {
       tlLoad: 'Muat',
       tlDelete: 'Hapus',
       tlSaveFailed: 'Gagal menyimpan garis waktu. Silakan coba lagi.',
+    loadingTimeline: 'Memuat linimasa…',
     },
 
     briefIntelligence: {
@@ -3015,6 +3016,13 @@ export const idMessages = {
     brandPersonality: "Kepribadian merek",
     copy: "Salin",
     noResults: "Belum ada mood board yang dibuat. Masukkan produk atau merek untuk memulai.",
+    primary: 'Primer',
+    secondary: 'Sekunder',
+    accent: 'Aksen',
+    background: 'Latar belakang',
+    text: 'Teks',
+    references: 'Referensi',
+    brandHeadline: 'Judul Merek Anda',
   },
   adPerformancePredictor: {
     title: "Prediktor Performa Iklan",
@@ -3041,6 +3049,12 @@ export const idMessages = {
     bestPostingTime: "Waktu posting terbaik",
     copy: "Salin",
     error: "Prediksi gagal",
+    metric: 'Metrik',
+    predicted: 'Diprediksi',
+    score: 'Skor',
+    confidence: 'Keyakinan',
+    benchmark: 'Benchmark',
+    rationale: 'Rasional',
   },
   abTestPlannerV2: {
     title: "Perencana A/B Test Kreatif",
@@ -3614,6 +3628,7 @@ export const idMessages = {
     copied: 'Disalin',
     error: 'Analisis emosi gagal',
     dryRunNotice: 'Mode uji-coba — menggunakan analisis templat',
+    overallEmotionalImpact: 'Dampak emosional keseluruhan',
   },
   creativeFormatConverter: {
     title: 'Pengonversi Format Kreatif',
@@ -4132,6 +4147,9 @@ export const idMessages = {
     copied: 'Disalin',
     error: 'Pemetaan titik nyeri gagal',
     dryRunNotice: 'Mode uji-coba — menggunakan pemetaan templat',
+    frequency: 'Frekuensi',
+    emotionalImpact: 'Dampak emosional',
+    addresses: 'Menangani',
   },
   creativeMessagingFrameworkBuilder: {
     title: 'Pembangun Kerangka Pesan Kreatif',
@@ -4155,6 +4173,12 @@ export const idMessages = {
     copied: 'Disalin',
     error: 'Pembangunan kerangka pesan gagal',
     dryRunNotice: 'Mode uji-coba — menggunakan kerangka templat',
+    keyMessage: 'Pesan kunci',
+    audience: 'Audiens',
+    supports: 'Mendukung',
+    evidence: 'Bukti',
+    do: 'Lakukan',
+    dont: 'Jangan',
   },
   adCreativeBurnoutDetector: {
     title: 'Detektor Kelelahan Kreatif Iklan',
@@ -4314,6 +4338,8 @@ export const idMessages = {
     copied: 'Disalin',
     error: 'Strategi persuasi gagal',
     dryRunNotice: 'Mode uji-coba — menggunakan strategi templat',
+    effect: 'Efek',
+    principle: 'Prinsip',
   },
   adCreativeHookTimingOptimizer: {
     title: 'Pengoptimal Waktu Hook Iklan Kreatif',
@@ -4335,6 +4361,10 @@ export const idMessages = {
     copied: 'Disalin',
     error: 'Optimasi waktu hook gagal',
     dryRunNotice: 'Mode uji-coba — menggunakan waktu templat',
+    retentionRisk: 'Risiko retensi',
+    currentPlacement: 'Penempatan saat ini',
+    optimalWindow: 'Jendela optimal',
+    attentionCurve: 'Kurva perhatian',
   },
   creativeAdMetaphorGenerator: {
     title: 'Generator Metafora Iklan Kreatif',
@@ -4423,6 +4453,8 @@ export const idMessages = {
     copied: 'Disalin',
     error: 'Arsiteksi bukti sosial gagal',
     dryRunNotice: 'Mode uji-coba — menggunakan arsitektur templat',
+    type: 'Tipe',
+    integration: 'Integrasi',
   },
   adCreativeEmotionSequencer: {
     title: 'Pengurut Emosi Iklan Kreatif',
@@ -4477,6 +4509,8 @@ export const idMessages = {
     copied: 'Disalin',
     error: 'Pembangunan antisipasi gagal',
     dryRunNotice: 'Mode uji-coba — menggunakan antisipasi templat',
+    apply: 'Terapkan',
+    payoff: 'Imbalan',
   },
   adCreativeContrastAmplifier: {
     title: 'Penguat Kontras Iklan Kreatif',
@@ -4594,6 +4628,10 @@ export const idMessages = {
     copied: 'Disalin',
     error: 'Penyusunan strategi pelepasan ketegangan gagal',
     dryRunNotice: 'Mode uji-coba — menggunakan strategi ketegangan templat',
+    buildup: 'Penumpukan',
+    peak: 'Puncak',
+    release: 'Pelepasan',
+    trigger: 'Pemicu',
   },
   adCreativeSensoryContrastDesigner: {
     title: 'Perancang Kontras Sensoris Iklan Kreatif',
@@ -4668,6 +4706,10 @@ export const idMessages = {
     copied: 'Disalin',
     error: 'Optimasi irama gagal',
     dryRunNotice: 'Mode uji-coba — menggunakan optimasi irama templat',
+    buildup: 'Penumpukan',
+    drop: 'Penurunan',
+    transition: 'Transisi',
+    duration: 'Durasi',
   },
   creativeAdVisualHierarchyStrategist: {
     title: 'Strategis Hierarki Visual Iklan Kreatif',
@@ -4690,6 +4732,8 @@ export const idMessages = {
     copied: 'Disalin',
     error: 'Strategi hierarki visual gagal',
     dryRunNotice: 'Mode uji-coba — menggunakan hierarki templat',
+    direction: 'Arah',
+    anchors: 'Jangkar',
   },
   adCreativeSoundDesignStrategist: {
     title: 'Strategis Desain Suara Iklan Kreatif',
@@ -4813,6 +4857,7 @@ export const idMessages = {
     copied: 'Disalin',
     error: 'Perancangan variabilitas pacing gagal',
     dryRunNotice: 'Mode uji-coba — menggunakan variabilitas pacing template',
+    energy: 'Energi',
   },
   creativeAdForeshadowingDesigner: {
     title: 'Designer Elemen Foreshadowing Iklan Kreatif',

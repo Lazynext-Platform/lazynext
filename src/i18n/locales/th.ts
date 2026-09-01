@@ -1708,7 +1708,7 @@ export const thMessages = {
       fldPersuasionMechanisms: 'กลไกการโน้มน้าว',
       lblCta: 'CTA: ',
     },
-    admin: { title: 'แดชบอร์ดผู้ดูแลระบบ', subtitle: 'การจัดการผู้ใช้และการติดตามการสร้าง', tabUsers: 'ผู้ใช้', tabCreations: 'การสร้าง', searchPlaceholder: 'ค้นหาด้วยอีเมล…', search: 'ค้นหา', creditsAdjust: '±N', reason: 'เหตุผล', apply: 'นำไปใช้', filterAll: 'ทั้งหมด', refresh: 'รีเฟรช', colUser: 'ผู้ใช้', colCredits: 'เครดิต', colCreations: 'การสร้าง', colJoined: 'วันที่เข้าร่วม', colAdjust: 'ปรับ', noUsers: 'ไม่พบผู้ใช้', colTemplate: 'เทมเพลต', colStatus: 'สถานะ', colPrompt: 'พรอมต์', colCost: 'ต้นทุน', colCreated: 'วันที่สร้าง', colError: 'ข้อผิดพลาด', noCreations: 'ไม่พบการสร้าง', creationMonitoring: 'การติดตามการสร้าง', userManagement: 'การจัดการผู้ใช้' },
+    admin: { title: 'แดชบอร์ดผู้ดูแลระบบ', subtitle: 'การจัดการผู้ใช้และการติดตามการสร้าง', tabUsers: 'ผู้ใช้', tabCreations: 'การสร้าง', searchPlaceholder: 'ค้นหาด้วยอีเมล…', search: 'ค้นหา', creditsAdjust: '±N', reason: 'เหตุผล', apply: 'นำไปใช้', filterAll: 'ทั้งหมด', refresh: 'รีเฟรช', colUser: 'ผู้ใช้', colCredits: 'เครดิต', colCreations: 'การสร้าง', colJoined: 'วันที่เข้าร่วม', colAdjust: 'ปรับ', noUsers: 'ไม่พบผู้ใช้', colTemplate: 'เทมเพลต', colStatus: 'สถานะ', colPrompt: 'พรอมต์', colCost: 'ต้นทุน', colCreated: 'วันที่สร้าง', colError: 'ข้อผิดพลาด', noCreations: 'ไม่พบการสร้าง', creationMonitoring: 'การติดตามการสร้าง', userManagement: 'การจัดการผู้ใช้', accessDenied: 'การเข้าถึงถูกปฏิเสธ อีเมลของคุณไม่อยู่ในรายการผู้ดูแล' },
     adminFeedback: { title: 'แดชบอร์ดความคิดเห็น', subtitle: 'สรุปความคิดเห็นและรายการแต่ละรายการ', tabFeedback: 'ความคิดเห็น', back: 'กลับไปที่ผู้ดูแล', forbidden: 'ปฏิเสธการเข้าถึง อีเมลของคุณไม่อยู่ในรายการผู้ดูแล', loadError: 'โหลดความคิดเห็นไม่สำเร็จ กรุณาลองอีกครั้ง', empty: 'ยังไม่มีความคิดเห็น', summaryTitle: 'สรุปตามฟีเจอร์', summaryCaption: 'สรุปความคิดเห็นตามฟีเจอร์', entriesTitle: 'รายการแต่ละรายการ', entriesCaption: 'รายการความคิดเห็นแต่ละรายการ', colFeature: 'ฟีเจอร์', colAvgRating: 'คะแนนเฉลี่ย', colCount: 'จำนวน', colRating: 'คะแนน', colComment: 'ความคิดเห็น', colTimestamp: 'เวลา', refresh: 'รีเฟรช' },
     reset: { title: 'รีเซ็ตรหัสผ่าน', successMessage: 'รหัสผ่านของคุณถูกเปลี่ยนแล้ว คุณสามารถเข้าสู่ระบบด้วยรหัสผ่านใหม่ได้', backToSignIn: 'กลับไปเข้าสู่ระบบ', heading: 'รีเซ็ตรหัสผ่าน', subtitle: 'กรอกรหัสผ่านใหม่ด้านล่าง', newPassword: 'รหัสผ่านใหม่ (อย่างน้อย 8 ตัวอักษร)', confirmPassword: 'ยืนยันรหัสผ่านใหม่', resetting: 'กำลังรีเซ็ต…', reset: 'รีเซ็ตรหัสผ่าน', backToSignIn2: 'กลับไปเข้าสู่ระบบ', loading: 'กำลังโหลด…', errMismatch: 'รหัสผ่านไม่ตรงกัน', errTooShort: 'รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร', errFailed: 'รีเซ็ตรหัสผ่านไม่สำเร็จ กรุณาลองอีกครั้ง', errInvalidToken: 'ลิงก์รีเซ็ตไม่ถูกต้องหรือหมดอายุ กรุณาขอลิงก์ใหม่' },
     editor: {
@@ -1799,6 +1799,7 @@ export const thMessages = {
       tlLoad: 'โหลด',
       tlDelete: 'ลบ',
       tlSaveFailed: 'บันทึกไทม์ไลน์ล้มเหลว กรุณาลองอีกครั้ง',
+      loadingTimeline: 'กำลังโหลดไทม์ไลน์…',
     },
 
     briefIntelligence: {
@@ -3037,6 +3038,13 @@ export const thMessages = {
     brandPersonality: "บุคลิกแบรนด์",
     copy: "คัดลอก",
     noResults: "ยังไม่มี mood board ที่สร้างขึ้น ป้อนสินค้าหรือแบรนด์เพื่อเริ่มต้น",
+    primary: 'หลัก',
+    secondary: 'รอง',
+    accent: 'เน้น',
+    background: 'พื้นหลัง',
+    text: 'ข้อความ',
+    references: 'อ้างอิง',
+    brandHeadline: 'พาดหัวแบรนด์ของคุณ',
   },
   adPerformancePredictor: {
     title: "ตัวทำนายประสิทธิภาพโฆษณา",
@@ -3063,6 +3071,12 @@ export const thMessages = {
     bestPostingTime: "เวลาโพสต์ที่ดีที่สุด",
     copy: "คัดลอก",
     error: "การทำนายล้มเหลว",
+    metric: 'เมตริก',
+    predicted: 'คาดการณ์',
+    score: 'คะแนน',
+    confidence: 'ความมั่นใจ',
+    benchmark: 'เกณฑ์อ้างอิง',
+    rationale: 'เหตุผล',
   },
   abTestPlannerV2: {
     title: "ตัววางแผน A/B Test สร้างสรรค์",
@@ -3636,6 +3650,7 @@ export const thMessages = {
     copied: 'คัดลอกแล้ว',
     error: 'การวิเคราะห์อารมณ์ล้มเหลว',
     dryRunNotice: 'โหมดจำลอง — ใช้การวิเคราะห์จากเทมเพลต',
+    overallEmotionalImpact: 'ผลกระทบทางอารมณ์โดยรวม',
   },
   creativeFormatConverter: {
     title: 'ตัวแปลงฟอร์แมตครีเอทีฟ',
@@ -4154,6 +4169,9 @@ export const thMessages = {
     copied: 'คัดลอกแล้ว',
     error: 'การจับคู้จุดปวดล้มเหลว',
     dryRunNotice: 'โหมดทดลอง — ใช้การจับคู้แม่แบบ',
+    frequency: 'ความถี่',
+    emotionalImpact: 'ผลกระทบทางอารมณ์',
+    addresses: 'จัดการ',
   },
   creativeMessagingFrameworkBuilder: {
     title: 'ตัวสร้างกรอบข้อความสร้างสรรค์',
@@ -4177,6 +4195,12 @@ export const thMessages = {
     copied: 'คัดลอกแล้ว',
     error: 'การสร้างกรอบข้อความล้มเหลว',
     dryRunNotice: 'โหมดทดลอง — ใช้กรอบแม่แบบ',
+    keyMessage: 'ข้อความหลัก',
+    audience: 'ผู้ชม',
+    supports: 'สนับสนุน',
+    evidence: 'หลักฐาน',
+    do: 'ทำ',
+    dont: 'ห้ามทำ',
   },
   adCreativeBurnoutDetector: {
     title: 'ตัวตรวจจับภาวะเหนื่อยล้าของครีเอทีฟโฆษณา',
@@ -4336,6 +4360,8 @@ export const thMessages = {
     copied: 'คัดลอกแล้ว',
     error: 'กลยุทธ์การโน้มน้าวล้มเหลว',
     dryRunNotice: 'โหมดทดลอง — ใช้กลยุทธ์แม่แบบ',
+    effect: 'ผลกระทบ',
+    principle: 'หลักการ',
   },
   adCreativeHookTimingOptimizer: {
     title: 'ผู้เพิ่มประสิทธิภาพจังหวะฮุกโฆษณาสร้างสรรค์',
@@ -4357,6 +4383,10 @@ export const thMessages = {
     copied: 'คัดลอกแล้ว',
     error: 'การเพิ่มประสิทธิภาพจังหวะฮุกล้มเหลว',
     dryRunNotice: 'โหมดทดลอง — ใช้จังหวะแม่แบบ',
+    retentionRisk: 'ความเสี่ยงการรักษา',
+    currentPlacement: 'ตำแหน่งปัจจุบัน',
+    optimalWindow: 'หน้าต่างที่เหมาะสม',
+    attentionCurve: 'เส้นโค้งความสนใจ',
   },
   creativeAdMetaphorGenerator: {
     title: 'ตัวสร้างอุปมาโฆษณาสร้างสรรค์',
@@ -4445,6 +4475,8 @@ export const thMessages = {
     copied: 'คัดลอกแล้ว',
     error: 'การสถาปนาหลักฐานทางสังคมล้มเหลว',
     dryRunNotice: 'โหมดทดลอง — ใช้สถาปัตยกรรมแม่แบบ',
+    type: 'ประเภท',
+    integration: 'การบูรณาการ',
   },
   adCreativeEmotionSequencer: {
     title: 'ผู้จัดลำดับอารมณ์โฆษณาครีเอทีฟ',
@@ -4499,6 +4531,8 @@ export const thMessages = {
     copied: 'คัดลอกแล้ว',
     error: 'การสร้างความคาดหวังล้มเหลว',
     dryRunNotice: 'โหมดทดลอง — ใช้ความคาดหวังแม่แบบ',
+    apply: 'นำไปใช้',
+    payoff: 'ผลตอบแทน',
   },
   adCreativeContrastAmplifier: {
     title: 'ตัวขยายความคมชัดโฆษณาครีเอทีฟ',
@@ -4616,6 +4650,10 @@ export const thMessages = {
     copied: 'คัดลอกแล้ว',
     error: 'การวางกลยุทธ์การคลายความตึงเครียดล้มเหลว',
     dryRunNotice: 'โหมดทดลอง — ใช้กลยุทธ์ความตึงเครียดแม่แบบ',
+    buildup: 'การสร้าง',
+    peak: 'จุดสูงสุด',
+    release: 'การปล่อย',
+    trigger: 'ตัวกระตุ้น',
   },
   adCreativeSensoryContrastDesigner: {
     title: 'ผู้ออกแบบความคมชัดทางประสาทสัมผัสโฆษณาครีเอทีฟ',
@@ -4690,6 +4728,10 @@ export const thMessages = {
     copied: 'คัดลอกแล้ว',
     error: 'การเพิ่มประสิทธิภาพจังหวะล้มเหลว',
     dryRunNotice: 'โหมดทดลอง — ใช้การเพิ่มประสิทธิภาพจังหวะแม่แบบ',
+    buildup: 'การสร้าง',
+    drop: 'จุดดรอป',
+    transition: 'การเปลี่ยนผ่าน',
+    duration: 'ระยะเวลา',
   },
   creativeAdVisualHierarchyStrategist: {
     title: 'ผู้วางกลยุทธ์ลำดับชั้นภาพโฆษณาครีเอทีฟ',
@@ -4712,6 +4754,8 @@ export const thMessages = {
     copied: 'คัดลอกแล้ว',
     error: 'กลยุทธ์ลำดับชั้นภาพล้มเหลว',
     dryRunNotice: 'โหมดทดลอง — ใช้ลำดับชั้นแม่แบบ',
+    direction: 'ทิศทาง',
+    anchors: 'จุดยึด',
   },
   adCreativeSoundDesignStrategist: {
     title: 'ผู้วางกลยุทธ์การออกแบบเสียงโฆษณาครีเอทีฟ',
@@ -4835,6 +4879,7 @@ export const thMessages = {
     copied: 'คัดลอกแล้ว',
     error: 'การออกแบบความผันแปรของจังหวะล้มเหลว',
     dryRunNotice: 'โหมดทดลอง — ใช้ความผันแปรของจังหวะจากเทมเพลต',
+    energy: 'พลังงาน',
   },
   creativeAdForeshadowingDesigner: {
     title: 'ดีไซเนอร์องค์ประกอบฟอร์ชาโดว์อิงโฆษณาครีเอทีฟ',

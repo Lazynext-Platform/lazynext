@@ -1709,7 +1709,7 @@ export const esMessages = {
       fldPersuasionMechanisms: 'Mecanismos de persuasión',
       lblCta: 'CTA: ',
     },
-    admin: { title: 'Panel de administración', subtitle: 'Gestión de usuarios y supervisión de creaciones', tabUsers: 'Usuarios', tabCreations: 'Creaciones', searchPlaceholder: 'Buscar por correo…', search: 'Buscar', creditsAdjust: '±N', reason: 'motivo', apply: 'Aplicar', filterAll: 'Todos', refresh: 'Actualizar', colUser: 'Usuario', colCredits: 'Créditos', colCreations: 'Creaciones', colJoined: 'Registro', colAdjust: 'Ajustar', noUsers: 'No se encontraron usuarios.', colTemplate: 'Plantilla', colStatus: 'Estado', colPrompt: 'Prompt', colCost: 'Costo', colCreated: 'Creado', colError: 'Error', noCreations: 'No se encontraron creaciones.', creationMonitoring: 'Supervisión de creaciones', userManagement: 'Gestión de usuarios' },
+    admin: { title: 'Panel de administración', subtitle: 'Gestión de usuarios y supervisión de creaciones', tabUsers: 'Usuarios', tabCreations: 'Creaciones', searchPlaceholder: 'Buscar por correo…', search: 'Buscar', creditsAdjust: '±N', reason: 'motivo', apply: 'Aplicar', filterAll: 'Todos', refresh: 'Actualizar', colUser: 'Usuario', colCredits: 'Créditos', colCreations: 'Creaciones', colJoined: 'Registro', colAdjust: 'Ajustar', noUsers: 'No se encontraron usuarios.', colTemplate: 'Plantilla', colStatus: 'Estado', colPrompt: 'Prompt', colCost: 'Costo', colCreated: 'Creado', colError: 'Error', noCreations: 'No se encontraron creaciones.', creationMonitoring: 'Supervisión de creaciones', userManagement: 'Gestión de usuarios', accessDenied: 'Acceso denegado. Su correo electrónico no está en la lista de administradores.' },
     adminFeedback: { title: 'Panel de comentarios', subtitle: 'Resúmenes y entradas individuales de comentarios', tabFeedback: 'Comentarios', back: 'Volver a Admin', forbidden: 'Acceso denegado. Tu correo no está en la lista de administradores.', loadError: 'Error al cargar comentarios. Inténtalo de nuevo.', empty: 'Aún no hay comentarios.', summaryTitle: 'Resumen por función', summaryCaption: 'Resumen de comentarios por función', entriesTitle: 'Entradas individuales', entriesCaption: 'Entradas individuales de comentarios', colFeature: 'Función', colAvgRating: 'Calificación media', colCount: 'Cantidad', colRating: 'Calificación', colComment: 'Comentario', colTimestamp: 'Fecha', refresh: 'Actualizar' },
     reset: { title: 'Restablecimiento de contraseña', successMessage: 'Tu contraseña ha sido cambiada. Ya puedes iniciar sesión con tu nueva contraseña.', backToSignIn: 'Volver a iniciar sesión', heading: 'Restablecer contraseña', subtitle: 'Introduce tu nueva contraseña a continuación.', newPassword: 'Nueva contraseña (mín. 8 caracteres)', confirmPassword: 'Confirmar nueva contraseña', resetting: 'Restableciendo…', reset: 'Restablecer contraseña', backToSignIn2: 'Volver a iniciar sesión', loading: 'Cargando…', errMismatch: 'Las contraseñas no coinciden', errTooShort: 'La contraseña debe tener al menos 8 caracteres', errFailed: 'No se pudo restablecer la contraseña. Inténtalo de nuevo.', errInvalidToken: 'El enlace de restablecimiento es inválido o ha expirado. Solicita uno nuevo.' },
     editor: {
@@ -1800,6 +1800,7 @@ export const esMessages = {
       tlLoad: 'Cargar',
       tlDelete: 'Eliminar',
       tlSaveFailed: 'Error al guardar la línea de tiempo. Inténtalo de nuevo.',
+      loadingTimeline: 'Cargando línea de tiempo…',
     },
 
     briefIntelligence: {
@@ -3038,6 +3039,13 @@ export const esMessages = {
     brandPersonality: "Personalidad de marca",
     copy: "Copiar",
     noResults: "Aún no se ha generado ningún mood board. Ingresa un producto o marca para comenzar.",
+    primary: 'Primario',
+    secondary: 'Secundario',
+    accent: 'Acento',
+    background: 'Fondo',
+    text: 'Texto',
+    references: 'Referencias',
+    brandHeadline: 'El titular de su marca',
   },
   adPerformancePredictor: {
     title: "Predictor de Rendimiento de Anuncios",
@@ -3064,6 +3072,12 @@ export const esMessages = {
     bestPostingTime: "Mejor hora de publicación",
     copy: "Copiar",
     error: "Predicción fallida",
+    metric: 'Métrica',
+    predicted: 'Predicho',
+    score: 'Puntuación',
+    confidence: 'Confianza',
+    benchmark: 'Benchmark',
+    rationale: 'Justificación',
   },
   abTestPlannerV2: {
     title: "Planificador de Tests A/B Creativos",
@@ -3637,6 +3651,7 @@ export const esMessages = {
     copied: 'Copiado',
     error: 'Análisis de emociones fallido',
     dryRunNotice: 'Modo simulación — usando análisis de plantilla',
+    overallEmotionalImpact: 'Impacto emocional general',
   },
   creativeFormatConverter: {
     title: 'Conversor de Formatos Creativos',
@@ -4155,6 +4170,9 @@ export const esMessages = {
     copied: 'Copiado',
     error: 'Mapeo de puntos de dolor fallido',
     dryRunNotice: 'Modo de prueba — usando mapeo de plantilla',
+    frequency: 'Frecuencia',
+    emotionalImpact: 'Impacto emocional',
+    addresses: 'Aborda',
   },
   creativeMessagingFrameworkBuilder: {
     title: 'Constructor de Marco de Mensajes Creativos',
@@ -4178,6 +4196,12 @@ export const esMessages = {
     copied: 'Copiado',
     error: 'Construcción de marco de mensajes fallida',
     dryRunNotice: 'Modo de prueba — usando marco de plantilla',
+    keyMessage: 'Mensaje clave',
+    audience: 'Audiencia',
+    supports: 'Soporta',
+    evidence: 'Evidencia',
+    do: 'Hacer',
+    dont: 'No hagas',
   },
   adCreativeBurnoutDetector: {
     title: 'Detector de Burnout Creativo de Anuncios',
@@ -4337,6 +4361,8 @@ export const esMessages = {
     copied: 'Copiado',
     error: 'Estrategia de persuasión fallida',
     dryRunNotice: 'Modo de prueba — usando estrategia de plantilla',
+    effect: 'Efecto',
+    principle: 'Principio',
   },
   adCreativeHookTimingOptimizer: {
     title: 'Optimizador de Tiempo de Hooks Creativos Publicitarios',
@@ -4358,6 +4384,10 @@ export const esMessages = {
     copied: 'Copiado',
     error: 'Optimización de tiempo de hooks fallida',
     dryRunNotice: 'Modo de prueba — usando tiempo de plantilla',
+    retentionRisk: 'Riesgo de retención',
+    currentPlacement: 'Colocación actual',
+    optimalWindow: 'Ventana óptima',
+    attentionCurve: 'Curva de atención',
   },
   creativeAdMetaphorGenerator: {
     title: 'Generador de Metáforas Creativas Publicitarias',
@@ -4446,6 +4476,8 @@ export const esMessages = {
     copied: 'Copiado',
     error: 'Diseño de prueba social fallido',
     dryRunNotice: 'Modo de prueba — usando diseño de plantilla',
+    type: 'Tipo',
+    integration: 'Integración',
   },
   adCreativeEmotionSequencer: {
     title: 'Secuenciador de Emociones de Creativos Publicitarios',
@@ -4500,6 +4532,8 @@ export const esMessages = {
     copied: 'Copiado',
     error: 'Construcción de anticipación fallida',
     dryRunNotice: 'Modo de prueba — usando anticipación de plantilla',
+    apply: 'Aplicar',
+    payoff: 'Recompensa',
   },
   adCreativeContrastAmplifier: {
     title: 'Amplificador de Contraste de Creativos Publicitarios',
@@ -4617,6 +4651,10 @@ export const esMessages = {
     copied: 'Copiado',
     error: 'Estrategia de liberación de tensión fallida',
     dryRunNotice: 'Modo de prueba — usando estrategia de tensión de plantilla',
+    buildup: 'Acumulación',
+    peak: 'Pico',
+    release: 'Liberación',
+    trigger: 'Disparador',
   },
   adCreativeSensoryContrastDesigner: {
     title: 'Diseñador de Contrastes Sensoriales de Anuncios Creativos',
@@ -4691,6 +4729,10 @@ export const esMessages = {
     copied: 'Copiado',
     error: 'Optimización de ritmo fallida',
     dryRunNotice: 'Modo de prueba — usando optimización de ritmo de plantilla',
+    buildup: 'Acumulación',
+    drop: 'Caída',
+    transition: 'Transición',
+    duration: 'Duración',
   },
   creativeAdVisualHierarchyStrategist: {
     title: 'Estratega de Jerarquía Visual de Anuncios Creativos',
@@ -4713,6 +4755,8 @@ export const esMessages = {
     copied: 'Copiado',
     error: 'Estrategia de jerarquía visual fallida',
     dryRunNotice: 'Modo de prueba — usando jerarquía de plantilla',
+    direction: 'Dirección',
+    anchors: 'Anclajes',
   },
   adCreativeSoundDesignStrategist: {
     title: 'Estratega de Diseño de Sonido de Anuncios Creativos',
@@ -4836,6 +4880,7 @@ export const esMessages = {
     copied: 'Copiado',
     error: 'Diseño de variabilidad de pacing falló',
     dryRunNotice: 'Modo de prueba — usando variabilidad de pacing de plantilla',
+    energy: 'Energía',
   },
   creativeAdForeshadowingDesigner: {
     title: 'Diseñador de Elementos Foreshadowing para Anuncios Creativos',

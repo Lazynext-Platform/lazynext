@@ -40,12 +40,13 @@ function ScoreBar({ label, value, max = 10 }: { label: string; value: number; ma
 }
 
 function ImpactBar({ value }: { value: number }) {
+  const { t } = useI18n();
   const pct = value;
   const color = pct >= 80 ? 'bg-success' : pct >= 60 ? 'bg-warning' : 'bg-danger';
   return (
     <div>
       <div className="flex items-center justify-between text-xs mb-1">
-        <span className="text-fg-muted">Overall Emotional Impact</span>
+        <span className="text-fg-muted">{t('adEmotionAnalyzer.overallEmotionalImpact')}</span>
         <span className="font-medium">{value}/100</span>
       </div>
       <div className="h-3 rounded-full bg-bg-secondary overflow-hidden">

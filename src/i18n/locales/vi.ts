@@ -1709,7 +1709,7 @@ export const viMessages = {
       fldPersuasionMechanisms: 'Cơ chế thuyết phục',
       lblCta: 'CTA: ',
     },
-    admin: { title: 'Bảng quản trị', subtitle: 'Quản lý người dùng và theo dõi tác phẩm', tabUsers: 'Người dùng', tabCreations: 'Tác phẩm', searchPlaceholder: 'Tìm theo email…', search: 'Tìm kiếm', creditsAdjust: '±N', reason: 'lý do', apply: 'Áp dụng', filterAll: 'Tất cả', refresh: 'Làm mới', colUser: 'Người dùng', colCredits: 'Tín dụng', colCreations: 'Tác phẩm', colJoined: 'Ngày tham gia', colAdjust: 'Điều chỉnh', noUsers: 'Không tìm thấy người dùng.', colTemplate: 'Mẫu', colStatus: 'Trạng thái', colPrompt: 'Lệnh', colCost: 'Chi phí', colCreated: 'Ngày tạo', colError: 'Lỗi', noCreations: 'Không tìm thấy tác phẩm.', creationMonitoring: 'Theo dõi tác phẩm', userManagement: 'Quản lý người dùng' },
+    admin: { title: 'Bảng quản trị', subtitle: 'Quản lý người dùng và theo dõi tác phẩm', tabUsers: 'Người dùng', tabCreations: 'Tác phẩm', searchPlaceholder: 'Tìm theo email…', search: 'Tìm kiếm', creditsAdjust: '±N', reason: 'lý do', apply: 'Áp dụng', filterAll: 'Tất cả', refresh: 'Làm mới', colUser: 'Người dùng', colCredits: 'Tín dụng', colCreations: 'Tác phẩm', colJoined: 'Ngày tham gia', colAdjust: 'Điều chỉnh', noUsers: 'Không tìm thấy người dùng.', colTemplate: 'Mẫu', colStatus: 'Trạng thái', colPrompt: 'Lệnh', colCost: 'Chi phí', colCreated: 'Ngày tạo', colError: 'Lỗi', noCreations: 'Không tìm thấy tác phẩm.', creationMonitoring: 'Theo dõi tác phẩm', accessDenied: 'Truy cập bị từ chối. Email của bạn không có trong danh sách quản trị viên.', userManagement: 'Quản lý người dùng' },
     adminFeedback: { title: 'Bảng phản hồi', subtitle: 'Tóm tắt phản hồi và các mục riêng lẻ', tabFeedback: 'Phản hồi', back: 'Quay lại Quản trị', forbidden: 'Truy cập bị từ chối. Email của bạn không có trong danh sách quản trị viên.', loadError: 'Không thể tải phản hồi. Vui lòng thử lại.', empty: 'Chưa có phản hồi nào.', summaryTitle: 'Tóm tắt theo tính năng', summaryCaption: 'Tóm tắt phản hồi theo tính năng', entriesTitle: 'Các mục riêng lẻ', entriesCaption: 'Các mục phản hồi riêng lẻ', colFeature: 'Tính năng', colAvgRating: 'Đánh giá TB', colCount: 'Số lượng', colRating: 'Đánh giá', colComment: 'Bình luận', colTimestamp: 'Thời gian', refresh: 'Làm mới' },
     reset: { title: 'Đặt lại mật khẩu', successMessage: 'Mật khẩu của bạn đã được thay đổi. Bạn có thể đăng nhập bằng mật khẩu mới.', backToSignIn: 'Quay lại đăng nhập', heading: 'Đặt lại mật khẩu', subtitle: 'Nhập mật khẩu mới của bạn bên dưới.', newPassword: 'Mật khẩu mới (tối thiểu 8 ký tự)', confirmPassword: 'Xác nhận mật khẩu mới', resetting: 'Đang đặt lại…', reset: 'Đặt lại mật khẩu', backToSignIn2: 'Quay lại đăng nhập', loading: 'Đang tải…', errMismatch: 'Mật khẩu không khớp', errTooShort: 'Mật khẩu phải có ít nhất 8 ký tự', errFailed: 'Đặt lại mật khẩu thất bại. Vui lòng thử lại.', errInvalidToken: 'Liên kết đặt lại không hợp lệ hoặc đã hết hạn. Vui lòng yêu cầu liên kết mới.' },
     editor: {
@@ -1800,6 +1800,7 @@ export const viMessages = {
       tlLoad: 'Tải',
       tlDelete: 'Xóa',
       tlSaveFailed: 'Lưu dòng thời gian thất bại. Vui lòng thử lại.',
+      loadingTimeline: 'Đang tải dòng thời gian…',
     },
 
     briefIntelligence: {
@@ -3119,6 +3120,9 @@ export const viMessages = {
     copied: 'Đã sao chép',
     error: 'Kiểm tra hook thất bại',
     dryRunNotice: 'Chế độ thử nghiệm — sử dụng chấm điểm heuristic',
+    brandHeadline: 'Tiêu đề thương hiệu của bạn',
+    predicted: 'Dự đoán',
+    benchmark: 'Chuẩn mực',
   },
   trendSpotter: {
     title: 'Trình Phát Hiện Xu Hướng',
@@ -3637,6 +3641,7 @@ export const viMessages = {
     copied: 'Đã sao chép',
     error: 'Phân tích cảm xúc thất bại',
     dryRunNotice: 'Chế độ mô phỏng — sử dụng phân tích mẫu',
+    overallEmotionalImpact: 'Tác động cảm xúc tổng thể',
   },
   creativeFormatConverter: {
     title: 'Trình chuyển đổi định dạng sáng tạo',
@@ -4155,6 +4160,8 @@ export const viMessages = {
     copied: 'Đã sao chép',
     error: 'Ánh xạ điểm đau thất bại',
     dryRunNotice: 'Chế độ thử nghiệm — sử dụng ánh xạ mẫu',
+    frequency: 'Tần suất',
+    addresses: 'Giải quyết',
   },
   creativeMessagingFrameworkBuilder: {
     title: 'Xây dựng Khung Tin nhắn Sáng tạo',
@@ -4178,6 +4185,8 @@ export const viMessages = {
     copied: 'Đã sao chép',
     error: 'Xây dựng khung tin nhắn thất bại',
     dryRunNotice: 'Chế độ thử nghiệm — sử dụng khung mẫu',
+    supports: 'Hỗ trợ',
+    dont: 'Không làm',
   },
   adCreativeBurnoutDetector: {
     title: 'Trình Phát hiện Burnout Sáng tạo Quảng cáo',
@@ -4337,6 +4346,8 @@ export const viMessages = {
     copied: 'Đã sao chép',
     error: 'Chiến lược thuyết phục thất bại',
     dryRunNotice: 'Chế độ thử nghiệm — sử dụng chiến lược mẫu',
+    effect: 'Hiệu ứng',
+    principle: 'Nguyên tắc',
   },
   adCreativeHookTimingOptimizer: {
     title: 'Trình tối ưu Thời điểm Hook Quảng cáo',
@@ -4358,6 +4369,10 @@ export const viMessages = {
     copied: 'Đã sao chép',
     error: 'Tối ưu thời điểm hook thất bại',
     dryRunNotice: 'Chế độ thử nghiệm — sử dụng thời điểm mẫu',
+    retentionRisk: 'Rủi ro giữ chân',
+    currentPlacement: 'Vị trí hiện tại',
+    optimalWindow: 'Cửa sổ tối ưu',
+    attentionCurve: 'Đường cong sự chú ý',
   },
   creativeAdMetaphorGenerator: {
     title: 'Trình tạo Ẩn dụ Quảng cáo Sáng tạo',
@@ -4446,6 +4461,7 @@ export const viMessages = {
     copied: 'Đã sao chép',
     error: 'Kiến trúc bằng chứng xã hội thất bại',
     dryRunNotice: 'Chế độ thử nghiệm — sử dụng kiến trúc mẫu',
+    integration: 'Tích hợp',
   },
   adCreativeEmotionSequencer: {
     title: 'Trình tự Cảm xúc Quảng cáo Kreatif',
@@ -4617,6 +4633,8 @@ export const viMessages = {
     copied: 'Đã sao chép',
     error: 'Lập chiến lược giải tỏa căng thẳng thất bại',
     dryRunNotice: 'Chế độ thử nghiệm — sử dụng chiến lược căng thẳng mẫu',
+    peak: 'Đỉnh',
+    release: 'Giải phóng',
   },
   adCreativeSensoryContrastDesigner: {
     title: 'Trình thiết kế Tương phản Cảm giác Quảng cáo Sáng tạo',
@@ -4691,6 +4709,8 @@ export const viMessages = {
     copied: 'Đã sao chép',
     error: 'Tối ưu nhịp điệu thất bại',
     dryRunNotice: 'Chế độ thử nghiệm — sử dụng tối ưu nhịp điệu mẫu',
+    buildup: 'Xây dựng',
+    drop: 'Hạ',
   },
   creativeAdVisualHierarchyStrategist: {
     title: 'Chuyên gia Chiến lược Hệ thống Thị giác Quảng cáo Sáng tạo',

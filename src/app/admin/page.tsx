@@ -86,7 +86,7 @@ export default function AdminPage() {
     return (
       <div className="grid min-h-screen place-items-center gap-4 text-center">
         <AlertCircle className="h-10 w-10 text-danger" />
-        <p className="text-fg-muted">Access denied. Your email is not in the admin list.</p>
+        <p className="text-fg-muted">{t('admin.accessDenied')}</p>
       </div>
     );
   }

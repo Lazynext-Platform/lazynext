@@ -300,15 +300,15 @@ export default function AdCreativeHookTimingOptimizerPage() {
                 <Activity className="w-4 h-4 text-brand-accent" /> {t('adCreativeHookTimingOptimizer.timingAnalysis')}
               </p>
               <div className="flex items-center justify-between flex-wrap gap-2">
-                <span className="text-xs font-medium text-fg-muted">Retention risk</span>
+                <span className="text-xs font-medium text-fg-muted">{t('adCreativeHookTimingOptimizer.retentionRisk')}</span>
                 <span className={`inline-flex items-center text-xs font-medium px-2 py-0.5 rounded-full border ${RISK_COLORS[result.timing.timingAnalysis.retentionRisk] || RISK_COLORS.medium}`}>
                   {result.timing.timingAnalysis.retentionRisk}
                 </span>
               </div>
               <div className="space-y-1.5 text-xs text-fg-muted">
-                <p><span className="font-medium text-fg">Current placement:</span> {result.timing.timingAnalysis.currentPlacement}</p>
-                <p><span className="font-medium text-fg">Optimal window:</span> {result.timing.timingAnalysis.optimalWindow}</p>
-                <p><span className="font-medium text-fg">Attention curve:</span> {result.timing.timingAnalysis.attentionCurve}</p>
+                <p><span className="font-medium text-fg">{t('adCreativeHookTimingOptimizer.currentPlacement')}:</span> {result.timing.timingAnalysis.currentPlacement}</p>
+                <p><span className="font-medium text-fg">{t('adCreativeHookTimingOptimizer.optimalWindow')}:</span> {result.timing.timingAnalysis.optimalWindow}</p>
+                <p><span className="font-medium text-fg">{t('adCreativeHookTimingOptimizer.attentionCurve')}:</span> {result.timing.timingAnalysis.attentionCurve}</p>
                 <p><span className="font-medium text-fg">{t('common.resultLabels.reasoning')}:</span> {result.timing.timingAnalysis.reasoning}</p>
               </div>
             </div>

@@ -1709,7 +1709,7 @@ export const jaMessages = {
       fldPersuasionMechanisms: '説得メカニズム',
       lblCta: 'CTA：',
     },
-    admin: { title: '管理ダッシュボード', subtitle: 'ユーザー管理と作成監視', tabUsers: 'ユーザー', tabCreations: '作成', searchPlaceholder: 'メールで検索…', search: '検索', creditsAdjust: '±N', reason: '理由', apply: '適用', filterAll: 'すべて', refresh: '更新', colUser: 'ユーザー', colCredits: 'クレジット', colCreations: '作成', colJoined: '登録日', colAdjust: '調整', noUsers: 'ユーザーが見つかりません。', colTemplate: 'テンプレート', colStatus: 'ステータス', colPrompt: 'プロンプト', colCost: 'コスト', colCreated: '作成日', colError: 'エラー', noCreations: '作成が見つかりません。', creationMonitoring: '作成監視', userManagement: 'ユーザー管理' },
+    admin: { title: '管理ダッシュボード', subtitle: 'ユーザー管理と作成監視', tabUsers: 'ユーザー', tabCreations: '作成', searchPlaceholder: 'メールで検索…', search: '検索', creditsAdjust: '±N', reason: '理由', apply: '適用', filterAll: 'すべて', refresh: '更新', colUser: 'ユーザー', colCredits: 'クレジット', colCreations: '作成', colJoined: '登録日', colAdjust: '調整', noUsers: 'ユーザーが見つかりません。', colTemplate: 'テンプレート', colStatus: 'ステータス', colPrompt: 'プロンプト', colCost: 'コスト', colCreated: '作成日', colError: 'エラー', noCreations: '作成が見つかりません。', creationMonitoring: '作成監視', userManagement: 'ユーザー管理', accessDenied: 'アクセスが拒否されました。あなたのメールは管理者リストにありません。' },
     adminFeedback: { title: 'フィードバックダッシュボード', subtitle: 'ユーザーフィードバックの概要と個別エントリ', tabFeedback: 'フィードバック', back: '管理に戻る', forbidden: 'アクセスが拒否されました。メールが管理者リストにありません。', loadError: 'フィードバックの読み込みに失敗しました。再試行してください。', empty: 'まだフィードバックがありません。', summaryTitle: '機能別サマリー', summaryCaption: '機能別フィードバックサマリー', entriesTitle: '個別フィードバック', entriesCaption: '個別フィードバックエントリ', colFeature: '機能', colAvgRating: '平均評価', colCount: '件数', colRating: '評価', colComment: 'コメント', colTimestamp: '日時', refresh: '更新' },
     reset: { title: 'パスワードリセット', successMessage: 'パスワードが変更されました。新しいパスワードでログインできます。', backToSignIn: 'ログインに戻る', heading: 'パスワードリセット', subtitle: '以下に新しいパスワードを入力してください。', newPassword: '新しいパスワード（8 文字以上）', confirmPassword: '新しいパスワード（確認）', resetting: 'リセット中…', reset: 'パスワードをリセット', backToSignIn2: 'ログインに戻る', loading: '読み込み中…', errMismatch: 'パスワードが一致しません', errTooShort: 'パスワードは 8 文字以上で入力してください', errFailed: 'パスワードのリセットに失敗しました。もう一度お試しください。', errInvalidToken: 'リセットリンクが無効または期限切れです。再度申請してください。' },
     editor: {
@@ -1800,6 +1800,7 @@ export const jaMessages = {
       tlLoad: '読み込み',
       tlDelete: '削除',
       tlSaveFailed: 'タイムラインの保存に失敗しました。もう一度お試しください。',
+    loadingTimeline: 'タイムラインを読み込み中…',
     },
 
     briefIntelligence: {
@@ -3038,6 +3039,13 @@ export const jaMessages = {
     brandPersonality: "ブランドパーソナリティ",
     copy: "コピー",
     noResults: "まだムードボードが生成されていません。製品またはブランドを入力して開始してください。",
+    primary: 'プライマリ',
+    secondary: 'セカンダリ',
+    accent: 'アクセント',
+    background: '背景',
+    text: 'テキスト',
+    references: '参照',
+    brandHeadline: 'あなたのブランド見出し',
   },
   adPerformancePredictor: {
     title: "広告パフォーマンス予測器",
@@ -3064,6 +3072,12 @@ export const jaMessages = {
     bestPostingTime: "最適な投稿時間",
     copy: "コピー",
     error: "予測に失敗しました",
+    metric: '指標',
+    predicted: '予測',
+    score: 'スコア',
+    confidence: '信頼度',
+    benchmark: 'ベンチマーク',
+    rationale: '根拠',
   },
   abTestPlannerV2: {
     title: "クリエイティブA/Bテストプランナー",
@@ -3637,6 +3651,7 @@ export const jaMessages = {
     copied: 'コピーしました',
     error: '感情分析に失敗しました',
     dryRunNotice: 'ドライランモード — テンプレート分析を使用中',
+    overallEmotionalImpact: '全体的な感情的影響',
   },
   creativeFormatConverter: {
     title: 'クリエイティブフォーマットコンバーター',
@@ -4155,6 +4170,9 @@ export const jaMessages = {
     copied: 'コピーしました',
     error: 'ペインポイントマッピングに失敗しました',
     dryRunNotice: 'ドライランモード — テンプレートマッピングを使用',
+    frequency: '頻度',
+    emotionalImpact: '感情的影響',
+    addresses: '対処',
   },
   creativeMessagingFrameworkBuilder: {
     title: 'クリエイティブメッセージングフレームワークビルダー',
@@ -4178,6 +4196,12 @@ export const jaMessages = {
     copied: 'コピーしました',
     error: 'メッセージングフレームワーク構築に失敗しました',
     dryRunNotice: 'ドライランモード — テンプレートフレームワークを使用',
+    keyMessage: 'キーメッセージ',
+    audience: 'オーディエンス',
+    supports: 'サポート',
+    evidence: 'エビデンス',
+    do: '実行',
+    dont: '非推奨',
   },
   adCreativeBurnoutDetector: {
     title: '広告クリエイティブバーンアウト検出器',
@@ -4337,6 +4361,8 @@ export const jaMessages = {
     copied: 'コピーしました',
     error: '説得戦略に失敗しました',
     dryRunNotice: 'ドライランモード — テンプレート戦略を使用',
+    effect: '効果',
+    principle: '原則',
   },
   adCreativeHookTimingOptimizer: {
     title: '広告クリエイティブフックタイミングオプティマイザー',
@@ -4358,6 +4384,10 @@ export const jaMessages = {
     copied: 'コピーしました',
     error: 'フックタイミング最適化に失敗しました',
     dryRunNotice: 'ドライランモード — テンプレートタイミングを使用',
+    retentionRisk: 'リテンションリスク',
+    currentPlacement: '現在の配置',
+    optimalWindow: '最適なウィンドウ',
+    attentionCurve: 'アテンションカーブ',
   },
   creativeAdMetaphorGenerator: {
     title: 'クリエイティブ広告メタファージェネレーター',
@@ -4446,6 +4476,8 @@ export const jaMessages = {
     copied: 'コピーしました',
     error: 'ソーシャルプルーフ設計に失敗しました',
     dryRunNotice: 'ドライランモード — テンプレート設計を使用',
+    type: 'タイプ',
+    integration: '統合',
   },
   adCreativeEmotionSequencer: {
     title: '広告クリエイティブエモーションシーケンサー',
@@ -4500,6 +4532,8 @@ export const jaMessages = {
     copied: 'コピーしました',
     error: '期待感構築に失敗しました',
     dryRunNotice: 'ドライランモード — テンプレート期待感を使用',
+    apply: '適用',
+    payoff: 'ペイオフ',
   },
   adCreativeContrastAmplifier: {
     title: '広告クリエイティブコントラストアンプリファイアー',
@@ -4617,6 +4651,10 @@ export const jaMessages = {
     copied: 'コピーしました',
     error: 'テンションリリース戦略化に失敗しました',
     dryRunNotice: 'ドライランモード — テンプレートテンション戦略を使用',
+    buildup: 'ビルドアップ',
+    peak: 'ピーク',
+    release: 'リリース',
+    trigger: 'トリガー',
   },
   adCreativeSensoryContrastDesigner: {
     title: '広告クリエイティブセンソリーコントラストデザイナー',
@@ -4691,6 +4729,10 @@ export const jaMessages = {
     copied: 'コピーしました',
     error: 'リズム最適化に失敗しました',
     dryRunNotice: 'ドライランモード — テンプレートリズム最適化を使用',
+    buildup: 'ビルドアップ',
+    drop: 'ドロップ',
+    transition: 'トランジション',
+    duration: '再生時間',
   },
   creativeAdVisualHierarchyStrategist: {
     title: 'クリエイティブ広告ビジュアルヒエラルキーストラテジスト',
@@ -4713,6 +4755,8 @@ export const jaMessages = {
     copied: 'コピーしました',
     error: 'ビジュアルヒエラルキー戦略化に失敗しました',
     dryRunNotice: 'ドライランモード — テンプレートヒエラルキーを使用',
+    direction: '方向',
+    anchors: 'アンカー',
   },
   adCreativeSoundDesignStrategist: {
     title: '広告クリエイティブサウンドデザインストラテジスト',
@@ -4836,6 +4880,7 @@ export const jaMessages = {
     copied: 'コピーしました',
     error: 'ペーシング変動性デザインに失敗しました',
     dryRunNotice: 'ドライランモード — テンプレートペーシング変動性を使用',
+    energy: 'エネルギー',
   },
   creativeAdForeshadowingDesigner: {
     title: 'クリエイティブ広告伏線要素デザイナー',

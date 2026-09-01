@@ -16,9 +16,13 @@ import { useUndoRedo } from '@/lib/editor/use-undo-redo';
 import type { Timeline as TimelineModel, Track as TrackModel, Clip as ClipModel } from '@/lib/editor/types';
 
 // Code-split VisualTimeline — heavy drag-and-drop component, only needed when timeline tab is active
+function TimelineLoading() {
+  const { t } = useI18n();
+  return <div className="flex items-center justify-center h-32 text-fg-muted text-sm">{t('editor.loadingTimeline')}</div>;
+}
 const VisualTimeline = dynamic(() => import('@/components/editor/VisualTimeline').then(m => ({ default: m.VisualTimeline })), {
   ssr: false,
-  loading: () => <div className="flex items-center justify-center h-32 text-fg-muted text-sm">Loading timeline…</div>,
+  loading: () => <TimelineLoading />,
 });
 
 type Step = 'idle' | 'loading' | 'done' | 'error';

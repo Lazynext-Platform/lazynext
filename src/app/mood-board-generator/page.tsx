@@ -255,11 +255,11 @@ export default function MoodBoardGeneratorPage() {
                 ))}
               </div>
               <div className="mt-3 grid grid-cols-2 sm:grid-cols-5 gap-2 text-xs text-fg-muted">
-                <div>Primary: <span className="font-mono">{result.moodBoard.colorPalette.primary}</span></div>
-                <div>Secondary: <span className="font-mono">{result.moodBoard.colorPalette.secondary}</span></div>
-                <div>Accent: <span className="font-mono">{result.moodBoard.colorPalette.accent}</span></div>
-                <div>Background: <span className="font-mono">{result.moodBoard.colorPalette.background}</span></div>
-                <div>Text: <span className="font-mono">{result.moodBoard.colorPalette.text}</span></div>
+                <div>{t('moodBoardGenerator.primary')}: <span className="font-mono">{result.moodBoard.colorPalette.primary}</span></div>
+                <div>{t('moodBoardGenerator.secondary')}: <span className="font-mono">{result.moodBoard.colorPalette.secondary}</span></div>
+                <div>{t('moodBoardGenerator.accent')}: <span className="font-mono">{result.moodBoard.colorPalette.accent}</span></div>
+                <div>{t('moodBoardGenerator.background')}: <span className="font-mono">{result.moodBoard.colorPalette.background}</span></div>
+                <div>{t('moodBoardGenerator.text')}: <span className="font-mono">{result.moodBoard.colorPalette.text}</span></div>
               </div>
             </div>
 
@@ -276,7 +276,7 @@ export default function MoodBoardGeneratorPage() {
                     className="mt-1 text-xl font-bold"
                     style={{ fontFamily: result.moodBoard.typography.headingFont }}
                   >
-                    {productOrBrand || 'Your Brand Headline'}
+                    {productOrBrand || t('moodBoardGenerator.brandHeadline')}
                   </p>
                 </div>
                 <div>
@@ -313,7 +313,7 @@ export default function MoodBoardGeneratorPage() {
                     )}
                     {it.referenceStyles.length > 0 && (
                       <p className="mt-1 text-xs text-fg-muted">
-                        <span className="font-medium">References:</span> {it.referenceStyles.join(', ')}
+                        <span className="font-medium">{t('moodBoardGenerator.references')}:</span> {it.referenceStyles.join(', ')}
                       </p>
                     )}
                   </div>

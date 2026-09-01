@@ -372,7 +372,7 @@ export default function DashboardPage() {
         <div className="mb-10">
           <h2 className="mb-4 flex items-center gap-2 text-lg font-bold text-fg">
             <Star className="h-5 w-5 text-brand-accent" />
-            {t('dashboard.featuredApps') || 'Featured Apps'}
+            {t('dashboard.featuredApps')}
           </h2>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {[
@@ -400,7 +400,7 @@ export default function DashboardPage() {
                     {t(`home.${app.key}.subtitle`) || ''}
                   </p>
                   <div className="mt-3 flex items-center gap-1 text-xs text-brand-accent opacity-0 transition group-hover:opacity-100">
-                    {t('common.tryIt') || 'Try it'} <ArrowRight className="h-3 w-3" />
+                    {t('common.tryIt')} <ArrowRight className="h-3 w-3" />
                   </div>
                 </Link>
               );
@@ -533,7 +533,7 @@ function RecentlyUsed({ t }: { t: (k: string) => string }) {
     <div className="mb-10">
       <h2 className="mb-4 flex items-center gap-2 text-lg font-bold text-fg">
         <Clock className="h-5 w-5 text-brand-accent" />
-        {t('dashboard.recentlyUsed') || 'Recently Used'}
+        {t('dashboard.recentlyUsed')}
       </h2>
       <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6">
         {recent.map((item) => (

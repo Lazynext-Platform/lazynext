@@ -294,9 +294,9 @@ export default function CreativeAdTensionReleaseStrategistPage() {
                         style={{ width: `${c.intensity}%` }}
                       />
                     </div>
-                    <p className="text-xs text-fg-muted"><span className="font-medium text-fg">Buildup:</span> {c.buildup}</p>
-                    <p className="text-xs text-fg-muted"><span className="font-medium text-fg">Peak:</span> {c.peak}</p>
-                    <p className="text-xs text-fg-muted"><span className="font-medium text-fg">Release:</span> {c.release}</p>
+                    <p className="text-xs text-fg-muted"><span className="font-medium text-fg">{t('creativeAdTensionReleaseStrategist.buildup')}:</span> {c.buildup}</p>
+                    <p className="text-xs text-fg-muted"><span className="font-medium text-fg">{t('creativeAdTensionReleaseStrategist.peak')}:</span> {c.peak}</p>
+                    <p className="text-xs text-fg-muted"><span className="font-medium text-fg">{t('creativeAdTensionReleaseStrategist.release')}:</span> {c.release}</p>
                   </div>
                 ))}
               </div>
@@ -338,8 +338,8 @@ export default function CreativeAdTensionReleaseStrategistPage() {
                         style={{ width: `${cm.impact}%` }}
                       />
                     </div>
-                    <p className="text-xs text-fg-muted"><span className="font-medium text-fg">Trigger:</span> {cm.trigger}</p>
-                    <p className="text-xs text-fg-muted"><span className="font-medium text-fg">Release:</span> {cm.emotionalRelease}</p>
+                    <p className="text-xs text-fg-muted"><span className="font-medium text-fg">{t('creativeAdTensionReleaseStrategist.trigger')}:</span> {cm.trigger}</p>
+                    <p className="text-xs text-fg-muted"><span className="font-medium text-fg">{t('creativeAdTensionReleaseStrategist.release')}:</span> {cm.emotionalRelease}</p>
                   </div>
                 ))}
               </div>

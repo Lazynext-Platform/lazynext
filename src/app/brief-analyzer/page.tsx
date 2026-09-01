@@ -150,7 +150,7 @@ export default function BriefAnalyzerPage() {
         <a href="#main-content" className="skip-link">{t('briefAnalyzer.skipToContent')}</a>
         <main id="main-content" className="mx-auto max-w-5xl px-4 py-16 text-center" tabIndex={-1}>
           <ClipboardList className="mx-auto mb-4 h-10 w-10 text-brand-accent" aria-hidden="true" />
-          <h1 className="text-2xl font-bold mb-2">Creative Brief Analyzer</h1>
+          <h1 className="text-2xl font-bold mb-2">{t('briefAnalyzer.title')}</h1>
           <p className="text-sm text-fg-faint mb-6">{t('briefAnalyzer.signInPrompt')}</p>
         </main>
         <AuthModal open={true} onClose={() => {}} />
