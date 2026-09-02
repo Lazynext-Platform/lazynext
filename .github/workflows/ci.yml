@@ -100,7 +100,7 @@ jobs:
           curl -s http://localhost:3099/health || echo "mock-atlas may not have /health endpoint"
 
       - name: Run E2E tests
-        run: npx playwright test --project=chromium
+        run: npx playwright test --project=chromium --shard=1/4
         env:
           CI: true
           NEXTAUTH_URL: http://localhost:3100
