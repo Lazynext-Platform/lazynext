@@ -26,7 +26,7 @@ const SAMPLES = [
 ];
 
 type Slot = { status: 'idle' | 'processing' | 'done' | 'failed'; url?: string };
-type Plan = { idea: string; productImagePrompt: string; videoPrompt: string; caption: string };
+type Plan = { idea: string; productImagePrompt: string; videoPrompt: string; caption: string; dryRun?: boolean };
 
 async function imageToDataUrl(file: File): Promise<string> {
   const objectUrl = URL.createObjectURL(file);
@@ -208,6 +208,11 @@ export default function AdSkitPage() {
           {plan && (
             <div className="space-y-3 rounded-2xl border border-line bg-popover p-5">
               <h2 className="flex items-center gap-2 text-sm font-semibold text-fg"><span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#0064d9] text-xs text-white">2</span>{t('adSkit.scriptReview')}</h2>
+              {plan.dryRun && (
+                <div role="status" className="rounded-lg bg-amber-500/10 border border-amber-500/30 px-3 py-2 text-sm text-amber-600 dark:text-amber-400">
+                  Sample output: AI generation is currently unavailable. This is a placeholder plan — real generation will resume when the AI service is restored.
+                </div>
+              )}
               <div className="rounded-lg bg-surface p-3 text-sm leading-6 text-fg-secondary"><b>{t('adSkit.idea')}</b>{plan.idea}</div>
               {plan.caption && <p className="text-xs text-fg-faint">{t('adSkit.caption')}{plan.caption}</p>}
               <button onClick={genVideo} disabled={busy !== null} className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#0064d9] px-5 py-3 font-semibold text-white transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50">

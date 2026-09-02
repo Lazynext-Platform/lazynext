@@ -19,6 +19,7 @@ import {
 import { planTaskResume } from '@/lib/lazynext-studio/resume';
 import { videoCredits } from '@/lib/video-pricing';
 import { useI18n } from '@/i18n/provider';
+import { fetchWithRetry } from '@/lib/fetch-retry';
 import { AssetPicker } from '@/components/AssetPicker';
 
 // ── Higgsfield lazynext-studio/product visual specs (measured) ──
@@ -173,7 +174,7 @@ export default function MarketingStudioPage() {
   const refreshCredits = useCallback(async () => {
     const attempt = async (): Promise<number | null> => {
       try {
-        const r = await fetch('/api/me', { cache: 'no-store' });
+        const r = await fetchWithRetry('/api/me', { cache: 'no-store' });
         if (!r.ok) return null;
         const j = await r.json();
         const n = Number(j.credits);
@@ -253,7 +254,7 @@ export default function MarketingStudioPage() {
         };
         setShots([restoredShot]);
         if (vidDone) {
-          setCompose({ status: 'done', frac: 1, note: 'Done', url: vidUrl });
+          setCompose({ status: 'done', frac: 1, note: t('mkStudio.done'), url: vidUrl });
         } else if (imgGetUrl || vidGetUrl) {
           setCompose({
             status: 'run',
@@ -476,13 +477,13 @@ export default function MarketingStudioPage() {
       local.vid = 'done';
       local.vidUrl = vidUrl;
       setShots([{ ...local }]);
-      setCompose({ status: 'done', frac: 1, note: 'Done', url: vidUrl });
+      setCompose({ status: 'done', frac: 1, note: t('mkStudio.done'), url: vidUrl });
 
       // Save history: final video URL → write Creation (logged-in users; failure doesn't affect page display)
       try {
         await postJson('/api/lazynext-studio/save-reel', {
           url: vidUrl,
-          title: directPlan.title || product.slice(0, 60) || 'Ad',
+          title: directPlan.title || product.slice(0, 60) || t('mkStudio.defaultSaveTitle'),
           type: 'lazynext-studio',
           thumbnail: imgUrl,
           creationId: cid,
@@ -595,7 +596,7 @@ export default function MarketingStudioPage() {
                 <select value={avatarId} onChange={(e) => { const id = e.target.value; setAvatarId(id); const a = getAvatar(id); setAvatarAsset(a.image ? { preview: a.image, url: a.image } : {}); }} disabled={!fmt.needsPerson} className={`${selCls} disabled:opacity-40`} title={t('mkStudio.avatarTitle')} aria-label={t('mkStudio.avatarTitle')}>{AVATAR_PRESETS.map((a) => <option key={a.id} value={a.id}>{a.id === 'none' ? t('mkStudio.avatarLabel') : t(`presets.avatar.${a.id}`)}</option>)}</select>
                 <select value={videoRatio} onChange={(e) => setVideoRatio(e.target.value)} className={selCls} title={t('mkStudio.aspectRatio')} aria-label={t('mkStudio.aspectRatio')}>{VIDEO_RATIOS.map((r) => <option key={r} value={r}>{r}</option>)}</select>
                 <select value={videoResolution} onChange={(e) => setVideoResolution(e.target.value)} className={selCls} title={t('mkStudio.resolution')} aria-label={t('mkStudio.resolution')}>{VIDEO_RESOLUTIONS.map((r) => <option key={r} value={r}>{r}</option>)}</select>
-                <select value={videoDuration} onChange={(e) => setVideoDuration(Number(e.target.value))} className={selCls} title={t('mkStudio.duration')} aria-label={t('mkStudio.duration')}>{VIDEO_DURATIONS.map((d) => <option key={d} value={d}>{d}s</option>)}</select>
+                <select value={videoDuration} onChange={(e) => setVideoDuration(Number(e.target.value))} className={selCls} title={t('mkStudio.duration')} aria-label={t('mkStudio.duration')}>{VIDEO_DURATIONS.map((d) => <option key={d} value={d}>{d}{t('mkStudio.secondsSuffix')}</option>)}</select>
                 {/* Language dropdown removed: dialogue language auto-follows the language typed in the text box (Chinese input → Chinese dialogue) */}
               </div>
             </div>

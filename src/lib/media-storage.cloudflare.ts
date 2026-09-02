@@ -1,6 +1,9 @@
 import { getCloudflareContext } from '@opennextjs/cloudflare';
 
 const MEDIA_PATH_PREFIX = '/api/lazynext-studio/media/';
+const R2_S3_ENDPOINT =
+  'https://85953070bae00da372951a8833bd3459.r2.cloudflarestorage.com';
+const R2_BUCKET_NAME = 'lazynext-studio-media';
 
 export type MediaStorageCapabilities = {
   provider: 'r2';
@@ -20,34 +23,55 @@ export class MediaStorageNotConfiguredError extends Error {
   }
 }
 
-type R2HeadLike = {
-  size: number;
-  httpMetadata?: { contentType?: string };
+type EnvWithS3 = {
+  R2_S3_ACCESS_KEY_ID?: string;
+  R2_S3_SECRET_ACCESS_KEY?: string;
 };
 
-type R2ObjectLike = {
-  body: ReadableStream;
-  httpMetadata?: { contentType?: string };
-  arrayBuffer?: () => Promise<ArrayBuffer>;
-};
-
-type R2BucketLike = {
-  put(
-    key: string,
-    value: ArrayBuffer,
-    options?: { httpMetadata?: { contentType?: string } },
-  ): Promise<unknown>;
-  head(key: string): Promise<R2HeadLike | null>;
-  get(
-    key: string,
-    options?: { range?: { offset: number; length: number } },
-  ): Promise<R2ObjectLike | null>;
-};
-
-function getBucket(): R2BucketLike | undefined {
-  const { env } = getCloudflareContext();
-  return (env as unknown as { MEDIA_BUCKET?: R2BucketLike }).MEDIA_BUCKET;
+function getEnv(): EnvWithS3 {
+  try {
+    const { env } = getCloudflareContext();
+    return env as unknown as EnvWithS3;
+  } catch {
+    return {};
+  }
 }
+
+function isS3Configured(): boolean {
+  const env = getEnv();
+  return Boolean(env.R2_S3_ACCESS_KEY_ID && env.R2_S3_SECRET_ACCESS_KEY);
+}
+
+/* ---------- AWS Sig V4 helpers (Web Crypto API) ---------- */
+
+const enc = new TextEncoder();
+
+function bufToHex(buf: ArrayBuffer): string {
+  return Array.from(new Uint8Array(buf))
+    .map((b) => b.toString(16).padStart(2, '0'))
+    .join('');
+}
+
+async function hmac(key: ArrayBuffer, data: string): Promise<ArrayBuffer> {
+  const ck = await crypto.subtle.importKey(
+    'raw',
+    key,
+    { name: 'HMAC', hash: 'SHA-256' },
+    false,
+    ['sign'],
+  );
+  return crypto.subtle.sign('HMAC', ck, enc.encode(data));
+}
+
+async function hashHex(data: string): Promise<string> {
+  return bufToHex(await crypto.subtle.digest('SHA-256', enc.encode(data)));
+}
+
+async function hashHexBuf(data: ArrayBuffer): Promise<string> {
+  return bufToHex(await crypto.subtle.digest('SHA-256', data));
+}
+
+/* ---------- URL helpers ---------- */
 
 function mediaKey(value: string): string {
   let path = value.trim();
@@ -69,55 +93,221 @@ function mediaKey(value: string): string {
 }
 
 export function getMediaStorageCapabilities(): MediaStorageCapabilities {
-  let configured = false;
-  try {
-    configured = Boolean(getBucket());
-  } catch {
-    configured = false;
-  }
-  return { provider: 'r2', configured, directUpload: false };
+  return { provider: 'r2', configured: isS3Configured(), directUpload: false };
 }
 
 export function isManagedMediaUrl(value: unknown): boolean {
   return typeof value === 'string' && Boolean(mediaKey(value));
 }
 
+/* ---------- Core S3 operations ---------- */
+
+async function s3Put(
+  key: string,
+  body: ArrayBuffer,
+  contentType: string,
+): Promise<void> {
+  const env = getEnv();
+  if (!env.R2_S3_ACCESS_KEY_ID || !env.R2_S3_SECRET_ACCESS_KEY) {
+    throw new MediaStorageNotConfiguredError();
+  }
+
+  const url = new URL(`${R2_S3_ENDPOINT}/${R2_BUCKET_NAME}/${encodeURIComponent(key)}`);
+  const payloadHash = await hashHexBuf(body);
+  const headers = await signHeaders(
+    'PUT',
+    url,
+    { 'content-type': contentType },
+    payloadHash,
+    env.R2_S3_ACCESS_KEY_ID,
+    env.R2_S3_SECRET_ACCESS_KEY,
+  );
+
+  const resp = await fetch(url.toString(), {
+    method: 'PUT',
+    headers,
+    body,
+  });
+  if (!resp.ok) {
+    const text = await resp.text();
+    throw new Error(`R2 S3 PUT failed: ${resp.status} ${text}`);
+  }
+}
+
+async function s3Get(
+  key: string,
+  range?: string,
+): Promise<{ buffer: ArrayBuffer; contentType: string; size: number }> {
+  const env = getEnv();
+  if (!env.R2_S3_ACCESS_KEY_ID || !env.R2_S3_SECRET_ACCESS_KEY) {
+    throw new MediaStorageNotConfiguredError();
+  }
+
+  const url = new URL(`${R2_S3_ENDPOINT}/${R2_BUCKET_NAME}/${encodeURIComponent(key)}`);
+  const extraHeaders: Record<string, string> = {};
+  if (range) extraHeaders.range = range;
+
+  const headers = await signHeaders(
+    'GET',
+    url,
+    extraHeaders,
+    'UNSIGNED-PAYLOAD',
+    env.R2_S3_ACCESS_KEY_ID,
+    env.R2_S3_SECRET_ACCESS_KEY,
+  );
+
+  const resp = await fetch(url.toString(), { method: 'GET', headers });
+  if (resp.status === 404) throw new NotFoundError();
+  if (!resp.ok) {
+    const text = await resp.text();
+    throw new Error(`R2 S3 GET failed: ${resp.status} ${text}`);
+  }
+  const buffer = await resp.arrayBuffer();
+  const contentType = resp.headers.get('content-type') || 'application/octet-stream';
+  const size = Number(resp.headers.get('content-length') || buffer.byteLength);
+  return { buffer, contentType, size };
+}
+
+async function s3Head(
+  key: string,
+): Promise<{ size: number; contentType: string }> {
+  const env = getEnv();
+  if (!env.R2_S3_ACCESS_KEY_ID || !env.R2_S3_SECRET_ACCESS_KEY) {
+    throw new MediaStorageNotConfiguredError();
+  }
+
+  const url = new URL(`${R2_S3_ENDPOINT}/${R2_BUCKET_NAME}/${encodeURIComponent(key)}`);
+  const headers = await signHeaders(
+    'HEAD',
+    url,
+    {},
+    'UNSIGNED-PAYLOAD',
+    env.R2_S3_ACCESS_KEY_ID,
+    env.R2_S3_SECRET_ACCESS_KEY,
+  );
+
+  const resp = await fetch(url.toString(), { method: 'HEAD', headers });
+  if (resp.status === 404) throw new NotFoundError();
+  if (!resp.ok) throw new Error(`R2 S3 HEAD failed: ${resp.status}`);
+  return {
+    size: Number(resp.headers.get('content-length') || '0'),
+    contentType: resp.headers.get('content-type') || 'application/octet-stream',
+  };
+}
+
+class NotFoundError extends Error {
+  constructor() {
+    super('not_found');
+    this.name = 'NotFoundError';
+  }
+}
+
+/* ---------- AWS Sig V4 signing ---------- */
+
+async function signHeaders(
+  method: string,
+  url: URL,
+  extraHeaders: Record<string, string>,
+  payloadHash: string,
+  accessKeyId: string,
+  secretAccessKey: string,
+): Promise<Record<string, string>> {
+  const now = new Date();
+  const amzDate = now.toISOString().replace(/[:-]|\.\d{3}/g, '');
+  const dateStamp = amzDate.slice(0, 8);
+
+  // Build headers to sign (all lowercase)
+  const headersToSign: Record<string, string> = {
+    host: url.host,
+    'x-amz-date': amzDate,
+    'x-amz-content-sha256': payloadHash,
+    ...extraHeaders,
+  };
+
+  // Canonical headers (sorted, lowercase, trimmed)
+  const sortedKeys = Object.keys(headersToSign).sort();
+  const canonicalHeaders = sortedKeys
+    .map((k) => `${k}:${headersToSign[k].trim()}\n`)
+    .join('');
+  const signedHeaders = sortedKeys.join(';');
+
+  // Canonical request
+  const canonicalRequest = [
+    method,
+    url.pathname,
+    url.search.replace(/^\?/, ''),
+    canonicalHeaders,
+    signedHeaders,
+    payloadHash,
+  ].join('\n');
+
+  const canonicalHash = await hashHex(canonicalRequest);
+  const credentialScope = `${dateStamp}/auto/s3/aws4_request`;
+  const stringToSign = [
+    'AWS4-HMAC-SHA256',
+    amzDate,
+    credentialScope,
+    canonicalHash,
+  ].join('\n');
+
+  // Derive signing key: kDate → kRegion → kService → kSigning
+  const kDate = await hmac(enc.encode(`AWS4${secretAccessKey}`).buffer as ArrayBuffer, dateStamp);
+  const kRegion = await hmac(kDate, 'auto');
+  const kService = await hmac(kRegion, 's3');
+  const kSigning = await hmac(kService, 'aws4_request');
+  const signature = bufToHex(await hmac(kSigning, stringToSign));
+
+  const authorization = `AWS4-HMAC-SHA256 Credential=${accessKeyId}/${credentialScope}, SignedHeaders=${signedHeaders}, Signature=${signature}`;
+
+  // Return headers for the fetch request (with proper casing for HTTP)
+  const result: Record<string, string> = {};
+  for (const k of sortedKeys) {
+    // Normalize header names: x-amz-* stays lowercase, content-type becomes Content-Type
+    if (k.startsWith('x-amz-')) {
+      result[k] = headersToSign[k];
+    } else if (k === 'content-type') {
+      result['Content-Type'] = headersToSign[k];
+    } else if (k === 'range') {
+      result['Range'] = headersToSign[k];
+    } else {
+      result[k] = headersToSign[k];
+    }
+  }
+  result['Authorization'] = authorization;
+  return result;
+}
+
+/* ---------- Public API ---------- */
+
 export async function putMedia(
   key: string,
   value: ArrayBuffer,
   contentType: string,
 ): Promise<string> {
-  const bucket = getBucket();
-  if (!bucket) throw new MediaStorageNotConfiguredError();
-  await bucket.put(key, value, { httpMetadata: { contentType } });
+  await s3Put(key, value, contentType);
   return `${MEDIA_PATH_PREFIX}${encodeURIComponent(key)}`;
 }
 
 export async function readMedia(value: string): Promise<StoredMedia | null> {
   const key = mediaKey(value);
   if (!key) return null;
-  const bucket = getBucket();
-  if (!bucket) throw new MediaStorageNotConfiguredError();
-  const object = await bucket.get(key);
-  if (!object) return null;
-  const buffer = object.arrayBuffer
-    ? await object.arrayBuffer()
-    : await new Response(object.body).arrayBuffer();
-  return {
-    buffer,
-    contentType:
-      object.httpMetadata?.contentType || 'application/octet-stream',
-  };
+  try {
+    const { buffer, contentType } = await s3Get(key);
+    return { buffer, contentType };
+  } catch (e) {
+    if (e instanceof NotFoundError) return null;
+    throw e;
+  }
 }
 
-function baseHeaders(meta: R2HeadLike) {
+function baseHeaders(contentType: string, size: number) {
   return {
-    'Content-Type':
-      meta.httpMetadata?.contentType || 'application/octet-stream',
+    'Content-Type': contentType,
     'Accept-Ranges': 'bytes',
     'Access-Control-Allow-Origin': '*',
     'Cache-Control': 'public, max-age=31536000, immutable',
     'Content-Disposition': 'inline',
+    'Content-Length': String(size),
     Vary: 'Range',
   };
 }
@@ -144,13 +334,16 @@ export async function serveMedia(
   key: string,
   includeBody: boolean,
 ): Promise<Response> {
-  const bucket = getBucket();
-  if (!bucket) return new Response('bucket not bound', { status: 500 });
+  let meta: { size: number; contentType: string };
+  try {
+    meta = await s3Head(key);
+  } catch (e) {
+    if (e instanceof NotFoundError) return new Response('not found', { status: 404 });
+    return new Response(String(e), { status: 500 });
+  }
 
-  const meta = await bucket.head(key);
-  if (!meta) return new Response('not found', { status: 404 });
   const size = meta.size;
-  const base = baseHeaders(meta);
+  const base = baseHeaders(meta.contentType, size);
   const range = parseRange(request.headers.get('range'), size);
 
   if (range === 'invalid') {
@@ -163,27 +356,31 @@ export async function serveMedia(
   if (range) {
     const { start, end } = range;
     const length = end - start + 1;
-    const headers = {
+    const rangeHeaders = {
       ...base,
       'Content-Range': `bytes ${start}-${end}/${size}`,
       'Content-Length': String(length),
     };
-    if (!includeBody) return new Response(null, { status: 206, headers });
-    const object = await bucket.get(key, {
-      range: { offset: start, length },
-    });
-    if (!object) return new Response('not found', { status: 404 });
-    return new Response(object.body as unknown as BodyInit, {
-      status: 206,
-      headers,
-    });
+    if (!includeBody) return new Response(null, { status: 206, headers: rangeHeaders });
+
+    try {
+      const { buffer } = await s3Get(key, `bytes=${start}-${end}`);
+      return new Response(buffer, { status: 206, headers: rangeHeaders });
+    } catch (e) {
+      if (e instanceof NotFoundError) return new Response('not found', { status: 404 });
+      return new Response(String(e), { status: 500 });
+    }
   }
 
-  const headers = { ...base, 'Content-Length': String(size) };
-  if (!includeBody) return new Response(null, { headers });
-  const object = await bucket.get(key);
-  if (!object) return new Response('not found', { status: 404 });
-  return new Response(object.body as unknown as BodyInit, { headers });
+  if (!includeBody) return new Response(null, { headers: base });
+
+  try {
+    const { buffer } = await s3Get(key);
+    return new Response(buffer, { headers: base });
+  } catch (e) {
+    if (e instanceof NotFoundError) return new Response('not found', { status: 404 });
+    return new Response(String(e), { status: 500 });
+  }
 }
 
 export async function handleClientUploadRequest(

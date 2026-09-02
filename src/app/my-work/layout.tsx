@@ -5,7 +5,7 @@ import { LOCALES, type Locale, messages } from '@/i18n/messages';
 export async function generateMetadata(): Promise<Metadata> {
   const localeCookie = (await cookies()).get('locale')?.value;
   const locale = ((LOCALES as readonly string[]).includes(localeCookie || '') ? localeCookie : 'en') as Locale;
-  const nav = (messages[locale] as any)?.nav || (messages.en as any).nav;
+  const nav = messages[locale]?.nav || messages.en.nav;
   return { title: `${nav.myWork} — Lazynext`, referrer: 'no-referrer' };
 }
 

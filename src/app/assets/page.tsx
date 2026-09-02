@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import {
-  Boxes, UserCircle, Palette, Plus, Pencil, Trash2, Loader2, X, Image as ImageIcon, Link2,
+  Boxes, UserCircle, Palette, Plus, Pencil, Trash2, Loader2, X, Image as ImageIcon, Link2, Package,
 } from 'lucide-react';
 import { useI18n } from '@/i18n/provider';
 import { AuthModal } from '@/components/AuthModal';
@@ -12,12 +12,13 @@ type Product = { id: string; name: string; description: string; imageUrl: string
 type Avatar = { id: string; name: string; description: string; imageUrl: string | null; createdAt: string };
 type BrandKit = { id: string; name: string; logoUrl: string | null; colors: string[] | null; fontNote: string | null; toneNote: string | null; createdAt: string };
 
-type Tab = 'products' | 'avatars' | 'brandKits';
+type Tab = 'products' | 'avatars' | 'brandKits' | 'creativePackages';
 
 const TABS: { key: Tab; icon: typeof Boxes }[] = [
   { key: 'products', icon: Boxes },
   { key: 'avatars', icon: UserCircle },
   { key: 'brandKits', icon: Palette },
+  { key: 'creativePackages', icon: Package },
 ];
 
 // Read a File as a data URL.
@@ -59,7 +60,7 @@ export default function AssetsPage() {
               {TABS.map((tb) => {
                 const Icon = tb.icon;
                 const active = tab === tb.key;
-                const label = tb.key === 'products' ? t('assets.tabProducts') : tb.key === 'avatars' ? t('assets.tabAvatars') : t('assets.tabBrandKits');
+                const label = tb.key === 'products' ? t('assets.tabProducts') : tb.key === 'avatars' ? t('assets.tabAvatars') : tb.key === 'brandKits' ? t('assets.tabBrandKits') : t('assets.tabCreativePackages');
                 return (
                   <button
                     key={tb.key}
@@ -75,6 +76,7 @@ export default function AssetsPage() {
             {tab === 'products' && <ProductsPanel />}
             {tab === 'avatars' && <AvatarsPanel />}
             {tab === 'brandKits' && <BrandKitsPanel />}
+            {tab === 'creativePackages' && <CreativePackagesPanel />}
           </>
         )}
       </div>
@@ -137,12 +139,13 @@ function ImageField({
 function Modal({ title, onClose, children, saving, onSave, saveLabel, cancelLabel, savingLabel }: {
   title: string; onClose: () => void; children: React.ReactNode; saving: boolean; onSave: () => void; saveLabel: string; cancelLabel: string; savingLabel: string;
 }) {
+  const { t } = useI18n();
   return (
     <div className="fixed inset-0 z-[90] grid place-items-center bg-black/70 p-4 pt-safe" onClick={onClose}>
       <div className="w-full max-w-md max-h-[90vh] overflow-y-auto rounded-2xl border border-line bg-popover p-5 shadow-2xl" onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true" aria-label={title}>
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-lg font-bold text-fg">{title}</h2>
-          <button onClick={onClose} className="text-fg-faint hover:text-fg" aria-label="close"><X className="h-5 w-5" /></button>
+          <button onClick={onClose} className="text-fg-faint hover:text-fg" aria-label={t('common.close')}><X className="h-5 w-5" /></button>
         </div>
         <div className="space-y-4">{children}</div>
         <div className="mt-5 flex flex-col-reverse justify-end gap-2 sm:flex-row">
@@ -445,7 +448,7 @@ function BrandKitForm({ brandKit, onClose, onSaved }: { brandKit?: BrandKit; onC
             {colors.map((c) => (
               <span key={c} className="inline-flex items-center gap-1 rounded-md border border-line px-1.5 py-1 text-[11px] text-fg-secondary">
                 <span className="h-3.5 w-3.5 rounded" style={{ background: c }} /> {c}
-                <button type="button" onClick={() => setColors((p) => p.filter((x) => x !== c))} aria-label="remove color" className="p-0.5 text-fg-placeholder hover:text-danger"><X className="h-3.5 w-3.5" /></button>
+                <button type="button" onClick={() => setColors((p) => p.filter((x) => x !== c))} aria-label={t('assets.removeColor')} className="p-0.5 text-fg-placeholder hover:text-danger"><X className="h-3.5 w-3.5" /></button>
               </span>
             ))}
           </div>
@@ -455,6 +458,84 @@ function BrandKitForm({ brandKit, onClose, onSaved }: { brandKit?: BrandKit; onC
       <TextareaField label={t('assets.brandTone')} value={toneNote} onChange={setToneNote} placeholder={t('assets.brandTonePh')} />
       {err && <p role="alert" className="text-xs text-danger">{err}</p>}
     </Modal>
+  );
+}
+
+// ── Creative packages panel (pipeline outputs) ──
+type CreativePackage = {
+  id: string;
+  type: string;
+  name: string;
+  metadata: unknown;
+  createdAt: string;
+};
+
+function CreativePackagesPanel() {
+  const { t } = useI18n();
+  const [items, setItems] = useState<CreativePackage[] | null>(null);
+
+  const load = useCallback(async () => {
+    setItems(null);
+    try {
+      const r = await fetch('/api/creative/assets?type=creative_package', { cache: 'no-store' });
+      const j = await r.json();
+      setItems(r.ok ? (j.assets || []) : []);
+    } catch { setItems([]); }
+  }, []);
+  useEffect(() => { void load(); }, [load]);
+
+  async function del(id: string) {
+    if (!confirm(t('assets.deleteConfirm'))) return;
+    setItems((p) => p?.filter((x) => x.id !== id) ?? null);
+    try { await fetch(`/api/creative/assets?id=${id}`, { method: 'DELETE' }); } catch { void load(); }
+  }
+
+  function parseMeta(m: unknown): { pipelineId?: string; credits?: number; stages?: string[] } {
+    if (!m) return {};
+    if (typeof m === 'string') { try { return JSON.parse(m); } catch { return {}; } }
+    return m as { pipelineId?: string; credits?: number; stages?: string[] };
+  }
+
+  return (
+    <div>
+      {items === null ? (
+        <div className="grid place-items-center py-32"><Loader2 className="h-7 w-7 animate-spin text-fg-faint" /></div>
+      ) : items.length === 0 ? (
+        <div className="grid place-items-center gap-3 rounded-2xl border border-dashed border-line bg-hover px-6 py-16 text-center">
+          <div className="grid h-14 w-14 place-items-center rounded-2xl bg-surface text-fg-faint"><Package className="h-6 w-6" /></div>
+          <p className="max-w-sm text-sm font-medium text-fg-secondary">{t('assets.creativePackagesEmpty')}</p>
+          <p className="max-w-sm text-xs text-fg-faint">{t('assets.creativePackagesEmptyHint')}</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {items.map((pkg) => {
+            const meta = parseMeta(pkg.metadata);
+            return (
+              <div key={pkg.id} className="overflow-hidden rounded-2xl border border-line bg-black/30">
+                <div className="p-4">
+                  <div className="flex items-center gap-2">
+                    <Package className="h-4 w-4 text-fg-faint" />
+                    <div className="truncate text-sm font-semibold">{pkg.name}</div>
+                  </div>
+                  {meta.credits != null && (
+                    <p className="mt-1 text-[11px] text-fg-faint">{meta.credits} {t('pipeline.credits')}</p>
+                  )}
+                  {meta.stages && meta.stages.length > 0 && (
+                    <p className="mt-1 line-clamp-2 text-[11px] text-fg-placeholder">{meta.stages.join(', ')}</p>
+                  )}
+                  <p className="mt-1 text-[10px] text-fg-placeholder">{new Date(pkg.createdAt).toLocaleDateString()}</p>
+                </div>
+                <div className="flex items-center justify-between gap-2 border-t border-line px-3 py-2">
+                  <button onClick={() => del(pkg.id)} className="inline-flex items-center gap-1 rounded-md px-2.5 py-1.5 text-[11px] text-fg-faint transition hover:bg-danger/10 hover:text-danger" aria-label={t('assets.delete')}>
+                    <Trash2 className="h-3.5 w-3.5" /> {t('assets.delete')}
+                  </button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
   );
 }
 

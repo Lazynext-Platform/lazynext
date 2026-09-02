@@ -26,8 +26,8 @@ export async function POST(req: Request) {
       key: webhookSecret,
     });
   } catch (e) {
-    const msg = e instanceof Error ? e.message : String(e);
-    return new Response(`Webhook Error: ${msg}`, { status: 401 });
+    console.error('[dodo-webhook] signature verification failed:', e instanceof Error ? e.message : String(e));
+    return new Response('Webhook Error: signature_verification_failed', { status: 401 });
   }
 
   const payment = event.data as {

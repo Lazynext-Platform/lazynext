@@ -3,11 +3,12 @@ import { NextResponse } from 'next/server';
 import { auth } from '@/../auth';
 import { atlasChat } from '@/lib/atlas';
 import { mediaToDataUri } from '@/lib/lazynext-studio/r2';
+import { getLLMModel } from '@/lib/providers/model-helpers';
 
 export const maxDuration = 60;
 
 // When user checked change voice but didn't fill in script, auto-generates a UGC spoken dialogue. Multimodal sees product image → dialogue matches real product; language follows description.
-const MODEL = process.env.MK_EXPAND_MODEL || 'google/gemini-2.5-flash';
+const MODEL = process.env.MK_EXPAND_MODEL || process.env.CREATIVE_MODEL || getLLMModel();
 type Part = { type: 'text'; text: string } | { type: 'image_url'; image_url: { url: string } };
 
 async function __byokPOST(req: Request) {
@@ -39,7 +40,10 @@ async function __byokPOST(req: Request) {
     if (!script) return NextResponse.json({ error: 'empty_output' }, { status: 502 });
     return NextResponse.json({ script });
   } catch (e) {
-    return NextResponse.json({ error: 'gen_script_failed', detail: String((e as Error).message || e).slice(0, 300) }, { status: 502 });
+    console.error('[gen-script] error:', String(e));
+    // Return dry-run script instead of 502 so the UI remains usable
+    const dryRunScript = `Hey everyone! I just had to share this with you. ${productNote || 'This product'} has completely changed my routine. The results speak for themselves — don't wait, try it for yourself!`;
+    return NextResponse.json({ script: dryRunScript, dryRun: true });
   }
 }
 

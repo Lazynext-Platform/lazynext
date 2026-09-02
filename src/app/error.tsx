@@ -11,7 +11,7 @@ export default function Error({ error, reset }: { error: Error & { digest?: stri
   }, [error]);
 
   return (
-    <main className="min-h-screen flex items-center justify-center text-fg bg-app">
+    <main className="min-h-screen flex items-center justify-center text-fg bg-app" role="alert" aria-live="assertive">
       <div className="max-w-md px-6 text-center">
         <h1 className="text-2xl font-bold tracking-tight">{t('error.title')}</h1>
         <p className="mt-3 text-sm text-fg-faint">{t('error.desc')}</p>

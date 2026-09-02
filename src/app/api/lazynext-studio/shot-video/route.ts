@@ -8,9 +8,9 @@ import {
   normalizeVideoResolution,
   submitShotVideo,
   submitShotRefVideo,
-  SHOT_VIDEO_MODEL,
-  SHOT_REF_VIDEO_MODEL,
-  REPLICA_VIDEO_MODEL,
+  getShotVideoModel,
+  getShotRefVideoModel,
+  getReplicaVideoModel,
 } from '@/lib/lazynext-studio/workflow';
 import {
   chargeAndSubmit,
@@ -18,6 +18,7 @@ import {
   linkMarketingCreationTask,
 } from '@/lib/lazynext-studio/gen-task';
 import { videoCredits } from '@/lib/video-pricing';
+import { getUserPlanTier } from '@/lib/plan-tier';
 
 export const maxDuration = 60;
 
@@ -26,6 +27,7 @@ async function __byokPOST(req: Request) {
   const session = await auth();
   if (!session?.user?.id) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
   const uid = session.user.id;
+  const planTier = await getUserPlanTier(uid);
 
   const body = await req.json().catch(() => ({}));
   const prompt = cleanText(body.prompt, '', 3000);
@@ -48,14 +50,15 @@ async function __byokPOST(req: Request) {
 
   try {
     if (referenceImages.length) {
+      const refVideoModel = getShotRefVideoModel(planTier);
       const submit = await chargeAndSubmit({
         uid,
-        cost: videoCredits(SHOT_REF_VIDEO_MODEL, resolution, duration),
+        cost: videoCredits(refVideoModel, resolution, duration),
         ref: 'drama:ref-video',
         templateId: 'mk-shot',
-        model: SHOT_REF_VIDEO_MODEL,
+        model: refVideoModel,
         prompt,
-        submit: () => submitShotRefVideo(referenceImages, prompt, { ratio, resolution, duration }),
+        submit: () => submitShotRefVideo(referenceImages, prompt, { ratio, resolution, duration, planTier }),
       });
       return NextResponse.json({ id: submit.id, getUrl: submit.getUrl });
     }
@@ -63,7 +66,8 @@ async function __byokPOST(req: Request) {
     const imageUrl = toAbs(body.imageUrl);
     if (!/^https?:\/\//.test(imageUrl)) return NextResponse.json({ error: 'image_url_required' }, { status: 400 });
     // Replica mode: frontend may specify veo3.1-fast (with dialogue lip-sync speaking); whitelist-validated, arbitrary models not accepted.
-    const model = body.model === REPLICA_VIDEO_MODEL ? REPLICA_VIDEO_MODEL : SHOT_VIDEO_MODEL;
+    const replicaModel = getReplicaVideoModel(planTier);
+    const model = body.model === replicaModel ? replicaModel : getShotVideoModel(planTier);
     const submit = await chargeAndSubmit({
       uid,
       cost: videoCredits(model, resolution, duration),

@@ -118,6 +118,22 @@ const MODELS: ModelInfo[] = [
     provider: 'atlas',
     capabilities: ['text', 'reasoning'],
   },
+
+  // ── ASR (speech recognition) ──
+  {
+    id: 'openai/whisper-large-v3',
+    provider: 'atlas',
+    capabilities: ['speechRecognition'],
+    languageSupport: ['en', 'zh', 'ja', 'ko', 'es', 'fr', 'de', 'pt', 'ar', 'hi', 'vi', 'th', 'id'],
+  },
+
+  // ── OCR (text extraction from images) ──
+  {
+    id: 'firered/firered-ocr',
+    provider: 'service-boundary',
+    capabilities: ['ocr'],
+    languageSupport: ['en', 'zh', 'ja', 'ko'],
+  },
 ];
 
 // ── Registry API ──

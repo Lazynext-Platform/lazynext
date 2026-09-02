@@ -13,6 +13,8 @@
  * Only the workflow concept (URL → fetch → LLM analysis → structured JSON) is adapted.
  */
 import { atlasChat } from '@/lib/atlas';
+import { getLLMModel } from '@/lib/providers/model-helpers';
+import type { PlanTier } from '@/lib/plan-tier';
 import { safeFetchText, htmlToText, extractImageUrls, SSRFError } from './fetch';
 import { BRAND_EXTRACTION_SYS, PRODUCT_EXTRACTION_SYS } from './prompts';
 import type { BrandExtraction, ProductExtraction } from './types';
@@ -20,6 +22,11 @@ import type { BrandExtraction, ProductExtraction } from './types';
 const EXTRACTION_MODEL = process.env.BRAND_EXTRACTION_MODEL || 'bytedance/doubao-seed-2.1-turbo-260628';
 const EXTRACTION_TIMEOUT_MS = Number(process.env.BRAND_EXTRACTION_TIMEOUT_MS || 60_000);
 const EXTRACTION_MAX_TOKENS = Number(process.env.BRAND_EXTRACTION_MAX_TOKENS || 4000);
+
+/** Resolve extraction model, respecting env override and plan-tier routing. */
+function resolveExtractionModel(planTier?: PlanTier): string {
+  return process.env.BRAND_EXTRACTION_MODEL || getLLMModel(planTier);
+}
 
 function extractJson(raw: string): Record<string, unknown> {
   const s = raw.trim().replace(/^```(?:json)?/i, '').replace(/```$/, '').trim();
@@ -47,7 +54,7 @@ function asObjArr(v: unknown): Array<Record<string, unknown>> {
  * Extract brand intelligence from a brand/homepage URL.
  * Fetches the page, extracts text, and uses LLM to produce structured BrandExtraction.
  */
-export async function extractBrand(url: string): Promise<BrandExtraction> {
+export async function extractBrand(url: string, planTier?: PlanTier): Promise<BrandExtraction> {
   const result = await safeFetchText(url);
   if (!result.ok && result.status === 0) throw new Error('brand_fetch_timeout');
   if (!result.ok) throw new Error(`brand_fetch_failed:${result.status}`);
@@ -73,7 +80,7 @@ Output the brand intelligence JSON now.`;
       { role: 'system', content: BRAND_EXTRACTION_SYS },
       { role: 'user', content: userPrompt },
     ],
-    EXTRACTION_MODEL,
+    resolveExtractionModel(planTier),
     EXTRACTION_MAX_TOKENS,
     EXTRACTION_TIMEOUT_MS,
   );
@@ -113,7 +120,7 @@ Output the brand intelligence JSON now.`;
 /**
  * Extract structured product facts from a product page URL.
  */
-export async function extractProduct(url: string): Promise<ProductExtraction> {
+export async function extractProduct(url: string, planTier?: PlanTier): Promise<ProductExtraction> {
   const result = await safeFetchText(url);
   if (!result.ok && result.status === 0) throw new Error('product_fetch_timeout');
   if (!result.ok) throw new Error(`product_fetch_failed:${result.status}`);
@@ -143,7 +150,7 @@ Output the product extraction JSON now.`;
       { role: 'system', content: PRODUCT_EXTRACTION_SYS },
       { role: 'user', content: userPrompt },
     ],
-    EXTRACTION_MODEL,
+    resolveExtractionModel(planTier),
     EXTRACTION_MAX_TOKENS,
     EXTRACTION_TIMEOUT_MS,
   );

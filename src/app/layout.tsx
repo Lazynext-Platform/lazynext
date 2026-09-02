@@ -11,7 +11,7 @@ import { auth } from '@/../auth';
 export async function generateMetadata(): Promise<Metadata> {
   const localeCookie = (await cookies()).get('locale')?.value;
   const locale = ((LOCALES as readonly string[]).includes(localeCookie || '') ? localeCookie : 'en') as Locale;
-  const seo = (messages[locale] as any)?.seo || (messages.en as any).seo;
+  const seo = messages[locale]?.seo || messages.en.seo;
   const siteUrl = process.env.NEXTAUTH_URL || 'https://lazynext.com';
   return {
     metadataBase: new URL(siteUrl),

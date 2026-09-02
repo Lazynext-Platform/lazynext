@@ -249,7 +249,7 @@ export interface PollResult {
   status: AtlasStatus;
   outputs: string[];
   error?: string;
-  raw: any;
+  raw: unknown;
 }
 
 function outputUrl(value: unknown): string {

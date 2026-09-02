@@ -17,7 +17,7 @@ export async function POST(req: Request) {
     const { amount } = await provider.redeem(session.user.id, code);
     return NextResponse.json({ amount });
   } catch (e) {
-    const msg = e instanceof Error ? e.message : String(e);
-    return NextResponse.json({ error: msg }, { status: 400 });
+    console.error('[redeem] error:', e instanceof Error ? e.message : String(e));
+    return NextResponse.json({ error: 'redeem_failed' }, { status: 400 });
   }
 }

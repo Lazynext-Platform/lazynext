@@ -4,13 +4,15 @@ import { auth } from '@/../auth';
 import { prisma } from '@/lib/prisma';
 import { deductCredits, grantCredits } from '@/lib/credits';
 import { uploadMedia } from '@/lib/atlas';
-import { submitProductImage, IMAGE_MODEL, AD_SKIT_COSTS, AD_SKIT_TEMPLATE_ID } from '@/lib/ad-skit';
+import { submitProductImage, getAdSkitImageModel, AD_SKIT_COSTS, AD_SKIT_TEMPLATE_ID } from '@/lib/ad-skit';
+import { getUserPlanTier } from '@/lib/plan-tier';
 
 export const maxDuration = 60;
 
 async function __byokPOST(req: Request) {
   const session = await auth();
   if (!session?.user?.id) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+  const planTier = await getUserPlanTier(session.user.id);
 
   const body = await req.json().catch(() => ({}));
   const uploads: string[] = Array.isArray(body.uploadedImages)
@@ -30,7 +32,8 @@ async function __byokPOST(req: Request) {
       );
       return NextResponse.json({ productUrls: productUrls.filter((u) => typeof u === 'string' && u.startsWith('http')) });
     } catch (e) {
-      return NextResponse.json({ error: 'upload_failed', detail: String(e) }, { status: 502 });
+      console.error('[ad-skit/image] upload error:', String(e));
+      return NextResponse.json({ error: 'upload_failed' }, { status: 502 });
     }
   }
 
@@ -43,13 +46,15 @@ async function __byokPOST(req: Request) {
   }
   let res;
   try {
-    res = await submitProductImage(imagePrompt);
+    res = await submitProductImage(imagePrompt, undefined, planTier);
   } catch (e) {
     await grantCredits(session.user.id, AD_SKIT_COSTS.image, 'refund', AD_SKIT_TEMPLATE_ID + ':image');
-    return NextResponse.json({ error: 'submit_failed', detail: String(e) }, { status: 502 });
+    console.error('[ad-skit/image] submit error:', String(e));
+    return NextResponse.json({ error: 'submit_failed' }, { status: 502 });
   }
+  const imageModel = getAdSkitImageModel(planTier);
   const creation = await prisma.creation.create({
-    data: { userId: session.user.id, templateId: AD_SKIT_TEMPLATE_ID + ':image', model: IMAGE_MODEL, prompt: imagePrompt, status: 'processing', taskId: res.id, getUrl: res.getUrl, cost: AD_SKIT_COSTS.image },
+    data: { userId: session.user.id, templateId: AD_SKIT_TEMPLATE_ID + ':image', model: imageModel, prompt: imagePrompt, status: 'processing', taskId: res.id, getUrl: res.getUrl, cost: AD_SKIT_COSTS.image },
   });
   return NextResponse.json({ id: creation.id, status: 'processing' });
 }

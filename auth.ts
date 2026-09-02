@@ -6,6 +6,15 @@ import bcrypt from 'bcryptjs';
 import { prisma } from '@/lib/prisma';
 import { grantCredits } from '@/lib/credits';
 
+// Account lockout: track failed login attempts per email.
+// After 5 failed attempts within 15 minutes, the account is locked for 15 minutes.
+// Note: in-memory on Workers isolates — Cloudflare rate limiter provides
+// distributed protection. This is an additional per-account layer.
+type FailData = { count: number; resetAt: number };
+type LockData = { lockedUntil: number };
+const accountLocks = new Map<string, LockData>();
+const failedAttempts = new Map<string, FailData>();
+
 // In local development (http://localhost), NextAuth would otherwise use __Secure-
 // prefixed cookies when NEXTAUTH_URL points at https. Chromium refuses to send
 // __Secure- cookies over plain http, so local auth silently breaks. Force the
@@ -58,13 +67,45 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         const password = credentials?.password as string | undefined;
         if (!email || !password) return null;
 
+        const lowerEmail = email.toLowerCase();
+
+        // Account lockout: track failed attempts per email.
+        // After 5 failed attempts, lock the account for 15 minutes.
+        // Note: in-memory on Workers isolates — Cloudflare rate limiter
+        // provides distributed protection. This is an additional layer.
+        const lockKey = `lock:${lowerEmail}`;
+        const lockData = accountLocks.get(lockKey);
+        const now = Date.now();
+        if (lockData && lockData.lockedUntil > now) {
+          return null; // Account is locked
+        }
+
         const user = await prisma.user.findUnique({
-          where: { email: email.toLowerCase() },
+          where: { email: lowerEmail },
         });
         if (!user || !user.password) return null;
 
         const valid = await bcrypt.compare(password, user.password);
-        if (!valid) return null;
+        if (!valid) {
+          // Record failed attempt
+          const failKey = `fail:${lowerEmail}`;
+          const failData = failedAttempts.get(failKey);
+          if (failData && failData.resetAt > now) {
+            failData.count++;
+            if (failData.count >= 5) {
+              // Lock the account for 15 minutes
+              accountLocks.set(lockKey, { lockedUntil: now + 15 * 60 * 1000 });
+              failedAttempts.delete(failKey);
+            }
+          } else {
+            failedAttempts.set(failKey, { count: 1, resetAt: now + 15 * 60 * 1000 });
+          }
+          return null;
+        }
+
+        // Successful login — clear any failed attempt records
+        failedAttempts.delete(`fail:${lowerEmail}`);
+        accountLocks.delete(lockKey);
 
         return {
           id: user.id,
@@ -108,6 +149,27 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       if (user) {
         token.id = user.id;
         token.credits = (user as { credits?: number }).credits ?? 0;
+        token.creditsUpdatedAt = Date.now();
+      }
+// Refresh credits from DB if stale (older than 5 minutes) to avoid
+// showing a stale balance after spending/refunding credits. The 5-minute
+// window reduces DB reads on every auth() call (154 API routes) while
+// keeping the UI balance reasonably fresh. API routes that need
+// authoritative credit checks use deductCredits() which reads from the DB
+// directly, not the JWT value. The /api/me endpoint provides the freshest
+// balance for UI updates after purchases.
+const CREDIT_REFRESH_MS = 5 * 60_000;
+      if (token.id && (!token.creditsUpdatedAt || Date.now() - (token.creditsUpdatedAt as number) > CREDIT_REFRESH_MS)) {
+        try {
+          const { prisma } = await import('@/lib/prisma');
+          const u = await prisma.user.findUnique({ where: { id: token.id as string }, select: { credits: true } });
+          if (u) {
+            token.credits = u.credits;
+            token.creditsUpdatedAt = Date.now();
+          }
+        } catch {
+          // DB lookup failed — keep the existing token value
+        }
       }
       return token;
     },

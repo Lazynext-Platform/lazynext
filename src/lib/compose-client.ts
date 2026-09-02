@@ -1,34 +1,16 @@
 'use client';
 /**
- * Browser-side full video composition (ffmpeg.wasm, single-thread core → no COOP/COEP needed, doesn't break site-wide image loading).
- * Media prefers direct remote URL access; only small images use a restricted proxy fallback, avoiding large video/audio blowing up deployment platform traffic.
+ * Browser-side full video composition via a Web Worker.
  *
- * Generic capability: composes multiple "slide + narrator/voiceover" sections into one complete video.
- * course-studio is the first consumer; SKU/drama/podcast can reuse the same function.
+ * The FFmpeg encoding and media fetching run entirely in a dedicated worker
+ * thread, keeping the main thread free for UI interactions. The worker loads
+ * the single-thread FFmpeg core (no COOP/COEP needed) and posts progress
+ * updates back.
  *
- * Performance: single-thread wasm encoding is slow (720p, preset ultrafast), large course time grows linearly with section count,
- * runs entirely in the user's browser locally, no server load, no extra deployment needed.
+ * Generic capability: composes multiple "slide + narrator/voiceover" sections
+ * into one complete video. course-studio is the first consumer; SKU/drama/podcast
+ * can reuse the same function.
  */
-import type { FFmpeg } from '@ffmpeg/ffmpeg';
-import { fetchMediaBytes } from '@/lib/media-url';
-
-const CORE = 'https://unpkg.com/@ffmpeg/core@0.12.10/dist/umd';
-let ffPromise: Promise<FFmpeg> | null = null;
-
-async function getFF(): Promise<FFmpeg> {
-  if (ffPromise) return ffPromise;
-  ffPromise = (async () => {
-    const { FFmpeg } = await import('@ffmpeg/ffmpeg');
-    const { toBlobURL } = await import('@ffmpeg/util');
-    const ff = new FFmpeg();
-    await ff.load({
-      coreURL: await toBlobURL(`${CORE}/ffmpeg-core.js`, 'text/javascript'),
-      wasmURL: await toBlobURL(`${CORE}/ffmpeg-core.wasm`, 'application/wasm'),
-    });
-    return ff;
-  })();
-  return ffPromise;
-}
 
 export interface ComposeSection {
   slideUrl?: string; // slide image (16:9)
@@ -41,86 +23,66 @@ export interface ComposeProgress {
   note: string;
 }
 
+let worker: Worker | null = null;
+
+function getWorker(): Worker {
+  if (worker) return worker;
+  worker = new Worker(new URL('./compose-worker.ts', import.meta.url), { type: 'module' });
+  return worker;
+}
+
 /**
  * Compose a course: each section → slide|narrator left-right split (with voiceover audio) or slide+voiceover; then concat into the full video.
  * Outputs a 720p mp4 Blob (for download).
+ * All FFmpeg work runs in a Web Worker to avoid blocking the main thread.
  */
 export async function composeCourseVideo(
   sections: ComposeSection[],
   onProgress?: (p: ComposeProgress) => void,
 ): Promise<Blob> {
-  const ff = await getFF();
-  const segs: string[] = [];
-  const usable = sections.filter((s) => s.slideUrl && (s.videoUrl || s.audioUrl));
-  if (!usable.length) throw new Error('no_sections');
-
-  for (let i = 0; i < usable.length; i++) {
-    const s = usable[i];
-    onProgress?.({ frac: (i / usable.length) * 0.9, note: `Composing section ${i + 1}/${usable.length}` });
-    await ff.writeFile(`slide${i}.jpg`, await fetchMediaBytes(s.slideUrl!));
-    if (s.videoUrl) {
-      await ff.writeFile(`t${i}.mp4`, await fetchMediaBytes(s.videoUrl));
-      // Left: slide 640x720, right: narrator 640x720 → hstack 1280x720, audio track from narrator video (includes voiceover)
-      await ff.exec([
-        '-loop', '1', '-i', `slide${i}.jpg`, '-i', `t${i}.mp4`,
-        '-filter_complex',
-        '[0:v]scale=640:720:force_original_aspect_ratio=decrease,pad=640:720:(ow-iw)/2:(oh-ih)/2,setsar=1[l];' +
-          '[1:v]scale=640:720:force_original_aspect_ratio=decrease,pad=640:720:(ow-iw)/2:(oh-ih)/2,setsar=1[r];' +
-          '[l][r]hstack=inputs=2[v]',
-        '-map', '[v]', '-map', '1:a', '-shortest', '-r', '25',
-        '-c:v', 'libx264', '-preset', 'ultrafast', '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-ar', '44100', `seg${i}.mp4`,
-      ]);
-    } else {
-      await ff.writeFile(`a${i}.mp3`, await fetchMediaBytes(s.audioUrl!));
-      // Slide fills 1280x720 + voiceover audio track
-      await ff.exec([
-        '-loop', '1', '-i', `slide${i}.jpg`, '-i', `a${i}.mp3`,
-        '-vf', 'scale=1280:720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2,setsar=1',
-        '-map', '0:v', '-map', '1:a', '-shortest', '-r', '25',
-        '-c:v', 'libx264', '-preset', 'ultrafast', '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-ar', '44100', `seg${i}.mp4`,
-      ]);
-    }
-    segs.push(`seg${i}.mp4`);
-  }
-
-  onProgress?.({ frac: 0.92, note: 'Concatenating full course' });
-  await ff.writeFile('list.txt', new TextEncoder().encode(segs.map((f) => `file '${f}'`).join('\n')));
-  await ff.exec(['-f', 'concat', '-safe', '0', '-i', 'list.txt', '-c', 'copy', 'out.mp4']);
-  const data = await ff.readFile('out.mp4');
-  onProgress?.({ frac: 1, note: 'Done' });
-  const bytes = data instanceof Uint8Array ? data : new TextEncoder().encode(String(data));
-  return new Blob([bytes as BlobPart], { type: 'video/mp4' });
+  const w = getWorker();
+  return new Promise<Blob>((resolve, reject) => {
+    const handler = (e: MessageEvent) => {
+      const msg = e.data;
+      if (msg.type === 'progress') {
+        onProgress?.({ frac: msg.frac, note: msg.note });
+      } else if (msg.type === 'done') {
+        w.removeEventListener('message', handler);
+        resolve(msg.blob as Blob);
+      } else if (msg.type === 'error') {
+        w.removeEventListener('message', handler);
+        reject(new Error(msg.message));
+      }
+    };
+    w.addEventListener('message', handler);
+    w.postMessage({ type: 'compose', job: 'course', sections });
+  });
 }
 
 /**
  * Vertical ad reel concatenation: multiple vertical video shots with built-in dialogue audio → each normalized to 1080x1920/30fps →
  * concat into one complete ad. Used by lazynext-studio's multi-shot voiceover ads (each shot generated by Veo i2v).
+ * All FFmpeg work runs in a Web Worker to avoid blocking the main thread.
  */
 export async function composeAdReel(
   videoUrls: string[],
   onProgress?: (p: ComposeProgress) => void,
 ): Promise<Blob> {
-  const ff = await getFF();
-  const clips = videoUrls.filter((u): u is string => typeof u === 'string' && u.length > 0);
-  if (!clips.length) throw new Error('no_clips');
-  const segs: string[] = [];
-  for (let i = 0; i < clips.length; i++) {
-    onProgress?.({ frac: (i / clips.length) * 0.9, note: `Composing shot ${i + 1}/${clips.length}` });
-    await ff.writeFile(`v${i}.mp4`, await fetchMediaBytes(clips[i]));
-    // Normalize vertical 1080x1920 (letterbox centering for undersized), unified 30fps + aac for lossless concat
-    await ff.exec([
-      '-i', `v${i}.mp4`,
-      '-vf', 'scale=1080:1920:force_original_aspect_ratio=decrease,pad=1080:1920:(ow-iw)/2:(oh-ih)/2,setsar=1,fps=30',
-      '-c:v', 'libx264', '-preset', 'ultrafast', '-pix_fmt', 'yuv420p',
-      '-c:a', 'aac', '-ar', '44100', '-r', '30', `seg${i}.mp4`,
-    ]);
-    segs.push(`seg${i}.mp4`);
-  }
-  onProgress?.({ frac: 0.92, note: 'Concatenating full reel' });
-  await ff.writeFile('list.txt', new TextEncoder().encode(segs.map((f) => `file '${f}'`).join('\n')));
-  await ff.exec(['-f', 'concat', '-safe', '0', '-i', 'list.txt', '-c', 'copy', 'reel.mp4']);
-  const data = await ff.readFile('reel.mp4');
-  onProgress?.({ frac: 1, note: 'Done' });
-  const bytes = data instanceof Uint8Array ? data : new TextEncoder().encode(String(data));
-  return new Blob([bytes as BlobPart], { type: 'video/mp4' });
+  const w = getWorker();
+  return new Promise<Blob>((resolve, reject) => {
+    const handler = (e: MessageEvent) => {
+      const msg = e.data;
+      if (msg.type === 'progress') {
+        onProgress?.({ frac: msg.frac, note: msg.note });
+      } else if (msg.type === 'done') {
+        w.removeEventListener('message', handler);
+        resolve(msg.blob as Blob);
+      } else if (msg.type === 'error') {
+        w.removeEventListener('message', handler);
+        reject(new Error(msg.message));
+      }
+    };
+    w.addEventListener('message', handler);
+    w.postMessage({ type: 'compose', job: 'reel', videoUrls });
+  });
 }

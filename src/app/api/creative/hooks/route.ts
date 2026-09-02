@@ -3,8 +3,8 @@ import { NextResponse } from 'next/server';
 import { auth } from '@/../auth';
 import { generateHooks, CREATIVE_COSTS } from '@/lib/creative/intelligence';
 import type { CreativeBrief } from '@/lib/creative/types';
-import { deductCredits } from '@/lib/credits';
-import { refundSync } from '@/lib/lazynext-studio/gen-task';
+import { deductCredits, refundCredits } from '@/lib/credits';
+import { getUserPlanTier } from '@/lib/plan-tier';
 
 export const maxDuration = 60;
 
@@ -12,6 +12,7 @@ async function __byokPOST(req: Request) {
   const session = await auth();
   if (!session?.user?.id) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
   const uid = session.user.id;
+  const planTier = await getUserPlanTier(uid);
 
   const body = await req.json().catch(() => ({}));
   const brief = body.brief as CreativeBrief | undefined;
@@ -29,12 +30,12 @@ async function __byokPOST(req: Request) {
   }
 
   try {
-    const hooks = await generateHooks(brief, count);
+    const hooks = await generateHooks(brief, count, planTier);
     return NextResponse.json({ hooks });
   } catch (e) {
-    await refundSync(uid, CREATIVE_COSTS.hooks, 'creative:hooks');
+    await refundCredits(uid, CREATIVE_COSTS.hooks, 'creative:hooks');
     console.error('[creative/hooks] error:', String(e));
-    return NextResponse.json({ error: 'hooks_failed', detail: String(e) }, { status: 500 });
+    return NextResponse.json({ error: 'hooks_failed' }, { status: 500 });
   }
 }
 

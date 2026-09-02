@@ -47,3 +47,35 @@ Key design principles:
 - Existing workflows can optionally use the brief layer before storyboard generation
 - The studio UI can be extended to show brief/angles/hooks before generation
 - No changes to existing workflow code — this is additive
+
+## Implementation Notes (Updated)
+
+The creative intelligence layer is implemented as a consolidated module rather than
+separate files. This is an intentional architectural decision — the functions are
+tightly coupled and share helpers (`atlasChat`, `extractJson`, `asStr`, etc.).
+
+Actual file structure:
+```
+src/lib/creative/
+  types.ts           — all creative types (CreativeBrief, HookCandidate, etc.)
+  intelligence.ts    — generateBrief, generateHooks, generateAngles, generateScript,
+                       generateStoryboard, analyzeReferenceCreative, scoreCreative,
+                       generateVariants
+  prompts.ts         — system prompts for each step
+```
+
+Implemented functions:
+- `generateBrief` — product + brand → structured brief
+- `generateHooks` — brief → multiple hook candidates
+- `generateAngles` — brief → multiple angle candidates
+- `generateScript` — brief + angle + hook → full script
+- `generateStoryboard` — brief + script → shot-by-shot storyboard
+- `analyzeReferenceCreative` — reference video URL → structured analysis
+- `scoreCreative` — brief + script + storyboard → 10-dimension quality score
+- `generateVariants` — brief + script → A/B test variants
+
+Credit costs: brief=3, hooks=2, angles=2, script=3, storyboard=3, referenceAnalysis=5, score=2, variants=3
+
+API routes: `/api/creative/{brief,hooks,angles,script,storyboard,reference-analysis}`
+
+UI: `/creative-studio` page with full pipeline, reference analysis, and send-to-studio links.

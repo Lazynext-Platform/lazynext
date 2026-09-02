@@ -31,11 +31,6 @@ export async function chargeSync(uid: string, cost: number, ref: string): Promis
   }
 }
 
-/** Synchronous refund (for plan/script generation failure rollback). */
-export async function refundSync(uid: string, cost: number, ref: string): Promise<void> {
-  await grantCredits(uid, cost, 'refund', ref);
-}
-
 /**
  * Unified flow for async generation tasks: charge → submit to Atlas → create a processing Creation record (for async failure refund on poll).
  * - Charge failure: throws InsufficientCreditsError / ChargeError, route converts to 402 / 500 respectively.

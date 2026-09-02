@@ -32,6 +32,23 @@ model User {
   adProducts AdProduct[]
   adAvatars  AdAvatar[]
   brandKits  BrandKit[]
+  brandProfiles BrandProfile[]
+  assets     Asset[]
+  workflowRuns WorkflowRun[]
+  adCampaigns  AdCampaign[]
+  creativePerformance CreativePerformance[]
+  timelines  Timeline[]
+  editingSkills EditingSkill[]
+  creativeTemplates CreativeTemplate[]
+  sharedLinks  SharedLink[]
+  webhookEndpoints WebhookEndpoint[]
+  creativeComments CreativeComment[]
+  teamMembers  TeamMember[]
+  teamActivities TeamActivity[]
+  customComplianceRules CustomComplianceRule[]
+  platformConnections PlatformConnection[]
+  scheduledPosts ScheduledPost[]
+  hooks        Hook[]
 }
 
 model Account {
@@ -88,21 +105,29 @@ model Creation {
   updatedAt  DateTime @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  timelines Timeline[]
 
   @@index([userId])
+  @@index([status, createdAt])
+  @@index([taskId])
+  @@index([getUrl])
 }
 
 model CreditLedger {
-  id        String   @id @default(cuid())
-  userId    String
-  delta     Int // +grant / -spend
-  reason    String // signup | purchase | redeem | generate | refund
-  ref       String? // stripe session id / cdkey / creation id
-  createdAt DateTime @default(now())
+  id             String   @id @default(cuid())
+  userId         String
+  delta          Int // +grant / -spend
+  reason         String // signup | purchase | redeem | generate | refund
+  ref            String? // stripe session id / cdkey / creation id
+  idempotencyKey String? // unique key for pipeline stage charges to prevent double-charging
+  createdAt      DateTime @default(now())
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
+  @@unique([userId, idempotencyKey])
+  @@index([reason])
+  @@index([ref])
 }
 
 // Prevents the same Atlas redeem code being used twice in this app.
@@ -145,7 +170,7 @@ model BrandKit {
   id        String   @id @default(cuid())
   userId    String
   name      String
-  logoUrl   String? 
+  logoUrl   String?
   colors    Json? // 品牌色数组
   fontNote  String?
   toneNote  String?  // 语气/风格
@@ -154,4 +179,519 @@ model BrandKit {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
+}
+
+model BrandProfile {
+  id              String   @id @default(cuid())
+  userId          String
+  company         String
+  domain          String
+  industry        String
+  positioning     String?
+  audience        String?
+  tone            String?
+  visualStyle     String?
+  colors          Json?    // string[]
+  fonts           Json?    // string[]
+  prohibitedClaims Json?   // string[]
+  brandVocabulary Json?    // string[]
+  sourceUrls      Json?    // string[]
+  extractionTimestamp DateTime?
+  createdAt       DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+// ── Unified asset system (lineage, versions, tags, reuse) ──
+model Asset {
+  id          String   @id @default(cuid())
+  userId      String
+  type        String   // image | video | audio | script | storyboard | brief | brand_profile
+  name        String
+  sourceUrl   String?  // original source (R2 URL, external URL, etc.)
+  parentId    String?  // lineage: parent asset this was derived from
+  tags        Json?    // string[]
+  metadata    Json?    // type-specific metadata
+  createdAt   DateTime @default(now())
+
+  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  versions    AssetVersion[]
+  approvalStages ApprovalStage[]
+
+  @@index([userId])
+  @@index([parentId])
+}
+
+model SharedLink {
+  id          String    @id @default(cuid())
+  userId      String   // owner who created the share link
+  assetId     String   // the asset being shared
+  token       String   @unique // random token for the share URL
+  password    String?  // optional bcrypt hash
+  expiresAt   DateTime? // optional expiry
+  views       Int      @default(0)
+  createdAt   DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([assetId])
+  @@index([token])
+  @@index([expiresAt])
+}
+
+model WebhookEndpoint {
+  id          String   @id @default(cuid())
+  userId      String
+  url         String   // callback URL
+  secret      String   // signing secret for HMAC
+  events      String   // comma-separated list of events to subscribe to
+  active      Boolean  @default(true)
+  lastFiredAt DateTime?
+  lastStatus  Int?     // last HTTP response status code
+  createdAt   DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([active, events])
+}
+
+model CreativeComment {
+  id        String   @id @default(cuid())
+  userId    String
+  assetId   String
+  parentId  String?  // for threaded replies
+  body      String   // comment text (supports @mentions)
+  mentions  String   @default("[]") // JSON array of mentioned userIds
+  resolved  Boolean  @default(false) // for comment resolution
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([assetId])
+}
+
+model Team {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  ownerId     String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  members     TeamMember[]
+  invitations TeamInvitation[]
+  activities  TeamActivity[]
+
+  @@index([ownerId])
+}
+
+model TeamMember {
+  id        String   @id @default(cuid())
+  teamId    String
+  userId    String
+  role      String   @default("viewer") // owner | editor | viewer
+  joinedAt  DateTime @default(now())
+
+  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([teamId, userId])
+  @@index([userId])
+}
+
+model TeamInvitation {
+  id         String    @id @default(cuid())
+  teamId     String
+  email      String
+  role       String    @default("viewer") // editor | viewer
+  token      String    @unique
+  invitedBy  String
+  acceptedAt DateTime?
+  createdAt  DateTime  @default(now())
+  expiresAt  DateTime
+
+  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  @@index([teamId])
+  @@index([email])
+  @@index([expiresAt])
+}
+
+model TeamActivity {
+  id        String   @id @default(cuid())
+  teamId    String
+  userId    String
+  type      String   // member_joined | member_left | role_changed | project_created | project_updated | comment_added | approval_requested | approval_granted
+  summary   String
+  metadataJson String @default("{}")
+  createdAt DateTime @default(now())
+
+  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([teamId, createdAt])
+  @@index([userId])
+}
+
+model ApprovalStage {
+  id          String   @id @default(cuid())
+  assetId     String?
+  campaignId  String?
+  stage       String   @default("creative_review") // creative_review | brand_review | legal_review | final_approval
+  status      String   @default("pending") // pending | approved | rejected | changes_requested
+  reviewerId  String?
+  note        String?
+  submittedAt DateTime @default(now())
+  reviewedAt  DateTime?
+
+  asset    Asset?      @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  campaign AdCampaign? @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+
+  @@index([assetId])
+  @@index([campaignId])
+  @@index([stage])
+  @@index([status])
+}
+
+model AssetVersion {
+  id          String   @id @default(cuid())
+  assetId     String
+  version     Int      @default(1)
+  url         String   // R2 or external URL for this version
+  metadata    Json?    // version-specific metadata (resolution, duration, etc.)
+  createdAt   DateTime @default(now())
+
+  asset       Asset     @relation(fields: [assetId], references: [id], onDelete: Cascade)
+
+  @@index([assetId])
+}
+
+// ── Workflow engine state (durable step tracking) ──
+model WorkflowRun {
+  id           String   @id @default(cuid())
+  userId       String
+  workflowType String
+  status       String   @default("running") // running | completed | failed | cancelled
+  input        Json?
+  output       Json?
+  error        String?
+  version      Int      @default(0) // optimistic locking for pipeline state
+  startedAt    DateTime @default(now())
+  completedAt  DateTime?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([status])
+}
+
+model WorkflowStep {
+  id          String   @id @default(cuid())
+  runId       String
+  stepName    String
+  status      String   @default("pending") // pending | running | completed | failed | skipped
+  input       Json?
+  output      Json?
+  error       String?
+  creditsCost Int?
+  startedAt   DateTime?
+  completedAt DateTime?
+
+  @@index([runId])
+}
+
+// ── Ad platform integrations ──
+model AdCampaign {
+  id           String   @id @default(cuid())
+  userId       String
+  platform     String   // meta | google
+  campaignId   String?  // external platform campaign ID
+  name         String
+  status       String   @default("draft") // draft | pending_approval | active | paused | completed
+  budgetDaily  Float?
+  budgetTotal  Float?
+  currency     String   @default("USD")
+  targeting    Json?    // audience targeting config
+  creativeIds  Json?    // string[] of Creation IDs
+  metrics      Json?    // { impressions, clicks, conversions, spend, roas }
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  approvalStages ApprovalStage[]
+
+  @@index([userId])
+  @@index([platform])
+}
+
+// ── Performance learning ──
+model CreativePerformance {
+  id            String   @id @default(cuid())
+  userId        String
+  creationId    String
+  campaignId    String?
+  platform      String
+  hookType      String?
+  angleName     String?
+  variantId     String?
+  impressions   Int      @default(0)
+  clicks        Int      @default(0)
+  conversions   Int      @default(0)
+  spend         Float    @default(0)
+  revenue       Float    @default(0)
+  ctr           Float    @default(0)
+  cvr           Float    @default(0)
+  roas          Float    @default(0)
+  recordedAt    DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([creationId])
+  @@index([platform])
+}
+
+// ── Native video editor timeline ──
+model Timeline {
+  id          String   @id @default(cuid())
+  userId      String
+  creationId  String?  // optional link to the Creation this timeline edits
+  name        String
+  durationSec Float    @default(0) // total timeline duration in seconds
+  fps         Int      @default(30) // frames per second
+  ratio       String   @default("16:9") // aspect ratio: 16:9 | 9:16 | 1:1 | 4:5 | 4:3 | 21:9
+  tracksJson  String   @default("[]") // serialized Track[] (clips nested inside)
+  markersJson String   @default("[]") // serialized Marker[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  creation  Creation?  @relation(fields: [creationId], references: [id], onDelete: SetNull)
+  versions  TimelineVersion[]
+
+  @@index([userId])
+  @@index([creationId])
+}
+
+model TimelineVersion {
+  id          String   @id @default(cuid())
+  timelineId  String
+  versionNum  Int      // sequential version number (1, 2, 3, ...)
+  name        String   @default("") // optional label for this version
+  tracksJson  String   @default("[]") // serialized Track[] snapshot
+  markersJson String   @default("[]") // serialized Marker[] snapshot
+  durationSec Float    @default(0)
+  createdAt   DateTime @default(now())
+
+  timeline Timeline @relation(fields: [timelineId], references: [id], onDelete: Cascade)
+
+  @@index([timelineId])
+  @@unique([timelineId, versionNum])
+}
+
+model EditingSkill {
+  id          String   @id @default(cuid())
+  userId      String
+  name        String
+  description String   @default("")
+  contentTypesJson String @default("[]") // serialized ContentType[]
+  platformsJson    String @default("[]") // serialized string[]
+  stepsJson        String @default("[]") // serialized EditStep[]
+  estimatedTimeMin Int      @default(5)
+  tagsJson         String   @default("[]") // serialized string[]
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+// ── Creative Template Library ──
+// Pre-built and user-saved templates for creative briefs, hook formulas,
+// script structures, and editing skill bundles.  Built-in templates are
+// seeded at startup; user templates are persisted per-user.
+model CreativeTemplate {
+  id          String   @id @default(cuid())
+  userId      String?  // null = built-in template, non-null = user-saved
+  category    String   // "brief" | "hooks" | "angles" | "script" | "skill-bundle"
+  name        String
+  description String   @default("")
+  // Serialized template payload — shape depends on category:
+  //   brief: { product, audience, tone, goals, ... }
+  //   hooks: { hooks: [{ type, text, ... }] }
+  //   angles: { angles: [{ name, description, ... }] }
+  //   script: { structure, scenes, ... }
+  //   skill-bundle: { skillIds: [...], skills: [...] }
+  payloadJson String   @default("{}")
+  tagsJson    String   @default("[]") // serialized string[]
+  isFavorite  Boolean  @default(false) // user can favorite templates
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([category])
+}
+
+// ── Custom compliance rules (user-defined, per-platform) ──
+
+model CustomComplianceRule {
+  id          String   @id @default(cuid())
+  userId      String   // owner
+  platform    String   // tiktok | youtube | meta | google | universal
+  enabled     Boolean  @default(true)
+  priority    Int      @default(0) // higher = checked first
+  category    String   // ComplianceCategory (prohibited_content, restricted_content, etc.)
+  title       String   // short rule title
+  description String   // what this rule checks
+  keywordsJson String  @default("[]") // serialized string[]
+  recommendation String // how to fix
+  severity    String   @default("medium") // critical | high | medium | low | info
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([platform])
+  @@index([enabled])
+}
+
+// ── Publishing: OAuth tokens & scheduled posts ──
+
+model PlatformConnection {
+  id           String   @id @default(cuid())
+  userId       String
+  platform     String   // tiktok | youtube | instagram | facebook | linkedin
+  accessToken  String
+  refreshToken String?
+  tokenExpiresAt DateTime?
+  platformUserId String? // platform-specific user/page ID
+  platformUsername String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, platform])
+  @@index([userId])
+  @@index([platform])
+}
+
+model ScheduledPost {
+  id          String    @id @default(cuid())
+  userId      String
+  platform    String    // tiktok | youtube | instagram | facebook | linkedin
+  mediaUrl    String
+  caption     String
+  hashtagsJson String   @default("[]") // serialized string[] of hashtags
+  privacyLevel String?  // public | private | followers (platform-specific)
+  crossPostToJson String @default("[]") // serialized string[] of cross-post target platforms
+  postUrl     String?   // filled after actual publish
+  postId      String?   // platform-specific post ID after publish
+  scheduledAt DateTime  // when to publish
+  status      String    @default("scheduled") // scheduled | publishing | published | failed | cancelled
+  error       String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([userId, status])
+  @@index([status, scheduledAt])
+}
+
+// ── Meta Ads Safety Layer: persisted audit log & approval workflow ──
+// These tables back the D1 persistence path in src/lib/ads/meta-safety.ts.
+// The in-memory Maps remain as a fallback for tests and dry-run mode.
+
+model MetaSafetyAudit {
+  id        String   @id @default(cuid())
+  action    String
+  actor     String
+  timestamp DateTime @default(now())
+  dryRun    Boolean
+  approved  Boolean
+  payload   String
+  result    String
+  spendDelta Float   @default(0)
+
+  @@index([actor])
+  @@index([timestamp])
+}
+
+model MetaSafetyApproval {
+  id        String   @id @default(cuid())
+  action    String
+  payload   String
+  status    String   @default("pending")
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+  approvedBy String?
+  approvedAt DateTime?
+
+  @@index([status])
+  @@index([expiresAt])
+}
+
+// ── Google Ads Safety Layer: audit log & approval state (D1-persisted) ──
+
+model GoogleSafetyAudit {
+  id        String   @id @default(cuid())
+  action    String
+  actor     String
+  timestamp DateTime @default(now())
+  dryRun    Boolean
+  approved  Boolean
+  payload   String
+  result    String
+  spendDelta Float   @default(0)
+
+  @@index([actor])
+  @@index([timestamp])
+}
+
+model GoogleSafetyApproval {
+  id        String   @id @default(cuid())
+  action    String
+  payload   String
+  status    String   @default("pending")
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+  approvedBy String?
+  approvedAt DateTime?
+
+  @@index([status])
+  @@index([expiresAt])
+}
+
+// ── Hook Library: AI-generated reusable ad hooks (D1-persisted per user) ──
+// Backs the persistence path in src/lib/creative/hook-library.ts. Hooks are
+// generated via Atlas LLM (or heuristic dry-run fallback), stored here so they
+// survive deploys, and retrieved/filtered per user.
+
+model Hook {
+  id              String   @id @default(cuid())
+  userId          String
+  text            String
+  trigger         String
+  platforms       String   // JSON array stored as string (Platform[])
+  performanceScore Int
+  productOrBrand  String?
+  audience        String?
+  createdAt       DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([userId, trigger])
 }

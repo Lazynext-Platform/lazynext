@@ -26,8 +26,9 @@ async function POST(req: Request) {
     const url = await putMedia(key, buffer, contentType);
     return NextResponse.json({ url });
   } catch (e) {
-    console.error('[marketing/upload] error:', String(e));
-    return NextResponse.json({ error: 'upload_failed', detail: String(e) }, { status: 502 });
+    const msg = e instanceof Error ? e.message : String(e);
+    console.error('[marketing/upload] error:', msg);
+    return NextResponse.json({ error: 'upload_failed' }, { status: 502 });
   }
 }
 

@@ -2,9 +2,10 @@ import { withAtlas } from '@/lib/request-context';
 import { NextResponse } from 'next/server';
 import { auth } from '@/../auth';
 import { generateBrief, CREATIVE_COSTS, type BriefInput } from '@/lib/creative/intelligence';
-import { deductCredits } from '@/lib/credits';
-import { refundSync } from '@/lib/lazynext-studio/gen-task';
+import { deductCredits, refundCredits } from '@/lib/credits';
 import { prisma } from '@/lib/prisma';
+import { getLearningsContext } from '@/lib/creative/learning';
+import { getUserPlanTier } from '@/lib/plan-tier';
 
 export const maxDuration = 90;
 
@@ -12,6 +13,7 @@ async function __byokPOST(req: Request) {
   const session = await auth();
   if (!session?.user?.id) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
   const uid = session.user.id;
+  const planTier = await getUserPlanTier(uid);
 
   const body = await req.json().catch(() => ({}));
   const product = typeof body.product === 'string' ? body.product.trim().slice(0, 2000) : '';
@@ -43,15 +45,17 @@ async function __byokPOST(req: Request) {
     platform: typeof body.platform === 'string' ? body.platform : undefined,
     format: typeof body.format === 'string' ? body.format : undefined,
     audience: typeof body.audience === 'string' ? body.audience : undefined,
+    learnings: await getLearningsContext(uid).catch(() => ''),
+    planTier,
   };
 
   try {
     const brief = await generateBrief(input);
     return NextResponse.json({ brief });
   } catch (e) {
-    await refundSync(uid, CREATIVE_COSTS.brief, 'creative:brief');
+    await refundCredits(uid, CREATIVE_COSTS.brief, 'creative:brief');
     console.error('[creative/brief] error:', String(e));
-    return NextResponse.json({ error: 'brief_failed', detail: String(e) }, { status: 500 });
+    return NextResponse.json({ error: 'brief_failed' }, { status: 500 });
   }
 }
 

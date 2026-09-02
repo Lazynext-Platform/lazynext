@@ -4,12 +4,23 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { AlertCircle, CheckCircle2, Download, Film, ImagePlus, Loader2, Pencil, RefreshCw, Video, Wand2, X } from 'lucide-react';
 import { uploadDirectMediaIfSupported } from '@/lib/client-media-upload';
-import { composeAdReel } from '@/lib/compose-client';
 import { DRAMA_STYLES } from '@/lib/drama/prompt';
 import { videoCredits } from '@/lib/video-pricing';
 import { useI18n } from '@/i18n/provider';
+import { fetchWithRetry } from '@/lib/fetch-retry';
 import { AssetPicker } from '@/components/AssetPicker';
 import { useMounted } from '@/lib/use-mounted';
+
+// Lazy-load the FFmpeg Web Worker composition module — only needed when user
+// actually composes a video, not on page load.
+let _composeAdReel: typeof import('@/lib/compose-client')['composeAdReel'] | null = null;
+async function composeAdReel(...args: Parameters<typeof import('@/lib/compose-client')['composeAdReel']>) {
+  if (!_composeAdReel) {
+    const mod = await import('@/lib/compose-client');
+    _composeAdReel = mod.composeAdReel;
+  }
+  return _composeAdReel(...args);
+}
 
 // Visual specs unified with lazynext-studio: dark #131416 + cyan #0064d9 + Space Grotesk
 const ACCENT = '#0064d9';
@@ -192,7 +203,7 @@ export default function DramaStudioPage() {
 
   const refreshCredits = useCallback(async () => {
     try {
-      const r = await fetch('/api/me', { cache: 'no-store' });
+      const r = await fetchWithRetry('/api/me', { cache: 'no-store' });
       if (!r.ok) {
         setCredits(null);
         return null;
@@ -649,7 +660,7 @@ export default function DramaStudioPage() {
             {productAssets.map((pa, idx) => (
               <span key={idx} className="inline-flex items-center gap-1.5 pl-1 pr-2 py-1 rounded-lg text-[11px] bg-surface border border-line">
                 <span className="relative w-6 h-6 rounded overflow-hidden bg-black/30 shrink-0">
-                  {pa.preview && <img src={pa.preview} alt="product" className={`w-full h-full object-cover ${pa.url ? 'cursor-zoom-in' : ''}`} onClick={() => pa.url && setZoomImg(pa.url)} />}
+                  {pa.preview && <img src={pa.preview} alt={t('drama.altProduct')} className={`w-full h-full object-cover ${pa.url ? 'cursor-zoom-in' : ''}`} onClick={() => pa.url && setZoomImg(pa.url)} />}
                   {pa.uploading && <span className="absolute inset-0 bg-black/60 grid place-items-center"><Loader2 className="w-3 h-3 animate-spin text-white" /></span>}
                 </span>
                 <button onClick={() => setProductAssets((prev) => prev.filter((_, k) => k !== idx))} title={t('drama.remove')} aria-label={t('drama.remove')} className="p-1 text-fg-faint hover:text-fg"><X className="w-3.5 h-3.5" /></button>
@@ -678,9 +689,9 @@ export default function DramaStudioPage() {
       </div>
 
       {zoomImg && (
-        <div onClick={() => setZoomImg(null)} className="fixed inset-0 z-[60] bg-black/85 flex items-center justify-center p-4 pt-safe cursor-zoom-out" role="dialog" aria-modal="true" aria-label="Image preview">
+        <div onClick={() => setZoomImg(null)} className="fixed inset-0 z-[60] bg-black/85 flex items-center justify-center p-4 pt-safe cursor-zoom-out" role="dialog" aria-modal="true" aria-label={t('drama.imagePreview')}>
           <img src={zoomImg} alt="preview" className="max-w-[94vw] max-h-[85vh] w-auto h-auto object-contain rounded-lg" onClick={(e) => e.stopPropagation()} />
-          <button onClick={() => setZoomImg(null)} className="absolute top-4 right-4 text-fg-secondary hover:text-fg" aria-label="close"><X className="w-6 h-6" /></button>
+          <button onClick={() => setZoomImg(null)} className="absolute top-4 right-4 text-fg-secondary hover:text-fg" aria-label={t('common.close')}><X className="w-6 h-6" /></button>
         </div>
       )}
       {err && <div role="alert" className="max-w-4xl mx-auto px-4 mt-6"><div className="flex items-center gap-2 text-sm text-danger bg-danger/10 border border-danger/25 rounded-lg px-3 py-2"><AlertCircle className="w-4 h-4" />{t('drama.error')}: {dramaErrText(err, t)}</div></div>}
@@ -732,7 +743,7 @@ export default function DramaStudioPage() {
               <div className="flex items-center gap-2 text-xs text-fg-faint mb-4">
                 {sceneAsset.status !== 'idle' && (
                   <span className="w-11 h-7 rounded overflow-hidden bg-hover border border-line grid place-items-center shrink-0">
-                    {sceneAsset.url ? <img src={sceneAsset.url} className="w-full h-full object-cover cursor-zoom-in" alt="scene" onClick={() => setZoomImg(sceneAsset.url!)} />
+                    {sceneAsset.url ? <img src={sceneAsset.url} className="w-full h-full object-cover cursor-zoom-in" alt={t('drama.altScene')} onClick={() => setZoomImg(sceneAsset.url!)} />
                       : sceneAsset.status === 'run' ? <Loader2 className="w-3 h-3 animate-spin text-fg-faint" />
                       : sceneAsset.status === 'fail' ? <AlertCircle className="w-3 h-3 text-danger" /> : null}
                   </span>
@@ -750,7 +761,7 @@ export default function DramaStudioPage() {
                     <div className="flex items-center gap-2 mb-2 flex-wrap">
                       <span className="text-[11px] rounded-full px-2 py-0.5 bg-hover border border-line" style={{ color: ACCENT }}>{t('drama.sceneN', { n: seg.i })}</span>
                       {/* Per-segment duration: AI gives suggested value, user can fine-tune */}
-                      <select value={seg.durationSec || 8} onChange={(e) => setSegDuration(i, Number(e.target.value))} className="appearance-none bg-elevated rounded px-1.5 py-0.5 text-[10px] text-fg-secondary focus:outline-none focus:ring-1 focus:ring-[#00b2fc]" title={t('drama.sceneDuration')} aria-label={t('drama.sceneDuration')}>{VIDEO_DURATIONS.map((d) => <option key={d} value={d}>{d}s</option>)}</select>
+                      <select value={seg.durationSec || 8} onChange={(e) => setSegDuration(i, Number(e.target.value))} className="appearance-none bg-elevated rounded px-1.5 py-0.5 text-[10px] text-fg-secondary focus:outline-none focus:ring-1 focus:ring-[#00b2fc]" title={t('drama.sceneDuration')} aria-label={t('drama.sceneDuration')}>{VIDEO_DURATIONS.map((d) => <option key={d} value={d}>{d}{t('drama.secondsSuffix')}</option>)}</select>
                       {/* Appearing characters (corresponding portrait references) */}
                       {(seg.cast || []).map((k) => {
                         const c = script.characters?.find((x) => x.key === k);

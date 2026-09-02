@@ -3,17 +3,19 @@ import { NextResponse } from 'next/server';
 import { auth } from '@/../auth';
 import { prisma } from '@/lib/prisma';
 import { deductCredits, grantCredits } from '@/lib/credits';
-import { submitSkitVideo, VIDEO_MODEL, AD_SKIT_TEMPLATE_ID } from '@/lib/ad-skit';
+import { submitSkitVideo, getAdSkitVideoModel, AD_SKIT_TEMPLATE_ID } from '@/lib/ad-skit';
 import { videoCredits } from '@/lib/video-pricing';
+import { getUserPlanTier } from '@/lib/plan-tier';
 
 export const maxDuration = 60;
-
-// seedance ref-to-video fixed 720p / 15s: dynamic billing by seconds × resolution (no longer fixed AD_SKIT_COSTS.video).
-const AD_SKIT_VIDEO_COST = videoCredits(VIDEO_MODEL, '720p', 15);
 
 async function __byokPOST(req: Request) {
   const session = await auth();
   if (!session?.user?.id) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+  const planTier = await getUserPlanTier(session.user.id);
+  const videoModel = getAdSkitVideoModel(planTier);
+  // seedance ref-to-video fixed 720p / 15s: dynamic billing by seconds × resolution (no longer fixed AD_SKIT_COSTS.video).
+  const AD_SKIT_VIDEO_COST = videoCredits(videoModel, '720p', 15);
 
   const body = await req.json().catch(() => ({}));
   const productUrls: string[] = Array.isArray(body.productUrls)
@@ -33,15 +35,16 @@ async function __byokPOST(req: Request) {
   }
   let res;
   try {
-    res = await submitSkitVideo(productUrls, videoPrompt, duration);
+    res = await submitSkitVideo(productUrls, videoPrompt, duration, planTier);
   } catch (e) {
     await grantCredits(session.user.id, AD_SKIT_VIDEO_COST, 'refund', AD_SKIT_TEMPLATE_ID + ':video');
-    return NextResponse.json({ error: 'submit_failed', detail: String(e) }, { status: 502 });
+    console.error('[ad-skit/video] error:', String(e));
+    return NextResponse.json({ error: 'submit_failed' }, { status: 502 });
   }
   // templateId uses formal 'ad-skit' (without ':') → final video enters "My Creations"; prompt stores friendly title (frontend passes plan.idea).
   const title = typeof body.title === 'string' && body.title.trim() ? body.title.trim().slice(0, 200) : videoPrompt.slice(0, 120);
   const creation = await prisma.creation.create({
-    data: { userId: session.user.id, templateId: AD_SKIT_TEMPLATE_ID, model: VIDEO_MODEL, prompt: title, status: 'processing', taskId: res.id, getUrl: res.getUrl, cost: AD_SKIT_VIDEO_COST },
+    data: { userId: session.user.id, templateId: AD_SKIT_TEMPLATE_ID, model: videoModel, prompt: title, status: 'processing', taskId: res.id, getUrl: res.getUrl, cost: AD_SKIT_VIDEO_COST },
   });
   return NextResponse.json({ id: creation.id, status: 'processing' });
 }

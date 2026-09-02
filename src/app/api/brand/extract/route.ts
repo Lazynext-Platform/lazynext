@@ -2,9 +2,10 @@ import { withAtlas } from '@/lib/request-context';
 import { NextResponse } from 'next/server';
 import { auth } from '@/../auth';
 import { extractBrand, SSRFError } from '@/lib/brand/extract';
-import { deductCredits } from '@/lib/credits';
-import { refundSync } from '@/lib/lazynext-studio/gen-task';
+import { buildProfile } from '@/lib/brand/profile';
+import { deductCredits, refundCredits } from '@/lib/credits';
 import { prisma } from '@/lib/prisma';
+import { getUserPlanTier } from '@/lib/plan-tier';
 
 export const maxDuration = 90;
 
@@ -14,6 +15,7 @@ async function __byokPOST(req: Request) {
   const session = await auth();
   if (!session?.user?.id) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
   const uid = session.user.id;
+  const planTier = await getUserPlanTier(uid);
 
   const body = await req.json().catch(() => ({}));
   const url = typeof body.url === 'string' ? body.url.trim() : '';
@@ -32,7 +34,7 @@ async function __byokPOST(req: Request) {
   }
 
   try {
-    const extraction = await extractBrand(url);
+    const extraction = await extractBrand(url, planTier);
 
     // Save as a BrandKit (extends existing model — stores structured data in colors JSON)
     const brandKit = await prisma.brandKit.create({
@@ -64,14 +66,35 @@ async function __byokPOST(req: Request) {
       },
     });
 
+    // Also persist a normalized BrandProfile
+    // (non-fatal — return extraction even if DB save fails)
+    void prisma.brandProfile.create({
+      data: {
+        userId: uid,
+        company: extraction.company || extraction.domain,
+        domain: extraction.domain,
+        industry: extraction.industry,
+        positioning: extraction.positioning,
+        audience: extraction.audience,
+        tone: extraction.tone,
+        visualStyle: extraction.visualStyle,
+        colors: extraction.colors,
+        fonts: extraction.fonts,
+        prohibitedClaims: extraction.prohibitedClaims,
+        brandVocabulary: extraction.brandVocabulary,
+        sourceUrls: extraction.sourceUrls,
+        extractionTimestamp: new Date(extraction.extractionTimestamp || Date.now()),
+      },
+    }).catch(() => {});
+
     return NextResponse.json({ extraction, brandKitId: brandKit.id });
   } catch (e) {
-    await refundSync(uid, BRAND_EXTRACT_COST, 'brand:extract');
+    await refundCredits(uid, BRAND_EXTRACT_COST, 'brand:extract');
     if (e instanceof SSRFError) {
-      return NextResponse.json({ error: 'url_blocked', reason: e.message }, { status: 400 });
+      return NextResponse.json({ error: 'url_blocked' }, { status: 400 });
     }
     console.error('[brand/extract] error:', String(e));
-    return NextResponse.json({ error: 'extraction_failed', detail: String(e) }, { status: 500 });
+    return NextResponse.json({ error: 'extraction_failed' }, { status: 500 });
   }
 }
 

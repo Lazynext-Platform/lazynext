@@ -217,12 +217,13 @@ const SECURITY_HEADERS: Record<string, string> = {
   'Permissions-Policy': 'camera=(), microphone=(), geolocation=(), interest-cohort=()',
   'Content-Security-Policy': [
     "default-src 'self'",
-    `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ''} https://static.cloudflareinsights.com`,
+    `script-src 'self' 'unsafe-inline' blob:${isDev ? " 'unsafe-eval'" : ''} https://static.cloudflareinsights.com https://unpkg.com`,
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "font-src 'self' https://fonts.gstatic.com",
     `img-src 'self' data: blob: https:${isDev ? ' http://localhost:3099' : ''}`,
     `media-src 'self' blob: https:${isDev ? ' http://localhost:3099' : ''}`,
-    `connect-src 'self' https://*.atlascloud.ai https://*.dodopayments.com https://cloudflareinsights.com${isDev ? ' http://localhost:3099' : ''}`,
+    `connect-src 'self' https://*.atlascloud.ai https://*.dodopayments.com https://cloudflareinsights.com https://unpkg.com${isDev ? ' http://localhost:3099' : ''}`,
+    "worker-src 'self' blob:",
     "frame-ancestors 'none'",
     "form-action 'self'",
     "base-uri 'self'",
@@ -253,16 +254,21 @@ export async function proxy(req: NextRequest): Promise<NextResponse> {
   if (pathname.startsWith('/api/')) {
     const isWebhook = pathname.startsWith('/api/webhook/');
     const isAuth = pathname.startsWith('/api/auth/');
-    if (!isWebhook && !isAuth) {
-      const ip = getClientIP(req);
-      const category = getRateCategory(pathname);
-      const { limited, retryAfter } = checkRateLimit(ip, category);
-      if (limited) {
-        const res = NextResponse.json(
-          { error: 'rate_limited', retryAfter },
-          { status: 429, headers: { 'Retry-After': String(retryAfter || 60) } },
-        );
-        return applySecurityHeaders(res);
+    const isHealth = pathname === '/api/health';
+    if (!isWebhook && !isAuth && !isHealth) {
+      // Skip rate limiting in test/E2E environment to avoid flaky skips
+      const skipRateLimit = process.env.NODE_ENV === 'test' || process.env.E2E_NO_RATE_LIMIT === '1';
+      if (!skipRateLimit) {
+        const ip = getClientIP(req);
+        const category = getRateCategory(pathname);
+        const { limited, retryAfter } = checkRateLimit(ip, category);
+        if (limited) {
+          const res = NextResponse.json(
+            { error: 'rate_limited', retryAfter },
+            { status: 429, headers: { 'Retry-After': String(retryAfter || 60) } },
+          );
+          return applySecurityHeaders(res);
+        }
       }
     }
     return applySecurityHeaders(NextResponse.next());

@@ -5,7 +5,7 @@ import { LOCALES, type Locale, messages } from '@/i18n/messages';
 export async function generateMetadata(): Promise<Metadata> {
   const localeCookie = (await cookies()).get('locale')?.value;
   const locale = ((LOCALES as readonly string[]).includes(localeCookie || '') ? localeCookie : 'en') as Locale;
-  const legal = (messages[locale] as any)?.legal?.terms || (messages.en as any).legal.terms;
+  const legal = messages[locale]?.legal?.terms || messages.en.legal.terms;
   return {
     title: legal.metaTitle,
     description: legal.metaDesc,
@@ -16,7 +16,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function TermsPage() {
   const localeCookie = (await cookies()).get('locale')?.value;
   const locale = ((LOCALES as readonly string[]).includes(localeCookie || '') ? localeCookie : 'en') as Locale;
-  const t = (messages[locale] as any)?.legal?.terms || (messages.en as any).legal.terms;
+  const t = messages[locale]?.legal?.terms || messages.en.legal.terms;
   const year = new Date().getFullYear();
 
   return (

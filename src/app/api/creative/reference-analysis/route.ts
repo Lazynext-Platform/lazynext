@@ -2,10 +2,10 @@ import { withAtlas } from '@/lib/request-context';
 import { NextResponse } from 'next/server';
 import { auth } from '@/../auth';
 import { analyzeReferenceCreative, CREATIVE_COSTS } from '@/lib/creative/intelligence';
-import { deductCredits } from '@/lib/credits';
-import { refundSync } from '@/lib/lazynext-studio/gen-task';
+import { deductCredits, refundCredits } from '@/lib/credits';
 import { atlasASR, ATLAS_ASR_MODEL } from '@/lib/providers/atlas-audio';
 import { pollOnce } from '@/lib/atlas';
+import { getUserPlanTier } from '@/lib/plan-tier';
 
 export const maxDuration = 90;
 
@@ -36,6 +36,7 @@ async function __byokPOST(req: Request) {
   const session = await auth();
   if (!session?.user?.id) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
   const uid = session.user.id;
+  const planTier = await getUserPlanTier(uid);
 
   const body = await req.json().catch(() => ({}));
   const sourceUrl = typeof body.sourceUrl === 'string' ? body.sourceUrl.trim() : '';
@@ -69,12 +70,12 @@ async function __byokPOST(req: Request) {
       }
     }
 
-    const analysis = await analyzeReferenceCreative(sourceUrl, effectiveTranscript);
+    const analysis = await analyzeReferenceCreative(sourceUrl, effectiveTranscript, planTier);
     return NextResponse.json({ analysis, transcript: effectiveTranscript || undefined });
   } catch (e) {
-    await refundSync(uid, totalCost, 'creative:reference-analysis');
+    await refundCredits(uid, totalCost, 'creative:reference-analysis');
     console.error('[creative/reference-analysis] error:', String(e));
-    return NextResponse.json({ error: 'analysis_failed', detail: String(e) }, { status: 500 });
+    return NextResponse.json({ error: 'analysis_failed' }, { status: 500 });
   }
 }
 

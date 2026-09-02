@@ -6,6 +6,7 @@ import { LogOut, CreditCard, Settings, FolderOpen, Boxes, LayoutDashboard, Shiel
 import { useI18n } from '@/i18n/provider';
 import { useMounted } from '@/lib/use-mounted';
 import { AuthModal } from './AuthModal';
+import { fetchWithRetry } from '@/lib/fetch-retry';
 
 // Unified top-right user area (shared by all immersive pages):
 // Signed out -> Pricing / Sign in / Sign up; signed in -> avatar + name + dropdown (Pricing / Sign out). Bilingual.
@@ -21,7 +22,7 @@ export function UserMenu() {
 
   useEffect(() => {
     if (status !== 'authenticated') return;
-    fetch('/api/me').then((r) => r.json()).then((j) => setIsAdmin(!!j.isAdmin)).catch(() => {});
+    fetchWithRetry('/api/me').then((r) => r.json()).then((j) => setIsAdmin(!!j.isAdmin)).catch(() => {});
   }, [status]);
 
   // Close on Escape / outside interaction when the signed-in dropdown is open.

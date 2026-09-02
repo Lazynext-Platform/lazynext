@@ -1,11 +1,11 @@
 'use client';
 
 import { createContext, useCallback, useContext, useEffect, useState } from 'react';
-import { LOCALES, RTL_LOCALES, type Locale, messages, appMessages } from './messages';
+import { LOCALES, RTL_LOCALES, type Locale, messages, appMessages, loadLocaleMessages } from './messages';
 
  
-function get(obj: any, path: string): any {
-  return path.split('.').reduce((o, k) => (o == null ? undefined : o[k]), obj);
+function get(obj: Record<string, unknown> | undefined, path: string): unknown {
+  return path.split('.').reduce<unknown>((o, k) => (o == null ? undefined : (o as Record<string, unknown>)[k]), obj);
 }
 
 interface Ctx {
@@ -21,6 +21,31 @@ const I18nContext = createContext<Ctx | null>(null);
 // completely eliminating hydration mismatch caused by "SSR English → client useEffect switches to Chinese" (React #418).
 export function I18nProvider({ children, initialLocale }: { children: React.ReactNode; initialLocale?: Locale }) {
   const [locale, setLocaleState] = useState<Locale>(initialLocale || 'en');
+  const [localeMessages, setLocaleMessages] = useState<any>(messages[locale] || messages.en);
+  const [localeAppMessages, setLocaleAppMessages] = useState<any>(appMessages[locale] || appMessages.en);
+  const [loadedLocales, setLoadedLocales] = useState<Set<Locale>>(new Set(['en']));
+
+  // Load locale messages when locale changes
+  useEffect(() => {
+    if (loadedLocales.has(locale)) {
+      setLocaleMessages(messages[locale] || messages.en);
+      setLocaleAppMessages(appMessages[locale] || appMessages.en);
+      return;
+    }
+    let cancelled = false;
+    loadLocaleMessages(locale).then(({ messages: msgs, appMessages: appMsgs }) => {
+      if (cancelled) return;
+      // Store in the static objects for future synchronous access
+      messages[locale] = msgs;
+      appMessages[locale] = appMsgs;
+      setLoadedLocales(prev => new Set(prev).add(locale));
+      setLocaleMessages(msgs);
+      setLocaleAppMessages(appMsgs);
+    }).catch(() => {
+      // Fallback to English if locale load fails — keeps current state
+    });
+    return () => { cancelled = true; };
+  }, [locale, loadedLocales]);
 
   // Migrate old users: only when localStorage has it but cookie doesn't (initialLocale didn't reach the expected value),
   // adopt it and write the cookie so next SSR can read it → first frame fully consistent thereafter.
@@ -63,18 +88,19 @@ export function I18nProvider({ children, initialLocale }: { children: React.Reac
 
   const t = useCallback(
     (key: string, vars?: Record<string, string | number>) => {
-      let s = get(messages[locale], key) ?? get(messages.en, key) ?? key;
-      if (typeof s === 'string' && vars) {
+      const raw = get(localeMessages, key) ?? get(messages.en, key) ?? key;
+      let s: string = typeof raw === 'string' ? raw : key;
+      if (vars) {
         for (const [k, v] of Object.entries(vars)) s = s.replace(`{${k}}`, String(v));
       }
-      return s as string;
+      return s;
     },
-    [locale],
+    [localeMessages],
   );
 
   const appText = useCallback(
-    (id: string) => appMessages[locale]?.[id] ?? appMessages.en[id] ?? { title: id, description: '' },
-    [locale],
+    (id: string) => localeAppMessages?.[id] ?? appMessages.en[id] ?? { title: id, description: '' },
+    [localeAppMessages],
   );
 
   return <I18nContext.Provider value={{ locale, setLocale, t, appText }}>{children}</I18nContext.Provider>;

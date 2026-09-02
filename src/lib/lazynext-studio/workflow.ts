@@ -1,5 +1,8 @@
 import { atlasImage } from '@/lib/providers/atlas-image';
 import { atlasVideo } from '@/lib/providers/atlas-video';
+import { emitProviderCalled, emitProviderCompleted } from '@/lib/observability/events';
+import { getImageModel, getVideoModel } from '@/lib/providers/model-helpers';
+import type { PlanTier } from '@/lib/plan-tier';
 import type { MarketingPlan, AdShot } from './schema';
 
 /** in-app credit cost */
@@ -7,17 +10,28 @@ export const MK_PLAN_COST = 3;
 export const MK_IMAGE_COST = 5; // per-shot image, priced at nano-banana-2's current ~$0.08
 export const MK_VIDEO_COST = 12; // per-shot Seedance 2.0 i2v, priced at current ~$0.09 + SaaS margin
 
-export const SHOT_IMAGE_MODEL = process.env.MK_SHOT_IMAGE_MODEL || 'google/nano-banana-2/text-to-image';
+/** Resolve the shot image model, respecting env override and plan-tier routing. */
+export function getShotImageModel(planTier?: PlanTier): string {
+  return process.env.MK_SHOT_IMAGE_MODEL || getImageModel(planTier);
+}
 // ⚠️ Uses the old nano-banana/edit, not nano-banana-2/edit: testing shows the latter intermittently returns 400
 // "Request parameters are invalid" (4 out of 6 times, ~50-75%), drama first frame almost always fails; old version tested with no 400, ~15s per image, quality sufficient for UGC/short drama.
-export const SHOT_IMAGE_EDIT_MODEL = process.env.MK_SHOT_IMAGE_EDIT_MODEL || 'google/nano-banana/edit';
-export const SHOT_VIDEO_MODEL = process.env.MK_SHOT_VIDEO_MODEL || 'bytedance/seedance-2.0/image-to-video';
+export function getShotImageEditModel(planTier?: PlanTier): string {
+  return process.env.MK_SHOT_IMAGE_EDIT_MODEL || getImageModel(planTier);
+}
+export function getShotVideoModel(planTier?: PlanTier): string {
+  return process.env.MK_SHOT_VIDEO_MODEL || getVideoModel(planTier);
+}
 // Replica/generation video model: seedance-2.0/image-to-video — prompt includes dialogue + generate_audio for lip-synced speech,
 // single step, cheapest (saves vs veo3.1), and respects user-selected duration. Testing shows prompt dialogue alone produces video with voiceover audio track, no TTS/reference_audios needed.
-export const REPLICA_VIDEO_MODEL = process.env.MK_REPLICA_VIDEO_MODEL || 'bytedance/seedance-2.0/image-to-video';
+export function getReplicaVideoModel(planTier?: PlanTier): string {
+  return process.env.MK_REPLICA_VIDEO_MODEL || getVideoModel(planTier);
+}
 // drama per-shot: feeds product image + character costume photo + scene image all at once to reference-to-video to directly produce video,
 // prompt binds @image1.. in reference_images order; saves one lossy step vs "edit composite first frame → i2v", consistency locked by multi-reference.
-export const SHOT_REF_VIDEO_MODEL = process.env.MK_SHOT_REF_VIDEO_MODEL || 'bytedance/seedance-2.0/reference-to-video';
+export function getShotRefVideoModel(planTier?: PlanTier): string {
+  return process.env.MK_SHOT_REF_VIDEO_MODEL || getVideoModel(planTier);
+}
 
 const RATIOS = new Set(['9:16', '16:9', '1:1', '4:3', '3:4']);
 const VIDEO_RATIOS = new Set(['9:16', '16:9', '1:1', '4:3', '3:4', '21:9', 'adaptive']);
@@ -94,36 +108,43 @@ export function buildShotImageEditPrompt(plan: MarketingPlan, shot: AdShot, hasP
 }
 
 /** nano-banana image generation: with reference images uses edit (consumes real images), otherwise text-to-image */
-export async function submitShotImage(prompt: string, ratio: string, refImages?: string[]) {
+export async function submitShotImage(prompt: string, ratio: string, refImages?: string[], planTier?: PlanTier) {
   const imgs = (refImages || []).filter((u) => typeof u === 'string' && /^https?:\/\//.test(u)).slice(0, 4);
-  if (imgs.length) {
-    // ⚠️ nano-banana-2/edit's aspect ratio parameter is named image_size (value like '9:16'), not aspect_ratio.
-    // Passing aspect_ratio or omitting the ratio param entirely, the submit returns 200 but GET prediction returns 400
-    // "Request parameters are invalid" (drama first frame edit always reproduces; marketing replica avoided exposure via promptOverride fallback to t2i).
-    // Tested: image_size:'9:16' → completed.
-    return atlasImage.generate({
-      model: SHOT_IMAGE_EDIT_MODEL,
+  const imageModel = imgs.length ? getShotImageEditModel(planTier) : getShotImageModel(planTier);
+  const t0 = Date.now();
+  emitProviderCalled('', 'atlas-image', imageModel, { ratio, hasRef: imgs.length > 0 });
+  try {
+    if (imgs.length) {
+      // ⚠️ nano-banana-2/edit's aspect ratio parameter is named image_size (value like '9:16'), not aspect_ratio.
+      // Passing aspect_ratio or omitting the ratio param entirely, the submit returns 200 but GET prediction returns 400
+      // "Request parameters are invalid" (drama first frame edit always reproduces; marketing replica avoided exposure via promptOverride fallback to t2i).
+      // Tested: image_size:'9:16' → completed.
+      return await atlasImage.generate({
+        model: imageModel,
+        prompt,
+        referenceImages: imgs,
+        imageField: 'images',
+        extra: { image_size: ratio },
+      });
+    }
+    return await atlasImage.generate({
+      model: imageModel,
       prompt,
-      referenceImages: imgs,
-      imageField: 'images',
-      extra: { image_size: ratio },
+      ratio,
+      extra: { resolution: '2k' },
     });
+  } finally {
+    emitProviderCompleted('', 'atlas-image', imageModel, Date.now() - t0);
   }
-  return atlasImage.generate({
-    model: SHOT_IMAGE_MODEL,
-    prompt,
-    ratio,
-    extra: { resolution: '2k' },
-  });
 }
 
 /** Seedance 2.0 image-to-video: first frame field is image, can natively generate dialogue/sound effects. */
 export async function submitShotVideo(
   imageUrl: string,
   prompt: string,
-  opts: { ratio?: unknown; resolution?: unknown; duration?: unknown; model?: string } = {},
+  opts: { ratio?: unknown; resolution?: unknown; duration?: unknown; model?: string; planTier?: PlanTier } = {},
 ) {
-  const model = typeof opts.model === 'string' && opts.model ? opts.model : SHOT_VIDEO_MODEL;
+  const model = typeof opts.model === 'string' && opts.model ? opts.model : getShotVideoModel(opts.planTier);
   const extra: Record<string, unknown> = {};
   if (model.includes('seedance-2.0')) {
     Object.assign(extra, {
@@ -145,11 +166,11 @@ export async function submitShotVideo(
 export async function submitShotRefVideo(
   referenceImages: string[],
   prompt: string,
-  opts: { ratio?: unknown; resolution?: unknown; duration?: unknown } = {},
+  opts: { ratio?: unknown; resolution?: unknown; duration?: unknown; planTier?: PlanTier } = {},
 ) {
   const imgs = referenceImages.filter((u) => typeof u === 'string' && /^https?:\/\//.test(u)).slice(0, 9);
   return atlasVideo.generate({
-    model: SHOT_REF_VIDEO_MODEL,
+    model: getShotRefVideoModel(opts.planTier),
     prompt,
     referenceImages: imgs,
     extra: {

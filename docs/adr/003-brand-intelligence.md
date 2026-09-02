@@ -40,7 +40,40 @@ enforce HTTPS, limit response size, and timeout. This is critical for security.
 
 ## Consequences
 - New API route `/api/brand/extract` for URL → brand extraction
-- New API route `/api/brand/products/extract` for URL → product extraction
+- New API route `/api/brand/product-extract` for URL → product extraction
 - BrandProfile extends (not replaces) the existing BrandKit model
 - Existing BrandKit UI continues to work; new brand intelligence is additive
 - SSRF protection is mandatory before any URL fetching goes to production
+
+## Implementation Notes (Updated)
+
+Actual file structure:
+```
+src/lib/brand/
+  types.ts           — BrandExtraction, ProductExtraction types
+  fetch.ts           — safeFetchText() with SSRF protection
+  extract.ts         — extractBrand() and extractProduct() (consolidated)
+  profile.ts         — buildProfile() → normalized BrandProfile
+  prompts.ts         — system prompts for brand/product extraction
+```
+
+`product-extract.ts` was intentionally consolidated into `extract.ts` — both share
+the same fetch + LLM pipeline and only differ in the system prompt.
+
+Prisma `BrandProfile` model added to `schema.prisma` with:
+- company, domain, industry, positioning, audience, tone, visualStyle
+- colors, fonts, prohibitedClaims, brandVocabulary, sourceUrls (all JSON)
+- extractionTimestamp, createdAt
+
+The brand extract API route saves to both `BrandKit` (for UI compatibility) and
+`BrandProfile` (for normalized structured storage).
+
+The product extract API route saves to `AdProduct` for reuse in generation workflows.
+
+SSRF protection implemented in `fetch.ts`:
+- HTTPS enforcement
+- Private IP / localhost blocking via `dns.lookup()`
+- Response size limits (256KB)
+- Timeouts (15s)
+- Note: Cloudflare Workers do not provide full DNS-resolution APIs; production
+  hardening remains limited compared to Node.js environments.
