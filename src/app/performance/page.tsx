@@ -172,7 +172,7 @@ export default function PerformancePage() {
                     <div key={i} className="flex items-center justify-between rounded-xl bg-app p-3 text-xs">
                       <span className="font-medium text-fg truncate min-w-0">{h.value}</span>
                       <div className="flex items-center gap-3 text-fg-faint">
-                        <span>CTR: {(h.avgScore ?? 0).toFixed(1)}%</span>
+                        <span>{t('perf.ctrLabel')} {(h.avgScore ?? 0).toFixed(1)}%</span>
                         <span>n={h.sampleSize ?? 0}</span>
                       </div>
                     </div>
@@ -190,7 +190,7 @@ export default function PerformancePage() {
                     <div key={i} className="flex items-center justify-between rounded-xl bg-app p-3 text-xs">
                       <span className="font-medium text-fg truncate min-w-0">{a.value}</span>
                       <div className="flex items-center gap-3 text-fg-faint">
-                        <span>ROAS: {(a.avgScore ?? 0).toFixed(2)}x</span>
+                        <span>{t('perf.roasLabel')} {(a.avgScore ?? 0).toFixed(2)}x</span>
                         <span>n={a.sampleSize ?? 0}</span>
                       </div>
                     </div>
@@ -208,7 +208,7 @@ export default function PerformancePage() {
                     <div key={i} className="flex items-center justify-between rounded-xl bg-app p-3 text-xs">
                       <span className="font-medium text-fg truncate min-w-0">{p.value}</span>
                       <div className="flex items-center gap-3 text-fg-faint">
-                        <span>CTR: {(p.avgScore ?? 0).toFixed(1)}%</span>
+                        <span>{t('perf.ctrLabel')} {(p.avgScore ?? 0).toFixed(1)}%</span>
                         <span>n={p.sampleSize ?? 0}</span>
                       </div>
                     </div>

@@ -990,6 +990,9 @@ export const enMessages = {
       phProductName: "e.g., Acme Protein Powder",
       phProductDescription: "Describe the product, key benefits, and positioning…",
       phMarket: "e.g., DTC fitness supplements",
+      sharedChannels: "Shared channels:",
+      sharedInterests: "Shared interests:",
+      sharedPainPoints: "Shared pain points:",
     },
     variantMatrix: {
       title: "Variant Matrix",
@@ -1001,6 +1004,8 @@ export const enMessages = {
       phPlatforms: "tiktok, instagram, youtube",
       phTones: "energetic, calm, humorous",
       phCtas: "Shop now, Learn more, Sign up",
+      ctr: "CTR",
+      roas: "ROAS",
     },
     fatigue: {
       title: "Ad Fatigue Detector",
@@ -1272,6 +1277,8 @@ export const enMessages = {
       budgetCurrentSpend: 'Current avg spend',
       budgetCurrentRevenue: 'Current avg revenue',
       forecastNoData: 'Insufficient data for forecasting (need 3+ records)',
+      ctrLabel: 'CTR:',
+      roasLabel: 'ROAS:',
     },
     cassets: {
       title: 'Creative Assets',
@@ -2550,6 +2557,9 @@ export const enMessages = {
       painPoints: "Audience Pain Points",
       emotionalTriggers: "Emotional Triggers",
       insights: "Insights",
+      strength: "Strength:",
+      resonance: "Resonance:",
+      diff: "Diff:",
     },
     testingLab: {
       title: "Testing Lab",
@@ -2599,6 +2609,10 @@ export const enMessages = {
       insights: "Insights",
       recommendations: "Recommendations",
       modelAccuracy: "Model accuracy",
+      impressions: "Impressions:",
+      clicks: "Clicks:",
+      conversions: "Conversions:",
+      revenue: "Revenue:",
     },
     brandVoice: {
       title: "Brand Voice & Style",
@@ -2627,6 +2641,10 @@ export const enMessages = {
       recommendations: "Recommendations",
       phSampleContent: "Content",
       phContentToCheck: "Content to check",
+      tone: "Tone:",
+      msg: "Msg:",
+      vocab: "Vocab:",
+      style: "Style:",
     },
     qualityScoring: {
       title: "Quality Scoring",
@@ -2874,6 +2892,8 @@ export const enMessages = {
       transitionedFrom: "Transitioned from",
       to: "to",
       insights: "Insights",
+      cost: "Cost:",
+      reach: "Reach:",
     },
     brandConcepts: {
       title: "Brand-to-Multi-Concept",

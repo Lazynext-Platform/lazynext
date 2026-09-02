@@ -99,7 +99,7 @@ export function BrandVoice() {
             <div key={i} className="rounded-lg border border-border bg-bg-card p-4">
               <div className="flex items-center justify-between mb-2"><span className="text-sm font-medium">{c.creativeId}</span><span className={`text-xs font-bold ${c.overallScore >= 70 ? 'text-success' : c.overallScore >= 50 ? 'text-warning' : 'text-danger'}`}>{c.overallScore}/100</span></div>
               <div className="grid grid-cols-4 gap-2 text-xs mb-2">
-                <div>Tone: {c.toneScore}</div><div>Msg: {c.messagingScore}</div><div>Vocab: {c.vocabularyScore}</div><div>Style: {c.styleScore}</div>
+                <div>{t('brandVoice.tone')} {c.toneScore}</div><div>{t('brandVoice.msg')} {c.messagingScore}</div><div>{t('brandVoice.vocab')} {c.vocabularyScore}</div><div>{t('brandVoice.style')} {c.styleScore}</div>
               </div>
               {c.issues.length > 0 && <div className="space-y-1">{c.issues.map((iss, j) => (<div key={j} className="text-xs flex gap-2"><span className={`font-medium ${iss.severity === 'critical' ? 'text-danger' : iss.severity === 'major' ? 'text-warning' : iss.severity === 'minor' ? 'text-warning' : 'text-brand-accent'}`}>{iss.severity}</span><span className="flex-1">{iss.description}</span><span className="text-success">{iss.suggestion}</span></div>))}</div>}
             </div>

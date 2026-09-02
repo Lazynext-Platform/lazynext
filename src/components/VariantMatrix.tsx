@@ -504,14 +504,14 @@ export function VariantMatrix() {
                 {selectedCell.performance && (
                   <div className="grid grid-cols-2 gap-2 rounded-lg border border-line bg-bg/50 p-3 text-sm sm:grid-cols-4">
                     {[
-                      { l: 'Impressions', v: selectedCell.performance.impressions.toLocaleString() },
-                      { l: 'Clicks', v: selectedCell.performance.clicks.toLocaleString() },
-                      { l: 'Conversions', v: selectedCell.performance.conversions.toLocaleString() },
-                      { l: 'CTR', v: `${(selectedCell.performance.ctr * 100).toFixed(2)}%` },
+                      { l: t('forecasting.impressions').replace(':', ''), v: selectedCell.performance.impressions.toLocaleString() },
+                      { l: t('forecasting.clicks').replace(':', ''), v: selectedCell.performance.clicks.toLocaleString() },
+                      { l: t('forecasting.conversions').replace(':', ''), v: selectedCell.performance.conversions.toLocaleString() },
+                      { l: t('variantMatrix.ctr'), v: `${(selectedCell.performance.ctr * 100).toFixed(2)}%` },
                       { l: 'CVR', v: `${(selectedCell.performance.cvr * 100).toFixed(2)}%` },
                       { l: 'Spend', v: `$${selectedCell.performance.spend.toFixed(2)}` },
-                      { l: 'Revenue', v: `$${selectedCell.performance.revenue.toFixed(2)}` },
-                      { l: 'ROAS', v: `${selectedCell.performance.roas.toFixed(2)}x` },
+                      { l: t('forecasting.revenue').replace(':', ''), v: `$${selectedCell.performance.revenue.toFixed(2)}` },
+                      { l: t('variantMatrix.roas'), v: `${selectedCell.performance.roas.toFixed(2)}x` },
                     ].map((m) => (
                       <div key={m.l}>
                         <div className="text-xs text-fg-faint">{m.l}</div>

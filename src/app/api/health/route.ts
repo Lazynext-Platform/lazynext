@@ -33,8 +33,8 @@ export async function GET() {
         allOk = false;
       }
     }
-  } catch (e) {
-    checks.atlas = { ok: false, detail: e instanceof Error ? e.message : 'fetch failed' };
+  } catch {
+    checks.atlas = { ok: false, detail: 'fetch_failed' };
     allOk = false;
   }
 
@@ -65,8 +65,8 @@ export async function GET() {
         checks.r2 = { ok: true, detail: 'credentials configured (endpoint check skipped)' };
       }
     }
-  } catch (e) {
-    checks.r2 = { ok: false, detail: e instanceof Error ? e.message : 'check failed' };
+  } catch {
+    checks.r2 = { ok: false, detail: 'check_failed' };
     allOk = false;
   }
 
@@ -84,10 +84,10 @@ export async function GET() {
       checks.d1 = { ok: hasSqlite, detail: hasSqlite ? 'SQLite (local dev)' : 'no database binding' };
       if (!hasSqlite) allOk = false;
     }
-  } catch (e) {
+  } catch {
     // In local dev, getCloudflareContext may not be available
     const hasDb = !!process.env.DATABASE_URL;
-    checks.d1 = { ok: hasDb, detail: hasDb ? 'SQLite (local dev)' : (e instanceof Error ? e.message : 'context unavailable') };
+    checks.d1 = { ok: hasDb, detail: hasDb ? 'SQLite (local dev)' : 'context_unavailable' };
     if (!hasDb) allOk = false;
   }
 

@@ -100,9 +100,9 @@ export function BriefIntelligence() {
                     <p className="font-medium">{u.statement}</p>
                     <p className="text-xs text-fg-muted">{u.evidence}</p>
                     <div className="flex gap-3 mt-1 text-xs">
-                      <span>Strength: {u.strength}/10</span>
-                      <span>Resonance: {u.audienceResonance}/10</span>
-                      <span>Diff: {u.competitiveDifferentiation}/10</span>
+                      <span>{t('briefIntelligence.strength')} {u.strength}/10</span>
+                      <span>{t('briefIntelligence.resonance')} {u.audienceResonance}/10</span>
+                      <span>{t('briefIntelligence.diff')} {u.competitiveDifferentiation}/10</span>
                     </div>
                   </div>
                 ))}

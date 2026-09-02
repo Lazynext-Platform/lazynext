@@ -101,10 +101,10 @@ export function Forecasting() {
                     <div className="flex items-center justify-between mb-1"><span className="text-sm font-medium capitalize">{s.scenario.replace(/_/g, ' ')}</span><span className="text-xs text-fg-muted">{s.probability}%</span></div>
                     {s.scenario === result.recommendedScenario && <span className="text-xs text-brand-accent">{t('forecasting.recommended')}</span>}
                     <div className="text-xs space-y-0.5 mt-1">
-                      <div>Impressions: {s.totalPredicted.impressions.toLocaleString()}</div>
-                      <div>Clicks: {s.totalPredicted.clicks.toLocaleString()}</div>
-                      <div>Conversions: {s.totalPredicted.conversions}</div>
-                      <div>Revenue: ${s.totalPredicted.revenue.toLocaleString()}</div>
+                      <div>{t('forecasting.impressions')} {s.totalPredicted.impressions.toLocaleString()}</div>
+                      <div>{t('forecasting.clicks')} {s.totalPredicted.clicks.toLocaleString()}</div>
+                      <div>{t('forecasting.conversions')} {s.totalPredicted.conversions}</div>
+                      <div>{t('forecasting.revenue')} ${s.totalPredicted.revenue.toLocaleString()}</div>
                       <div>ROAS: {s.totalPredicted.roas.toFixed(2)}x</div>
                     </div>
                   </div>

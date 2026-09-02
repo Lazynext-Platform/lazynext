@@ -118,9 +118,9 @@ export async function GET(req: Request) {
         net: creditsGranted - creditsSpent + creditsRefunded,
       },
     });
-  } catch (e) {
+  } catch {
     return NextResponse.json(
-      { error: 'metrics_query_failed', detail: e instanceof Error ? e.message : 'unknown' },
+      { error: 'metrics_query_failed' },
       { status: 500 },
     );
   }

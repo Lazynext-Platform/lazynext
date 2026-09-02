@@ -166,10 +166,10 @@ export function CampaignOrchestrator() {
                   </div>
                   <p className="text-xs text-fg-muted">{concept.angle}</p>
                   <div className="flex flex-wrap gap-2 text-xs text-fg-muted">
-                    <span>CTR: {concept.estimatedCtr}%</span>
+                    <span>{t('perf.ctrLabel')} {concept.estimatedCtr}%</span>
                     <span>CVR: {concept.estimatedCvr}%</span>
-                    <span>Cost: ${concept.estimatedCost}</span>
-                    <span>Reach: {concept.estimatedReach.toLocaleString()}</span>
+                    <span>{t('campaignOrchestrator.cost')} ${concept.estimatedCost}</span>
+                    <span>{t('campaignOrchestrator.reach')} {concept.estimatedReach.toLocaleString()}</span>
                   </div>
                   <p className="text-xs text-fg-muted">{t('campaignOrchestrator.platforms')}: {concept.platforms.join(', ')}</p>
                 </div>

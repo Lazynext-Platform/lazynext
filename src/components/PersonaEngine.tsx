@@ -192,6 +192,7 @@ function PersonaCard({ persona }: { persona: Persona }) {
 }
 
 function OverlapCard({ overlap, names }: { overlap: PersonaOverlap; names: Record<string, string> }) {
+  const { t } = useI18n();
   return (
     <div className="rounded-lg border border-border bg-bg-card p-3 space-y-2">
       <div className="flex items-center justify-between gap-2">
@@ -202,9 +203,9 @@ function OverlapCard({ overlap, names }: { overlap: PersonaOverlap; names: Recor
       </div>
       <Bar value={overlap.overlapScore} max={100} label="Overlap" />
       <div className="text-xs text-fg-muted space-y-0.5">
-        {overlap.sharedChannels.length > 0 && <div>Shared channels: {overlap.sharedChannels.join(', ')}</div>}
-        {overlap.sharedInterests.length > 0 && <div>Shared interests: {overlap.sharedInterests.join(', ')}</div>}
-        {overlap.sharedPainPoints.length > 0 && <div>Shared pain points: {overlap.sharedPainPoints.length}</div>}
+        {overlap.sharedChannels.length > 0 && <div>{t('personas.sharedChannels')} {overlap.sharedChannels.join(', ')}</div>}
+        {overlap.sharedInterests.length > 0 && <div>{t('personas.sharedInterests')} {overlap.sharedInterests.join(', ')}</div>}
+        {overlap.sharedPainPoints.length > 0 && <div>{t('personas.sharedPainPoints')} {overlap.sharedPainPoints.length}</div>}
       </div>
       <p className="text-xs">{overlap.recommendation}</p>
     </div>
