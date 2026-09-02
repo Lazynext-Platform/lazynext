@@ -60,7 +60,7 @@
     "tailwindcss": "^4.3.3",
     "typescript": "^6.0.3",
     "typescript7": "npm:typescript@^7.0.2",
-    "wrangler": "^4.59.2"
+    "wrangler": "^4.128.0"
   },
   "overrides": {
     "brace-expansion": "^5.0.8",
