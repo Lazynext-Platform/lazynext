@@ -6,6 +6,15 @@ import bcrypt from 'bcryptjs';
 import { prisma } from '@/lib/prisma';
 import { grantCredits } from '@/lib/credits';
 
+// Account lockout: track failed login attempts per email.
+// After 5 failed attempts within 15 minutes, the account is locked for 15 minutes.
+// Note: in-memory on Workers isolates — Cloudflare rate limiter provides
+// distributed protection. This is an additional per-account layer.
+type FailData = { count: number; resetAt: number };
+type LockData = { lockedUntil: number };
+const accountLocks = new Map<string, LockData>();
+const failedAttempts = new Map<string, FailData>();
+
 // In local development (http://localhost), NextAuth would otherwise use __Secure-
 // prefixed cookies when NEXTAUTH_URL points at https. Chromium refuses to send
 // __Secure- cookies over plain http, so local auth silently breaks. Force the
@@ -58,13 +67,45 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         const password = credentials?.password as string | undefined;
         if (!email || !password) return null;
 
+        const lowerEmail = email.toLowerCase();
+
+        // Account lockout: track failed attempts per email.
+        // After 5 failed attempts, lock the account for 15 minutes.
+        // Note: in-memory on Workers isolates — Cloudflare rate limiter
+        // provides distributed protection. This is an additional layer.
+        const lockKey = `lock:${lowerEmail}`;
+        const lockData = accountLocks.get(lockKey);
+        const now = Date.now();
+        if (lockData && lockData.lockedUntil > now) {
+          return null; // Account is locked
+        }
+
         const user = await prisma.user.findUnique({
-          where: { email: email.toLowerCase() },
+          where: { email: lowerEmail },
         });
         if (!user || !user.password) return null;
 
         const valid = await bcrypt.compare(password, user.password);
-        if (!valid) return null;
+        if (!valid) {
+          // Record failed attempt
+          const failKey = `fail:${lowerEmail}`;
+          const failData = failedAttempts.get(failKey);
+          if (failData && failData.resetAt > now) {
+            failData.count++;
+            if (failData.count >= 5) {
+              // Lock the account for 15 minutes
+              accountLocks.set(lockKey, { lockedUntil: now + 15 * 60 * 1000 });
+              failedAttempts.delete(failKey);
+            }
+          } else {
+            failedAttempts.set(failKey, { count: 1, resetAt: now + 15 * 60 * 1000 });
+          }
+          return null;
+        }
+
+        // Successful login — clear any failed attempt records
+        failedAttempts.delete(`fail:${lowerEmail}`);
+        accountLocks.delete(lockKey);
 
         return {
           id: user.id,

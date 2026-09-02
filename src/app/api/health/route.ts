@@ -46,20 +46,19 @@ export async function GET() {
       checks.r2 = { ok: false, detail: 'missing S3 credentials' };
       allOk = false;
     } else {
-      // Light check: verify we can list the bucket (head bucket via S3 API)
+      // Light check: verify the R2 endpoint is reachable via a simple GET to the bucket URL.
+      // We don't use full SigV4 signing here — a 400/403 response confirms the endpoint is up.
       const endpoint = 'https://85953070bae00da372951a8833bd3459.r2.cloudflarestorage.com';
       const start = Date.now();
       const res = await fetch(`${endpoint}/lazynext-studio-media`, {
-        method: 'HEAD',
-        headers: {
-          'Authorization': `AWS4-HMAC-SHA256 Credential=${accessKey}/`,
-        },
+        method: 'GET',
         signal: AbortSignal.timeout(5000),
       }).catch(() => null);
       const latencyMs = Date.now() - start;
-      // R2 may return 403 for HEAD without proper SigV4 — that still means the endpoint is reachable
-      if (res && (res.ok || res.status === 403 || res.status === 400)) {
-        checks.r2 = { ok: true, latencyMs, detail: res.ok ? 'reachable' : `HTTP ${res.status} (endpoint reachable)` };
+      // Any HTTP response (200, 400, 403) means the R2 endpoint is reachable.
+      // A null response means the network request failed entirely.
+      if (res) {
+        checks.r2 = { ok: true, latencyMs, detail: res.ok ? 'bucket accessible' : `HTTP ${res.status} (endpoint reachable)` };
       } else {
         // If fetch fails entirely, just check that credentials exist
         checks.r2 = { ok: true, detail: 'credentials configured (endpoint check skipped)' };
