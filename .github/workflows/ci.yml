@@ -153,6 +153,11 @@ jobs:
           ATLASCLOUD_LLM_BASE: https://api.atlascloud.com/v1
           ATLASCLOUD_API_KEY: mock-key-for-dev
 
+      - name: Bundle worker (dry-run)
+        run: npx wrangler deploy --dry-run --outdir .open-next/dist
+        env:
+          CLOUDFLARE_API_TOKEN: dummy-token-for-bundle-check
+
       - name: Check bundle size
         run: node scripts/check-bundle-size.mjs
 
