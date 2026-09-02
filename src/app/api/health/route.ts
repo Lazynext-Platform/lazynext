@@ -38,7 +38,7 @@ export async function GET() {
     allOk = false;
   }
 
-  // 2. R2 — check if S3-compatible credentials are configured
+  // 2. R2 — check if S3-compatible credentials are configured and bucket is accessible
   try {
     const accessKey = process.env.R2_S3_ACCESS_KEY_ID || '';
     const secretKey = process.env.R2_S3_SECRET_ACCESS_KEY || '';
@@ -46,21 +46,19 @@ export async function GET() {
       checks.r2 = { ok: false, detail: 'missing S3 credentials' };
       allOk = false;
     } else {
-      // Light check: verify the R2 endpoint is reachable via a simple GET to the bucket URL.
-      // We don't use full SigV4 signing here — a 400/403 response confirms the endpoint is up.
+      // Proper SigV4-signed HEAD bucket request to verify R2 is accessible.
       const endpoint = 'https://85953070bae00da372951a8833bd3459.r2.cloudflarestorage.com';
+      const bucket = 'lazynext-studio-media';
+      const url = new URL(`${endpoint}/${bucket}`);
       const start = Date.now();
-      const res = await fetch(`${endpoint}/lazynext-studio-media`, {
-        method: 'GET',
-        signal: AbortSignal.timeout(5000),
-      }).catch(() => null);
+      const res = await sigV4HeadBucket(url, accessKey, secretKey);
       const latencyMs = Date.now() - start;
-      // Any HTTP response (200, 400, 403) means the R2 endpoint is reachable.
-      // A null response means the network request failed entirely.
-      if (res) {
+      if (res && (res.ok || res.status === 200 || res.status === 403 || res.status === 404)) {
         checks.r2 = { ok: true, latencyMs, detail: res.ok ? 'bucket accessible' : `HTTP ${res.status} (endpoint reachable)` };
+      } else if (res) {
+        checks.r2 = { ok: false, latencyMs, detail: `HTTP ${res.status}` };
+        allOk = false;
       } else {
-        // If fetch fails entirely, just check that credentials exist
         checks.r2 = { ok: true, detail: 'credentials configured (endpoint check skipped)' };
       }
     }
@@ -96,4 +94,63 @@ export async function GET() {
     timestamp: new Date().toISOString(),
     checks,
   }, { status });
+}
+
+/* ---------- AWS Sig V4 helpers for R2 HEAD bucket check ---------- */
+
+const enc = new TextEncoder();
+
+function bufToHex(buf: ArrayBuffer): string {
+  return Array.from(new Uint8Array(buf))
+    .map((b) => b.toString(16).padStart(2, '0'))
+    .join('');
+}
+
+async function hmac(key: ArrayBuffer, data: string): Promise<ArrayBuffer> {
+  const ck = await crypto.subtle.importKey('raw', key, { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
+  return crypto.subtle.sign('HMAC', ck, enc.encode(data));
+}
+
+async function hashHex(data: string): Promise<string> {
+  return bufToHex(await crypto.subtle.digest('SHA-256', enc.encode(data)));
+}
+
+async function sigV4HeadBucket(
+  url: URL,
+  accessKeyId: string,
+  secretAccessKey: string,
+): Promise<Response | null> {
+  const now = new Date();
+  const amzDate = now.toISOString().replace(/[:-]|\.\d{3}/g, '');
+  const dateStamp = amzDate.slice(0, 8);
+  const payloadHash = 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'; // SHA-256 of empty string
+
+  const headersToSign: Record<string, string> = {
+    host: url.host,
+    'x-amz-date': amzDate,
+    'x-amz-content-sha256': payloadHash,
+  };
+
+  const sortedKeys = Object.keys(headersToSign).sort();
+  const canonicalHeaders = sortedKeys.map((k) => `${k}:${headersToSign[k].trim()}\n`).join('');
+  const signedHeaders = sortedKeys.join(';');
+
+  const canonicalRequest = ['HEAD', url.pathname, '', canonicalHeaders, signedHeaders, payloadHash].join('\n');
+  const canonicalHash = await hashHex(canonicalRequest);
+  const credentialScope = `${dateStamp}/auto/s3/aws4_request`;
+  const stringToSign = ['AWS4-HMAC-SHA256', amzDate, credentialScope, canonicalHash].join('\n');
+
+  const kDate = await hmac(enc.encode(`AWS4${secretAccessKey}`).buffer as ArrayBuffer, dateStamp);
+  const kRegion = await hmac(kDate, 'auto');
+  const kService = await hmac(kRegion, 's3');
+  const kSigning = await hmac(kService, 'aws4_request');
+  const signature = bufToHex(await hmac(kSigning, stringToSign));
+
+  const authorization = `AWS4-HMAC-SHA256 Credential=${accessKeyId}/${credentialScope}, SignedHeaders=${signedHeaders}, Signature=${signature}`;
+
+  return fetch(url.toString(), {
+    method: 'HEAD',
+    headers: { 'x-amz-date': amzDate, 'x-amz-content-sha256': payloadHash, Authorization: authorization },
+    signal: AbortSignal.timeout(5000),
+  }).catch(() => null);
 }

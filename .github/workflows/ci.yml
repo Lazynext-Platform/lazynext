@@ -86,6 +86,12 @@ jobs:
           BUILD_TARGET: local
           DATABASE_URL: "file:./prisma/dev.db"
 
+      - name: Seed test account
+        run: npm run db:seed:test
+        env:
+          BUILD_TARGET: local
+          DATABASE_URL: "file:./prisma/dev.db"
+
       - name: Start mock Atlas server
         run: |
           npm run mock-atlas &
