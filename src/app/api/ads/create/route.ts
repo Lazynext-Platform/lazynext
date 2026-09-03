@@ -37,7 +37,7 @@ async function __byokPOST(req: Request) {
         userId: uid,
         platform: input.platform,
         campaignId: result.campaignId || null,
-        name: input.name,
+        name: String(input.name).slice(0, 200),
         status: result.status,
         budgetDaily: input.budgetDaily || null,
         budgetTotal: input.budgetTotal || null,
