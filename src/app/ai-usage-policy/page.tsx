@@ -1,7 +1,14 @@
 import { Bot } from 'lucide-react';
+import type { Metadata } from 'next';
 import { auth } from '@/../auth';
 
 export const dynamic = 'force-dynamic';
+
+export const metadata: Metadata = {
+  title: 'AI Usage Policy — Lazynext',
+  description: 'Policy governing the use of AI-generated content on the Lazynext platform.',
+  robots: { index: true, follow: true },
+};
 
 export default async function AiUsagePolicyPage() {
   const session = await auth().catch(() => null);

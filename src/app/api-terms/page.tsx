@@ -1,7 +1,14 @@
 import { Lock } from 'lucide-react';
+import type { Metadata } from 'next';
 import { auth } from '@/../auth';
 
 export const dynamic = 'force-dynamic';
+
+export const metadata: Metadata = {
+  title: 'API Terms of Service — Lazynext',
+  description: 'Terms governing access to the Lazynext REST API and MCP server.',
+  robots: { index: true, follow: true },
+};
 
 export default async function ApiTermsPage() {
   const session = await auth().catch(() => null);
