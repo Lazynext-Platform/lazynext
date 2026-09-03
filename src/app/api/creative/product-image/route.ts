@@ -35,6 +35,16 @@ async function __byokPOST(req: Request) {
   const imageUrl = typeof body.imageUrl === 'string' ? body.imageUrl.trim().slice(0, 2048) : '';
   if (!imageUrl) return NextResponse.json({ error: 'image_url_required' }, { status: 400 });
 
+  // Validate URL format
+  try {
+    const parsed = new URL(imageUrl);
+    if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
+      return NextResponse.json({ error: 'invalid_url' }, { status: 400 });
+    }
+  } catch {
+    return NextResponse.json({ error: 'invalid_url' }, { status: 400 });
+  }
+
   const enhancementType = typeof body.enhancementType === 'string' ? body.enhancementType : '';
   if (!enhancementType) return NextResponse.json({ error: 'enhancement_type_required' }, { status: 400 });
   if (!VALID_ENHANCEMENT_TYPES.has(enhancementType as ImageEnhancementType)) {

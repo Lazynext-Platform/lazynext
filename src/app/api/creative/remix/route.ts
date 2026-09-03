@@ -20,9 +20,18 @@ async function __byokPOST(req: Request) {
 
   // Either provide a pre-computed analysis, or a referenceUrl to analyze
   let analysis: ReferenceCreativeAnalysis | undefined = body.analysis as ReferenceCreativeAnalysis | undefined;
-  const referenceUrl = typeof body.referenceUrl === 'string' ? body.referenceUrl.trim() : '';
+  const referenceUrl = typeof body.referenceUrl === 'string' ? body.referenceUrl.trim().slice(0, 2048) : '';
 
   if (!analysis && referenceUrl) {
+    // Validate URL format
+    try {
+      const parsed = new URL(referenceUrl);
+      if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
+        return NextResponse.json({ error: 'invalid_url' }, { status: 400 });
+      }
+    } catch {
+      return NextResponse.json({ error: 'invalid_url' }, { status: 400 });
+    }
     // Analyze the reference first (costs extra credits)
     try {
       await deductCredits(uid, CREATIVE_COSTS.referenceAnalysis, 'creative:remix:analysis');

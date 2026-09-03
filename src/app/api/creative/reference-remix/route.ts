@@ -57,6 +57,16 @@ async function __byokPOST(req: Request) {
   const referenceUrl = typeof body.referenceUrl === 'string' ? body.referenceUrl.trim().slice(0, 2048) : '';
   if (!referenceUrl) return NextResponse.json({ error: 'reference_url_required' }, { status: 400 });
 
+  // Validate URL format
+  try {
+    const parsed = new URL(referenceUrl);
+    if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
+      return NextResponse.json({ error: 'invalid_url' }, { status: 400 });
+    }
+  } catch {
+    return NextResponse.json({ error: 'invalid_url' }, { status: 400 });
+  }
+
   const referenceType =
     typeof body.referenceType === 'string' && VALID_REFERENCE_TYPES.has(body.referenceType as ReferenceType)
       ? (body.referenceType as ReferenceType)
