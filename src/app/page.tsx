@@ -183,8 +183,8 @@ export default function Home() {
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
           {[
             { value: '15+', label: 'OS Modules' },
-            { value: '37', label: 'Data Models' },
-            { value: '10', label: 'Languages' },
+            { value: '55', label: 'Data Models' },
+            { value: '13', label: 'Languages' },
             { value: '99.9%', label: 'Uptime' },
           ].map((stat) => (
             <div key={stat.label} className="rounded-xl border border-line bg-surface p-4 text-center">

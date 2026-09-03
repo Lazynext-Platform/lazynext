@@ -238,8 +238,18 @@ test.describe('Production security headers', () => {
  * use Prisma at all).
  *
  * These tests require the test user to exist in production D1.
+ * The local test account (test@lazynext.local) is seeded only in the
+ * local dev database. To run these against production, set
+ * PROD_TEST_EMAIL and PROD_TEST_PASSWORD env vars to a real production
+ * account. Without those vars, the authenticated tests are skipped.
  */
+const prodTestEmail = process.env.PROD_TEST_EMAIL;
+const prodTestPassword = process.env.PROD_TEST_PASSWORD;
+const canRunAuthTests = !!(prodTestEmail && prodTestPassword);
+
 test.describe('Production authenticated Prisma operations', () => {
+  test.skip(!canRunAuthTests, 'Requires PROD_TEST_EMAIL and PROD_TEST_PASSWORD env vars (test@lazynext.local is local-only)');
+
   // These tests share a browser context to reuse the session cookie
   test('credentials login works and creates a session', async ({ browser }) => {
     const context = await browser.newContext();
@@ -252,8 +262,8 @@ test.describe('Production authenticated Prisma operations', () => {
     // Login
     const loginRes = await page.request.post('/api/auth/callback/credentials', {
       form: {
-        email: 'test@lazynext.local',
-        password: 'Test1234!',
+        email: prodTestEmail!,
+        password: prodTestPassword!,
         csrfToken,
         callbackUrl: 'https://lazynext.com/dashboard',
         json: 'true',
@@ -274,8 +284,8 @@ test.describe('Production authenticated Prisma operations', () => {
     const { csrfToken } = await csrfRes.json();
     await page.request.post('/api/auth/callback/credentials', {
       form: {
-        email: 'test@lazynext.local',
-        password: 'Test1234!',
+        email: prodTestEmail!,
+        password: prodTestPassword!,
         csrfToken,
         callbackUrl: 'https://lazynext.com/dashboard',
         json: 'true',
@@ -298,8 +308,8 @@ test.describe('Production authenticated Prisma operations', () => {
     const { csrfToken } = await csrfRes.json();
     await page.request.post('/api/auth/callback/credentials', {
       form: {
-        email: 'test@lazynext.local',
-        password: 'Test1234!',
+        email: prodTestEmail!,
+        password: prodTestPassword!,
         csrfToken,
         callbackUrl: 'https://lazynext.com/dashboard',
         json: 'true',
@@ -322,8 +332,8 @@ test.describe('Production authenticated Prisma operations', () => {
     const { csrfToken } = await csrfRes.json();
     await page.request.post('/api/auth/callback/credentials', {
       form: {
-        email: 'test@lazynext.local',
-        password: 'Test1234!',
+        email: prodTestEmail!,
+        password: prodTestPassword!,
         csrfToken,
         callbackUrl: 'https://lazynext.com/dashboard',
         json: 'true',
