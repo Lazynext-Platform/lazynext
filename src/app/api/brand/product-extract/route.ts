@@ -17,7 +17,7 @@ async function __byokPOST(req: Request) {
   const planTier = await getUserPlanTier(uid);
 
   const body = await req.json().catch(() => ({}));
-  const url = typeof body.url === 'string' ? body.url.trim() : '';
+  const url = typeof body.url === 'string' ? body.url.trim().slice(0, 2048) : '';
   if (!url || !/^https?:\/\//.test(url)) {
     return NextResponse.json({ error: 'url_required' }, { status: 400 });
   }

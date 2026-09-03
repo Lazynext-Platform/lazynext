@@ -19,15 +19,14 @@ async function __byokPOST(req: Request) {
   const planTier = await getUserPlanTier(uid);
 
   const body = await req.json().catch(() => ({}));
-  const voiceoverUrl = typeof body.voiceoverUrl === 'string' ? body.voiceoverUrl.trim() : '';
-  if (!voiceoverUrl) {
+  const voiceoverUrl = typeof body.voiceoverUrl === 'string' ? body.voiceoverUrl.trim().slice(0, 2048) : '';  if (!voiceoverUrl) {
     return NextResponse.json({ error: 'voiceover_url_required' }, { status: 400 });
   }
   if (!isUrlSafe(voiceoverUrl)) {
     return NextResponse.json({ error: 'voiceover_url_unsafe', detail: 'URL must be public http(s)' }, { status: 400 });
   }
 
-  const musicUrl = typeof body.musicUrl === 'string' ? body.musicUrl.trim() : '';
+  const musicUrl = typeof body.musicUrl === 'string' ? body.musicUrl.trim().slice(0, 2048) : '';
   if (musicUrl && !isUrlSafe(musicUrl)) {
     return NextResponse.json({ error: 'music_url_unsafe', detail: 'URL must be public http(s)' }, { status: 400 });
   }

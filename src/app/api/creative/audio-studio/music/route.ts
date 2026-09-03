@@ -36,7 +36,7 @@ async function __byokPOST(req: Request) {
       body.bpmRange && typeof body.bpmRange === 'object'
         ? { min: Number(body.bpmRange.min), max: Number(body.bpmRange.max) }
         : undefined,
-    genre: typeof body.genre === 'string' ? body.genre : undefined,
+    genre: typeof body.genre === 'string' ? body.genre.slice(0, 100) : undefined,
   };
 
   try {
