@@ -49,13 +49,15 @@
 - **Contact:** privacy@atlascloud.ai
 - **Status:** DPA likely available for enterprise customers but not publicly posted. SOC 2 certified. GDPR/CCPA compliance claimed. SCCs unconfirmed.
 - **Action required:**
-  - [ ] Email privacy@atlascloud.ai to request a signed DPA
+  - [x] DPA request submitted via Atlas Cloud contact form (2026-09-03, confirmed: "Thank you! We've received your message")
+  - [x] Backup email drafted to privacy@atlascloud.ai (opened in mail client — click Send to deliver)
   - [ ] Request confirmation of EU SCCs (2021/914) and UK IDTA coverage
   - [ ] Request Atlas Cloud's subprocessor list (upstream model providers)
   - [ ] Request data retention periods for prompts and generated content
   - [ ] Request current SOC 2 report
   - [ ] Confirm whether Atlas Cloud acts as controller or processor for prompts
   - [ ] **BLOCKING:** Do not send personal data to Atlas Cloud until DPA is executed
+  - [ ] Save received DPA to compliance/dpa/atlas-cloud-dpa.pdf when response arrives
 
 ### 4. Dodo Payments
 
