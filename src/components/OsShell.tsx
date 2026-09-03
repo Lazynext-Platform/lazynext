@@ -66,6 +66,7 @@ export function OsShell({ children }: { children: React.ReactNode }) {
 
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [localeMenuOpen, setLocaleMenuOpen] = useState(false);
   const [themeMenuOpen, setThemeMenuOpen] = useState(false);
@@ -116,20 +117,27 @@ export function OsShell({ children }: { children: React.ReactNode }) {
 
   // Focus search input when opened
   useEffect(() => {
-    if (searchOpen) requestAnimationFrame(() => searchInputRef.current?.focus());
+    if (searchOpen) {
+      setSearchQuery('');
+      requestAnimationFrame(() => searchInputRef.current?.focus());
+    }
   }, [searchOpen]);
 
   const handleSearchSubmit = useCallback(
     (e: React.FormEvent) => {
       e.preventDefault();
-      const q = searchInputRef.current?.value.trim();
+      const q = searchQuery.trim();
       if (q) {
         router.push(`/search?q=${encodeURIComponent(q)}`);
         setSearchOpen(false);
       }
     },
-    [router, setSearchOpen],
+    [router, setSearchOpen, searchQuery],
   );
+
+  const filteredNav = searchQuery.trim()
+    ? OS_NAV.filter((item) => item.label.toLowerCase().includes(searchQuery.toLowerCase()))
+    : OS_NAV;
 
   const isActive = (href: string) => p === href || p.startsWith(href + '/');
 
@@ -478,6 +486,8 @@ export function OsShell({ children }: { children: React.ReactNode }) {
               <input
                 ref={searchInputRef}
                 type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search projects, tasks, documents..."
                 className="flex-1 bg-transparent text-base outline-none text-fg placeholder:text-fg-muted"
               />
@@ -485,17 +495,23 @@ export function OsShell({ children }: { children: React.ReactNode }) {
             </form>
             <div className="p-2">
               <p className="label-mono px-3 py-2">Quick navigation</p>
-              {OS_NAV.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className="flex items-center gap-3 px-3 py-2 text-sm rounded-[var(--radius-sm)] hover:bg-hover transition-colors"
-                  onClick={() => setSearchOpen(false)}
-                >
-                  <item.icon className="h-4 w-4 text-fg-muted" />
-                  {item.label}
-                </Link>
-              ))}
+              {filteredNav.length === 0 ? (
+                <p className="px-3 py-4 text-sm text-fg-muted">
+                  No matches. Press Enter to search all content.
+                </p>
+              ) : (
+                filteredNav.map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className="flex items-center gap-3 px-3 py-2 text-sm rounded-[var(--radius-sm)] hover:bg-hover transition-colors"
+                    onClick={() => setSearchOpen(false)}
+                  >
+                    <item.icon className="h-4 w-4 text-fg-muted" />
+                    {item.label}
+                  </Link>
+                ))
+              )}
             </div>
           </div>
         </div>

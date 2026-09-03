@@ -33,7 +33,12 @@ export function WorkspaceProvider({ children }: { children: React.ReactNode }) {
       return;
     }
     try {
-      const res = await fetch('/api/workspaces');
+      let res = await fetch('/api/workspaces');
+      // Retry once on 500 (Cloudflare Worker cold-start resilience)
+      if (!res.ok && res.status === 500) {
+        await new Promise((r) => setTimeout(r, 800));
+        res = await fetch('/api/workspaces');
+      }
       if (res.ok) {
         const data = await res.json();
         setWorkspaces(data.workspaces || []);
