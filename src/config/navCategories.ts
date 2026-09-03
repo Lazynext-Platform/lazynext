@@ -1,5 +1,5 @@
 /**
- * Navigation categories for the LazyNext platform.
+ * Navigation categories for the Lazynext platform.
  *
  * Replaces the flat 181-link nav and 159-tile dashboard with a categorized,
  * searchable navigation model.

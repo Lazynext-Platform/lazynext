@@ -77,7 +77,7 @@ export const dryRunRender: VideoRenderProvider = {
 //   VIDEO_RENDER_API_KEY  — rb_... (Pro required for GPU/concurrency)
 //   VIDEO_RENDER_TIMEOUT_MS — polling timeout (default 120s)
 
-/** Map LazyNext's EDL to RendoBar's compose timeline schema. */
+/** Map Lazynext's EDL to RendoBar's compose timeline schema. */
 function edlToRendoBarCompose(edl: EditDecisionList) {
   const tracks: Array<{ clips: Array<Record<string, unknown>> }> = [{
     clips: edl.shots.map((shot, i) => {

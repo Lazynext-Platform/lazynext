@@ -2351,7 +2351,7 @@ export const arMessages = {
   },
   "mcpServer": {
     "title": "خادم MCP الإبداعي",
-    "subtitle": "كشف أدوات LazyNext الإبداعية كخادم MCP متوافق مع المعايير للوكلاء الخارجيين.",
+    "subtitle": "كشف أدوات Lazynext الإبداعية كخادم MCP متوافق مع المعايير للوكلاء الخارجيين.",
     "signInPrompt": "سجل الدخول لعرض خادم MCP.",
     "loading": "جارٍ تحميل بيانات الخادم…",
     "serverInfo": "معلومات الخادم",
@@ -6815,7 +6815,7 @@ export const arMessages = {
   },
   "statusPage": {
     "title": "حالة النظام",
-    "subtitle": "الحالة الصحية لخدمات LazyNext في الوقت الفعلي. يتم التحديث تلقائياً كل 30 ثانية.",
+    "subtitle": "الحالة الصحية لخدمات Lazynext في الوقت الفعلي. يتم التحديث تلقائياً كل 30 ثانية.",
     "checking": "جار الفحص...",
     "allOperational": "جميع الأنظمة تعمل",
     "degraded": "أداء متدهور",

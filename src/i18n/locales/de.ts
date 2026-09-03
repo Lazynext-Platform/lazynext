@@ -2351,7 +2351,7 @@ export const deMessages = {
   },
   "mcpServer": {
     "title": "Creative MCP-Server",
-    "subtitle": "Stellt LazyNext Creative-Tools als standardkonformen MCP-Server für externe Agenten bereit.",
+    "subtitle": "Stellt Lazynext Creative-Tools als standardkonformen MCP-Server für externe Agenten bereit.",
     "signInPrompt": "Anmelden um den MCP-Server zu sehen.",
     "loading": "Server-Manifest wird geladen…",
     "serverInfo": "Server-Info",
@@ -6815,7 +6815,7 @@ export const deMessages = {
   },
   "statusPage": {
     "title": "Systemstatus",
-    "subtitle": "Echtzeit-Status der LazyNext-Dienste. Aktualisiert sich alle 30 Sekunden automatisch.",
+    "subtitle": "Echtzeit-Status der Lazynext-Dienste. Aktualisiert sich alle 30 Sekunden automatisch.",
     "checking": "Wird geprüft...",
     "allOperational": "Alle Systeme betriebsbereit",
     "degraded": "Eingeschränkte Leistung",

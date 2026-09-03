@@ -2351,7 +2351,7 @@ export const viMessages = {
   },
   "mcpServer": {
     "title": "Máy chủ MCP Sáng tạo",
-    "subtitle": "Cung cấp công cụ sáng tạo LazyNext như máy chủ MCP tuân thủ tiêu chuẩn cho các tác nhân bên ngoài.",
+    "subtitle": "Cung cấp công cụ sáng tạo Lazynext như máy chủ MCP tuân thủ tiêu chuẩn cho các tác nhân bên ngoài.",
     "signInPrompt": "Đăng nhập để xem máy chủ MCP.",
     "loading": "Đang tải manifest máy chủ…",
     "serverInfo": "Thông tin Máy chủ",
@@ -6815,7 +6815,7 @@ export const viMessages = {
   },
   "statusPage": {
     "title": "Trạng thái Hệ thống",
-    "subtitle": "Tình trạng thời gian thực của các dịch vụ LazyNext. Tự động làm mới mỗi 30 giây.",
+    "subtitle": "Tình trạng thời gian thực của các dịch vụ Lazynext. Tự động làm mới mỗi 30 giây.",
     "checking": "Đang kiểm tra...",
     "allOperational": "Tất cả Hệ thống Hoạt động",
     "degraded": "Hiệu suất Giảm",

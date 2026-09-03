@@ -2351,7 +2351,7 @@ export const koMessages = {
   },
   "mcpServer": {
     "title": "크리에이티브 MCP 서버",
-    "subtitle": "LazyNext 크리에이티브 도구를 외부 에이전트를 위한 MCP 서버로 공개합니다.",
+    "subtitle": "Lazynext 크리에이티브 도구를 외부 에이전트를 위한 MCP 서버로 공개합니다.",
     "signInPrompt": "로그인하여 MCP 서버를 확인하세요.",
     "loading": "서버 매니페스트 로딩 중…",
     "serverInfo": "서버 정보",
@@ -6815,7 +6815,7 @@ export const koMessages = {
   },
   "statusPage": {
     "title": "시스템 상태",
-    "subtitle": "LazyNext 서비스의 실시간 상태. 30초마다 자동으로 새로고침됩니다.",
+    "subtitle": "Lazynext 서비스의 실시간 상태. 30초마다 자동으로 새로고침됩니다.",
     "checking": "확인 중...",
     "allOperational": "모든 시스템 정상 작동",
     "degraded": "성능 저하",

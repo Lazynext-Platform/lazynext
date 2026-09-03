@@ -113,7 +113,7 @@ export function PlatformConnectionsSection() {
     <div className="rounded-2xl border border-line bg-surface p-6">
       <h2 className="mb-1 font-semibold text-fg">Publishing Platforms</h2>
       <p className="mb-4 text-sm text-fg-faint">
-        Connect your social media accounts to publish and schedule posts directly from LazyNext.
+        Connect your social media accounts to publish and schedule posts directly from Lazynext.
       </p>
 
       {error && (

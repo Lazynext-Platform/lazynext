@@ -11,7 +11,7 @@
  * - execute: the function to call (optional — the contract layer defines
  *   the interface; execution is wired up by the workflow layer)
  *
- * Inspired by OpenChatCut (#48) MCP concept but adapted for LazyNext's
+ * Inspired by OpenChatCut (#48) MCP concept but adapted for Lazynext's
  * architecture: the creative intelligence functions in intelligence.ts are
  * composable steps (brief → hooks → angles → script → storyboard) that can
  * be called individually or chained. This module exposes them as standardized,

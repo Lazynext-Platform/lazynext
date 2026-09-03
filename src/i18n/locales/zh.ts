@@ -2351,7 +2351,7 @@ export const zhMessages = {
   },
   "mcpServer": {
     "title": "创意MCP服务器",
-    "subtitle": "将LazyNext创意工具暴露为标准兼容的模型上下文协议服务器，供外部代理使用。",
+    "subtitle": "将Lazynext创意工具暴露为标准兼容的模型上下文协议服务器，供外部代理使用。",
     "signInPrompt": "登录以查看MCP服务器。",
     "loading": "加载服务器清单…",
     "serverInfo": "服务器信息",
@@ -6815,7 +6815,7 @@ export const zhMessages = {
   },
   "statusPage": {
     "title": "系统状态",
-    "subtitle": "LazyNext 服务的实时健康状况。每 30 秒自动刷新。",
+    "subtitle": "Lazynext 服务的实时健康状况。每 30 秒自动刷新。",
     "checking": "检查中...",
     "allOperational": "所有系统运行正常",
     "degraded": "性能下降",

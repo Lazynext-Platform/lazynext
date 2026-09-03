@@ -10,7 +10,7 @@
  *
  * This module is intentionally self-contained: it does NOT modify
  * intelligence.ts, types.ts, or prompts.ts. All types, helpers, and the system
- * prompt live here. It builds on LazyNext's existing reference-analysis but
+ * prompt live here. It builds on Lazynext's existing reference-analysis but
  * adds deeper structured analysis and a remix brief.
  *
  * All AI generation uses the existing atlasChat() from src/lib/atlas.ts — no

@@ -1,4 +1,4 @@
-# LazyNext Changelog
+# Lazynext Changelog
 
 ## 2026-09-03 — II: Security, MCP, Metadata, Cold-Start, Lighthouse, Docs
 

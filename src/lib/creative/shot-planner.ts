@@ -6,7 +6,7 @@
  * Bridges the gap between script generation and actual video production.
  *
  * Inspired by gen-v (#14), creatify video-ad-generator (#18), and
- * storyboard-to-video concepts — adapted for LazyNext's creative workflow.
+ * storyboard-to-video concepts — adapted for Lazynext's creative workflow.
  */
 import { atlasChat } from '@/lib/atlas';
 import { getLLMModel } from '@/lib/providers/model-helpers';

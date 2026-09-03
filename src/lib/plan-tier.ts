@@ -3,7 +3,7 @@ import { prisma } from '@/lib/prisma';
 /**
  * Infer a user's plan tier from their credit purchase history.
  *
- * LazyNext uses credit packs (not recurring subscriptions):
+ * Lazynext uses credit packs (not recurring subscriptions):
  *   starter = 100 credits
  *   pro     = 600 credits
  *   elite   = 2000 credits

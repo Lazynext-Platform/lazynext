@@ -4,7 +4,7 @@
  * This is the foundation for a future model router that can select providers
  * based on quality, cost, speed, user plan, and task requirements.
  *
- * Currently, LazyNext hard-codes model IDs in each workflow file (workflow.ts,
+ * Currently, Lazynext hard-codes model IDs in each workflow file (workflow.ts,
  * ad-reference.ts, ad-skit.ts, drama/prompt.ts). This registry centralizes
  * that metadata without changing existing code.
  */

@@ -7,7 +7,7 @@
  * partnerships at scale (distinct from AI-generated UGC).
  *
  * Inspired by the existing scene-analysis intelligence module — adapted for
- * LazyNext's e-commerce creative workflow to support human creator campaigns.
+ * Lazynext's e-commerce creative workflow to support human creator campaigns.
  */
 import { atlasChat } from '@/lib/atlas';
 import { getLLMModel } from '@/lib/providers/model-helpers';

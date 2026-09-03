@@ -7,7 +7,7 @@
  * ambiguous commands.
  *
  * Architecture inspired by OpenChatCut (#48, AGPL-3.0) — ideas only,
- * NO code reuse. Fully original implementation for LazyNext's MIT codebase.
+ * NO code reuse. Fully original implementation for Lazynext's MIT codebase.
  */
 import { atlasChat } from '@/lib/atlas';
 import { getLLMModel } from '@/lib/providers/model-helpers';

@@ -2351,7 +2351,7 @@ export const idMessages = {
   },
   "mcpServer": {
     "title": "Server MCP Kreatif",
-    "subtitle": "Ekspos alat kreatif LazyNext sebagai server MCP yang sesuai standar untuk agen eksternal.",
+    "subtitle": "Ekspos alat kreatif Lazynext sebagai server MCP yang sesuai standar untuk agen eksternal.",
     "signInPrompt": "Masuk untuk melihat server MCP.",
     "loading": "Memuat manifest server…",
     "serverInfo": "Info Server",
@@ -6815,7 +6815,7 @@ export const idMessages = {
   },
   "statusPage": {
     "title": "Status Sistem",
-    "subtitle": "Kesehatan layanan LazyNext secara real-time. Diperbarui otomatis setiap 30 detik.",
+    "subtitle": "Kesehatan layanan Lazynext secara real-time. Diperbarui otomatis setiap 30 detik.",
     "checking": "Memeriksa...",
     "allOperational": "Semua Sistem Beroperasi",
     "degraded": "Performa Menurun",

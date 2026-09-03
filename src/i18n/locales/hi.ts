@@ -2351,7 +2351,7 @@ export const hiMessages = {
   },
   "mcpServer": {
     "title": "क्रिएटिव MCP सर्वर",
-    "subtitle": "LazyNext क्रिएटिव टूल्स को बाहरी एजेंटों के लिए MCP सर्वर के रूप में उजागर करें।",
+    "subtitle": "Lazynext क्रिएटिव टूल्स को बाहरी एजेंटों के लिए MCP सर्वर के रूप में उजागर करें।",
     "signInPrompt": "MCP सर्वर देखने के लिए साइन इन करें।",
     "loading": "सर्वर मैनिफेस्ट लोड हो रहा है…",
     "serverInfo": "सर्वर जानकारी",
@@ -6815,7 +6815,7 @@ export const hiMessages = {
   },
   "statusPage": {
     "title": "सिस्टम स्थिति",
-    "subtitle": "LazyNext सेवाओं की रीयल-टाइम स्थिति। हर 30 सेकंड में स्वतः ताज़ा होता है।",
+    "subtitle": "Lazynext सेवाओं की रीयल-टाइम स्थिति। हर 30 सेकंड में स्वतः ताज़ा होता है।",
     "checking": "जाँच हो रही है...",
     "allOperational": "सभी सिस्टम चालू हैं",
     "degraded": "कमजोर प्रदर्शन",

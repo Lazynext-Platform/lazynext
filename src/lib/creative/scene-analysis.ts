@@ -6,7 +6,7 @@
  * and generates scene-by-scene creative briefs for re-shooting or adaptation.
  *
  * Inspired by Google scene-machine (#13) — scene-level video analysis and
- * segmentation — adapted for LazyNext's e-commerce creative workflow.
+ * segmentation — adapted for Lazynext's e-commerce creative workflow.
  */
 import { atlasChat } from '@/lib/atlas';
 import { getLLMModel } from '@/lib/providers/model-helpers';

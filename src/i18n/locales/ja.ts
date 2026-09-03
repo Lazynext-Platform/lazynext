@@ -2351,7 +2351,7 @@ export const jaMessages = {
   },
   "mcpServer": {
     "title": "クリエイティブMCPサーバー",
-    "subtitle": "LazyNextのクリエイティブツールをMCPサーバーとして外部エージェントに公開します。",
+    "subtitle": "LazynextのクリエイティブツールをMCPサーバーとして外部エージェントに公開します。",
     "signInPrompt": "サインインしてMCPサーバーを表示します。",
     "loading": "サーバーマニフェストを読み込み中…",
     "serverInfo": "サーバー情報",
@@ -6815,7 +6815,7 @@ export const jaMessages = {
   },
   "statusPage": {
     "title": "システムステータス",
-    "subtitle": "LazyNextサービスのリアルタイム健全性。30秒ごとに自動更新されます。",
+    "subtitle": "Lazynextサービスのリアルタイム健全性。30秒ごとに自動更新されます。",
     "checking": "確認中...",
     "allOperational": "すべてのシステムが正常に稼働",
     "degraded": "パフォーマンス低下",

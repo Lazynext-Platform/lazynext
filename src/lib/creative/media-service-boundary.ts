@@ -268,9 +268,9 @@ function baseMetadata(modelUsed: string, processingTime: number, warnings: strin
 function dryRunASR(input: MediaServiceInput): Record<string, unknown> {
   const lang = (input.language || 'en').slice(0, 20);
   return {
-    transcript: 'Welcome to LazyNext, the AI creative platform for e-commerce. This is a dry-run transcript placeholder generated without a real GPU service.',
+    transcript: 'Welcome to Lazynext, the AI creative platform for e-commerce. This is a dry-run transcript placeholder generated without a real GPU service.',
     segments: [
-      { start: 0.0, end: 2.4, text: 'Welcome to LazyNext,' },
+      { start: 0.0, end: 2.4, text: 'Welcome to Lazynext,' },
       { start: 2.4, end: 5.1, text: 'the AI creative platform for e-commerce.' },
       { start: 5.1, end: 8.0, text: 'This is a dry-run transcript placeholder generated without a real GPU service.' },
     ],

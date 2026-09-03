@@ -2,7 +2,7 @@
  * Provider abstraction layer — shared types.
  *
  * All provider interfaces return ProviderTask (async: id + getUrl for polling),
- * matching LazyNext's existing submit→poll architecture. Credits are NOT handled
+ * matching Lazynext's existing submit→poll architecture. Credits are NOT handled
  * here — that's the workflow layer's job.
  */
 

@@ -7115,7 +7115,7 @@ dryRunNotice: 'Dry-run mode — using template choice simplifications',
 },
 statusPage: {
 title: 'System Status',
-subtitle: 'Real-time health of LazyNext services. Auto-refreshes every 30 seconds.',
+subtitle: 'Real-time health of Lazynext services. Auto-refreshes every 30 seconds.',
 checking: 'Checking...',
 allOperational: 'All Systems Operational',
 degraded: 'Degraded Performance',

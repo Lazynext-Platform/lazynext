@@ -6,7 +6,7 @@
  * storyboard) in one pass.
  *
  * Inspired by AdsTurbo/product-page-to-ad-brief (#40, MIT licensed) — the only
- * ADAPTER_INTEGRATE repo from the research audit — adapted for LazyNext's
+ * ADAPTER_INTEGRATE repo from the research audit — adapted for Lazynext's
  * e-commerce creative workflow with concept diversity scoring, best-concept
  * recommendation, and cross-concept insights.
  */

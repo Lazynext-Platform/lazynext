@@ -1,7 +1,7 @@
 /**
  * SSRF-safe URL fetcher.
  *
- * CRITICAL SECURITY: Any URL fetching in LazyNext must be protected against
+ * CRITICAL SECURITY: Any URL fetching in Lazynext must be protected against
  * Server-Side Request Forgery (SSRF). This module validates URLs before
  * fetching, blocks private/internal IP ranges, enforces HTTPS, limits
  * response size, and applies timeouts.
@@ -140,7 +140,7 @@ export async function safeFetchText(rawUrl: string): Promise<SafeFetchResult> {
   try {
     const res = await fetch(url.toString(), {
       headers: {
-        'User-Agent': 'LazyNext-Bot/1.0 (+https://lazynext.com)',
+        'User-Agent': 'Lazynext-Bot/1.0 (+https://lazynext.com)',
         Accept: 'text/html,application/xhtml+xml,text/plain',
       },
       cache: 'no-store',

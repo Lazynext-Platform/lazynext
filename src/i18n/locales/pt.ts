@@ -2351,7 +2351,7 @@ export const ptMessages = {
   },
   "mcpServer": {
     "title": "Servidor MCP Criativo",
-    "subtitle": "Expõe as ferramentas criativas do LazyNext como um servidor MCP compatível com o padrão para agentes externos.",
+    "subtitle": "Expõe as ferramentas criativas do Lazynext como um servidor MCP compatível com o padrão para agentes externos.",
     "signInPrompt": "Entre para ver o servidor MCP.",
     "loading": "Carregando manifesto do servidor…",
     "serverInfo": "Info do Servidor",
@@ -6815,7 +6815,7 @@ export const ptMessages = {
   },
   "statusPage": {
     "title": "Status do Sistema",
-    "subtitle": "Saúde em tempo real dos serviços LazyNext. Atualiza automaticamente a cada 30 segundos.",
+    "subtitle": "Saúde em tempo real dos serviços Lazynext. Atualiza automaticamente a cada 30 segundos.",
     "checking": "Verificando...",
     "allOperational": "Todos os Sistemas Operacionais",
     "degraded": "Desempenho Degradado",
