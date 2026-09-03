@@ -27,6 +27,7 @@ export default async function AgentsPage() {
   const agents = await safePrisma(() => prisma.agentDef.findMany({
     where: { workspaceId: { in: wsIds } },
     orderBy: { createdAt: 'desc' },
+    take: 100,
     include: {
       _count: { select: { runs: true } },
     },

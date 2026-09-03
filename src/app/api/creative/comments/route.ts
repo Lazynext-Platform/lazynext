@@ -22,6 +22,7 @@ export async function GET(req: Request) {
   const comments = await prisma.creativeComment.findMany({
     where: { assetId },
     orderBy: { createdAt: 'asc' },
+    take: 200,
   });
 
   // Fetch user info for each comment

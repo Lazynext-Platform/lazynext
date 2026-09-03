@@ -27,6 +27,7 @@ export default async function AutomationsPage() {
   const automations = await safePrisma(() => prisma.automation.findMany({
     where: { workspaceId: { in: wsIds } },
     orderBy: { createdAt: 'desc' },
+    take: 100,
     include: {
       _count: { select: { runs: true } },
     },
