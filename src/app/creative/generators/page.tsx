@@ -80,7 +80,6 @@ const GENERATORS = [
   // Testing / Optimization
   { api: '/api/creative/ad-ab-test-name-generator', label: 'AB Test Name Generator', category: 'Testing' },
   { api: '/api/creative/ad-creative-ab-test-simulator', label: 'AB Test Simulator', category: 'Testing' },
-  { api: '/api/creative/creative-ad-persuasion-strategist', label: 'Persuasion Strategist', category: 'Testing' },
 ];
 
 const CATEGORIES = [...new Set(GENERATORS.map((g) => g.category))];

@@ -22,7 +22,7 @@ export function McpServer() {
   const fetchManifest = useCallback(async () => {
     setLoading(true); setError('');
     try {
-      const res = await fetch('/api/mcp', {
+      const res = await fetch('/mcp', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           jsonrpc: '2.0', id: 0, method: 'server/discover',
@@ -50,7 +50,7 @@ export function McpServer() {
   const testPing = useCallback(async () => {
     setTestResult('');
     try {
-      const res = await fetch('/api/mcp', {
+      const res = await fetch('/mcp', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           jsonrpc: '2.0', id: 1, method: 'ping',
@@ -67,7 +67,7 @@ export function McpServer() {
   const testToolsList = useCallback(async () => {
     setTestResult('');
     try {
-      const res = await fetch('/api/mcp', {
+      const res = await fetch('/mcp', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           jsonrpc: '2.0', id: 2, method: 'tools/list',
@@ -111,7 +111,7 @@ export function McpServer() {
           {/* Endpoint */}
           <div className="rounded-lg border border-border bg-bg-secondary p-4">
             <h3 className="text-sm font-semibold mb-2">{t('mcpServer.endpoint')}</h3>
-            <code className="block text-xs bg-bg-primary rounded p-2 overflow-x-auto">POST /api/mcp</code>
+            <code className="block text-xs bg-bg-primary rounded p-2 overflow-x-auto">POST /mcp</code>
             <p className="text-xs text-fg-muted mt-2">{t('mcpServer.endpointDescription')}</p>
           </div>
 
