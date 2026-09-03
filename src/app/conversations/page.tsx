@@ -15,7 +15,14 @@ export default async function ConversationsPage() {
   }
 
   const workspaces = await WorkspaceService.listForUser(session.user.id);
-  const workspaceId = workspaces[0]?.id || null;
+  const workspaceList = workspaces.map((w) => ({ id: w.id, name: w.name }));
+  const initialWorkspaceId = workspaceList[0]?.id || null;
 
-  return <ConversationsClient currentUserId={session.user.id} initialWorkspaceId={workspaceId} />;
+  return (
+    <ConversationsClient
+      currentUserId={session.user.id}
+      initialWorkspaceId={initialWorkspaceId}
+      workspaces={workspaceList}
+    />
+  );
 }

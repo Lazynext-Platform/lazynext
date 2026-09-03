@@ -32,9 +32,22 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     where: { conversationId: id },
     orderBy: { createdAt: 'asc' },
     take: 100,
+    include: {
+      user: { select: { id: true, name: true, image: true } },
+    },
   });
 
-  return NextResponse.json({ messages, conversation });
+  return NextResponse.json({
+    messages: messages.map((m) => ({
+      id: m.id,
+      userId: m.userId,
+      userName: m.user?.name || 'Unknown',
+      userImage: m.user?.image || null,
+      body: m.body,
+      createdAt: m.createdAt.toISOString(),
+    })),
+    conversation,
+  });
 }
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {

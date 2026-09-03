@@ -14,11 +14,21 @@ interface Conversation {
 interface Message {
   id: string;
   userId: string;
+  userName: string;
+  userImage: string | null;
   body: string;
   createdAt: string;
 }
 
-export function ConversationsClient({ currentUserId, initialWorkspaceId }: { currentUserId: string; initialWorkspaceId: string | null }) {
+export function ConversationsClient({
+  currentUserId,
+  initialWorkspaceId,
+  workspaces,
+}: {
+  currentUserId: string;
+  initialWorkspaceId: string | null;
+  workspaces: { id: string; name: string }[];
+}) {
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -29,8 +39,9 @@ export function ConversationsClient({ currentUserId, initialWorkspaceId }: { cur
   const [sending, setSending] = useState(false);
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState('');
+  const [selectedWorkspaceId, setSelectedWorkspaceId] = useState<string | null>(initialWorkspaceId);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const workspaceId = initialWorkspaceId;
+  const workspaceId = selectedWorkspaceId;
 
   const loadConversations = useCallback(async () => {
     if (!workspaceId) { setLoading(false); return; }
@@ -144,6 +155,30 @@ export function ConversationsClient({ currentUserId, initialWorkspaceId }: { cur
         <p className="text-sm text-fg-secondary mt-1">Workspace discussions and messaging</p>
       </div>
 
+      {/* Workspace selector */}
+      {workspaces.length > 1 && (
+        <div className="mb-4 flex items-center gap-2">
+          <label className="label-mono text-xs">Workspace:</label>
+          <select
+            value={selectedWorkspaceId || ''}
+            onChange={(e) => {
+              setSelectedWorkspaceId(e.target.value);
+              setSelectedId(null);
+              setConversations([]);
+              setMessages([]);
+              setLoading(true);
+              loadConversations();
+            }}
+            className="text-sm px-3 py-1.5 border-2 bg-surface"
+            style={{ borderColor: 'var(--c-ink)', borderRadius: 'var(--radius-sm)' }}
+          >
+            {workspaces.map((w) => (
+              <option key={w.id} value={w.id}>{w.name}</option>
+            ))}
+          </select>
+        </div>
+      )}
+
       <div className="grid grid-cols-1 lg:grid-cols-[300px_1fr] gap-4 h-[600px]">
         {/* Sidebar: conversation list */}
         <Card className="p-0 overflow-hidden flex flex-col">
@@ -230,7 +265,7 @@ export function ConversationsClient({ currentUserId, initialWorkspaceId }: { cur
                           {m.body}
                         </div>
                         <p className="text-xs text-fg-muted mt-1">
-                          {isOwn ? 'You' : 'Other'} · {new Date(m.createdAt).toLocaleTimeString()}
+                          {isOwn ? 'You' : m.userName} · {new Date(m.createdAt).toLocaleTimeString()}
                         </p>
                       </div>
                     );

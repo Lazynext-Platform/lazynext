@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Lock, Key, Shield, AlertCircle, Loader2, Check } from 'lucide-react';
+import { Lock, Key, Shield, AlertCircle, Loader2, Check, Trash2, AlertTriangle, Download } from 'lucide-react';
 import { Card, Button, Input, Badge } from '@/components/ui';
 
 export function SecuritySettings({ hasPassword }: { hasPassword: boolean }) {
@@ -11,6 +11,10 @@ export function SecuritySettings({ hasPassword }: { hasPassword: boolean }) {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [deleteConfirm, setDeleteConfirm] = useState(false);
+  const [deletePassword, setDeletePassword] = useState('');
+  const [deleting, setDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState('');
 
   async function changePassword(e: React.FormEvent) {
     e.preventDefault();
@@ -106,6 +110,93 @@ export function SecuritySettings({ hasPassword }: { hasPassword: boolean }) {
           </div>
           <Badge variant="success">Active</Badge>
         </div>
+      </Card>
+
+      {/* Data export (GDPR right to portability) */}
+      <Card className="p-6">
+        <h2 className="heading-display text-lg mb-2 flex items-center gap-2">
+          <Download className="h-5 w-5" /> Export your data
+        </h2>
+        <p className="text-sm text-fg-secondary mb-4">
+          Download a copy of all your personal data including projects, tasks, documents,
+          creative work, and account information (JSON format).
+        </p>
+        <Button
+          onClick={() => { window.open('/api/settings/export', '_blank'); }}
+        >
+          <Download className="h-4 w-4" /> Download data export
+        </Button>
+      </Card>
+
+      {/* Delete account (GDPR right to erasure) */}
+      <Card className="p-6" style={{ borderColor: 'var(--c-danger)' }}>
+        <h2 className="heading-display text-lg mb-2 flex items-center gap-2" style={{ color: 'var(--c-danger)' }}>
+          <Trash2 className="h-5 w-5" /> Delete account
+        </h2>
+        <p className="text-sm text-fg-secondary mb-4">
+          Permanently delete your account and all associated data. This action cannot be undone.
+        </p>
+        {!deleteConfirm ? (
+          <Button variant="danger" onClick={() => setDeleteConfirm(true)}>
+            <Trash2 className="h-4 w-4" /> Delete my account
+          </Button>
+        ) : (
+          <div className="flex flex-col gap-4">
+            <div className="flex items-start gap-2 p-3 border-2" style={{ borderColor: 'var(--c-danger)', borderRadius: 'var(--radius-sm)', backgroundColor: 'var(--c-danger-soft, transparent)' }}>
+              <AlertTriangle className="h-4 w-4 shrink-0 mt-0.5" style={{ color: 'var(--c-danger)' }} />
+              <p className="text-sm">
+                This will permanently delete all your projects, tasks, documents, conversations,
+                creative work, and account data. This cannot be undone.
+              </p>
+            </div>
+            {hasPassword && (
+              <div>
+                <label className="label-mono block mb-1">Enter your password to confirm</label>
+                <Input
+                  type="password"
+                  value={deletePassword}
+                  onChange={(e) => setDeletePassword(e.target.value)}
+                  required
+                  autoComplete="current-password"
+                  placeholder="Your password"
+                />
+              </div>
+            )}
+            {deleteError && <p className="text-sm text-danger flex items-center gap-1"><AlertCircle className="h-3 w-3" /> {deleteError}</p>}
+            <div className="flex items-center gap-3">
+              <Button
+                variant="danger"
+                onClick={async () => {
+                  setDeleting(true);
+                  setDeleteError('');
+                  try {
+                    const res = await fetch('/api/settings/account', {
+                      method: 'DELETE',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({ password: deletePassword || undefined }),
+                    });
+                    if (!res.ok) {
+                      const data = await res.json().catch(() => ({}));
+                      throw new Error(data.error || 'Failed to delete account');
+                    }
+                    // Redirect to home after deletion
+                    window.location.href = '/';
+                  } catch (err) {
+                    setDeleteError(err instanceof Error ? err.message : 'Failed to delete account');
+                  } finally {
+                    setDeleting(false);
+                  }
+                }}
+                disabled={deleting || (hasPassword && !deletePassword)}
+              >
+                {deleting ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Confirm permanent deletion'}
+              </Button>
+              <Button variant="ghost" onClick={() => { setDeleteConfirm(false); setDeletePassword(''); setDeleteError(''); }}>
+                Cancel
+              </Button>
+            </div>
+          </div>
+        )}
       </Card>
     </div>
   );

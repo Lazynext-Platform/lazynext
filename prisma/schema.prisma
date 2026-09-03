@@ -43,6 +43,7 @@ model User {
   creativeTemplates CreativeTemplate[]
   sharedLinks  SharedLink[]
   webhookEndpoints WebhookEndpoint[]
+  messages     Message[]
   creativeComments CreativeComment[]
   teamMembers  TeamMember[]
   teamActivities TeamActivity[]
@@ -949,6 +950,7 @@ model Message {
   createdAt      DateTime @default(now())
 
   conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  user           User        @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([conversationId])
   @@index([userId])
