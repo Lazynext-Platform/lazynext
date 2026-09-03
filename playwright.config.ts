@@ -26,12 +26,12 @@ export default defineConfig({
     // Unauthenticated projects — for smoke tests and auth-prompt verification
     {
       name: 'chromium',
-      testIgnore: ['**/auth-*.spec.ts'],
+      testIgnore: ['**/auth-*.spec.ts', '**/prod-*.spec.ts'],
       use: { ...devices['Desktop Chrome'] },
     },
     {
       name: 'mobile-chrome',
-      testIgnore: ['**/auth-*.spec.ts'],
+      testIgnore: ['**/auth-*.spec.ts', '**/prod-*.spec.ts'],
       use: { ...devices['Pixel 5'] },
     },
     // Authenticated projects — use saved storage state from global-setup
