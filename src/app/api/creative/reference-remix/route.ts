@@ -10,7 +10,7 @@ import {
 } from '@/lib/creative/reference-remix';
 import { deductCredits, refundCredits } from '@/lib/credits';
 import { getUserPlanTier } from '@/lib/plan-tier';
-import { safeError, safeAtlasError } from '@/lib/security';
+import { isUrlSafe, safeError, safeAtlasError } from '@/lib/security';
 
 export const maxDuration = 90;
 
@@ -54,7 +54,7 @@ async function __byokPOST(req: Request) {
 
   const body = await req.json().catch(() => ({}));
 
-  const referenceUrl = typeof body.referenceUrl === 'string' ? body.referenceUrl.trim().slice(0, 2048) : '';
+  const referenceUrl = typeof body.referenceUrl === 'string' && isUrlSafe(body.referenceUrl) ? body.referenceUrl.trim().slice(0, 2048) : '';
   if (!referenceUrl) return NextResponse.json({ error: 'reference_url_required' }, { status: 400 });
 
   // Validate URL format

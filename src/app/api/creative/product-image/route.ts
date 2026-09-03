@@ -10,6 +10,7 @@ import {
 } from '@/lib/creative/product-image';
 import { deductCredits, refundCredits } from '@/lib/credits';
 import { getUserPlanTier } from '@/lib/plan-tier';
+import { isUrlSafe } from '@/lib/security';
 
 export const maxDuration = 60;
 
@@ -32,7 +33,7 @@ async function __byokPOST(req: Request) {
 
   const body = await req.json().catch(() => ({}));
 
-  const imageUrl = typeof body.imageUrl === 'string' ? body.imageUrl.trim().slice(0, 2048) : '';
+  const imageUrl = typeof body.imageUrl === 'string' && isUrlSafe(body.imageUrl) ? body.imageUrl.trim().slice(0, 2048) : '';
   if (!imageUrl) return NextResponse.json({ error: 'image_url_required' }, { status: 400 });
 
   // Validate URL format

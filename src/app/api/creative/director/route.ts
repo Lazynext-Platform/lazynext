@@ -4,6 +4,7 @@ import { auth } from '@/../auth';
 import { runCreativeDirector, type DirectorStep, type DirectorResult } from '@/lib/creative/director';
 import { deductCredits, refundCredits } from '@/lib/credits';
 import { dispatchWebhook } from '@/lib/webhooks';
+import { isUrlSafe } from '@/lib/security';
 
 export const maxDuration = 120;
 
@@ -15,6 +16,8 @@ async function __byokPOST(req: Request) {
   const uid = session.user.id;
 
   const body = await req.json().catch(() => ({}));
+  const brandUrl = typeof body.brandUrl === 'string' && isUrlSafe(body.brandUrl) ? body.brandUrl : undefined;
+  const productUrl = typeof body.productUrl === 'string' && isUrlSafe(body.productUrl) ? body.productUrl : undefined;
   const budget = typeof body.budgetCredits === 'number' ? Math.min(body.budgetCredits, 50) : DIRECTOR_BUDGET_DEFAULT;
 
   // Pre-charge the full budget; refund unused credits after
@@ -35,8 +38,8 @@ async function __byokPOST(req: Request) {
     // Legacy non-streaming response
     try {
       const result = await runCreativeDirector({
-        brandUrl: body.brandUrl,
-        productUrl: body.productUrl,
+        brandUrl,
+        productUrl,
         productText: body.productText,
         productName: body.productName,
         platform: body.platform,
@@ -70,8 +73,8 @@ async function __byokPOST(req: Request) {
       try {
         const result = await runCreativeDirector(
           {
-            brandUrl: body.brandUrl,
-            productUrl: body.productUrl,
+            brandUrl,
+            productUrl,
             productText: body.productText,
             productName: body.productName,
             platform: body.platform,

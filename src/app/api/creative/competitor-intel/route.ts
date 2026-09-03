@@ -8,6 +8,7 @@ import {
 } from '@/lib/creative/competitor-intel';
 import { deductCredits, refundCredits } from '@/lib/credits';
 import { getUserPlanTier } from '@/lib/plan-tier';
+import { isUrlSafe } from '@/lib/security';
 
 export const maxDuration = 120;
 
@@ -20,7 +21,7 @@ async function __byokPOST(req: Request) {
   const body = await req.json().catch(() => ({}));
   const market = typeof body.market === 'string' ? body.market.trim().slice(0, 200) : '';
   const competitorUrls: string[] = Array.isArray(body.competitorUrls)
-    ? body.competitorUrls.filter((u: unknown) => typeof u === 'string').map((u: string) => u.trim()).filter(Boolean).slice(0, 10)
+    ? body.competitorUrls.filter((u: unknown) => typeof u === 'string').map((u: string) => u.trim()).filter((u: string) => Boolean(u) && isUrlSafe(u)).slice(0, 10)
     : [];
   const yourMetrics: Record<string, number> = body.yourMetrics && typeof body.yourMetrics === 'object'
     ? Object.fromEntries(

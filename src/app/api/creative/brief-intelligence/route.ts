@@ -5,6 +5,7 @@ import { analyzeBrief, BRIEF_INTELLIGENCE_COST, validateBriefRequest } from '@/l
 import type { BriefType } from '@/lib/creative/brief-intelligence';
 import { deductCredits, refundCredits } from '@/lib/credits';
 import { getUserPlanTier } from '@/lib/plan-tier';
+import { isUrlSafe } from '@/lib/security';
 
 export const maxDuration = 90;
 
@@ -45,7 +46,7 @@ async function __byokPOST(req: Request) {
     const result = await analyzeBrief({
       productName,
       productDescription: typeof body.productDescription === 'string' ? body.productDescription.trim().slice(0, 4000) : undefined,
-      productUrl: typeof body.productUrl === 'string' ? body.productUrl.trim().slice(0, 500) : undefined,
+      productUrl: typeof body.productUrl === 'string' && isUrlSafe(body.productUrl) ? body.productUrl.trim().slice(0, 500) : undefined,
       competitorInfo: typeof body.competitorInfo === 'string' ? body.competitorInfo.trim().slice(0, 4000) : undefined,
       briefType: typeof body.briefType === 'string' ? (body.briefType as BriefType) : undefined,
       existingCreatives: existingCreatives && existingCreatives.length ? existingCreatives : undefined,

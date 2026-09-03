@@ -9,7 +9,7 @@ import {
 } from '@/lib/creative/competitor-watch';
 import { deductCredits, refundCredits } from '@/lib/credits';
 import { getUserPlanTier } from '@/lib/plan-tier';
-import { safeError, safeAtlasError } from '@/lib/security';
+import { isUrlSafe, safeError, safeAtlasError } from '@/lib/security';
 
 export const maxDuration = 90;
 
@@ -52,12 +52,12 @@ async function __byokPOST(req: Request) {
 
   const body = await req.json().catch(() => ({}));
 
-  const competitorUrl = typeof body.competitorUrl === 'string' ? body.competitorUrl.trim().slice(0, 2048) : '';
+  const competitorUrl = typeof body.competitorUrl === 'string' && isUrlSafe(body.competitorUrl) ? body.competitorUrl.trim().slice(0, 2048) : '';
   if (!competitorUrl) return NextResponse.json({ error: 'competitor_url_required' }, { status: 400 });
 
   const input: CompetitorWatchInput = {
     competitorUrl,
-    adUrl: typeof body.adUrl === 'string' ? body.adUrl.trim().slice(0, 2048) : undefined,
+    adUrl: typeof body.adUrl === 'string' && isUrlSafe(body.adUrl) ? body.adUrl.trim().slice(0, 2048) : undefined,
     brandKit: typeof body.brandKit === 'string' ? body.brandKit.trim().slice(0, 2000) : undefined,
     brandPositioning: typeof body.brandPositioning === 'string' ? body.brandPositioning.trim().slice(0, 1000) : undefined,
     productCategory: typeof body.productCategory === 'string' ? body.productCategory.trim().slice(0, 200) : undefined,

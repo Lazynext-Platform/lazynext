@@ -8,6 +8,7 @@ import type { AdCampaignInput, PublishOptions } from '@/lib/ad-platforms/types';
 import { deductCredits, refundCredits } from '@/lib/credits';
 import { prisma } from '@/lib/prisma';
 import { dispatchWebhook } from '@/lib/webhooks';
+import { isUrlSafe } from '@/lib/security';
 
 export const maxDuration = 120;
 
@@ -43,6 +44,8 @@ async function __byokPOST(req: Request) {
   const uid = session.user.id;
 
   const body = await req.json().catch(() => ({}));
+  const brandUrl = typeof body.brandUrl === 'string' && isUrlSafe(body.brandUrl) ? body.brandUrl : undefined;
+  const productUrl = typeof body.productUrl === 'string' && isUrlSafe(body.productUrl) ? body.productUrl : undefined;
   const budget = typeof body.budgetCredits === 'number' ? Math.min(body.budgetCredits, 50) : 30;
   const deployPlatform = String(body.deployPlatform || 'meta');
   if (!['meta', 'google'].includes(deployPlatform)) {
@@ -78,8 +81,8 @@ async function __byokPOST(req: Request) {
 
         const directorResult = await runCreativeDirector(
           {
-            brandUrl: body.brandUrl,
-            productUrl: body.productUrl,
+            brandUrl,
+            productUrl,
             productText: body.productText,
             productName: body.productName,
             platform: body.platform,

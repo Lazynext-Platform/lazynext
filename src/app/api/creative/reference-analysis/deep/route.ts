@@ -6,6 +6,7 @@ import { deductCredits, refundCredits } from '@/lib/credits';
 import { atlasASR, ATLAS_ASR_MODEL } from '@/lib/providers/atlas-audio';
 import { pollOnce } from '@/lib/atlas';
 import { getUserPlanTier } from '@/lib/plan-tier';
+import { isUrlSafe } from '@/lib/security';
 
 export const maxDuration = 120;
 
@@ -33,7 +34,7 @@ async function __byokPOST(req: Request) {
   const planTier = await getUserPlanTier(uid);
 
   const body = await req.json().catch(() => ({}));
-  const sourceUrl = typeof body.sourceUrl === 'string' ? body.sourceUrl.trim().slice(0, 2048) : '';
+  const sourceUrl = typeof body.sourceUrl === 'string' && isUrlSafe(body.sourceUrl) ? body.sourceUrl.trim().slice(0, 2048) : '';
   const transcript = typeof body.transcript === 'string' ? body.transcript.trim().slice(0, 10000) : undefined;
   const language = typeof body.language === 'string' ? body.language.trim().slice(0, 10) : undefined;
   const autoTranscribe = body.autoTranscribe !== false;

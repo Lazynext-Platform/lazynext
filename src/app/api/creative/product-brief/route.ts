@@ -9,7 +9,7 @@ import {
 } from '@/lib/creative/product-brief';
 import { deductCredits, refundCredits } from '@/lib/credits';
 import { getUserPlanTier } from '@/lib/plan-tier';
-import { safeError, safeAtlasError } from '@/lib/security';
+import { isUrlSafe, safeError, safeAtlasError } from '@/lib/security';
 
 export const maxDuration = 60;
 
@@ -82,7 +82,7 @@ async function __byokPOST(req: Request) {
 
   const input: ProductBriefInput = {
     productName,
-    productUrl: typeof body.productUrl === 'string' ? body.productUrl.trim().slice(0, 2048) : undefined,
+    productUrl: typeof body.productUrl === 'string' && isUrlSafe(body.productUrl) ? body.productUrl.trim().slice(0, 2048) : undefined,
     category: typeof body.category === 'string' ? body.category.trim().slice(0, 200) : undefined,
     audience: typeof body.audience === 'string' ? body.audience.trim().slice(0, 500) : undefined,
     platform,

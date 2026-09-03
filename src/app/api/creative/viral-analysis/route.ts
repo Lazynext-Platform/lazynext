@@ -4,6 +4,7 @@ import { auth } from '@/../auth';
 import { analyzeVirality, VIRAL_ANALYSIS_COST } from '@/lib/creative/viral-analysis';
 import { deductCredits, refundCredits } from '@/lib/credits';
 import { getUserPlanTier } from '@/lib/plan-tier';
+import { isUrlSafe } from '@/lib/security';
 
 export const maxDuration = 90;
 
@@ -14,7 +15,7 @@ async function __byokPOST(req: Request) {
   const planTier = await getUserPlanTier(uid);
 
   const body = await req.json().catch(() => ({}));
-  const sourceUrl = typeof body.sourceUrl === 'string' ? body.sourceUrl.trim().slice(0, 2048) : '';
+  const sourceUrl = typeof body.sourceUrl === 'string' && isUrlSafe(body.sourceUrl) ? body.sourceUrl.trim().slice(0, 2048) : '';
   const transcript = typeof body.transcript === 'string' ? body.transcript.trim().slice(0, 10000) : undefined;
 
   if (!sourceUrl) return NextResponse.json({ error: 'source_url_required' }, { status: 400 });

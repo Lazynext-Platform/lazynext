@@ -7,6 +7,7 @@ import type { BrandProfile, ProductExtraction } from '@/lib/brand/types';
 import { deductCredits, refundCredits } from '@/lib/credits';
 import { getTool, validateAgainstSchema } from '@/lib/creative/tools';
 import { getUserPlanTier } from '@/lib/plan-tier';
+import { isUrlSafe } from '@/lib/security';
 
 export const maxDuration = 90;
 
@@ -20,7 +21,7 @@ async function __byokPOST(req: Request) {
 
   // Either provide a pre-computed analysis, or a referenceUrl to analyze
   let analysis: ReferenceCreativeAnalysis | undefined = body.analysis as ReferenceCreativeAnalysis | undefined;
-  const referenceUrl = typeof body.referenceUrl === 'string' ? body.referenceUrl.trim().slice(0, 2048) : '';
+  const referenceUrl = typeof body.referenceUrl === 'string' && isUrlSafe(body.referenceUrl) ? body.referenceUrl.trim().slice(0, 2048) : '';
 
   if (!analysis && referenceUrl) {
     // Validate URL format

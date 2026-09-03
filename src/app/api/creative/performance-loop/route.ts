@@ -9,7 +9,7 @@ import {
 } from '@/lib/creative/performance-loop';
 import { deductCredits, refundCredits } from '@/lib/credits';
 import { getUserPlanTier } from '@/lib/plan-tier';
-import { safeError, safeAtlasError } from '@/lib/security';
+import { isUrlSafe, safeError, safeAtlasError } from '@/lib/security';
 
 export const maxDuration = 60;
 
@@ -57,7 +57,7 @@ async function __byokPOST(req: Request) {
   }
 
   const productUrl =
-    typeof body.productUrl === 'string' && body.productUrl.trim()
+    typeof body.productUrl === 'string' && body.productUrl.trim() && isUrlSafe(body.productUrl)
       ? body.productUrl.trim().slice(0, 2048)
       : undefined;
 
