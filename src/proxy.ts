@@ -107,6 +107,34 @@ if (rateBuckets.size > 500) {
 async function handleRequest(req: NextRequest): Promise<NextResponse> {
   const pathname = req.nextUrl.pathname;
 
+  // Redirect old ad-studio creative tool pages to /creative/generators
+  // These page routes have been removed; the API routes remain.
+  if (
+    pathname.startsWith('/ad-') ||
+    pathname.startsWith('/creative-ad-') ||
+    pathname.startsWith('/brand-') ||
+    pathname.startsWith('/brief-') ||
+    pathname.startsWith('/hook-') ||
+    [
+      '/mood-board-generator', '/scene-analysis', '/shot-planner', '/multi-concept',
+      '/reference-remix', '/repurposing', '/viral-analyzer', '/trend-spotter',
+      '/trend-intelligence', '/competitor-intel', '/competitor-watch', '/concept-expander',
+      '/personas', '/audience-persona-generator', '/creator-kits', '/product-brief',
+      '/campaign-orchestrator', '/fatigue', '/quality-scoring', '/forecasting',
+      '/budget-optimizer', '/performance-loop', '/smart-calendar', '/audience-insights',
+      '/variant-matrix', '/variant-matrix-generator', '/testing-lab',
+      '/ab-test-planner', '/ab-test-results', '/ab-automation',
+      '/creative-brief-generator', '/creative-hook-matrix-generator', '/creative-hook-revamp-generator',
+      '/creative-messaging-framework-builder', '/creative-scene-generator', '/creative-format-converter',
+      '/creative-format-recommender', '/creative-visual-hierarchy-analyzer', '/creative-fatigue-detector',
+      '/creative-performance-forecaster', '/creative-trend-adapter', '/creative-quality-scorer',
+      '/creative-sentiment-journey-mapper', '/creative-concept-expander-pro',
+      '/creative-concept-validator', '/creative-diff', '/creative-assets',
+    ].includes(pathname)
+  ) {
+    return NextResponse.redirect(new URL('/creative/generators', req.url), 308);
+  }
+
   // Path-based locale routing: /zh, /zh/lazynext-studio, etc.
   // Strip the locale prefix, set the cookie, and rewrite to the bare path.
   const pathSegments = pathname.split('/').filter(Boolean);

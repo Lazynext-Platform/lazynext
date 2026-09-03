@@ -5,6 +5,7 @@ import { auth } from '@/../auth';
 import { WorkspaceService } from '@/lib/services/workspace';
 import { prisma } from '@/lib/prisma';
 import { Card, Badge, Button, EmptyState } from '@/components/ui';
+import { TaskList } from '@/components/TaskList';
 
 export const dynamic = 'force-dynamic';
 
@@ -62,30 +63,11 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
 
       {/* Tasks + Documents grid */}
       <div className="grid gap-6 lg:grid-cols-2">
-        {/* Tasks */}
-        <Card className="p-5">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="heading-display text-sm">Tasks ({project.tasks.length})</h2>
-          </div>
-          {project.tasks.length === 0 ? (
-            <EmptyState icon={CheckSquare} title="No tasks" description="Add tasks to this project." />
-          ) : (
-            <div className="flex flex-col gap-2">
-              {project.tasks.map((task) => (
-                <div key={task.id} className="flex items-center justify-between p-3 border-2 bg-surface" style={{ borderColor: 'var(--c-ink)', borderRadius: 'var(--radius-sm)' }}>
-                  <div className="flex items-center gap-3 min-w-0">
-                    <CheckSquare className="h-4 w-4 shrink-0 text-fg-muted" />
-                    <span className="text-sm font-medium truncate">{task.title}</span>
-                  </div>
-                  <div className="flex items-center gap-2 shrink-0">
-                    <Badge>{task.priority}</Badge>
-                    <Badge variant={task.status === 'done' ? 'success' : 'default'}>{task.status}</Badge>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </Card>
+        {/* Tasks — interactive component */}
+        <TaskList
+          projectId={project.id}
+          initialTasks={project.tasks.map((t) => ({ id: t.id, title: t.title, priority: t.priority, status: t.status }))}
+        />
 
         {/* Documents */}
         <Card className="p-5">

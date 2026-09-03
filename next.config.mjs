@@ -8,6 +8,39 @@ const nextConfig = {
   experimental: {
     optimizePackageImports: ['lucide-react'],
   },
+  // Redirect old ad-studio routes to the creative hub
+  async redirects() {
+    return [
+      // Old studio pages → creative hub
+      { source: '/creative-studio', destination: '/creative', permanent: true },
+      { source: '/creative-director', destination: '/creative', permanent: true },
+      { source: '/lazynext-studio', destination: '/creative', permanent: true },
+      { source: '/ugc-studio', destination: '/creative', permanent: true },
+      { source: '/narrative-studio', destination: '/creative', permanent: true },
+      { source: '/drama-studio', destination: '/creative', permanent: true },
+      { source: '/image-studio', destination: '/creative', permanent: true },
+      { source: '/audio-studio', destination: '/creative', permanent: true },
+      // Old pipeline → creative pipelines
+      { source: '/pipeline', destination: '/creative/pipelines', permanent: true },
+      { source: '/workflow-builder', destination: '/creative/pipelines', permanent: true },
+      // Old inspiration → creative
+      { source: '/inspiration', destination: '/creative', permanent: true },
+      { source: '/ml-insights', destination: '/analytics', permanent: true },
+      { source: '/performance', destination: '/analytics', permanent: true },
+      { source: '/analytics-hub', destination: '/analytics', permanent: true },
+      // Old media → files
+      { source: '/media-service-boundary', destination: '/files', permanent: true },
+      { source: '/clip-editor', destination: '/creative', permanent: true },
+      // Old skills → agents
+      { source: '/skills', destination: '/agents', permanent: true },
+      { source: '/skill-chains', destination: '/agents', permanent: true },
+      // Old safety → integrations
+      { source: '/meta-safety', destination: '/integrations', permanent: true },
+      { source: '/google-safety', destination: '/integrations', permanent: true },
+      // Old mcp-server → developers
+      { source: '/mcp-server', destination: '/developers', permanent: true },
+    ];
+  },
   // Turbopack (used by `next dev` in Next.js 16) ignores webpack config, so we
   // mirror the async_hooks client alias here. The bare `async_hooks` specifier
   // resolves normally server-side (Node.js / workerd nodejs_compat) but must be

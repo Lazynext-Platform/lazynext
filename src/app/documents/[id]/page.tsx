@@ -5,6 +5,7 @@ import { auth } from '@/../auth';
 import { WorkspaceService } from '@/lib/services/workspace';
 import { prisma } from '@/lib/prisma';
 import { Card, Badge, Button } from '@/components/ui';
+import { DocumentEditor } from '@/components/DocumentEditor';
 
 export const dynamic = 'force-dynamic';
 
@@ -53,15 +54,7 @@ export default async function DocumentDetailPage({ params }: { params: Promise<{
         </div>
       </div>
 
-      <Card className="p-6">
-        <div className="prose prose-sm max-w-none">
-          {doc.content ? (
-            <pre className="whitespace-pre-wrap text-sm font-sans">{doc.content}</pre>
-          ) : (
-            <p className="text-fg-muted">This document is empty.</p>
-          )}
-        </div>
-      </Card>
+      <DocumentEditor doc={{ id: doc.id, title: doc.title, content: doc.content, version: doc.version }} />
     </div>
   );
 }
