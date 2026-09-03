@@ -126,6 +126,71 @@ jobs:
           path: playwright-report/
           retention-days: 7
 
+  e2e-auth:
+    name: E2E Auth Tests
+    runs-on: ubuntu-latest
+    needs: lint-and-test
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '25'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Generate Prisma client
+        run: npm run prisma:generate
+        env:
+          BUILD_TARGET: local
+
+      - name: Create local database
+        run: npm run db:push
+        env:
+          BUILD_TARGET: local
+          DATABASE_URL: "file:./prisma/dev.db"
+
+      - name: Seed test account
+        run: npm run db:seed:test
+        env:
+          BUILD_TARGET: local
+          DATABASE_URL: "file:./prisma/dev.db"
+
+      - name: Start mock Atlas server
+        run: |
+          npm run mock-atlas &
+          sleep 3
+          curl -s http://localhost:3099/health || echo "mock-atlas may not have /health endpoint"
+
+      - name: Run auth E2E tests
+        run: npx playwright test --project=chromium-auth
+        env:
+          CI: true
+          NEXTAUTH_URL: http://localhost:3100
+          AUTH_URL: http://localhost:3100
+          NEXTAUTH_SECRET: ci-test-secret-not-for-production
+          AUTH_SECRET: ci-test-secret-not-for-production
+          ATLASCLOUD_BASE: http://localhost:3099/api/v1
+          ATLASCLOUD_LLM_BASE: http://localhost:3099/v1
+          ATLASCLOUD_API_KEY: mock-key-for-dev
+          BUILD_TARGET: local
+          NODE_OPTIONS: --max-old-space-size=3072
+
+      - name: Upload auth test results
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: playwright-report-auth
+          path: playwright-report/
+          retention-days: 7
+
   bundle-size:
     name: Bundle Size Check
     runs-on: ubuntu-latest
@@ -165,7 +230,7 @@ jobs:
   deploy:
     name: Deploy to Cloudflare
     runs-on: ubuntu-latest
-    needs: [lint-and-test, build, e2e, bundle-size]
+    needs: [lint-and-test, build, e2e, e2e-auth, bundle-size]
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     steps:
       - uses: actions/checkout@v5
@@ -217,10 +282,10 @@ jobs:
         run: npm ci
 
       - name: Run npm audit (high+critical)
-        run: npm audit --audit-level=high --omit=dev || true
+        run: npm audit --audit-level=high --omit=dev
 
       - name: Check for known vulnerabilities
-        run: npx better-npm-audit audit --level high || true
+        run: npx better-npm-audit audit --level high
 
   license-check:
     name: License Compliance Check
