@@ -5,7 +5,7 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](#license)
 [![Next.js](https://img.shields.io/badge/Next.js-16-black)](https://nextjs.org/)
 [![Cloudflare Workers](https://img.shields.io/badge/Cloudflare-Workers-f38020)](https://workers.cloudflare.com/)
-[![Powered by Atlas Cloud](https://img.shields.io/badge/powered%20by-Atlas%20Cloud-00b2fc)](https://www.atlascloud.ai)
+[![Powered by Atlas Cloud](https://www.atlascloud.ai/oss-program/powered-by-atlas-cloud.svg)](https://www.atlascloud.ai/?ref=LAZYNEXT)
 
 > One environment for your entire workflow. Identity is unified, data is unified, permissions are unified, and every module shares the same platform core.
 
