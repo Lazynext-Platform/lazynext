@@ -19,8 +19,8 @@ export async function PATCH(req: NextRequest) {
   }
 
   const data: Record<string, unknown> = {};
-  if (body.name?.trim()) data.name = body.name.trim();
-  if (body.image !== undefined) data.image = body.image || null;
+  if (body.name?.trim()) data.name = body.name.trim().slice(0, 200);
+  if (body.image !== undefined) data.image = typeof body.image === 'string' ? body.image.slice(0, 2000) : null;
 
   if (Object.keys(data).length === 0) {
     return NextResponse.json({ error: 'no_fields_to_update' }, { status: 400 });

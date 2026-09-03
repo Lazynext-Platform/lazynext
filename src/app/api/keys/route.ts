@@ -37,8 +37,15 @@ export async function POST(req: NextRequest) {
   if (!name) {
     return NextResponse.json({ error: 'validation', message: 'Name is required' }, { status: 400 });
   }
+  if (name.length > 100) {
+    return NextResponse.json({ error: 'validation', message: 'Name must be at most 100 characters' }, { status: 400 });
+  }
 
-  const scopes = Array.isArray(body.scopes) ? body.scopes : ['read'];
+  const VALID_SCOPES = ['read', 'write', 'admin'];
+  const scopes = Array.isArray(body.scopes)
+    ? body.scopes.filter((s: unknown) => typeof s === 'string' && VALID_SCOPES.includes(s as string))
+    : ['read'];
+  if (scopes.length === 0) scopes.push('read');
   const workspaceId = body.workspaceId || null;
 
   const { key, keyHash, keyPrefix } = generateApiKey();

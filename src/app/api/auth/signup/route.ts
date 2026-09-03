@@ -32,6 +32,11 @@ export async function POST(req: Request) {
 
     const normalizedEmail = email.toLowerCase().trim();
 
+    // Validate email format and length
+    if (normalizedEmail.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) {
+      return NextResponse.json({ error: 'Please provide a valid email address' }, { status: 400 });
+    }
+
     // Block disposable/temporary email domains
     if (isDisposableEmail(normalizedEmail)) {
       return NextResponse.json({ error: 'Please use a real email address — temporary email domains are not allowed' }, { status: 400 });
