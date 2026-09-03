@@ -2,11 +2,13 @@ import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 import { auth } from '@/../auth';
 import { prisma } from '@/lib/prisma';
+import { revokeAllUserSessions } from '@/lib/session-revocation';
 
 /**
  * POST /api/settings/password — change the current user's password.
  * Requires the current password to be verified.
  * Only works for email+password accounts (not OAuth-only).
+ * Revokes all other sessions after password change (security best practice).
  */
 export async function POST(req: NextRequest) {
   const session = await auth().catch(() => null);
@@ -41,6 +43,10 @@ export async function POST(req: NextRequest) {
     where: { id: session.user.id },
     data: { password: hashed },
   });
+
+  // Revoke all sessions (including this one) — the client should redirect to login.
+  // This ensures any stolen JWTs are invalidated after a password change.
+  await revokeAllUserSessions(session.user.id).catch(() => {});
 
   return NextResponse.json({ ok: true });
 }

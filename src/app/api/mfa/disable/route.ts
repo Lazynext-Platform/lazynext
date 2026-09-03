@@ -3,12 +3,15 @@ import { auth } from '@/../auth';
 import { prisma } from '@/lib/prisma';
 import { verifyTOTP } from '@/lib/mfa';
 import { safeError } from '@/lib/security';
+import { revokeAllUserSessions } from '@/lib/session-revocation';
 
 /**
  * POST /api/mfa/disable — Disable MFA for the authenticated user.
  * Body: { code: "123456" } — requires a valid TOTP code to disable.
  *
  * Clears mfaSecret and sets mfaEnabled=false.
+ * Revokes all sessions after MFA disable (security best practice —
+ * ensures no potentially compromised sessions persist without MFA).
  */
 export async function POST(req: Request) {
   const session = await auth();
@@ -40,6 +43,9 @@ export async function POST(req: Request) {
       where: { id: session.user.id },
       data: { mfaSecret: null, mfaEnabled: false },
     });
+
+    // Revoke all sessions — user must re-authenticate without MFA.
+    await revokeAllUserSessions(session.user.id).catch(() => {});
 
     return NextResponse.json({ disabled: true });
   } catch (e) {
