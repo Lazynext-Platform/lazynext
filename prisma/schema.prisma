@@ -742,6 +742,7 @@ model Workspace {
   automations     Automation[]
   agents          AgentDef[]
   notifications   Notification[]
+  conversations   Conversation[]
   scheduledJobs   ScheduledJob[]
   auditEvents     AuditEvent[]
 
@@ -923,6 +924,33 @@ model Notification {
 
   @@index([userId, read])
   @@index([workspaceId])
+}
+
+model Conversation {
+  id          String   @id @default(cuid())
+  workspaceId String
+  title       String
+  createdById String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  messages    Message[]
+
+  @@index([workspaceId])
+}
+
+model Message {
+  id             String   @id @default(cuid())
+  conversationId String
+  userId         String
+  body           String
+  createdAt      DateTime @default(now())
+
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@index([conversationId])
+  @@index([userId])
 }
 
 // A scheduled job (cron or one-shot).

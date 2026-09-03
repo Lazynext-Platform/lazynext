@@ -32,9 +32,43 @@ export function NotificationsBell() {
 
   useEffect(() => {
     fetchNotifications();
-    // Poll every 30 seconds
-    const interval = setInterval(fetchNotifications, 30_000);
-    return () => clearInterval(interval);
+
+    // Try SSE first, fall back to polling
+    let eventSource: EventSource | null = null;
+    let pollInterval: ReturnType<typeof setInterval> | null = null;
+
+    try {
+      eventSource = new EventSource('/api/notifications/stream');
+      eventSource.addEventListener('notification', (e) => {
+        try {
+          const data = JSON.parse(e.data);
+          // Prepend new notification and increment unread count
+          setNotifications((prev) => {
+            if (prev.some((n) => n.id === data.id)) return prev;
+            return [{ ...data, read: false }, ...prev].slice(0, 20);
+          });
+          setUnreadCount((c) => c + 1);
+        } catch {}
+      });
+      eventSource.onerror = () => {
+        // SSE failed — fall back to polling
+        if (eventSource) {
+          eventSource.close();
+          eventSource = null;
+        }
+        if (!pollInterval) {
+          pollInterval = setInterval(fetchNotifications, 30_000);
+        }
+      };
+    } catch {
+      // EventSource not supported — fall back to polling
+      pollInterval = setInterval(fetchNotifications, 30_000);
+    }
+
+    return () => {
+      if (eventSource) eventSource.close();
+      if (pollInterval) clearInterval(pollInterval);
+    };
   }, [fetchNotifications]);
 
   useEffect(() => {

@@ -85,3 +85,48 @@ export async function sendPasswordResetEmail(email: string, token: string): Prom
     return false;
   }
 }
+
+/**
+ * Send a notification email for in-app notifications.
+ * Returns true if sent, false if skipped or failed.
+ */
+export async function sendNotificationEmail(
+  email: string,
+  title: string,
+  body: string | null,
+  notificationType: string,
+): Promise<boolean> {
+  const client = getResendClient();
+  if (!client) {
+    console.warn('[email] RESEND_API_KEY not set — skipping notification email');
+    return false;
+  }
+  try {
+    const { error } = await client.emails.send({
+      from: FROM,
+      to: email,
+      subject: title,
+      html: `
+        <div style="font-family: sans-serif; max-width: 480px; margin: 0 auto; padding: 24px;">
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px;">
+            <span style="display: inline-block; width: 32px; height: 32px; background: #00b2fc; border-radius: 6px; text-align: center; line-height: 32px; color: white; font-weight: bold; font-size: 16px;">L</span>
+            <span style="font-weight: bold; font-size: 18px; color: #131416;">Lazynext</span>
+          </div>
+          <h2 style="color: #131416; font-size: 18px;">${title}</h2>
+          ${body ? `<p style="color: #555; font-size: 15px; line-height: 1.5;">${body}</p>` : ''}
+          <hr style="border: none; border-top: 1px solid #eee; margin: 24px 0;" />
+          <a href="${APP_URL}" style="display: inline-block; padding: 10px 24px; background: #00b2fc; color: white; text-decoration: none; border-radius: 8px; font-weight: bold;">Open Lazynext</a>
+          <p style="color: #999; font-size: 12px; margin-top: 24px;">You received this email because you have email notifications enabled for ${notificationType} events. Manage your preferences in Settings &rarr; Notifications.</p>
+        </div>
+      `,
+    });
+    if (error) {
+      console.error('[email] Resend error:', error);
+      return false;
+    }
+    return true;
+  } catch (err) {
+    console.error('[email] Failed to send notification email:', err);
+    return false;
+  }
+}

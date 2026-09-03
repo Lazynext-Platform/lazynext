@@ -5,6 +5,7 @@ import { LOCALES, RTL_LOCALES, type Locale, messages } from '@/i18n/messages';
 import Providers from './providers';
 import { ShellRouter } from '@/components/ShellRouter';
 import { CookieBanner } from '@/components/CookieBanner';
+import { ServiceWorkerRegister } from '@/components/ServiceWorkerRegister';
 import { auth } from '@/../auth';
 
 
@@ -19,6 +20,7 @@ export async function generateMetadata(): Promise<Metadata> {
     description: seo.metaDesc,
     // Atlas OSS force-downloads media when a Referer is sent — drop it so <img>/<video> render inline.
     referrer: 'no-referrer',
+    manifest: '/manifest.json',
     icons: {
       icon: [{ url: '/favicon-32.png', sizes: '32x32', type: 'image/png' }],
       apple: [{ url: '/icon-180.png', sizes: '180px', type: 'image/png' }],
@@ -40,6 +42,15 @@ export async function generateMetadata(): Promise<Metadata> {
     alternates: {
       canonical: '/',
       languages: Object.fromEntries(LOCALES.map((l) => [l, l === 'en' ? '/' : `/${l}`])),
+    },
+    appleWebApp: {
+      capable: true,
+      title: 'Lazynext',
+      statusBarStyle: 'default',
+    },
+    applicationName: 'Lazynext',
+    formatDetection: {
+      telephone: false,
     },
   };
 }
@@ -82,6 +93,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <Providers session={session} initialLocale={initialLocale}>
           <ShellRouter>{children}</ShellRouter>
           <CookieBanner />
+          <ServiceWorkerRegister />
         </Providers>
       </body>
     </html>

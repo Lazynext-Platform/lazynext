@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/../auth';
 import { prisma } from '@/lib/prisma';
+import { createNotification } from '@/lib/notifications';
 
 /**
  * GET /api/notifications — list notifications for the current user.
@@ -49,14 +50,12 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'title_required' }, { status: 400 });
   }
 
-  const notification = await prisma.notification.create({
-    data: {
-      userId: session.user.id,
-      workspaceId: body.workspaceId || null,
-      type: body.type || 'general',
-      title: body.title.trim(),
-      body: body.body || null,
-    },
+  const notification = await createNotification({
+    userId: session.user.id,
+    workspaceId: body.workspaceId || undefined,
+    type: body.type || 'general',
+    title: body.title.trim(),
+    body: body.body,
   });
 
   return NextResponse.json({ notification }, { status: 201 });

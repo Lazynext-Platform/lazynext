@@ -4,6 +4,7 @@ import { auth } from '@/../auth';
 import { WorkspaceService } from '@/lib/services/workspace';
 import { prisma } from '@/lib/prisma';
 import { Card, Badge } from '@/components/ui';
+import { BarChart, DonutChart, ProgressRing } from '@/components/Charts';
 
 export const dynamic = 'force-dynamic';
 
@@ -73,30 +74,28 @@ export default async function AnalyticsPage() {
         {/* Task completion */}
         <Card className="p-5">
           <h2 className="heading-display text-sm mb-4">Task Completion</h2>
-          <div className="space-y-4">
-            <div>
-              <div className="flex items-center justify-between mb-2">
-                <span className="label-mono">Completion rate</span>
-                <span className="heading-display text-lg">{taskCompletionRate}%</span>
+          <div className="flex items-center gap-6">
+            <ProgressRing value={completedTasks} max={taskCount} label={`${completedTasks}/${taskCount} done`} />
+            <div className="flex-1 space-y-3">
+              <div className="grid grid-cols-2 gap-3">
+                <div className="p-3 border-2" style={{ borderColor: 'var(--c-ink)', borderRadius: 'var(--radius-sm)' }}>
+                  <p className="label-mono">Completed</p>
+                  <p className="heading-display text-xl">{completedTasks}</p>
+                </div>
+                <div className="p-3 border-2" style={{ borderColor: 'var(--c-ink)', borderRadius: 'var(--radius-sm)' }}>
+                  <p className="label-mono">Open</p>
+                  <p className="heading-display text-xl">{pendingTasks}</p>
+                </div>
               </div>
-              <div className="h-6 border-2" style={{ borderColor: 'var(--c-ink)', borderRadius: 'var(--radius-sm)' }}>
-                <div
-                  className="h-full"
-                  style={{
-                    width: `${taskCompletionRate}%`,
-                    backgroundColor: 'var(--c-accent)',
-                  }}
+              <div>
+                <p className="label-mono mb-2">Task status breakdown</p>
+                <BarChart
+                  data={[
+                    { label: 'Done', value: completedTasks, color: '#22c55e' },
+                    { label: 'Pending', value: pendingTasks, color: '#f97316' },
+                  ]}
+                  height={120}
                 />
-              </div>
-            </div>
-            <div className="grid grid-cols-2 gap-3">
-              <div className="p-3 border-2" style={{ borderColor: 'var(--c-ink)', borderRadius: 'var(--radius-sm)' }}>
-                <p className="label-mono">Completed</p>
-                <p className="heading-display text-xl">{completedTasks}</p>
-              </div>
-              <div className="p-3 border-2" style={{ borderColor: 'var(--c-ink)', borderRadius: 'var(--radius-sm)' }}>
-                <p className="label-mono">Open</p>
-                <p className="heading-display text-xl">{pendingTasks}</p>
               </div>
             </div>
           </div>
@@ -108,22 +107,13 @@ export default async function AnalyticsPage() {
           {Object.keys(statusCounts).length === 0 ? (
             <p className="text-sm text-fg-muted">No creative work yet.</p>
           ) : (
-            <div className="space-y-3">
-              {Object.entries(statusCounts).map(([status, count]) => {
-                const pct = creationCount > 0 ? Math.round((count / creationCount) * 100) : 0;
-                return (
-                  <div key={status}>
-                    <div className="flex items-center justify-between mb-1">
-                      <Badge>{status}</Badge>
-                      <span className="text-sm font-mono">{count} ({pct}%)</span>
-                    </div>
-                    <div className="h-4 border-2" style={{ borderColor: 'var(--c-ink)', borderRadius: 'var(--radius-sm)' }}>
-                      <div className="h-full" style={{ width: `${pct}%`, backgroundColor: 'var(--c-ink)' }} />
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+            <DonutChart
+              data={Object.entries(statusCounts).map(([status, count]) => ({
+                label: status,
+                value: count,
+              }))}
+              size={180}
+            />
           )}
         </Card>
 
@@ -179,6 +169,22 @@ export default async function AnalyticsPage() {
             ))}
           </div>
         )}
+      </Card>
+
+      {/* Resource distribution chart */}
+      <Card className="p-5 mt-6">
+        <h2 className="heading-display text-sm mb-4">Resource Distribution</h2>
+        <BarChart
+          data={[
+            { label: 'Projects', value: projectCount, color: '#00b2fc' },
+            { label: 'Tasks', value: taskCount, color: '#22c55e' },
+            { label: 'Docs', value: docCount, color: '#f97316' },
+            { label: 'Creative', value: creationCount, color: '#a855f7' },
+            { label: 'Automations', value: automationCount, color: '#ec4899' },
+            { label: 'Agents', value: agentCount, color: '#eab308' },
+          ]}
+          height={220}
+        />
       </Card>
     </div>
   );

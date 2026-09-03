@@ -1,0 +1,53 @@
+{
+  "name": "Lazynext",
+  "short_name": "Lazynext",
+  "description": "Unified operating system for people, teams, organizations, workflows, information, tools, applications, automation, AI, integrations, data, and digital work.",
+  "start_url": "/dashboard",
+  "display": "standalone",
+  "background_color": "#f4f1ea",
+  "theme_color": "#00b2fc",
+  "orientation": "any",
+  "categories": ["productivity", "business", "developer"],
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-180.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-32.png",
+      "sizes": "32x32",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Dashboard",
+      "url": "/dashboard",
+      "description": "View your workspace dashboard"
+    },
+    {
+      "name": "Projects",
+      "url": "/projects",
+      "description": "Manage projects"
+    },
+    {
+      "name": "Creative Studio",
+      "url": "/creative",
+      "description": "Generate creative content"
+    },
+    {
+      "name": "Settings",
+      "url": "/settings",
+      "description": "Account settings"
+    }
+  ]
+}
