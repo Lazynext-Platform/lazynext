@@ -226,3 +226,127 @@ test.describe('Production security headers', () => {
     expect(headers['referrer-policy']).toBeTruthy();
   });
 });
+
+/**
+ * Authenticated Prisma tests — these verify that Prisma actually works
+ * in production with a real authenticated session. The Prisma WASM bug
+ * (fast→small swap mismatch) was hidden for weeks because all existing
+ * prod tests only checked unauthenticated routes (which return 401
+ * before ever calling Prisma) or the health endpoint (which doesn't
+ * use Prisma at all).
+ *
+ * These tests require the test user to exist in production D1.
+ */
+test.describe('Production authenticated Prisma operations', () => {
+  // These tests share a browser context to reuse the session cookie
+  test('credentials login works and creates a session', async ({ browser }) => {
+    const context = await browser.newContext();
+    const page = await context.newPage();
+
+    // Get CSRF token
+    const csrfRes = await page.request.get('/api/auth/csrf');
+    const { csrfToken } = await csrfRes.json();
+
+    // Login
+    const loginRes = await page.request.post('/api/auth/callback/credentials', {
+      form: {
+        email: 'test@lazynext.local',
+        password: 'Test1234!',
+        csrfToken,
+        callbackUrl: 'https://lazynext.com/dashboard',
+        json: 'true',
+      },
+      maxRedirects: 0,
+    });
+    // Should redirect (302) to dashboard, not to error page
+    const location = loginRes.headers()['location'] || '';
+    expect(location).not.toContain('error');
+  });
+
+  test('authenticated /api/me returns user data via Prisma', async ({ browser }) => {
+    const context = await browser.newContext();
+    const page = await context.newPage();
+
+    // Login first
+    const csrfRes = await page.request.get('/api/auth/csrf');
+    const { csrfToken } = await csrfRes.json();
+    await page.request.post('/api/auth/callback/credentials', {
+      form: {
+        email: 'test@lazynext.local',
+        password: 'Test1234!',
+        csrfToken,
+        callbackUrl: 'https://lazynext.com/dashboard',
+        json: 'true',
+      },
+      maxRedirects: 0,
+    });
+
+    // Test Prisma read
+    const meRes = await page.request.get('/api/me');
+    expect(meRes.status()).toBe(200);
+    const me = await meRes.json();
+    expect(me.credits).toBeDefined();
+  });
+
+  test('authenticated /api/notifications returns via Prisma', async ({ browser }) => {
+    const context = await browser.newContext();
+    const page = await context.newPage();
+
+    const csrfRes = await page.request.get('/api/auth/csrf');
+    const { csrfToken } = await csrfRes.json();
+    await page.request.post('/api/auth/callback/credentials', {
+      form: {
+        email: 'test@lazynext.local',
+        password: 'Test1234!',
+        csrfToken,
+        callbackUrl: 'https://lazynext.com/dashboard',
+        json: 'true',
+      },
+      maxRedirects: 0,
+    });
+
+    const notifRes = await page.request.get('/api/notifications');
+    expect(notifRes.status()).toBe(200);
+    const notifBody = await notifRes.json();
+    expect(notifBody.notifications).toBeDefined();
+    expect(typeof notifBody.unreadCount).toBe('number');
+  });
+
+  test('authenticated /api/settings/notifications returns prefs via Prisma', async ({ browser }) => {
+    const context = await browser.newContext();
+    const page = await context.newPage();
+
+    const csrfRes = await page.request.get('/api/auth/csrf');
+    const { csrfToken } = await csrfRes.json();
+    await page.request.post('/api/auth/callback/credentials', {
+      form: {
+        email: 'test@lazynext.local',
+        password: 'Test1234!',
+        csrfToken,
+        callbackUrl: 'https://lazynext.com/dashboard',
+        json: 'true',
+      },
+      maxRedirects: 0,
+    });
+
+    const prefsRes = await page.request.get('/api/settings/notifications');
+    expect(prefsRes.status()).toBe(200);
+    const prefs = await prefsRes.json();
+    expect(prefs.prefs).toBeDefined();
+  });
+
+  test('POST /api/data-request persists to D1 via Prisma (no auth required)', async ({ request }) => {
+    const res = await request.post('/api/data-request', {
+      data: {
+        type: 'access',
+        email: 'e2e-test@example.com',
+        name: 'E2E Test',
+        details: 'Automated test request',
+      },
+    });
+    expect(res.status()).toBe(201);
+    const body = await res.json();
+    expect(body.ok).toBe(true);
+    expect(body.id).toBeTruthy();
+  });
+});
