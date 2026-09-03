@@ -386,7 +386,7 @@ export function OsShell({ children }: { children: React.ReactNode }) {
                 aria-label="Account menu"
                 aria-expanded={userMenuOpen}
               >
-                {session.user.image ? (
+                {session.user.image && /^https?:\/\//i.test(session.user.image) ? (
                   <img src={session.user.image} alt="" className="h-6 w-6 rounded-[var(--radius-sm)]" />
                 ) : (
                   <span

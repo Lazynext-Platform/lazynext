@@ -49,7 +49,7 @@ export default async function WorkspaceMembersPage({ params }: { params: Promise
               <tr key={m.id} className="border-b-2 last:border-0" style={{ borderColor: 'var(--c-ink)' }}>
                 <td className="px-4 py-3">
                   <div className="flex items-center gap-3">
-                    {m.user.image ? (
+                    {m.user.image && /^https?:\/\//i.test(m.user.image) ? (
                       <img src={m.user.image} alt="" className="h-8 w-8 rounded-[var(--radius-sm)]" />
                     ) : (
                       <span

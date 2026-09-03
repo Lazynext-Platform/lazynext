@@ -351,7 +351,7 @@ export function TeamWorkspace({ teamId }: { teamId: string }) {
                 return (
                   <li key={m.id} className="flex items-center gap-3 py-2 border-b border-border last:border-0">
                     <div className="relative">
-                      {m.user.image ? (
+                      {m.user.image && /^https?:\/\//i.test(m.user.image) ? (
                         <img src={m.user.image} alt={displayName} className="w-8 h-8 rounded-full" />
                       ) : (
                         <div className="w-8 h-8 rounded-full bg-accent/20 flex items-center justify-center text-xs font-medium" aria-hidden="true">

@@ -15,7 +15,7 @@ export async function GET(req: NextRequest) {
 
   const url = new URL(req.url);
   const unreadOnly = url.searchParams.get('unread') === '1';
-  const limit = Math.min(parseInt(url.searchParams.get('limit') || '20', 10), 50);
+  const limit = Math.max(1, Math.min(parseInt(url.searchParams.get('limit') || '20', 10) || 20, 50));
 
   // Retry up to 3 times on cold start — Prisma/D1 may not be ready on the
   // first request after a Cloudflare Worker isolate is created.

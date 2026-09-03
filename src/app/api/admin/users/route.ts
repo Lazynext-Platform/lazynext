@@ -12,8 +12,8 @@ export async function GET(req: Request) {
 
   const url = new URL(req.url);
   const search = url.searchParams.get('search')?.trim() || '';
-  const limit = Math.min(parseInt(url.searchParams.get('limit') || '50', 10), 200);
-  const offset = parseInt(url.searchParams.get('offset') || '0', 10);
+  const limit = Math.max(1, Math.min(parseInt(url.searchParams.get('limit') || '50', 10) || 50, 200));
+  const offset = Math.max(0, parseInt(url.searchParams.get('offset') || '0', 10) || 0);
 
   const where = search
     ? { email: { contains: search } }

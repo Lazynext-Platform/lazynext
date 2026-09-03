@@ -14,7 +14,7 @@ export async function GET() {
     const llmBase = process.env.ATLASCLOUD_LLM_BASE || '';
     const apiKey = process.env.ATLASCLOUD_API_KEY || '';
     if (!llmBase || !apiKey) {
-      checks.atlas = { ok: false, detail: 'missing env vars' };
+      checks.atlas = { ok: false, detail: 'not_configured' };
       allOk = false;
     } else {
       const start = Date.now();
@@ -43,7 +43,7 @@ export async function GET() {
     const accessKey = process.env.R2_S3_ACCESS_KEY_ID || '';
     const secretKey = process.env.R2_S3_SECRET_ACCESS_KEY || '';
     if (!accessKey || !secretKey) {
-      checks.r2 = { ok: false, detail: 'missing S3 credentials' };
+      checks.r2 = { ok: false, detail: 'not_configured' };
       allOk = false;
     } else {
       // Proper SigV4-signed HEAD bucket request to verify R2 is accessible.

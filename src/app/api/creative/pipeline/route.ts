@@ -36,7 +36,7 @@ async function __byokGET(req: Request) {
   const uid = session.user.id;
 
   const url = new URL(req.url);
-  const limit = Math.min(Number(url.searchParams.get('limit') || 20), 100);
+  const limit = Math.max(1, Math.min(Number(url.searchParams.get('limit') || 20) || 20, 100));
   const summary = url.searchParams.get('summary') === 'true';
 
   const runs = await prisma.workflowRun.findMany({

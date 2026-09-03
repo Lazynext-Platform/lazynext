@@ -66,7 +66,7 @@ export function UserMenu() {
         aria-expanded={open}
         className="flex max-w-[40vw] items-center gap-2 rounded-full bg-elevated py-1 pl-1 pr-2 sm:pr-3 hover:bg-active transition"
       >
-        {u?.image ? (
+        {u?.image && /^https?:\/\//i.test(u.image) ? (
           <img src={u.image} alt="" className="h-7 w-7 shrink-0 rounded-full" referrerPolicy="no-referrer" />
         ) : (
           <div className="grid h-7 w-7 shrink-0 place-items-center rounded-full text-xs font-bold text-white" style={{ background: '#0064d9' }}>{(u?.name || u?.email || 'U')[0]?.toUpperCase()}</div>

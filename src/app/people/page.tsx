@@ -57,7 +57,7 @@ export default async function PeoplePage() {
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {members.map((m) => (
             <Card key={m.id} className="p-4 flex items-center gap-4">
-              {m.user.image ? (
+              {m.user.image && /^https?:\/\//i.test(m.user.image) ? (
                 <img src={m.user.image} alt="" className="h-12 w-12 rounded-[var(--radius-md)] border-2" style={{ borderColor: 'var(--c-ink)' }} />
               ) : (
                 <span

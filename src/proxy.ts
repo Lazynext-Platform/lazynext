@@ -299,21 +299,17 @@ async function handleRequest(req: NextRequest): Promise<NextResponse> {
   return res;
 }
 
-// Baseline security headers for every response. CSP is intentionally pragmatic
-// (Next.js requires inline scripts/styles); media/img allow HTTPS because model
-// outputs and avatars are served from Atlas OSS / R2 / Google.
+// Baseline security headers for every response. CSP uses a per-request nonce
+// for inline scripts (theme bootstrap + Next.js hydration scripts); styles
+// still require 'unsafe-inline' because Tailwind injects inline styles.
 // In development, React/Turbopack requires 'unsafe-eval' for stack
 // reconstruction; production keeps the strict policy (no unsafe-eval).
 const isDev = process.env.NODE_ENV !== 'production';
-const SECURITY_HEADERS: Record<string, string> = {
-  'Strict-Transport-Security': 'max-age=63072000; includeSubDomains; preload',
-  'X-Content-Type-Options': 'nosniff',
-  'X-Frame-Options': 'DENY',
-  'Referrer-Policy': 'strict-origin-when-cross-origin',
-  'Permissions-Policy': 'camera=(), microphone=(), geolocation=(), interest-cohort=()',
-  'Content-Security-Policy': [
+
+function buildCsp(nonce: string): string {
+  return [
     "default-src 'self'",
-    `script-src 'self' 'unsafe-inline' blob:${isDev ? " 'unsafe-eval'" : ''} https://static.cloudflareinsights.com https://unpkg.com`,
+    `script-src 'self' 'nonce-${nonce}' blob: https://static.cloudflareinsights.com${isDev ? " 'unsafe-eval'" : ''}`,
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "font-src 'self' https://fonts.gstatic.com",
     `img-src 'self' data: blob: https:${isDev ? ' http://localhost:3099' : ''}`,
@@ -324,11 +320,20 @@ const SECURITY_HEADERS: Record<string, string> = {
     "form-action 'self'",
     "base-uri 'self'",
     "object-src 'none'",
-  ].join('; '),
+  ].join('; ');
+}
+
+const STATIC_SECURITY_HEADERS: Record<string, string> = {
+  'Strict-Transport-Security': 'max-age=63072000; includeSubDomains; preload',
+  'X-Content-Type-Options': 'nosniff',
+  'X-Frame-Options': 'DENY',
+  'Referrer-Policy': 'strict-origin-when-cross-origin',
+  'Permissions-Policy': 'camera=(), microphone=(), geolocation=(), interest-cohort=()',
 };
 
-export function applySecurityHeaders(res: NextResponse): NextResponse {
-  for (const [k, v] of Object.entries(SECURITY_HEADERS)) res.headers.set(k, v);
+export function applySecurityHeaders(res: NextResponse, nonce?: string): NextResponse {
+  for (const [k, v] of Object.entries(STATIC_SECURITY_HEADERS)) res.headers.set(k, v);
+  res.headers.set('Content-Security-Policy', buildCsp(nonce || crypto.randomUUID()));
   return res;
 }
 
@@ -344,6 +349,9 @@ export async function proxy(req: NextRequest): Promise<NextResponse> {
   if (/\/cdn-cgi[\\/]/i.test(rawUrl) || /\/cdn-cgi[\\/]/i.test(pathname)) {
     return new NextResponse('Forbidden', { status: 403 });
   }
+
+  // Generate a per-request CSP nonce for inline scripts
+  const nonce = crypto.randomUUID();
 
   // API routes: apply rate limiting + security headers only (no geo/locale)
   // Skip rate limiting for webhooks (external service callbacks) and auth callbacks
@@ -365,15 +373,40 @@ export async function proxy(req: NextRequest): Promise<NextResponse> {
             { error: 'rate_limited', retryAfter },
             { status: 429, headers: { 'Retry-After': String(retryAfter || 60) } },
           );
-          return applySecurityHeaders(res);
+          return applySecurityHeaders(res, nonce);
         }
       }
     }
-    return applySecurityHeaders(NextResponse.next());
+    return applySecurityHeaders(NextResponse.next(), nonce);
+  }
+
+  // Defense-in-depth: redirect unauthenticated users away from protected pages.
+  // Individual pages still call auth() — this is a secondary check based on the
+  // presence of a NextAuth session cookie. If no session cookie exists, redirect
+  // to /login. Pages that render public CTAs (dashboard, settings) handle their
+  // own auth display; this catches the remaining routes that should be guarded.
+  const protectedPrefixes = [
+    '/admin', '/analytics', '/automations', '/calendar', '/conversations',
+    '/documents', '/files', '/integrations', '/onboarding', '/people',
+    '/projects', '/search', '/tasks', '/workspaces',
+  ];
+  const isProtected = protectedPrefixes.some((p) => pathname === p || pathname.startsWith(p + '/'));
+  if (isProtected) {
+    const sessionCookie = req.cookies.get('next-auth.session-token')?.value ||
+      req.cookies.get('__Secure-next-auth.session-token')?.value;
+    if (!sessionCookie) {
+      const loginUrl = new URL('/login', req.url);
+      loginUrl.searchParams.set('callbackUrl', pathname);
+      return applySecurityHeaders(NextResponse.redirect(loginUrl), nonce);
+    }
   }
 
   // Page routes: geo/locale + security headers
-  return applySecurityHeaders(await handleRequest(req));
+  // Pass nonce to the page via a request header so layout.tsx can apply it
+  // to inline scripts (theme bootstrap + Next.js hydration).
+  const pageRes = await handleRequest(req);
+  pageRes.headers.set('x-csp-nonce', nonce);
+  return applySecurityHeaders(pageRes, nonce);
 }
 
 export const config = {

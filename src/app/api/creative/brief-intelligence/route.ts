@@ -18,7 +18,8 @@ async function __byokPOST(req: Request) {
   const body = await req.json().catch(() => ({}));
 
   const productName = typeof body.productName === 'string' ? body.productName.trim().slice(0, 200) : '';
-  const validation = validateBriefRequest({ ...body, productName });
+  const productUrl = typeof body.productUrl === 'string' && isUrlSafe(body.productUrl) ? body.productUrl.trim().slice(0, 500) : undefined;
+  const validation = validateBriefRequest({ ...body, productName, productUrl });
   if (!validation.valid) {
     return NextResponse.json({ error: 'invalid_request', details: validation.errors }, { status: 400 });
   }
@@ -46,7 +47,7 @@ async function __byokPOST(req: Request) {
     const result = await analyzeBrief({
       productName,
       productDescription: typeof body.productDescription === 'string' ? body.productDescription.trim().slice(0, 4000) : undefined,
-      productUrl: typeof body.productUrl === 'string' && isUrlSafe(body.productUrl) ? body.productUrl.trim().slice(0, 500) : undefined,
+      productUrl,
       competitorInfo: typeof body.competitorInfo === 'string' ? body.competitorInfo.trim().slice(0, 4000) : undefined,
       briefType: typeof body.briefType === 'string' ? (body.briefType as BriefType) : undefined,
       existingCreatives: existingCreatives && existingCreatives.length ? existingCreatives : undefined,

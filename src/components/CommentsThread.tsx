@@ -159,7 +159,7 @@ export function CommentsThread({ assetId }: { assetId: string }) {
   };
 
   const Avatar = ({ name, image }: { name?: string; image?: string | null }) => {
-    if (image) {
+    if (image && /^https?:\/\//i.test(image)) {
       return <img src={image} alt={name || 'avatar'} className="h-7 w-7 shrink-0 rounded-full object-cover" />;
     }
     const letter = (name || '?').charAt(0).toUpperCase();

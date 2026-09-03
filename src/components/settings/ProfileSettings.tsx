@@ -49,7 +49,7 @@ export function ProfileSettings({ initialName, initialImage, email }: { initialN
         <div>
           <label className="label-mono block mb-1">Avatar URL</label>
           <Input value={image} onChange={(e) => setImage(e.target.value)} placeholder="https://..." type="url" />
-          {image && (
+          {image && /^https?:\/\//i.test(image) && (
             <img src={image} alt="Avatar preview" className="mt-2 h-12 w-12 rounded-[var(--radius-sm)] border-2" style={{ borderColor: 'var(--c-ink)' }} />
           )}
         </div>

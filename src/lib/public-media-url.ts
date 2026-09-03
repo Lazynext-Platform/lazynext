@@ -60,6 +60,16 @@ export function isPublicHttpUrl(value: string): boolean {
   }
 }
 
+/**
+ * Validate that a URL is safe to use as an `<img src>` or `<a href>`.
+ * Returns true only for http(s) URLs (blocks javascript:, data:, etc.).
+ * Client-safe — no Node.js APIs.
+ */
+export function isSafeSrc(value: string | null | undefined): boolean {
+  if (!value) return false;
+  return /^https?:\/\//i.test(value);
+}
+
 function publicOriginForRequest(req: Request): string {
   const fromRequest = originFromRequest(req);
   if (isPublicHttpUrl(fromRequest)) return fromRequest;

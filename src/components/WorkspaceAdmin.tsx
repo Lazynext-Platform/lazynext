@@ -158,7 +158,7 @@ export function WorkspaceAdmin({ workspaceId, currentRole }: { workspaceId: stri
         <div className="divide-y-2" style={{ borderColor: 'var(--c-ink)' }}>
           {members.map((m) => (
             <div key={m.id} className="flex items-center gap-3 px-4 py-3">
-              {m.user.image ? (
+              {m.user.image && /^https?:\/\//i.test(m.user.image) ? (
                 <img src={m.user.image} alt="" className="h-8 w-8 rounded-[var(--radius-sm)]" />
               ) : (
                 <span

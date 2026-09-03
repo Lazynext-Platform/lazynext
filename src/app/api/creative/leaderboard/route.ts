@@ -22,7 +22,7 @@ export async function GET(req: Request) {
 
   const url = new URL(req.url);
   const platform = url.searchParams.get('platform') || undefined;
-  const limit = Math.min(parseInt(url.searchParams.get('limit') || '10'), 20);
+  const limit = Math.max(1, Math.min(parseInt(url.searchParams.get('limit') || '10') || 10, 20));
 
   const where = { userId: uid, ...(platform ? { platform } : {}) };
   try {
@@ -32,8 +32,8 @@ export async function GET(req: Request) {
       take: limit,
     });
 
-    // Summary
-    const allRecords = await prisma.creativePerformance.findMany({ where: { userId: uid } });
+    // Summary — bounded to last 1000 records to prevent unbounded in-memory aggregation
+    const allRecords = await prisma.creativePerformance.findMany({ where: { userId: uid }, take: 1000, orderBy: { recordedAt: 'desc' } });
     const totalImpressions = allRecords.reduce((s, r) => s + r.impressions, 0);
     const totalClicks = allRecords.reduce((s, r) => s + r.clicks, 0);
     const totalConversions = allRecords.reduce((s, r) => s + r.conversions, 0);

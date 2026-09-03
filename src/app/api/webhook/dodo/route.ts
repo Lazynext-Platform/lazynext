@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import { dodo } from '@/lib/payments/dodo';
-import { prisma } from '@/lib/prisma';
-import { grantCredits } from '@/lib/credits';
+import { grantCreditsWithIdempotency } from '@/lib/credits';
 
 // Dodo Payments webhook: verifies signature via SDK unwrap(), then handles
 // payment lifecycle events (succeeded, failed, dispute.created, refund.succeeded).
@@ -41,13 +40,22 @@ export async function POST(req: Request) {
   const ref = payment?.payment_id || '';
 
   switch (event.type) {
-    // ── Successful payment: grant credits (idempotent) ──
+    // ── Successful payment: grant credits (idempotent via idempotencyKey) ──
     case 'payment.succeeded': {
-      const already = await prisma.creditLedger.findFirst({
-        where: { ref, reason: 'purchase' },
-      });
-      if (!already && userId && credits > 0) {
-        await grantCredits(userId, credits, 'purchase', ref);
+      if (userId && credits > 0 && ref) {
+        // Use idempotencyKey to prevent double-credit on concurrent/duplicate webhooks.
+        // The unique constraint on (userId, idempotencyKey) ensures only one grant succeeds.
+        try {
+          await grantCreditsWithIdempotency(userId, credits, 'purchase', ref, `dodo-pay-${ref}`);
+        } catch (e) {
+          // If unique constraint violation, this webhook was already processed — safe to ignore
+          const err = e as { code?: string; message?: string };
+          if (err?.code === 'P2002' || String(err?.message || '').includes('UNIQUE constraint') || String(err?.message || '').includes('unique')) {
+            console.info(`[dodo-webhook] payment.succeeded already processed for ref=${ref}`);
+          } else {
+            throw e;
+          }
+        }
       }
       break;
     }
@@ -67,17 +75,19 @@ export async function POST(req: Request) {
       break;
     }
 
-    // ── Refund succeeded: optionally claw back credits ──
+    // ── Refund succeeded: claw back credits (idempotent via idempotencyKey) ──
     case 'refund.succeeded': {
       console.info(`[dodo-webhook] refund.succeeded for payment=${ref} user=${userId}`);
-      // Claw back the credits that were granted for this payment (idempotent).
-      // We use a negative credit ledger entry with reason 'refund'.
-      if (userId && credits > 0) {
-        const alreadyClawed = await prisma.creditLedger.findFirst({
-          where: { ref: `refund-${ref}`, reason: 'refund' },
-        });
-        if (!alreadyClawed) {
-          await grantCredits(userId, -credits, 'refund', `refund-${ref}`);
+      if (userId && credits > 0 && ref) {
+        try {
+          await grantCreditsWithIdempotency(userId, -credits, 'refund', `refund-${ref}`, `dodo-refund-${ref}`);
+        } catch (e) {
+          const err = e as { code?: string; message?: string };
+          if (err?.code === 'P2002' || String(err?.message || '').includes('UNIQUE constraint') || String(err?.message || '').includes('unique')) {
+            console.info(`[dodo-webhook] refund.succeeded already processed for ref=${ref}`);
+          } else {
+            throw e;
+          }
         }
       }
       break;

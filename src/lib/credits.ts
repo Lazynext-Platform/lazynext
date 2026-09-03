@@ -41,6 +41,43 @@ export async function grantCredits(
   }
 }
 
+/**
+ * Idempotent credit grant: writes the ledger entry first with a unique
+ * idempotencyKey, then increments the balance. If the ledger create fails
+ * with a unique constraint violation, the grant was already processed by
+ * a concurrent/duplicate request — safe to skip.
+ * This prevents double-credit races in webhook handlers.
+ */
+export async function grantCreditsWithIdempotency(
+  userId: string,
+  amount: number,
+  reason: string,
+  ref: string,
+  idempotencyKey: string,
+): Promise<void> {
+  if (isByok()) return;
+  if (amount === 0) return;
+  // Write ledger first — the unique constraint on (userId, idempotencyKey)
+  // prevents duplicate grants from concurrent webhook deliveries.
+  try {
+    await prisma.creditLedger.create({
+      data: { userId, delta: amount, reason, ref, idempotencyKey },
+    });
+  } catch (e) {
+    const err = e as { code?: string; message?: string };
+    if (err?.code === 'P2002' || String(err?.message || '').includes('UNIQUE constraint') || String(err?.message || '').includes('unique')) {
+      // Already processed — skip silently
+      return;
+    }
+    throw e;
+  }
+  // Ledger written successfully → now increment the balance
+  await prisma.user.update({
+    where: { id: userId },
+    data: { credits: { increment: amount } },
+  });
+}
+
 /** Atomically spend credits. Throws INSUFFICIENT_CREDITS if balance too low.
  *  If `idempotencyKey` is provided and a ledger entry with that key already exists,
  *  the charge is treated as already applied — the deduction is reversed and the

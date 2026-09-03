@@ -1,6 +1,6 @@
 import './globals.css';
 import type { Metadata, Viewport } from 'next';
-import { cookies } from 'next/headers';
+import { cookies, headers } from 'next/headers';
 import { LOCALES, RTL_LOCALES, type Locale, messages } from '@/i18n/messages';
 import Providers from './providers';
 import { ShellRouter } from '@/components/ShellRouter';
@@ -84,11 +84,13 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   }
   const localeCookie = (await cookies()).get('locale')?.value;
   const initialLocale = ((LOCALES as readonly string[]).includes(localeCookie || '') ? localeCookie : 'en') as Locale;
+  // Read CSP nonce from middleware (proxy.ts) for inline script authorization
+  const nonce = (await headers()).get('x-csp-nonce') || undefined;
   return (
     <html lang={initialLocale} dir={RTL_LOCALES.has(initialLocale) ? 'rtl' : 'ltr'} data-theme="dark" suppressHydrationWarning>
       <head>
         {/* Theme bootstrap — must run before body paints to avoid FOUC. */}
-        <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
+        <script nonce={nonce} dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
         {/* Neo-Brutalist typography: Inter (body), Archivo Black (display), JetBrains Mono (labels) */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
