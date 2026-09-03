@@ -12,7 +12,7 @@ test.describe('Production health', () => {
     // Health endpoint may return 200 (healthy) or 503 (degraded) depending on
     // whether all services (Atlas, R2, D1) are available. Both indicate the
     // endpoint is functional.
-    expect(res.status()).toBeLessThan(500);
+    expect([200, 503]).toContain(res.status());
     const body = await res.json();
     expect(['healthy', 'degraded']).toContain(body.status);
     expect(body.platform).toBe('lazynext-os');
