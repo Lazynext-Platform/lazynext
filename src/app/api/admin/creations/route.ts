@@ -17,30 +17,45 @@ export async function GET(req: Request) {
 
   const where = status ? { status } : {};
 
-  const [creations, total, statusCounts] = await Promise.all([
-    prisma.creation.findMany({
-      where,
-      select: {
-        id: true,
-        userId: true,
-        templateId: true,
-        status: true,
-        prompt: true,
-        cost: true,
-        error: true,
-        createdAt: true,
-        updatedAt: true,
-      },
-      orderBy: { createdAt: 'desc' },
-      take: limit,
-      skip: offset,
-    }),
-    prisma.creation.count({ where }),
-    prisma.creation.groupBy({
-      by: ['status'],
-      _count: true,
-    }),
-  ]);
-
-  return NextResponse.json({ creations, total, statusCounts });
+  // Retry up to 3 times on cold start — Prisma/D1 may not be ready on the
+  // first request after a Cloudflare Worker isolate is created.
+  // If all retries fail, return 200 with empty result (not 500) so the admin
+  // UI stays usable. The client will re-fetch once the isolate is warm.
+  const delays = [200, 500, 1000];
+  for (let attempt = 0; attempt <= delays.length; attempt++) {
+    try {
+      const [creations, total, statusCounts] = await Promise.all([
+        prisma.creation.findMany({
+          where,
+          select: {
+            id: true,
+            userId: true,
+            templateId: true,
+            status: true,
+            prompt: true,
+            cost: true,
+            error: true,
+            createdAt: true,
+            updatedAt: true,
+          },
+          orderBy: { createdAt: 'desc' },
+          take: limit,
+          skip: offset,
+        }),
+        prisma.creation.count({ where }),
+        prisma.creation.groupBy({
+          by: ['status'],
+          _count: true,
+        }),
+      ]);
+      return NextResponse.json({ creations, total, statusCounts });
+    } catch (e) {
+      if (attempt < delays.length) {
+        await new Promise((r) => setTimeout(r, delays[attempt]));
+        continue;
+      }
+      return NextResponse.json({ creations: [], total: 0, statusCounts: [] });
+    }
+  }
+  return NextResponse.json({ creations: [], total: 0, statusCounts: [] });
 }
