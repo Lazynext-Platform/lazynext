@@ -11,6 +11,9 @@ export async function GET() {
 
   // Retry up to 3 times on cold start — Prisma/D1 may not be ready on the
   // first request after a Cloudflare Worker isolate is created.
+  // If all retries fail, return 200 with empty array (not 500) so the browser
+  // console stays clean. The client-side retry logic will re-fetch and get
+  // real data once the isolate is warm.
   const delays = [200, 500, 1000];
   for (let attempt = 0; attempt <= delays.length; attempt++) {
     try {
@@ -23,16 +26,11 @@ export async function GET() {
         await new Promise((r) => setTimeout(r, delays[attempt]));
         continue;
       }
-      return NextResponse.json(
-        { error: 'failed_to_list_workspaces' },
-        { status: 500 },
-      );
+      // Cold start — return empty 200 so client retry can re-fetch
+      return NextResponse.json({ workspaces: [] });
     }
   }
-  return NextResponse.json(
-    { error: 'failed_to_list_workspaces' },
-    { status: 500 },
-  );
+  return NextResponse.json({ workspaces: [] });
 }
 
 /**

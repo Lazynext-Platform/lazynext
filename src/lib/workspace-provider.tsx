@@ -42,12 +42,30 @@ export function WorkspaceProvider({ children }: { children: React.ReactNode }) {
       }
       if (res.ok) {
         const data = await res.json();
-        setWorkspaces(data.workspaces || []);
+        const ws = data.workspaces || [];
+        // If workspaces is empty, the Worker may still be warming up (cold start
+        // returns 200 with empty array). Retry once after a delay to get real data.
+        if (ws.length === 0) {
+          await new Promise((r) => setTimeout(r, 1500));
+          const retryRes = await fetch('/api/workspaces');
+          if (retryRes.ok) {
+            const retryData = await retryRes.json();
+            if ((retryData.workspaces || []).length > 0) {
+              setWorkspaces(retryData.workspaces);
+              const cookieMatch = document.cookie.match(/lazynext-ws=([^;]+)/);
+              const cookieId = cookieMatch?.[1];
+              const current = cookieId && retryData.workspaces.find((w: ClientWorkspace) => w.id === cookieId);
+              setCurrentId(current?.id || retryData.workspaces[0]?.id || null);
+              return;
+            }
+          }
+        }
+        setWorkspaces(ws);
         // Read current workspace from cookie or default to first
         const cookieMatch = document.cookie.match(/lazynext-ws=([^;]+)/);
         const cookieId = cookieMatch?.[1];
-        const current = cookieId && data.workspaces.find((w: ClientWorkspace) => w.id === cookieId);
-        setCurrentId(current?.id || data.workspaces[0]?.id || null);
+        const current = cookieId && ws.find((w: ClientWorkspace) => w.id === cookieId);
+        setCurrentId(current?.id || ws[0]?.id || null);
       }
     } catch {
       // ignore

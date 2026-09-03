@@ -39,39 +39,46 @@ export function NotificationsBell() {
   useEffect(() => {
     fetchNotifications();
 
-    // Try SSE first, fall back to polling
+    // Try SSE first, fall back to polling.
+    // Delay the EventSource connection by 2s to allow the Worker isolate to
+    // warm up from other API calls (workspaces, notifications). Connecting
+    // immediately on cold start causes a 500 that logs to the browser console.
     let eventSource: EventSource | null = null;
     let pollInterval: ReturnType<typeof setInterval> | null = null;
+    let sseTimer: ReturnType<typeof setTimeout> | null = null;
 
-    try {
-      eventSource = new EventSource('/api/notifications/stream');
-      eventSource.addEventListener('notification', (e) => {
-        try {
-          const data = JSON.parse(e.data);
-          // Prepend new notification and increment unread count
-          setNotifications((prev) => {
-            if (prev.some((n) => n.id === data.id)) return prev;
-            return [{ ...data, read: false }, ...prev].slice(0, 20);
-          });
-          setUnreadCount((c) => c + 1);
-        } catch {}
-      });
-      eventSource.onerror = () => {
-        // SSE failed — fall back to polling
-        if (eventSource) {
-          eventSource.close();
-          eventSource = null;
-        }
-        if (!pollInterval) {
-          pollInterval = setInterval(fetchNotifications, 30_000);
-        }
-      };
-    } catch {
-      // EventSource not supported — fall back to polling
-      pollInterval = setInterval(fetchNotifications, 30_000);
-    }
+    sseTimer = setTimeout(() => {
+      try {
+        eventSource = new EventSource('/api/notifications/stream');
+        eventSource.addEventListener('notification', (e) => {
+          try {
+            const data = JSON.parse(e.data);
+            // Prepend new notification and increment unread count
+            setNotifications((prev) => {
+              if (prev.some((n) => n.id === data.id)) return prev;
+              return [{ ...data, read: false }, ...prev].slice(0, 20);
+            });
+            setUnreadCount((c) => c + 1);
+          } catch {}
+        });
+        eventSource.onerror = () => {
+          // SSE failed — fall back to polling
+          if (eventSource) {
+            eventSource.close();
+            eventSource = null;
+          }
+          if (!pollInterval) {
+            pollInterval = setInterval(fetchNotifications, 30_000);
+          }
+        };
+      } catch {
+        // EventSource not supported — fall back to polling
+        pollInterval = setInterval(fetchNotifications, 30_000);
+      }
+    }, 2000);
 
     return () => {
+      if (sseTimer) clearTimeout(sseTimer);
       if (eventSource) eventSource.close();
       if (pollInterval) clearInterval(pollInterval);
     };
