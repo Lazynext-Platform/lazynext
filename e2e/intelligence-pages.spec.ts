@@ -8,7 +8,7 @@ import { test, expect } from '@playwright/test';
  * (no page directory under src/app), so they are intentionally omitted here.
  */
 
-const pages = [
+const pages: string[] = [
   // All routes redirected
 ];
 
@@ -70,7 +70,7 @@ for (const p of redirectedPages) {
     test('is reachable via direct navigation', async ({ page }) => {
       await page.goto(`/${p}`);
       // Each page redirects to its new destination
-      const dests = {"audience-insights": "/creative/generators", "brand-voice": "/creative/generators", "forecasting": "/creative/generators", "ml-insights": "/analytics", "repurposing": "/creative/generators", "brief-intelligence": "/creative/generators", "brand-concepts": "/creative/generators", "quality-scoring": "/creative/generators", "fatigue": "/creative/generators", "shot-planner": "/creative/generators", "trend-intelligence": "/creative/generators", "competitor-intel": "/creative/generators", "scene-analysis": "/creative/generators", "viral-analyzer": "/creative/generators"};
+      const dests: Record<string, string> = {"audience-insights": "/creative/generators", "brand-voice": "/creative/generators", "forecasting": "/creative/generators", "ml-insights": "/analytics", "repurposing": "/creative/generators", "brief-intelligence": "/creative/generators", "brand-concepts": "/creative/generators", "quality-scoring": "/creative/generators", "fatigue": "/creative/generators", "shot-planner": "/creative/generators", "trend-intelligence": "/creative/generators", "competitor-intel": "/creative/generators", "scene-analysis": "/creative/generators", "viral-analyzer": "/creative/generators"};
       const dest = dests[p];
       const escaped = dest.replace(/\//g, '\\/');
       await expect(page).toHaveURL(new RegExp(escaped));

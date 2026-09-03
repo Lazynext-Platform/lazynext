@@ -5,7 +5,7 @@ import { test, expect } from '@playwright/test';
  * Auth-gated pages — show AuthModal or main content when unauthenticated.
  */
 
-const pages = [
+const pages: string[] = [
   // All routes redirected
 ];
 

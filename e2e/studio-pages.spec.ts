@@ -5,7 +5,7 @@ import { test, expect } from '@playwright/test';
  * Auth-gated pages — show AuthModal or main content when unauthenticated.
  */
 
-const pages = [
+const pages: string[] = [
   // All routes redirected
 ];
 
@@ -67,7 +67,7 @@ for (const p of redirectedPages) {
     test('is reachable via direct navigation', async ({ page }) => {
       await page.goto(`/${p}`);
       // Each page redirects to its new destination
-      const dests = {"image-studio": "/creative", "ad-reference": "/creative/generators", "ad-skit": "/creative/generators", "audio-studio": "/creative", "drama-studio": "/creative"};
+      const dests: Record<string, string> = {"image-studio": "/creative", "ad-reference": "/creative/generators", "ad-skit": "/creative/generators", "audio-studio": "/creative", "drama-studio": "/creative"};
       const dest = dests[p];
       const escaped = dest.replace(/\//g, '\\/');
       await expect(page).toHaveURL(new RegExp(escaped));

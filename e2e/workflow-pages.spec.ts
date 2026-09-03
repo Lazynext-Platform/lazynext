@@ -70,7 +70,7 @@ for (const p of redirectedPages) {
     test('is reachable via direct navigation', async ({ page }) => {
       await page.goto(`/${p}`);
       // Each page redirects to its new destination
-      const dests = {"skill-chains": "/agents", "multi-concept": "/creative/generators", "campaign-orchestrator": "/creative/generators", "performance-loop": "/creative/generators", "variant-matrix": "/creative/generators", "reference-remix": "/creative/generators", "product-brief": "/creative/generators", "creator-kits": "/creative/generators", "skills": "/agents", "media-service-boundary": "/files", "clip-editor": "/creative"};
+      const dests: Record<string, string> = {"skill-chains": "/agents", "multi-concept": "/creative/generators", "campaign-orchestrator": "/creative/generators", "performance-loop": "/creative/generators", "variant-matrix": "/creative/generators", "reference-remix": "/creative/generators", "product-brief": "/creative/generators", "creator-kits": "/creative/generators", "skills": "/agents", "media-service-boundary": "/files", "clip-editor": "/creative"};
       const dest = dests[p];
       const escaped = dest.replace(/\//g, '\\/');
       await expect(page).toHaveURL(new RegExp(escaped));

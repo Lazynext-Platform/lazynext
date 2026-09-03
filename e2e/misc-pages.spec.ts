@@ -134,7 +134,7 @@ for (const p of redirectedPages) {
     test('is reachable via direct navigation', async ({ page }) => {
       await page.goto(`/${p}`);
       // Each page redirects to its new destination
-      const dests = {"creative-director": "/creative", "narrative-studio": "/creative", "ab-test-results": "/creative/generators", "personas": "/creative/generators", "testing-lab": "/creative/generators", "inspiration": "/creative", "creative-diff": "/creative/generators"};
+      const dests: Record<string, string> = {"creative-director": "/creative", "narrative-studio": "/creative", "ab-test-results": "/creative/generators", "personas": "/creative/generators", "testing-lab": "/creative/generators", "inspiration": "/creative", "creative-diff": "/creative/generators"};
       const dest = dests[p];
       const escaped = dest.replace(/\//g, '\\/');
       await expect(page).toHaveURL(new RegExp(escaped));
