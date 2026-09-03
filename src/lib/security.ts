@@ -41,7 +41,13 @@ export async function verifyPassword(password: string, stored: string): Promise<
   const data = encoder.encode(saltHex + password);
   const hashBuffer = await crypto.subtle.digest('SHA-256', data);
   const hashHex = Array.from(new Uint8Array(hashBuffer)).map((b) => b.toString(16).padStart(2, '0')).join('');
-  return hashHex === expectedHash;
+  // Constant-time comparison to prevent timing attacks
+  if (hashHex.length !== expectedHash.length) return false;
+  let diff = 0;
+  for (let i = 0; i < hashHex.length; i++) {
+    diff |= hashHex.charCodeAt(i) ^ expectedHash.charCodeAt(i);
+  }
+  return diff === 0;
 }
 
 /** Private/internal IP ranges that should be blocked for SSRF protection. */

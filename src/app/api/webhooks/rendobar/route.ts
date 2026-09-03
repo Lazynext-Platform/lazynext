@@ -9,7 +9,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { createHmac } from 'crypto';
+import { createHmac, timingSafeEqual } from 'crypto';
 
 export const runtime = 'nodejs';
 
@@ -22,9 +22,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'webhook_secret_not_configured' }, { status: 500 });
   }
 
-  // Verify HMAC signature
+  // Verify HMAC signature (constant-time comparison to prevent timing attacks)
   const expected = createHmac('sha256', secret).update(body).digest('hex');
-  if (signature !== expected) {
+  const sigBuf = Buffer.from(signature);
+  const expBuf = Buffer.from(expected);
+  if (sigBuf.length !== expBuf.length || !timingSafeEqual(sigBuf, expBuf)) {
     return NextResponse.json({ error: 'invalid_signature' }, { status: 401 });
   }
 
