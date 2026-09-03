@@ -341,8 +341,10 @@ export function SecuritySettings({ hasPassword, mfaEnabled }: { hasPassword: boo
                       const data = await res.json().catch(() => ({}));
                       throw new Error(data.error || 'Failed to delete account');
                     }
-                    // Redirect to home after deletion
-                    window.location.href = '/';
+                    // Full page reload after account deletion — the session
+                    // cookie is gone and all client state must be cleared.
+                    // router.push() would keep stale session in memory.
+                    window.location.replace('/');
                   } catch (err) {
                     setDeleteError(err instanceof Error ? err.message : 'Failed to delete account');
                   } finally {

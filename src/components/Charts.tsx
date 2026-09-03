@@ -90,7 +90,7 @@ export function DonutChart({ data, size = 160 }: DonutChartProps) {
       const path = `M ${x1} ${y1} A ${radius} ${radius} 0 ${largeArc} 1 ${x2} ${y2} L ${x3} ${y3} A ${innerRadius} ${innerRadius} 0 ${largeArc} 0 ${x4} ${y4} Z`;
       return { path, color: d.color || COLORS[i % COLORS.length], label: d.label, value: d.value };
     });
-  }, [data, total]);
+  }, [data, total, cx, cy, radius, innerRadius]);
 
   return (
     <div className="flex items-center gap-4">
