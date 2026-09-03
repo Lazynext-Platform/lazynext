@@ -4,6 +4,7 @@ import { prisma } from '@/lib/prisma';
 import { verifyTOTP } from '@/lib/mfa';
 import { safeError } from '@/lib/security';
 import { revokeAllUserSessions } from '@/lib/session-revocation';
+import { checkAuthRateLimit, getClientIP } from '@/lib/auth-rate-limit';
 
 /**
  * POST /api/mfa/disable — Disable MFA for the authenticated user.
@@ -12,11 +13,22 @@ import { revokeAllUserSessions } from '@/lib/session-revocation';
  * Clears mfaSecret and sets mfaEnabled=false.
  * Revokes all sessions after MFA disable (security best practice —
  * ensures no potentially compromised sessions persist without MFA).
+ * Rate-limited to prevent TOTP brute-force attacks.
  */
 export async function POST(req: Request) {
   const session = await auth();
   if (!session?.user?.id) {
     return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+  }
+
+  // Rate limit: 10 MFA attempts per minute per IP
+  const ip = getClientIP(req as any);
+  const { limited, retryAfter } = checkAuthRateLimit(ip, 'mfa-disable', 10, 60_000);
+  if (limited) {
+    return NextResponse.json(
+      { error: 'Too many attempts. Please try again later.' },
+      { status: 429, headers: { 'Retry-After': String(retryAfter || 60) } },
+    );
   }
 
   try {

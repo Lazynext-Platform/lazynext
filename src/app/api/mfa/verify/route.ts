@@ -3,6 +3,7 @@ import { auth } from '@/../auth';
 import { prisma } from '@/lib/prisma';
 import { verifyTOTP } from '@/lib/mfa';
 import { safeError } from '@/lib/security';
+import { checkAuthRateLimit, getClientIP } from '@/lib/auth-rate-limit';
 
 /**
  * POST /api/mfa/verify — Verify a TOTP code and enable MFA.
@@ -10,11 +11,22 @@ import { safeError } from '@/lib/security';
  *
  * If the code is valid, sets mfaEnabled=true on the user record.
  * Subsequent logins will require a TOTP code.
+ * Rate-limited to prevent TOTP brute-force attacks.
  */
 export async function POST(req: Request) {
   const session = await auth();
   if (!session?.user?.id) {
     return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+  }
+
+  // Rate limit: 10 MFA attempts per minute per IP
+  const ip = getClientIP(req as any);
+  const { limited, retryAfter } = checkAuthRateLimit(ip, 'mfa-verify', 10, 60_000);
+  if (limited) {
+    return NextResponse.json(
+      { error: 'Too many attempts. Please try again later.' },
+      { status: 429, headers: { 'Retry-After': String(retryAfter || 60) } },
+    );
   }
 
   try {

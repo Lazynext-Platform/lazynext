@@ -129,6 +129,19 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           }
           const mfaValid = await verifyTOTP(user.mfaSecret, totpCode);
           if (!mfaValid) {
+            // MFA failures also count toward account lockout to prevent
+            // TOTP brute-force attacks by someone who knows the password.
+            const failKey = `fail:${lowerEmail}`;
+            const failData = failedAttempts.get(failKey);
+            if (failData && failData.resetAt > now) {
+              failData.count++;
+              if (failData.count >= 5) {
+                accountLocks.set(lockKey, { lockedUntil: now + 15 * 60 * 1000 });
+                failedAttempts.delete(failKey);
+              }
+            } else {
+              failedAttempts.set(failKey, { count: 1, resetAt: now + 15 * 60 * 1000 });
+            }
             throw new Error('MFA_INVALID');
           }
         }

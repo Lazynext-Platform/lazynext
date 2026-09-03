@@ -1,10 +1,21 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@/../auth';
 import { paymentProvider } from '@/lib/payments';
+import { checkAuthRateLimit, getClientIP } from '@/lib/auth-rate-limit';
 
 export async function POST(req: Request) {
   const session = await auth();
   if (!session?.user?.id) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+
+  // Rate limit: 5 redeem attempts per minute per IP (coupon brute-force protection)
+  const ip = getClientIP(req as any);
+  const { limited, retryAfter } = checkAuthRateLimit(ip, 'redeem', 5, 60_000);
+  if (limited) {
+    return NextResponse.json(
+      { error: 'Too many attempts. Please try again later.' },
+      { status: 429, headers: { 'Retry-After': String(retryAfter || 60) } },
+    );
+  }
 
   const { code } = await req.json().catch(() => ({}));
   if (!code) return NextResponse.json({ error: 'empty_code' }, { status: 400 });
