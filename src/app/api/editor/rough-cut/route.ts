@@ -33,6 +33,11 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'transcript_required', detail: 'transcript with text field is required' }, { status: 400 });
   }
 
+  // Limit transcript size to prevent DoS
+  if (typeof transcript.text === 'string' && transcript.text.length > 500_000) {
+    return NextResponse.json({ error: 'transcript_too_large' }, { status: 400 });
+  }
+
   if (!transcript.segments || !Array.isArray(transcript.segments)) {
     return NextResponse.json({ error: 'segments_required', detail: 'transcript.segments array is required' }, { status: 400 });
   }
@@ -52,7 +57,7 @@ export async function POST(req: Request) {
     const format: ExportFormat = (validFormats as readonly string[]).includes(requested)
       ? (requested as ExportFormat)
       : 'json';
-    const sourceName = body.sourceName || 'SOURCE';
+    const sourceName = typeof body.sourceName === 'string' ? body.sourceName.slice(0, 200) : 'SOURCE';
 
     // Apply editing skills if requested
     const skillIds: string[] = Array.isArray(body.skillIds) ? body.skillIds.filter((s: unknown) => typeof s === 'string') : [];

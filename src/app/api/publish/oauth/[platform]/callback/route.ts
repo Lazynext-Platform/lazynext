@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { timingSafeEqual } from 'crypto';
 
 /** Extract a cookie value from a Request's Cookie header. */
 function getCookie(req: Request, name: string): string | null {
@@ -65,8 +66,11 @@ export async function GET(req: Request, { params }: { params: Promise<{ platform
   }
 
   // Verify state matches the cookie we set during initiation (CSRF protection)
+  // Constant-time comparison to prevent timing attacks on the OAuth state.
   const cookieState = getCookie(req, 'oauth_state');
-  if (!cookieState || cookieState !== state) {
+  const stateBuf = Buffer.from(state);
+  const cookieBuf = Buffer.from(cookieState || '');
+  if (!cookieState || stateBuf.length !== cookieBuf.length || !timingSafeEqual(stateBuf, cookieBuf)) {
     return NextResponse.redirect(`${baseUrl}/settings?oauth_error=invalid_state`);
   }
 

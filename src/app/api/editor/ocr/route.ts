@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server';
 import { auth } from '@/../auth';
 import { getOCRProvider } from '@/lib/providers/ocr';
 import { deductCredits, refundCredits } from '@/lib/credits';
+import { isUrlSafe } from '@/lib/security';
 export const maxDuration = 60;
 
 const OCR_COST = 1;
@@ -20,7 +21,7 @@ async function __byokPOST(req: Request) {
   const uid = session.user.id;
 
   const body = await req.json().catch(() => ({}));
-  const imageUrl = typeof body.imageUrl === 'string' ? body.imageUrl.trim() : '';
+  const imageUrl = typeof body.imageUrl === 'string' ? body.imageUrl.trim().slice(0, 2048) : '';
   if (!imageUrl) {
     return NextResponse.json({ error: 'imageUrl_required' }, { status: 400 });
   }
@@ -29,6 +30,9 @@ async function __byokPOST(req: Request) {
     new URL(imageUrl);
   } catch {
     return NextResponse.json({ error: 'invalid_url' }, { status: 400 });
+  }
+  if (!isUrlSafe(imageUrl)) {
+    return NextResponse.json({ error: 'url_not_allowed' }, { status: 400 });
   }
 
   const language = typeof body.language === 'string' ? body.language : undefined;
