@@ -4,6 +4,7 @@ import { auth } from '@/../auth';
 import { atlasASR, ATLAS_ASR_MODEL } from '@/lib/providers/atlas-audio';
 import { pollOnce } from '@/lib/atlas';
 import { deductCredits, refundCredits } from '@/lib/credits';
+import { isUrlSafe } from '@/lib/security';
 import type { ASRResult } from '@/lib/providers/types';
 
 export const maxDuration = 90;
@@ -71,16 +72,19 @@ async function __byokPOST(req: Request) {
   const uid = session.user.id;
 
   const body = await req.json().catch(() => ({}));
-  const videoUrl = typeof body.videoUrl === 'string' ? body.videoUrl.trim() : '';
+  const videoUrl = typeof body.videoUrl === 'string' ? body.videoUrl.trim().slice(0, 2048) : '';
   if (!videoUrl) {
     return NextResponse.json({ error: 'videoUrl_required' }, { status: 400 });
   }
 
-  // Validate URL format
+  // Validate URL format and SSRF safety
   try {
     new URL(videoUrl);
   } catch {
     return NextResponse.json({ error: 'invalid_url' }, { status: 400 });
+  }
+  if (!isUrlSafe(videoUrl)) {
+    return NextResponse.json({ error: 'url_not_allowed' }, { status: 400 });
   }
 
   const language = typeof body.language === 'string' ? body.language : undefined;

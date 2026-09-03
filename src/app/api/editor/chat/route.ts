@@ -34,7 +34,7 @@ async function __byokPOST(req: Request) {
   const planTier = await getUserPlanTier(uid);
 
   const body = await req.json().catch(() => ({}));
-  const message = typeof body.message === 'string' ? body.message.trim() : '';
+  const message = typeof body.message === 'string' ? body.message.trim().slice(0, 4000) : '';
   const timeline = body.timeline as Timeline | undefined;
 
   if (!message) return NextResponse.json({ error: 'message_required' }, { status: 400 });

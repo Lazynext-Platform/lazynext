@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { auth } from '@/../auth';
 import { prisma } from '@/lib/prisma';
 import { randomBytes } from 'crypto';
+import { isUrlSafe } from '@/lib/security';
 
 const VALID_EVENTS = [
   'creative.generated', 'creative.scored', 'campaign.deployed',
@@ -35,12 +36,14 @@ export async function POST(req: Request) {
   if (!session?.user?.id) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
 
   const body = await req.json().catch(() => ({}));
-  const url = String(body.url || '').trim();
-  const events = Array.isArray(body.events) ? body.events : [];
+  const url = String(body.url || '').trim().slice(0, 2048);
+  const events = Array.isArray(body.events) ? body.events.slice(0, 20) : [];
 
   if (!url) return NextResponse.json({ error: 'url_required' }, { status: 400 });
   if (!url.startsWith('http://') && !url.startsWith('https://'))
     return NextResponse.json({ error: 'invalid_url' }, { status: 400 });
+  if (!isUrlSafe(url))
+    return NextResponse.json({ error: 'url_not_allowed' }, { status: 400 });
   if (events.length === 0) return NextResponse.json({ error: 'events_required' }, { status: 400 });
 
   const invalidEvents = events.filter((e: string) => !VALID_EVENTS.includes(e));
