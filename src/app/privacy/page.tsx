@@ -38,6 +38,7 @@ export default async function PrivacyPage() {
               <li>{t.s2Li2}</li>
               <li>{t.s2Li3}</li>
               <li>{t.s2Li4}</li>
+              {t.s2Li5 && <li>{t.s2Li5}</li>}
             </ul>
           </section>
 
@@ -48,6 +49,7 @@ export default async function PrivacyPage() {
               <li>{t.s3Li2}</li>
               <li>{t.s3Li3}</li>
               <li>{t.s3Li4}</li>
+              {t.s3Li5 && <li>{t.s3Li5}</li>}
             </ul>
           </section>
 
@@ -70,6 +72,13 @@ export default async function PrivacyPage() {
             <h2 className="text-lg font-semibold text-fg">{t.s7Title}</h2>
             <p className="mt-3">{t.s7Body}</p>
           </section>
+
+          {t.s8Title && (
+            <section>
+              <h2 className="text-lg font-semibold text-fg">{t.s8Title}</h2>
+              <p className="mt-3">{t.s8Body}</p>
+            </section>
+          )}
         </div>
 
         <div className="mt-12">

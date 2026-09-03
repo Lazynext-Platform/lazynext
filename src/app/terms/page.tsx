@@ -48,6 +48,7 @@ export default async function TermsPage() {
               <li>{t.s4Li2}</li>
               <li>{t.s4Li3}</li>
               <li>{t.s4Li4}</li>
+              {t.s4Li5 && <li>{t.s4Li5}</li>}
             </ul>
           </section>
 
@@ -57,6 +58,7 @@ export default async function TermsPage() {
               <li>{t.s5Li1}</li>
               <li>{t.s5Li2}</li>
               <li>{t.s5Li3}</li>
+              {t.s5Li4 && <li>{t.s5Li4}</li>}
             </ul>
           </section>
 
@@ -84,6 +86,13 @@ export default async function TermsPage() {
             <h2 className="text-lg font-semibold text-fg">{t.s10Title}</h2>
             <p className="mt-3">{t.s10Body}</p>
           </section>
+
+          {t.s11Title && (
+            <section>
+              <h2 className="text-lg font-semibold text-fg">{t.s11Title}</h2>
+              <p className="mt-3">{t.s11Body}</p>
+            </section>
+          )}
         </div>
 
         <div className="mt-12">
