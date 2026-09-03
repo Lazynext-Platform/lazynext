@@ -70,8 +70,9 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ connection }, { status: 201 });
   } catch (e) {
+    console.error('[integrations] connect error:', e);
     return NextResponse.json(
-      { error: e instanceof Error ? e.message : 'failed_to_connect' },
+      { error: 'failed_to_connect' },
       { status: 500 },
     );
   }

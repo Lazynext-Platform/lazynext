@@ -61,8 +61,9 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ agent }, { status: 201 });
   } catch (e) {
+    console.error('[agents] create error:', e);
     return NextResponse.json(
-      { error: e instanceof Error ? e.message : 'failed_to_create_agent' },
+      { error: 'failed_to_create_agent' },
       { status: 500 },
     );
   }

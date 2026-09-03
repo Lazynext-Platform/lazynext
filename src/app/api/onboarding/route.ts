@@ -88,8 +88,9 @@ export async function POST(req: NextRequest) {
       projectId: project?.id || null,
     });
   } catch (e) {
+    console.error('[onboarding] error:', e);
     return NextResponse.json(
-      { error: e instanceof Error ? e.message : 'onboarding_failed' },
+      { error: 'onboarding_failed' },
       { status: 500 },
     );
   }

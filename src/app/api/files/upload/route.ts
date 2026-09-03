@@ -63,8 +63,9 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ file: fileRecord }, { status: 201 });
   } catch (e) {
+    console.error('[files/upload] error:', e);
     return NextResponse.json(
-      { error: e instanceof Error ? e.message : 'upload_failed' },
+      { error: 'upload_failed' },
       { status: 500 },
     );
   }

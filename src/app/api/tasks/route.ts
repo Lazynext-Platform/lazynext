@@ -67,8 +67,9 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ task }, { status: 201 });
   } catch (e) {
+    console.error('[tasks] create error:', e);
     return NextResponse.json(
-      { error: e instanceof Error ? e.message : 'failed_to_create_task' },
+      { error: 'failed_to_create_task' },
       { status: 500 },
     );
   }

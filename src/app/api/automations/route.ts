@@ -55,8 +55,9 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ automation }, { status: 201 });
   } catch (e) {
+    console.error('[automations] create error:', e);
     return NextResponse.json(
-      { error: e instanceof Error ? e.message : 'failed_to_create_automation' },
+      { error: 'failed_to_create_automation' },
       { status: 500 },
     );
   }

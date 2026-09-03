@@ -65,8 +65,9 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ document: doc }, { status: 201 });
   } catch (e) {
+    console.error('[documents] create error:', e);
     return NextResponse.json(
-      { error: e instanceof Error ? e.message : 'failed_to_create_document' },
+      { error: 'failed_to_create_document' },
       { status: 500 },
     );
   }
