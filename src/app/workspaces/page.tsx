@@ -1,6 +1,13 @@
 import Link from 'next/link';
+import type { Metadata } from 'next';
 import { Building, Plus, ArrowRight } from 'lucide-react';
 import { auth } from '@/../auth';
+
+export const metadata: Metadata = {
+  title: 'Workspaces — Lazynext',
+  description: 'Manage your workspaces and organizations.',
+  robots: { index: false, follow: false },
+};
 import { WorkspaceService } from '@/lib/services/workspace';
 import { Card, Badge, Button, EmptyState } from '@/components/ui';
 

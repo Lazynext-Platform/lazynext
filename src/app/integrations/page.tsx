@@ -1,6 +1,13 @@
 import { auth } from '@/../auth';
+import type { Metadata } from 'next';
 import { prisma } from '@/lib/prisma';
 import { Button } from '@/components/ui';
+
+export const metadata: Metadata = {
+  title: 'Integrations — Lazynext',
+  description: 'Connect Lazynext with external platforms and services.',
+  robots: { index: false, follow: false },
+};
 import { IntegrationsManager } from '@/components/IntegrationsManager';
 
 export const dynamic = 'force-dynamic';

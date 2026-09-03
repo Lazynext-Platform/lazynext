@@ -1,6 +1,13 @@
 import Link from 'next/link';
+import type { Metadata } from 'next';
 import { User, Lock, Bell, Globe, Palette, Building, CreditCard, Webhook, ScrollText, ArrowRight } from 'lucide-react';
 import { auth } from '@/../auth';
+
+export const metadata: Metadata = {
+  title: 'Settings — Lazynext',
+  description: 'Profile, security, notifications, billing, and preferences.',
+  robots: { index: false, follow: false },
+};
 import { Card } from '@/components/ui';
 
 export const dynamic = 'force-dynamic';
