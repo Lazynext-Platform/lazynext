@@ -4,6 +4,7 @@ import { auth } from '@/../auth';
 import { urlToBrief, URL_TO_BRIEF_COST, SSRFError } from '@/lib/creative/url-to-brief';
 import { deductCredits, refundCredits } from '@/lib/credits';
 import { getUserPlanTier } from '@/lib/plan-tier';
+import { isUrlSafe } from '@/lib/security';
 
 export const maxDuration = 60;
 
@@ -14,7 +15,7 @@ async function __byokPOST(req: Request) {
   const planTier = await getUserPlanTier(uid);
 
   const body = await req.json().catch(() => ({}));
-  const url = typeof body.url === 'string' ? body.url.trim() : '';
+  const url = typeof body.url === 'string' ? body.url.trim().slice(0, 2048) : '';
   if (!url) return NextResponse.json({ error: 'url_required' }, { status: 400 });
 
   // Validate URL (must be valid http/https URL)
@@ -26,6 +27,9 @@ async function __byokPOST(req: Request) {
   }
   if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
     return NextResponse.json({ error: 'invalid_url' }, { status: 400 });
+  }
+  if (!isUrlSafe(url)) {
+    return NextResponse.json({ error: 'url_not_allowed' }, { status: 400 });
   }
 
   // Charge credits (URL fetch + AI extraction + brief generation = 5 credits)

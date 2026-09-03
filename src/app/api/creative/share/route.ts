@@ -30,7 +30,7 @@ export async function POST(req: Request) {
 
   // Hash the password using Web Crypto API (SHA-256 + salt)
   const rawPassword = typeof body.password === 'string' && body.password.trim()
-    ? body.password.trim()
+    ? body.password.trim().slice(0, 200)
     : null;
   const password = rawPassword ? await hashPassword(rawPassword) : null;
 
