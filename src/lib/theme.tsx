@@ -69,7 +69,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     el.setAttribute('data-theme', res);
     el.style.colorScheme = res;
     const meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) meta.setAttribute('content', res === 'dark' ? '#131416' : '#f7f7f8');
+    if (meta) meta.setAttribute('content', res === 'dark' ? '#0a0a0a' : '#f4f1ea');
   }, []);
 
   const applySelection = useCallback(

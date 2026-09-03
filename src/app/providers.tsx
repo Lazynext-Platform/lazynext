@@ -5,6 +5,8 @@ import type { Session } from 'next-auth';
 import { I18nProvider } from '@/i18n/provider';
 import type { Locale } from '@/i18n/messages';
 import { ThemeProvider } from '@/lib/theme';
+import { ToastProvider } from '@/components/ui/Toast';
+import { WorkspaceProvider } from '@/lib/workspace-provider';
 
 export default function Providers({
   children,
@@ -22,7 +24,11 @@ export default function Providers({
   return (
     <SessionProvider {...sessionProps} refetchOnWindowFocus={false}>
       <ThemeProvider>
-        <I18nProvider initialLocale={initialLocale}>{children}</I18nProvider>
+        <I18nProvider initialLocale={initialLocale}>
+          <ToastProvider>
+            <WorkspaceProvider>{children}</WorkspaceProvider>
+          </ToastProvider>
+        </I18nProvider>
       </ThemeProvider>
     </SessionProvider>
   );

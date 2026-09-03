@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 /*
- * Lazynext theme system
- * ---------------------
+ * Lazynext Neo-Brutalist Design System
+ * --------------------------------------
  * Three modes: light | dark | system.
  * The resolved theme is applied to <html data-theme="light|dark"> by the
  * pre-hydration inline script (src/app/layout.tsx) and the ThemeProvider
@@ -10,168 +10,159 @@
  * swap based on [data-theme]. Tailwind utilities (bg-app, text-fg, border-line,
  * ...) are generated from these via @theme inline so they always resolve to the
  * active theme's value.
+ *
+ * Design philosophy: explicitness over subtlety, personality over invisibility,
+ * memorable structure over perfect polish. Hard borders, hard offset shadows
+ * (zero blur), flat colors, no gradients, no glassmorphism.
  */
 
 @theme inline {
-  --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  /* ── Typography ── */
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-display: "Archivo Black", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "Space Mono", monospace;
 
-  /* Extra-narrow phone breakpoint (below Tailwind's default 640px sm).
-     Used to progressively reveal labels/controls that would otherwise crowd
-     the toolbar on the smallest devices. */
+  /* Extra-narrow phone breakpoint (below Tailwind's default 640px sm). */
   --breakpoint-xs: 400px;
 
-  --color-brand-50: #ecfeff;
-  --color-brand-100: #cffafe;
-  --color-brand-200: #a5f3fc;
-  --color-brand-300: #67e8f9;
-  --color-brand-400: #22d3ee;
-  --color-brand-500: #00b2fc;
-  --color-brand-600: #008cfb;
-  --color-brand-700: #0072f9;
-  --color-brand-800: #005ae0;
-  --color-brand-900: #0648b8;
-  --color-brand: #00b2fc;
-  --color-brand-fg: #ffffff;
-  --color-brand-accent: var(--c-brand-accent);
+  /* ── Color: Accent (signal red — used sparingly) ── */
+  --color-accent: var(--c-accent);
+  --color-accent-fg: var(--c-accent-fg);
+  --color-accent-secondary: var(--c-accent-secondary);
 
-  /* Semantic surface tokens (resolve per [data-theme]) */
+  /* ── Semantic surface tokens (resolve per [data-theme]) ── */
   --color-app: var(--c-app);
   --color-surface: var(--c-surface);
+  --color-surface-alt: var(--c-surface-alt);
   --color-elevated: var(--c-elevated);
   --color-popover: var(--c-popover);
   --color-hover: var(--c-hover);
   --color-active: var(--c-active);
   --color-input: var(--c-input);
 
-  /* Semantic foreground tokens */
+  /* ── Semantic foreground tokens ── */
   --color-fg: var(--c-fg);
   --color-fg-secondary: var(--c-fg-secondary);
   --color-fg-muted: var(--c-fg-muted);
-  --color-fg-faint: var(--c-fg-faint);
-  --color-fg-placeholder: var(--c-fg-placeholder);
   --color-fg-inverse: var(--c-fg-inverse);
 
-  /* Semantic border tokens */
+  /* ── Semantic border tokens ── */
   --color-line: var(--c-line);
   --color-line-strong: var(--c-line-strong);
   --color-line-focus: var(--c-line-focus);
 
-  /* Status tokens */
+  /* ── Status tokens ── */
   --color-success: var(--c-success);
   --color-warning: var(--c-warning);
   --color-danger: var(--c-danger);
   --color-info: var(--c-info);
 
-  --shadow-soft: 0 1px 3px rgba(16,24,40,0.04), 0 10px 28px -10px rgba(16,24,40,0.10);
-  --shadow-card: 0 1px 2px rgba(16,24,40,0.04), 0 16px 40px -16px rgba(16,24,40,0.14);
-  --shadow-glow: 0 10px 40px -10px rgba(0,178,252,0.5);
+  /* ── Borders ── */
+  --border-width: 2px;
+  --border-width-thick: 3px;
 
-  --animate-fade-up: fade-up 0.55s cubic-bezier(0.16,1,0.3,1) both;
-  --animate-fade-in: fade-in 0.4s ease both;
-  --animate-shimmer: shimmer 1.6s infinite;
-  --animate-float: float 5s ease-in-out infinite;
-  --animate-pulse-ring: pulse-ring 1.4s cubic-bezier(0.16,1,0.3,1) infinite;
+  /* ── Hard offset shadows (zero blur — Neo-Brutalist signature) ── */
+  --shadow-hard-sm: 2px 2px 0 0 var(--c-ink);
+  --shadow-hard: 4px 4px 0 0 var(--c-ink);
+  --shadow-hard-lg: 6px 6px 0 0 var(--c-ink);
+  --shadow-none: none;
 
-  --background-image-brand-gradient: linear-gradient(135deg,#00e0fc 0%,#00b2fc 50%,#0072f9 100%);
+  /* ── Corner radii ── */
+  --radius-sm: 2px;
+  --radius-md: 4px;
+  --radius-pill: 9999px;
 
-  @keyframes fade-up {
-    0% { opacity: 0; transform: translateY(14px); }
-    100% { opacity: 1; transform: translateY(0); }
-  }
+  /* ── Motion ── */
+  --duration-fast: 100ms;
+  --duration-normal: 200ms;
+  --easing: cubic-bezier(0, 0, 0.2, 1);
+
+  --animate-fade-in: fade-in 0.2s var(--easing) both;
+  --animate-slide-up: slide-up 0.2s var(--easing) both;
+
   @keyframes fade-in {
     0% { opacity: 0; }
     100% { opacity: 1; }
   }
-  @keyframes shimmer {
-    100% { transform: translateX(100%); }
-  }
-  @keyframes float {
-    0%,100% { transform: translateY(0); }
-    50% { transform: translateY(-8px); }
-  }
-  @keyframes pulse-ring {
-    0% { transform: scale(0.9); opacity: 0.7; }
-    100% { transform: scale(1.6); opacity: 0; }
+  @keyframes slide-up {
+    0% { opacity: 0; transform: translateY(8px); }
+    100% { opacity: 1; transform: translateY(0); }
   }
 }
 
-/* ───────────────────────── DARK (default identity) ───────────────────────── */
+/* ───────────────────────── DARK ───────────────────────── */
 :root,
 :root[data-theme='dark'] {
   color-scheme: dark;
-  --c-app: #131416;
-  --c-surface: rgba(255, 255, 255, 0.03);
-  --c-elevated: rgba(255, 255, 255, 0.06);
-  --c-popover: #1c1e21;
-  --c-hover: rgba(255, 255, 255, 0.06);
-  --c-active: rgba(255, 255, 255, 0.10);
-  --c-input: rgba(255, 255, 255, 0.05);
+  --c-ink: #f4f1ea;
+  --c-app: #0a0a0a;
+  --c-surface: #161616;
+  --c-surface-alt: #1e1e1e;
+  --c-elevated: #222222;
+  --c-popover: #161616;
+  --c-hover: #1e1e1e;
+  --c-active: #2a2a2a;
+  --c-input: #161616;
 
-  --c-fg: #f7f7f8;
-  --c-fg-secondary: rgba(247, 247, 248, 0.82);
-  --c-fg-muted: rgba(247, 247, 248, 0.60);
-  --c-fg-faint: rgba(247, 247, 248, 0.50);
-  --c-fg-placeholder: rgba(247, 247, 248, 0.30);
-  --c-fg-inverse: #131416;
+  --c-fg: #f4f1ea;
+  --c-fg-secondary: #b0b0b0;
+  --c-fg-muted: #808080;
+  --c-fg-inverse: #0a0a0a;
 
-  --c-line: rgba(255, 255, 255, 0.10);
-  --c-line-strong: rgba(255, 255, 255, 0.20);
-  --c-line-focus: #22d3ee;
+  --c-line: #f4f1ea;
+  --c-line-strong: #f4f1ea;
+  --c-line-focus: #ff2d2d;
 
-  --c-success: #34d399;
-  --c-warning: #fbbf24;
-  --c-danger: #f87171;
-  --c-info: #38bdf8;
-  --c-brand-accent: #22d3ee;
+  --c-accent: #ff2d2d;
+  --c-accent-fg: #ffffff;
+  --c-accent-secondary: #3a8eff;
 
-  --shadow-soft: 0 1px 3px rgba(0,0,0,0.30), 0 10px 28px -10px rgba(0,0,0,0.45);
-  --shadow-card: 0 1px 2px rgba(0,0,0,0.30), 0 16px 40px -16px rgba(0,0,0,0.55);
+  --c-success: #22c55e;
+  --c-warning: #eab308;
+  --c-danger: #ef4444;
+  --c-info: #3a8eff;
 }
 
 /* ───────────────────────── LIGHT ───────────────────────── */
 :root[data-theme='light'] {
   color-scheme: light;
-  --c-app: #f7f7f8;
+  --c-ink: #0a0a0a;
+  --c-app: #f4f1ea;
   --c-surface: #ffffff;
-  --c-elevated: #f1f3f5;
+  --c-surface-alt: #f0ede5;
+  --c-elevated: #f0ede5;
   --c-popover: #ffffff;
-  --c-hover: rgba(19, 20, 22, 0.05);
-  --c-active: rgba(19, 20, 22, 0.09);
+  --c-hover: #f0ede5;
+  --c-active: #e8e4da;
   --c-input: #ffffff;
 
-  --c-fg: #131416;
-  --c-fg-secondary: rgba(19, 20, 22, 0.78);
-  --c-fg-muted: rgba(19, 20, 22, 0.60);
-  --c-fg-faint: rgba(19, 20, 22, 0.60);
-  --c-fg-placeholder: rgba(19, 20, 22, 0.36);
+  --c-fg: #0a0a0a;
+  --c-fg-secondary: #4a4a4a;
+  --c-fg-muted: #6b6b6b;
   --c-fg-inverse: #ffffff;
 
-  --c-line: rgba(19, 20, 22, 0.10);
-  --c-line-strong: rgba(19, 20, 22, 0.18);
-  --c-line-focus: #0072f9;
+  --c-line: #0a0a0a;
+  --c-line-strong: #0a0a0a;
+  --c-line-focus: #ff2d2d;
 
-  --c-success: #047857;
-  --c-warning: #b45309;
-  --c-danger: #dc2626;
-  --c-info: #0369a1;
-  --c-brand-accent: #0064d9;
+  --c-accent: #ff2d2d;
+  --c-accent-fg: #ffffff;
+  --c-accent-secondary: #0066ff;
 
-  --shadow-soft: 0 1px 3px rgba(16,24,40,0.04), 0 10px 28px -10px rgba(16,24,40,0.10);
-  --shadow-card: 0 1px 2px rgba(16,24,40,0.04), 0 16px 40px -16px rgba(16,24,40,0.14);
+  --c-success: #0a7c2e;
+  --c-warning: #b88600;
+  --c-danger: #c20a0a;
+  --c-info: #0066ff;
 }
 
-/* Global keyboard focus indicator for accessibility.
-   Ensures all interactive elements show a visible focus ring when
-   navigated via keyboard (Tab), even if individual components don't
-   define their own focus styles. */
+/* Global keyboard focus indicator for accessibility. */
 :focus-visible {
-  outline: 2px solid var(--c-line-focus);
+  outline: 3px solid var(--c-line-focus);
   outline-offset: 2px;
   border-radius: 2px;
 }
 
-/* Skip-to-content link for keyboard accessibility.
-   Hidden by default, visible on focus. */
+/* Skip-to-content link for keyboard accessibility. */
 .skip-link {
   position: absolute;
   width: 1px;
@@ -195,14 +186,20 @@
   margin: 0;
   overflow: visible;
   clip: auto;
-  border-radius: 0.25rem;
-  background: #0064d9;
-  color: #fff;
-  outline: 2px solid #fff;
+  border: 2px solid var(--c-ink);
+  border-radius: var(--radius-md);
+  background: var(--c-accent);
+  color: var(--c-accent-fg);
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  outline: 2px solid var(--c-ink);
   outline-offset: 2px;
+  box-shadow: var(--shadow-hard);
 }
 
-/* Hide scrollbar for nav overflow container — keeps visual clean while allowing horizontal scroll */
+/* Hide scrollbar for nav overflow container */
 .scrollbar-hide {
   -ms-overflow-style: none;
   scrollbar-width: none;
@@ -217,24 +214,18 @@ html {
 }
 body {
   @apply bg-app text-fg antialiased;
-  background-image:
-    radial-gradient(55rem 55rem at 105% -10%, rgba(0, 178, 252, 0.07), transparent 60%),
-    radial-gradient(45rem 45rem at -10% 5%, rgba(0, 114, 249, 0.06), transparent 55%);
-  background-attachment: fixed;
-  /* Long strings (URLs, filenames, prompts, localized text) must never create
-     horizontal overflow. Break anywhere rather than overflow the viewport. */
+  font-family: var(--font-sans);
+  /* Long strings must never create horizontal overflow. */
   overflow-wrap: anywhere;
   word-break: break-word;
 }
 
-/* Root overflow guard: prevent accidental page-level horizontal scrollbars
-   caused by decorations/shadows/transforms without masking real overflow
-   sources (those are fixed at the component level). */
+/* Root overflow guard */
 :root {
   overflow-x: clip;
 }
-/* Respect reduced-motion preferences across the app. Disables non-essential
-   animations/transitions so the UI stays usable for motion-sensitive users. */
+
+/* Respect reduced-motion preferences. */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -245,11 +236,8 @@ body {
     scroll-behavior: auto !important;
   }
 }
-/* On touch devices, remove the 300ms tap delay and prevent double-tap zoom
-   on interactive controls for a more native feel. Also expand the tappable
-   area of small toolbar controls to meet WCAG 2.5.5 (min 44×44px) without
-   changing their visual size — the ::before overlay extends the hit region
-   outward with negative insets. */
+
+/* Touch device helpers — remove tap delay, expand tappable area. */
 @media (pointer: coarse) {
   button,
   a,
@@ -259,9 +247,6 @@ body {
   [role="menuitem"] {
     touch-action: manipulation;
   }
-  /* Expand tappable area for small interactive elements using a transparent
-     ::before pseudo-element. Only applies to elements without explicit
-     position (avoids interfering with dropdowns, tooltips, etc.). */
   button:not([class*="absolute"]):not([class*="fixed"]),
   a[href]:not([class*="absolute"]):not([class*="fixed"]),
   [role="menuitem"] {
@@ -277,68 +262,154 @@ body {
     border-radius: inherit;
   }
 }
-/* Lighter, subtler ambient glow in light mode so the page doesn't look washed out. */
-:root[data-theme='light'] body {
-  background-image:
-    radial-gradient(55rem 55rem at 105% -10%, rgba(0, 178, 252, 0.10), transparent 60%),
-    radial-gradient(45rem 45rem at -10% 5%, rgba(0, 114, 249, 0.08), transparent 55%);
-}
 
+/* ───────────────────────── COMPONENT LAYER ───────────────────────── */
 @layer components {
-  .gradient-text {
-    @apply bg-clip-text text-transparent;
-    background-image: linear-gradient(135deg, #00e0fc, #00b2fc 55%, #0072f9);
-  }
+  /* Neo-Brutalist card: flat surface, thick border, hard shadow */
   .card {
-    @apply rounded-2xl border border-line bg-surface shadow-soft;
+    @apply border-2 bg-surface;
+    border-color: var(--c-line);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-hard);
   }
-  .btn-brand {
-    @apply inline-flex items-center justify-center gap-2 rounded-xl bg-brand-gradient px-5 py-3 font-semibold text-white shadow-glow transition-all;
+
+  /* Primary button: accent background, hard shadow, press effect */
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 px-5 py-3 font-semibold;
+    border: var(--border-width) solid var(--c-ink);
+    border-radius: var(--radius-md);
+    background: var(--c-accent);
+    color: var(--c-accent-fg);
+    box-shadow: var(--shadow-hard);
+    transition: transform var(--duration-fast) var(--easing), box-shadow var(--duration-fast) var(--easing);
   }
-  .btn-brand:hover {
-    @apply brightness-110;
+  .btn-primary:hover {
+    box-shadow: var(--shadow-hard-lg);
   }
-  .btn-brand:active {
-    transform: scale(0.98);
+  .btn-primary:active {
+    transform: translate(2px, 2px);
+    box-shadow: var(--shadow-none);
   }
-  .btn-brand:disabled {
-    @apply cursor-not-allowed opacity-50 shadow-none;
+  .btn-primary:disabled {
+    @apply cursor-not-allowed;
+    opacity: 0.5;
+    box-shadow: var(--shadow-none);
   }
+
+  /* Secondary button: surface background, ink border */
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 px-5 py-3 font-semibold;
+    border: var(--border-width) solid var(--c-ink);
+    border-radius: var(--radius-md);
+    background: var(--c-surface);
+    color: var(--c-fg);
+    box-shadow: var(--shadow-hard);
+    transition: transform var(--duration-fast) var(--easing), box-shadow var(--duration-fast) var(--easing);
+  }
+  .btn-secondary:hover {
+    box-shadow: var(--shadow-hard-lg);
+    background: var(--c-hover);
+  }
+  .btn-secondary:active {
+    transform: translate(2px, 2px);
+    box-shadow: var(--shadow-none);
+  }
+  .btn-secondary:disabled {
+    @apply cursor-not-allowed;
+    opacity: 0.5;
+    box-shadow: var(--shadow-none);
+  }
+
+  /* Ghost button: no shadow, transparent */
   .btn-ghost {
-    @apply inline-flex items-center justify-center gap-2 rounded-xl border border-line bg-elevated px-5 py-3 font-medium text-fg-secondary transition hover:border-line-strong hover:bg-active;
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2 font-medium;
+    border: var(--border-width) solid var(--c-line);
+    border-radius: var(--radius-md);
+    background: transparent;
+    color: var(--c-fg-secondary);
+    transition: border-color var(--duration-fast) var(--easing), color var(--duration-fast) var(--easing);
+  }
+  .btn-ghost:hover {
+    border-color: var(--c-line-strong);
+    color: var(--c-fg);
+  }
+
+  /* Danger button */
+  .btn-danger {
+    @apply inline-flex items-center justify-center gap-2 px-5 py-3 font-semibold;
+    border: var(--border-width) solid var(--c-ink);
+    border-radius: var(--radius-md);
+    background: var(--c-danger);
+    color: #ffffff;
+    box-shadow: var(--shadow-hard);
+    transition: transform var(--duration-fast) var(--easing), box-shadow var(--duration-fast) var(--easing);
+  }
+  .btn-danger:hover {
+    box-shadow: var(--shadow-hard-lg);
+  }
+  .btn-danger:active {
+    transform: translate(2px, 2px);
+    box-shadow: var(--shadow-none);
+  }
+
+  /* Input: thick border, transparent bg, focus = accent border */
+  .input {
+    @apply w-full px-3 py-2 text-fg;
+    border: var(--border-width) solid var(--c-line);
+    border-radius: var(--radius-sm);
+    background: var(--c-input);
+    transition: border-color var(--duration-fast) var(--easing);
+  }
+  .input:focus {
+    border-color: var(--c-line-focus);
+    border-width: var(--border-width-thick);
+    outline: none;
+  }
+  .input::placeholder {
+    color: var(--c-fg-muted);
+  }
+
+  /* Badge/pill: pill radius, thick border, flat bg, mono uppercase */
+  .badge {
+    @apply inline-flex items-center gap-1 px-2.5 py-0.5;
+    border: var(--border-width) solid var(--c-ink);
+    border-radius: var(--radius-pill);
+    background: var(--c-surface);
+    color: var(--c-fg);
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  /* Mono label: uppercase, mono font, muted */
+  .label-mono {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--c-fg-muted);
+  }
+
+  /* Display heading: heavy display font, uppercase, tight tracking */
+  .heading-display {
+    font-family: var(--font-display);
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
   }
 }
 
-/* skeleton shimmer for loading states */
+/* Skeleton: flat surface-alt, no shimmer (respect reduced motion) */
 .skeleton {
-  @apply relative overflow-hidden;
-  background-color: var(--c-elevated);
+  background-color: var(--c-surface-alt);
+  border-radius: var(--radius-sm);
 }
-.skeleton::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  transform: translateX(-100%);
-  background: linear-gradient(90deg, transparent, var(--skeleton-shimmer), transparent);
-  animation: shimmer 1.6s infinite;
-}
-:root[data-theme='dark'] { --skeleton-shimmer: rgba(255, 255, 255, 0.65); }
-:root[data-theme='light'] { --skeleton-shimmer: rgba(19, 20, 22, 0.18); }
 
-/* Ambient grid background used by hero/landing sections. Theme-aware grid
-   lines so it reads in both light and dark. */
-.app-grid-bg {
-  background-image:
-    radial-gradient(70% 55% at 50% -6%, rgba(0, 178, 252, 0.12) 0%, rgba(0, 178, 252, 0) 60%),
-    linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
-    linear-gradient(var(--grid-line) 1px, transparent 1px);
-  background-size: auto, 44px 44px, 44px 44px;
-}
-:root[data-theme='dark'] { --grid-line: rgba(255, 255, 255, 0.05); }
-:root[data-theme='light'] { --grid-line: rgba(19, 20, 22, 0.06); }
-
-/* Theme-aware dropdown chevron for native <select> elements. The stroke color
-   swaps with the theme so the chevron stays visible on light and dark. */
+/* Theme-aware dropdown chevron for native <select> elements. */
 .select-chevron {
   background-image: var(--chevron);
   background-position: right 8px center;
@@ -346,28 +417,25 @@ body {
   background-repeat: no-repeat;
 }
 :root[data-theme='dark'] {
-  --chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-opacity='0.55' stroke-width='3'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  --chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%23f4f1ea' stroke-opacity='0.55' stroke-width='3'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
 }
 :root[data-theme='light'] {
-  --chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%23131416' stroke-opacity='0.55' stroke-width='3'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  --chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%230a0a0a' stroke-opacity='0.55' stroke-width='3'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
 }
 
-/* Native select option backgrounds: browser <option> elements don't inherit
-   data-theme, so force a readable surface that matches the active theme. */
+/* Native select option backgrounds. */
 :root[data-theme='light'] select option,
 :root[data-theme='light'] select optgroup {
   background-color: #ffffff;
-  color: #131416;
+  color: #0a0a0a;
 }
 :root[data-theme='dark'] select option,
 :root[data-theme='dark'] select optgroup {
-  background-color: #1c1e21;
-  color: #f7f7f8;
+  background-color: #161616;
+  color: #f4f1ea;
 }
 
-/* ───────────────────────── SAFE-AREA INSETS ─────────────────────────
-   Helpers for notched / rounded-corner / dynamic-island / home-indicator
-   devices. Applied to fixed/sticky UI so controls stay reachable. */
+/* ───────────────────────── SAFE-AREA INSETS ───────────────────────── */
 .safe-top { padding-top: env(safe-area-inset-top); }
 .safe-right { padding-right: env(safe-area-inset-right); }
 .safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
@@ -378,13 +446,10 @@ body {
   padding-bottom: env(safe-area-inset-bottom);
   padding-left: env(safe-area-inset-left);
 }
-/* Sticky/fixed bars that need safe-area aware padding without doubling. */
 .pb-safe { padding-bottom: max(env(safe-area-inset-bottom), 0px); }
 .pt-safe { padding-top: max(env(safe-area-inset-top), 0px); }
 
-/* ───────────────────────── SCROLLBAR POLISH ─────────────────────────
-   Thin, theme-aware scrollbars for internal scroll regions (dropdowns,
-   drawers, modal bodies) so dense content stays readable. */
+/* ───────────────────────── SCROLLBAR ───────────────────────── */
 * {
   scrollbar-width: thin;
   scrollbar-color: var(--c-line-strong) transparent;
@@ -393,39 +458,32 @@ body {
 *::-webkit-scrollbar-track { background: transparent; }
 *::-webkit-scrollbar-thumb {
   background-color: var(--c-line-strong);
-  border-radius: 9999px;
+  border-radius: 0;
 }
 
-/* ───────────────────────── KEYBOARD HINT ─────────────────────────
-   Styled <kbd> element for keyboard shortcut help overlays. */
+/* ───────────────────────── KEYBOARD HINT ───────────────────────── */
 .kbd {
   display: inline-block;
   padding: 0.125rem 0.5rem;
   font-size: 0.75rem;
-  font-family: ui-monospace, monospace;
-  background: var(--c-app);
-  border: 1px solid var(--c-line);
-  border-radius: 0.25rem;
-  box-shadow: 0 1px 0 var(--c-line);
+  font-family: var(--font-mono);
+  background: var(--c-surface);
+  border: 2px solid var(--c-ink);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-hard-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
-/* ───────────────────────── MEDIA OVERFLOW GUARD ─────────────────────────
-   Ensure images/videos never push beyond their container, regardless of
-   intrinsic dimensions or aspect ratio. Width is left to per-component
-   classes (w-full / w-auto / max-w-*); only the overflow cap is global. */
+/* ───────────────────────── MEDIA OVERFLOW GUARD ───────────────────────── */
 img, video, svg { max-width: 100%; }
-/* Inline <video> without an explicit width class should still not overflow:
-   cap at container width while preserving aspect ratio. */
 video:where(:not([class*='w-'])) { width: 100%; height: auto; }
 
-/* ───────────────────────── PRINT STYLES ─────────────────────────
-   Basic print rules so pages are legible on paper. Hides interactive-only
-   UI (nav, buttons, cookie banner, dev overlays), forces dark text on
-   white, and prevents color-adjust suppression for branded elements. */
+/* ───────────────────────── PRINT STYLES ───────────────────────── */
 @media print {
-  :root { --c-bg: #ffffff; --c-fg: #000000; --c-surface: #ffffff; }
+  :root { --c-app: #ffffff; --c-fg: #000000; --c-surface: #ffffff; }
   body { background: #ffffff !important; color: #000000 !important; }
-  nav, header, button, .btn-brand, .btn-ghost,
+  nav, header, button, .btn-primary, .btn-secondary, .btn-ghost,
   [role="dialog"][aria-label="Cookie consent"],
   .skip-link, button[class*="DevTools"] {
     display: none !important;
