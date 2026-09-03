@@ -32,6 +32,12 @@ const RATE_LIMITS: Record<string, { max: number; windowMs: number }> = {
   'payment': { max: 5, windowMs: 60_000 },
   // Poll endpoints — high frequency but authenticated (60/min)
   'poll': { max: 60, windowMs: 60_000 },
+  // Public API v1 — 100/min per IP (matches RateLimits.API_V1)
+  'api-v1': { max: 100, windowMs: 60_000 },
+  // MCP endpoint — 60/min per IP (matches RateLimits.MCP)
+  'mcp': { max: 60, windowMs: 60_000 },
+  // API key management — 10/min per IP
+  'api-keys': { max: 10, windowMs: 60_000 },
   // Default API rate limit (30/min)
   'default': { max: 30, windowMs: 60_000 },
 };
@@ -51,6 +57,10 @@ function getRateCategory(pathname: string): string {
   if (pathname.includes('/upload')) return 'upload';
   if (pathname.includes('/checkout') || pathname.includes('/redeem')) return 'payment';
   if (pathname.includes('/poll')) return 'poll';
+  // Phase 5: Public API v1 and MCP endpoints
+  if (pathname.startsWith('/api/v1')) return 'api-v1';
+  if (pathname === '/mcp') return 'mcp';
+  if (pathname.startsWith('/api/keys')) return 'api-keys';
   return 'default';
 }
 

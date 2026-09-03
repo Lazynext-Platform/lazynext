@@ -1291,3 +1291,50 @@ Completed across 15+ sessions:
 - `ComplianceRulesSection.tsx` UI on `/compliance` page
 - Rules merged with built-in rules during compliance checks
 
+
+### Phase 5-8: OS Platform Security, API, Legal, Testing, Production Readiness
+
+#### Phase 5: Security & API
+- Centralized authorization: `src/lib/auth.ts` with `requireAuth`, `requireRole`, `requireApiKey`
+- API key model: `ApiKey` in Prisma with SHA-256 hashing, scopes (read/write/admin), revocation
+- API key management: `GET/POST /api/keys`, `DELETE /api/keys/[id]`
+- Public REST API v1: `/api/v1` with workspaces, projects, tasks, documents CRUD
+- MCP 2026-07-28: stateless `/mcp` endpoint with `server/discover`, `tools/list`, `tools/call`, `ping`
+- OAuth 2.1 protected resource metadata: `/.well-known/oauth-protected-resource`
+- Audit service: `src/lib/services/audit.ts` with 25+ named actions
+- Rate limiting: `src/lib/services/rate-limit.ts` with Cloudflare binding + in-memory fallback
+- Developers page: `/developers` with API key management UI, MCP info, REST API docs
+
+#### Phase 6: Legal/Compliance
+- 10 legal pages: /terms, /privacy, /cookies, /acceptable-use, /ai-policy, /api-terms, /dpa, /subprocessors, /security, /data-request
+- Shared `LegalPage` component with cross-linking footer
+- i18n updated for OS platform positioning (terms + privacy rewritten)
+- Interactive data subject request form at `/data-request`
+
+#### Phase 7: Testing
+- 7 new unit test files (156 tests): auth-helpers, audit-service, rate-limiter, mcp-protocol, api-v1-contract, api-key-management, legal-pages
+- 1 new E2E spec (40+ tests): `e2e/auth-os-surfaces.spec.ts` covering Phase 3-6 surfaces
+- Pure crypto extracted to `src/lib/api-key-crypto.ts` for testability
+- Total: 6,780 unit tests pass, 0 fail
+
+#### Phase 8: Production Readiness
+- Proxy rate limits: Added `api-v1` (100/min), `mcp` (60/min), `api-keys` (10/min) categories
+- Structured error logging: `src/lib/services/logger.ts` with severity levels, audit integration
+- Cache headers: Legal pages (1h + SWR 24h), API v1 metadata (5m), MCP metadata (5m), OAuth metadata (1h)
+- Health check: Enhanced with `version` and `platform` fields
+
+#### Production Deployment Checklist
+1. **Environment variables**: Ensure all vars in `.env.example` are set in Cloudflare Workers secrets
+2. **D1 migration**: Run `npm run db:migrate:d1:apply` to apply the OS platform models migration
+3. **Prisma generate**: Run `npm run prisma:generate` before build
+4. **Build**: `npm run cf:build` (Cloudflare/OpenNext build)
+5. **Deploy**: `npm run cf:deploy`
+6. **Health check**: Verify `GET /api/health` returns 200 with all checks passing
+7. **Smoke test**: Verify `/dashboard`, `/developers`, `/api/v1`, `/mcp` respond correctly
+8. **Legal pages**: Verify all 10 legal pages are accessible
+9. **Rate limiting**: Verify Cloudflare rate-limit bindings are active (check 429 responses)
+10. **Observability**: Verify Cloudflare Workers observability is enabled in wrangler.jsonc
+11. **CSP headers**: Verify security headers are present in production responses
+12. **OAuth metadata**: Verify `/.well-known/oauth-protected-resource` returns valid JSON
+13. **API key creation**: Create a test API key via `/developers` and verify API v1 access
+14. **MCP protocol**: Verify `server/discover` returns correct protocol version (2026-07-28)

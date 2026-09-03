@@ -92,6 +92,8 @@ export async function GET() {
   return NextResponse.json({
     status: allOk ? 'healthy' : 'degraded',
     timestamp: new Date().toISOString(),
+    version: '1.0.0',
+    platform: 'lazynext-os',
     checks,
   }, { status });
 }
