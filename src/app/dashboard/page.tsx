@@ -3,6 +3,8 @@ import { FolderKanban, CheckSquare, FileText, Sparkles, Zap, Bot, Plug, BarChart
 import { auth } from '@/../auth';
 import { WorkspaceService } from '@/lib/services/workspace';
 import { prisma } from '@/lib/prisma';
+import { getCredits } from '@/lib/credits';
+import { getUserPlanTier } from '@/lib/plan-tier';
 import { Card, Badge, Button, EmptyState } from '@/components/ui';
 
 export const dynamic = 'force-dynamic';
@@ -71,6 +73,21 @@ export default async function DashboardPage() {
     documents: await prisma.document.count({ where: { workspaceId: workspace.id, deletedAt: null } }),
     automations: await prisma.automation.count({ where: { workspaceId: workspace.id } }),
   };
+
+  // Task progress + activity feed + credits
+  const [completedTasks, totalTasks, recentActivity, credits, planTier] = await Promise.all([
+    prisma.task.count({ where: { project: { workspaceId: workspace.id }, deletedAt: null, status: 'done' } }),
+    prisma.task.count({ where: { project: { workspaceId: workspace.id }, deletedAt: null } }),
+    prisma.auditEvent.findMany({
+      where: { workspaceId: workspace.id },
+      orderBy: { createdAt: 'desc' },
+      take: 8,
+    }),
+    getCredits(userId),
+    getUserPlanTier(userId),
+  ]);
+
+  const taskProgress = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
 
   const quickActions = [
     { href: '/projects', label: 'New Project', icon: FolderKanban, desc: 'Organize work' },
@@ -333,6 +350,89 @@ export default async function DashboardPage() {
               ))}
             </div>
           )}
+        </Card>
+      </div>
+
+      {/* Task progress + Activity feed row */}
+      <div className="grid gap-6 lg:grid-cols-2 mt-6">
+        {/* Task progress */}
+        <Card className="p-5">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="heading-display text-sm flex items-center gap-2">
+              <TrendingUp className="h-4 w-4" /> Task Progress
+            </h2>
+            <Link href="/tasks" className="text-xs text-fg-secondary hover:text-fg flex items-center gap-1">
+              View all <ArrowRight className="h-3 w-3" />
+            </Link>
+          </div>
+          <div className="flex flex-col gap-4">
+            <div className="flex items-end justify-between">
+              <div>
+                <p className="heading-display text-3xl">{taskProgress}%</p>
+                <p className="text-xs text-fg-muted">{completedTasks} of {totalTasks} tasks completed</p>
+              </div>
+              <div className="flex gap-2">
+                <Badge variant="success">{completedTasks} done</Badge>
+                <Badge>{totalTasks - completedTasks} open</Badge>
+              </div>
+            </div>
+            <div className="h-3 border-2" style={{ borderColor: 'var(--c-ink)', borderRadius: 'var(--radius-sm)', backgroundColor: 'var(--c-surface)' }}>
+              <div
+                className="h-full transition-all"
+                style={{ width: `${taskProgress}%`, backgroundColor: taskProgress === 100 ? 'var(--c-success)' : 'var(--c-accent)', borderRadius: 'var(--radius-sm)' }}
+              />
+            </div>
+          </div>
+        </Card>
+
+        {/* Recent activity */}
+        <Card className="p-5">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="heading-display text-sm flex items-center gap-2">
+              <Activity className="h-4 w-4" /> Recent Activity
+            </h2>
+          </div>
+          {recentActivity.length === 0 ? (
+            <EmptyState icon={Activity} title="No activity yet" description="Actions across your workspace will appear here." />
+          ) : (
+            <div className="flex flex-col gap-2">
+              {recentActivity.map((e) => (
+                <div key={e.id} className="flex items-center gap-3 p-2 text-sm">
+                  <div className="flex h-6 w-6 items-center justify-center border-2 shrink-0" style={{ borderColor: 'var(--c-ink)', borderRadius: 'var(--radius-sm)', backgroundColor: 'var(--c-surface-alt)' }}>
+                    <Clock className="h-3 w-3" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-mono text-xs truncate">{e.action}</p>
+                    <p className="text-xs text-fg-muted">{new Date(e.createdAt).toLocaleString()}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </Card>
+      </div>
+
+      {/* Credits + Plan footer */}
+      <div className="grid gap-6 lg:grid-cols-2 mt-6">
+        <Card className="p-5">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="heading-display text-sm mb-1">Credits</h2>
+              <p className="heading-display text-2xl">{credits}</p>
+              <p className="text-xs text-fg-muted">remaining balance</p>
+            </div>
+            <Button href="/settings/billing" size="sm">Buy more <ArrowRight className="h-3 w-3" /></Button>
+          </div>
+        </Card>
+        <Card className="p-5">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="heading-display text-sm mb-1">Plan</h2>
+              <p className="heading-display text-2xl capitalize">{planTier}</p>
+              <p className="text-xs text-fg-muted">current tier</p>
+            </div>
+            <Button href="/settings/billing" size="sm">Upgrade <ArrowRight className="h-3 w-3" /></Button>
+          </div>
         </Card>
       </div>
     </div>
