@@ -6,6 +6,7 @@ import { chargeAndSubmit, chargeErrorResponse } from '@/lib/lazynext-studio/gen-
 import { videoCredits } from '@/lib/video-pricing';
 import { NonPublicMediaUrlError, toAtlasMediaUrl } from '@/lib/public-media-url';
 import { uploadInputMediaToAtlas } from '@/lib/ad-reference-media';
+import { isUrlSafe } from '@/lib/security';
 
 export const maxDuration = 60;
 
@@ -13,6 +14,7 @@ export const maxDuration = 60;
 // Used as degradation when omni real-person swap hits 1010002 (deepfake). kling input image/video both ≤10MB;
 // same-origin R2 media is first read directly from bucket and uploaded to Atlas temporary URL (bypassing Worker self-fetch → otherwise Atlas can't fetch and reports invalid params).
 const KLING_MEDIA_LIMIT = 10_000_000;
+const MAX_VIDEO_SECONDS = 300;
 
 async function __byokPOST(req: Request) {
   const session = await auth();
@@ -33,9 +35,13 @@ async function __byokPOST(req: Request) {
   }
   if (!videoUrl) return NextResponse.json({ error: 'video_url_required' }, { status: 400 });
   if (!avatarUrl) return NextResponse.json({ error: 'avatar_url_required' }, { status: 400 });
+  // SSRF: validate URLs before Atlas upload fetches them server-side.
+  if (!isUrlSafe(videoUrl) || !isUrlSafe(avatarUrl)) {
+    return NextResponse.json({ error: 'blocked_url' }, { status: 400 });
+  }
 
   // kling motion-control bills by driving video seconds; frontend passes reference video duration with body.videoSeconds, conservatively defaults to 30s.
-  const videoSeconds = Number(body.videoSeconds) > 0 ? Number(body.videoSeconds) : 30;
+  const videoSeconds = Math.min(Number(body.videoSeconds) > 0 ? Number(body.videoSeconds) : 30, MAX_VIDEO_SECONDS);
 
   try {
     const submit = await chargeAndSubmit({

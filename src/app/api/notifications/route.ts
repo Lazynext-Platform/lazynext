@@ -68,12 +68,17 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'title_required' }, { status: 400 });
   }
 
+  const title = body.title.trim().slice(0, 200);
+  const notifBody = typeof body.body === 'string' ? body.body.slice(0, 2000) : undefined;
+  const type = (body.type || 'general').slice(0, 50);
+  const workspaceId = body.workspaceId?.slice(0, 100) || undefined;
+
   const notification = await createNotification({
     userId: session.user.id,
-    workspaceId: body.workspaceId || undefined,
-    type: body.type || 'general',
-    title: body.title.trim(),
-    body: body.body,
+    workspaceId,
+    type,
+    title,
+    body: notifBody,
   });
 
   return NextResponse.json({ notification }, { status: 201 });

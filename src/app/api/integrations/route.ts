@@ -33,14 +33,15 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'invalid_json' }, { status: 400 });
   }
 
-  const platform = body.platform?.trim().toLowerCase();
+  const platform = body.platform?.trim().toLowerCase().slice(0, 50);
   if (!platform) {
     return NextResponse.json({ error: 'platform_required' }, { status: 400 });
   }
 
   // For demo purposes, we store a placeholder token. In production, this would
   // come from an OAuth flow with the platform.
-  const accessToken = body.accessToken || `demo-token-${Date.now()}`;
+  const accessToken = (body.accessToken || `demo-token-${Date.now()}`).slice(0, 4096);
+  const platformUsername = body.platformUsername?.trim().slice(0, 200) || null;
 
   try {
     // Upsert: if connection exists, update; otherwise create
@@ -53,10 +54,11 @@ export async function POST(req: NextRequest) {
         where: { userId_platform: { userId: session.user.id, platform } },
         data: {
           accessToken,
-          platformUsername: body.platformUsername || existing.platformUsername,
+          platformUsername: platformUsername || existing.platformUsername,
         },
       });
-      return NextResponse.json({ connection });
+      // Never return the accessToken in the response.
+      return NextResponse.json({ connection: { id: connection.id, platform: connection.platform, platformUsername: connection.platformUsername, createdAt: connection.createdAt } });
     }
 
     const connection = await prisma.platformConnection.create({
@@ -64,11 +66,12 @@ export async function POST(req: NextRequest) {
         userId: session.user.id,
         platform,
         accessToken,
-        platformUsername: body.platformUsername || null,
+        platformUsername,
       },
     });
 
-    return NextResponse.json({ connection }, { status: 201 });
+    // Never return the accessToken in the response.
+    return NextResponse.json({ connection: { id: connection.id, platform: connection.platform, platformUsername: connection.platformUsername, createdAt: connection.createdAt } }, { status: 201 });
   } catch (e) {
     console.error('[integrations] connect error:', e);
     return NextResponse.json(

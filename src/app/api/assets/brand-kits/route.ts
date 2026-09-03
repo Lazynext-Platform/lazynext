@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@/../auth';
 import { prisma } from '@/lib/prisma';
+import { isUrlSafe } from '@/lib/security';
 
 export const dynamic = 'force-dynamic';
 
@@ -26,7 +27,7 @@ export async function POST(req: Request) {
   const name = typeof body.name === 'string' ? body.name.trim() : '';
   if (!name) return NextResponse.json({ error: 'name_required' }, { status: 400 });
 
-  const logoUrl = typeof body.logoUrl === 'string' && /^https?:\/\//.test(body.logoUrl) ? body.logoUrl : null;
+  const logoUrl = typeof body.logoUrl === 'string' && body.logoUrl.length <= 2048 && isUrlSafe(body.logoUrl) ? body.logoUrl : null;
   const colors = Array.isArray(body.colors)
     ? body.colors.filter((c: unknown) => typeof c === 'string' && /^#[0-9a-fA-F]{3,8}$/.test(c)).slice(0, 12)
     : [];

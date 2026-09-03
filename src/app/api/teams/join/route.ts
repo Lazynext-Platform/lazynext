@@ -13,7 +13,7 @@ export async function POST(req: Request) {
   const uid = session.user.id;
 
   const body = await req.json().catch(() => ({}));
-  const token = String(body.token || '');
+  const token = String(body.token || '').slice(0, 200);
   if (!token) return NextResponse.json({ error: 'token_required' }, { status: 400 });
 
   const invitation = await prisma.teamInvitation.findFirst({ where: { token } });

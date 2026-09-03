@@ -15,11 +15,13 @@ export async function GET(req: Request) {
 
   // Get IP from various headers (Cloudflare, generic proxies)
   const headers = Object.fromEntries(req.headers.entries());
-  const ip =
+  const rawIp =
     headers['x-forwarded-for']?.split(',')[0]?.trim() ||
     headers['cf-connecting-ip']?.trim() ||
     headers['x-real-ip']?.trim() ||
     null;
+  // Validate IP format and length before using it in external API URL (prevent SSRF/header injection).
+  const ip = rawIp && rawIp.length <= 45 && /^[0-9a-fA-F:.]+$/.test(rawIp) ? rawIp : null;
 
   // If we already have a country cookie, return it
   if (existingCountry) {

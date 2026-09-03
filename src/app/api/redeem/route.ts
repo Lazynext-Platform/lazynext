@@ -18,14 +18,15 @@ export async function POST(req: Request) {
   }
 
   const { code } = await req.json().catch(() => ({}));
-  if (!code) return NextResponse.json({ error: 'empty_code' }, { status: 400 });
+  const codeStr = typeof code === 'string' ? code.trim().slice(0, 100) : '';
+  if (!codeStr) return NextResponse.json({ error: 'empty_code' }, { status: 400 });
 
   const provider = paymentProvider();
   if (provider.mode !== 'redeem' || !provider.redeem)
     return NextResponse.json({ error: 'redeem_not_enabled' }, { status: 400 });
 
   try {
-    const { amount } = await provider.redeem(session.user.id, code);
+    const { amount } = await provider.redeem(session.user.id, codeStr);
     return NextResponse.json({ amount });
   } catch (e) {
     console.error('[redeem] error:', e instanceof Error ? e.message : String(e));

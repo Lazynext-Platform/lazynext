@@ -12,11 +12,13 @@ import {
   NonPublicMediaUrlError,
   toAtlasMediaUrl,
 } from '@/lib/public-media-url';
+import { isUrlSafe } from '@/lib/security';
 
 export const maxDuration = 60;
 
 const WAN_IMAGE_LIMIT = 5_000_000;
 const WAN_VIDEO_LIMIT = 200_000_000;
+const MAX_VIDEO_SECONDS = 300;
 
 // Wan-2.2 Character Swap doesn't reliably accept Workers/R2 URLs, so upload to Atlas temporary media URL first before submitting.
 async function __byokPOST(req: Request) {
@@ -38,9 +40,13 @@ async function __byokPOST(req: Request) {
   }
   if (!videoUrl) return NextResponse.json({ error: 'video_url_required' }, { status: 400 });
   if (!avatarUrl) return NextResponse.json({ error: 'avatar_url_required' }, { status: 400 });
+  // SSRF: validate URLs before Atlas upload fetches them server-side.
+  if (!isUrlSafe(videoUrl) || !isUrlSafe(avatarUrl)) {
+    return NextResponse.json({ error: 'blocked_url' }, { status: 400 });
+  }
 
   // omni video-edit bills by reference video seconds (same as /edit); frontend passes duration with body.videoSeconds, conservatively defaults to 30s.
-  const videoSeconds = Number(body.videoSeconds) > 0 ? Number(body.videoSeconds) : 30;
+  const videoSeconds = Math.min(Number(body.videoSeconds) > 0 ? Number(body.videoSeconds) : 30, MAX_VIDEO_SECONDS);
 
   try {
     const submit = await chargeAndSubmit({

@@ -5,7 +5,7 @@ export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
     const token = searchParams.get('token');
-    if (!token) {
+    if (!token || token.length > 200) {
       return NextResponse.redirect(new URL('/?error=invalid-token', req.url));
     }
 

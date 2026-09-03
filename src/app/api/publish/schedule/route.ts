@@ -11,6 +11,7 @@ import {
 import { getPlatformCapabilities } from '@/lib/publishing/platforms';
 import type { PublishRequest } from '@/lib/publishing/types';
 import { prisma } from '@/lib/prisma';
+import { isUrlSafe } from '@/lib/security';
 
 export const maxDuration = 60;
 
@@ -58,6 +59,10 @@ async function __byokPOST(req: Request) {
 
   if (!request || !request.platform || !request.mediaUrl || !request.caption) {
     return NextResponse.json({ error: 'platform_media_caption_required' }, { status: 400 });
+  }
+  // SSRF: validate mediaUrl before persisting for later server-side fetch.
+  if (!isUrlSafe(request.mediaUrl)) {
+    return NextResponse.json({ error: 'blocked_url' }, { status: 400 });
   }
   if (!scheduleAt) {
     return NextResponse.json({ error: 'schedule_at_required' }, { status: 400 });

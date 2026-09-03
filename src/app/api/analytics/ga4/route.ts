@@ -37,7 +37,7 @@ async function __byokPOST(req: Request) {
   const planTier = await getUserPlanTier(uid).catch(() => 'free' as const);
 
   const body = await req.json().catch(() => ({}));
-  const propertyId = typeof body.propertyId === 'string' ? body.propertyId.trim() : '';
+  const propertyId = typeof body.propertyId === 'string' ? body.propertyId.trim().slice(0, 128) : '';
   const metric = typeof body.metric === 'string' ? (body.metric as GA4Metric) : 'overview';
   const dateRange = body.dateRange as GA4DateRange | undefined;
   const dryRun = body.dryRun !== false; // default to dry-run for safety

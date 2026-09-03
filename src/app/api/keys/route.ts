@@ -4,6 +4,7 @@ import { prisma } from '@/lib/prisma';
 import { generateApiKey } from '@/lib/auth';
 import { RateLimiter, RateLimits } from '@/lib/services/rate-limit';
 import { AuditService, AuditActions } from '@/lib/services/audit';
+import { WorkspaceService } from '@/lib/services/workspace';
 
 // GET /api/keys — list user's API keys
 export async function GET() {
@@ -47,6 +48,14 @@ export async function POST(req: NextRequest) {
     : ['read'];
   if (scopes.length === 0) scopes.push('read');
   const workspaceId = body.workspaceId || null;
+
+  // Verify the user is a member of the workspace if workspaceId is provided.
+  if (workspaceId) {
+    const workspaces = await WorkspaceService.listForUser(session.user.id);
+    if (!workspaces.find((w) => w.id === workspaceId)) {
+      return NextResponse.json({ error: 'workspace_not_found' }, { status: 404 });
+    }
+  }
 
   const { key, keyHash, keyPrefix } = generateApiKey();
 

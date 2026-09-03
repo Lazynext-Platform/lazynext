@@ -21,7 +21,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Email is required' }, { status: 400 });
     }
 
-    const normalizedEmail = email.toLowerCase().trim();
+    const normalizedEmail = email.toLowerCase().trim().slice(0, 254);
     const user = await prisma.user.findUnique({ where: { email: normalizedEmail } });
 
     // Always return success — don't leak whether the email exists

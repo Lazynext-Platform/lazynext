@@ -5,8 +5,11 @@ import { submitAdRefLipsync, AD_REF_LIPSYNC_MODEL } from '@/lib/ad-reference';
 import { chargeAndSubmit, chargeErrorResponse } from '@/lib/lazynext-studio/gen-task';
 import { videoCredits } from '@/lib/video-pricing';
 import { NonPublicMediaUrlError, toAtlasMediaUrl } from '@/lib/public-media-url';
+import { isUrlSafe } from '@/lib/security';
 
 export const maxDuration = 60;
+
+const MAX_AUDIO_SECONDS = 120;
 
 // veed/lipsync syncs new dubbing to final video mouth: requires login + charges AD_REF_LIPSYNC_COST; refunds on submit/async failure, Atlas errors pass through.
 async function __byokPOST(req: Request) {
@@ -28,9 +31,13 @@ async function __byokPOST(req: Request) {
   }
   if (!videoUrl) return NextResponse.json({ error: 'video_url_required' }, { status: 400 });
   if (!audioUrl) return NextResponse.json({ error: 'audio_url_required' }, { status: 400 });
+  // SSRF: validate URLs before Atlas fetches them server-side.
+  if (!isUrlSafe(videoUrl) || !isUrlSafe(audioUrl)) {
+    return NextResponse.json({ error: 'blocked_url' }, { status: 400 });
+  }
 
   // veed/lipsync bills by audio/output duration; frontend estimates by dialogue word count and passes with body.audioSeconds, conservatively defaults to 12s.
-  const audioSeconds = Number(body.audioSeconds) > 0 ? Number(body.audioSeconds) : 12;
+  const audioSeconds = Math.min(Number(body.audioSeconds) > 0 ? Number(body.audioSeconds) : 12, MAX_AUDIO_SECONDS);
 
   try {
     const submit = await chargeAndSubmit({

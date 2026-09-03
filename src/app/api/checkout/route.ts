@@ -4,6 +4,7 @@ import { auth } from '@/../auth';
 import { paymentProvider } from '@/lib/payments';
 import { getPack } from '@/config/pricing';
 import { LOCALES, type Locale } from '@/i18n/messages';
+import { isUrlSafe } from '@/lib/security';
 
 export async function POST(req: Request) {
   const session = await auth();
@@ -17,7 +18,9 @@ export async function POST(req: Request) {
   if (provider.mode !== 'checkout' || !provider.createCheckout)
     return NextResponse.json({ error: 'checkout_not_enabled' }, { status: 400 });
 
-  const origin = req.headers.get('origin') || process.env.NEXTAUTH_URL || '';
+  const rawOrigin = req.headers.get('origin') || process.env.NEXTAUTH_URL || '';
+  // Validate origin is a safe HTTP(S) URL before passing to payment provider.
+  const origin = rawOrigin && isUrlSafe(rawOrigin) ? rawOrigin.slice(0, 2048) : '';
 
   // ── Global: gather locale/country/currency from cookies (set by the geo-detection layer) ──
   const localeCookie = (await cookies()).get('locale')?.value;

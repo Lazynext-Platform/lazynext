@@ -21,8 +21,8 @@ async function __byokPOST(req: Request) {
 
   const body = await req.json().catch(() => ({}));
   const topic = typeof body.topic === 'string' ? body.topic.trim().slice(0, 2000) : '';
-  const style = typeof body.style === 'string' ? body.style : 'epic';
-  const lang = typeof body.lang === 'string' ? body.lang : '中文';
+  const style = typeof body.style === 'string' ? body.style.trim().slice(0, 50) : 'epic';
+  const lang = typeof body.lang === 'string' ? body.lang.trim().slice(0, 20) : '中文';
   // Shot count defaults to AI deciding based on story pacing (4-6 segments); when frontend explicitly passes segments it's treated as an "exact segment count" requirement.
   const targetSegments = body.segments ? Math.max(2, Math.min(8, Number(body.segments))) : undefined;
   if (!topic) return NextResponse.json({ error: 'topic_required' }, { status: 400 });

@@ -258,15 +258,15 @@ export async function markTaskCompleted(getUrl: string, outputs?: string[]): Pro
   return true;
 }
 
-/** Unifies charge/submit phase exceptions into HTTP responses: insufficient balance→402, charge system error→500, Atlas submit failure→502 (passes through original message). */
+/** Unifies charge/submit phase exceptions into HTTP responses: insufficient balance→402, charge system error→500, Atlas submit failure→502. Internal details are logged server-side only, never leaked to the client. */
 export function chargeErrorResponse(e: unknown, tag: string) {
   if (e instanceof InsufficientCreditsError) {
     return NextResponse.json({ error: 'insufficient_credits' }, { status: 402 });
   }
   if (e instanceof ChargeError) {
     console.error(`[${tag}] charge error:`, String(e));
-    return NextResponse.json({ error: 'charge_failed', detail: String(e) }, { status: 500 });
+    return NextResponse.json({ error: 'charge_failed' }, { status: 500 });
   }
   console.error(`[${tag}] atlas error:`, String(e));
-  return NextResponse.json({ error: 'atlas_submit_failed', detail: String(e) }, { status: 502 });
+  return NextResponse.json({ error: 'atlas_submit_failed' }, { status: 502 });
 }

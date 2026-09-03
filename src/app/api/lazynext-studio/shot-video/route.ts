@@ -19,6 +19,7 @@ import {
 } from '@/lib/lazynext-studio/gen-task';
 import { videoCredits } from '@/lib/video-pricing';
 import { getUserPlanTier } from '@/lib/plan-tier';
+import { isUrlSafe } from '@/lib/security';
 
 export const maxDuration = 60;
 
@@ -38,10 +39,12 @@ async function __byokPOST(req: Request) {
   if (!prompt) return NextResponse.json({ error: 'prompt_required' }, { status: 400 });
 
   // Convert site-relative paths (/api/lazynext-studio/media/...) to public absolute URLs, otherwise Atlas cannot fetch them.
+  // Wraps with SSRF validation: same-origin media paths are safe, external URLs must pass isUrlSafe.
   const toAbs = (u: unknown): string => {
     const s = typeof u === 'string' ? u.trim() : '';
     if (s.startsWith('/api/lazynext-studio/media/')) return new URL(s, req.url).toString();
-    return /^https?:\/\//.test(s) ? s : '';
+    if (!/^https?:\/\//.test(s)) return '';
+    return isUrlSafe(s) ? s : '';
   };
 
   // Drama per-shot: if referenceImages[] is provided, use reference-to-video (product image + character look image + scene image directly to video);

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@/../auth';
 import { prisma } from '@/lib/prisma';
+import { isUrlSafe } from '@/lib/security';
 
 export const dynamic = 'force-dynamic';
 
@@ -14,7 +15,7 @@ export async function PATCH(req: Request, { params }: Params) {
 
   const data: Record<string, unknown> = {};
   if (typeof body.name === 'string') data.name = body.name.trim().slice(0, 120);
-  if (typeof body.logoUrl === 'string') data.logoUrl = /^https?:\/\//.test(body.logoUrl) ? body.logoUrl : null;
+  if (typeof body.logoUrl === 'string') data.logoUrl = body.logoUrl.length <= 2048 && isUrlSafe(body.logoUrl) ? body.logoUrl : null;
   if (Array.isArray(body.colors))
     data.colors = body.colors.filter((c: unknown) => typeof c === 'string' && /^#[0-9a-fA-F]{3,8}$/.test(c)).slice(0, 12);
   if (typeof body.fontNote === 'string') data.fontNote = body.fontNote.slice(0, 500);

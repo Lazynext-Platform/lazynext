@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@/../auth';
 import { prisma } from '@/lib/prisma';
+import { isUrlSafe } from '@/lib/security';
 
 export const dynamic = 'force-dynamic';
 
@@ -29,8 +30,8 @@ export async function POST(req: Request) {
   const description = typeof body.description === 'string' ? body.description.trim() : '';
   if (!name) return NextResponse.json({ error: 'name_required' }, { status: 400 });
   if (!description) return NextResponse.json({ error: 'description_required' }, { status: 400 });
-  const imageUrl = typeof body.imageUrl === 'string' && /^https?:\/\//.test(body.imageUrl) ? body.imageUrl : null;
-  const sourceUrl = typeof body.sourceUrl === 'string' && /^https?:\/\//.test(body.sourceUrl) ? body.sourceUrl : null;
+  const imageUrl = typeof body.imageUrl === 'string' && body.imageUrl.length <= 2048 && isUrlSafe(body.imageUrl) ? body.imageUrl : null;
+  const sourceUrl = typeof body.sourceUrl === 'string' && body.sourceUrl.length <= 2048 && isUrlSafe(body.sourceUrl) ? body.sourceUrl : null;
 
   const product = await prisma.adProduct.create({
     data: {

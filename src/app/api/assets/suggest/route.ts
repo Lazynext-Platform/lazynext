@@ -18,9 +18,9 @@ export async function GET(req: Request) {
   const uid = session.user.id;
 
   const url = new URL(req.url);
-  const product = (url.searchParams.get('product') || '').toLowerCase();
-  const audience = (url.searchParams.get('audience') || '').toLowerCase();
-  const platform = (url.searchParams.get('platform') || '').toLowerCase();
+  const product = (url.searchParams.get('product') || '').toLowerCase().slice(0, 200);
+  const audience = (url.searchParams.get('audience') || '').toLowerCase().slice(0, 200);
+  const platform = (url.searchParams.get('platform') || '').toLowerCase().slice(0, 50);
   const limit = Math.min(Math.max(parseInt(url.searchParams.get('limit') || '10') || 10, 1), 30);
 
   // Fetch all user assets of type image/video

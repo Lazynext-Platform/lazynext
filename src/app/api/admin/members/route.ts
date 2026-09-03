@@ -52,9 +52,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'invalid_json' }, { status: 400 });
   }
 
-  const workspaceId = body.workspaceId;
-  const email = body.email?.trim().toLowerCase();
-  const role = body.role?.trim() || 'member';
+  const workspaceId = body.workspaceId?.trim().slice(0, 100);
+  const email = body.email?.trim().toLowerCase().slice(0, 254);
+  // Allowlist role to prevent privilege escalation via arbitrary role values.
+  const VALID_ROLES = ['owner', 'admin', 'member', 'viewer'];
+  const role = VALID_ROLES.includes(body.role?.trim() || '') ? body.role!.trim() : 'member';
 
   if (!workspaceId || !email) {
     return NextResponse.json({ error: 'workspaceId_and_email_required' }, { status: 400 });

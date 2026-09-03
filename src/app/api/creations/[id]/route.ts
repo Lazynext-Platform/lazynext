@@ -62,7 +62,7 @@ async function __byokGET(_req: Request, { params }: { params: Promise<{ id: stri
         return NextResponse.json({
           id: c.id,
           status: update.count === 1 ? 'failed' : c.status,
-          error: task.error,
+          error: 'generation_failed',
         });
       }
       return NextResponse.json({ id: c.id, status: 'processing' });
@@ -74,7 +74,7 @@ async function __byokGET(_req: Request, { params }: { params: Promise<{ id: stri
 
   // Terminal states: nothing more to do. (includes assets, drama detail page needs it)
   if (c.status === 'completed' || c.status === 'failed')
-    return NextResponse.json({ id: c.id, status: c.status, outputs: c.outputs, error: c.error, assets: c.assets, prompt: c.prompt, templateId: c.templateId, inputImage: c.inputImage, createdAt: c.createdAt });
+    return NextResponse.json({ id: c.id, status: c.status, outputs: c.outputs, error: c.status === 'failed' ? 'generation_failed' : null, assets: c.assets, prompt: c.prompt, templateId: c.templateId, inputImage: c.inputImage, createdAt: c.createdAt });
   // Placeholder record (no getUrl): frontend updates it on completion/failure; if already stuck in processing beyond timeout, treat as frontend interruption,
   // auto-mark as failed, to avoid creations page spinning forever. Placeholder has no charge, no refund needed.
   if (!c.getUrl) {
@@ -87,7 +87,7 @@ async function __byokGET(_req: Request, { params }: { params: Promise<{ id: stri
       await prisma.creation.updateMany({ where: { id: c.id, status: 'processing' }, data: { status: 'failed', error: 'timeout' } });
       return NextResponse.json({ id: c.id, status: 'failed', error: 'timeout' });
     }
-    return NextResponse.json({ id: c.id, status: c.status, outputs: c.outputs, error: c.error, assets: c.assets, prompt: c.prompt, templateId: c.templateId, inputImage: c.inputImage, createdAt: c.createdAt });
+    return NextResponse.json({ id: c.id, status: c.status, outputs: c.outputs, error: c.status === 'failed' ? 'generation_failed' : null, assets: c.assets, prompt: c.prompt, templateId: c.templateId, inputImage: c.inputImage, createdAt: c.createdAt });
   }
 
   try {
@@ -107,7 +107,7 @@ async function __byokGET(_req: Request, { params }: { params: Promise<{ id: stri
       if (update.count === 1 && c.cost > 0) {
         await grantCredits(c.userId, c.cost, 'refund', c.id); // refund a failed job
       }
-      return NextResponse.json({ id: c.id, status: 'failed', error: p.error });
+      return NextResponse.json({ id: c.id, status: 'failed', error: 'generation_failed' });
     }
     return NextResponse.json({ id: c.id, status: 'processing' });
   } catch {

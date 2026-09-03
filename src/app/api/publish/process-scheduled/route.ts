@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma';
 import { publishToPlatform } from '@/lib/publishing/platform-adapters';
 import { decryptToken } from '@/lib/publishing/token-crypto';
 import { isTokenExpired, refreshPlatformToken } from '@/lib/publishing/token-refresh';
+import { isUrlSafe } from '@/lib/security';
 
 /** Map raw error strings to controlled client-safe codes for scheduled-post failures. */
 function classifyPublishError(raw: string): string {
@@ -93,6 +94,10 @@ export async function POST(req: Request) {
       const hashtags: string[] = (() => {
         try { return JSON.parse(post.hashtagsJson || '[]') as string[]; } catch { return []; }
       })();
+      // Defense in depth: re-validate stored mediaUrl before server-side fetch.
+      if (!isUrlSafe(post.mediaUrl)) {
+        throw new Error('blocked_media_url');
+      }
       const result = await publishToPlatform(post.platform, accessToken, {
         mediaUrl: post.mediaUrl,
         caption: post.caption,

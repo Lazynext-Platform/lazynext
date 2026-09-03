@@ -20,7 +20,7 @@ export async function GET(req: Request) {
   if (!session) return NextResponse.json({ error: 'forbidden' }, { status: 403 });
 
   const url = new URL(req.url);
-  const filterUserId = url.searchParams.get('userId');
+  const filterUserId = url.searchParams.get('userId')?.slice(0, 100) || undefined;
   const shouldFix = url.searchParams.get('fix') === 'true';
 
   // Aggregate ledger deltas per user
@@ -84,6 +84,12 @@ export async function GET(req: Request) {
         // (negative discrepancy = ledger says more than DB → add credits to DB)
         // (positive discrepancy = DB has more than ledger → deduct credits from DB)
         const adjustment = -d.discrepancy;
+
+        // Prevent over-deduction: if adjustment is negative and would drive balance below zero, clamp.
+        if (adjustment < 0 && d.dbBalance + adjustment < 0) {
+          fixes.push({ userId: d.userId, adjustment, ok: false });
+          continue;
+        }
 
         // D1 doesn't support prisma.$transaction — use compensation pattern:
         // 1. Update user balance

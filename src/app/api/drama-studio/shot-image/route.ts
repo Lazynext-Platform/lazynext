@@ -4,6 +4,7 @@ import { auth } from '@/../auth';
 import { submitShotImage, normalizeRatio, MK_IMAGE_COST, getShotImageModel, getShotImageEditModel } from '@/lib/lazynext-studio/workflow';
 import { chargeAndSubmit, chargeErrorResponse } from '@/lib/lazynext-studio/gen-task';
 import { getUserPlanTier } from '@/lib/plan-tier';
+import { isUrlSafe } from '@/lib/security';
 
 export const maxDuration = 60;
 
@@ -22,7 +23,8 @@ async function __byokPOST(req: Request) {
   const toAbs = (u: unknown): string => {
     const s = typeof u === 'string' ? u.trim() : '';
     if (s.startsWith('/api/lazynext-studio/media/')) return new URL(s, req.url).toString();
-    return /^https?:\/\//.test(s) ? s : '';
+    if (!/^https?:\/\//.test(s)) return '';
+    return isUrlSafe(s) ? s : '';
   };
   const refImages = (Array.isArray(body.refImages) ? body.refImages : []).map(toAbs).filter(Boolean) as string[];
   if (!prompt) return NextResponse.json({ error: 'prompt_required' }, { status: 400 });

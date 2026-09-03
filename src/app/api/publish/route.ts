@@ -11,6 +11,10 @@ import {
 } from '@/lib/publishing/publisher';
 import { getPlatformCapabilities } from '@/lib/publishing/platforms';
 import type { PublishRequest, PublishResult } from '@/lib/publishing/types';
+import { isUrlSafe } from '@/lib/security';
+
+const MAX_CROSS_POST_TARGETS = 10;
+const MAX_CAPTION_LENGTH = 5000;
 
 export const maxDuration = 60;
 
@@ -23,6 +27,16 @@ async function __byokPOST(req: Request) {
   const request = body.request as PublishRequest | undefined;
   if (!request || !request.platform || !request.mediaUrl || !request.caption) {
     return NextResponse.json({ error: 'platform_media_caption_required' }, { status: 400 });
+  }
+
+  // SSRF: validate mediaUrl before any downstream fetch.
+  if (!isUrlSafe(request.mediaUrl)) {
+    return NextResponse.json({ error: 'blocked_url' }, { status: 400 });
+  }
+
+  // Cap cross-post targets to prevent unbounded credit charges.
+  if (request.crossPostTo && request.crossPostTo.length > MAX_CROSS_POST_TARGETS) {
+    return NextResponse.json({ error: 'too_many_cross_post_targets' }, { status: 400 });
   }
 
   // Validate against platform capabilities before charging.

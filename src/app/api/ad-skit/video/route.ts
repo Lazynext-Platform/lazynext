@@ -6,6 +6,7 @@ import { deductCredits, grantCredits } from '@/lib/credits';
 import { submitSkitVideo, getAdSkitVideoModel, AD_SKIT_TEMPLATE_ID } from '@/lib/ad-skit';
 import { videoCredits } from '@/lib/video-pricing';
 import { getUserPlanTier } from '@/lib/plan-tier';
+import { isUrlSafe } from '@/lib/security';
 
 export const maxDuration = 60;
 
@@ -19,8 +20,8 @@ async function __byokPOST(req: Request) {
 
   const body = await req.json().catch(() => ({}));
   const productUrls: string[] = Array.isArray(body.productUrls)
-    ? body.productUrls.filter((u: unknown) => typeof u === 'string' && u.startsWith('http')).slice(0, 4)
-    : typeof body.productUrl === 'string' && body.productUrl.startsWith('http')
+    ? body.productUrls.filter((u: unknown) => typeof u === 'string' && u.startsWith('http') && isUrlSafe(u as string)).slice(0, 4)
+    : typeof body.productUrl === 'string' && body.productUrl.startsWith('http') && isUrlSafe(body.productUrl)
       ? [body.productUrl]
       : [];
   const videoPrompt = typeof body.videoPrompt === 'string' ? body.videoPrompt.slice(0, 700) : '';

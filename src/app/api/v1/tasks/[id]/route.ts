@@ -54,14 +54,16 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   });
   if (!membership) return NextResponse.json({ error: 'forbidden' }, { status: 403 });
 
+  const VALID_TASK_STATUSES = ['todo', 'in_progress', 'done', 'cancelled'];
+  const VALID_TASK_PRIORITIES = ['low', 'medium', 'high', 'urgent'];
   const updated = await prisma.task.update({
     where: { id },
     data: {
       title: body.title?.trim().slice(0, 200) || undefined,
       description: body.description !== undefined ? (typeof body.description === 'string' ? body.description.slice(0, 2000) : body.description) : undefined,
-      status: body.status || undefined,
-      priority: body.priority || undefined,
-      assigneeId: body.assigneeId !== undefined ? body.assigneeId : undefined,
+      status: typeof body.status === 'string' && VALID_TASK_STATUSES.includes(body.status) ? body.status : undefined,
+      priority: typeof body.priority === 'string' && VALID_TASK_PRIORITIES.includes(body.priority) ? body.priority : undefined,
+      assigneeId: typeof body.assigneeId === 'string' ? body.assigneeId.slice(0, 128) : undefined,
       dueDate: body.dueDate ? new Date(body.dueDate) : undefined,
     },
   });

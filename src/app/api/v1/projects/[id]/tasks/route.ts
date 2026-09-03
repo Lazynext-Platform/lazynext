@@ -57,14 +57,16 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   const title = body.title?.trim();
   if (!title) return NextResponse.json({ error: 'validation', message: 'title is required' }, { status: 400 });
 
+  const VALID_TASK_STATUSES = ['todo', 'in_progress', 'done', 'cancelled'];
+  const VALID_TASK_PRIORITIES = ['low', 'medium', 'high', 'urgent'];
   const task = await prisma.task.create({
     data: {
       projectId,
       title: title.slice(0, 200),
       description: typeof body.description === 'string' ? body.description.slice(0, 2000) : null,
-      status: body.status || 'todo',
-      priority: body.priority || 'medium',
-      assigneeId: body.assigneeId || null,
+      status: typeof body.status === 'string' && VALID_TASK_STATUSES.includes(body.status) ? body.status : 'todo',
+      priority: typeof body.priority === 'string' && VALID_TASK_PRIORITIES.includes(body.priority) ? body.priority : 'medium',
+      assigneeId: typeof body.assigneeId === 'string' ? body.assigneeId.slice(0, 128) : null,
       dueDate: body.dueDate ? new Date(body.dueDate) : null,
     },
   });

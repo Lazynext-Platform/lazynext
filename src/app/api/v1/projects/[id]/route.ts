@@ -61,12 +61,13 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   });
   if (!membership) return NextResponse.json({ error: 'forbidden' }, { status: 403 });
 
+  const VALID_PROJECT_STATUSES = ['active', 'archived', 'deleted'];
   const updated = await prisma.project.update({
     where: { id },
     data: {
       name: body.name?.trim().slice(0, 200) || undefined,
       description: body.description !== undefined ? (typeof body.description === 'string' ? body.description.slice(0, 2000) : body.description) : undefined,
-      status: body.status || undefined,
+      status: typeof body.status === 'string' && VALID_PROJECT_STATUSES.includes(body.status) ? body.status : undefined,
     },
   });
 

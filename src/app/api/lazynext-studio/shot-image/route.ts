@@ -5,6 +5,7 @@ import { marketingPlanSchema } from '@/lib/lazynext-studio/schema';
 import { buildShotImagePrompt, buildShotImageEditPrompt, normalizeRatio, submitShotImage, MK_IMAGE_COST, getShotImageModel, getShotImageEditModel } from '@/lib/lazynext-studio/workflow';
 import { chargeAndSubmit, chargeErrorResponse } from '@/lib/lazynext-studio/gen-task';
 import { getUserPlanTier } from '@/lib/plan-tier';
+import { isUrlSafe } from '@/lib/security';
 
 export const maxDuration = 60;
 
@@ -15,6 +16,14 @@ function toAbsMedia(v: unknown, base: string): string {
   const s = typeof v === 'string' ? v.trim() : '';
   if (s.startsWith('/api/lazynext-studio/media/')) return new URL(s, base).toString();
   return /^https?:\/\//.test(s) ? s : '';
+}
+
+// Wrap toAbsMedia with SSRF validation: same-origin media paths are safe, external URLs must pass isUrlSafe.
+function toSafeAbsMedia(v: unknown, base: string): string {
+  const abs = toAbsMedia(v, base);
+  if (!abs) return '';
+  if (abs.startsWith('/api/lazynext-studio/media/')) return abs; // same-origin relative path
+  return isUrlSafe(abs) ? abs : '';
 }
 
 // Per-shot image generation (nano-banana): requires login + charges MK_IMAGE_COST; refunds on submit/async failure, Atlas errors pass through.
@@ -35,8 +44,8 @@ async function __byokPOST(req: Request) {
   const ratio = normalizeRatio(plan.ratio);
   // Product images support multiple (productUrls[]); backward compatible with single productUrl. Avatar is single. Edit reference images max 4 (submitShotImage will slice).
   const rawProducts = Array.isArray(body.productUrls) ? body.productUrls : [body.productUrl];
-  const productUrls: string[] = rawProducts.map((u: unknown) => toAbsMedia(u, req.url)).filter(Boolean);
-  const avatarUrl = toAbsMedia(body.avatarUrl, req.url);
+  const productUrls: string[] = rawProducts.map((u: unknown) => toSafeAbsMedia(u, req.url)).filter(Boolean);
+  const avatarUrl = toSafeAbsMedia(body.avatarUrl, req.url);
   // Avatar placed first: when multiple product images + portrait exceed submitShotImage's slice(4) limit, prioritize keeping the portrait (otherwise the speaking subject loses their face).
   const refImages = [avatarUrl, ...productUrls].filter(Boolean);
   const useEdit = refImages.length > 0;

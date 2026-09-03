@@ -6,8 +6,11 @@ import { chargeAndSubmit, chargeErrorResponse } from '@/lib/lazynext-studio/gen-
 import { videoCredits } from '@/lib/video-pricing';
 import { NonPublicMediaUrlError, toAtlasMediaUrl } from '@/lib/public-media-url';
 import { uploadInputMediaToAtlas, ADREF_VIDEO_UPLOAD_LIMIT, ADREF_IMAGE_UPLOAD_LIMIT } from '@/lib/ad-reference-media';
+import { isUrlSafe } from '@/lib/security';
 
 export const maxDuration = 60;
+
+const MAX_VIDEO_SECONDS = 300;
 
 // gemini-omni-flash/video-edit swaps person + product in one step (pure omni, person swap also goes here since 2026-07-16).
 // Person swap occasional async failure (1010002) is automatically retried as fallback by frontend submit+poll.
@@ -33,9 +36,13 @@ async function __byokPOST(req: Request) {
   if (!videoUrl) return NextResponse.json({ error: 'video_url_required' }, { status: 400 });
   // Pure omni: one video-edit swaps person + product simultaneously, at least one of avatar / product required.
   if (!avatarUrl && !productUrl) return NextResponse.json({ error: 'avatar_or_product_required' }, { status: 400 });
+  // SSRF: validate URLs before Atlas upload fetches them server-side.
+  if (!isUrlSafe(videoUrl) || (avatarUrl && !isUrlSafe(avatarUrl)) || (productUrl && !isUrlSafe(productUrl))) {
+    return NextResponse.json({ error: 'blocked_url' }, { status: 400 });
+  }
 
   // omni video-edit bills by reference video seconds; frontend reads duration on upload and passes with body.videoSeconds, conservatively defaults to 30s.
-  const videoSeconds = Number(body.videoSeconds) > 0 ? Number(body.videoSeconds) : 30;
+  const videoSeconds = Math.min(Number(body.videoSeconds) > 0 ? Number(body.videoSeconds) : 30, MAX_VIDEO_SECONDS);
 
   const { prompt } = buildEditRequest({
     videoUrl,

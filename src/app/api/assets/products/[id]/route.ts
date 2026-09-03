@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@/../auth';
 import { prisma } from '@/lib/prisma';
+import { isUrlSafe } from '@/lib/security';
 
 export const dynamic = 'force-dynamic';
 
@@ -16,8 +17,8 @@ export async function PATCH(req: Request, { params }: Params) {
   const data: Record<string, unknown> = {};
   if (typeof body.name === 'string') data.name = body.name.trim().slice(0, 120);
   if (typeof body.description === 'string') data.description = body.description.trim().slice(0, 2000);
-  if (typeof body.imageUrl === 'string') data.imageUrl = /^https?:\/\//.test(body.imageUrl) ? body.imageUrl : null;
-  if (typeof body.sourceUrl === 'string') data.sourceUrl = /^https?:\/\//.test(body.sourceUrl) ? body.sourceUrl : null;
+  if (typeof body.imageUrl === 'string') data.imageUrl = body.imageUrl.length <= 2048 && isUrlSafe(body.imageUrl) ? body.imageUrl : null;
+  if (typeof body.sourceUrl === 'string') data.sourceUrl = body.sourceUrl.length <= 2048 && isUrlSafe(body.sourceUrl) ? body.sourceUrl : null;
 
   // updateMany with userId filter enforces ownership and reports count.
   const res = await prisma.adProduct.updateMany({

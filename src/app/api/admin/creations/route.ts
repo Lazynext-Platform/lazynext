@@ -11,9 +11,12 @@ export async function GET(req: Request) {
   if (!session) return NextResponse.json({ error: 'forbidden' }, { status: 403 });
 
   const url = new URL(req.url);
-  const status = url.searchParams.get('status')?.trim() || '';
+  const rawStatus = url.searchParams.get('status')?.trim() || '';
+  // Allowlist status filter to prevent arbitrary query injection.
+  const VALID_STATUSES = ['processing', 'completed', 'failed', 'persisting'];
+  const status = VALID_STATUSES.includes(rawStatus) ? rawStatus : '';
   const limit = Math.min(parseInt(url.searchParams.get('limit') || '50', 10), 200);
-  const offset = parseInt(url.searchParams.get('offset') || '0', 10);
+  const offset = Math.max(0, parseInt(url.searchParams.get('offset') || '0', 10) || 0);
 
   const where = status ? { status } : {};
 
@@ -48,7 +51,11 @@ export async function GET(req: Request) {
           _count: true,
         }),
       ]);
-      return NextResponse.json({ creations, total, statusCounts });
+      return NextResponse.json({
+        creations: creations.map((c) => ({ ...c, error: c.status === 'failed' ? 'generation_failed' : null })),
+        total,
+        statusCounts,
+      });
     } catch (e) {
       if (attempt < delays.length) {
         await new Promise((r) => setTimeout(r, delays[attempt]));

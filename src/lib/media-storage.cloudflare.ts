@@ -339,7 +339,8 @@ export async function serveMedia(
     meta = await s3Head(key);
   } catch (e) {
     if (e instanceof NotFoundError) return new Response('not found', { status: 404 });
-    return new Response(String(e), { status: 500 });
+    console.error('[media-storage] s3Head error:', String(e));
+    return new Response('storage_error', { status: 500 });
   }
 
   const size = meta.size;
@@ -368,7 +369,8 @@ export async function serveMedia(
       return new Response(buffer, { status: 206, headers: rangeHeaders });
     } catch (e) {
       if (e instanceof NotFoundError) return new Response('not found', { status: 404 });
-      return new Response(String(e), { status: 500 });
+      console.error('[media-storage] s3Get range error:', String(e));
+      return new Response('storage_error', { status: 500 });
     }
   }
 
@@ -379,7 +381,8 @@ export async function serveMedia(
     return new Response(buffer, { headers: base });
   } catch (e) {
     if (e instanceof NotFoundError) return new Response('not found', { status: 404 });
-    return new Response(String(e), { status: 500 });
+    console.error('[media-storage] s3Get error:', String(e));
+    return new Response('storage_error', { status: 500 });
   }
 }
 

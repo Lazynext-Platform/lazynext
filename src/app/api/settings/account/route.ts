@@ -39,6 +39,9 @@ export async function DELETE(req: NextRequest) {
     if (!body.password) {
       return NextResponse.json({ error: 'password_required' }, { status: 400 });
     }
+    if (body.password.length > 128) {
+      return NextResponse.json({ error: 'password_incorrect' }, { status: 403 });
+    }
     const valid = await bcrypt.compare(body.password, user.password);
     if (!valid) {
       return NextResponse.json({ error: 'password_incorrect' }, { status: 403 });

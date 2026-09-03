@@ -193,7 +193,8 @@ export async function handleClientUploadRequest(
     return Response.json({ url });
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
-    const status = msg === 'unauthorized' ? 401 : 500;
-    return Response.json({ error: msg }, { status });
+    if (msg === 'unauthorized') return Response.json({ error: 'unauthorized' }, { status: 401 });
+    console.error('[media-storage.local] client upload error:', msg);
+    return Response.json({ error: 'upload_failed' }, { status: 500 });
   }
 }
