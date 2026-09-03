@@ -44,6 +44,7 @@ model User {
   sharedLinks  SharedLink[]
   webhookEndpoints WebhookEndpoint[]
   messages     Message[]
+  dataRequests DataRequest[]
   creativeComments CreativeComment[]
   teamMembers  TeamMember[]
   teamActivities TeamActivity[]
@@ -1009,4 +1010,22 @@ model ApiKey {
 
   @@index([userId])
   @@index([keyHash])
+}
+
+// GDPR/data-subject access request (filed via /data-request page).
+model DataRequest {
+  id         String   @id @default(cuid())
+  userId     String?
+  type       String   // access | correction | deletion | portability | restriction | objection
+  email      String
+  name       String?
+  details    String?
+  status     String   @default("pending") // pending | in_review | completed | rejected
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  user       User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([status])
 }

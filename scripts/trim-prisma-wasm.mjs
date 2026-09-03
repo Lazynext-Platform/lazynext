@@ -95,34 +95,14 @@ if (existsSync(dotPrismaDir)) {
 console.log(`\nDone: removed ${removedCount} files, freed ${(removedBytes / 1024 / 1024).toFixed(1)} MB`);
 console.log(`Kept engines: ${[...KEEP_ENGINES].join(', ')}`);
 
-// Prisma 7: swap the "fast" WASM engine with the "small" variant to reduce bundle size.
-// The "fast" engine is 3.2 MB (1.1 MB gzipped); the "small" engine is 1.6 MB (~550 KB gzipped).
-// Both share identical JS wrappers (wasm-bindgen interface is the same), so the edge.js
-// runtime works unchanged with either binary. The "small" engine is designed for
-// constrained environments like Cloudflare Workers and is the recommended choice when
-// bundle size is a concern.
-const smallWasmSrc = join(projectRoot, 'node_modules', 'prisma', 'build', 'query_compiler_small_bg.sqlite.wasm');
-const fastWasmTargets = [
-  join(dotPrismaDir, 'query_compiler_fast_bg.wasm'),
-  join(projectRoot, 'node_modules', '.prisma', 'client', 'query_compiler_fast_bg.wasm'),
-];
-if (existsSync(smallWasmSrc)) {
-  const smallStat = statSync(smallWasmSrc);
-  let swapped = false;
-  for (const target of fastWasmTargets) {
-    if (existsSync(target)) {
-      const targetStat = statSync(target);
-      copyFileSync(smallWasmSrc, target);
-      swapped = true;
-      console.log(`  swapped fast→small WASM at ${target.split('/').pop()} (${(targetStat.size / 1024).toFixed(0)} KiB → ${(smallStat.size / 1024).toFixed(0)} KiB)`);
-    }
-  }
-  if (swapped) {
-    console.log(`  WASM swap saved ${((3227 - smallStat.size / 1024)).toFixed(0)} KiB uncompressed (~500 KiB gzipped)`);
-  }
-} else {
-  console.log('  [warn] small WASM engine not found — keeping fast engine');
-}
+// Prisma 7: the "fast" and "small" WASM engines have DIFFERENT JS glue code
+// (query_compiler_fast_bg.js vs query_compiler_small_bg.js). Swapping the WASM
+// binary without also swapping the JS glue code causes a runtime error:
+//   WebAssembly.Instance(): Import #0 "./query_compiler_small_bg.js": module is not an object or function
+// We previously swapped fast→small to save ~500 KB gzipped, but this broke all
+// Prisma operations in production. The fast engine is larger but works correctly.
+// DO NOT swap the WASM binary.
+console.log('  keeping fast WASM engine (small swap disabled — JS glue mismatch)');
 
 // Prisma 7: remove the legacy query_compiler_bg.wasm (not used in workerd/edge runtime).
 // The edge.js entry point only uses query_compiler_fast_bg.* and wasm-compiler-edge.

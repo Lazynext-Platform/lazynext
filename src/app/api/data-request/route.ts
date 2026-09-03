@@ -1,0 +1,56 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { auth } from '@/../auth';
+import { prisma } from '@/lib/prisma';
+
+/**
+ * POST /api/data-request — submit a GDPR/data-subject access request.
+ *
+ * If the user is authenticated, the request is linked to their account.
+ * If not, it's stored with just the email address.
+ *
+ * Validates the request type and email format.
+ */
+const VALID_TYPES = ['access', 'correction', 'deletion', 'portability', 'restriction', 'objection'];
+
+export async function POST(req: NextRequest) {
+  let body: { type?: string; email?: string; name?: string; details?: string };
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: 'invalid_json' }, { status: 400 });
+  }
+
+  const type = body.type?.trim();
+  const email = body.email?.trim().toLowerCase();
+
+  if (!type || !VALID_TYPES.includes(type)) {
+    return NextResponse.json({ error: 'invalid_type' }, { status: 400 });
+  }
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return NextResponse.json({ error: 'invalid_email' }, { status: 400 });
+  }
+
+  // Link to user if authenticated (optional — unauthenticated submissions allowed)
+  const session = await auth().catch(() => null);
+  const userId = session?.user?.id || null;
+
+  try {
+    const request = await prisma.dataRequest.create({
+      data: {
+        userId,
+        type,
+        email,
+        name: body.name?.trim() || null,
+        details: body.details?.trim() || null,
+        status: 'pending',
+      },
+    });
+
+    return NextResponse.json({ ok: true, id: request.id }, { status: 201 });
+  } catch (e) {
+    return NextResponse.json(
+      { error: e instanceof Error ? e.message : 'failed_to_submit' },
+      { status: 500 },
+    );
+  }
+}

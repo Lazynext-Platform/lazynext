@@ -34,22 +34,24 @@ export default function DataRequestPage() {
     }
     setSubmitting(true);
     try {
-      // In production, this would POST to an API endpoint.
-      // For now, we simulate submission and store in localStorage for demo.
-      const request = {
-        type,
-        email: email.trim(),
-        name: name.trim(),
-        details: details.trim(),
-        submittedAt: new Date().toISOString(),
-      };
-      const existing = JSON.parse(localStorage.getItem('data-requests') || '[]');
-      existing.push(request);
-      localStorage.setItem('data-requests', JSON.stringify(existing));
+      const res = await fetch('/api/data-request', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type,
+          email: email.trim(),
+          name: name.trim(),
+          details: details.trim(),
+        }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || 'Failed to submit request');
+      }
       setSubmitted(true);
       toast('success', 'Data request submitted');
-    } catch {
-      toast('error', 'Failed to submit request');
+    } catch (err) {
+      toast('error', err instanceof Error ? err.message : 'Failed to submit request');
     } finally {
       setSubmitting(false);
     }
