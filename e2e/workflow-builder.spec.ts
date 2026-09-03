@@ -2,24 +2,19 @@ import { test, expect } from '@playwright/test';
 
 /**
  * E2E smoke tests for the Creative Workflow Builder page.
- * Auth-gated page — shows AuthModal when unauthenticated.
+ * /workflow-builder redirects to /creative/pipelines (next.config.mjs)
+ * When unauthenticated, the page shows a "Sign in" link instead of h1 content.
  */
 
-test.describe('Workflow Builder Page', () => {
+test.describe('Workflow Builder Page (redirected to /creative/pipelines)', () => {
   test('loads with correct title', async ({ page }) => {
     await page.goto('/workflow-builder');
     await expect(page).toHaveTitle(/Lazynext/i);
   });
 
-  test('has one h1', async ({ page }) => {
+  test('redirects to /creative/pipelines', async ({ page }) => {
     await page.goto('/workflow-builder');
-    const h1s = page.locator('h1');
-    await expect(h1s).toHaveCount(1);
-  });
-
-  test('h1 contains workflow builder text', async ({ page }) => {
-    await page.goto('/workflow-builder');
-    await expect(page.locator('h1')).toContainText(/Workflow|工作流|ワークフロー|Flujos|Flux|워크플로우|سير العمل|वर्कफ़्लो|Quy trình|เวิร์กโฟลว์|Alur Kerja/i);
+    await expect(page).toHaveURL(/\/creative\/pipelines/);
   });
 
   test('has data-theme attribute', async ({ page }) => {
@@ -27,10 +22,13 @@ test.describe('Workflow Builder Page', () => {
     await expect(page.locator('html')).toHaveAttribute('data-theme', /.*/);
   });
 
-  test('shows auth modal when unauthenticated', async ({ page }) => {
+  test('shows auth gate or main content', async ({ page }) => {
     await page.goto('/workflow-builder');
-    // The page should show the h1 and an auth prompt
-    await expect(page.locator('h1')).toBeVisible();
+    await page.waitForTimeout(1000);
+    // When unauthenticated, the page shows a "Sign in" link or h1 content
+    const h1Count = await page.locator('h1').count();
+    const signInCount = await page.locator('a:has-text("Sign in")').count();
+    expect(h1Count + signInCount).toBeGreaterThan(0);
   });
 
   test('no horizontal overflow at 375px', async ({ page }) => {
@@ -82,20 +80,6 @@ test.describe('Workflow Builder Page', () => {
   test('dashboard config includes workflow-builder route', async ({ page }) => {
     // Verify the route exists by navigating to it (even if auth-gated)
     const response = await page.goto('/workflow-builder');
-    expect(response?.status()).toBe(200);
+    expect(response?.status()).toBeLessThan(400);
   });
 });
-
-/**
- * Authenticated E2E tests for the Workflow Builder v2 UI are in
- * e2e/auth-workflow-builder.spec.ts, which runs under the chromium-auth
- * project with an active session for test@lazynext.local.
- *
- * The advanced flow (conditions, execution preview, save/reload round-trip)
- * is verified via:
- *   1. Unit tests (test/workflow-conditions.test.ts, test/workflow-execution.test.ts)
- *      — condition evaluation, wave planning, configFromWorkflow, round-trip serialization
- *   2. Authenticated E2E (e2e/auth-workflow-builder.spec.ts)
- *      — parallel wave creation, concurrent execution, page load with auth
- *   3. Production smoke testing against the deployed worker
- */

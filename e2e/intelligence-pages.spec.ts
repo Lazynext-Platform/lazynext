@@ -9,20 +9,7 @@ import { test, expect } from '@playwright/test';
  */
 
 const pages = [
-  'audience-insights',
-  'brand-concepts',
-  'brand-voice',
-  'brief-intelligence',
-  'competitor-intel',
-  'fatigue',
-  'forecasting',
-  'ml-insights',
-  'quality-scoring',
-  'repurposing',
-  'scene-analysis',
-  'shot-planner',
-  'trend-intelligence',
-  'viral-analyzer',
+  // All routes redirected
 ];
 
 for (const p of pages) {
@@ -45,6 +32,48 @@ for (const p of pages) {
     test('is reachable via direct navigation', async ({ page }) => {
       await page.goto(`/${p}`);
       await expect(page).toHaveURL(new RegExp(`/${p}`));
+    });
+
+    test('has auth gate or main content', async ({ page }) => {
+      await page.goto(`/${p}`);
+      const authModal = page.locator('[role="dialog"]');
+      const content = page.locator('h1');
+      const authCount = await authModal.count();
+      const contentCount = await content.count();
+      expect(authCount + contentCount).toBeGreaterThan(0);
+    });
+  });
+}
+
+// Redirected routes — these old pages redirect to new destinations
+const redirectedPages = [
+  'audience-insights', 'brand-voice', 'forecasting', 'ml-insights', 'repurposing', 'brief-intelligence', 'brand-concepts', 'quality-scoring', 'fatigue', 'shot-planner', 'trend-intelligence', 'competitor-intel', 'scene-analysis', 'viral-analyzer',
+];
+
+for (const p of redirectedPages) {
+  test.describe(`${p} Page (redirected)`, () => {
+    test('loads with correct title', async ({ page }) => {
+      await page.goto(`/${p}`);
+      await expect(page).toHaveTitle(/Lazynext/i);
+    });
+
+    test('has one h1', async ({ page }) => {
+      await page.goto(`/${p}`);
+      await expect(page.locator('h1')).toHaveCount(1);
+    });
+
+    test('has data-theme attribute', async ({ page }) => {
+      await page.goto(`/${p}`);
+      await expect(page.locator('html')).toHaveAttribute('data-theme', /.*/);
+    });
+
+    test('is reachable via direct navigation', async ({ page }) => {
+      await page.goto(`/${p}`);
+      // Each page redirects to its new destination
+      const dests = {"audience-insights": "/creative/generators", "brand-voice": "/creative/generators", "forecasting": "/creative/generators", "ml-insights": "/analytics", "repurposing": "/creative/generators", "brief-intelligence": "/creative/generators", "brand-concepts": "/creative/generators", "quality-scoring": "/creative/generators", "fatigue": "/creative/generators", "shot-planner": "/creative/generators", "trend-intelligence": "/creative/generators", "competitor-intel": "/creative/generators", "scene-analysis": "/creative/generators", "viral-analyzer": "/creative/generators"};
+      const dest = dests[p];
+      const escaped = dest.replace(/\//g, '\\/');
+      await expect(page).toHaveURL(new RegExp(escaped));
     });
 
     test('has auth gate or main content', async ({ page }) => {

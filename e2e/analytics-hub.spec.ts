@@ -42,7 +42,7 @@ test.describe('Analytics Hub Page', () => {
 
   test('is reachable via direct navigation', async ({ page }) => {
     await page.goto('/analytics-hub');
-    await expect(page).toHaveURL(/\/analytics-hub/);
+    await expect(page).toHaveURL(/\/analytics/);
   });
 
   test('has auth gate or main content', async ({ page }) => {

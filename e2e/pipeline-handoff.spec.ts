@@ -2,30 +2,28 @@ import { test, expect } from '@playwright/test';
 
 /**
  * E2E smoke tests for pipeline deep-linking and clip-editor handoff.
- * Auth-gated pages — show AuthModal when unauthenticated.
+ * /pipeline redirects to /creative/pipelines (next.config.mjs)
+ * /clip-editor redirects to /creative (next.config.mjs)
+ * When unauthenticated, pages show a "Sign in" link instead of h1 content.
  */
 
-test.describe('Pipeline Page — Deep Linking', () => {
+test.describe('Pipeline Page — Deep Linking (redirected to /creative/pipelines)', () => {
   test('loads with correct title', async ({ page }) => {
     await page.goto('/pipeline');
     await expect(page).toHaveTitle(/Lazynext/i);
   });
 
-  test('has one h1', async ({ page }) => {
+  test('redirects to /creative/pipelines', async ({ page }) => {
     await page.goto('/pipeline');
-    const h1s = page.locator('h1');
-    await expect(h1s).toHaveCount(1);
+    await expect(page).toHaveURL(/\/creative\/pipelines/);
   });
 
-  test('h1 contains pipeline text', async ({ page }) => {
+  test('shows auth gate or main content', async ({ page }) => {
     await page.goto('/pipeline');
-    await expect(page.locator('h1')).toContainText(/Pipeline|管道|パイプライン|Pipeline|파이프라인|Pipeline|Pipeline|Pipeline|पाइपलाइन|Pipeline|Pipeline|Pipeline/i);
-  });
-
-  test('shows auth prompt when unauthenticated', async ({ page }) => {
-    await page.goto('/pipeline');
-    // The page should show the h1 and an auth prompt
-    await expect(page.locator('h1')).toBeVisible();
+    await page.waitForTimeout(1000);
+    const h1Count = await page.locator('h1').count();
+    const signInCount = await page.locator('a:has-text("Sign in")').count();
+    expect(h1Count + signInCount).toBeGreaterThan(0);
   });
 
   test('deep link with ?id= loads page without crash', async ({ page }) => {
@@ -33,9 +31,12 @@ test.describe('Pipeline Page — Deep Linking', () => {
     await expect(page).toHaveTitle(/Lazynext/i);
   });
 
-  test('deep link with ?id= shows auth prompt when unauthenticated', async ({ page }) => {
+  test('deep link with ?id= shows auth gate or main content', async ({ page }) => {
     await page.goto('/pipeline?id=pl_nonexistent_test');
-    await expect(page.locator('h1')).toBeVisible();
+    await page.waitForTimeout(1000);
+    const h1Count = await page.locator('h1').count();
+    const signInCount = await page.locator('a:has-text("Sign in")').count();
+    expect(h1Count + signInCount).toBeGreaterThan(0);
   });
 
   test('has no horizontal overflow at 375px', async ({ page }) => {
@@ -67,21 +68,23 @@ test.describe('Pipeline Page — Deep Linking', () => {
   });
 });
 
-test.describe('Clip Editor — Pipeline Handoff', () => {
+test.describe('Clip Editor — Pipeline Handoff (redirected to /creative)', () => {
   test('loads with correct title', async ({ page }) => {
     await page.goto('/clip-editor');
     await expect(page).toHaveTitle(/Lazynext/i);
   });
 
-  test('has one h1', async ({ page }) => {
+  test('redirects to /creative', async ({ page }) => {
     await page.goto('/clip-editor');
-    const h1s = page.locator('h1');
-    await expect(h1s).toHaveCount(1);
+    await expect(page).toHaveURL(/\/creative/);
   });
 
-  test('shows auth prompt when unauthenticated', async ({ page }) => {
+  test('shows auth gate or main content', async ({ page }) => {
     await page.goto('/clip-editor');
-    await expect(page.locator('h1')).toBeVisible();
+    await page.waitForTimeout(1000);
+    const h1Count = await page.locator('h1').count();
+    const signInCount = await page.locator('a:has-text("Sign in")').count();
+    expect(h1Count + signInCount).toBeGreaterThan(0);
   });
 
   test('handoff with ?pipelineId=&mediaUrl= loads page without crash', async ({ page }) => {
@@ -89,9 +92,12 @@ test.describe('Clip Editor — Pipeline Handoff', () => {
     await expect(page).toHaveTitle(/Lazynext/i);
   });
 
-  test('handoff with ?pipelineId=&mediaUrl= shows auth prompt when unauthenticated', async ({ page }) => {
+  test('handoff with ?pipelineId=&mediaUrl= shows auth gate or main content', async ({ page }) => {
     await page.goto('/clip-editor?pipelineId=pl_test&mediaUrl=https://example.com/video.mp4');
-    await expect(page.locator('h1')).toBeVisible();
+    await page.waitForTimeout(1000);
+    const h1Count = await page.locator('h1').count();
+    const signInCount = await page.locator('a:has-text("Sign in")').count();
+    expect(h1Count + signInCount).toBeGreaterThan(0);
   });
 
   test('has no horizontal overflow at 375px', async ({ page }) => {

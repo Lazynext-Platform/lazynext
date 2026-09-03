@@ -6,8 +6,7 @@ import { test, expect } from '@playwright/test';
  */
 
 const pages = [
-  'ad-creative-aida-framework-designer',
-  'ad-creative-unique-mechanism-designer',
+  // All routes redirected
 ];
 
 for (const p of pages) {
@@ -30,6 +29,44 @@ for (const p of pages) {
     test('is reachable via direct navigation', async ({ page }) => {
       await page.goto(`/${p}`);
       await expect(page).toHaveURL(new RegExp(`/${p}`));
+    });
+
+    test('has auth gate or main content', async ({ page }) => {
+      await page.goto(`/${p}`);
+      const authModal = page.locator('[role="dialog"]');
+      const content = page.locator('h1');
+      const authCount = await authModal.count();
+      const contentCount = await content.count();
+      expect(authCount + contentCount).toBeGreaterThan(0);
+    });
+  });
+}
+
+// Redirected routes — these old pages redirect to new destinations
+const redirectedPages = [
+  'ad-creative-aida-framework-designer', 'ad-creative-unique-mechanism-designer',
+];
+
+for (const p of redirectedPages) {
+  test.describe(`${p} Page (redirected)`, () => {
+    test('loads with correct title', async ({ page }) => {
+      await page.goto(`/${p}`);
+      await expect(page).toHaveTitle(/Lazynext/i);
+    });
+
+    test('has one h1', async ({ page }) => {
+      await page.goto(`/${p}`);
+      await expect(page.locator('h1')).toHaveCount(1);
+    });
+
+    test('has data-theme attribute', async ({ page }) => {
+      await page.goto(`/${p}`);
+      await expect(page.locator('html')).toHaveAttribute('data-theme', /.*/);
+    });
+
+    test('is reachable via direct navigation', async ({ page }) => {
+      await page.goto(`/${p}`);
+      await expect(page).toHaveURL(/\/creative\/generators/);
     });
 
     test('has auth gate or main content', async ({ page }) => {

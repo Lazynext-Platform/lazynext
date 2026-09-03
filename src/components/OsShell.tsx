@@ -164,7 +164,7 @@ export function OsShell({ children }: { children: React.ReactNode }) {
         className="sticky top-0 z-40 border-b-2 bg-surface pt-safe"
         style={{ borderColor: 'var(--c-ink)' }}
       >
-        <div className="flex h-14 items-center gap-2 px-3 sm:px-4">
+        <div className="flex h-14 items-center gap-2 px-3 sm:px-4 max-w-full overflow-x-hidden">
           {/* Mobile menu toggle */}
           <button
             className="lg:hidden p-2 border-2 rounded-[var(--radius-sm)] bg-surface hover:bg-hover transition-colors"
@@ -286,7 +286,7 @@ export function OsShell({ children }: { children: React.ReactNode }) {
 
           {/* Search trigger */}
           <button
-            className="flex items-center gap-2 px-3 py-1.5 text-sm text-fg-muted border-2 rounded-[var(--radius-sm)] bg-surface hover:bg-hover transition-colors min-w-[120px] sm:min-w-[200px]"
+            className="flex items-center gap-2 px-3 py-1.5 text-sm text-fg-muted border-2 rounded-[var(--radius-sm)] bg-surface hover:bg-hover transition-colors min-w-0 sm:min-w-[200px]"
             style={{ borderColor: 'var(--c-ink)' }}
             onClick={() => setSearchOpen(true)}
             aria-label="Open search"

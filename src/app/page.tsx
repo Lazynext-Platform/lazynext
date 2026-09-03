@@ -70,6 +70,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen text-fg app-grid-bg bg-app">
+      <a href="#main-content" className="skip-link">Skip to content</a>
       {/* Email verification success banner */}
       {verified === 'true' && (
         <div className="mx-auto max-w-6xl px-6 pt-4">
@@ -89,6 +90,7 @@ export default function Home() {
         </div>
       )}
 
+      <main id="main-content" tabIndex={-1}>
       {/* Hero */}
       <div className="text-center pt-16 pb-12 px-6">
         <div className="mb-4 flex justify-center">
@@ -102,7 +104,7 @@ export default function Home() {
           {t('home.heroTitle')}<br /><span style={{ color: 'var(--color-brand-accent)' }}>{t('home.heroTitleHl')}</span>
         </h1>
         <p className="mx-auto mt-5 max-w-2xl text-fg-faint">{t('home.heroSubtitle')}</p>
-        <div className="mt-8 flex items-center justify-center gap-3">
+        <nav className="mt-8 flex items-center justify-center gap-3" aria-label="Get started">
           <Link
             href="/dashboard"
             className="inline-flex items-center gap-2 rounded-lg px-5 py-2.5 text-sm font-semibold text-white transition hover:opacity-90"
@@ -116,11 +118,11 @@ export default function Home() {
           >
             {t('home.signUp')}
           </Link>
-        </div>
+        </nav>
       </div>
 
       {/* OS Module Grid */}
-      <div className="max-w-6xl mx-auto px-4 pb-16">
+      <nav className="max-w-6xl mx-auto px-4 pb-16" aria-label="OS modules">
         <h2 className="mb-6 text-center text-lg font-semibold text-fg-secondary">
           {OS_MODULES.length} modules · one unified workspace
         </h2>
@@ -147,10 +149,10 @@ export default function Home() {
             );
           })}
         </div>
-      </div>
+      </nav>
 
       {/* Platform Features */}
-      <div className="max-w-6xl mx-auto px-4 pb-16">
+      <nav className="max-w-6xl mx-auto px-4 pb-16" aria-label="Platform features">
         <h2 className="mb-6 text-center text-lg font-semibold text-fg-secondary">
           Platform
         </h2>
@@ -174,7 +176,7 @@ export default function Home() {
             );
           })}
         </div>
-      </div>
+      </nav>
 
       {/* Stats */}
       <div className="max-w-4xl mx-auto px-4 pb-24">
@@ -192,6 +194,7 @@ export default function Home() {
           ))}
         </div>
       </div>
+      </main>
     </div>
   );
 }

@@ -1,22 +1,20 @@
 import { test, expect } from '@playwright/test';
 
-test.describe('Lazynext Studio', () => {
+/**
+ * E2E smoke tests for old studio pages.
+ * All routes redirect: /lazynext-studio → /creative, /drama-studio → /creative,
+ * /ad-skit → /creative/generators, /ad-reference → /creative/generators
+ */
+
+test.describe('Lazynext Studio (redirected to /creative)', () => {
   test('loads with correct title', async ({ page }) => {
     await page.goto('/lazynext-studio');
     await expect(page).toHaveTitle(/Lazynext/);
   });
 
-  test('all selects have aria-labels', async ({ page }) => {
+  test('redirects to /creative', async ({ page }) => {
     await page.goto('/lazynext-studio');
-    await page.waitForTimeout(2000);
-    const selects = page.locator('select:visible');
-    const count = await selects.count();
-    expect(count).toBeGreaterThan(0);
-    for (let i = 0; i < count; i++) {
-      const label = await selects.nth(i).getAttribute('aria-label');
-      const title = await selects.nth(i).getAttribute('title');
-      expect(label || title).not.toBeNull();
-    }
+    await expect(page).toHaveURL(/\/creative/);
   });
 
   test('has no horizontal overflow at 375px', async ({ page }) => {
@@ -28,49 +26,38 @@ test.describe('Lazynext Studio', () => {
   });
 });
 
-test.describe('Drama Studio', () => {
+test.describe('Drama Studio (redirected to /creative)', () => {
   test('loads with correct title', async ({ page }) => {
     await page.goto('/drama-studio');
     await expect(page).toHaveTitle(/Lazynext/);
   });
 
-  test('all selects have aria-labels', async ({ page }) => {
+  test('redirects to /creative', async ({ page }) => {
     await page.goto('/drama-studio');
-    await page.waitForTimeout(2000);
-    const selects = page.locator('select:visible');
-    const count = await selects.count();
-    expect(count).toBeGreaterThan(0);
-    for (let i = 0; i < count; i++) {
-      const label = await selects.nth(i).getAttribute('aria-label');
-      const title = await selects.nth(i).getAttribute('title');
-      expect(label || title).not.toBeNull();
-    }
+    await expect(page).toHaveURL(/\/creative/);
   });
 });
 
-test.describe('Ad-Skit', () => {
+test.describe('Ad-Skit (redirected to /creative/generators)', () => {
   test('loads with correct title', async ({ page }) => {
     await page.goto('/ad-skit');
     await expect(page).toHaveTitle(/Lazynext/);
   });
 
-  test('all selects have aria-labels', async ({ page }) => {
+  test('redirects to /creative/generators', async ({ page }) => {
     await page.goto('/ad-skit');
-    await page.waitForTimeout(2000);
-    const selects = page.locator('select:visible');
-    const count = await selects.count();
-    expect(count).toBeGreaterThan(0);
-    for (let i = 0; i < count; i++) {
-      const label = await selects.nth(i).getAttribute('aria-label');
-      const title = await selects.nth(i).getAttribute('title');
-      expect(label || title).not.toBeNull();
-    }
+    await expect(page).toHaveURL(/\/creative\/generators/);
   });
 });
 
-test.describe('Ad-Reference', () => {
+test.describe('Ad-Reference (redirected to /creative/generators)', () => {
   test('loads with correct title', async ({ page }) => {
     await page.goto('/ad-reference');
     await expect(page).toHaveTitle(/Lazynext/);
+  });
+
+  test('redirects to /creative/generators', async ({ page }) => {
+    await page.goto('/ad-reference');
+    await expect(page).toHaveURL(/\/creative\/generators/);
   });
 });

@@ -2,24 +2,16 @@ import { test, expect } from '@playwright/test';
 
 /**
  * E2E smoke tests for the /creative-assets browsing page.
- *
- * Follows the same pattern as e2e/new-pages.spec.ts:
- * - Page loads with correct title
- * - Shows sign-in prompt when unauthenticated
- * - No horizontal overflow at narrow and wide viewports
- * - Has data-theme attribute
- * - Has exactly one h1
- * - Has #main-content
- * - Nav link to /creative-assets is present in the header on desktop
+ * /creative-assets redirects to /creative/generators (proxy.ts)
  */
 
-test.describe('Creative Assets Page', () => {
+test.describe('Creative Assets Page (redirected to /creative/generators)', () => {
   test('loads with correct title', async ({ page }) => {
     await page.goto('/creative-assets');
     await expect(page).toHaveTitle(/Lazynext/i);
   });
 
-  test('has one h1 with Creative Assets text', async ({ page }) => {
+  test('has one h1', async ({ page }) => {
     await page.goto('/creative-assets');
     await expect(page.locator('h1')).toHaveCount(1);
     await expect(page.locator('h1')).toContainText(/Creative Generators/i);
@@ -52,39 +44,8 @@ test.describe('Creative Assets Page', () => {
     await expect(page.locator('#main-content')).toBeVisible();
   });
 
-  test('shows sign-in prompt when unauthenticated', async ({ page }) => {
+  test('redirects to /creative/generators', async ({ page }) => {
     await page.goto('/creative-assets');
-    await page.waitForTimeout(1000);
-    // Should show a Sign in button in the main content (auth-gated)
-    await expect(page.locator('#main-content').getByRole('button', { name: 'Sign in' })).toBeVisible();
-  });
-
-  test('does not show asset list when unauthenticated', async ({ page }) => {
-    await page.goto('/creative-assets');
-    await page.waitForTimeout(1000);
-    // Should not show the filter bar or package list
-    await expect(page.locator('h2', { hasText: /Standalone Assets/i })).toHaveCount(0);
-  });
-});
-
-test.describe('Creative Assets Navigation', () => {
-  test('Assets page is reachable via direct navigation', async ({ page }) => {
-    await page.setViewportSize({ width: 1280, height: 800 });
-    await page.goto('/creative-assets');
-    await expect(page).toHaveURL(/\/creative\/generators/);
-  });
-
-  test('clicking Assets link in Browse dropdown navigates to /creative-assets', async ({ page }) => {
-    await page.setViewportSize({ width: 1280, height: 800 });
-    await page.goto('/');
-    await page.waitForTimeout(1000);
-    // Open the Browse dropdown
-    await page.locator('nav[aria-label="Primary"] button', { hasText: 'Browse' }).click();
-    await page.waitForTimeout(500);
-    // Click the Assets link in the dropdown
-    const assetsLink = page.locator('a[href="/creative-assets"]').first();
-    await expect(assetsLink).toBeVisible();
-    await assetsLink.click();
     await expect(page).toHaveURL(/\/creative\/generators/);
   });
 });
