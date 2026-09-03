@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import { LegalPage, makeMetadata } from '@/components/LegalPage';
 
 export const metadata: Metadata = makeMetadata('Acceptable Use Policy — Lazynext', 'Rules for acceptable use of the Lazynext platform.');
@@ -44,7 +45,7 @@ export default function AcceptableUsePage() {
         },
         {
           title: '4. AI-Generated Content',
-          body: 'When using AI generation features, you are responsible for the prompts you submit and the content generated. You must not use AI features to create deepfakes, impersonate real people without consent, generate misleading or deceptive content, or violate any AI usage policies of our underlying providers (including Atlas Cloud). See our AI/Agent Usage Policy for full details.',
+          body: (<>When using AI generation features, you are responsible for the prompts you submit and the content generated. You must not use AI features to create deepfakes, impersonate real people without consent, generate misleading or deceptive content, or violate any AI usage policies of our underlying providers (including Atlas Cloud). See our <Link href="/ai-usage-policy" className="text-fg underline hover:text-fg-secondary">AI/Agent Usage Policy</Link> for full details.</>),
         },
         {
           title: '5. API and Developer Access',

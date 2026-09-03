@@ -1,10 +1,11 @@
 import Link from 'next/link';
 import type { Metadata } from 'next';
+import type { ReactNode } from 'react';
 
 export interface LegalSection {
   title: string;
-  body?: string;
-  list?: string[];
+  body?: ReactNode;
+  list?: ReactNode[];
 }
 
 export interface LegalPageProps {
@@ -49,7 +50,7 @@ export function LegalFooter() {
     { href: '/privacy', label: 'Privacy' },
     { href: '/cookies', label: 'Cookies' },
     { href: '/acceptable-use', label: 'Acceptable Use' },
-    { href: '/ai-policy', label: 'AI Policy' },
+    { href: '/ai-usage-policy', label: 'AI Policy' },
     { href: '/api-terms', label: 'API Terms' },
     { href: '/dpa', label: 'DPA' },
     { href: '/subprocessors', label: 'Subprocessors' },
