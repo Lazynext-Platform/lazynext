@@ -64,8 +64,8 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   const updated = await prisma.project.update({
     where: { id },
     data: {
-      name: body.name?.trim() || undefined,
-      description: body.description !== undefined ? body.description : undefined,
+      name: body.name?.trim().slice(0, 200) || undefined,
+      description: body.description !== undefined ? (typeof body.description === 'string' ? body.description.slice(0, 2000) : body.description) : undefined,
       status: body.status || undefined,
     },
   });

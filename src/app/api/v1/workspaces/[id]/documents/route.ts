@@ -54,8 +54,8 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   const doc = await prisma.document.create({
     data: {
       workspaceId,
-      title,
-      content: body.content || '',
+      title: title.slice(0, 200),
+      content: typeof body.content === 'string' ? body.content.slice(0, 500_000) : '',
       projectId: body.projectId || null,
       createdById: apiKeyCtx.userId,
     },

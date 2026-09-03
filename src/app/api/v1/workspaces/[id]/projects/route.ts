@@ -63,8 +63,8 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   const project = await prisma.project.create({
     data: {
       workspaceId,
-      name,
-      description: body.description || null,
+      name: name.slice(0, 200),
+      description: typeof body.description === 'string' ? body.description.slice(0, 2000) : null,
       createdById: apiKeyCtx.userId,
     },
   });

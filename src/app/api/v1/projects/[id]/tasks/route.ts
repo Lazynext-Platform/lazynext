@@ -60,8 +60,8 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   const task = await prisma.task.create({
     data: {
       projectId,
-      title,
-      description: body.description || null,
+      title: title.slice(0, 200),
+      description: typeof body.description === 'string' ? body.description.slice(0, 2000) : null,
       status: body.status || 'todo',
       priority: body.priority || 'medium',
       assigneeId: body.assigneeId || null,

@@ -57,8 +57,8 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   const updated = await prisma.task.update({
     where: { id },
     data: {
-      title: body.title?.trim() || undefined,
-      description: body.description !== undefined ? body.description : undefined,
+      title: body.title?.trim().slice(0, 200) || undefined,
+      description: body.description !== undefined ? (typeof body.description === 'string' ? body.description.slice(0, 2000) : body.description) : undefined,
       status: body.status || undefined,
       priority: body.priority || undefined,
       assigneeId: body.assigneeId !== undefined ? body.assigneeId : undefined,
