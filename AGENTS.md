@@ -49,8 +49,8 @@ Production uses Cloudflare R2 via `src/lib/media-storage.cloudflare.ts`.
 ## Verification Commands
 ```bash
 npm run lint    # ESLint
-npm test        # Node test runner (6188+ tests)
-# E2E: 1052+ passed, 0 skipped (chromium + mobile-chrome + chromium-auth)
+npm test        # Node test runner (6794+ tests)
+# E2E: 3726+ specs across 6 shards (chromium + mobile-chrome + chromium-auth)
 npm run build   # Production build (Cloudflare target)
 npm run cf:build  # Cloudflare/OpenNext build
 npm run cf:deploy # Deploy to Cloudflare Workers
@@ -74,7 +74,7 @@ npm run cf:deploy # Deploy to Cloudflare Workers
 - Next.js 16 + React 19 + TypeScript 6
 - Tailwind CSS 4
 - NextAuth (JWT session, Google + Credentials providers)
-- Prisma 7 with D1 (prod) / SQLite (local) — 37 tables total (including Hook model)
+- Prisma 7 with D1 (prod) / SQLite (local) — 55 tables total (including Hook model)
 - Cloudflare R2 (prod) / file-based (local) media storage
 - Atlas Cloud AI generation API (prod) / mock server (local)
 - Dodo Payments for billing
