@@ -36,13 +36,13 @@ test.describe('Settings sub-pages', () => {
   test('settings page loads with all sections', async ({ page }) => {
     await page.goto('/settings');
     // Should show the settings heading
-    await expect(page.locator('h1')).toContainText('Settings');
+    await expect(page.locator('h1').first()).toContainText('Settings');
     // Should have Personal section
-    await expect(page.locator('text=Personal')).toBeVisible();
+    await expect(page.locator('text=Personal').first()).toBeVisible();
     // Should have Workspace section
-    await expect(page.locator('text=Workspace & Platform')).toBeVisible();
+    await expect(page.locator('text=Workspace & Platform').first()).toBeVisible();
     // Should link to billing
-    await expect(page.locator('a[href="/settings/billing"]')).toBeVisible();
+    await expect(page.locator('a[href="/settings/billing"]').first()).toBeVisible();
   });
 
   test('settings/profile page loads', async ({ page }) => {
