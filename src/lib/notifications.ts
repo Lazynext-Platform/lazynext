@@ -40,10 +40,22 @@ export async function createNotification(input: CreateNotificationInput) {
     try {
       const user = await prisma.user.findUnique({
         where: { id: input.userId },
-        select: { email: true },
+        select: { email: true, notificationPrefs: true },
       });
       if (user?.email) {
-        await sendNotificationEmail(user.email, input.title, input.body || null, input.type);
+        // Check if email is enabled for this notification type
+        let emailEnabled = true;
+        if (user.notificationPrefs) {
+          try {
+            const prefs = JSON.parse(user.notificationPrefs);
+            if (prefs[input.type] && prefs[input.type].email === false) {
+              emailEnabled = false;
+            }
+          } catch {}
+        }
+        if (emailEnabled) {
+          await sendNotificationEmail(user.email, input.title, input.body || null, input.type);
+        }
       }
     } catch (err) {
       // Email failure should not affect notification creation

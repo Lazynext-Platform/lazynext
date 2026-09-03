@@ -23,6 +23,7 @@ model User {
   locale        String?   // UI language code: en, zh, ja, es, ko, pt, fr, de, ar, hi …
   country       String?   // ISO 3166-1 alpha-2 country code (e.g. US, CN, JP, IN, BR)
   currency      String?   // ISO 4217 currency code (e.g. USD, EUR, JPY, CNY, INR, BRL)
+  notificationPrefs String? // JSON string of notification type → {inApp, email} preferences
   createdAt     DateTime  @default(now())
 
   accounts  Account[]

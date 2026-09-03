@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { Bell, Mail, MessageSquare, Zap, Save, Loader2, Check } from 'lucide-react';
+import { useState, useEffect, useCallback } from 'react';
+import { Save, Loader2, Check } from 'lucide-react';
 import { Card, Button, Switch } from '@/components/ui';
 
 interface NotificationPref {
@@ -12,21 +12,51 @@ interface NotificationPref {
   email: boolean;
 }
 
-const DEFAULT_PREFS: NotificationPref[] = [
-  { key: 'task_assigned', label: 'Task assigned', desc: 'When a task is assigned to you', inApp: true, email: true },
-  { key: 'task_completed', label: 'Task completed', desc: 'When a task you created is completed', inApp: true, email: false },
-  { key: 'document_shared', label: 'Document shared', desc: 'When a document is shared with you', inApp: true, email: true },
-  { key: 'member_joined', label: 'Member joined', desc: 'When a new member joins your workspace', inApp: true, email: false },
-  { key: 'automation_failed', label: 'Automation failed', desc: 'When an automation run fails', inApp: true, email: true },
-  { key: 'agent_completed', label: 'Agent completed', desc: 'When an AI agent finishes a run', inApp: true, email: false },
-  { key: 'billing_reminder', label: 'Billing reminder', desc: 'Low credits or payment issues', inApp: true, email: true },
-  { key: 'security_alert', label: 'Security alert', desc: 'Suspicious activity on your account', inApp: true, email: true },
+const PREF_DEFINITIONS = [
+  { key: 'task_assigned', label: 'Task assigned', desc: 'When a task is assigned to you' },
+  { key: 'task_completed', label: 'Task completed', desc: 'When a task you created is completed' },
+  { key: 'project_created', label: 'Project created', desc: 'When a new project is created in your workspace' },
+  { key: 'document_shared', label: 'Document shared', desc: 'When a document is shared with you' },
+  { key: 'mention', label: 'Mentions', desc: 'When you are mentioned in a comment or message' },
+  { key: 'comment', label: 'Comments', desc: 'When someone comments on your work' },
+  { key: 'billing', label: 'Billing reminders', desc: 'Low credits or payment issues' },
+  { key: 'system', label: 'System alerts', desc: 'Security and platform notifications' },
 ];
+
+const DEFAULT_PREFS: NotificationPref[] = PREF_DEFINITIONS.map((d) => ({
+  ...d,
+  inApp: true,
+  email: false,
+}));
 
 export function NotificationSettings() {
   const [prefs, setPrefs] = useState(DEFAULT_PREFS);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  const loadPrefs = useCallback(async () => {
+    try {
+      const res = await fetch('/api/settings/notifications');
+      if (res.ok) {
+        const data = await res.json();
+        const serverPrefs = data.prefs || {};
+        setPrefs(
+          PREF_DEFINITIONS.map((d) => ({
+            ...d,
+            inApp: serverPrefs[d.key]?.inApp ?? true,
+            email: serverPrefs[d.key]?.email ?? false,
+          })),
+        );
+      }
+    } catch {} finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadPrefs();
+  }, [loadPrefs]);
 
   function toggle(key: string, field: 'inApp' | 'email') {
     setPrefs((prev) =>
@@ -37,14 +67,27 @@ export function NotificationSettings() {
   async function save() {
     setSaving(true);
     setSaved(false);
-    // Store in localStorage as a simple persistence mechanism
-    // In production, this would be saved via API to user preferences
-    localStorage.setItem('notification-prefs', JSON.stringify(prefs));
-    setTimeout(() => {
+    try {
+      const payload: Record<string, { inApp: boolean; email: boolean }> = {};
+      for (const p of prefs) {
+        payload[p.key] = { inApp: p.inApp, email: p.email };
+      }
+      const res = await fetch('/api/settings/notifications', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      if (res.ok) {
+        setSaved(true);
+        setTimeout(() => setSaved(false), 3000);
+      }
+    } catch {} finally {
       setSaving(false);
-      setSaved(true);
-      setTimeout(() => setSaved(false), 3000);
-    }, 500);
+    }
+  }
+
+  if (loading) {
+    return <div className="flex items-center justify-center py-8"><Loader2 className="h-5 w-5 animate-spin" /></div>;
   }
 
   return (
