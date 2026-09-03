@@ -22,7 +22,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
     }
 
     const body = await req.json().catch(() => ({}));
-    const email = String(body.email || '').trim().toLowerCase();
+    const email = String(body.email || '').trim().toLowerCase().slice(0, 254);
     const role = String(body.role || 'viewer');
 
     // Basic email format validation (regex instead of just includes('@'))

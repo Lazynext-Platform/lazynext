@@ -83,7 +83,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     data: {
       conversationId: id,
       userId: session.user.id,
-      body: text,
+      body: text.slice(0, 10_000),
     },
   });
 
