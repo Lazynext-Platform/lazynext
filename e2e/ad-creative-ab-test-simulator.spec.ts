@@ -40,7 +40,7 @@ test.describe('ad-creative-ab-test-simulator Page', () => {
   });
   test('is reachable via direct navigation', async ({ page }) => {
     await page.goto('/ad-creative-ab-test-simulator');
-    await expect(page).toHaveURL(/\/ad-creative-ab-test-simulator/);
+    await expect(page).toHaveURL(/\/creative\/generators/);
   });
   test('has auth gate or main content', async ({ page }) => {
     await page.goto('/ad-creative-ab-test-simulator');

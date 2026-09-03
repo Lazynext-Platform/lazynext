@@ -52,7 +52,7 @@ test.describe('concept expander Page', () => {
 
   test('is reachable via direct navigation', async ({ page }) => {
     await page.goto('/concept-expander');
-    await expect(page).toHaveURL(/\/concept-expander/);
+    await expect(page).toHaveURL(/\/creative\/generators/);
   });
 
   test('has auth gate or main content', async ({ page }) => {

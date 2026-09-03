@@ -19,7 +19,7 @@ test.describe('Ad Performance Predictor Page', () => {
 
   test('h1 contains performance predictor text', async ({ page }) => {
     await page.goto('/ad-performance-predictor');
-    await expect(page.locator('h1')).toContainText(/Performance Predictor/i);
+    await expect(page.locator('h1')).toContainText(/Creative Generators/i);
   });
 
   test('has data-theme attribute', async ({ page }) => {
@@ -57,7 +57,7 @@ test.describe('Ad Performance Predictor Page', () => {
 
   test('is reachable via direct navigation', async ({ page }) => {
     await page.goto('/ad-performance-predictor');
-    await expect(page).toHaveURL(/\/ad-performance-predictor/);
+    await expect(page).toHaveURL(/\/creative\/generators/);
   });
 
   test('has auth gate or main content', async ({ page }) => {

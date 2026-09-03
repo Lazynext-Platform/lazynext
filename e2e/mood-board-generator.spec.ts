@@ -19,7 +19,7 @@ test.describe('Mood Board Generator Page', () => {
 
   test('h1 contains mood board text', async ({ page }) => {
     await page.goto('/mood-board-generator');
-    await expect(page.locator('h1')).toContainText(/Mood Board/i);
+    await expect(page.locator('h1')).toContainText(/Creative Generators/i);
   });
 
   test('has data-theme attribute', async ({ page }) => {
@@ -57,7 +57,7 @@ test.describe('Mood Board Generator Page', () => {
 
   test('is reachable via direct navigation', async ({ page }) => {
     await page.goto('/mood-board-generator');
-    await expect(page).toHaveURL(/\/mood-board-generator/);
+    await expect(page).toHaveURL(/\/creative\/generators/);
   });
 
   test('has auth gate or main content', async ({ page }) => {

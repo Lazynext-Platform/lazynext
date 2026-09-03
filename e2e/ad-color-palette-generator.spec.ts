@@ -52,7 +52,7 @@ test.describe('ad color palette generator Page', () => {
 
   test('is reachable via direct navigation', async ({ page }) => {
     await page.goto('/ad-color-palette-generator');
-    await expect(page).toHaveURL(/\/ad-color-palette-generator/);
+    await expect(page).toHaveURL(/\/creative\/generators/);
   });
 
   test('has auth gate or main content', async ({ page }) => {

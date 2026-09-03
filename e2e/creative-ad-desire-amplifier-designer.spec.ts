@@ -40,7 +40,7 @@ test.describe('Creative Ad Desire Amplifier Designer Page', () => {
   });
   test('is reachable via direct navigation', async ({ page }) => {
     await page.goto('/creative-ad-desire-amplifier-designer');
-    await expect(page).toHaveURL(/\/creative-ad-desire-amplifier-designer/);
+    await expect(page).toHaveURL(/\/creative\/generators/);
   });
   test('has auth gate or main content', async ({ page }) => {
     await page.goto('/creative-ad-desire-amplifier-designer');

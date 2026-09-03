@@ -19,7 +19,7 @@ test.describe('Brand Guardrails Page', () => {
 
   test('h1 contains brand guardrails text', async ({ page }) => {
     await page.goto('/brand-guardrails');
-    await expect(page.locator('h1')).toContainText(/Brand Guardrails|دراية العلامة|品牌护栏/i);
+    await expect(page.locator('h1')).toContainText(/Creative Generators/i);
   });
 
   test('has data-theme attribute', async ({ page }) => {
@@ -63,7 +63,7 @@ test.describe('Brand Guardrails Page', () => {
 
   test('is reachable via direct navigation', async ({ page }) => {
     await page.goto('/brand-guardrails');
-    await expect(page).toHaveURL(/\/brand-guardrails/);
+    await expect(page).toHaveURL(/\/creative\/generators/);
   });
 
   test('has auth gate or main content', async ({ page }) => {

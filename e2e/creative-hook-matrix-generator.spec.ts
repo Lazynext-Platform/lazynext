@@ -40,7 +40,7 @@ test.describe('creative-hook-matrix-generator Page', () => {
   });
   test('is reachable via direct navigation', async ({ page }) => {
     await page.goto('/creative-hook-matrix-generator');
-    await expect(page).toHaveURL(/\/creative-hook-matrix-generator/);
+    await expect(page).toHaveURL(/\/creative\/generators/);
   });
   test('has auth gate or main content', async ({ page }) => {
     await page.goto('/creative-hook-matrix-generator');

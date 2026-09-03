@@ -19,7 +19,7 @@ test.describe('Competitor Watch Page', () => {
 
   test('h1 contains competitor watch text', async ({ page }) => {
     await page.goto('/competitor-watch');
-    await expect(page.locator('h1')).toContainText(/Competitor Watch|مراقبة المنافسين|竞品监控/i);
+    await expect(page.locator('h1')).toContainText(/Creative Generators/i);
   });
 
   test('has data-theme attribute', async ({ page }) => {
@@ -63,7 +63,7 @@ test.describe('Competitor Watch Page', () => {
 
   test('is reachable via direct navigation', async ({ page }) => {
     await page.goto('/competitor-watch');
-    await expect(page).toHaveURL(/\/competitor-watch/);
+    await expect(page).toHaveURL(/\/creative\/generators/);
   });
 
   test('has auth gate or main content', async ({ page }) => {

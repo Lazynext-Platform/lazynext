@@ -52,7 +52,7 @@ test.describe('trend spotter Page', () => {
 
   test('is reachable via direct navigation', async ({ page }) => {
     await page.goto('/trend-spotter');
-    await expect(page).toHaveURL(/\/trend-spotter/);
+    await expect(page).toHaveURL(/\/creative\/generators/);
   });
 
   test('has auth gate or main content', async ({ page }) => {

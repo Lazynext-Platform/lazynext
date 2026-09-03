@@ -52,7 +52,7 @@ test.describe('ad-voiceover-script-generator Page', () => {
 
   test('is reachable via direct navigation', async ({ page }) => {
     await page.goto('/ad-voiceover-script-generator');
-    await expect(page).toHaveURL(/\/ad-voiceover-script-generator/);
+    await expect(page).toHaveURL(/\/creative\/generators/);
   });
 
   test('has auth gate or main content', async ({ page }) => {

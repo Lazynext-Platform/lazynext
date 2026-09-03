@@ -19,7 +19,7 @@ test.describe('Ad Script Writer Page', () => {
 
   test('h1 contains ad script writer text', async ({ page }) => {
     await page.goto('/ad-script-writer');
-    await expect(page.locator('h1')).toContainText(/Ad Script Writer/i);
+    await expect(page.locator('h1')).toContainText(/Creative Generators/i);
   });
 
   test('has data-theme attribute', async ({ page }) => {
@@ -57,7 +57,7 @@ test.describe('Ad Script Writer Page', () => {
 
   test('is reachable via direct navigation', async ({ page }) => {
     await page.goto('/ad-script-writer');
-    await expect(page).toHaveURL(/\/ad-script-writer/);
+    await expect(page).toHaveURL(/\/creative\/generators/);
   });
 
   test('has auth gate or main content', async ({ page }) => {

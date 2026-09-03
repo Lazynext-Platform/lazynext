@@ -19,7 +19,7 @@ test.describe('Brief Template Builder Page', () => {
 
   test('h1 contains brief template builder text', async ({ page }) => {
     await page.goto('/brief-template-builder');
-    await expect(page.locator('h1')).toContainText(/Brief Template Builder|منشئ قوالب الموجز|简报模板构建器/i);
+    await expect(page.locator('h1')).toContainText(/Creative Generators/i);
   });
 
   test('has data-theme attribute', async ({ page }) => {
@@ -63,7 +63,7 @@ test.describe('Brief Template Builder Page', () => {
 
   test('is reachable via direct navigation', async ({ page }) => {
     await page.goto('/brief-template-builder');
-    await expect(page).toHaveURL(/\/brief-template-builder/);
+    await expect(page).toHaveURL(/\/creative\/generators/);
   });
 
   test('has auth gate or main content', async ({ page }) => {

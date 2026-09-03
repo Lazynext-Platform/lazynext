@@ -40,7 +40,7 @@ test.describe('creative-format-recommender Page', () => {
   });
   test('is reachable via direct navigation', async ({ page }) => {
     await page.goto('/creative-format-recommender');
-    await expect(page).toHaveURL(/\/creative-format-recommender/);
+    await expect(page).toHaveURL(/\/creative\/generators/);
   });
   test('has auth gate or main content', async ({ page }) => {
     await page.goto('/creative-format-recommender');

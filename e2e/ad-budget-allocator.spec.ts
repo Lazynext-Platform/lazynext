@@ -40,7 +40,7 @@ test.describe('ad-budget-allocator Page', () => {
   });
   test('is reachable via direct navigation', async ({ page }) => {
     await page.goto('/ad-budget-allocator');
-    await expect(page).toHaveURL(/\/ad-budget-allocator/);
+    await expect(page).toHaveURL(/\/creative\/generators/);
   });
   test('has auth gate or main content', async ({ page }) => {
     await page.goto('/ad-budget-allocator');

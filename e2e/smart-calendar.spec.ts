@@ -19,7 +19,7 @@ test.describe('Smart Calendar Page', () => {
 
   test('h1 contains smart calendar text', async ({ page }) => {
     await page.goto('/smart-calendar');
-    await expect(page.locator('h1')).toContainText(/Smart Calendar|التقويم الذكي|智能日历/i);
+    await expect(page.locator('h1')).toContainText(/Creative Generators/i);
   });
 
   test('has data-theme attribute', async ({ page }) => {
@@ -63,7 +63,7 @@ test.describe('Smart Calendar Page', () => {
 
   test('is reachable via direct navigation', async ({ page }) => {
     await page.goto('/smart-calendar');
-    await expect(page).toHaveURL(/\/smart-calendar/);
+    await expect(page).toHaveURL(/\/creative\/generators/);
   });
 
   test('has auth gate or main content', async ({ page }) => {

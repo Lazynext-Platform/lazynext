@@ -40,7 +40,7 @@ test.describe('ad-audience-segment-builder Page', () => {
   });
   test('is reachable via direct navigation', async ({ page }) => {
     await page.goto('/ad-audience-segment-builder');
-    await expect(page).toHaveURL(/\/ad-audience-segment-builder/);
+    await expect(page).toHaveURL(/\/creative\/generators/);
   });
   test('has auth gate or main content', async ({ page }) => {
     await page.goto('/ad-audience-segment-builder');

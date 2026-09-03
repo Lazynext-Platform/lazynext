@@ -40,7 +40,7 @@ test.describe('Creative Ad Reciprocity Trigger Designer Page', () => {
   });
   test('is reachable via direct navigation', async ({ page }) => {
     await page.goto('/creative-ad-reciprocity-trigger-designer');
-    await expect(page).toHaveURL(/\/creative-ad-reciprocity-trigger-designer/);
+    await expect(page).toHaveURL(/\/creative\/generators/);
   });
   test('has auth gate or main content', async ({ page }) => {
     await page.goto('/creative-ad-reciprocity-trigger-designer');

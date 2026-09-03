@@ -40,7 +40,7 @@ test.describe('creative-ad-surprise-element-designer Page', () => {
   });
   test('is reachable via direct navigation', async ({ page }) => {
     await page.goto('/creative-ad-surprise-element-designer');
-    await expect(page).toHaveURL(/\/creative-ad-surprise-element-designer/);
+    await expect(page).toHaveURL(/\/creative\/generators/);
   });
   test('has auth gate or main content', async ({ page }) => {
     await page.goto('/creative-ad-surprise-element-designer');

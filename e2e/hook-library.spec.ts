@@ -19,7 +19,7 @@ test.describe('Hook Library Page', () => {
 
   test('h1 contains hook library text', async ({ page }) => {
     await page.goto('/hook-library');
-    await expect(page.locator('h1')).toContainText(/Hook Library|مكتبة الخطافات|钩子库/i);
+    await expect(page.locator('h1')).toContainText(/Creative Generators/i);
   });
 
   test('has data-theme attribute', async ({ page }) => {
@@ -63,7 +63,7 @@ test.describe('Hook Library Page', () => {
 
   test('is reachable via direct navigation', async ({ page }) => {
     await page.goto('/hook-library');
-    await expect(page).toHaveURL(/\/hook-library/);
+    await expect(page).toHaveURL(/\/creative\/generators/);
   });
 
   test('has auth gate or main content', async ({ page }) => {

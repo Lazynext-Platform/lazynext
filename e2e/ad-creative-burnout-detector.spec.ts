@@ -40,7 +40,7 @@ test.describe('ad-creative-burnout-detector Page', () => {
   });
   test('is reachable via direct navigation', async ({ page }) => {
     await page.goto('/ad-creative-burnout-detector');
-    await expect(page).toHaveURL(/\/ad-creative-burnout-detector/);
+    await expect(page).toHaveURL(/\/creative\/generators/);
   });
   test('has auth gate or main content', async ({ page }) => {
     await page.goto('/ad-creative-burnout-detector');

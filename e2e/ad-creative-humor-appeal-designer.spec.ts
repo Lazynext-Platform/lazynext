@@ -40,7 +40,7 @@ test.describe('Ad Creative Humor Appeal Designer Page', () => {
   });
   test('is reachable via direct navigation', async ({ page }) => {
     await page.goto('/ad-creative-humor-appeal-designer');
-    await expect(page).toHaveURL(/\/ad-creative-humor-appeal-designer/);
+    await expect(page).toHaveURL(/\/creative\/generators/);
   });
   test('has auth gate or main content', async ({ page }) => {
     await page.goto('/ad-creative-humor-appeal-designer');

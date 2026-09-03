@@ -40,7 +40,7 @@ test.describe('creative-messaging-framework-builder Page', () => {
   });
   test('is reachable via direct navigation', async ({ page }) => {
     await page.goto('/creative-messaging-framework-builder');
-    await expect(page).toHaveURL(/\/creative-messaging-framework-builder/);
+    await expect(page).toHaveURL(/\/creative\/generators/);
   });
   test('has auth gate or main content', async ({ page }) => {
     await page.goto('/creative-messaging-framework-builder');

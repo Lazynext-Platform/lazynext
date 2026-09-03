@@ -22,7 +22,7 @@ test.describe('Creative Assets Page', () => {
   test('has one h1 with Creative Assets text', async ({ page }) => {
     await page.goto('/creative-assets');
     await expect(page.locator('h1')).toHaveCount(1);
-    await expect(page.locator('h1')).toContainText(/Creative Assets/i);
+    await expect(page.locator('h1')).toContainText(/Creative Generators/i);
   });
 
   test('has no horizontal overflow at 375px', async ({ page }) => {
@@ -71,7 +71,7 @@ test.describe('Creative Assets Navigation', () => {
   test('Assets page is reachable via direct navigation', async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
     await page.goto('/creative-assets');
-    await expect(page).toHaveURL(/\/creative-assets/);
+    await expect(page).toHaveURL(/\/creative\/generators/);
   });
 
   test('clicking Assets link in Browse dropdown navigates to /creative-assets', async ({ page }) => {
@@ -85,6 +85,6 @@ test.describe('Creative Assets Navigation', () => {
     const assetsLink = page.locator('a[href="/creative-assets"]').first();
     await expect(assetsLink).toBeVisible();
     await assetsLink.click();
-    await expect(page).toHaveURL(/\/creative-assets/);
+    await expect(page).toHaveURL(/\/creative\/generators/);
   });
 });

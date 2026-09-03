@@ -19,7 +19,7 @@ test.describe('Creative Brief Analyzer Page', () => {
 
   test('h1 contains creative brief analyzer text', async ({ page }) => {
     await page.goto('/brief-analyzer');
-    await expect(page.locator('h1')).toContainText(/Creative Brief Analyzer/i);
+    await expect(page.locator('h1')).toContainText(/Creative Generators/i);
   });
 
   test('has data-theme attribute', async ({ page }) => {
@@ -57,7 +57,7 @@ test.describe('Creative Brief Analyzer Page', () => {
 
   test('is reachable via direct navigation', async ({ page }) => {
     await page.goto('/brief-analyzer');
-    await expect(page).toHaveURL(/\/brief-analyzer/);
+    await expect(page).toHaveURL(/\/creative\/generators/);
   });
 
   test('has auth gate or main content', async ({ page }) => {

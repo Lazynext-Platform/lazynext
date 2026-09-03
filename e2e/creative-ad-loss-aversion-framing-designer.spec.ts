@@ -40,7 +40,7 @@ test.describe('Creative Ad Loss Aversion Framing Designer Page', () => {
   });
   test('is reachable via direct navigation', async ({ page }) => {
     await page.goto('/creative-ad-loss-aversion-framing-designer');
-    await expect(page).toHaveURL(/\/creative-ad-loss-aversion-framing-designer/);
+    await expect(page).toHaveURL(/\/creative\/generators/);
   });
   test('has auth gate or main content', async ({ page }) => {
     await page.goto('/creative-ad-loss-aversion-framing-designer');

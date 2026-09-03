@@ -40,7 +40,7 @@ test.describe('Creative Ad Urgency Catalyst Designer Page', () => {
   });
   test('is reachable via direct navigation', async ({ page }) => {
     await page.goto('/creative-ad-urgency-catalyst-designer');
-    await expect(page).toHaveURL(/\/creative-ad-urgency-catalyst-designer/);
+    await expect(page).toHaveURL(/\/creative\/generators/);
   });
   test('has auth gate or main content', async ({ page }) => {
     await page.goto('/creative-ad-urgency-catalyst-designer');

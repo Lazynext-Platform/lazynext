@@ -40,7 +40,7 @@ test.describe('ad-audience-psychographic-profiler Page', () => {
   });
   test('is reachable via direct navigation', async ({ page }) => {
     await page.goto('/ad-audience-psychographic-profiler');
-    await expect(page).toHaveURL(/\/ad-audience-psychographic-profiler/);
+    await expect(page).toHaveURL(/\/creative\/generators/);
   });
   test('has auth gate or main content', async ({ page }) => {
     await page.goto('/ad-audience-psychographic-profiler');

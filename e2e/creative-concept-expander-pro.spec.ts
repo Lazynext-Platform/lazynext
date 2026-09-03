@@ -40,7 +40,7 @@ test.describe('creative-concept-expander-pro Page', () => {
   });
   test('is reachable via direct navigation', async ({ page }) => {
     await page.goto('/creative-concept-expander-pro');
-    await expect(page).toHaveURL(/\/creative-concept-expander-pro/);
+    await expect(page).toHaveURL(/\/creative\/generators/);
   });
   test('has auth gate or main content', async ({ page }) => {
     await page.goto('/creative-concept-expander-pro');

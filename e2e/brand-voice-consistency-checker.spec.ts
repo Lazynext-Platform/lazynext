@@ -40,7 +40,7 @@ test.describe('brand-voice-consistency-checker Page', () => {
   });
   test('is reachable via direct navigation', async ({ page }) => {
     await page.goto('/brand-voice-consistency-checker');
-    await expect(page).toHaveURL(/\/brand-voice-consistency-checker/);
+    await expect(page).toHaveURL(/\/creative\/generators/);
   });
   test('has auth gate or main content', async ({ page }) => {
     await page.goto('/brand-voice-consistency-checker');

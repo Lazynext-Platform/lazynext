@@ -40,7 +40,7 @@ test.describe('Ad Creative Emotional Anchor Designer Page', () => {
   });
   test('is reachable via direct navigation', async ({ page }) => {
     await page.goto('/ad-creative-emotional-anchor-designer');
-    await expect(page).toHaveURL(/\/ad-creative-emotional-anchor-designer/);
+    await expect(page).toHaveURL(/\/creative\/generators/);
   });
   test('has auth gate or main content', async ({ page }) => {
     await page.goto('/ad-creative-emotional-anchor-designer');

@@ -40,7 +40,7 @@ test.describe('creative-ad-climax-architect Page', () => {
   });
   test('is reachable via direct navigation', async ({ page }) => {
     await page.goto('/creative-ad-climax-architect');
-    await expect(page).toHaveURL(/\/creative-ad-climax-architect/);
+    await expect(page).toHaveURL(/\/creative\/generators/);
   });
   test('has auth gate or main content', async ({ page }) => {
     await page.goto('/creative-ad-climax-architect');

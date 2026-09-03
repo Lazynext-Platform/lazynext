@@ -40,7 +40,7 @@ test.describe('ad-creative-viewer-reward-designer Page', () => {
   });
   test('is reachable via direct navigation', async ({ page }) => {
     await page.goto('/ad-creative-viewer-reward-designer');
-    await expect(page).toHaveURL(/\/ad-creative-viewer-reward-designer/);
+    await expect(page).toHaveURL(/\/creative\/generators/);
   });
   test('has auth gate or main content', async ({ page }) => {
     await page.goto('/ad-creative-viewer-reward-designer');

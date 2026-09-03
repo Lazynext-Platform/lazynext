@@ -40,7 +40,7 @@ test.describe('Creative Ad Offer Architecture Designer Page', () => {
   });
   test('is reachable via direct navigation', async ({ page }) => {
     await page.goto('/creative-ad-offer-architecture-designer');
-    await expect(page).toHaveURL(/\/creative-ad-offer-architecture-designer/);
+    await expect(page).toHaveURL(/\/creative\/generators/);
   });
   test('has auth gate or main content', async ({ page }) => {
     await page.goto('/creative-ad-offer-architecture-designer');

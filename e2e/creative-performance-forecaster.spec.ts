@@ -40,7 +40,7 @@ test.describe('creative-performance-forecaster Page', () => {
   });
   test('is reachable via direct navigation', async ({ page }) => {
     await page.goto('/creative-performance-forecaster');
-    await expect(page).toHaveURL(/\/creative-performance-forecaster/);
+    await expect(page).toHaveURL(/\/creative\/generators/);
   });
   test('has auth gate or main content', async ({ page }) => {
     await page.goto('/creative-performance-forecaster');

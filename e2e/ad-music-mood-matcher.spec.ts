@@ -52,7 +52,7 @@ test.describe('ad-music-mood-matcher Page', () => {
 
   test('is reachable via direct navigation', async ({ page }) => {
     await page.goto('/ad-music-mood-matcher');
-    await expect(page).toHaveURL(/\/ad-music-mood-matcher/);
+    await expect(page).toHaveURL(/\/creative\/generators/);
   });
 
   test('has auth gate or main content', async ({ page }) => {

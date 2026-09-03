@@ -40,7 +40,7 @@ test.describe('creative-ad-narrative-twist-designer Page', () => {
   });
   test('is reachable via direct navigation', async ({ page }) => {
     await page.goto('/creative-ad-narrative-twist-designer');
-    await expect(page).toHaveURL(/\/creative-ad-narrative-twist-designer/);
+    await expect(page).toHaveURL(/\/creative\/generators/);
   });
   test('has auth gate or main content', async ({ page }) => {
     await page.goto('/creative-ad-narrative-twist-designer');

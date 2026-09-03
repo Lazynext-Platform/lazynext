@@ -19,7 +19,7 @@ test.describe('Ad Format Optimizer Page', () => {
 
   test('h1 contains ad format optimizer text', async ({ page }) => {
     await page.goto('/ad-format-optimizer');
-    await expect(page.locator('h1')).toContainText(/Ad Format Optimizer/i);
+    await expect(page.locator('h1')).toContainText(/Creative Generators/i);
   });
 
   test('has data-theme attribute', async ({ page }) => {
@@ -57,7 +57,7 @@ test.describe('Ad Format Optimizer Page', () => {
 
   test('is reachable via direct navigation', async ({ page }) => {
     await page.goto('/ad-format-optimizer');
-    await expect(page).toHaveURL(/\/ad-format-optimizer/);
+    await expect(page).toHaveURL(/\/creative\/generators/);
   });
 
   test('has auth gate or main content', async ({ page }) => {

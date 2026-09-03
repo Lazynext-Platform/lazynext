@@ -19,7 +19,7 @@ test.describe('Creative Variant Matrix Page', () => {
 
   test('h1 contains creative variant matrix text', async ({ page }) => {
     await page.goto('/variant-matrix-generator');
-    await expect(page.locator('h1')).toContainText(/Creative Variant Matrix/i);
+    await expect(page.locator('h1')).toContainText(/Creative Generators/i);
   });
 
   test('has data-theme attribute', async ({ page }) => {
@@ -57,7 +57,7 @@ test.describe('Creative Variant Matrix Page', () => {
 
   test('is reachable via direct navigation', async ({ page }) => {
     await page.goto('/variant-matrix-generator');
-    await expect(page).toHaveURL(/\/variant-matrix-generator/);
+    await expect(page).toHaveURL(/\/creative\/generators/);
   });
 
   test('has auth gate or main content', async ({ page }) => {

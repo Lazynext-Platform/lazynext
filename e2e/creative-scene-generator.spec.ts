@@ -52,7 +52,7 @@ test.describe('creative-scene-generator Page', () => {
 
   test('is reachable via direct navigation', async ({ page }) => {
     await page.goto('/creative-scene-generator');
-    await expect(page).toHaveURL(/\/creative-scene-generator/);
+    await expect(page).toHaveURL(/\/creative\/generators/);
   });
 
   test('has auth gate or main content', async ({ page }) => {

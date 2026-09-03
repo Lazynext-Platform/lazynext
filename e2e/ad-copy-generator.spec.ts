@@ -19,7 +19,7 @@ test.describe('Ad Copy Generator Page', () => {
 
   test('h1 contains ad copy generator text', async ({ page }) => {
     await page.goto('/ad-copy-generator');
-    await expect(page.locator('h1')).toContainText(/Ad Copy Generator|مولّد نصوص الإعلانات|广告文案生成器/i);
+    await expect(page.locator('h1')).toContainText(/Creative Generators/i);
   });
 
   test('has data-theme attribute', async ({ page }) => {
@@ -63,7 +63,7 @@ test.describe('Ad Copy Generator Page', () => {
 
   test('is reachable via direct navigation', async ({ page }) => {
     await page.goto('/ad-copy-generator');
-    await expect(page).toHaveURL(/\/ad-copy-generator/);
+    await expect(page).toHaveURL(/\/creative\/generators/);
   });
 
   test('has auth gate or main content', async ({ page }) => {

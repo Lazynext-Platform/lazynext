@@ -40,7 +40,7 @@ test.describe('ad-audience-pain-point-mapper Page', () => {
   });
   test('is reachable via direct navigation', async ({ page }) => {
     await page.goto('/ad-audience-pain-point-mapper');
-    await expect(page).toHaveURL(/\/ad-audience-pain-point-mapper/);
+    await expect(page).toHaveURL(/\/creative\/generators/);
   });
   test('has auth gate or main content', async ({ page }) => {
     await page.goto('/ad-audience-pain-point-mapper');

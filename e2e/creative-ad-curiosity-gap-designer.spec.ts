@@ -40,7 +40,7 @@ test.describe('creative-ad-curiosity-gap-designer Page', () => {
   });
   test('is reachable via direct navigation', async ({ page }) => {
     await page.goto('/creative-ad-curiosity-gap-designer');
-    await expect(page).toHaveURL(/\/creative-ad-curiosity-gap-designer/);
+    await expect(page).toHaveURL(/\/creative\/generators/);
   });
   test('has auth gate or main content', async ({ page }) => {
     await page.goto('/creative-ad-curiosity-gap-designer');

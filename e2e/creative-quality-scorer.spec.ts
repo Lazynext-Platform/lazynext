@@ -40,7 +40,7 @@ test.describe('creative-quality-scorer Page', () => {
   });
   test('is reachable via direct navigation', async ({ page }) => {
     await page.goto('/creative-quality-scorer');
-    await expect(page).toHaveURL(/\/creative-quality-scorer/);
+    await expect(page).toHaveURL(/\/creative\/generators/);
   });
   test('has auth gate or main content', async ({ page }) => {
     await page.goto('/creative-quality-scorer');

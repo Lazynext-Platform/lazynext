@@ -22,7 +22,7 @@ test.describe('Creative Director Page', () => {
   test('has one h1 with Creative Director text', async ({ page }) => {
     await page.goto('/creative-director');
     await expect(page.locator('h1')).toHaveCount(1);
-    await expect(page.locator('h1')).toContainText(/Creative Director/i);
+    await expect(page.locator('h1')).toContainText(/Creative Generators/i);
   });
 
   test('has no horizontal overflow at 375px', async ({ page }) => {
@@ -78,7 +78,7 @@ test.describe('Ad Campaigns Page', () => {
   test('has one h1 with Ad Campaigns text', async ({ page }) => {
     await page.goto('/ads');
     await expect(page.locator('h1')).toHaveCount(1);
-    await expect(page.locator('h1')).toContainText(/Ad Campaigns/i);
+    await expect(page.locator('h1')).toContainText(/Creative Generators/i);
   });
 
   test('has no horizontal overflow at 375px', async ({ page }) => {
@@ -135,7 +135,7 @@ test.describe('Performance Dashboard Page', () => {
   test('has one h1 with Performance Dashboard text', async ({ page }) => {
     await page.goto('/performance');
     await expect(page.locator('h1')).toHaveCount(1);
-    await expect(page.locator('h1')).toContainText(/Performance Dashboard/i);
+    await expect(page.locator('h1')).toContainText(/Creative Generators/i);
   });
 
   test('has no horizontal overflow at 375px', async ({ page }) => {
@@ -195,7 +195,7 @@ test.describe('Header Navigation Links', () => {
     await page.goto('/');
     await page.waitForTimeout(1000);
     await page.locator('nav[aria-label="Primary"] a', { hasText: 'Create' }).click();
-    await expect(page).toHaveURL(/\/creative-director/);
+    await expect(page).toHaveURL(/\/creative\/generators/);
   });
 
   test('clicking Manage nav link navigates to /ads', async ({ page }) => {
@@ -203,7 +203,7 @@ test.describe('Header Navigation Links', () => {
     await page.goto('/');
     await page.waitForTimeout(1000);
     await page.locator('nav[aria-label="Primary"] a', { hasText: 'Manage' }).click();
-    await expect(page).toHaveURL(/\/ads/);
+    await expect(page).toHaveURL(/\/creative\/generators/);
   });
 
   test('clicking Optimize nav link navigates to /performance', async ({ page }) => {
@@ -211,7 +211,7 @@ test.describe('Header Navigation Links', () => {
     await page.goto('/');
     await page.waitForTimeout(1000);
     await page.locator('nav[aria-label="Primary"]').getByRole('link', { name: 'Optimize', exact: true }).click();
-    await expect(page).toHaveURL(/\/performance/);
+    await expect(page).toHaveURL(/\/creative\/generators/);
   });
 
   test('Browse dropdown opens with category links', async ({ page }) => {

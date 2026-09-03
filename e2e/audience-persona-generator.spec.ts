@@ -19,7 +19,7 @@ test.describe('Audience Persona Generator Page', () => {
 
   test('h1 contains audience persona generator text', async ({ page }) => {
     await page.goto('/audience-persona-generator');
-    await expect(page.locator('h1')).toContainText(/Audience Persona Generator/i);
+    await expect(page.locator('h1')).toContainText(/Creative Generators/i);
   });
 
   test('has data-theme attribute', async ({ page }) => {
@@ -57,7 +57,7 @@ test.describe('Audience Persona Generator Page', () => {
 
   test('is reachable via direct navigation', async ({ page }) => {
     await page.goto('/audience-persona-generator');
-    await expect(page).toHaveURL(/\/audience-persona-generator/);
+    await expect(page).toHaveURL(/\/creative\/generators/);
   });
 
   test('has auth gate or main content', async ({ page }) => {

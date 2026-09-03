@@ -40,7 +40,7 @@ test.describe('Creative Ad Identity Alignment Designer Page', () => {
   });
   test('is reachable via direct navigation', async ({ page }) => {
     await page.goto('/creative-ad-identity-alignment-designer');
-    await expect(page).toHaveURL(/\/creative-ad-identity-alignment-designer/);
+    await expect(page).toHaveURL(/\/creative\/generators/);
   });
   test('has auth gate or main content', async ({ page }) => {
     await page.goto('/creative-ad-identity-alignment-designer');

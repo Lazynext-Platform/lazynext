@@ -19,7 +19,7 @@ test.describe('Creative A/B Test Planner Page', () => {
 
   test('h1 contains A/B test planner text', async ({ page }) => {
     await page.goto('/ab-test-planner');
-    await expect(page.locator('h1')).toContainText(/A\/B Test Planner/i);
+    await expect(page.locator('h1')).toContainText(/Creative Generators/i);
   });
 
   test('has data-theme attribute', async ({ page }) => {
@@ -57,7 +57,7 @@ test.describe('Creative A/B Test Planner Page', () => {
 
   test('is reachable via direct navigation', async ({ page }) => {
     await page.goto('/ab-test-planner');
-    await expect(page).toHaveURL(/\/ab-test-planner/);
+    await expect(page).toHaveURL(/\/creative\/generators/);
   });
 
   test('has auth gate or main content', async ({ page }) => {

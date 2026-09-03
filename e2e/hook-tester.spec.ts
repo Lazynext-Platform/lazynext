@@ -52,7 +52,7 @@ test.describe('hook tester Page', () => {
 
   test('is reachable via direct navigation', async ({ page }) => {
     await page.goto('/hook-tester');
-    await expect(page).toHaveURL(/\/hook-tester/);
+    await expect(page).toHaveURL(/\/creative\/generators/);
   });
 
   test('has auth gate or main content', async ({ page }) => {

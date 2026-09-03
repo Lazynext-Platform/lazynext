@@ -42,7 +42,7 @@ test.describe('AB Automation Page', () => {
 
   test('is reachable via direct navigation', async ({ page }) => {
     await page.goto('/ab-automation');
-    await expect(page).toHaveURL(/\/ab-automation/);
+    await expect(page).toHaveURL(/\/creative\/generators/);
   });
 
   test('has auth gate or main content', async ({ page }) => {

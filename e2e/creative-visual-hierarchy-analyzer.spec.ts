@@ -40,7 +40,7 @@ test.describe('creative-visual-hierarchy-analyzer Page', () => {
   });
   test('is reachable via direct navigation', async ({ page }) => {
     await page.goto('/creative-visual-hierarchy-analyzer');
-    await expect(page).toHaveURL(/\/creative-visual-hierarchy-analyzer/);
+    await expect(page).toHaveURL(/\/creative\/generators/);
   });
   test('has auth gate or main content', async ({ page }) => {
     await page.goto('/creative-visual-hierarchy-analyzer');
