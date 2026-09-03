@@ -47,16 +47,22 @@ export function I18nProvider({ children, initialLocale }: { children: React.Reac
     return () => { cancelled = true; };
   }, [locale, loadedLocales]);
 
-  // Migrate old users: only when localStorage has it but cookie doesn't (initialLocale didn't reach the expected value),
-  // adopt it and write the cookie so next SSR can read it → first frame fully consistent thereafter.
-  // First frame still = initialLocale, doesn't break this hydration.
+  // Migrate old users: only when localStorage has a locale but NO cookie
+  // exists at all. The cookie is the source of truth (set by the language
+  // switcher and read by the server for SSR). localStorage is only used as
+  // a fallback for users who set their locale before cookies were implemented.
+  // If a cookie exists (any value), it takes precedence over localStorage.
   useEffect(() => {
     try {
       const saved = localStorage.getItem('locale') as Locale | null;
       if (saved && (LOCALES as readonly string[]).includes(saved)) {
-        if (saved !== locale) setLocaleState(saved);
-        if (typeof document !== 'undefined' && !document.cookie.includes(`locale=${saved}`)) {
-          document.cookie = `locale=${saved}; path=/; max-age=31536000; samesite=lax`;
+        // Only migrate if there is NO locale cookie at all
+        const hasCookie = typeof document !== 'undefined' && document.cookie.match(/locale=[a-z]{2}/);
+        if (!hasCookie) {
+          if (saved !== locale) setLocaleState(saved);
+          if (typeof document !== 'undefined') {
+            document.cookie = `locale=${saved}; path=/; max-age=31536000; samesite=lax`;
+          }
         }
       }
     } catch {
