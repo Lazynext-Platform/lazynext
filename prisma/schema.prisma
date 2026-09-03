@@ -49,6 +49,10 @@ model User {
   platformConnections PlatformConnection[]
   scheduledPosts ScheduledPost[]
   hooks        Hook[]
+  // ── OS Platform relations (Phase 3) ──
+  memberships     Membership[]
+  organizations   Organization[]
+  apiKeys         ApiKey[]
 }
 
 model Account {
@@ -694,4 +698,284 @@ model Hook {
 
   @@index([userId])
   @@index([userId, trigger])
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// OS Platform Models (Phase 3 — additive, no changes to existing models)
+// These introduce workspace-based tenancy alongside the existing user-scoped
+// data. Existing data is migrated incrementally; old models remain untouched.
+// ─────────────────────────────────────────────────────────────────────────────
+
+// An organization is a company/team entity that owns one or more workspaces.
+model Organization {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String   @unique
+  ownerId   String
+  plan      String   @default("free") // free | pro | team | enterprise
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  owner     User       @relation(fields: [ownerId], references: [id])
+  workspaces Workspace[]
+
+  @@index([ownerId])
+}
+
+// A workspace is the tenancy boundary for all business data.
+model Workspace {
+  id              String   @id @default(cuid())
+  organizationId  String
+  name            String
+  slug            String   @unique
+  defaultLocale   String   @default("en")
+  timezone        String   @default("UTC")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  deletedAt       DateTime?
+
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  memberships     Membership[]
+  projects        Project[]
+  documents       Document[]
+  files           FileStore[]
+  automations     Automation[]
+  agents          AgentDef[]
+  notifications   Notification[]
+  scheduledJobs   ScheduledJob[]
+  auditEvents     AuditEvent[]
+
+  @@index([organizationId])
+}
+
+// User ↔ Workspace relationship with a role.
+model Membership {
+  id           String   @id @default(cuid())
+  userId       String
+  workspaceId  String
+  role         String   @default("member") // owner | admin | member | viewer | guest
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  workspace    Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, workspaceId])
+  @@index([workspaceId])
+}
+
+// A project is a container for related work (tasks, documents, files).
+model Project {
+  id          String   @id @default(cuid())
+  workspaceId String
+  name        String
+  description String?
+  status      String   @default("active") // active | archived | deleted
+  createdById String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  deletedAt   DateTime?
+
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  tasks       Task[]
+  documents   Document[]
+
+  @@index([workspaceId])
+  @@index([workspaceId, status])
+}
+
+// A task is a unit of work within a project.
+model Task {
+  id          String   @id @default(cuid())
+  projectId   String
+  assigneeId  String?
+  title       String
+  description String?
+  status      String   @default("todo") // todo | in_progress | done | cancelled
+  priority    String   @default("medium") // low | medium | high | urgent
+  dueDate     DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  deletedAt   DateTime?
+
+  project     Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
+  @@index([assigneeId])
+  @@index([status])
+}
+
+// A document is a rich-text knowledge object.
+model Document {
+  id          String   @id @default(cuid())
+  workspaceId String
+  projectId   String?
+  title       String
+  content     String   // markdown / rich text
+  version     Int      @default(1)
+  createdById String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  deletedAt   DateTime?
+
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  project     Project?  @relation(fields: [projectId], references: [id], onDelete: SetNull)
+
+  @@index([workspaceId])
+  @@index([projectId])
+}
+
+// A file is a stored binary asset with metadata (distinct from creative Asset).
+model FileStore {
+  id          String   @id @default(cuid())
+  workspaceId String
+  projectId   String?
+  name        String
+  mimeType    String
+  size        Int
+  storageKey  String   // R2 key or local path
+  createdById String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  deletedAt   DateTime?
+
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@index([workspaceId])
+}
+
+// An automation is a workflow definition (trigger → steps → action).
+model Automation {
+  id          String   @id @default(cuid())
+  workspaceId String
+  name        String
+  trigger     String   // event type or cron expression
+  enabled     Boolean  @default(true)
+  definition  String   // JSON: steps
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  runs        AutomationRun[]
+
+  @@index([workspaceId])
+}
+
+model AutomationRun {
+  id          String   @id @default(cuid())
+  automationId String
+  status      String   @default("pending") // pending | running | completed | failed
+  startedAt   DateTime @default(now())
+  completedAt DateTime?
+
+  automation  Automation @relation(fields: [automationId], references: [id], onDelete: Cascade)
+
+  @@index([automationId])
+  @@index([status])
+}
+
+// An AI agent definition.
+model AgentDef {
+  id            String   @id @default(cuid())
+  workspaceId   String
+  name          String
+  modelProvider String
+  modelName     String
+  instructions  String
+  toolIds       String   // JSON array of tool IDs
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  workspace     Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  runs          AgentRun[]
+
+  @@index([workspaceId])
+}
+
+model AgentRun {
+  id          String   @id @default(cuid())
+  agentId     String
+  status      String   @default("running") // running | completed | failed | cancelled
+  input       String
+  output      String?
+  tokensUsed  Int      @default(0)
+  startedAt   DateTime @default(now())
+  completedAt DateTime?
+
+  agent       AgentDef @relation(fields: [agentId], references: [id], onDelete: Cascade)
+
+  @@index([agentId])
+  @@index([status])
+}
+
+// A user-facing notification.
+model Notification {
+  id          String   @id @default(cuid())
+  userId      String
+  workspaceId String?
+  type        String
+  title       String
+  body        String?
+  read        Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  workspace   Workspace? @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@index([userId, read])
+  @@index([workspaceId])
+}
+
+// A scheduled job (cron or one-shot).
+model ScheduledJob {
+  id          String   @id @default(cuid())
+  workspaceId String
+  type        String
+  payload     String   // JSON
+  scheduledAt DateTime
+  status      String   @default("pending") // pending | running | completed | failed
+  createdAt   DateTime @default(now())
+
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@index([workspaceId, status])
+  @@index([scheduledAt])
+}
+
+// A security/business-critical audit record.
+model AuditEvent {
+  id          String   @id @default(cuid())
+  userId      String?
+  workspaceId String?
+  action      String   // auth.login, user.create, role.update, ...
+  targetType  String?
+  targetId    String?
+  metadata    String?  // JSON
+  ip          String?
+  userAgent   String?
+  createdAt   DateTime @default(now())
+
+  workspace   Workspace? @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([workspaceId])
+  @@index([action])
+}
+
+// API key for public API v1 access.
+model ApiKey {
+  id          String    @id @default(cuid())
+  userId      String
+  workspaceId String?
+  name        String
+  keyHash     String    @unique  // SHA-256 hash of the key (never store plaintext)
+  keyPrefix   String    // first 8 chars for display (e.g. "ln_live_")
+  scopes      String    @default("[]")  // JSON array: ["read", "write", "admin"]
+  lastUsedAt  DateTime?
+  createdAt   DateTime  @default(now())
+  revokedAt   DateTime?
+
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([keyHash])
 }
