@@ -33,12 +33,22 @@ async function __byokPOST(req: Request) {
   const planTier = await getUserPlanTier(uid);
 
   const body = await req.json().catch(() => ({}));
-  const sourceUrl = typeof body.sourceUrl === 'string' ? body.sourceUrl.trim() : '';
+  const sourceUrl = typeof body.sourceUrl === 'string' ? body.sourceUrl.trim().slice(0, 2048) : '';
   const transcript = typeof body.transcript === 'string' ? body.transcript.trim().slice(0, 10000) : undefined;
   const language = typeof body.language === 'string' ? body.language.trim().slice(0, 10) : undefined;
   const autoTranscribe = body.autoTranscribe !== false;
 
   if (!sourceUrl) return NextResponse.json({ error: 'source_url_required' }, { status: 400 });
+
+  // Validate URL format
+  try {
+    const parsed = new URL(sourceUrl);
+    if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
+      return NextResponse.json({ error: 'invalid_url' }, { status: 400 });
+    }
+  } catch {
+    return NextResponse.json({ error: 'invalid_url' }, { status: 400 });
+  }
 
   const needsTranscription = !transcript && autoTranscribe;
   const totalCost = CREATIVE_COSTS.deepReferenceAnalysis + (needsTranscription ? ASR_COST : 0);
