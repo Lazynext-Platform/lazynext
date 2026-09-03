@@ -151,7 +151,7 @@ export function ScheduledPostsSection() {
                       <span className="text-xs text-fg-faint">{formatDate(post.scheduledAt)}</span>
                     </div>
                     <p className="mt-1 truncate text-sm text-fg-secondary">{post.caption}</p>
-                    {post.postUrl && (
+                    {post.postUrl && /^https?:\/\//i.test(post.postUrl) && (
                       <a
                         href={post.postUrl}
                         target="_blank"

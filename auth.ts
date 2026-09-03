@@ -162,7 +162,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   ],
   session: { strategy: 'jwt' },
   useSecureCookies,
-  trustHost: true,
+  // Only trust host in local development; in production, NextAuth validates
+  // the host/origin to prevent host-header injection and callback-URL tampering.
+  trustHost: process.env.NODE_ENV !== 'production',
   cookies: {
     sessionToken: {
       name: `${cookiePrefix}next-auth.session-token`,

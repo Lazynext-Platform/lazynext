@@ -233,7 +233,7 @@ export function MultiPlatformPublisher() {
               <div className="flex-1">
                 <p className="text-sm font-medium">{PLATFORM_LABELS[r.platform]}</p>
                 <p className="text-xs text-fg-muted capitalize">{r.status}</p>
-                {r.postUrl && <a href={r.postUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-brand-accent hover:underline">{r.postUrl}</a>}
+                {r.postUrl && /^https?:\/\//i.test(r.postUrl) && <a href={r.postUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-brand-accent hover:underline">{r.postUrl}</a>}
                 {r.error && <p className="text-xs text-danger">{r.error}</p>}
               </div>
             </div>

@@ -300,13 +300,18 @@ export async function readMedia(value: string): Promise<StoredMedia | null> {
   }
 }
 
+/** Content types that are safe to render inline in browsers. */
+const INLINE_SAFE_TYPES = /^(image\/(?!svg)|video\/|audio\/|application\/pdf|text\/plain|\*\/\*)/i;
+
 function baseHeaders(contentType: string, size: number) {
+  const safeInline = INLINE_SAFE_TYPES.test(contentType);
   return {
     'Content-Type': contentType,
     'Accept-Ranges': 'bytes',
     'Access-Control-Allow-Origin': '*',
     'Cache-Control': 'public, max-age=31536000, immutable',
-    'Content-Disposition': 'inline',
+    // Serve unknown/non-media types as attachments to prevent stored XSS
+    'Content-Disposition': safeInline ? 'inline' : 'attachment',
     'Content-Length': String(size),
     Vary: 'Range',
   };

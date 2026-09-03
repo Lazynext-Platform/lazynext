@@ -5,6 +5,23 @@ import { prisma } from '@/lib/prisma';
 import { canUploadFile } from '@/lib/plan-guard';
 import { putMedia } from '@/lib/media-storage';
 
+/** MIME types that are blocked from upload to prevent stored XSS. */
+const BLOCKED_MIME_TYPES = new Set([
+  'text/html',
+  'application/xhtml+xml',
+  'application/javascript',
+  'text/javascript',
+  'application/x-javascript',
+  'application/ecmascript',
+  'text/ecmascript',
+  'image/svg+xml', // SVG can contain scripts
+]);
+
+/** File extensions that are blocked from upload. */
+const BLOCKED_EXTENSIONS = /\.(html?|xhtml|js|mjs|svg|exe|bat|cmd|sh|php|jsp|asp|aspx)$/i;
+
+const MAX_FILE_SIZE = 100 * 1024 * 1024; // 100 MB
+
 /**
  * POST /api/files/upload — upload a file to the workspace.
  * Accepts multipart/form-data with a single file field.
@@ -24,6 +41,17 @@ export async function POST(req: NextRequest) {
 
     if (!file || !(file instanceof File)) {
       return NextResponse.json({ error: 'no_file' }, { status: 400 });
+    }
+
+    // File size limit
+    if (file.size > MAX_FILE_SIZE) {
+      return NextResponse.json({ error: 'file_too_large' }, { status: 413 });
+    }
+
+    // Block dangerous file types to prevent stored XSS
+    const mimeType = file.type || 'application/octet-stream';
+    if (BLOCKED_MIME_TYPES.has(mimeType) || BLOCKED_EXTENSIONS.test(file.name)) {
+      return NextResponse.json({ error: 'file_type_not_allowed' }, { status: 415 });
     }
 
     const workspaces = await WorkspaceService.listForUser(session.user.id);

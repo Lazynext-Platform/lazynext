@@ -243,11 +243,13 @@ async function handleRequest(req: NextRequest): Promise<NextResponse> {
     return res;
   }
 
-  // Get IP from various headers
+  // Get IP from various headers.
+  // Trust cf-connecting-ip first (set by Cloudflare and not client-spoofable),
+  // then fall back to x-forwarded-for and x-real-ip for local dev / other proxies.
   const headers = req.headers;
   const ip =
-    headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
     headers.get('cf-connecting-ip')?.trim() ||
+    headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
     headers.get('x-real-ip')?.trim() ||
     null;
 

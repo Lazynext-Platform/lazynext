@@ -1412,7 +1412,7 @@ function StageOutputContent({ stage, output, pipelineId }: { stage: PipelineStag
               {results.map((r, i) => (
                 <div key={i} className="ml-2">
                   <span className="text-fg-faint">[{String(r.platform)}]</span> {String(r.status)}
-                  {typeof r.postUrl === 'string' && r.postUrl && (
+                  {typeof r.postUrl === 'string' && r.postUrl && /^https?:\/\//i.test(r.postUrl) && (
                     <a href={r.postUrl} target="_blank" rel="noopener noreferrer" className="ml-1 text-accent underline">link</a>
                   )}
                   {typeof r.error === 'string' && r.error && (

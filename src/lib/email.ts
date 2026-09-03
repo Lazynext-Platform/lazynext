@@ -17,6 +17,16 @@ function getResendClient(): Resend | null {
   return new Resend(apiKey);
 }
 
+/** Escape user-controlled text for safe insertion into HTML email templates. */
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 const FROM = process.env.FROM_EMAIL || 'Lazynext <onboarding@resend.dev>';
 const APP_URL = process.env.NEXTAUTH_URL || process.env.AUTH_URL || 'https://lazynext.com';
 
@@ -112,11 +122,11 @@ export async function sendNotificationEmail(
             <span style="display: inline-block; width: 32px; height: 32px; background: #00b2fc; border-radius: 6px; text-align: center; line-height: 32px; color: white; font-weight: bold; font-size: 16px;">L</span>
             <span style="font-weight: bold; font-size: 18px; color: #131416;">Lazynext</span>
           </div>
-          <h2 style="color: #131416; font-size: 18px;">${title}</h2>
-          ${body ? `<p style="color: #555; font-size: 15px; line-height: 1.5;">${body}</p>` : ''}
+          <h2 style="color: #131416; font-size: 18px;">${escapeHtml(title)}</h2>
+          ${body ? `<p style="color: #555; font-size: 15px; line-height: 1.5;">${escapeHtml(body)}</p>` : ''}
           <hr style="border: none; border-top: 1px solid #eee; margin: 24px 0;" />
           <a href="${APP_URL}" style="display: inline-block; padding: 10px 24px; background: #00b2fc; color: white; text-decoration: none; border-radius: 8px; font-weight: bold;">Open Lazynext</a>
-          <p style="color: #999; font-size: 12px; margin-top: 24px;">You received this email because you have email notifications enabled for ${notificationType} events. Manage your preferences in Settings &rarr; Notifications.</p>
+          <p style="color: #999; font-size: 12px; margin-top: 24px;">You received this email because you have email notifications enabled for ${escapeHtml(notificationType)} events. Manage your preferences in Settings &rarr; Notifications.</p>
         </div>
       `,
     });
