@@ -53,7 +53,7 @@ export async function GET(req: NextRequest) {
     }),
     prisma.creation.findMany({
       where: { userId },
-      select: { id: true, templateId: true, status: true, prompt: true, result: true, createdAt: true },
+      select: { id: true, templateId: true, status: true, prompt: true, outputs: true, createdAt: true },
     }),
     prisma.notification.findMany({
       where: { userId },
@@ -75,7 +75,7 @@ export async function GET(req: NextRequest) {
     }),
     prisma.creditLedger.findMany({
       where: { userId },
-      select: { id: true, amount: true, reason: true, createdAt: true },
+      select: { id: true, delta: true, reason: true, createdAt: true },
       orderBy: { createdAt: 'desc' },
       take: 500,
     }),
