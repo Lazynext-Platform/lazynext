@@ -38,11 +38,11 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   }
 
   const data: Record<string, unknown> = {};
-  if (body.name?.trim()) data.name = body.name.trim();
-  if (body.modelProvider?.trim()) data.modelProvider = body.modelProvider.trim();
-  if (body.modelName?.trim()) data.modelName = body.modelName.trim();
-  if (body.instructions !== undefined) data.instructions = body.instructions;
-  if (body.toolIds !== undefined) data.toolIds = body.toolIds;
+  if (body.name?.trim()) data.name = body.name.trim().slice(0, 200);
+  if (body.modelProvider?.trim()) data.modelProvider = body.modelProvider.trim().slice(0, 50);
+  if (body.modelName?.trim()) data.modelName = body.modelName.trim().slice(0, 100);
+  if (body.instructions !== undefined) data.instructions = String(body.instructions).slice(0, 10_000);
+  if (body.toolIds !== undefined) data.toolIds = String(body.toolIds).slice(0, 1000);
 
   const agent = await prisma.agentDef.update({ where: { id }, data });
   return NextResponse.json({ agent });

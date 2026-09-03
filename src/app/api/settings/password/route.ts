@@ -23,6 +23,9 @@ export async function POST(req: NextRequest) {
   if (newPassword.length < 8) {
     return NextResponse.json({ error: 'password_too_short' }, { status: 400 });
   }
+  if (newPassword.length > 128) {
+    return NextResponse.json({ error: 'password_too_long' }, { status: 400 });
+  }
 
   const user = await prisma.user.findUnique({
     where: { id: session.user.id },

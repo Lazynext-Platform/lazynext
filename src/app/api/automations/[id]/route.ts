@@ -32,10 +32,10 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   }
 
   const data: Record<string, unknown> = {};
-  if (body.name?.trim()) data.name = body.name.trim();
-  if (body.trigger?.trim()) data.trigger = body.trigger.trim();
+  if (body.name?.trim()) data.name = body.name.trim().slice(0, 200);
+  if (body.trigger?.trim()) data.trigger = body.trigger.trim().slice(0, 100);
   if (typeof body.enabled === 'boolean') data.enabled = body.enabled;
-  if (body.definition !== undefined) data.definition = body.definition;
+  if (body.definition !== undefined) data.definition = String(body.definition).slice(0, 10_000);
 
   const automation = await prisma.automation.update({ where: { id }, data });
   return NextResponse.json({ automation });
