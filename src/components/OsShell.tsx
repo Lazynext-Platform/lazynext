@@ -39,18 +39,19 @@ import { LOCALES, LOCALE_NAMES, type Locale } from '@/i18n/messages';
 import { NotificationsBell } from '@/components/NotificationsBell';
 
 // OS module navigation — the primary nav items
+// Labels use i18n keys from home.mod* (same as homepage module grid)
 const OS_NAV = [
-  { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { href: '/projects', label: 'Projects', icon: FolderKanban },
-  { href: '/tasks', label: 'Tasks', icon: CheckSquare },
-  { href: '/documents', label: 'Documents', icon: FileText },
-  { href: '/files', label: 'Files', icon: Folder },
-  { href: '/creative', label: 'Creative', icon: Sparkles },
-  { href: '/automations', label: 'Automations', icon: Zap },
-  { href: '/agents', label: 'AI Agents', icon: Bot },
-  { href: '/integrations', label: 'Integrations', icon: Plug },
-  { href: '/calendar', label: 'Calendar', icon: Calendar },
-  { href: '/analytics', label: 'Analytics', icon: BarChart3 },
+  { href: '/dashboard', labelKey: 'home.modDashboard', icon: LayoutDashboard },
+  { href: '/projects', labelKey: 'home.modProjects', icon: FolderKanban },
+  { href: '/tasks', labelKey: 'home.modTasks', icon: CheckSquare },
+  { href: '/documents', labelKey: 'home.modDocuments', icon: FileText },
+  { href: '/files', labelKey: 'home.modFiles', icon: Folder },
+  { href: '/creative', labelKey: 'home.modCreative', icon: Sparkles },
+  { href: '/automations', labelKey: 'home.modAutomations', icon: Zap },
+  { href: '/agents', labelKey: 'home.modAgents', icon: Bot },
+  { href: '/integrations', labelKey: 'home.modIntegrations', icon: Plug },
+  { href: '/calendar', labelKey: 'home.modCalendar', icon: Calendar },
+  { href: '/analytics', labelKey: 'home.modAnalytics', icon: BarChart3 },
 ] as const;
 
 const LOCALE_RE = /^\/(en|zh|ja|es|ko|pt|fr|de|ar|hi|vi|th|id)(?=\/|$)/;
@@ -145,7 +146,7 @@ export function OsShell({ children }: { children: React.ReactNode }) {
   );
 
   const filteredNav = searchQuery.trim()
-    ? OS_NAV.filter((item) => item.label.toLowerCase().includes(searchQuery.toLowerCase()))
+    ? OS_NAV.filter((item) => t(item.labelKey).toLowerCase().includes(searchQuery.toLowerCase()))
     : OS_NAV;
 
   const isActive = (href: string) => p === href || p.startsWith(href + '/');
@@ -274,7 +275,7 @@ export function OsShell({ children }: { children: React.ReactNode }) {
                 }
               >
                 <item.icon className="h-4 w-4" />
-                <span>{item.label}</span>
+                <span>{t(item.labelKey)}</span>
               </Link>
             ))}
             {/* More menu for remaining nav items */}
@@ -464,7 +465,7 @@ export function OsShell({ children }: { children: React.ReactNode }) {
                   }
                 >
                   <item.icon className="h-5 w-5" />
-                  {item.label}
+                  {t(item.labelKey)}
                 </Link>
               ))}
             </div>
@@ -517,7 +518,7 @@ export function OsShell({ children }: { children: React.ReactNode }) {
                     onClick={() => setSearchOpen(false)}
                   >
                     <item.icon className="h-4 w-4 text-fg-muted" />
-                    {item.label}
+                    {t(item.labelKey)}
                   </Link>
                 ))
               )}
@@ -539,9 +540,10 @@ function NavOverflow({
   items,
   isActive,
 }: {
-  items: readonly { href: string; label: string; icon: typeof LayoutDashboard }[];
+  items: readonly { href: string; labelKey: string; icon: typeof LayoutDashboard }[];
   isActive: (href: string) => boolean;
 }) {
+  const { t } = useI18n();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -580,7 +582,7 @@ function NavOverflow({
               onClick={() => setOpen(false)}
             >
               <item.icon className="h-4 w-4" />
-              {item.label}
+              {t(item.labelKey)}
             </Link>
           ))}
         </div>
