@@ -14,7 +14,7 @@ async function __byokPOST(req: Request) {
   const uid = session.user.id;
 
   const body = await req.json().catch(() => ({}));
-  const campaignId = typeof body.campaignId === 'string' ? body.campaignId : '';
+  const campaignId = typeof body.campaignId === 'string' ? body.campaignId.slice(0, 100) : '';
   if (!campaignId) return NextResponse.json({ error: 'campaignId_required' }, { status: 400 });
 
   // Look up campaign in DB

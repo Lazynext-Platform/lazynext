@@ -61,6 +61,13 @@ async function __byokPOST(req: Request) {
 
   try {
     const body = (await req.json().catch(() => ({}))) as Partial<SafetyConfig>;
+    // Cap array fields to prevent oversized payloads
+    if (Array.isArray(body.allowedActions) && body.allowedActions.length > 20) {
+      return NextResponse.json({ error: 'too_many_allowed_actions' }, { status: 400 });
+    }
+    if (Array.isArray(body.blockedActions) && body.blockedActions.length > 20) {
+      return NextResponse.json({ error: 'too_many_blocked_actions' }, { status: 400 });
+    }
     const candidate: SafetyConfig = {
       ...DEFAULT_SAFETY_CONFIG,
       ...getSafetyConfig(),

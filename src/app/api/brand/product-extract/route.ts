@@ -5,6 +5,7 @@ import { extractProduct, SSRFError } from '@/lib/brand/extract';
 import { deductCredits, refundCredits } from '@/lib/credits';
 import { prisma } from '@/lib/prisma';
 import { getUserPlanTier } from '@/lib/plan-tier';
+import { isUrlSafe } from '@/lib/security';
 
 export const maxDuration = 90;
 
@@ -18,7 +19,7 @@ async function __byokPOST(req: Request) {
 
   const body = await req.json().catch(() => ({}));
   const url = typeof body.url === 'string' ? body.url.trim().slice(0, 2048) : '';
-  if (!url || !/^https?:\/\//.test(url)) {
+  if (!url || !/^https?:\/\//.test(url) || !isUrlSafe(url)) {
     return NextResponse.json({ error: 'url_required' }, { status: 400 });
   }
 

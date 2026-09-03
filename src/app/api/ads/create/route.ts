@@ -19,6 +19,21 @@ async function __byokPOST(req: Request) {
   if (!input || !input.platform || !input.name || !input.creativeIds?.length) {
     return NextResponse.json({ error: 'platform_name_creatives_required' }, { status: 400 });
   }
+  if (input.platform !== 'meta' && input.platform !== 'google') {
+    return NextResponse.json({ error: 'invalid_platform' }, { status: 400 });
+  }
+  if (typeof input.name === 'string' && input.name.length > 200) {
+    return NextResponse.json({ error: 'name_too_long' }, { status: 400 });
+  }
+  if (Array.isArray(input.creativeIds) && input.creativeIds.length > 50) {
+    return NextResponse.json({ error: 'too_many_creatives' }, { status: 400 });
+  }
+  if (typeof input.budgetDaily === 'number' && (!Number.isFinite(input.budgetDaily) || input.budgetDaily < 0 || input.budgetDaily > 1_000_000)) {
+    return NextResponse.json({ error: 'invalid_budget_daily' }, { status: 400 });
+  }
+  if (typeof input.budgetTotal === 'number' && (!Number.isFinite(input.budgetTotal) || input.budgetTotal < 0 || input.budgetTotal > 10_000_000)) {
+    return NextResponse.json({ error: 'invalid_budget_total' }, { status: 400 });
+  }
 
   const opts: PublishOptions = {
     dryRun: body.dryRun !== false, // default to dry-run for safety

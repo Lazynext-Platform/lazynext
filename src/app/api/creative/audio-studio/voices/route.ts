@@ -8,9 +8,9 @@ async function __byokGET(req: Request) {
   if (!session?.user?.id) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
 
   const url = new URL(req.url);
-  const gender = (url.searchParams.get('gender') || undefined) as VoiceGender | undefined;
-  const tone = (url.searchParams.get('tone') || undefined) as VoiceTone | undefined;
-  const language = (url.searchParams.get('language') || undefined) as VoiceLanguage | undefined;
+  const gender = (url.searchParams.get('gender') || undefined)?.slice(0, 50) as VoiceGender | undefined;
+  const tone = (url.searchParams.get('tone') || undefined)?.slice(0, 50) as VoiceTone | undefined;
+  const language = (url.searchParams.get('language') || undefined)?.slice(0, 20) as VoiceLanguage | undefined;
 
   const voices = getVoiceProfiles({ gender, tone, language });
   return NextResponse.json({ voices });

@@ -23,7 +23,7 @@ async function __byokGET(req: Request) {
   const uid = session.user.id;
 
   const url = new URL(req.url);
-  const campaignId = url.searchParams.get('campaignId') || '';
+  const campaignId = (url.searchParams.get('campaignId') || '').slice(0, 100);
   if (!campaignId) return NextResponse.json({ error: 'campaignId_required' }, { status: 400 });
 
   // Verify ownership

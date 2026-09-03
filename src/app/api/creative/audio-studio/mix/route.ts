@@ -3,9 +3,9 @@ import { NextResponse } from 'next/server';
 import { auth } from '@/../auth';
 import { deductCredits, refundCredits } from '@/lib/credits';
 import { getUserPlanTier } from '@/lib/plan-tier';
+import { isUrlSafe } from '@/lib/security';
 import {
   mixAudio,
-  isUrlSafe,
   MIX_CREDIT_COST,
   type AudioMixRequest,
 } from '@/lib/creative/audio-studio';

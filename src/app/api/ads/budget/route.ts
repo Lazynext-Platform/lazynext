@@ -16,13 +16,13 @@ async function __byokPATCH(req: Request) {
   const uid = session.user.id;
 
   const body = await req.json().catch(() => ({}));
-  const campaignId = typeof body.campaignId === 'string' ? body.campaignId : '';
+  const campaignId = typeof body.campaignId === 'string' ? body.campaignId.slice(0, 100) : '';
   const budgetDaily = typeof body.budgetDaily === 'number' ? body.budgetDaily : NaN;
 
   if (!campaignId) {
     return NextResponse.json({ error: 'campaignId_required' }, { status: 400 });
   }
-  if (!Number.isFinite(budgetDaily) || budgetDaily <= 0) {
+  if (!Number.isFinite(budgetDaily) || budgetDaily <= 0 || budgetDaily > 1_000_000) {
     return NextResponse.json({ error: 'budget_daily_must_be_positive' }, { status: 400 });
   }
 

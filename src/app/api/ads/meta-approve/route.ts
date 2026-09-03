@@ -56,11 +56,11 @@ async function __byokPOST(req: Request) {
       approver?: string;
     };
 
-    if (!body.id) {
+    if (!body.id || body.id.length > 200) {
       return NextResponse.json({ error: 'id_required' }, { status: 400 });
     }
     const action = body.action === 'reject' ? 'reject' : 'approve';
-    const approver = body.approver || session.user.email || session.user.id;
+    const approver = (body.approver || session.user.email || session.user.id || '').slice(0, 200);
 
     const existing = getApprovalRequest(body.id);
     if (!existing) {
