@@ -193,7 +193,7 @@ const CREDIT_REFRESH_MS = 5 * 60_000;
       if (bonus > 0 && user.id) await grantCredits(user.id, bonus, 'signup');
     },
   },
-  pages: { signIn: '/' },
+  pages: { signIn: '/login' },
 });
 
 /**

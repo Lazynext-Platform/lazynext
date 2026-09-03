@@ -1,0 +1,103 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { setRequestForAuth, requireApiKey } from '@/lib/auth';
+import { prisma } from '@/lib/prisma';
+import { RateLimiter, RateLimits } from '@/lib/services/rate-limit';
+import { AuditService, AuditActions } from '@/lib/services/audit';
+
+// GET /api/v1/documents/[id]
+export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const limited = await RateLimiter.check(req, RateLimits.API_V1);
+  if (limited) return limited;
+
+  setRequestForAuth(req);
+  const ctx = await requireApiKey(['read']);
+  if (ctx instanceof NextResponse) return ctx;
+
+  const apiKeyCtx = ctx as { userId: string; scopes: string[]; keyId: string };
+
+  const doc = await prisma.document.findFirst({ where: { id, deletedAt: null } });
+  if (!doc) return NextResponse.json({ error: 'not_found' }, { status: 404 });
+
+  const membership = await prisma.membership.findUnique({
+    where: { userId_workspaceId: { userId: apiKeyCtx.userId, workspaceId: doc.workspaceId } },
+  });
+  if (!membership) return NextResponse.json({ error: 'forbidden' }, { status: 403 });
+
+  return NextResponse.json({ document: doc });
+}
+
+// PATCH /api/v1/documents/[id]
+export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const limited = await RateLimiter.check(req, RateLimits.API_V1);
+  if (limited) return limited;
+
+  setRequestForAuth(req);
+  const ctx = await requireApiKey(['write']);
+  if (ctx instanceof NextResponse) return ctx;
+
+  const apiKeyCtx = ctx as { userId: string; scopes: string[]; keyId: string };
+  const body = await req.json().catch(() => ({}));
+
+  const doc = await prisma.document.findFirst({ where: { id, deletedAt: null } });
+  if (!doc) return NextResponse.json({ error: 'not_found' }, { status: 404 });
+
+  const membership = await prisma.membership.findUnique({
+    where: { userId_workspaceId: { userId: apiKeyCtx.userId, workspaceId: doc.workspaceId } },
+  });
+  if (!membership) return NextResponse.json({ error: 'forbidden' }, { status: 403 });
+
+  const updated = await prisma.document.update({
+    where: { id },
+    data: {
+      title: body.title?.trim() || undefined,
+      content: body.content !== undefined ? body.content : undefined,
+      version: { increment: 1 },
+    },
+  });
+
+  await AuditService.log({
+    userId: apiKeyCtx.userId,
+    workspaceId: doc.workspaceId,
+    action: AuditActions.DOCUMENT_UPDATE,
+    targetType: 'document',
+    targetId: id,
+    metadata: { title: body.title },
+  });
+
+  return NextResponse.json({ document: updated });
+}
+
+// DELETE /api/v1/documents/[id] (soft delete)
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const limited = await RateLimiter.check(req, RateLimits.API_V1);
+  if (limited) return limited;
+
+  setRequestForAuth(req);
+  const ctx = await requireApiKey(['write']);
+  if (ctx instanceof NextResponse) return ctx;
+
+  const apiKeyCtx = ctx as { userId: string; scopes: string[]; keyId: string };
+
+  const doc = await prisma.document.findFirst({ where: { id, deletedAt: null } });
+  if (!doc) return NextResponse.json({ error: 'not_found' }, { status: 404 });
+
+  const membership = await prisma.membership.findUnique({
+    where: { userId_workspaceId: { userId: apiKeyCtx.userId, workspaceId: doc.workspaceId } },
+  });
+  if (!membership) return NextResponse.json({ error: 'forbidden' }, { status: 403 });
+
+  await prisma.document.update({ where: { id }, data: { deletedAt: new Date() } });
+
+  await AuditService.log({
+    userId: apiKeyCtx.userId,
+    workspaceId: doc.workspaceId,
+    action: AuditActions.DOCUMENT_DELETE,
+    targetType: 'document',
+    targetId: id,
+  });
+
+  return NextResponse.json({ success: true });
+}
