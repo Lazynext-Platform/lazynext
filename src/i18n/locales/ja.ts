@@ -69,9 +69,9 @@ export const jaMessages = {
     "ctaTitle": "あなたのブランド、あなたの決済、あなたの利益。",
     "ctaSubtitle": "Fork してキーを入れ、Cloudflare にデプロイ。AI は Atlas Cloud が担当、売上は 100% あなたに。",
     "ctaBtn": "作成をはじめる",
-    "heroTitle": "あなたの AI",
-    "heroTitleHl": "クリエイティブスタジオ",
-    "heroSubtitle": "{n} のプレミアムアプリ · アップロードして完成 · すべて Atlas Cloud が駆動",
+    "heroTitle": "デジタルワークの",
+    "heroTitleHl": "オペレーティングシステム",
+    "heroSubtitle": "ワークスペース · プロジェクト · 自動化 · AIエージェント · 統合 — 個人、チーム、組織のための統一プラットフォーム",
     "featured": "注目",
     "signUp": "登録"
   },

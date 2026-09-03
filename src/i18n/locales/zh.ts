@@ -69,9 +69,9 @@ export const zhMessages = {
     "ctaTitle": "你的品牌,你的支付,你的利润。",
     "ctaSubtitle": "Fork 一份、填上你的 key、部署到 Cloudflare。AI 交给 Atlas Cloud,你收的钱 100% 归你。",
     "ctaBtn": "开始创作",
-    "heroTitle": "你的 AI",
-    "heroTitleHl": "创作工作室",
-    "heroSubtitle": "{n} 个精品应用 · 上传即出片 · 每一步真调 Atlas",
+    "heroTitle": "数字工作的",
+    "heroTitleHl": "操作系统",
+    "heroSubtitle": "工作空间 · 项目 · 自动化 · AI 智能体 · 集成 — 面向个人、团队和组织的统一平台",
     "featured": "精品",
     "signUp": "注册"
   },

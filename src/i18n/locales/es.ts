@@ -69,9 +69,9 @@ export const esMessages = {
     "ctaTitle": "Tu marca. Tus pagos. Tu beneficio.",
     "ctaSubtitle": "Haz un fork, añade tus claves, despliega en Cloudflare. Atlas Cloud pone la IA — te quedas el 100% de lo que cobras.",
     "ctaBtn": "Empezar a crear",
-    "heroTitle": "Tu estudio de",
-    "heroTitleHl": "creación con IA",
-    "heroSubtitle": "{n} apps premium · sube y publica · cada paso con Atlas Cloud",
+    "heroTitle": "El sistema operativo",
+    "heroTitleHl": "para el trabajo digital",
+    "heroSubtitle": "Espacios de trabajo · proyectos · automatización · agentes de IA · integraciones — una plataforma unificada para personas, equipos y organizaciones",
     "featured": "Destacado",
     "signUp": "Registrarse"
   },

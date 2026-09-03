@@ -138,9 +138,9 @@ export const koMessages = {
     "ctaTitle": "당신의 브랜드. 당신의 결제. 당신의 수익.",
     "ctaSubtitle": "포크하고, 키를 넣고, Cloudflare에 배포하세요. AI는 Atlas Cloud가 처리 — 수익의 100%는 당신이.",
     "ctaBtn": "만들기 시작",
-    "heroTitle": "당신의 AI",
-    "heroTitleHl": "크리에이티브 스튜디오",
-    "heroSubtitle": "{n}개 프리미엄 앱 · 업로드 후 바로 완성 · 모든 단계 Atlas Cloud 구동",
+    "heroTitle": "디지털 작업을 위한",
+    "heroTitleHl": "운영체제",
+    "heroSubtitle": "워크스페이스 · 프로젝트 · 자동화 · AI 에이전트 · 통합 — 개인, 팀, 조직을 위한 통합 플랫폼",
     "featured": "추천",
     "signUp": "회원가입"
   },

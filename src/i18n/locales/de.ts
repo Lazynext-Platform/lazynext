@@ -138,9 +138,9 @@ export const deMessages = {
     "ctaTitle": "Ihre Marke. Ihre Zahlungen. Ihr Gewinn.",
     "ctaSubtitle": "Forken, Keys hinzufügen, auf Cloudflare deployen. Atlas Cloud übernimmt die KI — Sie behalten 100% des Umsatzes.",
     "ctaBtn": "Erstellen beginnen",
-    "heroTitle": "Ihr Studio für",
-    "heroTitleHl": "KI-Kreation",
-    "heroSubtitle": "{n} Premium-Apps · hochladen und ausliefern · jeder Schritt von Atlas Cloud",
+    "heroTitle": "Das Betriebssystem",
+    "heroTitleHl": "für digitale Arbeit",
+    "heroSubtitle": "Arbeitsbereiche · Projekte · Automatisierung · KI-Agenten · Integrationen — eine einheitliche Plattform für Personen, Teams und Organisationen",
     "featured": "Empfohlen",
     "signUp": "Registrieren"
   },

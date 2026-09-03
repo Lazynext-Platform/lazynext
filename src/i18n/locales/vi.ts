@@ -69,9 +69,9 @@ export const viMessages = {
     "ctaTitle": "Thương hiệu của bạn. Thanh toán của bạn. Lợi nhuận của bạn.",
     "ctaSubtitle": "Fork dự án, thêm key của bạn, Triển khai lên Cloudflare. Atlas Cloud lo phần AI — bạn giữ 100% số tiền thu được.",
     "ctaBtn": "Bắt đầu sáng tạo",
-    "heroTitle": "AI của bạn",
-    "heroTitleHl": "Studio Sáng tạo",
-    "heroSubtitle": "{n} ứng dụng cao cấp · tải lên và xuất · mỗi bước được Atlas Cloud hỗ trợ",
+    "heroTitle": "Hệ điều hành",
+    "heroTitleHl": "cho công việc số",
+    "heroSubtitle": "Không gian làm việc · dự án · tự động hóa · tác nhân AI · tích hợp — nền tảng thống nhất cho cá nhân, nhóm và tổ chức",
     "featured": "Nổi bật",
     "signUp": "Đăng ký"
   },

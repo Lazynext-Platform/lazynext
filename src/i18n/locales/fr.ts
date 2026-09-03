@@ -138,9 +138,9 @@ export const frMessages = {
     "ctaTitle": "Votre marque. Vos paiements. Votre profit.",
     "ctaSubtitle": "Forkez, ajoutez vos clés, déployez sur Cloudflare. Atlas Cloud gère l'IA — vous gardez 100% de ce que vous facturez.",
     "ctaBtn": "Commencer à créer",
-    "heroTitle": "Votre studio de",
-    "heroTitleHl": "création IA",
-    "heroSubtitle": "{n} apps premium · envoyez et publiez · chaque étape par Atlas Cloud",
+    "heroTitle": "Le système d'exploitation",
+    "heroTitleHl": "pour le travail numérique",
+    "heroSubtitle": "Espaces de travail · projets · automatisation · agents IA · intégrations — une plateforme unifiée pour les personnes, les équipes et les organisations",
     "featured": "En vedette",
     "signUp": "S'inscrire"
   },

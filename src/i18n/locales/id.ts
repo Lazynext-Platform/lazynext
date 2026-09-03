@@ -69,9 +69,9 @@ export const idMessages = {
     "ctaTitle": "Brand kamu. Pembayaran kamu. Profit kamu.",
     "ctaSubtitle": "Fork proyek, tambahkan key kamu, Deploy ke Cloudflare. Atlas Cloud menangani AI — kamu simpan 100% dari yang kamu kenakan.",
     "ctaBtn": "Mulai membuat",
-    "heroTitle": "AI Anda",
-    "heroTitleHl": "Studio Kreatif",
-    "heroSubtitle": "{n} aplikasi premium · unggah dan kirim · setiap langkah ditenagai Atlas Cloud",
+    "heroTitle": "Sistem operasi",
+    "heroTitleHl": "untuk kerja digital",
+    "heroSubtitle": "Ruang kerja · proyek · otomatisasi · agen AI · integrasi — platform terpadu untuk individu, tim, dan organisasi",
     "featured": "Unggulan",
     "signUp": "Daftar"
   },
