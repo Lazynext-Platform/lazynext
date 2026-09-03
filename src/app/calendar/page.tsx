@@ -1,5 +1,12 @@
 import Link from 'next/link';
+import type { Metadata } from 'next';
 import { Calendar as CalendarIcon, ChevronLeft, ChevronRight, Plus } from 'lucide-react';
+
+export const metadata: Metadata = {
+  title: 'Calendar — Lazynext',
+  description: 'Schedule and track events, deadlines, and milestones.',
+  robots: { index: false, follow: false },
+};
 import { auth } from '@/../auth';
 import { WorkspaceService } from '@/lib/services/workspace';
 import { prisma } from '@/lib/prisma';

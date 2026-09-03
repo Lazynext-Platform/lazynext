@@ -1,5 +1,12 @@
 import Link from 'next/link';
+import type { Metadata } from 'next';
 import { Users, UserPlus, Mail } from 'lucide-react';
+
+export const metadata: Metadata = {
+  title: 'People — Lazynext',
+  description: 'Manage workspace members and roles.',
+  robots: { index: false, follow: false },
+};
 import { auth } from '@/../auth';
 import { WorkspaceService } from '@/lib/services/workspace';
 import { Card, Badge, Button, EmptyState } from '@/components/ui';

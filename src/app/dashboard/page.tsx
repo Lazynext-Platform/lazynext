@@ -1,5 +1,12 @@
 import Link from 'next/link';
+import type { Metadata } from 'next';
 import { FolderKanban, CheckSquare, FileText, Sparkles, Zap, Bot, Plug, BarChart3, ArrowRight, Activity, TrendingUp, Clock } from 'lucide-react';
+
+export const metadata: Metadata = {
+  title: 'Dashboard — Lazynext',
+  description: 'Overview of your workspace, projects, tasks, and activity.',
+  robots: { index: false, follow: false },
+};
 import { auth } from '@/../auth';
 import { WorkspaceService } from '@/lib/services/workspace';
 import { prisma } from '@/lib/prisma';

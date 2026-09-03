@@ -1,5 +1,12 @@
 import { Folder } from 'lucide-react';
+import type { Metadata } from 'next';
 import { auth } from '@/../auth';
+
+export const metadata: Metadata = {
+  title: 'Files — Lazynext',
+  description: 'Upload, store, and share files across your workspace.',
+  robots: { index: false, follow: false },
+};
 import { WorkspaceService } from '@/lib/services/workspace';
 import { prisma } from '@/lib/prisma';
 import { Card, Badge, Button, EmptyState } from '@/components/ui';

@@ -1,5 +1,12 @@
 import Link from 'next/link';
+import type { Metadata } from 'next';
 import { Bot, Plus, Play, Cpu } from 'lucide-react';
+
+export const metadata: Metadata = {
+  title: 'AI Agents — Lazynext',
+  description: 'Create AI agents to automate tasks with custom instructions.',
+  robots: { index: false, follow: false },
+};
 import { auth } from '@/../auth';
 import { WorkspaceService } from '@/lib/services/workspace';
 import { prisma } from '@/lib/prisma';

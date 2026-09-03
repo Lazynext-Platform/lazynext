@@ -1,5 +1,12 @@
 import Link from 'next/link';
+import type { Metadata } from 'next';
 import { BarChart3, TrendingUp, FolderKanban, CheckSquare, FileText, Sparkles, Zap, Bot, ArrowRight } from 'lucide-react';
+
+export const metadata: Metadata = {
+  title: 'Analytics — Lazynext',
+  description: 'Cross-module insights and resource distribution charts.',
+  robots: { index: false, follow: false },
+};
 import { auth } from '@/../auth';
 import { WorkspaceService } from '@/lib/services/workspace';
 import { prisma } from '@/lib/prisma';

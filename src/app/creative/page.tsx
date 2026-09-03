@@ -1,10 +1,17 @@
 import Link from 'next/link';
+import type { Metadata } from 'next';
 import {
   Sparkles, Film, Image as ImageIcon, Mic, Video, Drama, Clapperboard, Scissors,
   BarChart3, Target, TrendingUp, Shield, Calendar, Zap, Bot, FolderKanban,
   ArrowRight, Search, Wand2, Palette, Type, Music, Eye, Brain, Megaphone, Grid3x3,
 } from 'lucide-react';
 import { Card, Badge } from '@/components/ui';
+
+export const metadata: Metadata = {
+  title: 'Creative Studio — Lazynext',
+  description: 'Generate ads, scripts, and creative content with AI.',
+  robots: { index: false, follow: false },
+};
 
 export const dynamic = 'force-dynamic';
 

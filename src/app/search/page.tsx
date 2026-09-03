@@ -1,5 +1,12 @@
 import Link from 'next/link';
+import type { Metadata } from 'next';
 import { Search, FolderKanban, FileText, CheckSquare, Sparkles } from 'lucide-react';
+
+export const metadata: Metadata = {
+  title: 'Search — Lazynext',
+  description: 'Search across projects, tasks, documents, and creative work.',
+  robots: { index: false, follow: false },
+};
 import { auth } from '@/../auth';
 import { WorkspaceService } from '@/lib/services/workspace';
 import { prisma } from '@/lib/prisma';

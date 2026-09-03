@@ -1,5 +1,12 @@
 import { auth } from '@/../auth';
+import type { Metadata } from 'next';
 import { WorkspaceService } from '@/lib/services/workspace';
+
+export const metadata: Metadata = {
+  title: 'Conversations — Lazynext',
+  description: 'Workspace messaging and team discussions.',
+  robots: { index: false, follow: false },
+};
 import { ConversationsClient } from '@/components/conversations/ConversationsClient';
 
 export const dynamic = 'force-dynamic';

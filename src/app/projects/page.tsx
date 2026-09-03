@@ -1,5 +1,12 @@
 import Link from 'next/link';
+import type { Metadata } from 'next';
 import { FolderKanban, Plus, ArrowRight } from 'lucide-react';
+
+export const metadata: Metadata = {
+  title: 'Projects — Lazynext',
+  description: 'Organize work into projects with tasks, documents, and files.',
+  robots: { index: false, follow: false },
+};
 import { auth } from '@/../auth';
 import { WorkspaceService } from '@/lib/services/workspace';
 import { prisma } from '@/lib/prisma';
