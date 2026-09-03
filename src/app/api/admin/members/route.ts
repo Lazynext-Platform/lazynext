@@ -3,6 +3,7 @@ import { auth } from '@/../auth';
 import { WorkspaceService } from '@/lib/services/workspace';
 import { prisma } from '@/lib/prisma';
 import { canInviteMembers } from '@/lib/plan-guard';
+import { createNotification } from '@/lib/notifications';
 
 /**
  * GET /api/admin/members?workspaceId=... — list members of a workspace.
@@ -99,6 +100,15 @@ export async function POST(req: NextRequest) {
       role,
     },
   });
+
+  // Notify the invited user
+  await createNotification({
+    userId: targetUser.id,
+    workspaceId,
+    type: 'system',
+    title: `You've been added to a workspace`,
+    body: `You are now a ${role} of this workspace.`,
+  }).catch(() => {});
 
   return NextResponse.json({ membership }, { status: 201 });
 }

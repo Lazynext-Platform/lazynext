@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/../auth';
 import { WorkspaceService } from '@/lib/services/workspace';
 import { prisma } from '@/lib/prisma';
+import { createNotification } from '@/lib/notifications';
 
 /**
  * Internal task CRUD API (session-auth).
@@ -46,6 +47,25 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   if (body.dueDate !== undefined) data.dueDate = body.dueDate ? new Date(body.dueDate) : null;
 
   const task = await prisma.task.update({ where: { id }, data });
+
+  // If task was marked as done and has an assignee who isn't the current user, notify the creator
+  if (body.status === 'done' && existing.assigneeId && existing.assigneeId !== session.user.id) {
+    // Notify the task creator that their task was completed
+    const project = await prisma.project.findUnique({
+      where: { id: existing.projectId },
+      select: { createdById: true, workspaceId: true },
+    });
+    if (project?.createdById && project.createdById !== session.user.id) {
+      await createNotification({
+        userId: project.createdById,
+        workspaceId: project.workspaceId,
+        type: 'task_completed',
+        title: `Task completed: ${existing.title}`,
+        body: `The task "${existing.title}" has been marked as done.`,
+      }).catch(() => {});
+    }
+  }
+
   return NextResponse.json({ task });
 }
 

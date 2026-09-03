@@ -7,7 +7,7 @@ export const dynamic = 'force-dynamic';
 
 const SETTINGS_SECTIONS = [
   { href: '/settings/profile', label: 'Profile', desc: 'Your name, email, and avatar', icon: User },
-  { href: '/settings/security', label: 'Security', desc: 'Password, MFA, and active sessions', icon: Lock },
+  { href: '/settings/security', label: 'Security', desc: 'Password, data export, account deletion, and active sessions', icon: Lock },
   { href: '/settings/notifications', label: 'Notifications', desc: 'Email and in-app notification preferences', icon: Bell },
   { href: '/settings/locale', label: 'Language & Region', desc: 'Language, timezone, and regional settings', icon: Globe },
   { href: '/settings/appearance', label: 'Appearance', desc: 'Theme and display preferences', icon: Palette },

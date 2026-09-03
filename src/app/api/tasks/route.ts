@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/../auth';
 import { WorkspaceService } from '@/lib/services/workspace';
 import { prisma } from '@/lib/prisma';
+import { createNotification } from '@/lib/notifications';
 
 /**
  * Internal task CRUD API (session-auth).
@@ -13,7 +14,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
   }
 
-  let body: { projectId?: string; title?: string; description?: string; priority?: string; dueDate?: string };
+  let body: { projectId?: string; title?: string; description?: string; priority?: string; dueDate?: string; assigneeId?: string };
   try {
     body = await req.json();
   } catch {
@@ -49,8 +50,20 @@ export async function POST(req: NextRequest) {
         priority,
         status: 'todo',
         dueDate: body.dueDate ? new Date(body.dueDate) : null,
+        assigneeId: body.assigneeId?.trim() || null,
       },
     });
+
+    // Notify the assignee if the task is assigned to someone other than the creator
+    if (body.assigneeId && body.assigneeId !== session.user.id) {
+      await createNotification({
+        userId: body.assigneeId,
+        workspaceId: project.workspaceId,
+        type: 'task_assigned',
+        title: `Task assigned: ${title}`,
+        body: body.description?.trim() || undefined,
+      }).catch(() => {}); // Don't fail the request if notification fails
+    }
 
     return NextResponse.json({ task }, { status: 201 });
   } catch (e) {

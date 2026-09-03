@@ -3,6 +3,7 @@ import { auth } from '@/../auth';
 import { WorkspaceService } from '@/lib/services/workspace';
 import { prisma } from '@/lib/prisma';
 import { canCreateProject } from '@/lib/plan-guard';
+import { createNotifications } from '@/lib/notifications';
 
 /**
  * Internal project CRUD API (session-auth, not API key).
@@ -53,6 +54,25 @@ export async function POST(req: NextRequest) {
         status: 'active',
       },
     });
+
+    // Notify all workspace members about the new project (except the creator)
+    try {
+      const members = await prisma.membership.findMany({
+        where: { workspaceId: workspace.id, userId: { not: session.user.id } },
+        select: { userId: true },
+      });
+      if (members.length > 0) {
+        await createNotifications(
+          members.map((m) => ({
+            userId: m.userId,
+            workspaceId: workspace.id,
+            type: 'project_created',
+            title: `New project: ${name}`,
+            body: body.description?.trim() || undefined,
+          })),
+        );
+      }
+    } catch {}
 
     return NextResponse.json({ project }, { status: 201 });
   } catch (e) {

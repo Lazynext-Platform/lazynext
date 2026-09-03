@@ -94,6 +94,24 @@ export default function DataRequestPage() {
           Exercise your data protection rights under GDPR, CCPA, and other applicable regulations.
         </p>
 
+        {/* Self-service shortcuts */}
+        <div className="mb-8 grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <Card className="p-4">
+            <h3 className="text-sm font-semibold mb-1">Export your data</h3>
+            <p className="text-xs text-fg-secondary mb-3">Download all your personal data instantly (JSON).</p>
+            <Button size="sm" onClick={() => window.open('/api/settings/export', '_blank')}>
+              Download now
+            </Button>
+          </Card>
+          <Card className="p-4">
+            <h3 className="text-sm font-semibold mb-1">Delete your account</h3>
+            <p className="text-xs text-fg-secondary mb-3">Permanently erase your account and all data.</p>
+            <Button size="sm" variant="danger" href="/settings/security">
+              Go to account deletion
+            </Button>
+          </Card>
+        </div>
+
         <form onSubmit={handleSubmit}>
           <Card className="p-6 space-y-6">
             <div>
