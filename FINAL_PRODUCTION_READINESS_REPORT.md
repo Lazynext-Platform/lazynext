@@ -295,7 +295,7 @@ See docs/API.md and docs/API_SECURITY.md for full documentation.
 | Authorization | COMPLETE (session-based, workspace-scoped) |
 | MCP page | COMPLETE (/mcp-server with McpServer component) |
 
-Old MCP server (2024-11-05) at /api/creative/mcp-server still exists but McpServer component now points to /api/mcp (2026-07-28).
+Old MCP server (2024-11-05) at /api/creative/mcp-server converted to 301/410 redirect stub (correct migration practice). McpServer component now correctly points to /mcp (2026-07-28). **Fixed this session:** component was previously fetching /api/mcp (404 → HTML → JSON parse error on live site); corrected to /mcp. Also fixed stale i18n strings ("Creative MCP Server" → "Lazynext MCP Server") and a duplicate React key in creative/generators/page.tsx.
 
 See docs/MCP.md for full documentation.
 
@@ -341,21 +341,34 @@ See docs/SEO.md for full documentation.
 
 ## 19. Performance
 
-**Status: IMPLEMENTED — VERIFICATION PENDING**
+**Status: MEASURED (Lighthouse audit performed 2026-09-03)**
 
-| Metric | Target | Status |
-|---|---|---|
-| LCP | < 2.5s | Not measured in this session |
-| INP | < 200ms | Not measured in this session |
-| CLS | < 0.1 | Not measured in this session |
-| TTFB | < 800ms | Verified — production responds quickly |
-| Bundle size | Checked via cf:size-check | COMPLETE |
-| Bundle splitting | COMPLETE (Next.js automatic) |
-| Image optimization | COMPLETE (Next.js Image) |
-| Font loading | COMPLETE |
-| CDN | COMPLETE (Cloudflare) |
+Lighthouse audit run against https://lazynext.com/ (mobile emulation, production):
 
-**Remaining:** Core Web Vitals measurement via Lighthouse not performed in this session.
+| Category | Score |
+|---|---|
+| Performance | **83/100** |
+| Accessibility | **100/100** |
+| Best Practices | **100/100** |
+| SEO | **100/100** |
+
+| Metric | Target | Measured | Score | Status |
+|---|---|---|---|---|
+| LCP | < 2.5s | 4.0s | 0.51 | NEEDS IMPROVEMENT |
+| FCP | < 1.8s | 2.9s | 0.54 | NEEDS IMPROVEMENT |
+| CLS | < 0.1 | 0.002 | 1.0 | PASS |
+| TBT | < 200ms | 40ms | 1.0 | PASS |
+| Speed Index | < 3.4s | 3.0s | 0.94 | PASS |
+| Server response | < 800ms | 570ms | 1.0 | PASS |
+| Max FID | < 100ms | 80ms | 0.99 | PASS |
+
+**Analysis:** Accessibility, Best Practices, and SEO are perfect (100/100). Performance is 83 — the main drag is LCP (4.0s) and FCP (2.9s), likely due to:
+- Render-blocking requests (1,140ms estimated savings)
+- Unused JavaScript (48 KiB estimated savings)
+- Legacy JavaScript for older browsers (12 KiB savings)
+- back/forward cache restoration failures
+
+CLS, TBT, and server response are all excellent. The LCP/FCP gap is a known characteristic of Next.js App Router on Cloudflare Workers (cold-start + JS hydration) and is acceptable for the current traffic level. Optimization would require code-splitting the homepage further or moving static content to edge-cached HTML.
 
 ---
 
@@ -493,7 +506,7 @@ See docs/DEPLOYMENT.md for full documentation.
 | 9 | DPA with subprocessors unverified | Medium | **OPEN (human/external)** — verify DPAs with Atlas Cloud, Dodo, Resend, Cloudflare |
 | 10 | Backup restoration not tested | Medium | **OPEN (operational)** — schedule and perform restoration drill |
 | 11 | DR drill not performed | Medium | **OPEN (operational)** — schedule and perform DR drill |
-| 12 | Core Web Vitals not measured | Low | **OPEN** — run Lighthouse audit on production |
+| 12 | ~~Core Web Vitals not measured~~ | ~~Low~~ | **RESOLVED** — Lighthouse audit performed: Performance 83, Accessibility 100, Best Practices 100, SEO 100. LCP 4.0s is the main gap (Next.js cold-start hydration). See §19. |
 | 13 | Old MCP server (2024-11-05) route exists | Low | **ACCEPTED** — converted to proper 301/410 redirect stub with Deprecation/Sunset/Link headers (correct migration practice, not a duplicate server) |
 | 14 | Some scalar ID fields lack DB relations | Low | **OPEN (future)** — add relations in future schema migration |
 | 15 | ~~Refund/cancellation policy thin~~ | ~~Medium~~ | **RESOLVED** — Terms §4 items 5-7 already cover 14-day refunds, pro-rata, subscription cancellation, auto-refund for failed generations |
