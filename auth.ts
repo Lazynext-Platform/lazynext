@@ -162,9 +162,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   ],
   session: { strategy: 'jwt' },
   useSecureCookies,
-  // Only trust host in local development; in production, NextAuth validates
-  // the host/origin to prevent host-header injection and callback-URL tampering.
-  trustHost: process.env.NODE_ENV !== 'production',
+  // Cloudflare Workers sits behind a CDN/proxy, so the internal host header
+  // may not match the public URL. trustHost is required for NextAuth to work
+  // in this environment. Open-redirect protection is handled by the redirect
+  // callback below, which validates callbackUrl against the app origin.
+  trustHost: true,
   cookies: {
     sessionToken: {
       name: `${cookiePrefix}next-auth.session-token`,
@@ -188,6 +190,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     },
   },
   callbacks: {
+    // Validate callback URLs to prevent open redirect attacks.
+    async redirect({ url, baseUrl }) {
+      if (url.startsWith(baseUrl)) return url;
+      if (url.startsWith('/')) return new URL(url, baseUrl).toString();
+      return baseUrl;
+    },
     async signIn() {
       // Email verification and MFA checks are handled in the authorize()
       // callback above. When authorize() throws, NextAuth sets result.error
