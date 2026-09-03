@@ -1,5 +1,37 @@
 # Lazynext Changelog
 
+## 2026-09-03 — IV: Comprehensive Security Audit (50 commits)
+
+### Security Fixes
+- **Session revocation**: Wired JWT callback to create Session rows, store token hash, and check revocation. Password changes and MFA disable now revoke all sessions.
+- **MFA brute-force protection**: MFA failures now count toward account lockout (5 attempts → 15 min lock). MFA verify/disable endpoints rate-limited (10 req/min per IP).
+- **Redeem rate limiting**: Coupon redemption rate-limited (5 req/min per IP) to prevent brute-force.
+- **Timing attack fixes**: Rendobar webhook HMAC, OAuth state CSRF token, and legacy SHA-256 password verification now use constant-time comparison.
+- **Error detail leaks**: 12 API routes stopped leaking internal error messages to clients (poll, tools/execute, publish/schedule, and 9 others).
+- **OAuth state CSRF**: OAuth callback now uses `crypto.timingSafeEqual()` for state comparison.
+
+### DoS Protection
+- **Query limits**: 15 `findMany` queries across API routes, pages, and services had no `take` limit. All now capped at 50-200 records.
+- **Data export rate limiting**: GDPR data export rate-limited (3 req/hour per IP) to prevent DB load abuse.
+
+### Input Validation
+- **Input length limits**: 30+ API routes accepted unbounded input lengths. All now have `slice(0, N)` limits matching field type (names 200, descriptions 2000, content 500K, URLs 2048, passwords 128, messages 10K).
+- **Email validation**: Signup now validates email format (regex) and length (254, RFC 5321 max).
+- **Password max length**: Signup, reset-password, and password change now enforce 128 char max (prevents bcrypt hashing DoS).
+- **API key scopes**: API key creation now validates scopes against whitelist (read, write, admin only).
+- **URL format validation**: 8 creative routes accepted URLs without format validation. All now validate http/https protocol before credit deduction.
+- **SSRF validation**: Webhook creation, editor transcribe/OCR, and url-to-brief now call `isUrlSafe()` to block private/internal IPs at request time (in addition to existing delivery-time checks).
+
+### Verification
+- Lint: 0 errors, 0 warnings
+- Unit tests: 6803 passed, 0 failed
+- Typecheck: clean
+- Production build: successful
+- npm audit: 0 vulnerabilities
+- Production smoke E2E: 44 passed, 5 skipped, 0 failed
+- Working tree: clean
+- 50 commits, 139 files changed, +1333 / -1007 lines
+
 ## 2026-09-03 — III: OAuth Discovery, i18n, CI, Brand, Dead Code, Env Docs
 
 ### What Changed
