@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { ArrowLeft, Settings, Users, CreditCard, ScrollText, Plug } from 'lucide-react';
+import { ArrowLeft, Settings, Users, CreditCard, ScrollText, Plug, Shield } from 'lucide-react';
 import { auth } from '@/../auth';
 import { WorkspaceService } from '@/lib/services/workspace';
 import { prisma } from '@/lib/prisma';
@@ -17,6 +17,7 @@ export default async function WorkspaceSettingsPage({ params }: { params: Promis
   if (!detail) notFound();
 
   const sections = [
+    { href: `/workspaces/${id}/admin`, label: 'Admin Panel', desc: 'Manage members, roles, and settings', icon: Shield },
     { href: `/workspaces/${id}/members`, label: 'Members', desc: `${detail.memberCount} member${detail.memberCount !== 1 ? 's' : ''}`, icon: Users },
     { href: `/workspaces/${id}/settings`, label: 'General', desc: 'Workspace name, locale, timezone', icon: Settings },
     { href: `/workspaces/${id}/billing`, label: 'Billing', desc: 'Plan, invoices, usage', icon: CreditCard },

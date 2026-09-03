@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/../auth';
 import { WorkspaceService } from '@/lib/services/workspace';
 import { prisma } from '@/lib/prisma';
+import { canCreateDocument } from '@/lib/plan-guard';
 
 /**
  * Internal document CRUD API (session-auth).
@@ -32,6 +33,15 @@ export async function POST(req: NextRequest) {
     }
 
     const workspace = workspaces.find((w) => w.id === body.workspaceId) || workspaces[0];
+
+    // Plan limit check
+    const guard = await canCreateDocument(workspace.id, session.user.id);
+    if (!guard.ok) {
+      return NextResponse.json(
+        { error: guard.reason || 'plan_limit_exceeded', limit: guard.limit, current: guard.current, tier: guard.tier },
+        { status: 402 },
+      );
+    }
 
     // If projectId provided, verify it belongs to the workspace
     let projectId: string | null = null;

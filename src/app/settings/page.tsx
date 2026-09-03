@@ -15,6 +15,7 @@ const SETTINGS_SECTIONS = [
 
 const WORKSPACE_SECTIONS = [
   { href: '/workspaces', label: 'Workspaces', desc: 'Manage your workspaces and organizations', icon: Building },
+  { href: '/settings/billing', label: 'Billing & Plan', desc: 'Plan tier, credits, usage limits, and upgrades', icon: CreditCard },
   { href: '/developers', label: 'Developer', desc: 'API keys, MCP, and webhooks', icon: Webhook },
   { href: '/admin', label: 'Admin', desc: 'User and system administration', icon: ScrollText },
 ];

@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { Search, Wand2, ArrowRight, ExternalLink } from 'lucide-react';
-import { Card, Badge, Input } from '@/components/ui';
+import { Search, Wand2, ArrowRight, X, Loader2, AlertCircle, Copy, Check } from 'lucide-react';
+import { Card, Badge, Input, Button, Textarea } from '@/components/ui';
 
 const GENERATORS = [
   // Persuasion / Psychology
@@ -41,7 +41,6 @@ const GENERATORS = [
   { api: '/api/creative/creative-ad-urgency-catalyst-designer', label: 'Urgency Catalyst Designer', category: 'Persuasion' },
   { api: '/api/creative/creative-ad-value-ladder-designer', label: 'Value Ladder Designer', category: 'Persuasion' },
   { api: '/api/creative/creative-ad-visual-hierarchy-strategist', label: 'Visual Hierarchy Strategist', category: 'Persuasion' },
-
   // Copy / Writing
   { api: '/api/creative/ad-copy-generator', label: 'Ad Copy Generator', category: 'Copy' },
   { api: '/api/creative/ad-caption-generator', label: 'Caption Generator', category: 'Copy' },
@@ -53,35 +52,12 @@ const GENERATORS = [
   { api: '/api/creative/creative-hook-matrix-generator', label: 'Hook Matrix Generator', category: 'Copy' },
   { api: '/api/creative/creative-hook-revamp-generator', label: 'Hook Revamp Generator', category: 'Copy' },
   { api: '/api/creative/creative-messaging-framework-builder', label: 'Messaging Framework Builder', category: 'Copy' },
-
   // Visual / Design
   { api: '/api/creative/ad-color-palette-generator', label: 'Color Palette Generator', category: 'Visual' },
   { api: '/api/creative/ad-font-pairing-generator', label: 'Font Pairing Generator', category: 'Visual' },
   { api: '/api/creative/ad-thumbnail-generator', label: 'Thumbnail Generator', category: 'Visual' },
-  { api: '/api/creative/creative-scene-generator', label: 'Scene Generator', category: 'Visual' },
-  { api: '/api/creative/creative-format-converter', label: 'Format Converter', category: 'Visual' },
-  { api: '/api/creative/creative-format-recommender', label: 'Format Recommender', category: 'Visual' },
-  { api: '/api/creative/creative-visual-hierarchy-analyzer', label: 'Visual Hierarchy Analyzer', category: 'Visual' },
-
-  // Strategy / Planning
-  { api: '/api/creative/ad-format-optimizer', label: 'Format Optimizer', category: 'Strategy' },
-  { api: '/api/creative/ad-timing-optimizer', label: 'Timing Optimizer', category: 'Strategy' },
-  { api: '/api/creative/ad-placement-strategist', label: 'Placement Strategist', category: 'Strategy' },
-  { api: '/api/creative/ad-budget-allocator', label: 'Budget Allocator', category: 'Strategy' },
-  { api: '/api/creative/ad-creative-rotator', label: 'Creative Rotator', category: 'Strategy' },
-  { api: '/api/creative/ad-creative-lifecycle-manager', label: 'Lifecycle Manager', category: 'Strategy' },
-  { api: '/api/creative/ad-creative-burnout-detector', label: 'Burnout Detector', category: 'Strategy' },
-  { api: '/api/creative/creative-fatigue-detector', label: 'Fatigue Detector', category: 'Strategy' },
-  { api: '/api/creative/creative-performance-forecaster', label: 'Performance Forecaster', category: 'Strategy' },
-  { api: '/api/creative/creative-trend-adapter', label: 'Trend Adapter', category: 'Strategy' },
-
-  // Analysis / Intelligence
+  // Analysis
   { api: '/api/creative/ad-emotion-analyzer', label: 'Emotion Analyzer', category: 'Analysis' },
-  { api: '/api/creative/ad-sentiment-tuner', label: 'Sentiment Tuner', category: 'Analysis' },
-  { api: '/api/creative/ad-performance-predictor', label: 'Performance Predictor', category: 'Analysis' },
-  { api: '/api/creative/ad-audience-resonance-predictor', label: 'Audience Resonance Predictor', category: 'Analysis' },
-  { api: '/api/creative/ad-audience-psychographic-profiler', label: 'Audience Psychographic Profiler', category: 'Analysis' },
-  { api: '/api/creative/ad-audience-pain-point-mapper', label: 'Audience Pain Point Mapper', category: 'Analysis' },
   { api: '/api/creative/ad-audience-segment-builder', label: 'Audience Segment Builder', category: 'Analysis' },
   { api: '/api/creative/ad-persona-matcher', label: 'Persona Matcher', category: 'Analysis' },
   { api: '/api/creative/ad-competitive-intelligence', label: 'Competitive Intelligence', category: 'Analysis' },
@@ -89,22 +65,18 @@ const GENERATORS = [
   { api: '/api/creative/creative-sentiment-journey-mapper', label: 'Sentiment Journey Mapper', category: 'Analysis' },
   { api: '/api/creative/creative-concept-validator', label: 'Concept Validator', category: 'Analysis' },
   { api: '/api/creative/creative-diff', label: 'Creative Diff', category: 'Analysis' },
-
   // Social / Engagement
   { api: '/api/creative/ad-hashtag-generator', label: 'Hashtag Generator', category: 'Social' },
   { api: '/api/creative/ad-cta-optimizer', label: 'CTA Optimizer', category: 'Social' },
   { api: '/api/creative/ad-creative-social-proof-architect', label: 'Social Proof Architect', category: 'Social' },
   { api: '/api/creative/ad-creative-hook-timing-optimizer', label: 'Hook Timing Optimizer', category: 'Social' },
-
   // Localization / Adaptation
   { api: '/api/creative/ad-localization-adapter', label: 'Localization Adapter', category: 'Localization' },
   { api: '/api/creative/ad-concept-merger', label: 'Concept Merger', category: 'Localization' },
   { api: '/api/creative/creative-concept-expander-pro', label: 'Concept Expander Pro', category: 'Localization' },
-
   // Audio / Music
   { api: '/api/creative/ad-music-mood-matcher', label: 'Music Mood Matcher', category: 'Audio' },
   { api: '/api/creative/ad-creative-sound-design-strategist', label: 'Sound Design Strategist', category: 'Audio' },
-
   // Testing / Optimization
   { api: '/api/creative/ad-ab-test-name-generator', label: 'AB Test Name Generator', category: 'Testing' },
   { api: '/api/creative/ad-creative-ab-test-simulator', label: 'AB Test Simulator', category: 'Testing' },
@@ -113,9 +85,19 @@ const GENERATORS = [
 
 const CATEGORIES = [...new Set(GENERATORS.map((g) => g.category))];
 
+interface GeneratorResult {
+  [key: string]: unknown;
+}
+
 export default function GeneratorsPage() {
   const [query, setQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
+  const [selectedGen, setSelectedGen] = useState<typeof GENERATORS[0] | null>(null);
+  const [input, setInput] = useState('');
+  const [result, setResult] = useState<GeneratorResult | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [copied, setCopied] = useState(false);
 
   const filtered = useMemo(() => {
     return GENERATORS.filter((g) => {
@@ -125,14 +107,54 @@ export default function GeneratorsPage() {
     });
   }, [query, activeCategory]);
 
+  async function runGenerator() {
+    if (!selectedGen || !input.trim()) return;
+    setLoading(true);
+    setError('');
+    setResult(null);
+    try {
+      // Most creative APIs accept a JSON body with a "source" or "prompt" or "input" field.
+      // We send a generic body that works with most generators.
+      const body: Record<string, unknown> = { source: input.trim(), prompt: input.trim(), input: input.trim() };
+      const res = await fetch(selectedGen.api, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error === 'insufficient_credits'
+          ? 'Insufficient credits. Buy more in Settings → Billing.'
+          : data.error || `Request failed (${res.status})`);
+      }
+      setResult(data.result || data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Generation failed');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function copyResult() {
+    if (!result) return;
+    navigator.clipboard.writeText(JSON.stringify(result, null, 2));
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  }
+
+  function closePanel() {
+    setSelectedGen(null);
+    setResult(null);
+    setError('');
+    setInput('');
+  }
+
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       <div className="mb-8">
         <h1 className="heading-display text-2xl">Creative Generators</h1>
         <p className="text-sm text-fg-secondary mt-1">
-          {GENERATORS.length} generators available via API · Use the{' '}
-          <a href="/developers" className="underline hover:text-fg">API</a> or{' '}
-          <a href="/mcp" className="underline hover:text-fg">MCP</a> to call them
+          {GENERATORS.length} AI-powered generators · Click any generator to run it
         </p>
       </div>
 
@@ -187,27 +209,131 @@ export default function GeneratorsPage() {
       {/* Generator grid */}
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {filtered.map((gen) => (
-          <Card key={gen.api} className="p-4 transition-all hover:translate-x-[2px] hover:translate-y-[2px]">
-            <div className="flex items-start gap-3">
-              <div
-                className="flex h-8 w-8 items-center justify-center border-2 shrink-0"
-                style={{ borderColor: 'var(--c-ink)', backgroundColor: 'var(--c-surface-alt)', borderRadius: 'var(--radius-sm)' }}
-              >
-                <Wand2 className="h-4 w-4" />
+          <button
+            key={gen.api}
+            onClick={() => {
+              setSelectedGen(gen);
+              setResult(null);
+              setError('');
+              setInput('');
+            }}
+            className="text-left"
+          >
+            <Card className="p-4 transition-all hover:translate-x-[2px] hover:translate-y-[2px]">
+              <div className="flex items-start gap-3">
+                <div
+                  className="flex h-8 w-8 items-center justify-center border-2 shrink-0"
+                  style={{ borderColor: 'var(--c-ink)', backgroundColor: 'var(--c-surface-alt)', borderRadius: 'var(--radius-sm)' }}
+                >
+                  <Wand2 className="h-4 w-4" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-semibold truncate">{gen.label}</p>
+                  <p className="text-xs text-fg-muted truncate font-mono mt-1">{gen.api}</p>
+                </div>
+                <ArrowRight className="h-4 w-4 text-fg-muted shrink-0" />
               </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold truncate">{gen.label}</p>
-                <p className="text-xs text-fg-muted truncate font-mono mt-1">{gen.api}</p>
-              </div>
-              <Badge>{gen.category}</Badge>
-            </div>
-          </Card>
+            </Card>
+          </button>
         ))}
       </div>
 
       {filtered.length === 0 && (
         <div className="text-center py-12">
           <p className="text-sm text-fg-muted">No generators found for &ldquo;{query}&rdquo;</p>
+        </div>
+      )}
+
+      {/* Generator panel (slide-in) */}
+      {selectedGen && (
+        <div className="fixed inset-0 z-50 flex justify-end">
+          <div
+            className="absolute inset-0 bg-black/30"
+            onClick={closePanel}
+          />
+          <div
+            className="relative w-full max-w-lg h-full bg-surface border-l-2 overflow-y-auto"
+            style={{ borderColor: 'var(--c-ink)', boxShadow: 'var(--shadow-hard-lg)' }}
+          >
+            {/* Panel header */}
+            <div
+              className="sticky top-0 flex items-center justify-between px-4 py-3 border-b-2 bg-surface z-10"
+              style={{ borderColor: 'var(--c-ink)' }}
+            >
+              <div className="flex items-center gap-2">
+                <Wand2 className="h-5 w-5" />
+                <div>
+                  <h2 className="heading-display text-sm">{selectedGen.label}</h2>
+                  <p className="text-xs text-fg-muted font-mono">{selectedGen.api}</p>
+                </div>
+              </div>
+              <button onClick={closePanel} className="p-1 hover:bg-hover rounded transition-colors">
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            {/* Panel body */}
+            <div className="p-4 flex flex-col gap-4">
+              <div>
+                <label className="label-mono block mb-2">Input</label>
+                <Textarea
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  placeholder="Describe your product, paste a URL, or enter your creative brief..."
+                  rows={6}
+                  autoFocus
+                />
+                <p className="text-xs text-fg-muted mt-1">
+                  Most generators accept a product description, URL, or creative brief.
+                </p>
+              </div>
+
+              <Button
+                onClick={runGenerator}
+                disabled={loading || !input.trim()}
+                className="w-full"
+              >
+                {loading ? (
+                  <><Loader2 className="h-4 w-4 animate-spin" /> Generating...</>
+                ) : (
+                  <><Wand2 className="h-4 w-4" /> Generate</>
+                )}
+              </Button>
+
+              {error && (
+                <div
+                  className="p-3 border-2 text-sm"
+                  style={{ borderColor: 'var(--c-danger)', borderRadius: 'var(--radius-sm)', color: 'var(--c-danger)' }}
+                >
+                  <AlertCircle className="h-4 w-4 inline mr-2" />{error}
+                </div>
+              )}
+
+              {result && (
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="label-mono">Result</label>
+                    <button
+                      onClick={copyResult}
+                      className="text-xs flex items-center gap-1 text-fg-secondary hover:text-fg transition-colors"
+                    >
+                      {copied ? <><Check className="h-3 w-3" /> Copied</> : <><Copy className="h-3 w-3" /> Copy</>}
+                    </button>
+                  </div>
+                  <pre
+                    className="p-4 border-2 overflow-x-auto text-xs font-mono max-h-96"
+                    style={{
+                      borderColor: 'var(--c-ink)',
+                      borderRadius: 'var(--radius-sm)',
+                      backgroundColor: 'var(--c-surface-alt)',
+                    }}
+                  >
+                    {JSON.stringify(result, null, 2)}
+                  </pre>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       )}
     </div>

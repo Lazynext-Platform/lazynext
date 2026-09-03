@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/../auth';
 import { WorkspaceService } from '@/lib/services/workspace';
 import { prisma } from '@/lib/prisma';
+import { canCreateAutomation } from '@/lib/plan-guard';
 
 /**
  * Internal automation CRUD API (session-auth).
@@ -32,6 +33,15 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'no_workspace' }, { status: 400 });
     }
     const workspace = workspaces.find((w) => w.id === body.workspaceId) || workspaces[0];
+
+    // Plan limit check
+    const guard = await canCreateAutomation(workspace.id, session.user.id);
+    if (!guard.ok) {
+      return NextResponse.json(
+        { error: guard.reason || 'plan_limit_exceeded', limit: guard.limit, current: guard.current, tier: guard.tier },
+        { status: 402 },
+      );
+    }
 
     const automation = await prisma.automation.create({
       data: {
