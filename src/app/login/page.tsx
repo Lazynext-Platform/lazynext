@@ -4,7 +4,7 @@ import { useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { signIn } from 'next-auth/react';
-import { Mail, Lock, AlertCircle, ArrowRight } from 'lucide-react';
+import { Mail, Lock, AlertCircle, ArrowRight, Shield } from 'lucide-react';
 import { Button, Input } from '@/components/ui';
 
 function LoginForm() {
@@ -15,9 +15,17 @@ function LoginForm() {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [mfaCode, setMfaCode] = useState('');
+  const [mfaRequired, setMfaRequired] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(
-    errorParam ? 'Authentication failed. Please try again.' : null,
+    errorParam === 'EmailNotVerified'
+      ? 'Please verify your email before signing in. Check your inbox for a verification link.'
+      : errorParam === 'MfaRequired'
+      ? 'Please enter your MFA code.'
+      : errorParam === 'MfaInvalid'
+      ? 'Invalid MFA code. Please try again.'
+      : errorParam ? 'Authentication failed. Please try again.' : null,
   );
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -30,10 +38,29 @@ function LoginForm() {
       const result = await signIn('credentials', {
         email,
         password,
+        totpCode: mfaRequired ? mfaCode : undefined,
         redirect: false,
       });
 
       if (result?.error) {
+        // Check if MFA is required — the error URL contains MfaRequired
+        const errorUrl = result.error;
+        if (errorUrl?.includes('MfaRequired')) {
+          setMfaRequired(true);
+          setError('Please enter your authenticator code.');
+          setLoading(false);
+          return;
+        }
+        if (errorUrl?.includes('MfaInvalid')) {
+          setError('Invalid MFA code. Please try again.');
+          setLoading(false);
+          return;
+        }
+        if (errorUrl?.includes('EmailNotVerified')) {
+          setError('Please verify your email before signing in. Check your inbox for a verification link.');
+          setLoading(false);
+          return;
+        }
         setError('Invalid email or password.');
         setLoading(false);
       } else if (result?.ok) {
@@ -143,6 +170,24 @@ function LoginForm() {
               required
               autoComplete="current-password"
             />
+            {mfaRequired && (
+              <div className="flex items-center gap-2 p-3 border-2 rounded-sm" style={{ borderColor: 'var(--c-ink)', backgroundColor: 'var(--c-surface-alt)' }}>
+                <Shield className="h-4 w-4 shrink-0" />
+                <Input
+                  label="MFA Code"
+                  type="text"
+                  name="totpCode"
+                  value={mfaCode}
+                  onChange={(e) => setMfaCode(e.target.value)}
+                  placeholder="123456"
+                  required
+                  autoComplete="one-time-code"
+                  maxLength={6}
+                  pattern="[0-9]{6}"
+                  autoFocus
+                />
+              </div>
+            )}
             <Button type="submit" disabled={loading} className="w-full">
               {loading ? 'Signing in...' : 'Sign in'}
               {!loading && <ArrowRight className="h-4 w-4" />}

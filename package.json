@@ -2,7 +2,7 @@
   "name": "lazynext",
   "version": "0.1.0",
   "private": true,
-  "description": "Lazynext is an AI e-commerce ad studio for generating UGC product ads, reference-ad remakes, AI drama ads, and ad skits, powered by Atlas Cloud multi-model workflows.",
+  "description": "Lazynext Operating System — a unified platform for identity, workspaces, projects, tasks, documents, files, automations, AI agents, integrations, analytics, search, a developer API, and an MCP server, with a Creative Studio module for AI ad generation powered by Atlas Cloud.",
   "scripts": {
     "dev": "BUILD_TARGET=local npm run platform:prepare && BUILD_TARGET=local next dev -p 3100",
     "mock-atlas": "node scripts/mock-atlas.mjs",

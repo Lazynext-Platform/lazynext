@@ -4,14 +4,30 @@ import { currencyForCountry } from '@/config/pricing';
 import { LOCALES } from '@/i18n/messages';
 
 /**
- * In-memory rate limiting for API routes (per Workers isolate).
- * Limits are per-IP+route-category. Not globally distributed (per-edge),
- * but provides basic abuse protection without Durable Objects.
+ * Rate limiting: uses Cloudflare's distributed Rate Limiting API when available
+ * (production on Workers), and falls back to in-memory buckets for local dev.
+ *
+ * Cloudflare rate-limit bindings (declared in wrangler.jsonc):
+ *   API_RATE_LIMITER — 60 req/min (general API routes)
+ *   AI_RATE_LIMITER  — 10 req/min (AI generation endpoints)
+ *
+ * The in-memory fallback provides per-isolate protection only (not distributed),
+ * but is sufficient for local development.
  */
 type RateBucket = { count: number; resetAt: number };
 const globalForRate = globalThis as unknown as { __rateBuckets?: Map<string, RateBucket> };
 const rateBuckets: Map<string, RateBucket> = globalForRate.__rateBuckets ?? new Map();
 if (!globalForRate.__rateBuckets) globalForRate.__rateBuckets = rateBuckets;
+
+// Cloudflare Rate Limit binding types (available in production Workers runtime)
+interface RateLimitResult { success: boolean }
+interface RateLimitLimiter {
+  limit: (key: string) => Promise<RateLimitResult>;
+}
+interface CloudflareEnv {
+  API_RATE_LIMITER?: RateLimitLimiter;
+  AI_RATE_LIMITER?: RateLimitLimiter;
+}
 
 function getClientIP(req: NextRequest): string {
   return (
@@ -64,6 +80,15 @@ function getRateCategory(pathname: string): string {
   return 'default';
 }
 
+// Map rate categories to Cloudflare rate-limit bindings.
+// AI generation endpoints use AI_RATE_LIMITER (10/min); everything else uses
+// API_RATE_LIMITER (60/min). Categories with custom limits (upload, payment,
+// poll, api-v1, mcp, api-keys) use the in-memory fallback for precise control.
+const CF_BINDING_CATEGORIES: Record<string, 'AI_RATE_LIMITER' | 'API_RATE_LIMITER'> = {
+  'ai-gen': 'AI_RATE_LIMITER',
+  'default': 'API_RATE_LIMITER',
+};
+
 function checkRateLimit(ip: string, category: string): { limited: boolean; retryAfter?: number } {
   const limit = RATE_LIMITS[category] || RATE_LIMITS['default'];
   const key = `${ip}:${category}`;
@@ -81,6 +106,35 @@ function checkRateLimit(ip: string, category: string): { limited: boolean; retry
   }
 
   return { limited: false };
+}
+
+/**
+ * Distributed rate limit check using Cloudflare Rate Limiting API.
+ * Returns null if Cloudflare bindings are not available (local dev fallback).
+ */
+async function checkCloudflareRateLimit(
+  ip: string,
+  category: string,
+): Promise<{ limited: boolean; retryAfter?: number } | null> {
+  const bindingName = CF_BINDING_CATEGORIES[category];
+  if (!bindingName) return null; // Use in-memory for custom-limit categories
+
+  // Access Cloudflare bindings via the request's runtime env.
+  // In OpenNext/Workers, bindings are available on the request's ctx.
+  try {
+    const env = (globalThis as unknown as { __cloudflareEnv?: CloudflareEnv }).__cloudflareEnv;
+    const limiter = env?.[bindingName];
+    if (!limiter) return null;
+
+    const result = await limiter.limit(`${ip}:${category}`);
+    if (!result.success) {
+      return { limited: true, retryAfter: 60 };
+    }
+    return { limited: false };
+  } catch {
+    // Binding not available or error — fall back to in-memory
+    return null;
+  }
 }
 
 // Clean up expired buckets periodically
@@ -299,7 +353,9 @@ export async function proxy(req: NextRequest): Promise<NextResponse> {
       if (!skipRateLimit) {
         const ip = getClientIP(req);
         const category = getRateCategory(pathname);
-        const { limited, retryAfter } = checkRateLimit(ip, category);
+        // Try Cloudflare distributed rate limiter first, fall back to in-memory
+        const cfResult = await checkCloudflareRateLimit(ip, category);
+        const { limited, retryAfter } = cfResult ?? checkRateLimit(ip, category);
         if (limited) {
           const res = NextResponse.json(
             { error: 'rate_limited', retryAfter },

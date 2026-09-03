@@ -1,0 +1,42 @@
+Lazynext Operating System
+Copyright (c) 2026 Lazynext Platform
+
+This product includes software developed by the following projects:
+
+## Core Dependencies
+
+| Package | License | Source |
+|---|---|---|
+| next | MIT | https://nextjs.org |
+| react, react-dom | MIT | https://react.dev |
+| next-auth | ISC | https://next-auth.js.org |
+| @prisma/client, prisma | Apache-2.0 | https://prisma.io |
+| @auth/prisma-adapter | ISC | https://authjs.dev |
+| bcryptjs | MIT | https://github.com/dcodeIO/bcrypt.js |
+| dodopayments | MIT | https://dodopayments.com |
+| lucide-react | ISC | https://lucide.dev |
+| resend | MIT | https://resend.com |
+| @ffmpeg/ffmpeg, @ffmpeg/util | MIT | https://ffmpeg.org |
+| @opennextjs/cloudflare | Apache-2.0 | https://opennext.js.org |
+| @playwright/test | Apache-2.0 | https://playwright.dev |
+| tailwindcss | MIT | https://tailwindcss.com |
+| typescript | Apache-2.0 | https://typescriptlang.org |
+| better-sqlite3 | MIT | https://github.com/WiseLibs/better-sqlite3 |
+| wrangler | Apache-2.0 | https://developers.cloudflare.com/workers/wrangler/ |
+
+## Heritage
+
+Lazynext is a Lazynext-branded distribution built on the open-source
+Atlas Marketing Studio project (MIT license):
+https://github.com/AtlasCloudAI/atlas-marketing-studio
+
+## AI Generation
+
+All AI generation (image, video, LLM, TTS, lip-sync) is powered by the
+Atlas Cloud API: https://www.atlascloud.ai
+
+## Infrastructure
+
+- Cloudflare Workers — https://workers.cloudflare.com
+- Cloudflare D1 — https://developers.cloudflare.com/d1
+- Cloudflare R2 — https://developers.cloudflare.com/r2

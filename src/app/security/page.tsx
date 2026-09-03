@@ -20,7 +20,10 @@ export default function SecurityPage() {
           title: '2. Authentication',
           list: [
             'Google OAuth and email/password authentication via NextAuth (Auth.js v5).',
+            'Email verification required for credentials-based login.',
+            'Multi-factor authentication (MFA) via TOTP authenticator apps.',
             'JWT-based sessions with configurable expiration.',
+            'Server-side session revocation (revoke all sessions across devices).',
             'Account lockout after 5 failed login attempts within 15 minutes.',
             'IP-based rate limiting on auth endpoints (10 requests per minute).',
             'Password hashing using bcrypt.',

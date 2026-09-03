@@ -204,10 +204,9 @@ test.describe('Production old route redirects', () => {
     expect(page.url()).toContain('/agents');
   });
 
-  test('old mcp-server redirects to /developers', async ({ page }) => {
+  test('mcp-server page loads (MCP UI)', async ({ page }) => {
     const res = await page.goto('/mcp-server');
     expect(res?.status()).toBeLessThan(400);
-    expect(page.url()).toContain('/developers');
   });
 });
 

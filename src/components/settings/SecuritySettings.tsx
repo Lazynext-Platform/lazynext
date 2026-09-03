@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Lock, Key, Shield, AlertCircle, Loader2, Check, Trash2, AlertTriangle, Download } from 'lucide-react';
 import { Card, Button, Input, Badge } from '@/components/ui';
 
-export function SecuritySettings({ hasPassword }: { hasPassword: boolean }) {
+export function SecuritySettings({ hasPassword, mfaEnabled }: { hasPassword: boolean; mfaEnabled: boolean }) {
   const [current, setCurrent] = useState('');
   const [newPass, setNewPass] = useState('');
   const [confirm, setConfirm] = useState('');
@@ -15,6 +15,105 @@ export function SecuritySettings({ hasPassword }: { hasPassword: boolean }) {
   const [deletePassword, setDeletePassword] = useState('');
   const [deleting, setDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState('');
+
+  // MFA state
+  const [mfaEnabledState, setMfaEnabledState] = useState(mfaEnabled);
+  const [mfaSetupData, setMfaSetupData] = useState<{ secret: string; otpauthUri: string } | null>(null);
+  const [mfaCode, setMfaCode] = useState('');
+  const [mfaLoading, setMfaLoading] = useState(false);
+  const [mfaError, setMfaError] = useState('');
+  const [mfaSuccess, setMfaSuccess] = useState('');
+  const [mfaDisableCode, setMfaDisableCode] = useState('');
+  const [mfaDisabling, setMfaDisabling] = useState(false);
+
+  // Session revocation state
+  const [revokingSessions, setRevokingSessions] = useState(false);
+  const [sessionRevoked, setSessionRevoked] = useState(false);
+
+  async function setupMFA() {
+    setMfaLoading(true);
+    setMfaError('');
+    setMfaSuccess('');
+    try {
+      const res = await fetch('/api/mfa/setup', { method: 'POST' });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || 'Failed to setup MFA');
+      }
+      const data = await res.json();
+      setMfaSetupData(data);
+    } catch (err) {
+      setMfaError(err instanceof Error ? err.message : 'Failed to setup MFA');
+    } finally {
+      setMfaLoading(false);
+    }
+  }
+
+  async function verifyMFA(e: React.FormEvent) {
+    e.preventDefault();
+    setMfaLoading(true);
+    setMfaError('');
+    setMfaSuccess('');
+    try {
+      const res = await fetch('/api/mfa/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code: mfaCode }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || 'Invalid code');
+      }
+      setMfaEnabledState(true);
+      setMfaSetupData(null);
+      setMfaCode('');
+      setMfaSuccess('Two-factor authentication enabled successfully.');
+    } catch (err) {
+      setMfaError(err instanceof Error ? err.message : 'Invalid code');
+    } finally {
+      setMfaLoading(false);
+    }
+  }
+
+  async function disableMFA(e: React.FormEvent) {
+    e.preventDefault();
+    setMfaDisabling(true);
+    setMfaError('');
+    setMfaSuccess('');
+    try {
+      const res = await fetch('/api/mfa/disable', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code: mfaDisableCode }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || 'Invalid code');
+      }
+      setMfaEnabledState(false);
+      setMfaDisableCode('');
+      setMfaSuccess('Two-factor authentication disabled.');
+    } catch (err) {
+      setMfaError(err instanceof Error ? err.message : 'Invalid code');
+    } finally {
+      setMfaDisabling(false);
+    }
+  }
+
+  async function revokeAllSessions() {
+    setRevokingSessions(true);
+    try {
+      const res = await fetch('/api/session/revoke-all', { method: 'POST' });
+      if (res.ok) {
+        setSessionRevoked(true);
+        setMfaSuccess('All sessions revoked. You will be signed out on other devices.');
+      }
+    } catch {
+      setMfaError('Failed to revoke sessions.');
+    } finally {
+      setRevokingSessions(false);
+    }
+  }
 
   async function changePassword(e: React.FormEvent) {
     e.preventDefault();
@@ -84,32 +183,95 @@ export function SecuritySettings({ hasPassword }: { hasPassword: boolean }) {
         )}
       </Card>
 
-      {/* Two-factor auth (placeholder) */}
+      {/* Two-factor authentication */}
       <Card className="p-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h2 className="heading-display text-lg flex items-center gap-2">
-              <Shield className="h-5 w-5" /> Two-factor authentication
-            </h2>
-            <p className="text-sm text-fg-secondary mt-1">Add an extra layer of security to your account.</p>
+        <h2 className="heading-display text-lg mb-2 flex items-center gap-2">
+          <Shield className="h-5 w-5" /> Two-factor authentication
+        </h2>
+        <p className="text-sm text-fg-secondary mb-4">
+          Add an extra layer of security with an authenticator app (Google Authenticator, Authy, 1Password, etc.).
+        </p>
+        {mfaError && <p className="text-sm text-danger flex items-center gap-1 mb-3"><AlertCircle className="h-3 w-3" /> {mfaError}</p>}
+        {mfaSuccess && <p className="text-sm text-success flex items-center gap-1 mb-3"><Check className="h-3 w-3" /> {mfaSuccess}</p>}
+        {mfaEnabledState ? (
+          <div className="flex flex-col gap-4">
+            <div className="flex items-center gap-2">
+              <Badge variant="success">Enabled</Badge>
+              <span className="text-sm text-fg-secondary">Your account is protected with TOTP.</span>
+            </div>
+            <form onSubmit={disableMFA} className="flex flex-col gap-3">
+              <div>
+                <label className="label-mono block mb-1">Enter code to disable</label>
+                <Input
+                  type="text"
+                  value={mfaDisableCode}
+                  onChange={(e) => setMfaDisableCode(e.target.value)}
+                  placeholder="123456"
+                  required
+                  maxLength={6}
+                  autoComplete="one-time-code"
+                />
+              </div>
+              <Button type="submit" variant="danger" disabled={mfaDisabling || !mfaDisableCode}>
+                {mfaDisabling ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Disable 2FA'}
+              </Button>
+            </form>
           </div>
-          <Badge>Coming soon</Badge>
-        </div>
+        ) : mfaSetupData ? (
+          <div className="flex flex-col gap-4">
+            <p className="text-sm">Scan this QR code with your authenticator app, then enter the 6-digit code.</p>
+            <div className="p-4 border-2 rounded-sm" style={{ borderColor: 'var(--c-ink)' }}>
+              <p className="text-xs text-fg-muted mb-2">Secret (enter manually if QR scanning is unavailable):</p>
+              <code className="block text-xs bg-bg-secondary p-2 rounded break-all">{mfaSetupData.secret}</code>
+            </div>
+            <form onSubmit={verifyMFA} className="flex flex-col gap-3">
+              <div>
+                <label className="label-mono block mb-1">Verification code</label>
+                <Input
+                  type="text"
+                  value={mfaCode}
+                  onChange={(e) => setMfaCode(e.target.value)}
+                  placeholder="123456"
+                  required
+                  maxLength={6}
+                  autoComplete="one-time-code"
+                  autoFocus
+                />
+              </div>
+              <Button type="submit" disabled={mfaLoading || !mfaCode || mfaCode.length !== 6}>
+                {mfaLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Verify and enable'}
+              </Button>
+            </form>
+          </div>
+        ) : (
+          <Button onClick={setupMFA} disabled={mfaLoading}>
+            {mfaLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Shield className="h-4 w-4" />}
+            Enable 2FA
+          </Button>
+        )}
       </Card>
 
-      {/* Active sessions (placeholder) */}
+      {/* Active sessions */}
       <Card className="p-6">
         <h2 className="heading-display text-lg mb-2 flex items-center gap-2">
           <Lock className="h-5 w-5" /> Active sessions
         </h2>
-        <p className="text-sm text-fg-secondary">Manage devices currently signed in to your account.</p>
-        <div className="mt-4 flex items-center gap-3 p-3 border-2" style={{ borderColor: 'var(--c-ink)', borderRadius: 'var(--radius-sm)' }}>
+        <p className="text-sm text-fg-secondary mb-4">
+          Revoke all active sessions across all devices. You will need to sign in again on every device.
+        </p>
+        {sessionRevoked && (
+          <p className="text-sm text-success flex items-center gap-1 mb-3"><Check className="h-3 w-3" /> All sessions revoked successfully.</p>
+        )}
+        <div className="flex items-center gap-3 p-3 border-2 mb-4" style={{ borderColor: 'var(--c-ink)', borderRadius: 'var(--radius-sm)' }}>
           <div className="flex-1">
             <p className="text-sm font-semibold">Current session</p>
             <p className="text-xs text-fg-muted">This device</p>
           </div>
           <Badge variant="success">Active</Badge>
         </div>
+        <Button variant="danger" onClick={revokeAllSessions} disabled={revokingSessions}>
+          {revokingSessions ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Revoke all other sessions'}
+        </Button>
       </Card>
 
       {/* Data export (GDPR right to portability) */}

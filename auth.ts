@@ -5,6 +5,7 @@ import { PrismaAdapter } from '@auth/prisma-adapter';
 import bcrypt from 'bcryptjs';
 import { prisma } from '@/lib/prisma';
 import { grantCredits } from '@/lib/credits';
+import { verifyTOTP } from '@/lib/mfa';
 
 // Account lockout: track failed login attempts per email.
 // After 5 failed attempts within 15 minutes, the account is locked for 15 minutes.
@@ -61,10 +62,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       credentials: {
         email: { label: 'Email', type: 'email' },
         password: { label: 'Password', type: 'password' },
+        totpCode: { label: 'MFA Code', type: 'text' },
       },
       async authorize(credentials) {
         const email = credentials?.email as string | undefined;
         const password = credentials?.password as string | undefined;
+        const totpCode = credentials?.totpCode as string | undefined;
         if (!email || !password) return null;
 
         const lowerEmail = email.toLowerCase();
@@ -101,6 +104,31 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             failedAttempts.set(failKey, { count: 1, resetAt: now + 15 * 60 * 1000 });
           }
           return null;
+        }
+
+        // Enforce email verification for credentials login.
+        // Google OAuth users get emailVerified set automatically by NextAuth.
+        // In development/test, set ENFORCE_EMAIL_VERIFICATION=false to bypass.
+        const enforceVerification = process.env.ENFORCE_EMAIL_VERIFICATION !== 'false';
+        if (enforceVerification && !user.emailVerified) {
+          // Return a special error indicator — the signIn callback will
+          // redirect to a "verify your email" page instead of showing
+          // a generic "invalid credentials" error.
+          throw new Error('EMAIL_NOT_VERIFIED');
+        }
+
+        // MFA check: if the user has MFA enabled, verify the TOTP code.
+        // The client collects the code via a second step after password validation.
+        if (user.mfaEnabled && user.mfaSecret) {
+          if (!totpCode) {
+            // Password is correct but MFA code is required.
+            // The client should show an MFA input field and retry with totpCode.
+            throw new Error('MFA_REQUIRED');
+          }
+          const mfaValid = await verifyTOTP(user.mfaSecret, totpCode);
+          if (!mfaValid) {
+            throw new Error('MFA_INVALID');
+          }
         }
 
         // Successful login — clear any failed attempt records
@@ -143,6 +171,13 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     },
   },
   callbacks: {
+    async signIn() {
+      // Email verification and MFA checks are handled in the authorize()
+      // callback above. When authorize() throws, NextAuth sets result.error
+      // on the client side, which the login page reads to show the appropriate
+      // message. No additional blocking is needed here.
+      return true;
+    },
     async jwt({ token, user }) {
       // On first sign-in, `user` is populated. Persist id and credits in the
       // JWT so the session callback can read them without a DB lookup.

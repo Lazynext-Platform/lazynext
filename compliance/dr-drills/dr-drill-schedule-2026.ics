@@ -1,0 +1,46 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Lazynext//DR Drill Schedule//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:dr-drill-q4-2026@lazynext.com
+DTSTAMP:20260903T060000Z
+DTSTART:20261007T100000Z
+DTEND:20261007T120000Z
+SUMMARY:DR Drill — Partial Failover (Q4 2026)
+DESCRIPTION:Disaster Recovery Drill — Partial Failover against staging environment.\n\nScope:\n- D1 export → import to staging database\n- Worker rollback to previous version\n- R2 object versioning restore\n- DNS failover simulation (tabletop)\n\nFollow docs/DR_DRILL_PROCEDURE.md\n\nPrerequisites:\n- Staging D1 database created\n- Staging R2 bucket created\n- wrangler CLI authenticated\n- Team notified of drill window\n\nSuccess criteria: All RPO/RTO targets met, no production impact.
+LOCATION:Remote
+STATUS:CONFIRMED
+BEGIN:VALARM
+TRIGGER:-PT24H
+ACTION:EMAIL
+DESCRIPTION:DR Drill reminder — scheduled for tomorrow 10:00 UTC
+END:VALARM
+BEGIN:VALARM
+TRIGGER:-PT1H
+ACTION:DISPLAY
+DESCRIPTION:DR Drill starts in 1 hour
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:dr-drill-full-2026@lazynext.com
+DTSTAMP:20260903T060000Z
+DTSTART:20261202T100000Z
+DTEND:20261202T140000Z
+SUMMARY:DR Drill — Full Failover (Semi-Annual)
+DESCRIPTION:Disaster Recovery Drill — Full Failover against staging environment.\n\nScope:\n- Full D1 database failover to staging\n- Full R2 failover to backup bucket\n- Worker deployment to backup configuration\n- DNS cutover simulation\n- Secrets rotation test\n- Full health verification\n\nFollow docs/DR_DRILL_PROCEDURE.md\n\nThis is the semi-annual full failover drill.\n\nSuccess criteria: All RPO/RTO targets met, full platform recovery verified, no production impact.
+LOCATION:Remote
+STATUS:CONFIRMED
+BEGIN:VALARM
+TRIGGER:-PT48H
+ACTION:EMAIL
+DESCRIPTION:Full DR Drill reminder — scheduled for 2026-12-02 10:00 UTC
+END:VALARM
+BEGIN:VALARM
+TRIGGER:-PT1H
+ACTION:DISPLAY
+DESCRIPTION:Full DR Drill starts in 1 hour
+END:VALARM
+END:VEVENT
+END:VCALENDAR

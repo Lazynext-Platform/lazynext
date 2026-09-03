@@ -1,52 +1,36 @@
-import { withAtlas } from '@/lib/request-context';
 import { NextResponse } from 'next/server';
-import { auth } from '@/../auth';
-import {
-  handleMCPRequest,
-  handleMCPBatch,
-  validateMCPRequest,
-  getServerManifest,
-  type MCPRequest,
-} from '@/lib/creative/mcp-server';
 
-export const maxDuration = 30;
+// The legacy MCP server (protocol 2024-11-05) has been consolidated into the
+// canonical MCP endpoint at /api/mcp (protocol 2026-07-28).
+// This route returns a 301 redirect for GET and a 410 Gone for POST to inform
+// clients that the endpoint has moved.
 
-// GET returns the server manifest (public discovery, no auth required)
-export async function GET() {
-  const manifest = getServerManifest();
-  return NextResponse.json(manifest);
+export function GET(req: Request) {
+  const url = new URL('/api/mcp', req.url);
+  return NextResponse.redirect(url, {
+    status: 301,
+    headers: {
+      'Deprecation': 'true',
+      'Sunset': 'Sat, 31 Dec 2026 23:59:59 GMT',
+      'Link': '</api/mcp>; rel="successor-version"',
+    },
+  });
 }
 
-// POST handles MCP protocol requests (requires auth for tool execution)
-async function __byokPOST(req: Request) {
-  const session = await auth();
-  if (!session?.user?.id) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
-
-  const body = await req.json().catch(() => ({}));
-
-  // Handle batch requests
-  if (Array.isArray(body)) {
-    const requests = body as MCPRequest[];
-    const responses = handleMCPBatch(requests);
-    return NextResponse.json(responses);
-  }
-
-  // Validate single request
-  const validation = validateMCPRequest(body);
-  if (!validation.valid) {
-    return NextResponse.json(
-      {
-        jsonrpc: '2.0',
-        id: body?.id ?? null,
-        error: { code: -32600, message: 'Invalid Request', data: validation.errors },
+export function POST() {
+  return NextResponse.json(
+    {
+      error: 'endpoint_moved',
+      message: 'The MCP server has moved to /api/mcp (protocol 2026-07-28). Update your client configuration.',
+      newEndpoint: '/api/mcp',
+    },
+    {
+      status: 410,
+      headers: {
+        'Deprecation': 'true',
+        'Sunset': 'Sat, 31 Dec 2026 23:59:59 GMT',
+        'Link': '</api/mcp>; rel="successor-version"',
       },
-      { status: 400 },
-    );
-  }
-
-  const request = body as MCPRequest;
-  const response = handleMCPRequest(request);
-  return NextResponse.json(response);
+    },
+  );
 }
-
-export const POST = withAtlas(__byokPOST);

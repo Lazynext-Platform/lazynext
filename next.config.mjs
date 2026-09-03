@@ -37,8 +37,8 @@ const nextConfig = {
       // Old safety → integrations
       { source: '/meta-safety', destination: '/integrations', permanent: true },
       { source: '/google-safety', destination: '/integrations', permanent: true },
-      // Old mcp-server → developers
-      { source: '/mcp-server', destination: '/developers', permanent: true },
+      // /mcp-server is now a real page that renders the MCP server UI component.
+      // It calls /api/mcp (protocol 2026-07-28) — no redirect needed.
     ];
   },
   // Turbopack (used by `next dev` in Next.js 16) ignores webpack config, so we

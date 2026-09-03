@@ -22,10 +22,22 @@ export function McpServer() {
   const fetchManifest = useCallback(async () => {
     setLoading(true); setError('');
     try {
-      const res = await fetch('/api/creative/mcp-server');
+      const res = await fetch('/api/mcp', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          jsonrpc: '2.0', id: 0, method: 'server/discover',
+          _meta: { 'io.modelcontextprotocol/protocolVersion': '2026-07-28' },
+        }),
+      });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Failed');
-      setManifest(data);
+      if (!res.ok) throw new Error(data.error?.message || 'Failed');
+      setManifest({
+        server: { name: 'lazynext', version: '1.0.0', protocolVersion: '2026-07-28' },
+        tools: data.result?.tools || [],
+        resources: data.result?.resources || [],
+        toolCount: data.result?.tools?.length || 0,
+        resourceCount: data.result?.resources?.length || 0,
+      });
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
     } finally {
@@ -38,9 +50,12 @@ export function McpServer() {
   const testPing = useCallback(async () => {
     setTestResult('');
     try {
-      const res = await fetch('/api/creative/mcp-server', {
+      const res = await fetch('/api/mcp', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'ping' }),
+        body: JSON.stringify({
+          jsonrpc: '2.0', id: 1, method: 'ping',
+          _meta: { 'io.modelcontextprotocol/protocolVersion': '2026-07-28' },
+        }),
       });
       const data = await res.json();
       setTestResult(data.result ? 'Ping successful — server is responsive.' : 'Ping failed.');
@@ -52,9 +67,12 @@ export function McpServer() {
   const testToolsList = useCallback(async () => {
     setTestResult('');
     try {
-      const res = await fetch('/api/creative/mcp-server', {
+      const res = await fetch('/api/mcp', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ jsonrpc: '2.0', id: 2, method: 'tools/list' }),
+        body: JSON.stringify({
+          jsonrpc: '2.0', id: 2, method: 'tools/list',
+          _meta: { 'io.modelcontextprotocol/protocolVersion': '2026-07-28' },
+        }),
       });
       const data = await res.json();
       setTestResult(data.result?.tools ? `Found ${data.result.tools.length} tools.` : 'Tools list failed.');
@@ -93,7 +111,7 @@ export function McpServer() {
           {/* Endpoint */}
           <div className="rounded-lg border border-border bg-bg-secondary p-4">
             <h3 className="text-sm font-semibold mb-2">{t('mcpServer.endpoint')}</h3>
-            <code className="block text-xs bg-bg-primary rounded p-2 overflow-x-auto">POST /api/creative/mcp-server</code>
+            <code className="block text-xs bg-bg-primary rounded p-2 overflow-x-auto">POST /api/mcp</code>
             <p className="text-xs text-fg-muted mt-2">{t('mcpServer.endpointDescription')}</p>
           </div>
 
@@ -144,21 +162,37 @@ export function McpServer() {
           {/* Example Usage */}
           <div className="rounded-lg border border-border bg-bg-secondary p-4">
             <h3 className="text-sm font-semibold mb-2">{t('mcpServer.exampleUsage')}</h3>
-            <pre className="text-xs bg-bg-primary rounded p-3 overflow-x-auto"><code>{`// List tools
+            <pre className="text-xs bg-bg-primary rounded p-3 overflow-x-auto"><code>{`// Discover server (required first call — stateless, no initialize)
 {
   "jsonrpc": "2.0",
   "id": 1,
-  "method": "tools/list"
+  "method": "server/discover",
+  "_meta": {
+    "io.modelcontextprotocol/protocolVersion": "2026-07-28"
+  }
+}
+
+// List tools
+{
+  "jsonrpc": "2.0",
+  "id": 2,
+  "method": "tools/list",
+  "_meta": {
+    "io.modelcontextprotocol/protocolVersion": "2026-07-28"
+  }
 }
 
 // Call a tool
 {
   "jsonrpc": "2.0",
-  "id": 2,
+  "id": 3,
   "method": "tools/call",
   "params": {
-    "name": "creative.generateBrief",
-    "arguments": { "product": "..." }
+    "name": "list_workspaces",
+    "arguments": {}
+  },
+  "_meta": {
+    "io.modelcontextprotocol/protocolVersion": "2026-07-28"
   }
 }`}</code></pre>
           </div>

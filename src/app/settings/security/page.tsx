@@ -13,7 +13,7 @@ export default async function SecuritySettingsPage() {
 
   const user = await prisma.user.findUnique({
     where: { id: session.user.id },
-    select: { password: true },
+    select: { password: true, mfaEnabled: true },
   });
 
   return (
@@ -22,7 +22,7 @@ export default async function SecuritySettingsPage() {
         <Lock className="h-6 w-6" />
         <h1 className="heading-display text-2xl">Security</h1>
       </div>
-      <SecuritySettings hasPassword={!!user?.password} />
+      <SecuritySettings hasPassword={!!user?.password} mfaEnabled={!!user?.mfaEnabled} />
     </div>
   );
 }
