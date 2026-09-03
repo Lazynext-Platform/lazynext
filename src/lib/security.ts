@@ -52,8 +52,14 @@ const BLOCKED_IP_PATTERNS = [
   /^192\.168\./,      // private class C
   /^169\.254\./,      // link-local
   /^0\./,             // current network
+];
+
+/** IPv6 ranges that should be blocked for SSRF protection. */
+const BLOCKED_IPV6_PATTERNS = [
   /^::1$/,            // IPv6 loopback
+  /^::$/,             // IPv6 unspecified
   /^fc00:/i,          // IPv6 unique local
+  /^fd/i,             // IPv6 unique local (fd00::/8 locally assigned)
   /^fe80:/i,          // IPv6 link-local
 ];
 
@@ -61,8 +67,40 @@ const BLOCKED_IP_PATTERNS = [
 const ALLOWED_SCHEMES = ['http:', 'https:'];
 
 /**
+ * Convert two 16-bit hex groups of an IPv6-mapped IPv4 address
+ * (e.g. "a9fe:a9fe") into a dotted-quad IPv4 string (e.g. "169.254.169.254").
+ * Returns null if the input is not two colon-separated hex groups.
+ */
+function hexGroupsToIPv4(groups: string): string | null {
+  const parts = groups.split(':');
+  if (parts.length !== 2) return null;
+  const g1 = parseInt(parts[0], 16);
+  const g2 = parseInt(parts[1], 16);
+  if (Number.isNaN(g1) || Number.isNaN(g2)) return null;
+  if (g1 < 0 || g1 > 0xffff || g2 < 0 || g2 > 0xffff) return null;
+  return `${(g1 >> 8) & 0xff}.${g1 & 0xff}.${(g2 >> 8) & 0xff}.${g2 & 0xff}`;
+}
+
+/**
+ * Given an IPv6 hostname (brackets already stripped), if it is an
+ * IPv6-mapped IPv4 address (::ffff:X.X.X.X or ::ffff:XXXX:XXXX),
+ * extract and return the embedded IPv4 dotted-quad string.
+ * Returns null otherwise.
+ */
+function extractIPv4FromIPv6Mapped(hostname: string): string | null {
+  // ::ffff:a.b.c.d  (dotted-quad form)
+  const dottedMatch = hostname.match(/^::ffff:(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})$/i);
+  if (dottedMatch) return dottedMatch[1];
+  // ::ffff:XXXX:XXXX  (hex-pair form, e.g. ::ffff:a9fe:a9fe)
+  const hexMatch = hostname.match(/^::ffff:([0-9a-f]{1,4}:[0-9a-f]{1,4})$/i);
+  if (hexMatch) return hexGroupsToIPv4(hexMatch[1]);
+  return null;
+}
+
+/**
  * Validate that a URL is safe to fetch (no SSRF).
- * Blocks private/internal IP ranges and non-HTTP schemes.
+ * Blocks private/internal IP ranges, IPv6-mapped IPv4 bypasses,
+ * cloud metadata endpoints, and non-HTTP schemes.
  * Returns true if the URL is safe.
  */
 export function isUrlSafe(urlStr: string): boolean {
@@ -70,16 +108,40 @@ export function isUrlSafe(urlStr: string): boolean {
     const url = new URL(urlStr);
     if (!ALLOWED_SCHEMES.includes(url.protocol)) return false;
 
-    // Block localhost and common internal hostnames
-    const hostname = url.hostname.toLowerCase();
-    if (hostname === 'localhost' || hostname === '0.0.0.0') return false;
+    // WHATWG URL normalizes IPv4 literals (decimal/hex/octal) to dotted-decimal,
+    // so the BLOCKED_IP_PATTERNS regexes catch those forms. IPv6 literals may be
+    // returned with surrounding brackets depending on the runtime; strip them.
+    let hostname = url.hostname.toLowerCase();
+    if (hostname.startsWith('[') && hostname.endsWith(']')) {
+      hostname = hostname.slice(1, -1);
+    }
 
-    // Check against blocked IP patterns
+    // Block localhost and the unspecified/any address
+    if (hostname === 'localhost' || hostname === '0.0.0.0' || hostname === '::') return false;
+
+    // Check IPv4 against blocked patterns
     for (const pattern of BLOCKED_IP_PATTERNS) {
       if (pattern.test(hostname)) return false;
     }
 
-    // Block metadata service endpoints
+    // IPv6 handling: detect IPv6-mapped IPv4 and check the embedded IPv4,
+    // then check remaining IPv6 patterns.
+    if (hostname.includes(':')) {
+      const mappedIPv4 = extractIPv4FromIPv6Mapped(hostname);
+      if (mappedIPv4) {
+        for (const pattern of BLOCKED_IP_PATTERNS) {
+          if (pattern.test(mappedIPv4)) return false;
+        }
+        // Also block the metadata endpoint in mapped form
+        if (mappedIPv4 === '169.254.169.254') return false;
+        return true;
+      }
+      for (const pattern of BLOCKED_IPV6_PATTERNS) {
+        if (pattern.test(hostname)) return false;
+      }
+    }
+
+    // Block cloud metadata service endpoints
     if (hostname === 'metadata.google.internal' || hostname === '169.254.169.254') return false;
 
     return true;

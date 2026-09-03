@@ -88,5 +88,35 @@ describe('Security utilities', () => {
       assert.equal(isUrlSafe('not-a-url'), false);
       assert.equal(isUrlSafe(''), false);
     });
+
+    test('blocks IPv6-mapped IPv4 loopback (SSRF DNS-rebinding bypass)', () => {
+      assert.equal(isUrlSafe('http://[::ffff:127.0.0.1]/'), false);
+      assert.equal(isUrlSafe('http://[::ffff:7f00:1]/'), false);
+    });
+
+    test('blocks IPv6-mapped IPv4 cloud metadata endpoint', () => {
+      assert.equal(isUrlSafe('http://[::ffff:169.254.169.254]/'), false);
+      assert.equal(isUrlSafe('http://[::ffff:a9fe:a9fe]/'), false);
+    });
+
+    test('blocks IPv6-mapped private IPv4 ranges', () => {
+      assert.equal(isUrlSafe('http://[::ffff:10.0.0.1]/'), false);
+      assert.equal(isUrlSafe('http://[::ffff:192.168.1.1]/'), false);
+      assert.equal(isUrlSafe('http://[::ffff:172.16.0.1]/'), false);
+    });
+
+    test('blocks IPv6 loopback and link-local', () => {
+      assert.equal(isUrlSafe('http://[::1]/'), false);
+      assert.equal(isUrlSafe('http://[fe80::1]/'), false);
+      assert.equal(isUrlSafe('http://[fc00::1]/'), false);
+    });
+
+    test('blocks IPv4 IP-encoding bypasses (decimal/hex/octal)', () => {
+      // WHATWG URL normalizes these to dotted-decimal, which the patterns catch
+      assert.equal(isUrlSafe('http://2130706433/'), false);  // 127.0.0.1
+      assert.equal(isUrlSafe('http://0x7f000001/'), false);   // 127.0.0.1
+      assert.equal(isUrlSafe('http://0177.0.0.1/'), false);   // 127.0.0.1
+      assert.equal(isUrlSafe('http://0/'), false);            // 0.0.0.0
+    });
   });
 });
