@@ -151,10 +151,7 @@ test.describe('Production OS pages redirect to login when unauthenticated', () =
 });
 
 test.describe('Production old route redirects', () => {
-  // NOTE: These tests verify redirects that are configured in the new code.
-  // They will fail against the current production deployment until the new
-  // code is deployed. Run them after deploying to verify the redirects work.
-  test.fixme('old ad-studio routes redirect to /creative/generators', async ({ page }) => {
+  test('old ad-studio routes redirect to /creative/generators', async ({ page }) => {
     const oldRoutes = [
       '/ad-copy-generator',
       '/ad-script-writer',
@@ -176,7 +173,7 @@ test.describe('Production old route redirects', () => {
     }
   });
 
-  test.fixme('old studio routes redirect to /creative', async ({ page }) => {
+  test('old studio routes redirect to /creative', async ({ page }) => {
     const oldStudios = [
       '/creative-studio',
       '/creative-director',
@@ -195,19 +192,19 @@ test.describe('Production old route redirects', () => {
     }
   });
 
-  test.fixme('old pipeline redirects to /creative/pipelines', async ({ page }) => {
+  test('old pipeline redirects to /creative/pipelines', async ({ page }) => {
     const res = await page.goto('/pipeline');
     expect(res?.status()).toBeLessThan(400);
     expect(page.url()).toContain('/creative/pipelines');
   });
 
-  test.fixme('old skills redirect to /agents', async ({ page }) => {
+  test('old skills redirect to /agents', async ({ page }) => {
     const res = await page.goto('/skills');
     expect(res?.status()).toBeLessThan(400);
     expect(page.url()).toContain('/agents');
   });
 
-  test.fixme('old mcp-server redirects to /developers', async ({ page }) => {
+  test('old mcp-server redirects to /developers', async ({ page }) => {
     const res = await page.goto('/mcp-server');
     expect(res?.status()).toBeLessThan(400);
     expect(page.url()).toContain('/developers');
