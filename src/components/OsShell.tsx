@@ -36,6 +36,7 @@ import { useTheme } from '@/lib/theme';
 import { useI18n } from '@/i18n/provider';
 import { useWorkspace } from '@/lib/workspace-provider';
 import { LOCALES, LOCALE_NAMES, type Locale } from '@/i18n/messages';
+import { NotificationsBell } from '@/components/NotificationsBell';
 
 // OS module navigation — the primary nav items
 const OS_NAV = [
@@ -354,14 +355,8 @@ export function OsShell({ children }: { children: React.ReactNode }) {
             )}
           </div>
 
-          {/* Notifications (placeholder) */}
-          <button
-            className="p-2 border-2 rounded-[var(--radius-sm)] bg-surface hover:bg-hover transition-colors relative"
-            style={{ borderColor: 'var(--c-ink)' }}
-            aria-label="Notifications"
-          >
-            <Bell className="h-4 w-4" />
-          </button>
+          {/* Notifications */}
+          <NotificationsBell />
 
           {/* User menu */}
           {status === 'authenticated' && session?.user ? (

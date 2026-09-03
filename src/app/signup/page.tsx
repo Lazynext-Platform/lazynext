@@ -66,7 +66,7 @@ function SignupForm() {
       });
 
       if (result?.ok) {
-        router.push('/dashboard');
+        router.push('/onboarding');
         router.refresh();
       } else {
         // Registration succeeded but auto-login failed — send to login
@@ -79,7 +79,7 @@ function SignupForm() {
   };
 
   const handleGoogle = () => {
-    signIn('google', { callbackUrl: '/dashboard' });
+    signIn('google', { callbackUrl: '/onboarding' });
   };
 
   return (

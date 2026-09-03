@@ -31,7 +31,7 @@ export default async function AutomationsPage() {
           <h1 className="heading-display text-2xl">Automations</h1>
           <p className="text-sm text-fg-secondary mt-1">{automations.length} automation{automations.length !== 1 ? 's' : ''}</p>
         </div>
-        <Button>
+        <Button href="/automations/new">
           <Plus className="h-4 w-4" /> New Automation
         </Button>
       </div>

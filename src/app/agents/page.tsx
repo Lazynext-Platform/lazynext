@@ -31,7 +31,7 @@ export default async function AgentsPage() {
           <h1 className="heading-display text-2xl">AI Agents</h1>
           <p className="text-sm text-fg-secondary mt-1">{agents.length} agent{agents.length !== 1 ? 's' : ''}</p>
         </div>
-        <Button>
+        <Button href="/agents/new">
           <Plus className="h-4 w-4" /> New Agent
         </Button>
       </div>

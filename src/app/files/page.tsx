@@ -1,8 +1,9 @@
-import { Folder, Upload } from 'lucide-react';
+import { Folder } from 'lucide-react';
 import { auth } from '@/../auth';
 import { WorkspaceService } from '@/lib/services/workspace';
 import { prisma } from '@/lib/prisma';
 import { Card, Badge, Button, EmptyState } from '@/components/ui';
+import { FileUploader } from '@/components/FileUploader';
 
 export const dynamic = 'force-dynamic';
 
@@ -34,9 +35,7 @@ export default async function FilesPage() {
           <h1 className="heading-display text-2xl">Files</h1>
           <p className="text-sm text-fg-secondary mt-1">{files.length} file{files.length !== 1 ? 's' : ''}</p>
         </div>
-        <Button>
-          <Upload className="h-4 w-4" /> Upload
-        </Button>
+        <FileUploader workspaceId={workspace.id} />
       </div>
 
       {files.length === 0 ? (
