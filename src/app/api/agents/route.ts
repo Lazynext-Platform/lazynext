@@ -51,11 +51,11 @@ export async function POST(req: NextRequest) {
     const agent = await prisma.agentDef.create({
       data: {
         workspaceId: workspace.id,
-        name,
-        modelProvider: body.modelProvider || 'atlas',
-        modelName: body.modelName || 'doubao-seed-2.1-turbo',
-        instructions: body.instructions || '',
-        toolIds: body.toolIds || '[]',
+        name: name.slice(0, 200),
+        modelProvider: (body.modelProvider || 'atlas').slice(0, 50),
+        modelName: (body.modelName || 'doubao-seed-2.1-turbo').slice(0, 100),
+        instructions: (body.instructions || '').slice(0, 10_000),
+        toolIds: (body.toolIds || '[]').slice(0, 1000),
       },
     });
 

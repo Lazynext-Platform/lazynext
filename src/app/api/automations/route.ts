@@ -46,9 +46,9 @@ export async function POST(req: NextRequest) {
     const automation = await prisma.automation.create({
       data: {
         workspaceId: workspace.id,
-        name,
-        trigger,
-        definition: body.definition || '{}',
+        name: name.slice(0, 200),
+        trigger: (trigger || '').slice(0, 100),
+        definition: (body.definition || '{}').slice(0, 10_000),
         enabled: true,
       },
     });

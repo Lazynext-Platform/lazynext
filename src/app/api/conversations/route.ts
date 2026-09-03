@@ -63,7 +63,7 @@ export async function POST(req: NextRequest) {
   const conversation = await prisma.conversation.create({
     data: {
       workspaceId,
-      title,
+      title: title.slice(0, 200),
       createdById: session.user.id,
     },
   });
