@@ -25,32 +25,25 @@ import {
   Sparkles,
 } from 'lucide-react';
 
-type OSModule = {
-  href: string;
-  icon: typeof LayoutGrid;
-  title: string;
-  description: string;
-};
-
-const OS_MODULES: OSModule[] = [
-  { href: '/dashboard', icon: LayoutGrid, title: 'Dashboard', description: 'Overview of your workspace, projects, tasks, and activity' },
-  { href: '/projects', icon: FolderKanban, title: 'Projects', description: 'Organize work into projects with tasks, documents, and files' },
-  { href: '/tasks', icon: CheckSquare, title: 'Tasks', description: 'Track work with Kanban boards, assignments, and priorities' },
-  { href: '/documents', icon: FileText, title: 'Documents', description: 'Create and share knowledge base articles and documentation' },
-  { href: '/conversations', icon: MessageSquare, title: 'Conversations', description: 'Workspace messaging and team discussions' },
-  { href: '/calendar', icon: Calendar, title: 'Calendar', description: 'Schedule and track events, deadlines, and milestones' },
-  { href: '/people', icon: Users, title: 'People', description: 'Manage workspace members and roles' },
-  { href: '/analytics', icon: BarChart3, title: 'Analytics', description: 'Cross-module insights and resource distribution charts' },
-  { href: '/agents', icon: Bot, title: 'AI Agents', description: 'Create AI agents to automate tasks with custom instructions' },
-  { href: '/automations', icon: Zap, title: 'Automations', description: 'Automate repetitive workflows with triggers and actions' },
-  { href: '/files', icon: FolderOpen, title: 'Files', description: 'Upload, store, and share files across your workspace' },
-  { href: '/search', icon: Search, title: 'Search', description: 'Search across projects, tasks, documents, and creative work' },
+const OS_MODULES_KEY_MAP: { href: string; icon: typeof LayoutGrid; titleKey: string; descKey: string }[] = [
+  { href: '/dashboard', icon: LayoutGrid, titleKey: 'home.modDashboard', descKey: 'home.modDashboardDesc' },
+  { href: '/projects', icon: FolderKanban, titleKey: 'home.modProjects', descKey: 'home.modProjectsDesc' },
+  { href: '/tasks', icon: CheckSquare, titleKey: 'home.modTasks', descKey: 'home.modTasksDesc' },
+  { href: '/documents', icon: FileText, titleKey: 'home.modDocuments', descKey: 'home.modDocumentsDesc' },
+  { href: '/conversations', icon: MessageSquare, titleKey: 'home.modConversations', descKey: 'home.modConversationsDesc' },
+  { href: '/calendar', icon: Calendar, titleKey: 'home.modCalendar', descKey: 'home.modCalendarDesc' },
+  { href: '/people', icon: Users, titleKey: 'home.modPeople', descKey: 'home.modPeopleDesc' },
+  { href: '/analytics', icon: BarChart3, titleKey: 'home.modAnalytics', descKey: 'home.modAnalyticsDesc' },
+  { href: '/agents', icon: Bot, titleKey: 'home.modAgents', descKey: 'home.modAgentsDesc' },
+  { href: '/automations', icon: Zap, titleKey: 'home.modAutomations', descKey: 'home.modAutomationsDesc' },
+  { href: '/files', icon: FolderOpen, titleKey: 'home.modFiles', descKey: 'home.modFilesDesc' },
+  { href: '/search', icon: Search, titleKey: 'home.modSearch', descKey: 'home.modSearchDesc' },
 ];
 
-const PLATFORM_FEATURES: OSModule[] = [
-  { href: '/developers', icon: Code2, title: 'Developer API', description: 'REST API v1, MCP server, webhooks, and API keys' },
-  { href: '/settings', icon: Settings, title: 'Settings', description: 'Profile, security, notifications, billing, and preferences' },
-  { href: '/admin', icon: Shield, title: 'Admin', description: 'User management, credit adjustments, and system oversight' },
+const PLATFORM_FEATURES_KEY_MAP: { href: string; icon: typeof LayoutGrid; titleKey: string; descKey: string }[] = [
+  { href: '/developers', icon: Code2, titleKey: 'home.pfDeveloperApi', descKey: 'home.pfDeveloperApiDesc' },
+  { href: '/settings', icon: Settings, titleKey: 'home.pfSettings', descKey: 'home.pfSettingsDesc' },
+  { href: '/admin', icon: Shield, titleKey: 'home.pfAdmin', descKey: 'home.pfAdminDesc' },
 ];
 
 export default function Home() {
@@ -124,10 +117,10 @@ export default function Home() {
       {/* OS Module Grid */}
       <nav className="max-w-6xl mx-auto px-4 pb-16" aria-label="OS modules">
         <h2 className="mb-6 text-center text-lg font-semibold text-fg-secondary">
-          {OS_MODULES.length} modules · one unified workspace
+          {t('home.modulesHeading').replace('{count}', String(OS_MODULES_KEY_MAP.length))}
         </h2>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {OS_MODULES.map((mod) => {
+          {OS_MODULES_KEY_MAP.map((mod) => {
             const Icon = mod.icon;
             return (
               <Link
@@ -139,9 +132,9 @@ export default function Home() {
                   <span className="flex h-10 w-10 items-center justify-center rounded-xl transition duration-300 group-hover:scale-110" style={{ background: 'rgba(0,178,252,0.15)', color: 'var(--color-brand-accent)' }}>
                     <Icon className="h-5 w-5" />
                   </span>
-                  <h3 className="font-bold tracking-tight">{mod.title}</h3>
+                  <h3 className="font-bold tracking-tight">{t(mod.titleKey)}</h3>
                 </div>
-                <p className="mt-3 text-sm text-fg-faint leading-relaxed">{mod.description}</p>
+                <p className="mt-3 text-sm text-fg-faint leading-relaxed">{t(mod.descKey)}</p>
                 <div className="mt-3 flex items-center gap-1 text-sm font-medium opacity-0 transition duration-300 group-hover:opacity-100" style={{ color: 'var(--color-brand-accent)' }}>
                   Open <ArrowRight className="h-3.5 w-3.5" />
                 </div>
@@ -154,10 +147,10 @@ export default function Home() {
       {/* Platform Features */}
       <nav className="max-w-6xl mx-auto px-4 pb-16" aria-label="Platform features">
         <h2 className="mb-6 text-center text-lg font-semibold text-fg-secondary">
-          Platform
+          {t('home.platformHeading')}
         </h2>
         <div className="grid gap-4 sm:grid-cols-3">
-          {PLATFORM_FEATURES.map((mod) => {
+          {PLATFORM_FEATURES_KEY_MAP.map((mod) => {
             const Icon = mod.icon;
             return (
               <Link
@@ -169,9 +162,9 @@ export default function Home() {
                   <span className="flex h-10 w-10 items-center justify-center rounded-xl" style={{ background: 'rgba(0,178,252,0.15)', color: 'var(--color-brand-accent)' }}>
                     <Icon className="h-5 w-5" />
                   </span>
-                  <h3 className="font-bold tracking-tight">{mod.title}</h3>
+                  <h3 className="font-bold tracking-tight">{t(mod.titleKey)}</h3>
                 </div>
-                <p className="mt-3 text-sm text-fg-faint leading-relaxed">{mod.description}</p>
+                <p className="mt-3 text-sm text-fg-faint leading-relaxed">{t(mod.descKey)}</p>
               </Link>
             );
           })}
@@ -182,10 +175,10 @@ export default function Home() {
       <div className="max-w-4xl mx-auto px-4 pb-24">
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
           {[
-            { value: '15+', label: 'OS Modules' },
-            { value: '55', label: 'Data Models' },
-            { value: '13', label: 'Languages' },
-            { value: '99.9%', label: 'Uptime' },
+            { value: '15+', label: t('home.statModules') },
+            { value: '55', label: t('home.statModels') },
+            { value: '13', label: t('home.statLanguages') },
+            { value: '99.9%', label: t('home.statUptime') },
           ].map((stat) => (
             <div key={stat.label} className="rounded-xl border border-line bg-surface p-4 text-center">
               <div className="text-2xl font-bold" style={{ color: 'var(--color-brand-accent)' }}>{stat.value}</div>
