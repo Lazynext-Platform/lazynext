@@ -49,8 +49,8 @@ export async function POST(req: NextRequest) {
       data: {
         workspaceId: workspace.id,
         createdById: session.user.id,
-        name,
-        description: body.description?.trim() || null,
+        name: name.slice(0, 200),
+        description: body.description?.trim().slice(0, 2000) || null,
         status: 'active',
       },
     });

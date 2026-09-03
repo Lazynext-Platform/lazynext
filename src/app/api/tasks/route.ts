@@ -45,8 +45,8 @@ export async function POST(req: NextRequest) {
     const task = await prisma.task.create({
       data: {
         projectId,
-        title,
-        description: body.description?.trim() || null,
+        title: title.slice(0, 200),
+        description: body.description?.trim().slice(0, 2000) || null,
         priority,
         status: 'todo',
         dueDate: body.dueDate ? new Date(body.dueDate) : null,

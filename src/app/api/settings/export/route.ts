@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/../auth';
 import { prisma } from '@/lib/prisma';
+import { checkAuthRateLimit, getClientIP } from '@/lib/auth-rate-limit';
 
 /**
  * GET /api/settings/export — export all of the user's personal data as JSON.
@@ -8,11 +9,22 @@ import { prisma } from '@/lib/prisma';
  *
  * Returns a JSON file containing the user's profile, projects, tasks,
  * documents, creations, notifications, conversations, and audit events.
+ * Rate-limited to 3 requests per hour to prevent DB load abuse.
  */
 export async function GET(req: NextRequest) {
   const session = await auth().catch(() => null);
   if (!session?.user?.id) {
     return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+  }
+
+  // Rate limit: 3 exports per hour per IP (heavy DB load)
+  const ip = getClientIP(req);
+  const { limited, retryAfter } = checkAuthRateLimit(ip, 'data-export', 3, 60 * 60 * 1000);
+  if (limited) {
+    return NextResponse.json(
+      { error: 'Too many export requests. Please try again later.' },
+      { status: 429, headers: { 'Retry-After': String(retryAfter || 3600) } },
+    );
   }
 
   const userId = session.user.id;

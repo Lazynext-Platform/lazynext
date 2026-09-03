@@ -38,7 +38,7 @@ export async function POST(req: NextRequest) {
     if (body.workspaceName?.trim() && body.workspaceName !== workspace.name) {
       await prisma.workspace.update({
         where: { id: workspace.id },
-        data: { name: body.workspaceName.trim() },
+        data: { name: body.workspaceName.trim().slice(0, 100) },
       });
     }
 
@@ -50,8 +50,8 @@ export async function POST(req: NextRequest) {
         data: {
           workspaceId: workspace.id,
           createdById: session.user.id,
-          name: body.projectName.trim(),
-          description: body.projectDescription?.trim() || null,
+          name: body.projectName.trim().slice(0, 200),
+          description: body.projectDescription?.trim().slice(0, 2000) || null,
           status: 'active',
         },
       });
