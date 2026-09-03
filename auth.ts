@@ -3,9 +3,11 @@ import Google from 'next-auth/providers/google';
 import Credentials from 'next-auth/providers/credentials';
 import { PrismaAdapter } from '@auth/prisma-adapter';
 import bcrypt from 'bcryptjs';
+import { randomUUID } from 'crypto';
 import { prisma } from '@/lib/prisma';
 import { grantCredits } from '@/lib/credits';
 import { verifyTOTP } from '@/lib/mfa';
+import { isSessionRevoked } from '@/lib/session-revocation';
 
 // Account lockout: track failed login attempts per email.
 // After 5 failed attempts within 15 minutes, the account is locked for 15 minutes.
@@ -185,7 +187,38 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         token.id = user.id;
         token.credits = (user as { credits?: number }).credits ?? 0;
         token.creditsUpdatedAt = Date.now();
+
+        // Create a Session row for revocation tracking.
+        // With JWT strategy, NextAuth doesn't create Session rows automatically.
+        // We create one so that revokeAllUserSessions() can mark it as revoked.
+        try {
+          const sessionToken = randomUUID();
+          const { createHash } = await import('crypto');
+          const sessionTokenHash = createHash('sha256').update(sessionToken).digest('hex');
+          await prisma.session.create({
+            data: {
+              sessionToken: sessionTokenHash,
+              userId: user.id!,
+              expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
+            },
+          });
+          token.sessionToken = sessionToken;
+        } catch {
+          // Non-fatal: session revocation won't work for this session,
+          // but the user can still log in
+        }
       }
+
+      // Check if session has been revoked (logout-all, admin force-logout).
+      // Cached for 60s to avoid a DB lookup on every auth() call.
+      if (token.sessionToken && token.id) {
+        const revoked = await isSessionRevoked(token.sessionToken as string);
+        if (revoked) {
+          // Return a minimal token that won't authenticate
+          return { ...token, id: undefined, credits: 0, sessionToken: undefined } as typeof token;
+        }
+      }
+
 // Refresh credits from DB if stale (older than 5 minutes) to avoid
 // showing a stale balance after spending/refunding credits. The 5-minute
 // window reduces DB reads on every auth() call (154 API routes) while
