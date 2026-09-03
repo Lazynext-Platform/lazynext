@@ -184,6 +184,8 @@ async function handleRequest(req: NextRequest): Promise<NextResponse> {
       '/creative-performance-forecaster', '/creative-trend-adapter', '/creative-quality-scorer',
       '/creative-sentiment-journey-mapper', '/creative-concept-expander-pro',
       '/creative-concept-validator', '/creative-diff', '/creative-assets',
+      '/angle-finder', '/hook-tester', '/hook-library', '/brief-template-builder',
+      '/ad-script-writer', '/brief-analyzer', '/ad-format-optimizer', '/inspiration',
     ].includes(pathname)
   ) {
     return NextResponse.redirect(new URL('/creative/generators', req.url), 308);

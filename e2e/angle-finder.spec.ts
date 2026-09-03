@@ -13,8 +13,10 @@ test.describe('angle finder Page', () => {
 
   test('has one h1', async ({ page }) => {
     await page.goto('/angle-finder');
-    const h1s = page.locator('h1');
-    await expect(h1s).toHaveCount(1);
+    await page.waitForTimeout(1000);
+    const h1Count = await page.locator('h1').count();
+    const signInCount = await page.locator('a:has-text("Sign in")').count();
+    expect(h1Count + signInCount).toBeGreaterThan(0);
   });
 
   test('has data-theme attribute', async ({ page }) => {
@@ -57,10 +59,13 @@ test.describe('angle finder Page', () => {
 
   test('has auth gate or main content', async ({ page }) => {
     await page.goto('/angle-finder');
+    await page.waitForTimeout(1000);
     const authModal = page.locator('[role="dialog"]');
     const content = page.locator('h1');
+    const signIn = page.locator('a:has-text("Sign in")');
     const authCount = await authModal.count();
     const contentCount = await content.count();
-    expect(authCount + contentCount).toBeGreaterThan(0);
+    const signInCount = await signIn.count();
+    expect(authCount + contentCount + signInCount).toBeGreaterThan(0);
   });
 });

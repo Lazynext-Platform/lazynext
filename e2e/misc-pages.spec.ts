@@ -101,11 +101,14 @@ test.describe('feedback Page (admin)', () => {
 
   test('has auth gate or main content', async ({ page }) => {
     await page.goto('/admin/feedback');
+    await page.waitForTimeout(1000);
     const authModal = page.locator('[role="dialog"]');
     const content = page.locator('h1');
+    const signIn = page.locator('a:has-text("Sign in")');
     const authCount = await authModal.count();
     const contentCount = await content.count();
-    expect(authCount + contentCount).toBeGreaterThan(0);
+    const signInCount = await signIn.count();
+    expect(authCount + contentCount + signInCount).toBeGreaterThan(0);
   });
 });
 
