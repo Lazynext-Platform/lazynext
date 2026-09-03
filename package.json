@@ -20,7 +20,7 @@
     "db:migrate:d1": "node scripts/apply-d1-migrations.mjs",
     "db:migrate:d1:apply": "node scripts/apply-d1-migrations.mjs --apply",
     "db:studio": "prisma studio",
-    "cf:prepare": "DEPLOY_TARGET=cloudflare npm run prisma:generate && DEPLOY_TARGET=cloudflare npm run platform:prepare && node scripts/patch-wrangler-types.mjs",
+    "cf:prepare": "DEPLOY_TARGET=cloudflare npm run prisma:generate && DEPLOY_TARGET=cloudflare npm run platform:prepare && node scripts/patch-wrangler-types.mjs && node scripts/convert-locales-to-json.mjs",
     "cf:build": "npm run cf:prepare && opennextjs-cloudflare build && node scripts/trim-prisma-wasm.mjs",
     "cf:preview": "npm run cf:prepare && opennextjs-cloudflare build && node scripts/trim-prisma-wasm.mjs && opennextjs-cloudflare preview",
     "cf:deploy": "npm run cf:prepare && opennextjs-cloudflare build && node scripts/trim-prisma-wasm.mjs && npx wrangler deploy --dry-run --outdir .open-next/dist && node scripts/patch-worker.mjs && npx wrangler deploy --no-bundle --config .open-next/dist/wrangler.jsonc",

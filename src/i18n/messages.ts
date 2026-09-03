@@ -42,18 +42,20 @@ export const appMessages: Record<Locale, Record<string, { title: string; descrip
   ar: {}, hi: {}, vi: {}, th: {}, id: {},
 };
 
-// Dynamic locale loader — returns messages and appMessages for a locale
-// English is returned synchronously (already loaded); others are dynamically imported
+// Dynamic locale loader — returns messages and appMessages for a locale.
+// English is returned synchronously (already loaded). Non-English locales are
+// fetched as static JSON from /locales/{locale}.json (served as a Cloudflare
+// Workers asset) to avoid inlining ~4.5MB of translation data into the Worker
+// bundle, which would exceed the 10 MiB compressed size limit.
 export async function loadLocaleMessages(locale: Locale): Promise<{ messages: LocaleMessages; appMessages: LocaleAppMessages }> {
   if (locale === 'en') {
     return { messages: enMessages, appMessages: enAppMessages };
   }
   try {
-    const mod = await import(`./locales/${locale}`);
-    return {
-      messages: mod[`${locale}Messages`],
-      appMessages: mod[`${locale}AppMessages`],
-    };
+    const res = await fetch(`/locales/${locale}.json`);
+    if (!res.ok) throw new Error(`locale fetch failed: ${res.status}`);
+    const data = await res.json() as { messages: LocaleMessages; appMessages: LocaleAppMessages };
+    return { messages: data.messages, appMessages: data.appMessages };
   } catch {
     // Fallback to English if locale file fails to load
     return { messages: enMessages, appMessages: enAppMessages };
