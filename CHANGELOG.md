@@ -1,5 +1,32 @@
 # Lazynext Changelog
 
+## 2026-09-03 — III: OAuth Discovery, i18n, CI, Brand, Dead Code, Env Docs
+
+### What Changed
+- **OAuth authorization-server metadata**: Implemented `/.well-known/oauth-authorization-server` (RFC 8414) to complete the MCP OAuth 2.1 discovery chain. Previously returned 404, breaking standards-compliant MCP client discovery.
+- **ShellRouter fix**: Added 5 missing routes (mcp-server, onboarding, observability, api-terms, ai-usage-policy) to correct shell classification. 404 pages now use no-shell fallback instead of legacy ad-studio shell.
+- **Homepage i18n**: Wired hardcoded English module grid labels to i18n system (30 new keys). Non-English locales now translate the module grid instead of showing English.
+- **OsShell i18n**: Wired hardcoded English nav labels (Dashboard, Projects, Tasks, etc.) to i18n system. Nav now translates when locale is changed.
+- **Brand casing**: Normalized 47 "LazyNext" references to "Lazynext" across 30 files (13 i18n locales, 15 source files, CHANGELOG title, user-facing text, User-Agent header).
+- **Env docs**: Added 13 missing env vars to `.env.example` (R2_S3 credentials, social publishing tokens, GA4, BUILD_TARGET, NEXT_PUBLIC_SITE_URL, etc.).
+- **Migration lock**: Added missing `migration_lock.toml` for Prisma migrations directory — `prisma migrate` commands were failing with "Could not determine the connector".
+- **Error boundary**: Added missing `error.tsx` on `/creative` (all 14 other OS modules had one; an unhandled error would crash the entire app).
+- **Loading states**: Added missing `loading.tsx` on `/creative`, `/admin`, `/integrations` (blank page during server-side data fetch instead of spinner).
+- **Dead code removal**: Removed 641 lines of `.legacy.tsx` files that were tracked in git but never imported (`dashboard/page.legacy.tsx`, `settings/page.legacy.tsx`).
+- **CI auth E2E**: Added `e2e-auth` job to run the 7 `auth-*.spec.ts` files that were never executed in CI (the main e2e job only runs `--project=chromium` which ignores auth files).
+- **CI npm audit**: Removed `|| true` from npm audit steps — vulnerabilities now fail the build instead of just printing warnings.
+- **mysql2 vulnerability**: Resolved high-severity mysql2 advisory (credential downgrade + decompression bomb) via npm override to `^3.24.3` instead of downgrading Prisma.
+- **Readiness report**: Updated all resolved items, added session fix log, upgraded Gate 6 to "COMPLETE AND VERIFIED".
+
+### Verification
+- Lint: 0 errors, 0 warnings
+- Unit tests: 6794 passed, 0 failed
+- Typecheck: clean
+- Production build: successful
+- npm audit: 0 vulnerabilities
+- Production smoke E2E: 44 passed, 5 skipped, 0 failed
+- Working tree: clean
+
 ## 2026-09-03 — II: Security, MCP, Metadata, Cold-Start, Lighthouse, Docs
 
 ### What Changed
