@@ -62,7 +62,7 @@ async function __byokPOST(req: Request) {
         success: false,
         error: result.error,
       });
-      return NextResponse.json({ error: 'execution_failed', detail: result.error }, { status: 500 });
+      return NextResponse.json({ error: 'execution_failed' }, { status: 500 });
     }
     logToolExecution({
       tool: toolName,

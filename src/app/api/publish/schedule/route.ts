@@ -104,7 +104,7 @@ async function __byokPOST(req: Request) {
 
   if (result.status === 'failed') {
     await refundCredits(uid, cost, ref).catch(() => {});
-    return NextResponse.json({ error: 'schedule_failed', detail: result.error }, { status: 400 });
+    return NextResponse.json({ error: 'schedule_failed' }, { status: 400 });
   }
 
   return NextResponse.json({ result });

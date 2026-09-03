@@ -29,9 +29,8 @@ async function __byokPOST(req: Request) {
   try {
     return NextResponse.json(await pollMarketingTask(getUrl));
   } catch (error) {
-    const detail = String(error);
-    console.error('[marketing/poll] poll error:', detail);
-    return NextResponse.json({ error: 'poll_failed', detail }, { status: 502 });
+    console.error('[marketing/poll] poll error:', String(error));
+    return NextResponse.json({ error: 'poll_failed' }, { status: 502 });
   }
 }
 
