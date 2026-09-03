@@ -17,20 +17,40 @@ export async function GET(req: NextRequest) {
   const unreadOnly = url.searchParams.get('unread') === '1';
   const limit = Math.min(parseInt(url.searchParams.get('limit') || '20', 10), 50);
 
-  const notifications = await prisma.notification.findMany({
-    where: {
-      userId: session.user.id,
-      ...(unreadOnly ? { read: false } : {}),
-    },
-    orderBy: { createdAt: 'desc' },
-    take: limit,
-  });
+  // Retry up to 3 times on cold start — Prisma/D1 may not be ready on the
+  // first request after a Cloudflare Worker isolate is created.
+  const delays = [200, 500, 1000];
+  for (let attempt = 0; attempt <= delays.length; attempt++) {
+    try {
+      const notifications = await prisma.notification.findMany({
+        where: {
+          userId: session.user.id,
+          ...(unreadOnly ? { read: false } : {}),
+        },
+        orderBy: { createdAt: 'desc' },
+        take: limit,
+      });
 
-  const unreadCount = await prisma.notification.count({
-    where: { userId: session.user.id, read: false },
-  });
+      const unreadCount = await prisma.notification.count({
+        where: { userId: session.user.id, read: false },
+      });
 
-  return NextResponse.json({ notifications, unreadCount });
+      return NextResponse.json({ notifications, unreadCount });
+    } catch (e) {
+      if (attempt < delays.length) {
+        await new Promise((r) => setTimeout(r, delays[attempt]));
+        continue;
+      }
+      return NextResponse.json(
+        { error: 'failed_to_fetch_notifications' },
+        { status: 500 },
+      );
+    }
+  }
+  return NextResponse.json(
+    { error: 'failed_to_fetch_notifications' },
+    { status: 500 },
+  );
 }
 
 export async function POST(req: NextRequest) {

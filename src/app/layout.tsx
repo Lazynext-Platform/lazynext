@@ -76,7 +76,12 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   // Get the session server-side and pass it to SessionProvider. This avoids
   // a separate client-side fetch to /api/auth/session which was causing worker
   // hangs on Cloudflare due to concurrent Prisma/D1 queries exceeding CPU time.
-  const session = await auth().catch(() => null);
+  // Retry once on cold start — auth() may fail while Prisma/D1 initializes.
+  let session = await auth().catch(() => null);
+  if (!session) {
+    await new Promise((r) => setTimeout(r, 500));
+    session = await auth().catch(() => null);
+  }
   const localeCookie = (await cookies()).get('locale')?.value;
   const initialLocale = ((LOCALES as readonly string[]).includes(localeCookie || '') ? localeCookie : 'en') as Locale;
   return (

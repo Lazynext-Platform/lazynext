@@ -8,21 +8,22 @@
  * to the global error boundary.
  */
 
-const COLD_START_DELAY_MS = 300;
+const COLD_START_DELAYS_MS = [200, 500, 1000];
 
 export async function safePrisma<T>(
   fn: () => Promise<T>,
   fallback: T,
 ): Promise<T> {
-  try {
-    return await fn();
-  } catch {
-    // Retry once after a brief delay (cold-start resilience)
+  for (let attempt = 0; attempt <= COLD_START_DELAYS_MS.length; attempt++) {
     try {
-      await new Promise((r) => setTimeout(r, COLD_START_DELAY_MS));
       return await fn();
     } catch {
+      if (attempt < COLD_START_DELAYS_MS.length) {
+        await new Promise((r) => setTimeout(r, COLD_START_DELAYS_MS[attempt]));
+        continue;
+      }
       return fallback;
     }
   }
+  return fallback;
 }

@@ -9,17 +9,30 @@ export async function GET() {
     return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
   }
 
-  try {
-    // Ensure user has a default workspace
-    await WorkspaceService.ensureDefaultWorkspace(session.user.id, session.user.name);
-    const workspaces = await WorkspaceService.listForUser(session.user.id);
-    return NextResponse.json({ workspaces });
-  } catch (e) {
-    return NextResponse.json(
-      { error: 'failed_to_list_workspaces' },
-      { status: 500 },
-    );
+  // Retry up to 3 times on cold start — Prisma/D1 may not be ready on the
+  // first request after a Cloudflare Worker isolate is created.
+  const delays = [200, 500, 1000];
+  for (let attempt = 0; attempt <= delays.length; attempt++) {
+    try {
+      // Ensure user has a default workspace
+      await WorkspaceService.ensureDefaultWorkspace(session.user.id, session.user.name);
+      const workspaces = await WorkspaceService.listForUser(session.user.id);
+      return NextResponse.json({ workspaces });
+    } catch (e) {
+      if (attempt < delays.length) {
+        await new Promise((r) => setTimeout(r, delays[attempt]));
+        continue;
+      }
+      return NextResponse.json(
+        { error: 'failed_to_list_workspaces' },
+        { status: 500 },
+      );
+    }
   }
+  return NextResponse.json(
+    { error: 'failed_to_list_workspaces' },
+    { status: 500 },
+  );
 }
 
 /**

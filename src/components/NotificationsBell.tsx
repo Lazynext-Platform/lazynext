@@ -22,9 +22,10 @@ export function NotificationsBell() {
   const fetchNotifications = useCallback(async () => {
     try {
       let res = await fetch('/api/notifications?limit=10');
-      // Retry once on 500 (Cloudflare Worker cold-start resilience)
-      if (!res.ok && res.status === 500) {
-        await new Promise((r) => setTimeout(r, 800));
+      // Retry on 500 with backoff (Cloudflare Worker cold-start resilience)
+      const delays = [500, 1000, 2000];
+      for (let i = 0; !res.ok && res.status === 500 && i < delays.length; i++) {
+        await new Promise((r) => setTimeout(r, delays[i]));
         res = await fetch('/api/notifications?limit=10');
       }
       if (res.ok) {

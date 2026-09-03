@@ -64,6 +64,7 @@ export function OsShell({ children }: { children: React.ReactNode }) {
   const { locale, setLocale, t } = useI18n();
   const { workspaces, current, switchWorkspace } = useWorkspace();
 
+  const [mounted, setMounted] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -71,6 +72,14 @@ export function OsShell({ children }: { children: React.ReactNode }) {
   const [localeMenuOpen, setLocaleMenuOpen] = useState(false);
   const [themeMenuOpen, setThemeMenuOpen] = useState(false);
   const [wsMenuOpen, setWsMenuOpen] = useState(false);
+
+  // Mark as mounted after hydration to avoid hydration mismatches.
+  // Session/workspace state may differ between server render and client
+  // hydration (e.g. auth() fails on cold start but client has cached session).
+  // Session-dependent UI only renders after mount.
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const userMenuRef = useRef<HTMLDivElement>(null);
   const localeRef = useRef<HTMLDivElement>(null);
@@ -183,8 +192,8 @@ export function OsShell({ children }: { children: React.ReactNode }) {
             <span className="heading-display text-base hidden sm:block">Lazynext</span>
           </Link>
 
-          {/* Workspace switcher */}
-          {current && (
+          {/* Workspace switcher — only render after mount to avoid hydration mismatch */}
+          {mounted && current && (
             <div ref={wsRef} className="relative hidden md:block">
               <button
                 className="flex items-center gap-2 px-3 py-1.5 text-sm font-medium border-2 rounded-[var(--radius-sm)] bg-surface hover:bg-hover transition-colors max-w-[160px]"
@@ -366,8 +375,8 @@ export function OsShell({ children }: { children: React.ReactNode }) {
           {/* Notifications */}
           <NotificationsBell />
 
-          {/* User menu */}
-          {status === 'authenticated' && session?.user ? (
+          {/* User menu — only render after mount to avoid hydration mismatch */}
+          {mounted && status === 'authenticated' && session?.user ? (
             <div ref={userMenuRef} className="relative">
               <button
                 className="flex items-center gap-2 p-1 pr-2 border-2 rounded-[var(--radius-sm)] bg-surface hover:bg-hover transition-colors"

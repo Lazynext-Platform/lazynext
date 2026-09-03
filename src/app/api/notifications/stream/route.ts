@@ -30,34 +30,42 @@ export async function GET(req: NextRequest) {
 
       // Poll for new notifications every 10 seconds
       const interval = setInterval(async () => {
-        try {
-          const newNotifications = await prisma.notification.findMany({
-            where: {
-              userId,
-              createdAt: { gt: lastCheck },
-            },
-            orderBy: { createdAt: 'desc' },
-            take: 10,
-          });
-
-          lastCheck = new Date();
-
-          for (const n of newNotifications) {
-            const data = JSON.stringify({
-              id: n.id,
-              type: n.type,
-              title: n.title,
-              body: n.body,
-              createdAt: n.createdAt.toISOString(),
+        const delays = [200, 500];
+        for (let attempt = 0; attempt <= delays.length; attempt++) {
+          try {
+            const newNotifications = await prisma.notification.findMany({
+              where: {
+                userId,
+                createdAt: { gt: lastCheck },
+              },
+              orderBy: { createdAt: 'desc' },
+              take: 10,
             });
-            controller.enqueue(encoder.encode(`event: notification\ndata: ${data}\n\n`));
-          }
 
-          // Send heartbeat to keep connection alive
-          controller.enqueue(encoder.encode(': heartbeat\n\n'));
-        } catch (err) {
-          // Don't close the stream on error — just skip this tick
-          console.error('[sse] Poll error:', err);
+            lastCheck = new Date();
+
+            for (const n of newNotifications) {
+              const data = JSON.stringify({
+                id: n.id,
+                type: n.type,
+                title: n.title,
+                body: n.body,
+                createdAt: n.createdAt.toISOString(),
+              });
+              controller.enqueue(encoder.encode(`event: notification\ndata: ${data}\n\n`));
+            }
+
+            // Send heartbeat to keep connection alive
+            controller.enqueue(encoder.encode(': heartbeat\n\n'));
+            break; // Success — exit retry loop
+          } catch (err) {
+            // Don't close the stream on error — retry with backoff, then skip this tick
+            if (attempt < delays.length) {
+              await new Promise((r) => setTimeout(r, delays[attempt]));
+              continue;
+            }
+            // Next tick will try again
+          }
         }
       }, 10_000);
 
