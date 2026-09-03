@@ -27,6 +27,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
   const projects = await prisma.project.findMany({
     where: { workspaceId, deletedAt: null },
     orderBy: { updatedAt: 'desc' },
+    take: 100,
     include: { _count: { select: { tasks: true, documents: true } } },
   });
 

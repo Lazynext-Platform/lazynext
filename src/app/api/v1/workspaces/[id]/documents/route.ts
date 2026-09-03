@@ -24,6 +24,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
   const documents = await prisma.document.findMany({
     where: { workspaceId, deletedAt: null },
     orderBy: { updatedAt: 'desc' },
+    take: 100,
   });
 
   return NextResponse.json({ documents });

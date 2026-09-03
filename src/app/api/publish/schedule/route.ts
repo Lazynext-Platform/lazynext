@@ -41,6 +41,7 @@ async function __byokGET(req: Request) {
       createdAt: true,
     },
     orderBy: { scheduledAt: 'asc' },
+    take: 100,
   });
 
   return NextResponse.json({ posts });
