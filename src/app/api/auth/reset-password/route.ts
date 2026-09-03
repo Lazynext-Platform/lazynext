@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 import { prisma } from '@/lib/prisma';
+import { revokeAllUserSessions } from '@/lib/session-revocation';
 
 export async function POST(req: Request) {
   try {
@@ -21,11 +22,22 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Reset token has expired. Please request a new one.' }, { status: 400 });
     }
 
+    const user = await prisma.user.findUnique({
+      where: { email: record.identifier },
+      select: { id: true },
+    });
+
     const hashed = await bcrypt.hash(password, 10);
     await prisma.user.update({
       where: { email: record.identifier },
       data: { password: hashed },
     });
+
+    // Revoke all sessions — the user may have reset their password because
+    // their account was compromised. Invalidate all existing sessions.
+    if (user) {
+      await revokeAllUserSessions(user.id).catch(() => {});
+    }
 
     // Delete the used token
     await prisma.verificationToken.delete({ where: { token } }).catch(() => {});
