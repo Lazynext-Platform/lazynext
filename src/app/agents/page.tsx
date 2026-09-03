@@ -3,6 +3,7 @@ import { Bot, Plus, Play, Cpu } from 'lucide-react';
 import { auth } from '@/../auth';
 import { WorkspaceService } from '@/lib/services/workspace';
 import { prisma } from '@/lib/prisma';
+import { safePrisma } from '@/lib/safe-prisma';
 import { Card, Badge, Button, EmptyState } from '@/components/ui';
 
 export const dynamic = 'force-dynamic';
@@ -13,16 +14,16 @@ export default async function AgentsPage() {
     return <div className="p-8"><Button href="/login">Sign in</Button></div>;
   }
 
-  const workspaces = await WorkspaceService.listForUser(session.user.id);
+  const workspaces = await WorkspaceService.listForUser(session.user.id).catch(() => [] as Awaited<ReturnType<typeof WorkspaceService.listForUser>>);
   const wsIds = workspaces.map((w) => w.id);
 
-  const agents = await prisma.agentDef.findMany({
+  const agents = await safePrisma(() => prisma.agentDef.findMany({
     where: { workspaceId: { in: wsIds } },
     orderBy: { createdAt: 'desc' },
     include: {
       _count: { select: { runs: true } },
     },
-  });
+  }), [] as Awaited<ReturnType<typeof prisma.agentDef.findMany<{ include: { _count: { select: { runs: true } } } }>>>);
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
@@ -42,7 +43,7 @@ export default async function AgentsPage() {
             icon={Bot}
             title="No AI agents yet"
             description="Create AI agents to automate tasks with custom instructions, tools, and memory. Agents can call workspace tools and interact with your data."
-            action={<Button>New agent</Button>}
+            action={<Button href="/agents/new">New agent</Button>}
           />
         </Card>
       ) : (

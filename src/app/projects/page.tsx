@@ -4,6 +4,7 @@ import { auth } from '@/../auth';
 import { WorkspaceService } from '@/lib/services/workspace';
 import { prisma } from '@/lib/prisma';
 import { Card, Badge, Button, EmptyState } from '@/components/ui';
+import { safePrisma } from '@/lib/safe-prisma';
 
 export const dynamic = 'force-dynamic';
 
@@ -16,13 +17,13 @@ export default async function ProjectsPage() {
   const workspaces = await WorkspaceService.listForUser(session.user.id);
   const workspace = workspaces[0] || await WorkspaceService.ensureDefaultWorkspace(session.user.id, session.user.name);
 
-  const projects = await prisma.project.findMany({
+  const projects = await safePrisma(() => prisma.project.findMany({
     where: { workspaceId: workspace.id, deletedAt: null },
     orderBy: { updatedAt: 'desc' },
     include: {
       _count: { select: { tasks: true, documents: true } },
     },
-  });
+  }), []);
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">

@@ -4,6 +4,7 @@ import { auth } from '@/../auth';
 import { WorkspaceService } from '@/lib/services/workspace';
 import { prisma } from '@/lib/prisma';
 import { Card, Badge, EmptyState } from '@/components/ui';
+import { safePrisma } from '@/lib/safe-prisma';
 
 export const dynamic = 'force-dynamic';
 
@@ -21,23 +22,23 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
 
   const [projects, documents, tasks, creations] = query
     ? await Promise.all([
-        prisma.project.findMany({
+        safePrisma(() => prisma.project.findMany({
           where: { workspaceId: { in: wsIds }, deletedAt: null, OR: [{ name: { contains: query } }, { description: { contains: query } }] },
           take: 10,
-        }),
-        prisma.document.findMany({
+        }), []),
+        safePrisma(() => prisma.document.findMany({
           where: { workspaceId: { in: wsIds }, deletedAt: null, OR: [{ title: { contains: query } }, { content: { contains: query } }] },
           take: 10,
-        }),
-        prisma.task.findMany({
+        }), []),
+        safePrisma(() => prisma.task.findMany({
           where: { project: { workspaceId: { in: wsIds } }, deletedAt: null, OR: [{ title: { contains: query } }, { description: { contains: query } }] },
           take: 10,
           include: { project: { select: { name: true } } },
-        }),
-        prisma.creation.findMany({
+        }), []),
+        safePrisma(() => prisma.creation.findMany({
           where: { userId: session.user.id, OR: [{ templateId: { contains: query } }, { prompt: { contains: query } }] },
           take: 10,
-        }),
+        }), []),
       ])
     : [[], [], [], []];
 

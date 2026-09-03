@@ -4,6 +4,7 @@ import { auth } from '@/../auth';
 import { WorkspaceService } from '@/lib/services/workspace';
 import { prisma } from '@/lib/prisma';
 import { Card, Badge, Button, EmptyState } from '@/components/ui';
+import { safePrisma } from '@/lib/safe-prisma';
 
 export const dynamic = 'force-dynamic';
 
@@ -43,20 +44,20 @@ export default async function CalendarPage({ searchParams }: { searchParams: Pro
   const monthEnd = new Date(year, month + 1, 0, 23, 59, 59);
 
   const [tasksWithDue, scheduledJobs, scheduledPosts] = await Promise.all([
-    prisma.task.findMany({
+    safePrisma(() => prisma.task.findMany({
       where: {
         project: { workspaceId: { in: wsIds } },
         deletedAt: null,
         dueDate: { gte: monthStart, lte: monthEnd },
       },
       include: { project: { select: { id: true, name: true } } },
-    }),
-    prisma.scheduledJob.findMany({
+    }), []),
+    safePrisma(() => prisma.scheduledJob.findMany({
       where: { workspaceId: { in: wsIds }, scheduledAt: { gte: monthStart, lte: monthEnd } },
-    }),
-    prisma.scheduledPost.findMany({
+    }), []),
+    safePrisma(() => prisma.scheduledPost.findMany({
       where: { userId: session.user.id, scheduledAt: { gte: monthStart, lte: monthEnd } },
-    }),
+    }), []),
   ]);
 
   // Group items by day

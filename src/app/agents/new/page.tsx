@@ -44,8 +44,7 @@ export default function NewAgentPage() {
         const data = await res.json().catch(() => ({}));
         throw new Error(data.error || 'Failed to create agent');
       }
-      router.push('/agents');
-      router.refresh();
+      router.replace('/agents');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to create agent');
       setLoading(false);

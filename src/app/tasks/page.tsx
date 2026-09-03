@@ -4,6 +4,7 @@ import { auth } from '@/../auth';
 import { WorkspaceService } from '@/lib/services/workspace';
 import { prisma } from '@/lib/prisma';
 import { Card, Badge, Button, EmptyState } from '@/components/ui';
+import { safePrisma } from '@/lib/safe-prisma';
 
 export const dynamic = 'force-dynamic';
 
@@ -16,12 +17,12 @@ export default async function TasksPage() {
   const workspaces = await WorkspaceService.listForUser(session.user.id);
   const wsIds = workspaces.map((w) => w.id);
 
-  const tasks = await prisma.task.findMany({
+  const tasks = await safePrisma(() => prisma.task.findMany({
     where: { project: { workspaceId: { in: wsIds } }, deletedAt: null },
     orderBy: [{ status: 'asc' }, { createdAt: 'desc' }],
     include: { project: { select: { id: true, name: true } } },
     take: 50,
-  });
+  }), []);
 
   const grouped = {
     todo: tasks.filter((t) => t.status === 'todo'),

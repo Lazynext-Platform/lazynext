@@ -4,6 +4,7 @@ import { WorkspaceService } from '@/lib/services/workspace';
 import { prisma } from '@/lib/prisma';
 import { Card, Badge, Button, EmptyState } from '@/components/ui';
 import { FileUploader } from '@/components/FileUploader';
+import { safePrisma } from '@/lib/safe-prisma';
 
 export const dynamic = 'force-dynamic';
 
@@ -22,11 +23,11 @@ export default async function FilesPage() {
   const workspaces = await WorkspaceService.listForUser(session.user.id);
   const workspace = workspaces[0] || await WorkspaceService.ensureDefaultWorkspace(session.user.id, session.user.name);
 
-  const files = await prisma.fileStore.findMany({
+  const files = await safePrisma(() => prisma.fileStore.findMany({
     where: { workspaceId: workspace.id, deletedAt: null },
     orderBy: { createdAt: 'desc' },
     take: 50,
-  });
+  }), []);
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">

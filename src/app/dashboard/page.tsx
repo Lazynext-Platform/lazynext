@@ -3,6 +3,7 @@ import { FolderKanban, CheckSquare, FileText, Sparkles, Zap, Bot, Plug, BarChart
 import { auth } from '@/../auth';
 import { WorkspaceService } from '@/lib/services/workspace';
 import { prisma } from '@/lib/prisma';
+import { safePrisma } from '@/lib/safe-prisma';
 import { getCredits } from '@/lib/credits';
 import { getUserPlanTier } from '@/lib/plan-tier';
 import { Card, Badge, Button, EmptyState } from '@/components/ui';
@@ -35,56 +36,56 @@ export default async function DashboardPage() {
 
   // Fetch dashboard data in parallel
   const [projects, tasks, documents, automations, agents, recentCreations] = await Promise.all([
-    prisma.project.findMany({
+    safePrisma(() => prisma.project.findMany({
       where: { workspaceId: workspace.id, deletedAt: null, status: 'active' },
       orderBy: { updatedAt: 'desc' },
       take: 5,
-    }),
-    prisma.task.findMany({
+    }), []),
+    safePrisma(() => prisma.task.findMany({
       where: { project: { workspaceId: workspace.id }, deletedAt: null, status: { in: ['todo', 'in_progress'] } },
       orderBy: { createdAt: 'desc' },
       take: 5,
-    }),
-    prisma.document.findMany({
+    }), []),
+    safePrisma(() => prisma.document.findMany({
       where: { workspaceId: workspace.id, deletedAt: null },
       orderBy: { updatedAt: 'desc' },
       take: 5,
-    }),
-    prisma.automation.findMany({
+    }), []),
+    safePrisma(() => prisma.automation.findMany({
       where: { workspaceId: workspace.id },
       orderBy: { createdAt: 'desc' },
       take: 3,
-    }),
-    prisma.agentDef.findMany({
+    }), []),
+    safePrisma(() => prisma.agentDef.findMany({
       where: { workspaceId: workspace.id },
       orderBy: { createdAt: 'desc' },
       take: 3,
-    }),
-    prisma.creation.findMany({
+    }), []),
+    safePrisma(() => prisma.creation.findMany({
       where: { userId },
       orderBy: { createdAt: 'desc' },
       take: 5,
-    }),
+    }), []),
   ]);
 
   const stats = {
-    projects: await prisma.project.count({ where: { workspaceId: workspace.id, deletedAt: null } }),
-    tasks: await prisma.task.count({ where: { project: { workspaceId: workspace.id }, deletedAt: null } }),
-    documents: await prisma.document.count({ where: { workspaceId: workspace.id, deletedAt: null } }),
-    automations: await prisma.automation.count({ where: { workspaceId: workspace.id } }),
+    projects: await safePrisma(() => prisma.project.count({ where: { workspaceId: workspace.id, deletedAt: null } }), 0),
+    tasks: await safePrisma(() => prisma.task.count({ where: { project: { workspaceId: workspace.id }, deletedAt: null } }), 0),
+    documents: await safePrisma(() => prisma.document.count({ where: { workspaceId: workspace.id, deletedAt: null } }), 0),
+    automations: await safePrisma(() => prisma.automation.count({ where: { workspaceId: workspace.id } }), 0),
   };
 
   // Task progress + activity feed + credits
   const [completedTasks, totalTasks, recentActivity, credits, planTier] = await Promise.all([
-    prisma.task.count({ where: { project: { workspaceId: workspace.id }, deletedAt: null, status: 'done' } }),
-    prisma.task.count({ where: { project: { workspaceId: workspace.id }, deletedAt: null } }),
-    prisma.auditEvent.findMany({
+    safePrisma(() => prisma.task.count({ where: { project: { workspaceId: workspace.id }, deletedAt: null, status: 'done' } }), 0),
+    safePrisma(() => prisma.task.count({ where: { project: { workspaceId: workspace.id }, deletedAt: null } }), 0),
+    safePrisma(() => prisma.auditEvent.findMany({
       where: { workspaceId: workspace.id },
       orderBy: { createdAt: 'desc' },
       take: 8,
-    }),
-    getCredits(userId),
-    getUserPlanTier(userId),
+    }), []),
+    getCredits(userId).catch(() => 0),
+    getUserPlanTier(userId).catch(() => 'free' as const),
   ]);
 
   const taskProgress = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;

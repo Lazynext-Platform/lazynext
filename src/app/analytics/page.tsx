@@ -3,6 +3,7 @@ import { BarChart3, TrendingUp, FolderKanban, CheckSquare, FileText, Sparkles, Z
 import { auth } from '@/../auth';
 import { WorkspaceService } from '@/lib/services/workspace';
 import { prisma } from '@/lib/prisma';
+import { safePrisma } from '@/lib/safe-prisma';
 import { Card, Badge } from '@/components/ui';
 import { BarChart, DonutChart, ProgressRing } from '@/components/Charts';
 
@@ -23,27 +24,27 @@ export default async function AnalyticsPage() {
     creationCount, completedTasks, pendingTasks, automationsEnabled, agentsRuns,
     creationsByStatus, recentCreations,
   ] = await Promise.all([
-    prisma.project.count({ where: { workspaceId: { in: wsIds }, deletedAt: null } }),
-    prisma.task.count({ where: { project: { workspaceId: { in: wsIds } }, deletedAt: null } }),
-    prisma.document.count({ where: { workspaceId: { in: wsIds }, deletedAt: null } }),
-    prisma.automation.count({ where: { workspaceId: { in: wsIds } } }),
-    prisma.agentDef.count({ where: { workspaceId: { in: wsIds } } }),
-    prisma.creation.count({ where: { userId: session.user.id } }),
-    prisma.task.count({ where: { project: { workspaceId: { in: wsIds } }, deletedAt: null, status: 'done' } }),
-    prisma.task.count({ where: { project: { workspaceId: { in: wsIds } }, deletedAt: null, status: { in: ['todo', 'in_progress'] } } }),
-    prisma.automation.count({ where: { workspaceId: { in: wsIds }, enabled: true } }),
-    prisma.agentRun.count({ where: { agent: { workspaceId: { in: wsIds } } } }),
-    prisma.creation.groupBy({
+    safePrisma(() => prisma.project.count({ where: { workspaceId: { in: wsIds }, deletedAt: null } }), 0),
+    safePrisma(() => prisma.task.count({ where: { project: { workspaceId: { in: wsIds } }, deletedAt: null } }), 0),
+    safePrisma(() => prisma.document.count({ where: { workspaceId: { in: wsIds }, deletedAt: null } }), 0),
+    safePrisma(() => prisma.automation.count({ where: { workspaceId: { in: wsIds } } }), 0),
+    safePrisma(() => prisma.agentDef.count({ where: { workspaceId: { in: wsIds } } }), 0),
+    safePrisma(() => prisma.creation.count({ where: { userId: session.user.id } }), 0),
+    safePrisma(() => prisma.task.count({ where: { project: { workspaceId: { in: wsIds } }, deletedAt: null, status: 'done' } }), 0),
+    safePrisma(() => prisma.task.count({ where: { project: { workspaceId: { in: wsIds } }, deletedAt: null, status: { in: ['todo', 'in_progress'] } } }), 0),
+    safePrisma(() => prisma.automation.count({ where: { workspaceId: { in: wsIds }, enabled: true } }), 0),
+    safePrisma(() => prisma.agentRun.count({ where: { agent: { workspaceId: { in: wsIds } } } }), 0),
+    safePrisma(() => prisma.creation.groupBy({
       by: ['status'],
       where: { userId: session.user.id },
       _count: { _all: true },
-    }),
-    prisma.creation.findMany({
+    }), []),
+    safePrisma(() => prisma.creation.findMany({
       where: { userId: session.user.id },
       orderBy: { createdAt: 'desc' },
       take: 10,
       select: { id: true, templateId: true, status: true, createdAt: true },
-    }),
+    }), []),
   ]);
 
   const taskCompletionRate = taskCount > 0 ? Math.round((completedTasks / taskCount) * 100) : 0;
