@@ -65,8 +65,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        shard: [1, 2, 3, 4]
-        total: [4]
+        shard: [1, 2, 3, 4, 5, 6]
+        total: [6]
     steps:
       - uses: actions/checkout@v5
 
@@ -117,6 +117,7 @@ jobs:
           ATLASCLOUD_LLM_BASE: http://localhost:3099/v1
           ATLASCLOUD_API_KEY: mock-key-for-dev
           BUILD_TARGET: local
+          NODE_OPTIONS: --max-old-space-size=3072
 
       - name: Upload test results
         if: always()
