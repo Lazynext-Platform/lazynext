@@ -20,8 +20,9 @@ const CACHE_TTL_MS = 60_000; // 1 minute
 
 /**
  * Hash a session token for DB lookup (never store the raw token).
+ * Exported for testing to verify hash consistency with auth.ts.
  */
-async function hashToken(token: string): Promise<string> {
+export async function hashToken(token: string): Promise<string> {
   const encoder = new TextEncoder();
   const data = encoder.encode(token);
   const hashBuffer = await crypto.subtle.digest('SHA-256', data);
