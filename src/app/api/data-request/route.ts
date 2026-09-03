@@ -39,9 +39,9 @@ export async function POST(req: NextRequest) {
       data: {
         userId,
         type,
-        email,
-        name: body.name?.trim() || null,
-        details: body.details?.trim() || null,
+        email: email.slice(0, 254),
+        name: body.name?.trim().slice(0, 200) || null,
+        details: body.details?.trim().slice(0, 5000) || null,
         status: 'pending',
       },
     });

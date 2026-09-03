@@ -33,8 +33,8 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   }
 
   const data: Record<string, unknown> = {};
-  if (body.name?.trim()) data.name = body.name.trim();
-  if (body.description !== undefined) data.description = body.description?.trim() || null;
+  if (body.name?.trim()) data.name = body.name.trim().slice(0, 200);
+  if (body.description !== undefined) data.description = body.description?.trim().slice(0, 2000) || null;
   if (body.status && ['active', 'on_hold', 'completed', 'archived'].includes(body.status)) {
     data.status = body.status;
   }

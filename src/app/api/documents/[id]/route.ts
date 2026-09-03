@@ -36,11 +36,11 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   let versionChanged = false;
 
   if (body.title?.trim() && body.title !== existing.title) {
-    data.title = body.title.trim();
+    data.title = body.title.trim().slice(0, 200);
     versionChanged = true;
   }
   if (body.content !== undefined && body.content !== existing.content) {
-    data.content = body.content;
+    data.content = typeof body.content === 'string' ? body.content.slice(0, 500_000) : body.content;
     versionChanged = true;
   }
   if (versionChanged) {

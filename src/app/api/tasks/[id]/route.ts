@@ -40,8 +40,8 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   }
 
   const data: Record<string, unknown> = {};
-  if (body.title?.trim()) data.title = body.title.trim();
-  if (body.description !== undefined) data.description = body.description?.trim() || null;
+  if (body.title?.trim()) data.title = body.title.trim().slice(0, 200);
+  if (body.description !== undefined) data.description = body.description?.trim().slice(0, 2000) || null;
   if (body.status && ['todo', 'in_progress', 'done'].includes(body.status)) data.status = body.status;
   if (body.priority && ['low', 'medium', 'high', 'urgent'].includes(body.priority)) data.priority = body.priority;
   if (body.dueDate !== undefined) data.dueDate = body.dueDate ? new Date(body.dueDate) : null;
