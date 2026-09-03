@@ -27,6 +27,7 @@ export default async function DocumentsPage() {
   const documents = await safePrisma(() => prisma.document.findMany({
     where: { workspaceId: workspace.id, deletedAt: null },
     orderBy: { updatedAt: 'desc' },
+    take: 100,
     include: { project: { select: { id: true, name: true } } },
   }), []);
 

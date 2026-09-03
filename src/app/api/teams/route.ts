@@ -13,6 +13,7 @@ export async function GET() {
   try {
     const memberships = await prisma.teamMember.findMany({
       where: { userId: uid },
+      take: 100,
       include: { team: { include: { members: true, invitations: true } } },
     });
 
