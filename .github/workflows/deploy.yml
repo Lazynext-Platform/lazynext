@@ -36,6 +36,11 @@ jobs:
           ls -la .open-next/assets/wasm/ 2>&1 || echo "No .open-next/assets/wasm directory"
           echo "=== Checking for WASM in public/wasm ==="
           ls -la public/wasm/ 2>&1 || echo "No public/wasm directory"
+          echo "=== Key file sizes ==="
+          ls -lh .open-next/server-functions/default/handler.mjs 2>/dev/null || echo "no handler.mjs"
+          ls -lh .open-next/server-functions/default/handler.mjs.meta.json 2>/dev/null || echo "no meta.json"
+          du -sh .open-next/assets/ 2>/dev/null || echo "no assets dir"
+          du -sh .open-next/server-functions/ 2>/dev/null || echo "no server-functions dir"
       - name: Deploy to Cloudflare
         run: npm run cf:deploy-minified
         env:

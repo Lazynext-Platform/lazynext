@@ -86,7 +86,7 @@ if (mapCommentRegex.test(content)) {
 try {
   const minifiedPath = join(distDir, `${workerName}.min`);
   execSync(
-    `npx esbuild "${workerPath}" --minify --format=esm --outfile="${minifiedPath}"`,
+    `npx esbuild "${workerPath}" --minify --format=esm --pure=console.log --pure=console.error --pure=console.warn --outfile="${minifiedPath}"`,
     { stdio: 'pipe', timeout: 120_000 },
   );
   if (existsSync(minifiedPath)) {
@@ -135,6 +135,43 @@ try {
   } else {
     console.log(`  No large base64 blobs found (good!)`);
   }
+
+  // Check for large numeric arrays (WASM binary data inlined as Uint8Array)
+  const largeArrays = finalContent.match(/\[\d{1,3}(,\d{1,3}){9999,}\]/g);
+  if (largeArrays) {
+    let totalArraySize = 0;
+    for (const arr of largeArrays) totalArraySize += arr.length;
+    console.log(`  Large numeric arrays: ${largeArrays.length} arrays, ${(totalArraySize / 1024 / 1024).toFixed(1)} MB total`);
+  } else {
+    console.log(`  No large numeric arrays found`);
+  }
+
+  // Analyze the OpenNext server-functions handler meta file if it exists
+  const metaPath = join(projectRoot, '.open-next', 'server-functions', 'default', 'handler.mjs.meta.json');
+  if (existsSync(metaPath)) {
+    try {
+      const meta = JSON.parse(readFileSync(metaPath, 'utf8'));
+      const modules = [];
+      for (const [path, info] of Object.entries(meta.inputs || {})) {
+        const size = info.bytes || 0;
+        if (size > 100_000) {
+          modules.push({ path, size });
+        }
+      }
+      modules.sort((a, b) => b.size - a.size);
+      console.log(`\n  Top 30 largest modules (from handler.mjs.meta.json):`);
+      for (let i = 0; i < Math.min(30, modules.length); i++) {
+        const m = modules[i];
+        const shortPath = m.path.replace(/.*node_modules\//, '');
+        console.log(`    ${(m.size / 1024).toFixed(0)} KiB - ${shortPath}`);
+      }
+    } catch (e) {
+      console.log(`  [warn] could not parse meta file: ${e instanceof Error ? e.message : String(e)}`);
+    }
+  } else {
+    console.log(`  handler.mjs.meta.json not found (skipping module-level analysis)`);
+  }
+
   console.log(`=== End bundle analysis ===\n`);
 } catch (e) {
   console.log(`[warn] bundle analysis skipped: ${e instanceof Error ? e.message : String(e)}`);
