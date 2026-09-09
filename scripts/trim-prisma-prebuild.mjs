@@ -120,34 +120,6 @@ if (existsSync(indexBrowser)) {
   console.log(`  removed: index-browser.js (${(stat.size / 1024).toFixed(0)} KiB)`);
 }
 
-// Replace base64-encoded WASM in @prisma/client/runtime/ with empty exports.
-// We can't DELETE these files because `prisma generate` (which runs again inside
-// `opennextjs-cloudflare build` → `npm run build`) requires them to exist.
-// Instead, we overwrite them with empty exports so the OpenNext bundler inlines
-// empty content instead of 4+ MB of base64 data per file.
-// workerd loads the raw .wasm file via WebAssembly.instantiate, not the base64 fallback.
-console.log('\nEmptying base64 WASM files in @prisma/client/runtime/...');
-let emptiedCount = 0;
-let emptiedBytes = 0;
-if (existsSync(prismaRuntimeDir)) {
-  for (const entry of readdirSync(prismaRuntimeDir)) {
-    if (entry.includes('wasm-base64')) {
-      const fullPath = join(prismaRuntimeDir, entry);
-      try {
-        const stat = statSync(fullPath);
-        const isMjs = entry.endsWith('.mjs');
-        const emptyContent = isMjs
-          ? 'export default "";\n'
-          : 'module.exports = "";\n';
-        writeFileSync(fullPath, emptyContent);
-        emptiedCount++;
-        emptiedBytes += stat.size - emptyContent.length;
-        console.log(`  emptied: ${entry} (${(stat.size / 1024 / 1024).toFixed(1)} MB → 0)`);
-      } catch { /* skip */ }
-    }
-  }
-}
-
 // Remove .d.ts files from @prisma/client/runtime/ — not needed at runtime
 console.log('\nRemoving .d.ts files from @prisma/client/runtime/...');
 if (existsSync(prismaRuntimeDir)) {
@@ -180,8 +152,11 @@ if (existsSync(prismaRuntimeDir)) {
   }
 }
 
+// NOTE: We do NOT remove or empty the wasm-base64 files in @prisma/client/runtime/
+// because `prisma generate` (which runs again inside `opennextjs-cloudflare build`
+// → `npm run build`) requires the actual base64 data to generate the client.
+// Instead, we strip the inlined base64 data from the bundled worker AFTER the
+// wrangler dry-run, in scripts/patch-worker.mjs.
+
 console.log(`\nDone: removed ${removedCount} files, freed ${(removedBytes / 1024 / 1024).toFixed(1)} MB`);
-if (emptiedCount > 0) {
-  console.log(`Emptied ${emptiedCount} base64 WASM files, saved ${(emptiedBytes / 1024 / 1024).toFixed(1)} MB`);
-}
 console.log('Kept engines: sqlite (for Cloudflare D1)');

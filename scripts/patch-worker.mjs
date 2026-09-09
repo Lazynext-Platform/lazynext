@@ -154,27 +154,51 @@ const distWrangler = projectWrangler
 writeFileSync(join(distDir, 'wrangler.jsonc'), distWrangler);
 console.log('Created wrangler.jsonc in .open-next/dist/');
 
-// --- Remove Prisma WASM from the dist directory ---
-// The dry-run step copies the WASM to .open-next/dist/. Remove it so it's
-// not included in the Worker bundle (it's served from Cloudflare Assets instead).
-console.log('\nRemoving Prisma WASM from dist directory...');
-let wasmRemoved = 0;
-let wasmBytes = 0;
+// --- Strip inlined base64 WASM data from the bundled worker ---
+// The wrangler dry-run bundles everything into worker-entry.js, including
+// base64-encoded WASM data from @prisma/client/runtime/. These base64 strings
+// are 4+ MB each and are fallbacks for environments that can't load .wasm files
+// directly. workerd CAN load .wasm files directly via WebAssembly.instantiate,
+// so the base64 fallback is never used at runtime.
+//
+// We replace large base64 string literals (50,000+ chars) with empty strings.
+// This typically saves ~40 MB, bringing the worker under Cloudflare's 64 MiB
+// uncompressed size limit.
+//
+// The actual .wasm file is KEPT in the dist directory so workerd can load it.
+console.log('\nStripping inlined base64 WASM data from worker...');
+let strippedContent = readFileSync(workerPath, 'utf8');
+const beforeSize = strippedContent.length;
+
+// Match string literals containing 50,000+ base64 characters
+// These are the inlined WASM base64 data
+const base64Regex = /"([A-Za-z0-9+/]{50000,}={0,2})"/g;
+const matches = strippedContent.match(base64Regex);
+if (matches) {
+  let totalStripped = 0;
+  for (const match of matches) {
+    totalStripped += match.length - 2; // subtract quotes
+  }
+  strippedContent = strippedContent.replace(base64Regex, '""');
+  writeFileSync(workerPath, strippedContent);
+  console.log(`  Stripped ${matches.length} base64 blob(s), saved ${(totalStripped / 1024 / 1024).toFixed(1)} MB`);
+  console.log(`  Worker size: ${(beforeSize / 1024 / 1024).toFixed(1)} MB → ${(strippedContent.length / 1024 / 1024).toFixed(1)} MB`);
+} else {
+  console.log('  No large base64 blobs found');
+}
+
+// --- Keep the Prisma WASM file in the dist directory ---
+// Unlike the previous approach (which deleted the .wasm file), we KEEP it
+// because workerd needs it for WebAssembly.instantiate. The base64 fallback
+// has been stripped above, so the .wasm file is the only WASM source.
+console.log('\nChecking for Prisma WASM in dist directory...');
 if (existsSync(distDir)) {
   const entries = readdirSync(distDir);
   for (const entry of entries) {
     if (entry.endsWith('.wasm') && entry.includes('query_compiler')) {
       const wasmPath = join(distDir, entry);
       const stat = statSync(wasmPath);
-      rmSync(wasmPath, { force: true });
-      wasmRemoved++;
-      wasmBytes += stat.size;
-      console.log(`  removed: ${entry} (${(stat.size / 1024).toFixed(0)} KiB)`);
+      console.log(`  kept: ${entry} (${(stat.size / 1024).toFixed(0)} KiB)`);
     }
   }
-}
-if (wasmRemoved > 0) {
-  console.log(`Removed ${wasmRemoved} WASM file(s), saved ${(wasmBytes / 1024 / 1024).toFixed(1)} MB`);
-} else {
-  console.log('  no WASM files found in dist directory');
 }
