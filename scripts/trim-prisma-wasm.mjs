@@ -97,16 +97,13 @@ console.log(`Kept engines: ${[...KEEP_ENGINES].join(', ')}`);
 
 // --- Externalize Prisma WASM to Cloudflare Assets ---
 // The SQLite WASM (3.2 MB) pushes the worker over the 64 MB limit.
-// Move it to public/wasm/ so it's served as an asset instead of bundled.
+// Move it to .open-next/assets/wasm/ so it's served as an asset instead of bundled.
 const wasmDir = join(prismaRuntimeDir, 'lib');
-const assetsWasmDir = join(projectRoot, 'public', 'wasm');
+const assetsWasmDir = join(projectRoot, '.open-next', 'assets', 'wasm');
 
 console.log('\nExternalizing Prisma WASM to Cloudflare Assets...');
 if (!existsSync(assetsWasmDir)) {
-  // Create public/wasm directory
-  if (!existsSync(join(projectRoot, 'public'))) {
-    mkdirSync(join(projectRoot, 'public'), { recursive: true });
-  }
+  // Create .open-next/assets/wasm directory
   mkdirSync(assetsWasmDir, { recursive: true });
 }
 
@@ -141,11 +138,14 @@ if (existsSync(prismaIndex)) {
   for (const [old, neu] of wasmPatch) {
     if (content.includes(old)) {
       content = content.split(old).join(neu);
-      console.log(`  patched Prisma runtime to load WASM from Assets`);
+      console.log(`  patched Prisma runtime to load WASM from Assets (/wasm/)`);
       writeFileSync(prismaIndex, content);
     }
   }
 }
+
+console.log(`\nExternalization complete: ${removedCount} files moved/freed, ${(removedBytes / 1024 / 1024).toFixed(1)} MB`);
+console.log(`WASM files now served from Cloudflare Assets at /wasm/`);
 
 console.log(`\nExternalization complete: ${removedCount} files moved/freed, ${(removedBytes / 1024 / 1024).toFixed(1)} MB`);
 
