@@ -111,13 +111,15 @@ if (!existsSync(assetsWasmDir)) {
 if (existsSync(wasmDir)) {
   const wasmEntries = readdirSync(wasmDir);
   for (const entry of wasmEntries) {
-    if (entry.includes('sqlite') && (entry.endsWith('.wasm') || entry.endsWith('.js'))) {
+    if ((entry.includes('sqlite') || entry.includes('query_compiler')) && (entry.endsWith('.wasm') || entry.endsWith('.js'))) {
       const srcPath = join(wasmDir, entry);
       if (existsSync(srcPath)) {
         const stat = statSync(srcPath);
-        // Copy to assets first
-        const destPath = join(assetsWasmDir, entry);
-        copyFileSync(srcPath, destPath);
+        // Copy WASM files to assets first
+        if (entry.endsWith('.wasm')) {
+          const destPath = join(assetsWasmDir, entry);
+          copyFileSync(srcPath, destPath);
+        }
         // Then delete from runtime
         rmSync(srcPath, { force: true });
         removedCount++;
@@ -136,7 +138,7 @@ function removeSqliteWasmRecursively(dir) {
     const fullPath = join(dir, entry.name);
     if (entry.isDirectory()) {
       removeSqliteWasmRecursively(fullPath);
-    } else if (entry.isFile() && (entry.name.includes('sqlite') && (entry.name.endsWith('.wasm') || entry.name.endsWith('.js')))) {
+    } else if (entry.isFile() && ((entry.name.includes('sqlite') || entry.name.includes('query_compiler')) && (entry.name.endsWith('.wasm') || entry.name.endsWith('.js')))) {
       const stat = statSync(fullPath);
       rmSync(fullPath, { force: true });
       removedCount++;
@@ -189,10 +191,17 @@ const legacyWasmFiles = [
   // @prisma/client/runtime/query_compiler_fast_bg.{sqlite,postgresql}.wasm-base64.js
   // and is only referenced by index.js (not edge.js, which workerd uses).
   join(dotPrismaDir, 'query_compiler_fast_bg.wasm-base64.js'),
+  // The actual WASM binary — externalize to Cloudflare Assets
+  join(dotPrismaDir, 'query_compiler_fast_bg.wasm'),
 ];
 for (const file of legacyWasmFiles) {
   if (existsSync(file)) {
     const stat = statSync(file);
+    // Copy WASM files to assets before removing
+    if (file.endsWith('.wasm')) {
+      const destPath = join(assetsWasmDir, file.split('/').pop()!);
+      copyFileSync(file, destPath);
+    }
     rmSync(file, { force: true });
     removedCount++;
     removedBytes += stat.size;

@@ -11,6 +11,9 @@ const config = defineCloudflareConfig({});
   'node:crypto',
   'node:http',
   'node:https',
+  // Client-side only packages — don't bundle into the server worker
+  '@ffmpeg/ffmpeg',
+  '@ffmpeg/util',
 ];
 
 export default config;
