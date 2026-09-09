@@ -131,11 +131,16 @@ export async function refreshPlatformToken(
     return null;
   }
 
-  // Decrypt the refresh token
+  // Decrypt the refresh token (graceful fallback for dev / old plaintext tokens)
   let refreshToken: string;
   try {
-    const { decryptToken } = await import('./token-crypto');
-    refreshToken = await decryptToken(conn.refreshToken);
+    const { SecurityService } = await import('@/lib/services/security');
+    refreshToken = await SecurityService.decryptTokenIfNeeded(conn.refreshToken);
+    // If the token is still encrypted after decryption attempt, it's unusable
+    if (refreshToken.startsWith('v2:') || refreshToken.startsWith('iv:')) {
+      console.error(`[token-refresh] ${conn.platform} refresh token decryption failed`);
+      return null;
+    }
   } catch {
     console.error(`[token-refresh] ${conn.platform} refresh token decryption failed`);
     return null;
@@ -170,10 +175,10 @@ export async function refreshPlatformToken(
     const expiresIn = config.parseExpiresIn?.(json);
     const expiresAt = expiresIn ? new Date(Date.now() + expiresIn * 1000) : null;
 
-    // Encrypt and persist the new tokens
-    const { encryptToken } = await import('./token-crypto');
-    const encryptedAccess = await encryptToken(newAccess);
-    const encryptedRefresh = newRefresh ? await encryptToken(newRefresh) : conn.refreshToken;
+    // Encrypt and persist the new tokens (idempotent — safe if already encrypted)
+    const { SecurityService } = await import('@/lib/services/security');
+    const encryptedAccess = await SecurityService.encryptTokenIfPlain(newAccess);
+    const encryptedRefresh = newRefresh ? await SecurityService.encryptTokenIfPlain(newRefresh) : conn.refreshToken;
 
     const { prisma } = await import('@/lib/prisma');
     await prisma.platformConnection.update({

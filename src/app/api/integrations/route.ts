@@ -1,10 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/../auth';
 import { prisma } from '@/lib/prisma';
+import { SecurityService } from '@/lib/services/security';
+import { safeError } from '@/lib/security';
+import { IntegrationRegistry, type IntegrationConfig } from '@/lib/integrations';
 
 /**
- * GET /api/integrations — list connected integrations.
- * POST /api/integrations — connect an integration (stores a platform connection).
+ * GET /api/integrations — list connected integrations AND registered integration clients.
+ * POST /api/integrations — connect an integration (stores a platform connection),
+ *                          or test an integration connection when `action: 'test'`.
  */
 export async function GET() {
   const session = await auth().catch(() => null);
@@ -17,7 +21,13 @@ export async function GET() {
     select: { id: true, platform: true, platformUsername: true, createdAt: true },
   });
 
-  return NextResponse.json({ connections });
+  // Also expose the registry of built-in integration clients (stub framework).
+  const integrations = IntegrationRegistry.list().map((name) => {
+    const client = IntegrationRegistry.get(name);
+    return { name, type: client?.type ?? 'unknown' };
+  });
+
+  return NextResponse.json({ connections, integrations });
 }
 
 export async function POST(req: NextRequest) {
@@ -26,13 +36,49 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
   }
 
-  let body: { platform?: string; accessToken?: string; platformUsername?: string };
+  let body: {
+    platform?: string;
+    accessToken?: string;
+    platformUsername?: string;
+    action?: string;
+    name?: string;
+    credentials?: Record<string, string>;
+  };
   try {
     body = await req.json();
   } catch {
     return NextResponse.json({ error: 'invalid_json' }, { status: 400 });
   }
 
+  // ── Test an integration connection via the registry ──
+  if (body.action === 'test') {
+    const name = body.name?.trim().toLowerCase().slice(0, 50);
+    if (!name) {
+      return NextResponse.json({ error: 'name_required' }, { status: 400 });
+    }
+    const client = IntegrationRegistry.get(name);
+    if (!client) {
+      return NextResponse.json({ error: 'integration_not_found' }, { status: 404 });
+    }
+
+    const config: IntegrationConfig = {
+      id: name,
+      name,
+      type: client.type,
+      enabled: true,
+      credentials: body.credentials ?? {},
+    };
+    client.configure(config);
+
+    try {
+      const result = await client.testConnection();
+      return NextResponse.json(result, { status: result.success ? 200 : 400 });
+    } catch (e) {
+      return NextResponse.json(safeError(e, 'integrations', 'test_failed'), { status: 500 });
+    }
+  }
+
+  // ── Default: connect a platform (existing OAuth-connection flow) ──
   const platform = body.platform?.trim().toLowerCase().slice(0, 50);
   if (!platform) {
     return NextResponse.json({ error: 'platform_required' }, { status: 400 });
@@ -40,8 +86,11 @@ export async function POST(req: NextRequest) {
 
   // For demo purposes, we store a placeholder token. In production, this would
   // come from an OAuth flow with the platform.
-  const accessToken = (body.accessToken || `demo-token-${Date.now()}`).slice(0, 4096);
+  const rawToken = (body.accessToken || `demo-token-${Date.now()}`).slice(0, 4096);
   const platformUsername = body.platformUsername?.trim().slice(0, 200) || null;
+
+  // Encrypt the token before storing it at rest
+  const accessToken = await SecurityService.encryptTokenIfPlain(rawToken);
 
   try {
     // Upsert: if connection exists, update; otherwise create

@@ -58,8 +58,14 @@ async function getRealAccessToken(platform: PublishPlatform, userId?: string): P
           console.warn(`[publisher] ${platform} token expired and refresh failed for user ${userId}`);
           return null;
         }
-        const { decryptToken } = await import('./token-crypto');
-        return await decryptToken(conn.accessToken);
+        const { SecurityService } = await import('@/lib/services/security');
+        const decrypted = await SecurityService.decryptTokenIfNeeded(conn.accessToken);
+        // If the token is still encrypted after decryption attempt, it's unusable
+        if (decrypted.startsWith('v2:') || decrypted.startsWith('iv:')) {
+          console.warn(`[publisher] ${platform} token decryption failed for user ${userId}`);
+          return null;
+        }
+        return decrypted;
       }
     } catch {
       // DB or decryption failed — fall through to env check

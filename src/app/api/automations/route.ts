@@ -3,16 +3,61 @@ import { auth } from '@/../auth';
 import { WorkspaceService } from '@/lib/services/workspace';
 import { prisma } from '@/lib/prisma';
 import { canCreateAutomation } from '@/lib/plan-guard';
+import { AutomationService } from '@/lib/services/automation';
+import { RateLimiter, RateLimits } from '@/lib/services/rate-limit';
 
 /**
  * Internal automation CRUD API (session-auth).
+ * GET /api/automations — list automations for the user's workspaces.
  * POST /api/automations — create an automation.
  */
+export async function GET(req: NextRequest) {
+  const session = await auth().catch(() => null);
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+  }
+
+  const limited = await RateLimiter.check(req, RateLimits.API_V1);
+  if (limited) return limited;
+
+  const sp = req.nextUrl.searchParams;
+  const workspaceId = sp.get('workspaceId') || undefined;
+
+  try {
+    const workspaces = await WorkspaceService.listForUser(session.user.id);
+    const wsIds = workspaces.map((w) => w.id);
+
+    if (workspaceId) {
+      // Verify membership of the requested workspace
+      if (!wsIds.includes(workspaceId)) {
+        return NextResponse.json({ error: 'forbidden' }, { status: 403 });
+      }
+      const automations = await AutomationService.list(workspaceId);
+      return NextResponse.json({ automations });
+    }
+
+    // No workspace specified — return automations across all user workspaces
+    const automations = await prisma.automation.findMany({
+      where: { workspaceId: { in: wsIds } },
+      orderBy: { createdAt: 'desc' },
+      take: 100,
+      include: { _count: { select: { runs: true } } },
+    });
+    return NextResponse.json({ automations });
+  } catch (e) {
+    console.error('[automations] list error:', e);
+    return NextResponse.json({ error: 'failed_to_list_automations' }, { status: 500 });
+  }
+}
+
 export async function POST(req: NextRequest) {
   const session = await auth().catch(() => null);
   if (!session?.user?.id) {
     return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
   }
+
+  const limited = await RateLimiter.check(req, RateLimits.API_V1);
+  if (limited) return limited;
 
   let body: { name?: string; trigger?: string; definition?: string; workspaceId?: string };
   try {

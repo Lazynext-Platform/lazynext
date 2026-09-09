@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, Sparkles, BarChart3, Megaphone, Radar, ChevronDown, Menu, X, Keyboard } from 'lucide-react';
+import { LayoutDashboard, Sparkles, BarChart3, Megaphone, Radar, ChevronDown, Menu, X, Keyboard, Building2 } from 'lucide-react';
 import { UserMenu } from '@/components/UserMenu';
 import { LangToggle } from '@/components/LangToggle';
 import { CreditBadge } from '@/components/CreditBadge';
@@ -16,8 +16,9 @@ import { trackAppVisit } from '@/lib/recent-apps';
 // All pages use the unified immersive dark shell with a single sticky header.
 const LOCALE_RE = /^\/(en|zh|ja|es|ko|pt|fr|de|ar|hi|vi|th|id)(?=\/|$)/;
 
-// Primary nav — 5 core workflow destinations, always visible
+// Primary nav — core workflow destinations, always visible
 const PRIMARY_NAV = [
+  { href: '/company', label: 'Company', icon: Building2 },
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/creative-director', label: 'Create', icon: Sparkles },
   { href: '/performance', label: 'Optimize', icon: BarChart3 },

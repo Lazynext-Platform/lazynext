@@ -2,11 +2,45 @@ import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/../auth';
 import { WorkspaceService } from '@/lib/services/workspace';
 import { prisma } from '@/lib/prisma';
+import { AutomationService } from '@/lib/services/automation';
 
 /**
+ * GET /api/automations/[id] — get a single automation with recent runs.
  * PATCH /api/automations/[id] — update an automation (name, trigger, enabled, definition).
  * DELETE /api/automations/[id] — delete an automation.
  */
+export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const session = await auth().catch(() => null);
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+  }
+
+  try {
+    const workspaces = await WorkspaceService.listForUser(session.user.id);
+    const wsIds = workspaces.map((w) => w.id);
+
+    // Verify ownership before returning
+    const ownership = await prisma.automation.findFirst({
+      where: { id, workspaceId: { in: wsIds } },
+      select: { id: true },
+    });
+    if (!ownership) {
+      return NextResponse.json({ error: 'not_found' }, { status: 404 });
+    }
+
+    const automation = await AutomationService.get(id);
+    if (!automation) {
+      return NextResponse.json({ error: 'not_found' }, { status: 404 });
+    }
+
+    return NextResponse.json({ automation });
+  } catch (e) {
+    console.error('[automations] get error:', e);
+    return NextResponse.json({ error: 'failed_to_get_automation' }, { status: 500 });
+  }
+}
+
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const session = await auth().catch(() => null);

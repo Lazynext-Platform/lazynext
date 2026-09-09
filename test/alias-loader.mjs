@@ -16,6 +16,13 @@ export async function resolve(specifier, context, nextResolve) {
   // Resolve @/ alias to ./src/
   if (specifier.startsWith('@/')) {
     const resolvedPath = join(projectRoot, 'src', specifier.slice(2));
+    // Check for .ts file first, then fall back to /index.ts for directory imports
+    if (existsSync(resolvedPath + '.ts')) {
+      return nextResolve(pathToFileURL(resolvedPath + '.ts').href, context);
+    }
+    if (existsSync(join(resolvedPath, 'index.ts'))) {
+      return nextResolve(pathToFileURL(join(resolvedPath, 'index.ts')).href, context);
+    }
     return nextResolve(pathToFileURL(resolvedPath + '.ts').href, context);
   }
 

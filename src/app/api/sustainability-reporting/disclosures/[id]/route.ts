@@ -1,0 +1,36 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { auth } from '@/../auth';
+import { SustainabilityReportingService } from '@/lib/services/sustainability-reporting-service';
+
+export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const session = await auth().catch(() => null);
+  if (!session?.user?.id) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+  const { id } = await params;
+  const disclosure = await SustainabilityReportingService.getSustainabilityDisclosure(id);
+  if (!disclosure) return NextResponse.json({ error: 'not_found' }, { status: 404 });
+  return NextResponse.json({ disclosure });
+}
+
+export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const session = await auth().catch(() => null);
+  if (!session?.user?.id) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+  const { id } = await params;
+  const body = await req.json().catch(() => ({}));
+  try {
+    const disclosure = await SustainabilityReportingService.updateSustainabilityDisclosure(id, body);
+    if (!disclosure) return NextResponse.json({ error: 'not_found' }, { status: 404 });
+    return NextResponse.json({ disclosure });
+  } catch (e) {
+    console.error('[sustainability-reporting/sustainability_disclosure] update error:', e);
+    return NextResponse.json({ error: 'failed_to_update_disclosure' }, { status: 500 });
+  }
+}
+
+export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const session = await auth().catch(() => null);
+  if (!session?.user?.id) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+  const { id } = await params;
+  const ok = await SustainabilityReportingService.deleteSustainabilityDisclosure(id);
+  if (!ok) return NextResponse.json({ error: 'not_found' }, { status: 404 });
+  return NextResponse.json({ ok: true });
+}

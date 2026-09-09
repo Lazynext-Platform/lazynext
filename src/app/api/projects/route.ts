@@ -4,6 +4,7 @@ import { WorkspaceService } from '@/lib/services/workspace';
 import { prisma } from '@/lib/prisma';
 import { canCreateProject } from '@/lib/plan-guard';
 import { createNotifications } from '@/lib/notifications';
+import { RateLimiter, RateLimits } from '@/lib/services/rate-limit';
 
 /**
  * Internal project CRUD API (session-auth, not API key).
@@ -14,6 +15,9 @@ export async function POST(req: NextRequest) {
   if (!session?.user?.id) {
     return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
   }
+
+  const limited = await RateLimiter.check(req, RateLimits.API_V1);
+  if (limited) return limited;
 
   let body: { name?: string; description?: string; workspaceId?: string };
   try {

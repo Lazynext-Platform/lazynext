@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { publishToPlatform } from '@/lib/publishing/platform-adapters';
-import { decryptToken } from '@/lib/publishing/token-crypto';
 import { isTokenExpired, refreshPlatformToken } from '@/lib/publishing/token-refresh';
 import { isUrlSafe } from '@/lib/security';
 
@@ -87,7 +86,13 @@ export async function POST(req: Request) {
         if (!refreshed) throw new Error('token_expired_refresh_failed');
         accessToken = refreshed;
       } else {
-        accessToken = await decryptToken(conn.accessToken);
+        const { SecurityService } = await import('@/lib/services/security');
+        const decrypted = await SecurityService.decryptTokenIfNeeded(conn.accessToken);
+        // If the token is still encrypted after decryption attempt, it's unusable
+        if (decrypted.startsWith('v2:') || decrypted.startsWith('iv:')) {
+          throw new Error('token_decryption_failed');
+        }
+        accessToken = decrypted;
       }
 
       // Publish to the platform using persisted metadata

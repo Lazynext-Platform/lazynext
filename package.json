@@ -25,7 +25,10 @@
     "cf:preview": "npm run cf:prepare && opennextjs-cloudflare build && node scripts/trim-prisma-wasm.mjs && opennextjs-cloudflare preview",
     "cf:deploy": "npm run cf:prepare && opennextjs-cloudflare build && node scripts/trim-prisma-wasm.mjs && npx wrangler deploy --dry-run --outdir .open-next/dist && node scripts/patch-worker.mjs && npx wrangler deploy --no-bundle --config .open-next/dist/wrangler.jsonc",
     "cf:size-check": "node scripts/check-bundle-size.mjs",
-    "setup:dodo": "node scripts/setup-dodo-products.mjs"
+    "setup:dodo": "node scripts/setup-dodo-products.mjs",
+    "deploy": "node scripts/deploy.mjs",
+    "health-check": "node scripts/health-check.mjs",
+    "setup:prod": "node scripts/setup-production.mjs"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.11.3",

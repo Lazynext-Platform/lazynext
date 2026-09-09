@@ -3,6 +3,36 @@ import { auth } from '@/../auth';
 import { WorkspaceService } from '@/lib/services/workspace';
 import { prisma } from '@/lib/prisma';
 import { canCreateAgent } from '@/lib/plan-guard';
+import { RateLimiter, RateLimits } from '@/lib/services/rate-limit';
+
+/**
+ * GET /api/agents — list agents for the authenticated user's workspaces.
+ */
+export async function GET(req: NextRequest) {
+  const session = await auth().catch(() => null);
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+  }
+
+  const limited = await RateLimiter.check(req, RateLimits.API_V1);
+  if (limited) return limited;
+
+  try {
+    const workspaces = await WorkspaceService.listForUser(session.user.id);
+    const wsIds = workspaces.map((w) => w.id);
+
+    const agents = await prisma.agentDef.findMany({
+      where: { workspaceId: { in: wsIds } },
+      orderBy: { createdAt: 'desc' },
+      take: 50,
+    });
+
+    return NextResponse.json({ agents });
+  } catch (e) {
+    console.error('[agents] list error:', e);
+    return NextResponse.json({ error: 'failed_to_list_agents' }, { status: 500 });
+  }
+}
 
 /**
  * POST /api/agents — create an AI agent definition.
@@ -12,6 +42,9 @@ export async function POST(req: NextRequest) {
   if (!session?.user?.id) {
     return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
   }
+
+  const limited = await RateLimiter.check(req, RateLimits.API_V1);
+  if (limited) return limited;
 
   let body: {
     name?: string;

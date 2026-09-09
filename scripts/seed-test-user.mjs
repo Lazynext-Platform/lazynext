@@ -13,8 +13,9 @@ import bcrypt from 'bcryptjs';
 const dbUrl = process.env.DATABASE_URL || 'file:./prisma/dev.db';
 
 // Refuse to run in production or against a non-SQLite database
-if (process.env.NODE_ENV === 'production' || process.env.BUILD_TARGET === 'cloudflare') {
-  console.error('[seed-test-user] Refusing to seed test account in production. Aborting.');
+// unless explicitly overridden with ALLOW_PROD_SEED=true
+if ((process.env.NODE_ENV === 'production' || process.env.BUILD_TARGET === 'cloudflare') && !process.env.ALLOW_PROD_SEED) {
+  console.error('[seed-test-user] Seed script cannot run in production without ALLOW_PROD_SEED=true');
   process.exit(1);
 }
 if (!dbUrl.startsWith('file:')) {

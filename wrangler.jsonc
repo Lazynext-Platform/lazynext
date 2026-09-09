@@ -5,7 +5,16 @@
   "main": "worker-entry.mjs",
   "compatibility_date": "2026-08-01",
   "compatibility_flags": ["nodejs_compat", "no_handle_cross_request_promise_resolution"],
-  "r2_buckets": [],
+  "r2_buckets": [
+    {
+      "binding": "MEDIA_BUCKET",
+      "bucket_name": "lazynext-media"
+    },
+    {
+      "binding": "ASSET_BUCKET",
+      "bucket_name": "lazynext-assets"
+    }
+  ],
   "d1_databases": [
     { "binding": "DB", "database_name": "lazynext-db", "database_id": "2b14197d-49b0-4d11-85e4-821ba3648ae3" }
   ],
@@ -27,6 +36,14 @@
       "namespace_id": "1002",
       "simple": {
         "limit": 10,
+        "period": 60
+      }
+    },
+    {
+      "name": "RATE_LIMITER",
+      "namespace_id": "1003",
+      "simple": {
+        "limit": 100,
         "period": 60
       }
     }

@@ -1,14 +1,35 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/../auth';
 import { WorkspaceService } from '@/lib/services/workspace';
+import { TaskService } from '@/lib/services/task';
 import { prisma } from '@/lib/prisma';
 import { createNotification } from '@/lib/notifications';
 
 /**
  * Internal task CRUD API (session-auth).
+ * GET /api/tasks/[id] — get task detail with dependencies, subtasks, time entries.
  * PATCH /api/tasks/[id] — update a task (status, priority, title, etc).
  * DELETE /api/tasks/[id] — soft-delete a task.
  */
+export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const session = await auth().catch(() => null);
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+  }
+
+  try {
+    const task = await TaskService.get(id);
+    if (!task) {
+      return NextResponse.json({ error: 'not_found' }, { status: 404 });
+    }
+    return NextResponse.json({ task });
+  } catch (e) {
+    console.error('[tasks] get error:', e);
+    return NextResponse.json({ error: 'failed_to_get_task' }, { status: 500 });
+  }
+}
+
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const session = await auth().catch(() => null);

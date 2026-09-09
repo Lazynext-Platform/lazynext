@@ -3,6 +3,7 @@ import { auth } from '@/../auth';
 import { WorkspaceService } from '@/lib/services/workspace';
 import { prisma } from '@/lib/prisma';
 import { createNotification } from '@/lib/notifications';
+import { RateLimiter, RateLimits } from '@/lib/services/rate-limit';
 
 /**
  * Internal task CRUD API (session-auth).
@@ -13,6 +14,9 @@ export async function POST(req: NextRequest) {
   if (!session?.user?.id) {
     return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
   }
+
+  const limited = await RateLimiter.check(req, RateLimits.API_V1);
+  if (limited) return limited;
 
   let body: { projectId?: string; title?: string; description?: string; priority?: string; dueDate?: string; assigneeId?: string };
   try {

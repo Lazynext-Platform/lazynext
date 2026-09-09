@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/../auth';
 import { prisma } from '@/lib/prisma';
 import { createNotification } from '@/lib/notifications';
+import { RateLimiter, RateLimits } from '@/lib/services/rate-limit';
 
 /**
  * GET /api/notifications — list notifications for the current user.
@@ -12,6 +13,9 @@ export async function GET(req: NextRequest) {
   if (!session?.user?.id) {
     return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
   }
+
+  const limited = await RateLimiter.check(req, RateLimits.API_V1);
+  if (limited) return limited;
 
   const url = new URL(req.url);
   const unreadOnly = url.searchParams.get('unread') === '1';
@@ -56,6 +60,9 @@ export async function POST(req: NextRequest) {
   if (!session?.user?.id) {
     return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
   }
+
+  const limited = await RateLimiter.check(req, RateLimits.API_V1);
+  if (limited) return limited;
 
   let body: { type?: string; title?: string; body?: string; workspaceId?: string };
   try {

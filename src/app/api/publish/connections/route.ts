@@ -45,10 +45,10 @@ async function __byokPOST(req: Request) {
     return NextResponse.json({ error: 'access_token_required' }, { status: 400 });
   }
 
-  // Encrypt tokens before storing
-  const { encryptToken } = await import('@/lib/publishing/token-crypto');
-  const encryptedAccess = await encryptToken(accessToken);
-  const encryptedRefresh = body.refreshToken ? await encryptToken(String(body.refreshToken)) : null;
+  // Encrypt tokens before storing (idempotent — safe if already encrypted)
+  const { SecurityService } = await import('@/lib/services/security');
+  const encryptedAccess = await SecurityService.encryptTokenIfPlain(accessToken);
+  const encryptedRefresh = body.refreshToken ? await SecurityService.encryptTokenIfPlain(String(body.refreshToken)) : null;
 
   // Upsert: update if connection exists, create if not
   const connection = await prisma.platformConnection.upsert({
