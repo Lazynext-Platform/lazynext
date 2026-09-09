@@ -41,7 +41,7 @@ jobs:
           mkdir -p ~/.wrangler/config
           cat > ~/.wrangler/config/default.toml << EOF
           oauth_token = "${{ secrets.CLOUDFLARE_OAUTH_TOKEN }}"
-          expiration_time = "2026-09-09T11:56:47.323Z"
+          expiration_time = "2026-09-09T14:12:36.549Z"
           refresh_token = "${{ secrets.CLOUDFLARE_REFRESH_TOKEN }}"
           scopes = ["user:read", "offline_access", "account:read", "workers:write", "workers_kv:write", "workers_routes:write", "workers_scripts:write", "workers_tail:read", "d1:write", "pages:write", "zone:read", "ssl_certs:write", "ai:write", "ai-search:write", "ai-search:run", "websearch.run", "agent-memory:write", "queues:write", "pipelines:write", "secrets_store:write", "artifacts:write", "flagship:write", "containers:write", "cloudchamber:write", "connectivity:admin", "email_routing:write", "email_sending:write", "browser:write", "challenge-widgets.write"]
           EOF
@@ -50,3 +50,5 @@ jobs:
           cp ~/.wrangler/config/default.toml ~/.config/.wrangler/config/default.toml
       - name: Deploy to Cloudflare
         run: npm run cf:deploy-only
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_OAUTH_TOKEN }}
