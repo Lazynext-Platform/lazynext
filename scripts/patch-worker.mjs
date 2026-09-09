@@ -13,7 +13,7 @@
  * It also creates a wrangler.jsonc in the output directory so we can deploy
  * with --no-bundle (which preserves our patches).
  */
-import { readFileSync, writeFileSync, existsSync, rmSync, renameSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync, rmSync, renameSync, readdirSync, statSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { execSync } from 'node:child_process';
@@ -110,3 +110,28 @@ const distWrangler = projectWrangler
 
 writeFileSync(join(distDir, 'wrangler.jsonc'), distWrangler);
 console.log('Created wrangler.jsonc in .open-next/dist/');
+
+// --- Remove Prisma WASM from the dist directory ---
+// The dry-run step copies the WASM to .open-next/dist/. Remove it so it's
+// not included in the Worker bundle (it's served from Cloudflare Assets instead).
+console.log('\nRemoving Prisma WASM from dist directory...');
+let wasmRemoved = 0;
+let wasmBytes = 0;
+if (existsSync(distDir)) {
+  const entries = readdirSync(distDir);
+  for (const entry of entries) {
+    if (entry.endsWith('.wasm') && entry.includes('query_compiler')) {
+      const wasmPath = join(distDir, entry);
+      const stat = statSync(wasmPath);
+      rmSync(wasmPath, { force: true });
+      wasmRemoved++;
+      wasmBytes += stat.size;
+      console.log(`  removed: ${entry} (${(stat.size / 1024).toFixed(0)} KiB)`);
+    }
+  }
+}
+if (wasmRemoved > 0) {
+  console.log(`Removed ${wasmRemoved} WASM file(s), saved ${(wasmBytes / 1024 / 1024).toFixed(1)} MB`);
+} else {
+  console.log('  no WASM files found in dist directory');
+}
