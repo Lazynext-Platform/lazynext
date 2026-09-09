@@ -36,19 +36,26 @@ jobs:
           ls -la .open-next/assets/wasm/ 2>&1 || echo "No .open-next/assets/wasm directory"
           echo "=== Checking for WASM in public/wasm ==="
           ls -la public/wasm/ 2>&1 || echo "No public/wasm directory"
-      - name: Configure wrangler OAuth
+      - name: Refresh Cloudflare OAuth token
+        id: cf-token
         run: |
-          mkdir -p ~/.wrangler/config
-          cat > ~/.wrangler/config/default.toml << EOF
-          oauth_token = "${{ secrets.CLOUDFLARE_OAUTH_TOKEN }}"
-          expiration_time = "2026-09-09T15:14:14.568Z"
-          refresh_token = "${{ secrets.CLOUDFLARE_REFRESH_TOKEN }}"
-          scopes = ["user:read", "offline_access", "account:read", "workers:write", "workers_kv:write", "workers_routes:write", "workers_scripts:write", "workers_tail:read", "d1:write", "pages:write", "zone:read", "ssl_certs:write", "ai:write", "ai-search:write", "ai-search:run", "websearch.run", "agent-memory:write", "queues:write", "pipelines:write", "secrets_store:write", "artifacts:write", "flagship:write", "containers:write", "cloudchamber:write", "connectivity:admin", "email_routing:write", "email_sending:write", "browser:write", "challenge-widgets.write"]
-          EOF
-          # Also write to the alternate config location
-          mkdir -p ~/.config/.wrangler/config
-          cp ~/.wrangler/config/default.toml ~/.config/.wrangler/config/default.toml
+          set -e
+          RESPONSE=$(curl -s -X POST https://dash.cloudflare.com/oauth2/token \
+            -H "Content-Type: application/x-www-form-urlencoded" \
+            -d "grant_type=refresh_token" \
+            -d "refresh_token=${{ secrets.CLOUDFLARE_REFRESH_TOKEN }}" \
+            -d "client_id=54d11594-84e4-41aa-b438-e81b8fa78ee7")
+          echo "Response: $RESPONSE" | head -c 200
+          ACCESS_TOKEN=$(echo "$RESPONSE" | jq -r '.access_token // empty')
+          if [ -z "$ACCESS_TOKEN" ]; then
+            echo "::error::Failed to refresh OAuth token. Response: $RESPONSE"
+            exit 1
+          fi
+          echo "::add-mask::$ACCESS_TOKEN"
+          echo "cf_token=$ACCESS_TOKEN" >> "$GITHUB_OUTPUT"
+          echo "OAuth token refreshed successfully"
       - name: Deploy to Cloudflare
         run: npm run cf:deploy-only
         env:
           CLOUDFLARE_ACCOUNT_ID: "85953070bae00da372951a8833bd3459"
+          CLOUDFLARE_API_TOKEN: ${{ steps.cf-token.outputs.cf_token }}

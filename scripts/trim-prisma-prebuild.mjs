@@ -75,5 +75,42 @@ for (const dir of [prismaRuntimeDir, dotPrismaDir]) {
   }
 }
 
+// Remove TypeScript declaration files (.d.ts) from .prisma/client — they're
+// 14.5 MB and not needed at runtime.
+if (existsSync(dotPrismaDir)) {
+  const entries = readdirSync(dotPrismaDir);
+  for (const entry of entries) {
+    if (entry.endsWith('.d.ts')) {
+      const fullPath = join(dotPrismaDir, entry);
+      const stat = statSync(fullPath);
+      rmSync(fullPath, { force: true });
+      removedCount++;
+      removedBytes += stat.size;
+      console.log(`  removed .d.ts: ${entry} (${(stat.size / 1024 / 1024).toFixed(1)} MB)`);
+    }
+  }
+}
+
+// Remove the base64-encoded WASM from .prisma/client — it's only referenced
+// by index.js (not edge.js, which workerd uses). The actual .wasm file is kept.
+const base64Wasm = join(dotPrismaDir, 'query_compiler_fast_bg.wasm-base64.js');
+if (existsSync(base64Wasm)) {
+  const stat = statSync(base64Wasm);
+  rmSync(base64Wasm, { force: true });
+  removedCount++;
+  removedBytes += stat.size;
+  console.log(`  removed: query_compiler_fast_bg.wasm-base64.js (${(stat.size / 1024 / 1024).toFixed(1)} MB)`);
+}
+
+// Remove index-browser.js (not used in workerd)
+const indexBrowser = join(dotPrismaDir, 'index-browser.js');
+if (existsSync(indexBrowser)) {
+  const stat = statSync(indexBrowser);
+  rmSync(indexBrowser, { force: true });
+  removedCount++;
+  removedBytes += stat.size;
+  console.log(`  removed: index-browser.js (${(stat.size / 1024).toFixed(0)} KiB)`);
+}
+
 console.log(`\nDone: removed ${removedCount} files, freed ${(removedBytes / 1024 / 1024).toFixed(1)} MB`);
 console.log('Kept engines: sqlite (for Cloudflare D1)');
