@@ -86,7 +86,7 @@ if (mapCommentRegex.test(content)) {
 try {
   const minifiedPath = join(distDir, `${workerName}.min`);
   execSync(
-    `npx esbuild "${workerPath}" --minify --format=esm --drop=console --outfile="${minifiedPath}"`,
+    `npx esbuild "${workerPath}" --minify --format=esm --outfile="${minifiedPath}"`,
     { stdio: 'pipe', timeout: 120_000 },
   );
   if (existsSync(minifiedPath)) {
