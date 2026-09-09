@@ -64,7 +64,7 @@ jobs:
             echo "New refresh token received (not saved — manual rotation required)"
           fi
       - name: Deploy to Cloudflare
-        run: npm run cf:deploy-only
+        run: npm run cf:deploy-minified
         env:
           CLOUDFLARE_ACCOUNT_ID: "85953070bae00da372951a8833bd3459"
           CLOUDFLARE_API_TOKEN: ${{ steps.cf-token.outputs.cf_token }}
