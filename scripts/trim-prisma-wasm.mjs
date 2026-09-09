@@ -107,24 +107,45 @@ if (!existsSync(assetsWasmDir)) {
   mkdirSync(assetsWasmDir, { recursive: true });
 }
 
-// Find and move the SQLite WASM files
+// Find and remove all SQLite WASM files from runtime bundle
 if (existsSync(wasmDir)) {
   const wasmEntries = readdirSync(wasmDir);
   for (const entry of wasmEntries) {
     if (entry.includes('sqlite') && (entry.endsWith('.wasm') || entry.endsWith('.js'))) {
       const srcPath = join(wasmDir, entry);
-      const destPath = join(assetsWasmDir, entry);
       if (existsSync(srcPath)) {
-        copyFileSync(srcPath, destPath);
         const stat = statSync(srcPath);
+        // Copy to assets first
+        const destPath = join(assetsWasmDir, entry);
+        copyFileSync(srcPath, destPath);
+        // Then delete from runtime
         rmSync(srcPath, { force: true });
         removedCount++;
         removedBytes += stat.size;
-        console.log(`  externalized: ${entry} (${(stat.size / 1024).toFixed(0)} KiB)`);
+        console.log(`  externalized & removed: ${entry} (${(stat.size / 1024).toFixed(0)} KiB)`);
       }
     }
   }
 }
+
+// Also search for and remove any SQLite WASM in other runtime subdirectories
+function removeSqliteWasmRecursively(dir) {
+  if (!existsSync(dir)) return;
+  const entries = readdirSync(dir, { withFileTypes: true });
+  for (const entry of entries) {
+    const fullPath = join(dir, entry.name);
+    if (entry.isDirectory()) {
+      removeSqliteWasmRecursively(fullPath);
+    } else if (entry.isFile() && (entry.name.includes('sqlite') && (entry.name.endsWith('.wasm') || entry.name.endsWith('.js')))) {
+      const stat = statSync(fullPath);
+      rmSync(fullPath, { force: true });
+      removedCount++;
+      removedBytes += stat.size;
+      console.log(`  removed from bundle: ${entry.name} (${(stat.size / 1024).toFixed(0)} KiB)`);
+    }
+  }
+}
+removeSqliteWasmRecursively(prismaRuntimeDir);
 
 // Patch the Prisma runtime to load WASM from Assets instead of node_modules
 const prismaIndex = join(prismaRuntimeDir, 'index.js');
