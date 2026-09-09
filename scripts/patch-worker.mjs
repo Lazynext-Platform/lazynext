@@ -80,15 +80,33 @@ if (mapCommentRegex.test(content)) {
 }
 
 // Minify the worker with esbuild to reduce the Cloudflare Worker bundle size.
-// The wrangler dry-run outputs an unminified bundle (~126 MB). Esbuild minification
-// reduces it to ~98 MB. We use --drop=console to strip console.log calls and
-// --minify for maximum compression.
+// We use the esbuild JavaScript API (not the CLI) because the CLI version
+// in CI doesn't support --pure or --drop=console flags.
 try {
   const minifiedPath = join(distDir, `${workerName}.min`);
+  // Use esbuild's JS API via a small inline script
+  const minifyScript = `
+    import { build } from 'esbuild';
+    await build({
+      entryPoints: [process.argv[2]],
+      outfile: process.argv[3],
+      minify: true,
+      format: 'esm',
+      target: 'es2022',
+      treeShaking: true,
+      pure: ['console.log', 'console.error', 'console.warn', 'console.debug', 'console.info'],
+      legalComments: 'none',
+      write: true,
+      logLevel: 'warning',
+    });
+  `;
+  const minifyScriptPath = join(distDir, '_minify.mjs');
+  writeFileSync(minifyScriptPath, minifyScript);
   execSync(
-    `npx esbuild "${workerPath}" --minify --format=esm --pure=console.log --pure=console.error --pure=console.warn --outfile="${minifiedPath}"`,
-    { stdio: 'pipe', timeout: 120_000 },
+    `node "${minifyScriptPath}" "${workerPath}" "${minifiedPath}"`,
+    { stdio: 'pipe', timeout: 180_000, cwd: projectRoot },
   );
+  rmSync(minifyScriptPath, { force: true });
   if (existsSync(minifiedPath)) {
     const origSize = statSync(workerPath).size;
     const minSize = statSync(minifiedPath).size;
@@ -98,6 +116,88 @@ try {
   }
 } catch (e) {
   console.log(`[warn] esbuild minification skipped: ${e instanceof Error ? e.message : String(e)}`);
+  // Fallback: try CLI without --pure (basic minify only)
+  try {
+    const minifiedPath = join(distDir, `${workerName}.min`);
+    execSync(
+      `npx esbuild "${workerPath}" --minify --format=esm --outfile="${minifiedPath}"`,
+      { stdio: 'pipe', timeout: 120_000 },
+    );
+    if (existsSync(minifiedPath)) {
+      const origSize = statSync(workerPath).size;
+      const minSize = statSync(minifiedPath).size;
+      rmSync(workerPath, { force: true });
+      renameSync(minifiedPath, workerPath);
+      console.log(`Minified ${workerName} with esbuild CLI (fallback): ${(origSize / 1024 / 1024).toFixed(1)} MB -> ${(minSize / 1024 / 1024).toFixed(1)} MB`);
+    }
+  } catch (e2) {
+    console.log(`[warn] esbuild CLI fallback also failed: ${e2 instanceof Error ? e2.message : String(e2)}`);
+  }
+}
+
+// Second-pass minification with terser for more aggressive dead-code elimination.
+// Terser is already available as a dependency of Next.js.
+// This runs AFTER esbuild minification for additional reduction.
+try {
+  const terserScript = `
+    import { minify } from 'terser';
+    import { readFileSync, writeFileSync } from 'fs';
+    const code = readFileSync(process.argv[2], 'utf8');
+    const result = await minify(code, {
+      compress: {
+        passes: 2,
+        drop_console: false,  // don't drop — some may be needed for error logging
+        drop_debugger: true,
+        dead_code: true,
+        unused: true,
+        toplevel: true,
+        sequences: true,
+        properties: false,  // don't mangle properties (too risky)
+        conditionals: true,
+        comparisons: true,
+        evaluate: true,
+        booleans: true,
+        loops: true,
+        if_return: true,
+        join_vars: true,
+        collapse_vars: true,
+        reduce_vars: true,
+        typeofs: true,
+        switches: true,
+        hoist_funs: true,
+        hoist_vars: false,
+        inline: 2,
+        negate_iife: true,
+        side_effects: true,
+      },
+      mangle: {
+        toplevel: true,
+      },
+      format: {
+        comments: false,
+        semicolons: true,
+      },
+      sourceMap: false,
+    });
+    if (result.code) {
+      writeFileSync(process.argv[2], result.code);
+      console.log('Terser second pass complete');
+    } else {
+      console.log('Terser returned no code');
+    }
+  `;
+  const terserScriptPath = join(distDir, '_terser.mjs');
+  writeFileSync(terserScriptPath, terserScript);
+  const beforeTerser = statSync(workerPath).size;
+  execSync(
+    `node "${terserScriptPath}" "${workerPath}"`,
+    { stdio: 'pipe', timeout: 300_000, cwd: projectRoot, env: { ...process.env, NODE_OPTIONS: '--max-old-space-size=8192' } },
+  );
+  rmSync(terserScriptPath, { force: true });
+  const afterTerser = statSync(workerPath).size;
+  console.log(`Terser second pass: ${(beforeTerser / 1024 / 1024).toFixed(1)} MB -> ${(afterTerser / 1024 / 1024).toFixed(1)} MB`);
+} catch (e) {
+  console.log(`[warn] terser second pass skipped: ${e instanceof Error ? e.message : String(e)}`);
 }
 
 // Bundle analysis: show the largest strings in the worker to identify bloat
