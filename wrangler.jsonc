@@ -20,7 +20,9 @@
   ],
   "assets": {
     "directory": ".open-next/assets",
-    "binding": "ASSETS"
+    "binding": "ASSETS",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "single-page-application"
   },
   "ratelimits": [
     {

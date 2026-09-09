@@ -11,7 +11,7 @@
  * This script runs after `opennextjs-cloudflare build` and before
  * `opennextjs-cloudflare deploy` to delete the unused engine files.
  */
-import { readdirSync, rmSync, statSync, existsSync, readFileSync, writeFileSync, copyFileSync } from 'node:fs';
+import { readdirSync, rmSync, statSync, existsSync, readFileSync, writeFileSync, copyFileSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 
 const projectRoot = new URL('..', import.meta.url).pathname;
@@ -94,6 +94,60 @@ if (existsSync(dotPrismaDir)) {
 
 console.log(`\nDone: removed ${removedCount} files, freed ${(removedBytes / 1024 / 1024).toFixed(1)} MB`);
 console.log(`Kept engines: ${[...KEEP_ENGINES].join(', ')}`);
+
+// --- Externalize Prisma WASM to Cloudflare Assets ---
+// The SQLite WASM (3.2 MB) pushes the worker over the 64 MB limit.
+// Move it to public/wasm/ so it's served as an asset instead of bundled.
+const wasmDir = join(prismaRuntimeDir, 'lib');
+const assetsWasmDir = join(projectRoot, 'public', 'wasm');
+
+console.log('\nExternalizing Prisma WASM to Cloudflare Assets...');
+if (!existsSync(assetsWasmDir)) {
+  // Create public/wasm directory
+  if (!existsSync(join(projectRoot, 'public'))) {
+    mkdirSync(join(projectRoot, 'public'), { recursive: true });
+  }
+  mkdirSync(assetsWasmDir, { recursive: true });
+}
+
+// Find and move the SQLite WASM files
+if (existsSync(wasmDir)) {
+  const wasmEntries = readdirSync(wasmDir);
+  for (const entry of wasmEntries) {
+    if (entry.includes('sqlite') && (entry.endsWith('.wasm') || entry.endsWith('.js'))) {
+      const srcPath = join(wasmDir, entry);
+      const destPath = join(assetsWasmDir, entry);
+      if (existsSync(srcPath)) {
+        copyFileSync(srcPath, destPath);
+        const stat = statSync(srcPath);
+        rmSync(srcPath, { force: true });
+        removedCount++;
+        removedBytes += stat.size;
+        console.log(`  externalized: ${entry} (${(stat.size / 1024).toFixed(0)} KiB)`);
+      }
+    }
+  }
+}
+
+// Patch the Prisma runtime to load WASM from Assets instead of node_modules
+const prismaIndex = join(prismaRuntimeDir, 'index.js');
+if (existsSync(prismaIndex)) {
+  let content = readFileSync(prismaIndex, 'utf8');
+  // Replace the WASM path to use the Assets URL
+  const wasmPatch = [
+    // Patch: replace lib/ path with /wasm/ for Assets
+    [`lib/`, `/wasm/`],
+  ];
+  for (const [old, neu] of wasmPatch) {
+    if (content.includes(old)) {
+      content = content.split(old).join(neu);
+      console.log(`  patched Prisma runtime to load WASM from Assets`);
+      writeFileSync(prismaIndex, content);
+    }
+  }
+}
+
+console.log(`\nExternalization complete: ${removedCount} files moved/freed, ${(removedBytes / 1024 / 1024).toFixed(1)} MB`);
 
 // Prisma 7: the "fast" and "small" WASM engines have DIFFERENT JS glue code
 // (query_compiler_fast_bg.js vs query_compiler_small_bg.js). Swapping the WASM
