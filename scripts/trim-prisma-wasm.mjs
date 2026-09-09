@@ -199,7 +199,8 @@ for (const file of legacyWasmFiles) {
     const stat = statSync(file);
     // Copy WASM files to assets before removing
     if (file.endsWith('.wasm')) {
-      const destPath = join(assetsWasmDir, file.split('/').pop()!);
+      const fileName = file.split('/').pop();
+      const destPath = join(assetsWasmDir, fileName);
       copyFileSync(file, destPath);
     }
     rmSync(file, { force: true });
