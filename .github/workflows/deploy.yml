@@ -17,10 +17,11 @@ jobs:
           node-version: '25'
       - name: Add swap space
         run: |
-          sudo fallocate -l 16G /swapfile
-          sudo chmod 600 /swapfile
-          sudo mkswap /swapfile
-          sudo swapon /swapfile
+          sudo swapoff -a || true
+          sudo fallocate -l 16G /github-swapfile || sudo dd if=/dev/zero of=/github-swapfile bs=1M count=16384
+          sudo chmod 600 /github-swapfile
+          sudo mkswap /github-swapfile
+          sudo swapon /github-swapfile
           free -h
       - run: npm ci
       - run: npm run lint
