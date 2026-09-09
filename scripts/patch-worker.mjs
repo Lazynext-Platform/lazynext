@@ -87,14 +87,15 @@ try {
   // Use esbuild's JS API via a small inline script
   const minifyScript = `
     import { build } from 'esbuild';
-    await build({
+    const result = await build({
       entryPoints: [process.argv[2]],
       outfile: process.argv[3],
       minify: true,
       format: 'esm',
       target: 'es2022',
       treeShaking: true,
-      pure: ['console.log', 'console.error', 'console.warn', 'console.debug', 'console.info'],
+      drop: ['console', 'debugger'],
+      keepNames: false,
       legalComments: 'none',
       write: true,
       logLevel: 'warning',
@@ -137,53 +138,54 @@ try {
 
 // Second-pass minification with terser for more aggressive dead-code elimination.
 // Terser is already available as a dependency of Next.js.
-// This runs AFTER esbuild minification for additional reduction.
+// We configure it with module:true to handle ESM syntax.
 try {
   const terserScript = `
     import { minify } from 'terser';
     import { readFileSync, writeFileSync } from 'fs';
     const code = readFileSync(process.argv[2], 'utf8');
-    const result = await minify(code, {
-      compress: {
-        passes: 2,
-        drop_console: false,  // don't drop — some may be needed for error logging
-        drop_debugger: true,
-        dead_code: true,
-        unused: true,
-        toplevel: true,
-        sequences: true,
-        properties: false,  // don't mangle properties (too risky)
-        conditionals: true,
-        comparisons: true,
-        evaluate: true,
-        booleans: true,
-        loops: true,
-        if_return: true,
-        join_vars: true,
-        collapse_vars: true,
-        reduce_vars: true,
-        typeofs: true,
-        switches: true,
-        hoist_funs: true,
-        hoist_vars: false,
-        inline: 2,
-        negate_iife: true,
-        side_effects: true,
-      },
-      mangle: {
-        toplevel: true,
-      },
-      format: {
-        comments: false,
-        semicolons: true,
-      },
-      sourceMap: false,
-    });
-    if (result.code) {
-      writeFileSync(process.argv[2], result.code);
-      console.log('Terser second pass complete');
-    } else {
-      console.log('Terser returned no code');
+    try {
+      const result = await minify(code, {
+        module: true,
+        compress: {
+          passes: 2,
+          drop_debugger: true,
+          dead_code: true,
+          unused: true,
+          toplevel: true,
+          sequences: true,
+          conditionals: true,
+          comparisons: true,
+          evaluate: true,
+          booleans: true,
+          loops: true,
+          if_return: true,
+          join_vars: true,
+          collapse_vars: true,
+          reduce_vars: true,
+          switches: true,
+          inline: 1,
+          negate_iife: true,
+          side_effects: true,
+        },
+        mangle: {
+          toplevel: true,
+        },
+        format: {
+          comments: false,
+          semicolons: true,
+        },
+        sourceMap: false,
+      });
+      if (result.code) {
+        writeFileSync(process.argv[2], result.code);
+        console.log('Terser second pass complete');
+      } else {
+        console.log('Terser returned no code');
+      }
+    } catch (e) {
+      console.error('Terser error:', e.message);
+      process.exit(1);
     }
   `;
   const terserScriptPath = join(distDir, '_terser.mjs');

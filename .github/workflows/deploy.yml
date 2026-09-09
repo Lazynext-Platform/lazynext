@@ -41,6 +41,17 @@ jobs:
           ls -lh .open-next/server-functions/default/handler.mjs.meta.json 2>/dev/null || echo "no meta.json"
           du -sh .open-next/assets/ 2>/dev/null || echo "no assets dir"
           du -sh .open-next/server-functions/ 2>/dev/null || echo "no server-functions dir"
+          echo "=== Manifest file sizes ==="
+          find .open-next/server-functions/default/.next -name "*manifest*" -type f -exec ls -lh {} \; 2>/dev/null | sort -k5 -h -r | head -20
+          echo "=== Routes manifest size ==="
+          ls -lh .open-next/server-functions/default/.next/routes-manifest.json 2>/dev/null || echo "no routes-manifest.json"
+          echo "=== App paths manifest size ==="
+          ls -lh .open-next/server-functions/default/.next/app-paths-manifest.json 2>/dev/null || echo "no app-paths-manifest.json"
+          echo "=== Middleware manifest size ==="
+          ls -lh .open-next/server-functions/default/.next/server/middleware-manifest.json 2>/dev/null || echo "no middleware-manifest.json"
+          echo "=== Load manifest external.js size ==="
+          find .open-next -name "load-manifest.external.js" -type f -exec ls -lh {} \; 2>/dev/null | head -5
+          find node_modules/next/dist/server -name "load-manifest.external.js" -type f -exec ls -lh {} \; 2>/dev/null | head -5
       - name: Deploy to Cloudflare
         run: npm run cf:deploy-minified
         env:
