@@ -30,8 +30,9 @@ jobs:
         run: npm run cf:build
         env:
           NODE_OPTIONS: "--max-old-space-size=20480"
-      - name: Deploy to Cloudflare
-        run: npm run cf:deploy-only
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          ATLASCLOUD_API_KEY: ${{ secrets.ATLASCLOUD_API_KEY }}
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: open-next-build
+          path: .open-next/
+          retention-days: 1
