@@ -96,79 +96,50 @@ console.log(`\nDone: removed ${removedCount} files, freed ${(removedBytes / 1024
 console.log(`Kept engines: ${[...KEEP_ENGINES].join(', ')}`);
 
 // --- Externalize Prisma WASM to Cloudflare Assets ---
-// The SQLite WASM (3.2 MB) pushes the worker over the 64 MB limit.
-// Move it to .open-next/assets/wasm/ so it's served as an asset instead of bundled.
+// NOTE: We no longer remove the WASM file from the bundle because the
+// handler.mjs has a static import reference to it. Removing the file
+// causes Wrangler's bundler to fail with ENOENT.
+// The pre-build trim (trim-prisma-prebuild.mjs) already removed the
+// unused engine variants (cockroachdb, mysql, etc.) from node_modules
+// before the build, so only the SQLite WASM remains.
+// Copy WASM to assets for potential runtime use, but keep the original.
 const wasmDir = join(prismaRuntimeDir, 'lib');
 const assetsWasmDir = join(projectRoot, '.open-next', 'assets', 'wasm');
 
-console.log('\nExternalizing Prisma WASM to Cloudflare Assets...');
+console.log('\nCopying Prisma WASM to Cloudflare Assets (keeping original)...');
 if (!existsSync(assetsWasmDir)) {
-  // Create .open-next/assets/wasm directory
   mkdirSync(assetsWasmDir, { recursive: true });
 }
 
-// Find and remove all SQLite WASM files from runtime bundle
+// Copy SQLite WASM files to assets (but don't remove from runtime)
 if (existsSync(wasmDir)) {
   const wasmEntries = readdirSync(wasmDir);
   for (const entry of wasmEntries) {
-    if ((entry.includes('sqlite') || entry.includes('query_compiler')) && (entry.endsWith('.wasm') || entry.endsWith('.js'))) {
+    if ((entry.includes('sqlite') || entry.includes('query_compiler')) && entry.endsWith('.wasm')) {
       const srcPath = join(wasmDir, entry);
       if (existsSync(srcPath)) {
-        const stat = statSync(srcPath);
-        // Copy WASM files to assets first
-        if (entry.endsWith('.wasm')) {
-          const destPath = join(assetsWasmDir, entry);
-          copyFileSync(srcPath, destPath);
-        }
-        // Then delete from runtime
-        rmSync(srcPath, { force: true });
-        removedCount++;
-        removedBytes += stat.size;
-        console.log(`  externalized & removed: ${entry} (${(stat.size / 1024).toFixed(0)} KiB)`);
+        const destPath = join(assetsWasmDir, entry);
+        copyFileSync(srcPath, destPath);
+        console.log(`  copied to assets: ${entry} (${(statSync(srcPath).size / 1024).toFixed(0)} KiB)`);
       }
     }
   }
 }
 
-// Also search for and remove any SQLite WASM in other runtime subdirectories
-function removeSqliteWasmRecursively(dir) {
-  if (!existsSync(dir)) return;
-  const entries = readdirSync(dir, { withFileTypes: true });
-  for (const entry of entries) {
-    const fullPath = join(dir, entry.name);
-    if (entry.isDirectory()) {
-      removeSqliteWasmRecursively(fullPath);
-    } else if (entry.isFile() && ((entry.name.includes('sqlite') || entry.name.includes('query_compiler')) && (entry.name.endsWith('.wasm') || entry.name.endsWith('.js')))) {
-      const stat = statSync(fullPath);
-      rmSync(fullPath, { force: true });
-      removedCount++;
-      removedBytes += stat.size;
-      console.log(`  removed from bundle: ${entry.name} (${(stat.size / 1024).toFixed(0)} KiB)`);
+// Also copy from .prisma/client
+if (existsSync(dotPrismaDir)) {
+  const dotPrismaEntries = readdirSync(dotPrismaDir);
+  for (const entry of dotPrismaEntries) {
+    if (entry.includes('query_compiler') && entry.endsWith('.wasm')) {
+      const srcPath = join(dotPrismaDir, entry);
+      if (existsSync(srcPath)) {
+        const destPath = join(assetsWasmDir, entry);
+        copyFileSync(srcPath, destPath);
+        console.log(`  copied to assets: ${entry} (${(statSync(srcPath).size / 1024).toFixed(0)} KiB)`);
+      }
     }
   }
 }
-removeSqliteWasmRecursively(prismaRuntimeDir);
-
-// Patch the Prisma runtime to load WASM from Assets instead of node_modules
-const prismaIndex = join(prismaRuntimeDir, 'index.js');
-if (existsSync(prismaIndex)) {
-  let content = readFileSync(prismaIndex, 'utf8');
-  // Replace the WASM path to use the Assets URL
-  const wasmPatch = [
-    // Patch: replace lib/ path with /wasm/ for Assets
-    [`lib/`, `/wasm/`],
-  ];
-  for (const [old, neu] of wasmPatch) {
-    if (content.includes(old)) {
-      content = content.split(old).join(neu);
-      console.log(`  patched Prisma runtime to load WASM from Assets (/wasm/)`);
-      writeFileSync(prismaIndex, content);
-    }
-  }
-}
-
-console.log(`\nExternalization complete: ${removedCount} files moved/freed, ${(removedBytes / 1024 / 1024).toFixed(1)} MB`);
-console.log(`WASM files now served from Cloudflare Assets at /wasm/`);
 
 console.log(`\nExternalization complete: ${removedCount} files moved/freed, ${(removedBytes / 1024 / 1024).toFixed(1)} MB`);
 
@@ -183,6 +154,8 @@ console.log('  keeping fast WASM engine (small swap disabled — JS glue mismatc
 
 // Prisma 7: remove the legacy query_compiler_bg.wasm (not used in workerd/edge runtime).
 // The edge.js entry point only uses query_compiler_fast_bg.* and wasm-compiler-edge.
+// NOTE: Do NOT remove query_compiler_fast_bg.wasm — handler.mjs has a static
+// import reference to it and Wrangler's bundler will fail with ENOENT.
 const legacyWasmFiles = [
   join(dotPrismaDir, 'query_compiler_bg.wasm'),
   join(dotPrismaDir, 'query_compiler_bg.js'),
@@ -191,18 +164,10 @@ const legacyWasmFiles = [
   // @prisma/client/runtime/query_compiler_fast_bg.{sqlite,postgresql}.wasm-base64.js
   // and is only referenced by index.js (not edge.js, which workerd uses).
   join(dotPrismaDir, 'query_compiler_fast_bg.wasm-base64.js'),
-  // The actual WASM binary — externalize to Cloudflare Assets
-  join(dotPrismaDir, 'query_compiler_fast_bg.wasm'),
 ];
 for (const file of legacyWasmFiles) {
   if (existsSync(file)) {
     const stat = statSync(file);
-    // Copy WASM files to assets before removing
-    if (file.endsWith('.wasm')) {
-      const fileName = file.split('/').pop();
-      const destPath = join(assetsWasmDir, fileName);
-      copyFileSync(file, destPath);
-    }
     rmSync(file, { force: true });
     removedCount++;
     removedBytes += stat.size;
