@@ -8,9 +8,6 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
-    permissions:
-      contents: read
-      secrets: write
     env:
       NODE_OPTIONS: "--max-old-space-size=14336"
     steps:
@@ -59,14 +56,13 @@ jobs:
           echo "::add-mask::$NEW_REFRESH_TOKEN"
           echo "cf_token=$ACCESS_TOKEN" >> "$GITHUB_OUTPUT"
           echo "OAuth token refreshed successfully"
-          # Save the new refresh token back to GitHub secrets for next deploy
-          # (OAuth refresh tokens are single-use and rotate on each refresh)
+          # Note: OAuth refresh tokens are single-use and rotate on each refresh.
+          # The new refresh token is not saved back to secrets automatically.
+          # When the refresh token is consumed, run `npx wrangler login` locally
+          # and update the CLOUDFLARE_REFRESH_TOKEN GitHub secret.
           if [ -n "$NEW_REFRESH_TOKEN" ]; then
-            gh secret set CLOUDFLARE_REFRESH_TOKEN --repo devinedesk/lazynext --body "$NEW_REFRESH_TOKEN" || echo "::warning::Failed to update refresh token secret"
-            echo "Refresh token rotated and saved to GitHub secrets"
+            echo "New refresh token received (not saved — manual rotation required)"
           fi
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Deploy to Cloudflare
         run: npm run cf:deploy-only
         env:
