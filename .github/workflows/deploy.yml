@@ -31,8 +31,7 @@ jobs:
         env:
           NODE_OPTIONS: "--max-old-space-size=20480"
       - name: Deploy to Cloudflare
-        run: npm run cf:deploy
+        run: npm run cf:deploy-only
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           ATLASCLOUD_API_KEY: ${{ secrets.ATLASCLOUD_API_KEY }}
-          NODE_OPTIONS: "--max-old-space-size=20480"
