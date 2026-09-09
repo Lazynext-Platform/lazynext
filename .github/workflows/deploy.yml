@@ -36,35 +36,8 @@ jobs:
           ls -la .open-next/assets/wasm/ 2>&1 || echo "No .open-next/assets/wasm directory"
           echo "=== Checking for WASM in public/wasm ==="
           ls -la public/wasm/ 2>&1 || echo "No public/wasm directory"
-      - name: Refresh Cloudflare OAuth token
-        id: cf-token
-        run: |
-          set -e
-          RESPONSE=$(curl -s -X POST https://dash.cloudflare.com/oauth2/token \
-            -H "Content-Type: application/x-www-form-urlencoded" \
-            -d "grant_type=refresh_token" \
-            -d "refresh_token=${{ secrets.CLOUDFLARE_REFRESH_TOKEN }}" \
-            -d "client_id=54d11594-84e4-41aa-b438-e81b8fa78ee7")
-          echo "Response received"
-          ACCESS_TOKEN=$(echo "$RESPONSE" | jq -r '.access_token // empty')
-          NEW_REFRESH_TOKEN=$(echo "$RESPONSE" | jq -r '.refresh_token // empty')
-          if [ -z "$ACCESS_TOKEN" ]; then
-            echo "::error::Failed to refresh OAuth token. Response: $RESPONSE"
-            exit 1
-          fi
-          echo "::add-mask::$ACCESS_TOKEN"
-          echo "::add-mask::$NEW_REFRESH_TOKEN"
-          echo "cf_token=$ACCESS_TOKEN" >> "$GITHUB_OUTPUT"
-          echo "OAuth token refreshed successfully"
-          # Note: OAuth refresh tokens are single-use and rotate on each refresh.
-          # The new refresh token is not saved back to secrets automatically.
-          # When the refresh token is consumed, run `npx wrangler login` locally
-          # and update the CLOUDFLARE_REFRESH_TOKEN GitHub secret.
-          if [ -n "$NEW_REFRESH_TOKEN" ]; then
-            echo "New refresh token received (not saved — manual rotation required)"
-          fi
       - name: Deploy to Cloudflare
         run: npm run cf:deploy-minified
         env:
           CLOUDFLARE_ACCOUNT_ID: "85953070bae00da372951a8833bd3459"
-          CLOUDFLARE_API_TOKEN: ${{ steps.cf-token.outputs.cf_token }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
