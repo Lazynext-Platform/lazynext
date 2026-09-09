@@ -12,7 +12,7 @@
  *
  * The project only uses SQLite (Cloudflare D1).
  */
-import { readdirSync, rmSync, statSync, existsSync } from 'node:fs';
+import { readdirSync, rmSync, statSync, existsSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 const projectRoot = new URL('..', import.meta.url).pathname;
@@ -120,21 +120,30 @@ if (existsSync(indexBrowser)) {
   console.log(`  removed: index-browser.js (${(stat.size / 1024).toFixed(0)} KiB)`);
 }
 
-// Remove ALL base64-encoded WASM from @prisma/client/runtime/ — same reasoning.
-// The runtime directory has ~40 MB of base64 WASM files for all engines.
-// workerd uses the raw .wasm file, not the base64 fallback.
-console.log('\nRemoving ALL base64 WASM from @prisma/client/runtime/...');
+// Replace base64-encoded WASM in @prisma/client/runtime/ with empty exports.
+// We can't DELETE these files because `prisma generate` (which runs again inside
+// `opennextjs-cloudflare build` → `npm run build`) requires them to exist.
+// Instead, we overwrite them with empty exports so the OpenNext bundler inlines
+// empty content instead of 4+ MB of base64 data per file.
+// workerd loads the raw .wasm file via WebAssembly.instantiate, not the base64 fallback.
+console.log('\nEmptying base64 WASM files in @prisma/client/runtime/...');
+let emptiedCount = 0;
+let emptiedBytes = 0;
 if (existsSync(prismaRuntimeDir)) {
   for (const entry of readdirSync(prismaRuntimeDir)) {
     if (entry.includes('wasm-base64')) {
       const fullPath = join(prismaRuntimeDir, entry);
       try {
         const stat = statSync(fullPath);
-        rmSync(fullPath, { force: true });
-        removedCount++;
-        removedBytes += stat.size;
-        console.log(`  removed: ${entry} (${(stat.size / 1024 / 1024).toFixed(1)} MB)`);
-      } catch { /* already removed */ }
+        const isMjs = entry.endsWith('.mjs');
+        const emptyContent = isMjs
+          ? 'export default "";\n'
+          : 'module.exports = "";\n';
+        writeFileSync(fullPath, emptyContent);
+        emptiedCount++;
+        emptiedBytes += stat.size - emptyContent.length;
+        console.log(`  emptied: ${entry} (${(stat.size / 1024 / 1024).toFixed(1)} MB → 0)`);
+      } catch { /* skip */ }
     }
   }
 }
@@ -157,7 +166,6 @@ if (existsSync(prismaRuntimeDir)) {
 }
 
 // Remove .map files from @prisma/client/runtime/ — not needed at runtime
-console.log('\nRemoving .map files from @prisma/client/runtime/...');
 if (existsSync(prismaRuntimeDir)) {
   for (const entry of readdirSync(prismaRuntimeDir)) {
     if (entry.endsWith('.js.map') || entry.endsWith('.mjs.map')) {
@@ -173,4 +181,7 @@ if (existsSync(prismaRuntimeDir)) {
 }
 
 console.log(`\nDone: removed ${removedCount} files, freed ${(removedBytes / 1024 / 1024).toFixed(1)} MB`);
+if (emptiedCount > 0) {
+  console.log(`Emptied ${emptiedCount} base64 WASM files, saved ${(emptiedBytes / 1024 / 1024).toFixed(1)} MB`);
+}
 console.log('Kept engines: sqlite (for Cloudflare D1)');
