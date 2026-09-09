@@ -14,6 +14,7 @@ const config = defineCloudflareConfig({});
   // Client-side only packages — don't bundle into the server worker
   '@ffmpeg/ffmpeg',
   '@ffmpeg/util',
+  'lucide-react',
 ];
 
 export default config;

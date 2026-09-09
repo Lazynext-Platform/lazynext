@@ -91,15 +91,23 @@ if (existsSync(dotPrismaDir)) {
   }
 }
 
-// Remove the base64-encoded WASM from .prisma/client — it's only referenced
-// by index.js (not edge.js, which workerd uses). The actual .wasm file is kept.
-const base64Wasm = join(dotPrismaDir, 'query_compiler_fast_bg.wasm-base64.js');
-if (existsSync(base64Wasm)) {
-  const stat = statSync(base64Wasm);
-  rmSync(base64Wasm, { force: true });
-  removedCount++;
-  removedBytes += stat.size;
-  console.log(`  removed: query_compiler_fast_bg.wasm-base64.js (${(stat.size / 1024 / 1024).toFixed(1)} MB)`);
+// Remove ALL base64-encoded WASM from .prisma/client — workerd loads the .wasm
+// file directly via WebAssembly.instantiate, so the base64 fallback is never used.
+// The base64 files are huge (4+ MB each) and inflate the bundle massively.
+console.log('\nRemoving ALL base64 WASM from .prisma/client...');
+if (existsSync(dotPrismaDir)) {
+  for (const entry of readdirSync(dotPrismaDir)) {
+    if (entry.includes('wasm-base64')) {
+      const fullPath = join(dotPrismaDir, entry);
+      try {
+        const stat = statSync(fullPath);
+        rmSync(fullPath, { force: true });
+        removedCount++;
+        removedBytes += stat.size;
+        console.log(`  removed: ${entry} (${(stat.size / 1024 / 1024).toFixed(1)} MB)`);
+      } catch { /* already removed */ }
+    }
+  }
 }
 
 // Remove index-browser.js (not used in workerd)
@@ -110,6 +118,58 @@ if (existsSync(indexBrowser)) {
   removedCount++;
   removedBytes += stat.size;
   console.log(`  removed: index-browser.js (${(stat.size / 1024).toFixed(0)} KiB)`);
+}
+
+// Remove ALL base64-encoded WASM from @prisma/client/runtime/ — same reasoning.
+// The runtime directory has ~40 MB of base64 WASM files for all engines.
+// workerd uses the raw .wasm file, not the base64 fallback.
+console.log('\nRemoving ALL base64 WASM from @prisma/client/runtime/...');
+if (existsSync(prismaRuntimeDir)) {
+  for (const entry of readdirSync(prismaRuntimeDir)) {
+    if (entry.includes('wasm-base64')) {
+      const fullPath = join(prismaRuntimeDir, entry);
+      try {
+        const stat = statSync(fullPath);
+        rmSync(fullPath, { force: true });
+        removedCount++;
+        removedBytes += stat.size;
+        console.log(`  removed: ${entry} (${(stat.size / 1024 / 1024).toFixed(1)} MB)`);
+      } catch { /* already removed */ }
+    }
+  }
+}
+
+// Remove .d.ts files from @prisma/client/runtime/ — not needed at runtime
+console.log('\nRemoving .d.ts files from @prisma/client/runtime/...');
+if (existsSync(prismaRuntimeDir)) {
+  for (const entry of readdirSync(prismaRuntimeDir)) {
+    if (entry.endsWith('.d.ts') || entry.endsWith('.d.mts')) {
+      const fullPath = join(prismaRuntimeDir, entry);
+      try {
+        const stat = statSync(fullPath);
+        rmSync(fullPath, { force: true });
+        removedCount++;
+        removedBytes += stat.size;
+        console.log(`  removed: ${entry} (${(stat.size / 1024 / 1024).toFixed(1)} MB)`);
+      } catch { /* already removed */ }
+    }
+  }
+}
+
+// Remove .map files from @prisma/client/runtime/ — not needed at runtime
+console.log('\nRemoving .map files from @prisma/client/runtime/...');
+if (existsSync(prismaRuntimeDir)) {
+  for (const entry of readdirSync(prismaRuntimeDir)) {
+    if (entry.endsWith('.js.map') || entry.endsWith('.mjs.map')) {
+      const fullPath = join(prismaRuntimeDir, entry);
+      try {
+        const stat = statSync(fullPath);
+        rmSync(fullPath, { force: true });
+        removedCount++;
+        removedBytes += stat.size;
+      } catch { /* already removed */ }
+    }
+  }
 }
 
 console.log(`\nDone: removed ${removedCount} files, freed ${(removedBytes / 1024 / 1024).toFixed(1)} MB`);

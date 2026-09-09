@@ -80,21 +80,64 @@ if (mapCommentRegex.test(content)) {
 }
 
 // Minify the worker with esbuild to reduce the Cloudflare Worker bundle size.
-// The wrangler dry-run outputs an unminified bundle (~55 MB). Esbuild minification
-// reduces it to ~46 MB raw / ~8.5 MB gzipped, well under Cloudflare's 10 MiB limit.
+// The wrangler dry-run outputs an unminified bundle (~126 MB). Esbuild minification
+// reduces it to ~98 MB. We use --drop=console to strip console.log calls and
+// --minify for maximum compression.
 try {
   const minifiedPath = join(distDir, `${workerName}.min`);
-  execSync(`npx esbuild "${workerPath}" --minify --format=esm --outfile="${minifiedPath}"`, {
-    stdio: 'pipe',
-    timeout: 60_000,
-  });
+  execSync(
+    `npx esbuild "${workerPath}" --minify --format=esm --drop=console --outfile="${minifiedPath}"`,
+    { stdio: 'pipe', timeout: 120_000 },
+  );
   if (existsSync(minifiedPath)) {
+    const origSize = statSync(workerPath).size;
+    const minSize = statSync(minifiedPath).size;
     rmSync(workerPath, { force: true });
     renameSync(minifiedPath, workerPath);
-    console.log(`Minified ${workerName} with esbuild`);
+    console.log(`Minified ${workerName} with esbuild: ${(origSize / 1024 / 1024).toFixed(1)} MB -> ${(minSize / 1024 / 1024).toFixed(1)} MB`);
   }
 } catch (e) {
   console.log(`[warn] esbuild minification skipped: ${e instanceof Error ? e.message : String(e)}`);
+}
+
+// Bundle analysis: show the largest strings in the worker to identify bloat
+try {
+  const finalContent = readFileSync(workerPath, 'utf8');
+  const finalSize = (finalContent.length / 1024 / 1024).toFixed(1);
+  console.log(`\n=== Bundle analysis ===`);
+  console.log(`Final worker size: ${finalSize} MB`);
+
+  // Count occurrences of common module patterns to identify heavy dependencies
+  const patterns = [
+    { name: 'Prisma', regex: /prisma/gi },
+    { name: 'NextAuth', regex: /next-?auth/gi },
+    { name: 'openid-client', regex: /openid-client/gi },
+    { name: 'Atlas', regex: /atlascloud|atlas/gi },
+    { name: 'DodoPayments', regex: /dodopayment/gi },
+    { name: 'Resend', regex: /resend/gi },
+    { name: 'bcryptjs', regex: /bcrypt/gi },
+    { name: 'lucide-react', regex: /lucide/gi },
+    { name: 'wasm-base64', regex: /[A-Za-z0-9+/]{10000,}/g },
+  ];
+  for (const { name, regex } of patterns) {
+    const matches = finalContent.match(regex);
+    if (matches && matches.length > 0) {
+      console.log(`  ${name}: ${matches.length} occurrences`);
+    }
+  }
+
+  // Check for large base64 blobs (indicator of WASM still inlined)
+  const largeBlobs = finalContent.match(/[A-Za-z0-9+/]{50000,}/g);
+  if (largeBlobs) {
+    let totalBlobSize = 0;
+    for (const blob of largeBlobs) totalBlobSize += blob.length;
+    console.log(`  Large base64 blobs: ${largeBlobs.length} blobs, ${(totalBlobSize / 1024 / 1024).toFixed(1)} MB total`);
+  } else {
+    console.log(`  No large base64 blobs found (good!)`);
+  }
+  console.log(`=== End bundle analysis ===\n`);
+} catch (e) {
+  console.log(`[warn] bundle analysis skipped: ${e instanceof Error ? e.message : String(e)}`);
 }
 
 // Create wrangler.jsonc in the dist directory
