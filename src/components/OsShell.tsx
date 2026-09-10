@@ -38,7 +38,8 @@ import { useI18n } from '@/i18n/provider';
 import { useWorkspace } from '@/lib/workspace-provider';
 import { LOCALES, LOCALE_NAMES, type Locale } from '@/i18n/messages';
 import { NotificationsBell } from '@/components/NotificationsBell';
-import { trackAppVisit, appTitle } from '@/lib/recent-apps';
+import { trackAppVisit } from '@/lib/recent-apps';
+import { appTitle } from '@/config/appCatalog';
 
 // OS module navigation — the primary nav items
 // Labels use i18n keys from home.mod* (same as homepage module grid)
