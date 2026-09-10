@@ -11,8 +11,10 @@ import type { PlanTier } from '@/lib/plan-tier';
 export interface CreativeToolEntry {
   toolName: string;
   creditCost: number;
-  generate: (input: unknown, planTier: PlanTier) => Promise<unknown>;
-  validate: (input: unknown) => { valid: boolean; errors: string[] };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  generate: (input: any, planTier: PlanTier) => Promise<any>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  validate: (input: any) => { valid: boolean; errors: string[] };
   schema: Record<string, unknown>;
   maxDuration: number;
 }
