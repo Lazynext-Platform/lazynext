@@ -25,7 +25,7 @@
     "cf:preview": "npm run cf:prepare && opennextjs-cloudflare build && node scripts/trim-prisma-wasm.mjs && opennextjs-cloudflare preview",
     "cf:deploy": "npm run cf:prepare && opennextjs-cloudflare build && node scripts/trim-prisma-wasm.mjs && npx wrangler deploy --dry-run --outdir .open-next/dist && node scripts/patch-worker.mjs && npx wrangler deploy --no-bundle --config .open-next/dist/wrangler.jsonc",
     "cf:deploy-only": "npx wrangler deploy",
-    "cf:deploy-minified": "npx wrangler deploy --dry-run --outdir .open-next/dist && node scripts/patch-worker.mjs && npx wrangler deploy --no-bundle --config .open-next/dist/wrangler.jsonc",
+    "cf:deploy-minified": "npx wrangler deploy --dry-run --minify --outdir .open-next/dist && node scripts/patch-worker.mjs && npx wrangler deploy --no-bundle --config .open-next/dist/wrangler.jsonc",
     "cf:size-check": "node scripts/check-bundle-size.mjs",
     "setup:dodo": "node scripts/setup-dodo-products.mjs",
     "deploy": "node scripts/deploy.mjs",

@@ -80,56 +80,61 @@ if (mapCommentRegex.test(content)) {
 }
 
 // Minify the worker with esbuild to reduce the Cloudflare Worker bundle size.
-// Use aggressive options: drop console/debugger, target es2022, remove legal
-// comments, and mark common logging functions as pure for tree-shaking.
-// The wrangler dry-run outputs an unminified bundle (~133 MB). Esbuild
-// minification reduces it to ~98 MB with basic --minify. With aggressive
-// options we aim for further reduction to fit under Cloudflare's 64 MiB limit.
-try {
-  const minifiedPath = join(distDir, `${workerName}.min`);
-  execSync(
-    `npx esbuild "${workerPath}" --minify --format=esm --target=es2022 ` +
-    `--drop:console --drop:debugger ` +
-    `--pure:console.log --pure:console.info --pure:console.warn --pure:console.error --pure:console.debug --pure:console.trace ` +
-    `--legal-comments=none --charset=ascii --tree-shaking=true ` +
-    `--define:process.env.NODE_ENV='"production"' ` +
-    `--metafile="${join(distDir, 'metafile.json')}" ` +
-    `--outfile="${minifiedPath}"`,
-    {
-      stdio: 'pipe',
-      timeout: 120_000,
-      maxBuffer: 200 * 1024 * 1024,
-    },
-  );
-  if (existsSync(minifiedPath)) {
-    const rawSize = statSync(workerPath).size;
-    const minSize = statSync(minifiedPath).size;
-    rmSync(workerPath, { force: true });
-    renameSync(minifiedPath, workerPath);
-    console.log(`Minified ${workerName} with esbuild (${(rawSize / 1024 / 1024).toFixed(1)} MB → ${(minSize / 1024 / 1024).toFixed(1)} MB)`);
+// The wrangler --dry-run --minify flag should already minify the bundle.
+// We only run esbuild if the file is still too large (> 64 MiB) after wrangler's minification.
+// We use aggressive options: drop console/debugger, target es2022, pure console functions.
+const CLOUDFLARE_LIMIT_BYTES = 64 * 1024 * 1024; // 64 MiB
+const currentSize = existsSync(workerPath) ? statSync(workerPath).size : 0;
+if (currentSize > CLOUDFLARE_LIMIT_BYTES) {
+  console.log(`Worker is ${(currentSize / 1024 / 1024).toFixed(1)} MB (> 64 MiB), running esbuild minification...`);
+  try {
+    const minifiedPath = join(distDir, `${workerName}.min`);
+    execSync(
+      `npx esbuild "${workerPath}" --minify --format=esm --target=es2022 ` +
+      `--drop:console --drop:debugger ` +
+      `--pure:console.log --pure:console.info --pure:console.warn --pure:console.error --pure:console.debug --pure:console.trace ` +
+      `--legal-comments=none --charset=ascii --tree-shaking=true ` +
+      `--define:process.env.NODE_ENV='"production"' ` +
+      `--metafile="${join(distDir, 'metafile.json')}" ` +
+      `--outfile="${minifiedPath}"`,
+      {
+        stdio: 'pipe',
+        timeout: 120_000,
+        maxBuffer: 200 * 1024 * 1024,
+      },
+    );
+    if (existsSync(minifiedPath)) {
+      const rawSize = statSync(workerPath).size;
+      const minSize = statSync(minifiedPath).size;
+      rmSync(workerPath, { force: true });
+      renameSync(minifiedPath, workerPath);
+      console.log(`Minified ${workerName} with esbuild (${(rawSize / 1024 / 1024).toFixed(1)} MB → ${(minSize / 1024 / 1024).toFixed(1)} MB)`);
 
-    // Analyze metafile to find largest contributors
-    const metafilePath = join(distDir, 'metafile.json');
-    if (existsSync(metafilePath)) {
-      try {
-        const meta = JSON.parse(readFileSync(metafilePath, 'utf8'));
-        const inputs = Object.entries(meta.inputs || {})
-          .map(([path, info]) => ({ path, bytes: info.bytes }))
-          .sort((a, b) => b.bytes - a.bytes)
-          .slice(0, 30);
-        console.log('\n=== Top 30 largest bundle inputs ===');
-        for (const { path, bytes } of inputs) {
-          console.log(`  ${(bytes / 1024).toFixed(0)} KiB  ${path.replace(projectRoot + '/', '')}`);
+      // Analyze metafile to find largest contributors
+      const metafilePath = join(distDir, 'metafile.json');
+      if (existsSync(metafilePath)) {
+        try {
+          const meta = JSON.parse(readFileSync(metafilePath, 'utf8'));
+          const inputs = Object.entries(meta.inputs || {})
+            .map(([path, info]) => ({ path, bytes: info.bytes }))
+            .sort((a, b) => b.bytes - a.bytes)
+            .slice(0, 30);
+          console.log('\n=== Top 30 largest bundle inputs ===');
+          for (const { path, bytes } of inputs) {
+            console.log(`  ${(bytes / 1024).toFixed(0)} KiB  ${path.replace(projectRoot + '/', '')}`);
+          }
+          const totalBytes = Object.values(meta.inputs || {}).reduce((sum, i) => sum + i.bytes, 0);
+          console.log(`  Total inputs: ${(totalBytes / 1024 / 1024).toFixed(1)} MB`);
+        } catch (e) {
+          console.log(`[warn] metafile analysis skipped: ${e instanceof Error ? e.message : String(e)}`);
         }
-        const totalBytes = Object.values(meta.inputs || {}).reduce((sum, i) => sum + i.bytes, 0);
-        console.log(`  Total inputs: ${(totalBytes / 1024 / 1024).toFixed(1)} MB`);
-      } catch (e) {
-        console.log(`[warn] metafile analysis skipped: ${e instanceof Error ? e.message : String(e)}`);
       }
     }
+  } catch (e) {
+    console.log(`[warn] esbuild minification skipped: ${e instanceof Error ? e.message : String(e)}`);
   }
-} catch (e) {
-  console.log(`[warn] esbuild minification skipped: ${e instanceof Error ? e.message : String(e)}`);
+} else {
+  console.log(`Worker is already ${(currentSize / 1024 / 1024).toFixed(1)} MB (≤ 64 MiB), skipping esbuild minification`);
 }
 
 // Create wrangler.jsonc in the dist directory
