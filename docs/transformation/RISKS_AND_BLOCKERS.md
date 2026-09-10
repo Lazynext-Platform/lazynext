@@ -19,7 +19,7 @@
 | R9 | No autonomous execution loop | High | Certain | Core product gap | Phase 7-8: build agent runtime + planner + durable execution | Resolved — AutonomyLoopService implemented |
 | R10 | Agent runtime is thin CRUD (no tool calling, no verification) | High | Certain | Core product gap | Phase 7: rebuild AgentRun as durable execution | Resolved — Agent runtime has durable execution, tool calling, budget checks, approval gating |
 | R11 | Team model duplicates Organization/Workspace | Medium | Certain | Data model confusion | Phase 4: deprecate Team, migrate to Organization/Workspace | Resolved — deprecated with comments |
-| R12 | Email verification not enforced at login | Medium | Likely | Account security gap | Phase 27: enforce verification | Open |
+| R12 | Email verification not enforced at login | Medium | Likely | Account security gap | Phase 27: enforce verification | Resolved — enforced in auth.ts; signup sends verification email; resend endpoint added |
 | R13 | No distributed rate limiting (in-memory only) | Medium | Likely | Rate limit bypass | Phase 27: wire Cloudflare rate limiter | Resolved — binding configured in wrangler.jsonc |
 | R14 | Non-standard dependency versions (Next 16, React 19, TS 6/7, Prisma 7) | Low-Medium | Unknown | Potential registry instability | Monitor; verify published packages | Open |
 | R15 | No characterization tests for existing behavior | Medium | Certain | Regression risk during transformation | Phase 3: write characterization tests | Resolved — 5 characterization test files with 129 tests |
@@ -46,7 +46,7 @@
 
 ## Risk Assessment Summary
 
-- **24 of 26 risks (R1-R26) are RESOLVED.** R12 (email verification) and R14 (dep versions) remain open — low priority.
+- **25 of 26 risks (R1-R26) are RESOLVED.** R14 (dep versions) remains open — low priority, monitoring only.
 - **2 of 4 blockers (B1, B3) are RESOLVED.** B2 and B4 require external credentials that only the user can provide.
 
 ### Resolved in prior batches
@@ -55,7 +55,7 @@
 - R8 (no Company model) — Resolved (CompanyService exists)
 - R9 (no autonomous loop) — Resolved (AutonomyLoopService implemented)
 - R10 (thin agent runtime) — Resolved (durable execution, tool calling, budget checks)
-- R12 (email verification) — Open (low priority, not blocking production)
+- R12 (email verification) — Resolved (enforced in auth.ts; signup sends verification email; resend endpoint added)
 - R14 (dep versions) — Open (monitoring, not blocking)
 - R15 (characterization tests) — Resolved (5 test files, 129 tests)
 - R20 (no budgets) — Resolved (BudgetService wired into agent runtime)

@@ -27,6 +27,28 @@ function LoginForm() {
       ? 'Invalid MFA code. Please try again.'
       : errorParam ? 'Authentication failed. Please try again.' : null,
   );
+  const [showResend, setShowResend] = useState(errorParam === 'EmailNotVerified');
+  const [resendSent, setResendSent] = useState(false);
+  const [resending, setResending] = useState(false);
+
+  const handleResend = async () => {
+    if (!email) return;
+    setResending(true);
+    try {
+      const res = await fetch('/api/auth/resend-verification', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+      if (res.ok) {
+        setResendSent(true);
+        setShowResend(false);
+      }
+    } catch {
+      // Ignore — don't reveal status
+    }
+    setResending(false);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -58,6 +80,8 @@ function LoginForm() {
         }
         if (errorUrl?.includes('EmailNotVerified')) {
           setError('Please verify your email before signing in. Check your inbox for a verification link.');
+          setShowResend(true);
+          setResendSent(false);
           setLoading(false);
           return;
         }
@@ -126,7 +150,23 @@ function LoginForm() {
               role="alert"
             >
               <AlertCircle className="h-4 w-4 shrink-0 mt-0.5" />
-              <span>{error}</span>
+              <div className="flex-1">
+                <span>{error}</span>
+                {showResend && email && (
+                  <button
+                    onClick={handleResend}
+                    disabled={resending}
+                    className="mt-1 text-xs font-semibold underline underline-offset-2 hover:opacity-70 transition-opacity disabled:opacity-50"
+                  >
+                    {resending ? 'Sending...' : 'Resend verification email'}
+                  </button>
+                )}
+                {resendSent && (
+                  <p className="mt-1 text-xs" style={{ color: 'var(--c-success)' }}>
+                    Verification email sent. Check your inbox.
+                  </p>
+                )}
+              </div>
             </div>
           )}
 
