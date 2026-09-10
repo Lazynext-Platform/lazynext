@@ -28,7 +28,7 @@ console.log('Generating full schema SQL from prisma/schema.prisma...');
 const diffResult = spawnSync('npx', [
   'prisma', 'migrate', 'diff',
   '--from-empty',
-  '--to-schema-datamodel', 'prisma/schema.prisma',
+  '--to-schema', 'prisma/schema.prisma',
   '--script',
 ], {
   cwd: projectRoot,
