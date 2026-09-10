@@ -5,7 +5,7 @@
  * For each top-level directory under src/app/api (e.g., disaster-recovery, email, etc.),
  * this script:
  * 1. Moves all route.ts files to handler modules in src/lib/api-handlers/<family>/
- * 2. Creates a catch-all route src/app/api/<family>/[...path]/route.ts
+ * 2. Creates an optional catch-all route src/app/api/<family>/[[...path]]/route.ts
  * 3. The catch-all route dispatches to the appropriate handler based on path matching
  *
  * This reduces ~3,000+ route entry points to ~200 catch-all routes,
@@ -61,9 +61,9 @@ for (const family of families.sort()) {
     continue;
   }
   
-  // Skip if there's already a [...path] catch-all
-  if (existsSync(join(familyDir, '[...path]'))) {
-    console.log(`SKIP: ${family} - already has [...path] catch-all`);
+  // Skip if there's already a [[...path]] optional catch-all
+  if (existsSync(join(familyDir, '[[...path]]'))) {
+    console.log(`SKIP: ${family} - already has [[...path]] catch-all`);
     continue;
   }
   
@@ -238,9 +238,9 @@ function matchRoute(pathSegments: string[]): { route: RouteEntry; params: Record
 async function dispatch(
   req: NextRequest,
   method: string,
-  { params }: { params: Promise<{ path: string[] }> },
+  { params }: { params: Promise<{ path?: string[] }> },
 ) {
-  const { path } = await params;
+  const { path = [] } = await params;
   const match = matchRoute(path);
   if (!match) {
     return NextResponse.json({ error: 'not_found' }, { status: 404 });
@@ -253,37 +253,37 @@ async function dispatch(
   return handler(req, ctx);
 }
 
-export async function GET(req: NextRequest, ctx: { params: Promise<{ path: string[] }> }) {
+export async function GET(req: NextRequest, ctx: { params: Promise<{ path?: string[] }> }) {
   return dispatch(req, 'GET', ctx);
 }
 
-export async function POST(req: NextRequest, ctx: { params: Promise<{ path: string[] }> }) {
+export async function POST(req: NextRequest, ctx: { params: Promise<{ path?: string[] }> }) {
   return dispatch(req, 'POST', ctx);
 }
 
-export async function PUT(req: NextRequest, ctx: { params: Promise<{ path: string[] }> }) {
+export async function PUT(req: NextRequest, ctx: { params: Promise<{ path?: string[] }> }) {
   return dispatch(req, 'PUT', ctx);
 }
 
-export async function PATCH(req: NextRequest, ctx: { params: Promise<{ path: string[] }> }) {
+export async function PATCH(req: NextRequest, ctx: { params: Promise<{ path?: string[] }> }) {
   return dispatch(req, 'PATCH', ctx);
 }
 
-export async function DELETE(req: NextRequest, ctx: { params: Promise<{ path: string[] }> }) {
+export async function DELETE(req: NextRequest, ctx: { params: Promise<{ path?: string[] }> }) {
   return dispatch(req, 'DELETE', ctx);
 }
 
-export async function HEAD(req: NextRequest, ctx: { params: Promise<{ path: string[] }> }) {
+export async function HEAD(req: NextRequest, ctx: { params: Promise<{ path?: string[] }> }) {
   return dispatch(req, 'HEAD', ctx);
 }
 
-export async function OPTIONS(req: NextRequest, ctx: { params: Promise<{ path: string[] }> }) {
+export async function OPTIONS(req: NextRequest, ctx: { params: Promise<{ path?: string[] }> }) {
   return dispatch(req, 'OPTIONS', ctx);
 }
 `;
   
   // Write the catch-all route
-  const catchAllDir = join(familyDir, '[...path]');
+  const catchAllDir = join(familyDir, '[[...path]]');
   mkdirSync(catchAllDir, { recursive: true });
   writeFileSync(join(catchAllDir, 'route.ts'), catchAllCode);
   
