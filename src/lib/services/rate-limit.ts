@@ -50,6 +50,7 @@ interface RateLimitBinding {
 
 declare global {
   var API_RATE_LIMITER: RateLimitBinding | undefined;
+  var RATE_LIMITER: RateLimitBinding | undefined;
 }
 
 // ── Public API ──
@@ -92,6 +93,50 @@ export const RateLimiter = {
       );
     }
     return null;
+  },
+
+  /**
+   * Distributed rate-limit check using the Cloudflare RATE_LIMITER binding.
+   * Returns { limited: false } if allowed, { limited: true, retryAfter } if rate limited.
+   * Falls back to in-memory limiter when the binding is not available (local dev).
+   */
+  async checkDistributed(
+    req: NextRequest,
+    config: RateLimitConfig,
+    identifier?: string,
+  ): Promise<{ limited: boolean; retryAfter?: number }> {
+    const ip = getClientIP(req);
+    const key = `${config.prefix}:${identifier || ip}`;
+
+    // Use Cloudflare distributed rate limiter when available
+    if (typeof globalThis !== 'undefined' && globalThis.RATE_LIMITER) {
+      try {
+        const result = await globalThis.RATE_LIMITER.limit({ key });
+        if (!result.success) {
+          return { limited: true, retryAfter: Math.ceil(config.windowMs / 1000) };
+        }
+        return { limited: false };
+      } catch {
+        // Fall through to in-memory
+      }
+    }
+
+    // Also try the API_RATE_LIMITER binding as a secondary distributed limiter
+    if (typeof globalThis !== 'undefined' && globalThis.API_RATE_LIMITER) {
+      try {
+        const result = await globalThis.API_RATE_LIMITER.limit({ key });
+        if (!result.success) {
+          return { limited: true, retryAfter: Math.ceil(config.windowMs / 1000) };
+        }
+        return { limited: false };
+      } catch {
+        // Fall through to in-memory
+      }
+    }
+
+    // In-memory fallback
+    const result = checkInMemory(key, config.max, config.windowMs);
+    return { limited: result.limited, retryAfter: result.retryAfter };
   },
 };
 

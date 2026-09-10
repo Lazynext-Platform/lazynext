@@ -14,6 +14,7 @@ import { safePrisma } from '@/lib/safe-prisma';
 import { getCredits } from '@/lib/credits';
 import { getUserPlanTier } from '@/lib/plan-tier';
 import { Card, Badge, Button, EmptyState } from '@/components/ui';
+import { OnboardingBanner } from './OnboardingBanner';
 
 export const dynamic = 'force-dynamic';
 
@@ -108,6 +109,9 @@ export default async function DashboardPage() {
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      {/* Onboarding banner — only shows if onboarding is incomplete */}
+      <OnboardingBanner />
+
       {/* Header */}
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-2">

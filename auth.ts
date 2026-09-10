@@ -2,12 +2,36 @@ import NextAuth from 'next-auth';
 import Google from 'next-auth/providers/google';
 import Credentials from 'next-auth/providers/credentials';
 import { PrismaAdapter } from '@auth/prisma-adapter';
+import { CredentialsSignin } from '@auth/core/errors';
 import bcrypt from 'bcryptjs';
 import { randomUUID } from 'crypto';
 import { prisma } from '@/lib/prisma';
 import { grantCredits } from '@/lib/credits';
 import { verifyTOTP } from '@/lib/mfa';
 import { isSessionRevoked } from '@/lib/session-revocation';
+
+// NextAuth only exposes client-safe AuthError types to the client.
+// Regular Error objects are mapped to "Configuration" — which hides the
+// actual error from the user. Use CredentialsSignin (a client-safe type)
+// with a custom `code` so the login page can show the right message.
+class EmailNotVerifiedError extends CredentialsSignin {
+  constructor() {
+    super('Email not verified');
+    this.code = 'EmailNotVerified' as const;
+  }
+}
+class MfaRequiredError extends CredentialsSignin {
+  constructor() {
+    super('MFA required');
+    this.code = 'MfaRequired' as const;
+  }
+}
+class MfaInvalidError extends CredentialsSignin {
+  constructor() {
+    super('Invalid MFA code');
+    this.code = 'MfaInvalid' as const;
+  }
+}
 
 // Account lockout: track failed login attempts per email.
 // After 5 failed attempts within 15 minutes, the account is locked for 15 minutes.
@@ -113,10 +137,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         // In development/test, set ENFORCE_EMAIL_VERIFICATION=false to bypass.
         const enforceVerification = process.env.ENFORCE_EMAIL_VERIFICATION !== 'false';
         if (enforceVerification && !user.emailVerified) {
-          // Return a special error indicator — the signIn callback will
-          // redirect to a "verify your email" page instead of showing
-          // a generic "invalid credentials" error.
-          throw new Error('EMAIL_NOT_VERIFIED');
+          // Throw a CredentialsSignin subclass so NextAuth exposes the error
+          // type to the client (regular Errors are mapped to "Configuration").
+          throw new EmailNotVerifiedError();
         }
 
         // MFA check: if the user has MFA enabled, verify the TOTP code.
@@ -125,7 +148,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           if (!totpCode) {
             // Password is correct but MFA code is required.
             // The client should show an MFA input field and retry with totpCode.
-            throw new Error('MFA_REQUIRED');
+            throw new MfaRequiredError();
           }
           const mfaValid = await verifyTOTP(user.mfaSecret, totpCode);
           if (!mfaValid) {
@@ -142,7 +165,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             } else {
               failedAttempts.set(failKey, { count: 1, resetAt: now + 15 * 60 * 1000 });
             }
-            throw new Error('MFA_INVALID');
+            throw new MfaInvalidError();
           }
         }
 

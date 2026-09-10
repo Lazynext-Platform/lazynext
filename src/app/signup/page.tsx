@@ -16,6 +16,7 @@ function SignupForm() {
   const [agree, setAgree] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [registered, setRegistered] = useState(false);
 
   const passwordChecks = {
     length: password.length >= 8,
@@ -58,20 +59,11 @@ function SignupForm() {
         return;
       }
 
-      // Auto sign-in after successful registration
-      const result = await signIn('credentials', {
-        email,
-        password,
-        redirect: false,
-      });
-
-      if (result?.ok) {
-        router.push('/onboarding');
-        router.refresh();
-      } else {
-        // Registration succeeded but auto-login failed — send to login
-        router.push('/login?registered=1');
-      }
+      // Email verification is enforced at login (auth.ts).
+      // Instead of auto-sign-in (which would fail with EMAIL_NOT_VERIFIED),
+      // show a "check your email" message so the user knows to verify first.
+      setRegistered(true);
+      setLoading(false);
     } catch {
       setError('Something went wrong. Please try again.');
       setLoading(false);
@@ -81,6 +73,45 @@ function SignupForm() {
   const handleGoogle = () => {
     signIn('google', { callbackUrl: '/onboarding' });
   };
+
+  if (registered) {
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center px-4 py-12">
+        <div className="w-full max-w-md">
+          <div
+            className="border-[3px] bg-surface p-8 text-center"
+            style={{
+              borderColor: 'var(--c-ink)',
+              borderRadius: 'var(--radius-md)',
+              boxShadow: 'var(--shadow-hard-lg)',
+            }}
+          >
+            <div
+              className="mx-auto mb-4 flex h-12 w-12 items-center justify-center border-2"
+              style={{
+                borderColor: 'var(--c-success)',
+                backgroundColor: 'var(--c-surface-alt)',
+                borderRadius: 'var(--radius-full)',
+              }}
+            >
+              <Mail className="h-6 w-6" style={{ color: 'var(--c-success)' }} />
+            </div>
+            <h1 className="heading-display text-xl mb-2">Check your email</h1>
+            <p className="text-sm text-fg-secondary mb-6">
+              We sent a verification link to <strong>{email}</strong>. Click the link to verify your account, then sign in.
+            </p>
+            <Link
+              href="/login"
+              className="btn-primary w-full inline-flex items-center justify-center gap-2"
+            >
+              Go to sign in
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center px-4 py-12">

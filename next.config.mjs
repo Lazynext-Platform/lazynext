@@ -6,7 +6,11 @@ const nextConfig = {
   // Optimize barrel imports for large icon/dependency libraries to avoid
   // pulling the entire package into client bundles.
   experimental: {
+    // Optimize barrel imports for large icon/dependency libraries to avoid
+    // pulling the entire package into client bundles.
     optimizePackageImports: ['lucide-react'],
+    // Optimize CSS by removing unused rules and minifying (Phase 30 perf).
+    optimizeCss: true,
   },
   // Redirect old ad-studio routes to the creative hub
   async redirects() {
@@ -69,6 +73,12 @@ const nextConfig = {
     return config;
   },
   images: {
+    // Serve modern formats (avif/webp) for smaller payloads (Phase 30 perf).
+    formats: ['image/avif', 'image/webp'],
+    deviceSizes: [320, 420, 640, 750, 828, 1080, 1200, 1920, 2048, 3840],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+    // Cache optimized images at the edge for 60s before revalidating.
+    minimumCacheTTL: 60,
     remotePatterns: [
       { protocol: 'https', hostname: 'static.atlascloud.ai' },
       { protocol: 'https', hostname: '**.atlascloud.ai' },

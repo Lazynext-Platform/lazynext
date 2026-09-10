@@ -1,325 +1,138 @@
-'use client';
+import type { Metadata } from 'next';
+import { GitBranch as Github, Plus, ExternalLink } from 'lucide-react';
+import { auth } from '@/../auth';
+import { GitHubService } from '@/lib/services/github';
+import { Card, Badge, Button, EmptyState } from '@/components/ui';
+import ConnectForm from './ConnectForm';
+import { DisconnectButton } from './DisconnectButton';
+import { RepoList } from './RepoList';
 
-import { useState, useEffect, useCallback } from 'react';
-import { useSession } from 'next-auth/react';
-import { Key, Plus, Trash2, Copy, Check, Webhook, Bot, FileText, ExternalLink, Loader2 } from 'lucide-react';
-import { Card, Badge, Button, Input, EmptyState, Dialog } from '@/components/ui';
-import { useToast } from '@/components/ui/Toast';
+export const dynamic = 'force-dynamic';
 
-interface ApiKey {
-  id: string;
-  name: string;
-  keyPrefix: string;
-  scopes: string[];
-  lastUsedAt: string | null;
-  createdAt: string;
-}
+export const metadata: Metadata = {
+  title: 'Developers — Lazynext',
+  description: 'Connect GitHub and manage your repositories, issues, and pull requests.',
+  robots: { index: false, follow: false },
+};
 
-export default function DevelopersPage() {
-  const { status } = useSession();
-  const { toast } = useToast();
-  const [keys, setKeys] = useState<ApiKey[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [createOpen, setCreateOpen] = useState(false);
-  const [newKeyName, setNewKeyName] = useState('');
-  const [newKeyScopes, setNewKeyScopes] = useState<string[]>(['read']);
-  const [createdKey, setCreatedKey] = useState<string | null>(null);
-  const [copied, setCopied] = useState(false);
-
-  const fetchKeys = useCallback(async () => {
-    if (status !== 'authenticated') { setLoading(false); return; }
-    try {
-      const res = await fetch('/api/keys');
-      if (res.ok) {
-        const data = await res.json();
-        setKeys(data.keys || []);
-      }
-    } catch {
-      // ignore
-    } finally {
-      setLoading(false);
-    }
-  }, [status]);
-
-  useEffect(() => { fetchKeys(); }, [fetchKeys]);
-
-  const handleCreate = async () => {
-    if (!newKeyName.trim()) return;
-    try {
-      const res = await fetch('/api/keys', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: newKeyName, scopes: newKeyScopes }),
-      });
-      if (res.ok) {
-        const data = await res.json();
-        setCreatedKey(data.key);
-        setKeys([...keys, { id: data.id, name: data.name, keyPrefix: data.keyPrefix, scopes: data.scopes, lastUsedAt: null, createdAt: data.createdAt }]);
-        setNewKeyName('');
-        setNewKeyScopes(['read']);
-        toast('success', 'API key created');
-      } else {
-        toast('error', 'Failed to create key');
-      }
-    } catch {
-      toast('error', 'Failed to create key');
-    }
-  };
-
-  const handleRevoke = async (id: string) => {
-    if (!confirm('Revoke this API key? This cannot be undone.')) return;
-    try {
-      const res = await fetch(`/api/keys/${id}`, { method: 'DELETE' });
-      if (res.ok) {
-        setKeys(keys.filter((k) => k.id !== id));
-        toast('success', 'API key revoked');
-      }
-    } catch {
-      toast('error', 'Failed to revoke key');
-    }
-  };
-
-  const copyKey = () => {
-    if (createdKey) {
-      navigator.clipboard.writeText(createdKey);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    }
-  };
-
-  if (status !== 'authenticated') {
+export default async function DevelopersPage() {
+  const session = await auth().catch(() => null);
+  if (!session?.user?.id) {
     return <div className="p-8"><Button href="/login">Sign in</Button></div>;
   }
 
-  return (
-    <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
-      <div className="mb-8">
-        <h1 className="heading-display text-2xl">Developer</h1>
-        <p className="text-sm text-fg-secondary mt-1">API keys, MCP server, and webhooks</p>
-      </div>
+  const status = await GitHubService.getStatus(session.user.id);
 
-      {/* API Keys section */}
-      <div className="mb-8">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="heading-display text-sm flex items-center gap-2">
-            <Key className="h-4 w-4" /> API Keys
-          </h2>
-          <Button size="sm" onClick={() => setCreateOpen(true)}>
-            <Plus className="h-4 w-4" /> New Key
-          </Button>
+  // Not connected — show connect form
+  if (!status.connected) {
+    return (
+      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+        <div className="mb-8">
+          <h1 className="heading-display text-2xl">Developers</h1>
+          <p className="text-sm text-fg-secondary mt-1">
+            Connect your GitHub account to manage repos, issues, and pull requests.
+          </p>
         </div>
-
-        {loading ? (
-          <div className="flex items-center justify-center py-8">
-            <Loader2 className="h-6 w-6 animate-spin text-fg-muted" />
+        <Card className="p-8">
+          <EmptyState
+            icon={Github}
+            title="GitHub not connected"
+            description="Connect your GitHub account to view repositories, issues, and pull requests directly from Lazynext."
+            action={
+              <a
+                href="https://github.com/settings/tokens"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 text-xs text-fg-secondary hover:text-fg"
+              >
+                Create a token <ExternalLink className="h-3 w-3" />
+              </a>
+            }
+          />
+          {/* ConnectForm is a client component — lazy loaded below */}
+          <div className="mt-6 border-t pt-6" style={{ borderColor: 'var(--c-ink)' }}>
+            <ConnectForm />
           </div>
-        ) : keys.length === 0 ? (
-          <Card className="p-8">
-            <EmptyState
-              icon={Key}
-              title="No API keys yet"
-              description="Create an API key to access the Lazynext REST API and MCP server."
-              action={<Button size="sm" onClick={() => setCreateOpen(true)}>Create key</Button>}
-            />
-          </Card>
-        ) : (
-          <div className="flex flex-col gap-2">
-            {keys.map((k) => (
-              <Card key={k.id} className="p-4 flex items-center gap-4">
-                <div
-                  className="flex h-10 w-10 items-center justify-center border-2 shrink-0"
-                  style={{ borderColor: 'var(--c-ink)', backgroundColor: 'var(--c-surface-alt)', borderRadius: 'var(--radius-sm)' }}
-                >
-                  <Key className="h-5 w-5" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold truncate">{k.name}</p>
-                  <p className="text-xs text-fg-muted font-mono">{k.keyPrefix}...</p>
-                </div>
-                <div className="flex items-center gap-2 shrink-0">
-                  {k.scopes.map((s) => <Badge key={s}>{s}</Badge>)}
-                  <span className="text-xs text-fg-muted hidden sm:block">
-                    {k.lastUsedAt ? `Used ${new Date(k.lastUsedAt).toLocaleDateString()}` : 'Never used'}
-                  </span>
-                  <button
-                    onClick={() => handleRevoke(k.id)}
-                    className="p-1.5 border-2 hover:bg-hover transition-colors"
-                    style={{ borderColor: 'var(--c-ink)', borderRadius: 'var(--radius-sm)' }}
-                    aria-label="Revoke key"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </button>
-                </div>
-              </Card>
-            ))}
-          </div>
-        )}
+        </Card>
       </div>
+    );
+  }
 
-      {/* MCP section */}
+  // Connected — fetch repos
+  const repos = await GitHubService.listRepos(session.user.id, 1, 30);
+
+  return (
+    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      {/* Header */}
       <div className="mb-8">
-        <h2 className="heading-display text-sm mb-4 flex items-center gap-2">
-          <Bot className="h-4 w-4" /> MCP Server
-        </h2>
-        <Card className="p-5">
-          <div className="flex items-start gap-4 mb-4">
-            <div
-              className="flex h-10 w-10 items-center justify-center border-2 shrink-0"
-              style={{ borderColor: 'var(--c-ink)', backgroundColor: 'var(--c-surface-alt)', borderRadius: 'var(--radius-sm)' }}
-            >
-              <Bot className="h-5 w-5" />
-            </div>
-            <div className="flex-1">
-              <p className="text-sm font-semibold">Model Context Protocol</p>
-              <p className="text-xs text-fg-secondary mt-1">
-                Protocol version <Badge>2026-07-28</Badge>
-              </p>
-            </div>
-          </div>
-          <div className="space-y-2">
-            <div className="flex items-center justify-between p-3 border-2" style={{ borderColor: 'var(--c-ink)', borderRadius: 'var(--radius-sm)' }}>
-              <div>
-                <p className="label-mono">Endpoint</p>
-                <p className="text-sm font-mono">/mcp</p>
-              </div>
-              <a href="/mcp" target="_blank" rel="noopener noreferrer" className="text-fg-muted hover:text-fg">
-                <ExternalLink className="h-4 w-4" />
-              </a>
-            </div>
-            <div className="flex items-center justify-between p-3 border-2" style={{ borderColor: 'var(--c-ink)', borderRadius: 'var(--radius-sm)' }}>
-              <div>
-                <p className="label-mono">OAuth Protected Resource</p>
-                <p className="text-sm font-mono">/.well-known/oauth-protected-resource</p>
-              </div>
-              <a href="/.well-known/oauth-protected-resource" target="_blank" rel="noopener noreferrer" className="text-fg-muted hover:text-fg">
-                <ExternalLink className="h-4 w-4" />
-              </a>
-            </div>
-          </div>
-        </Card>
-      </div>
-
-      {/* REST API section */}
-      <div className="mb-8">
-        <h2 className="heading-display text-sm mb-4 flex items-center gap-2">
-          <FileText className="h-4 w-4" /> REST API v1
-        </h2>
-        <Card className="p-5">
-          <div className="flex items-start gap-4 mb-4">
-            <div
-              className="flex h-10 w-10 items-center justify-center border-2 shrink-0"
-              style={{ borderColor: 'var(--c-ink)', backgroundColor: 'var(--c-surface-alt)', borderRadius: 'var(--radius-sm)' }}
-            >
-              <FileText className="h-5 w-5" />
-            </div>
-            <div className="flex-1">
-              <p className="text-sm font-semibold">Public REST API</p>
-              <p className="text-xs text-fg-secondary mt-1">Version <Badge>1.0.0</Badge></p>
-            </div>
-          </div>
-          <div className="space-y-2">
-            <div className="flex items-center justify-between p-3 border-2" style={{ borderColor: 'var(--c-ink)', borderRadius: 'var(--radius-sm)' }}>
-              <div>
-                <p className="label-mono">Base URL</p>
-                <p className="text-sm font-mono">/api/v1</p>
-              </div>
-              <a href="/api/v1" target="_blank" rel="noopener noreferrer" className="text-fg-muted hover:text-fg">
-                <ExternalLink className="h-4 w-4" />
-              </a>
-            </div>
-            <div className="p-3 border-2" style={{ borderColor: 'var(--c-ink)', borderRadius: 'var(--radius-sm)' }}>
-              <p className="label-mono mb-2">Authentication</p>
-              <p className="text-xs font-mono">Authorization: Bearer ln_live_...</p>
-            </div>
-            <div className="p-3 border-2" style={{ borderColor: 'var(--c-ink)', borderRadius: 'var(--radius-sm)' }}>
-              <p className="label-mono mb-2">Rate Limit</p>
-              <p className="text-xs">100 requests per minute per IP</p>
-            </div>
-          </div>
-        </Card>
-      </div>
-
-      {/* Webhooks section */}
-      <div>
-        <h2 className="heading-display text-sm mb-4 flex items-center gap-2">
-          <Webhook className="h-4 w-4" /> Webhooks
-        </h2>
-        <Card className="p-5">
-          <div className="flex items-start gap-4">
-            <div
-              className="flex h-10 w-10 items-center justify-center border-2 shrink-0"
-              style={{ borderColor: 'var(--c-ink)', backgroundColor: 'var(--c-surface-alt)', borderRadius: 'var(--radius-sm)' }}
-            >
-              <Webhook className="h-5 w-5" />
-            </div>
-            <div className="flex-1">
-              <p className="text-sm font-semibold">Webhook Endpoints</p>
-              <p className="text-xs text-fg-secondary mt-1">
-                Manage webhook endpoints for event delivery.
-              </p>
-            </div>
-            <Button href="/api/webhooks" size="sm">Manage</Button>
-          </div>
-        </Card>
-      </div>
-
-      {/* Create key dialog */}
-      <Dialog open={createOpen} onClose={() => { setCreateOpen(false); setCreatedKey(null); }} title={createdKey ? 'API Key Created' : 'Create API Key'}>
-        {createdKey ? (
-          <div className="space-y-4">
-            <p className="text-sm text-fg-secondary">
-              Copy your API key now. You will not be able to see it again.
+        <div className="flex items-start justify-between">
+          <div>
+            <h1 className="heading-display text-2xl flex items-center gap-2">
+              <Github className="h-6 w-6" /> Developers
+            </h1>
+            <p className="text-sm text-fg-secondary mt-1">
+              Manage your GitHub repositories, issues, and pull requests.
             </p>
-            <div className="flex items-center gap-2 p-3 border-2" style={{ borderColor: 'var(--c-ink)', borderRadius: 'var(--radius-sm)' }}>
-              <code className="text-xs font-mono flex-1 break-all">{createdKey}</code>
-              <button onClick={copyKey} className="p-2 border-2 hover:bg-hover" style={{ borderColor: 'var(--c-ink)', borderRadius: 'var(--radius-sm)' }}>
-                {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-              </button>
-            </div>
-            <Button onClick={() => { setCreateOpen(false); setCreatedKey(null); }} className="w-full">Done</Button>
           </div>
-        ) : (
-          <div className="space-y-4">
-            <div>
-              <label className="label-mono block mb-2">Name</label>
-              <Input
-                placeholder="e.g. Production bot"
-                value={newKeyName}
-                onChange={(e) => setNewKeyName(e.target.value)}
-              />
-            </div>
-            <div>
-              <label className="label-mono block mb-2">Scopes</label>
-              <div className="flex gap-2">
-                {['read', 'write', 'admin'].map((scope) => (
-                  <button
-                    key={scope}
-                    onClick={() => {
-                      if (newKeyScopes.includes(scope)) {
-                        setNewKeyScopes(newKeyScopes.filter((s) => s !== scope));
-                      } else {
-                        setNewKeyScopes([...newKeyScopes, scope]);
-                      }
-                    }}
-                    className="px-3 py-1.5 text-xs font-mono border-2"
-                    style={{
-                      borderColor: 'var(--c-ink)',
-                      backgroundColor: newKeyScopes.includes(scope) ? 'var(--c-ink)' : 'var(--c-surface)',
-                      color: newKeyScopes.includes(scope) ? 'var(--c-surface)' : 'var(--c-fg)',
-                      borderRadius: 'var(--radius-sm)',
-                    }}
-                  >
-                    {scope.toUpperCase()}
-                  </button>
-                ))}
-              </div>
-            </div>
-            <Button onClick={handleCreate} className="w-full" disabled={!newKeyName.trim()}>
-              Create Key
-            </Button>
+          <div className="flex items-center gap-3">
+            <Badge variant="success">
+              <Github className="h-3 w-3 mr-1" /> @{status.username}
+            </Badge>
+            <DisconnectButton />
           </div>
-        )}
-      </Dialog>
+        </div>
+      </div>
+
+      {/* Quick stats */}
+      <div className="grid grid-cols-2 gap-4 mb-8 sm:grid-cols-4">
+        <Card className="p-4">
+          <div className="flex items-center gap-2 text-fg-secondary text-xs mb-1">
+            <Github className="h-3 w-3" /> Connected
+          </div>
+          <div className="text-sm font-semibold">@{status.username}</div>
+        </Card>
+        <Card className="p-4">
+          <div className="flex items-center gap-2 text-fg-secondary text-xs mb-1">
+            <Plus className="h-3 w-3" /> Repositories
+          </div>
+          <div className="text-2xl font-semibold">{repos.length}</div>
+        </Card>
+        <Card className="p-4">
+          <div className="flex items-center gap-2 text-fg-secondary text-xs mb-1">
+            <ExternalLink className="h-3 w-3" /> Profile
+          </div>
+          <a
+            href={`https://github.com/${status.username}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm font-medium text-accent-primary hover:underline"
+          >
+            View on GitHub
+          </a>
+        </Card>
+        <Card className="p-4">
+          <div className="flex items-center gap-2 text-fg-secondary text-xs mb-1">
+            <Github className="h-3 w-3" /> Token
+          </div>
+          <div className="text-sm font-semibold text-success">Active</div>
+        </Card>
+      </div>
+
+      {/* Repositories + Issues/PRs */}
+      <Card className="p-6">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="font-semibold">Repositories</h2>
+          <a
+            href={`https://github.com/${status.username}?tab=repositories`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-xs text-fg-secondary hover:text-fg inline-flex items-center gap-1"
+          >
+            View all on GitHub <ExternalLink className="h-3 w-3" />
+          </a>
+        </div>
+        <RepoList repos={repos} />
+      </Card>
     </div>
   );
 }

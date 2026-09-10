@@ -11,7 +11,7 @@
  * This script runs after `opennextjs-cloudflare build` and before
  * `opennextjs-cloudflare deploy` to delete the unused engine files.
  */
-import { readdirSync, rmSync, statSync, existsSync, readFileSync, writeFileSync, copyFileSync } from 'node:fs';
+import { readdirSync, rmSync, statSync, existsSync, readFileSync, writeFileSync, copyFileSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 
 const projectRoot = new URL('..', import.meta.url).pathname;
@@ -95,6 +95,54 @@ if (existsSync(dotPrismaDir)) {
 console.log(`\nDone: removed ${removedCount} files, freed ${(removedBytes / 1024 / 1024).toFixed(1)} MB`);
 console.log(`Kept engines: ${[...KEEP_ENGINES].join(', ')}`);
 
+// --- Externalize Prisma WASM to Cloudflare Assets ---
+// NOTE: We no longer remove the WASM file from the bundle because the
+// handler.mjs has a static import reference to it. Removing the file
+// causes Wrangler's bundler to fail with ENOENT.
+// The pre-build trim (trim-prisma-prebuild.mjs) already removed the
+// unused engine variants (cockroachdb, mysql, etc.) from node_modules
+// before the build, so only the SQLite WASM remains.
+// Copy WASM to assets for potential runtime use, but keep the original.
+const wasmDir = join(prismaRuntimeDir, 'lib');
+const assetsWasmDir = join(projectRoot, '.open-next', 'assets', 'wasm');
+
+console.log('\nCopying Prisma WASM to Cloudflare Assets (keeping original)...');
+if (!existsSync(assetsWasmDir)) {
+  mkdirSync(assetsWasmDir, { recursive: true });
+}
+
+// Copy SQLite WASM files to assets (but don't remove from runtime)
+if (existsSync(wasmDir)) {
+  const wasmEntries = readdirSync(wasmDir);
+  for (const entry of wasmEntries) {
+    if ((entry.includes('sqlite') || entry.includes('query_compiler')) && entry.endsWith('.wasm')) {
+      const srcPath = join(wasmDir, entry);
+      if (existsSync(srcPath)) {
+        const destPath = join(assetsWasmDir, entry);
+        copyFileSync(srcPath, destPath);
+        console.log(`  copied to assets: ${entry} (${(statSync(srcPath).size / 1024).toFixed(0)} KiB)`);
+      }
+    }
+  }
+}
+
+// Also copy from .prisma/client
+if (existsSync(dotPrismaDir)) {
+  const dotPrismaEntries = readdirSync(dotPrismaDir);
+  for (const entry of dotPrismaEntries) {
+    if (entry.includes('query_compiler') && entry.endsWith('.wasm')) {
+      const srcPath = join(dotPrismaDir, entry);
+      if (existsSync(srcPath)) {
+        const destPath = join(assetsWasmDir, entry);
+        copyFileSync(srcPath, destPath);
+        console.log(`  copied to assets: ${entry} (${(statSync(srcPath).size / 1024).toFixed(0)} KiB)`);
+      }
+    }
+  }
+}
+
+console.log(`\nExternalization complete: ${removedCount} files moved/freed, ${(removedBytes / 1024 / 1024).toFixed(1)} MB`);
+
 // Prisma 7: the "fast" and "small" WASM engines have DIFFERENT JS glue code
 // (query_compiler_fast_bg.js vs query_compiler_small_bg.js). Swapping the WASM
 // binary without also swapping the JS glue code causes a runtime error:
@@ -106,6 +154,8 @@ console.log('  keeping fast WASM engine (small swap disabled — JS glue mismatc
 
 // Prisma 7: remove the legacy query_compiler_bg.wasm (not used in workerd/edge runtime).
 // The edge.js entry point only uses query_compiler_fast_bg.* and wasm-compiler-edge.
+// NOTE: Do NOT remove query_compiler_fast_bg.wasm — handler.mjs has a static
+// import reference to it and Wrangler's bundler will fail with ENOENT.
 const legacyWasmFiles = [
   join(dotPrismaDir, 'query_compiler_bg.wasm'),
   join(dotPrismaDir, 'query_compiler_bg.js'),

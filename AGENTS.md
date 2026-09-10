@@ -1338,3 +1338,68 @@ Completed across 15+ sessions:
 12. **OAuth metadata**: Verify `/.well-known/oauth-protected-resource` returns valid JSON
 13. **API key creation**: Create a test API key via `/developers` and verify API v1 access
 14. **MCP protocol**: Verify `server/discover` returns correct protocol version (2026-07-28)
+
+#### CI/CD Deployment (GitHub Actions → Cloudflare Workers)
+
+Production deploys run through GitHub Actions, not local `wrangler deploy`. The workflow lives at
+`.github/workflows/deploy.yml` and triggers on every push to `main`.
+
+**Required GitHub secrets** (repo: `devinedesk/lazynext`):
+- `CLOUDFLARE_API_TOKEN` — long-lived Cloudflare API token (rolled from the
+  `Lazynext_Cloudflare_Custom_Token` user token, 174 permissions, no expiry).
+  Created via Cloudflare dashboard → My Profile → API Tokens → Actions → Roll.
+  Stored as a GitHub Actions secret; never commit it to the repo.
+- `CLOUDFLARE_ACCOUNT_ID` — the Cloudflare account ID that owns the Worker.
+- `ATLASCLOUD_API_KEY` — Atlas Cloud API key for AI generation.
+
+**Workflow steps**:
+1. `actions/checkout@v5` + `actions/setup-node@v5`
+2. Add swap space (build is memory-heavy)
+3. `NODE_OPTIONS=--max-old-space-size=14336 npm ci`
+4. `npm run lint`
+5. `npm test`
+6. Apply D1 schema baseline (`scripts/apply-d1-schema-baseline.mjs --apply`)
+   — generates full schema SQL via `prisma migrate diff --from-empty --to-schema`
+   — converts to `CREATE TABLE IF NOT EXISTS` (idempotent)
+   — creates all 145 model tables
+7. Apply D1 migrations (`scripts/apply-d1-migrations.mjs --apply`)
+   — applies incremental migrations one-by-one (idempotent)
+   — tracks applied migrations in `_prisma_migrations` table
+8. `npm run cf:build` (OpenNext → Cloudflare Worker)
+9. Verify WASM externalization (Prisma WASM → Cloudflare Assets, ~3.2 MB)
+10. `npx wrangler deploy` (uses `CLOUDFLARE_API_TOKEN` + `CLOUDFLARE_ACCOUNT_ID`)
+
+**Auth error handling** (NextAuth v5):
+- The `authorize` callback throws `CredentialsSignin` subclasses
+  (`EmailNotVerifiedError`, `MfaRequiredError`, `MfaInvalidError`) with
+  custom `code` values. Regular `Error` objects are mapped to
+  "Configuration" by NextAuth — only client-safe AuthError types are
+  exposed to the client.
+- Login page reads `?error=CredentialsSignin&code=EmailNotVerified`
+  (or `MfaRequired` / `MfaInvalid` / `credentials`).
+- Resend verification endpoint: `POST /api/auth/resend-verification`
+  (rate-limited, generates fresh 24h token).
+
+**Bundle-size remediation** (Cloudflare Worker uncompressed limit: 64 MiB ≈ 67 MB):
+- 132 creative routes consolidated into a single dynamic `src/app/api/creative/[tool]/route.ts`
+  dispatching via `src/lib/creative/tool-registry.ts`.
+- 3,029 API routes across 204 route families consolidated into family-level
+  `src/app/api/*/[...path]/route.ts` catch-all dispatchers backed by extracted
+  handler modules under `src/lib/api-handlers/`.
+- Final Worker size: ~59.0 MB (under the 64 MiB limit).
+- Helper scripts: `scripts/consolidate-creative-routes.mjs`,
+  `scripts/consolidate-all-routes.mjs`, `scripts/patch-worker.mjs`.
+
+**Production endpoints**:
+- Site: `https://lazynext.com`
+- Worker URL: `https://lazynext.dry-hall-6a50.workers.dev`
+- Health: `https://lazynext.com/api/health` → `{ "status": "healthy", checks: { atlas, r2, d1 } }`
+- R2 asset bucket binding: `lazynext-assets`
+
+**Known non-blocking warnings**:
+- `Node.js 20 is deprecated` — GitHub Actions forces Node 24 for actions targeting Node 20.
+  Does not block the deploy. Bumping `actions/checkout`/`actions/setup-node` to a Node 24
+  baseline is optional cleanup.
+- React hook dependency warnings in `WorkflowBuilder.tsx`,
+  `PatentManagementDashboard.tsx`, `ManagementSuccessionDashboard.tsx`,
+  `LeaseManagementDashboard.tsx`, `EmployeeSurveysDashboard.tsx`. Lint does not fail on these.

@@ -116,14 +116,19 @@ model Creation {
   cost       Int      @default(0) // credits charged
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+  // ── R16/R17: workspace tenancy + soft-delete (additive, optional) ──
+  workspaceId String?
+  deletedAt   DateTime?
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  workspace Workspace?  @relation(fields: [workspaceId], references: [id])
   timelines Timeline[]
 
   @@index([userId])
   @@index([status, createdAt])
   @@index([taskId])
   @@index([getUrl])
+  @@index([workspaceId])
 }
 
 model CreditLedger {
@@ -160,10 +165,15 @@ model AdProduct {
   imageUrl    String?  // 产品参考图 URL
   sourceUrl   String?  // URL 导入来源
   createdAt   DateTime @default(now())
+  // ── R16/R17: workspace tenancy + soft-delete (additive, optional) ──
+  workspaceId String?
+  deletedAt   DateTime?
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  workspace Workspace?  @relation(fields: [workspaceId], references: [id])
 
   @@index([userId])
+  @@index([workspaceId])
 }
 
 model AdAvatar {
@@ -173,10 +183,15 @@ model AdAvatar {
   description String   // 英文人物描述
   imageUrl    String?  // 数字人定妆图 URL
   createdAt   DateTime @default(now())
+  // ── R16/R17: workspace tenancy + soft-delete (additive, optional) ──
+  workspaceId String?
+  deletedAt   DateTime?
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  workspace Workspace?  @relation(fields: [workspaceId], references: [id])
 
   @@index([userId])
+  @@index([workspaceId])
 }
 
 model BrandKit {
@@ -188,10 +203,15 @@ model BrandKit {
   fontNote  String?
   toneNote  String?  // 语气/风格
   createdAt DateTime @default(now())
+  // ── R16/R17: workspace tenancy + soft-delete (additive, optional) ──
+  workspaceId String?
+  deletedAt   DateTime?
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  workspace Workspace?  @relation(fields: [workspaceId], references: [id])
 
   @@index([userId])
+  @@index([workspaceId])
 }
 
 model BrandProfile {
@@ -211,10 +231,15 @@ model BrandProfile {
   sourceUrls      Json?    // string[]
   extractionTimestamp DateTime?
   createdAt       DateTime @default(now())
+  // ── R16/R17: workspace tenancy + soft-delete (additive, optional) ──
+  workspaceId String?
+  deletedAt   DateTime?
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  workspace Workspace?  @relation(fields: [workspaceId], references: [id])
 
   @@index([userId])
+  @@index([workspaceId])
 }
 
 // ── Unified asset system (lineage, versions, tags, reuse) ──
@@ -228,13 +253,18 @@ model Asset {
   tags        Json?    // string[]
   metadata    Json?    // type-specific metadata
   createdAt   DateTime @default(now())
+  // ── R16/R17: workspace tenancy + soft-delete (additive, optional) ──
+  workspaceId String?
+  deletedAt   DateTime?
 
   user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  workspace   Workspace?    @relation(fields: [workspaceId], references: [id])
   versions    AssetVersion[]
   approvalStages ApprovalStage[]
 
   @@index([userId])
   @@index([parentId])
+  @@index([workspaceId])
 }
 
 model SharedLink {
@@ -246,13 +276,18 @@ model SharedLink {
   expiresAt   DateTime? // optional expiry
   views       Int      @default(0)
   createdAt   DateTime @default(now())
+  // ── R16/R17: workspace tenancy + soft-delete (additive, optional) ──
+  workspaceId String?
+  deletedAt   DateTime?
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  workspace Workspace?  @relation(fields: [workspaceId], references: [id])
 
   @@index([userId])
   @@index([assetId])
   @@index([token])
   @@index([expiresAt])
+  @@index([workspaceId])
 }
 
 model WebhookEndpoint {
@@ -282,13 +317,19 @@ model CreativeComment {
   resolved  Boolean  @default(false) // for comment resolution
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  // ── R16/R17: workspace tenancy + soft-delete (additive, optional) ──
+  workspaceId String?
+  deletedAt   DateTime?
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  workspace Workspace?  @relation(fields: [workspaceId], references: [id])
 
   @@index([userId])
   @@index([assetId])
+  @@index([workspaceId])
 }
 
+/// @deprecated Use Organization and Workspace instead. Migrate Team records to Organization/Workspace.
 model Team {
   id          String   @id @default(cuid())
   name        String
@@ -304,6 +345,7 @@ model Team {
   @@index([ownerId])
 }
 
+/// @deprecated Use Organization and Workspace instead. Migrate TeamMember records to Membership.
 model TeamMember {
   id        String   @id @default(cuid())
   teamId    String
@@ -318,6 +360,7 @@ model TeamMember {
   @@index([userId])
 }
 
+/// @deprecated Use Organization and Workspace instead. Migrate TeamInvitation to workspace-based invitations.
 model TeamInvitation {
   id         String    @id @default(cuid())
   teamId     String
@@ -336,6 +379,7 @@ model TeamInvitation {
   @@index([expiresAt])
 }
 
+/// @deprecated Use Organization and Workspace instead. Migrate TeamActivity to AuditEvent/Event.
 model TeamActivity {
   id        String   @id @default(cuid())
   teamId    String
@@ -397,11 +441,17 @@ model WorkflowRun {
   version      Int      @default(0) // optimistic locking for pipeline state
   startedAt    DateTime @default(now())
   completedAt  DateTime?
+  // ── R16/R17: workspace tenancy + soft-delete (additive, optional) ──
+  workspaceId String?
+  deletedAt   DateTime?
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  workspace Workspace?  @relation(fields: [workspaceId], references: [id])
+  steps     WorkflowStep[]
 
   @@index([userId])
   @@index([status])
+  @@index([workspaceId])
 }
 
 model WorkflowStep {
@@ -415,6 +465,9 @@ model WorkflowStep {
   creditsCost Int?
   startedAt   DateTime?
   completedAt DateTime?
+
+  // ── R18: relation for scalar runId foreign key ──
+  workflowRun WorkflowRun @relation(fields: [runId], references: [id], onDelete: Cascade)
 
   @@index([runId])
 }
@@ -435,12 +488,17 @@ model AdCampaign {
   metrics      Json?    // { impressions, clicks, conversions, spend, roas }
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+  // ── R16/R17: workspace tenancy + soft-delete (additive, optional) ──
+  workspaceId String?
+  deletedAt   DateTime?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  workspace Workspace? @relation(fields: [workspaceId], references: [id])
   approvalStages ApprovalStage[]
 
   @@index([userId])
   @@index([platform])
+  @@index([workspaceId])
 }
 
 // ── Performance learning ──
@@ -462,12 +520,17 @@ model CreativePerformance {
   cvr           Float    @default(0)
   roas          Float    @default(0)
   recordedAt    DateTime @default(now())
+  // ── R16/R17: workspace tenancy + soft-delete (additive, optional) ──
+  workspaceId String?
+  deletedAt   DateTime?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  workspace Workspace? @relation(fields: [workspaceId], references: [id])
 
   @@index([userId])
   @@index([creationId])
   @@index([platform])
+  @@index([workspaceId])
 }
 
 // ── Native video editor timeline ──
@@ -483,13 +546,18 @@ model Timeline {
   markersJson String   @default("[]") // serialized Marker[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  // ── R16/R17: workspace tenancy + soft-delete (additive, optional) ──
+  workspaceId String?
+  deletedAt   DateTime?
 
   user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  workspace Workspace? @relation(fields: [workspaceId], references: [id])
   creation  Creation?  @relation(fields: [creationId], references: [id], onDelete: SetNull)
   versions  TimelineVersion[]
 
   @@index([userId])
   @@index([creationId])
+  @@index([workspaceId])
 }
 
 model TimelineVersion {
@@ -520,10 +588,15 @@ model EditingSkill {
   tagsJson         String   @default("[]") // serialized string[]
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
+  // ── R16/R17: workspace tenancy + soft-delete (additive, optional) ──
+  workspaceId String?
+  deletedAt   DateTime?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  workspace Workspace? @relation(fields: [workspaceId], references: [id])
 
   @@index([userId])
+  @@index([workspaceId])
 }
 
 // ── Creative Template Library ──
@@ -547,11 +620,16 @@ model CreativeTemplate {
   isFavorite  Boolean  @default(false) // user can favorite templates
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  // ── R16/R17: workspace tenancy + soft-delete (additive, optional) ──
+  workspaceId String?
+  deletedAt   DateTime?
 
   user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
+  workspace Workspace? @relation(fields: [workspaceId], references: [id])
 
   @@index([userId])
   @@index([category])
+  @@index([workspaceId])
 }
 
 // ── Custom compliance rules (user-defined, per-platform) ──
@@ -615,12 +693,17 @@ model ScheduledPost {
   error       String?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
+  // ── R16/R17: workspace tenancy + soft-delete (additive, optional) ──
+  workspaceId String?
+  deletedAt   DateTime?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  workspace Workspace? @relation(fields: [workspaceId], references: [id])
 
   @@index([userId])
   @@index([userId, status])
   @@index([status, scheduledAt])
+  @@index([workspaceId])
 }
 
 // ── Meta Ads Safety Layer: persisted audit log & approval workflow ──
@@ -637,9 +720,17 @@ model MetaSafetyAudit {
   payload   String
   result    String
   spendDelta Float   @default(0)
+  // ── R3: workspace tenancy (additive, optional) ──
+  workspaceId     String?
+  organizationId  String?
+
+  workspace        Workspace?      @relation(fields: [workspaceId], references: [id])
+  organization     Organization?   @relation(fields: [organizationId], references: [id])
 
   @@index([actor])
   @@index([timestamp])
+  @@index([workspaceId])
+  @@index([organizationId])
 }
 
 model MetaSafetyApproval {
@@ -651,9 +742,17 @@ model MetaSafetyApproval {
   expiresAt DateTime
   approvedBy String?
   approvedAt DateTime?
+  // ── R3: workspace tenancy (additive, optional) ──
+  workspaceId     String?
+  organizationId  String?
+
+  workspace        Workspace?      @relation(fields: [workspaceId], references: [id])
+  organization     Organization?   @relation(fields: [organizationId], references: [id])
 
   @@index([status])
   @@index([expiresAt])
+  @@index([workspaceId])
+  @@index([organizationId])
 }
 
 // ── Google Ads Safety Layer: audit log & approval state (D1-persisted) ──
@@ -668,9 +767,17 @@ model GoogleSafetyAudit {
   payload   String
   result    String
   spendDelta Float   @default(0)
+  // ── R3: workspace tenancy (additive, optional) ──
+  workspaceId     String?
+  organizationId  String?
+
+  workspace        Workspace?      @relation(fields: [workspaceId], references: [id])
+  organization     Organization?   @relation(fields: [organizationId], references: [id])
 
   @@index([actor])
   @@index([timestamp])
+  @@index([workspaceId])
+  @@index([organizationId])
 }
 
 model GoogleSafetyApproval {
@@ -682,9 +789,17 @@ model GoogleSafetyApproval {
   expiresAt DateTime
   approvedBy String?
   approvedAt DateTime?
+  // ── R3: workspace tenancy (additive, optional) ──
+  workspaceId     String?
+  organizationId  String?
+
+  workspace        Workspace?      @relation(fields: [workspaceId], references: [id])
+  organization     Organization?   @relation(fields: [organizationId], references: [id])
 
   @@index([status])
   @@index([expiresAt])
+  @@index([workspaceId])
+  @@index([organizationId])
 }
 
 // ── Hook Library: AI-generated reusable ad hooks (D1-persisted per user) ──
@@ -702,11 +817,16 @@ model Hook {
   productOrBrand  String?
   audience        String?
   createdAt       DateTime @default(now())
+  // ── R16/R17: workspace tenancy + soft-delete (additive, optional) ──
+  workspaceId String?
+  deletedAt   DateTime?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  workspace Workspace? @relation(fields: [workspaceId], references: [id])
 
   @@index([userId])
   @@index([userId, trigger])
+  @@index([workspaceId])
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -716,17 +836,131 @@ model Hook {
 // ─────────────────────────────────────────────────────────────────────────────
 
 // An organization is a company/team entity that owns one or more workspaces.
+// Extended in Phase 4 to serve as the Company model (mission, vision, strategy, etc.).
 model Organization {
-  id        String   @id @default(cuid())
-  name      String
-  slug      String   @unique
-  ownerId   String
-  plan      String   @default("free") // free | pro | team | enterprise
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id              String   @id @default(cuid())
+  name            String
+  slug            String   @unique
+  ownerId         String
+  plan            String   @default("free") // free | pro | team | enterprise
+  // ── Company fields (Phase 4 — additive) ──
+  description     String?
+  mission         String?
+  vision          String?
+  strategy        String?
+  industry        String?
+  website         String?
+  targetMarket    String?
+  logoUrl         String?
+  autonomyMode    String   @default("manual") // manual | assisted | autonomous | timed
+  defaultWorkspaceId String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 
-  owner     User       @relation(fields: [ownerId], references: [id])
-  workspaces Workspace[]
+  owner           User       @relation(fields: [ownerId], references: [id])
+  workspaces      Workspace[]
+  goals           Goal[]
+  kpis            Kpi[]
+  plans           Plan[]
+  approvals       Approval[]
+  budgets         Budget[]
+  memories        Memory[]
+  events          Event[]
+  opportunities   DetectedOpportunity[]
+  recommendations Recommendation[]
+  // ── Phase 5 relations ──
+  products        Product[]
+  customers       Customer[]
+  initiatives     Initiative[]
+  deals           Deal[]
+  transactions    Transaction[]
+  // ── Phase 7+ relations ──
+  knowledgeBases  KnowledgeBase[]
+  researchSessions ResearchSession[]
+  securityEvents  SecurityEvent[]
+  metrics         Metric[]
+  // ── Phase 8 relations ──
+  tickets         Ticket[]
+  workspaceQuotas WorkspaceQuota[]
+  // ── Phase 9 relations ──
+  policies        Policy[]
+  complianceChecks ComplianceCheck[]
+  retentionRules  RetentionRule[]
+  deployments     Deployment[]
+  // ── Phase 10: Observability v2 relations ──
+  telemetryPoints TelemetryPoint[]
+  alerts          Alert[]
+  slos            SLO[]
+  traces          Trace[]
+  spans           Span[]
+  retentionPolicies RetentionPolicy[]
+  // ── Phase 11: Finance & Billing v2 relations ──
+  invoices Invoice[]
+  expenses Expense[]
+  revenueRecognitions RevenueRecognition[]
+  payrollRecords PayrollRecord[]
+  taxRecords TaxRecord[]
+  // ── Phase 12: API Platform relations ──
+  platformApiKeys PlatformApiKey[]
+  apiUsageLogs ApiUsageLog[]
+  webhookSubscriptions WebhookSubscription[]
+  sdkConfigs SdkConfig[]
+  // ── Phase 12: Knowledge Management v2 relations ──
+  knowledgeDocuments KnowledgeDocument[]
+  knowledgeLinks KnowledgeLink[]
+  knowledgeSearchIndices KnowledgeSearchIndex[]
+  // ── Phase 13: Calendar & Scheduling relations ──
+  calendarEvents CalendarEvent[]
+  calendarResources CalendarResource[]
+  calendarSyncs CalendarSync[]
+  // ── Phase 13: HR & People Ops relations ──
+  employees Employee[]
+  timeOffRequests TimeOffRequest[]
+  performanceReviews PerformanceReview[]
+  // ── Phase 14: Product Management relations ──
+  featureIdeas FeatureIdea[]
+  releases Release[]
+  roadmapItems RoadmapItem[]
+  // ── Phase 14: IT Asset Management relations ──
+  itAssets ITAsset[]
+  itProcurements ITProcurement[]
+  itContracts ITContract[]
+  // ── Phase 15: Meeting Intelligence & Strategy relations ──
+  meetings           Meeting[]
+  strategicInitiatives StrategicInitiative[]
+  milestones         Milestone[]
+  // ── Time & Expense Management relations ──
+  timesheets         Timesheet[]
+  // ── Recruitment & ATS relations ──
+  jobPostings        JobPosting[]
+  candidates         Candidate[]
+  interviews         Interview[]
+  jobOffers          JobOffer[]
+  // ── Help Desk / ITSM relations ──
+  itsmIncidents      ITSMIncident[]
+  changeRequests     ChangeRequest[]
+  itsmArticles       ITSMArticle[]
+  // ── Capacity Planning relations ──
+  resourceAllocations ResourceAllocation[]
+  // ── Asset Lifecycle Management relations ──
+  assetMaintenances AssetMaintenance[]
+  assetWarranties   AssetWarranty[]
+  // ── Employee Development relations ──
+  onboardingTasks   OnboardingTask[]
+  trainingPlans     TrainingPlan[]
+  certifications    Certification[]
+  // ── Accounting / GL relations ──
+  glAccounts        GLAccount[]
+  journalEntries    JournalEntry[]
+  // ── Inventory & Warehouse relations ──
+  warehouses        Warehouse[]
+  inventoryItems    InventoryItem[]
+  stockMovements    StockMovement[]
+  // ── R3: safety layer tenancy relations ──
+  metaSafetyAudits    MetaSafetyAudit[]
+  metaSafetyApprovals MetaSafetyApproval[]
+  googleSafetyAudits    GoogleSafetyAudit[]
+  googleSafetyApprovals GoogleSafetyApproval[]
 
   @@index([ownerId])
 }
@@ -754,6 +988,59 @@ model Workspace {
   conversations   Conversation[]
   scheduledJobs   ScheduledJob[]
   auditEvents     AuditEvent[]
+  // ── Phase 4 relations ──
+  goals           Goal[]
+  kpis            Kpi[]
+  plans           Plan[]
+  toolDefs        ToolDef[]
+  toolCalls       ToolCall[]
+  approvals       Approval[]
+  budgets         Budget[]
+  memories        Memory[]
+  events          Event[]
+  opportunities   DetectedOpportunity[]
+  recommendations Recommendation[]
+  // ── Phase 5 relations ──
+  products        Product[]
+  customers       Customer[]
+  initiatives     Initiative[]
+  deals           Deal[]
+  transactions    Transaction[]
+  // ── Phase 7+ relations ──
+  knowledgeBases  KnowledgeBase[]
+  researchSessions ResearchSession[]
+  securityEvents  SecurityEvent[]
+  metrics         Metric[]
+  // ── Phase 8 relations ──
+  tickets         Ticket[]
+  sandboxRuns     SandboxRun[]
+  workspaceQuotas WorkspaceQuota[]
+  // ── Phase 9 relations ──
+  policies        Policy[]
+  complianceChecks ComplianceCheck[]
+  deployments     Deployment[]
+  // ── R3: safety layer tenancy relations ──
+  metaSafetyAudits    MetaSafetyAudit[]
+  metaSafetyApprovals MetaSafetyApproval[]
+  googleSafetyAudits    GoogleSafetyAudit[]
+  googleSafetyApprovals GoogleSafetyApproval[]
+  // ── R16: creative model tenancy relations ──
+  creations             Creation[]
+  adProducts            AdProduct[]
+  adAvatars             AdAvatar[]
+  brandKits             BrandKit[]
+  brandProfiles         BrandProfile[]
+  assets                Asset[]
+  sharedLinks           SharedLink[]
+  creativeComments      CreativeComment[]
+  workflowRuns          WorkflowRun[]
+  adCampaigns           AdCampaign[]
+  creativePerformance   CreativePerformance[]
+  timelines             Timeline[]
+  editingSkills         EditingSkill[]
+  creativeTemplates     CreativeTemplate[]
+  scheduledPosts        ScheduledPost[]
+  hooks                 Hook[]
 
   @@index([organizationId])
 }
@@ -796,23 +1083,81 @@ model Project {
 
 // A task is a unit of work within a project.
 model Task {
-  id          String   @id @default(cuid())
-  projectId   String
-  assigneeId  String?
-  title       String
-  description String?
-  status      String   @default("todo") // todo | in_progress | done | cancelled
-  priority    String   @default("medium") // low | medium | high | urgent
-  dueDate     DateTime?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  deletedAt   DateTime?
+  id              String   @id @default(cuid())
+  projectId       String
+  assigneeId      String?
+  title           String
+  description     String?
+  status          String   @default("todo") // todo | in_progress | done | cancelled | blocked | awaiting_approval | failed | retrying | verified
+  priority        String   @default("medium") // low | medium | high | urgent
+  dueDate         DateTime?
+  // ── Autonomous execution fields (Phase 4 — additive) ──
+  assignedAgentId String?
+  planId          String?
+  parentTaskId    String?
+  toolIds         String?  // JSON array of tool IDs
+  inputs          String?  // JSON
+  outputs         String?  // JSON
+  verification    String?  // JSON: verification criteria and results
+  estimatedCost   Int      @default(0) // credits
+  budgetLimit     Int?     // credits
+  timeoutSec      Int?
+  retryPolicy     String?  // JSON: { maxRetries, backoffMs }
+  retryCount      Int      @default(0)
+  idempotencyKey  String?
+  riskLevel       String   @default("low") // low | medium | high
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  deletedAt       DateTime?
 
-  project     Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  project         Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  // ── Phase 6 relations ──
+  dependencies    TaskDependency[] @relation("TaskDependsOn") // tasks this task depends on
+  dependents      TaskDependency[] @relation("TaskIsDependedBy") // tasks that depend on this task
+  timeEntries     TimeEntry[]
 
   @@index([projectId])
   @@index([assigneeId])
+  @@index([assignedAgentId])
   @@index([status])
+  @@index([planId])
+  @@index([parentTaskId])
+  @@index([idempotencyKey])
+}
+
+// ── Phase 6: Task dependencies (blocking relationships) ──
+model TaskDependency {
+  id           String   @id @default(cuid())
+  taskId       String   // the task that depends on another
+  dependsOnId  String   // the task being depended upon
+  type         String   @default("blocks") // blocks | finish_to_start | start_to_start | finish_to_finish
+  createdAt    DateTime @default(now())
+
+  task         Task @relation("TaskDependsOn", fields: [taskId], references: [id], onDelete: Cascade)
+  dependsOn    Task @relation("TaskIsDependedBy", fields: [dependsOnId], references: [id], onDelete: Cascade)
+
+  @@unique([taskId, dependsOnId])
+  @@index([taskId])
+  @@index([dependsOnId])
+}
+
+// ── Phase 6: Time tracking ──
+model TimeEntry {
+  id          String   @id @default(cuid())
+  taskId      String
+  userId      String?
+  agentRunId  String?
+  durationSec Int      @default(0)
+  description String?
+  startedAt   DateTime @default(now())
+  endedAt     DateTime?
+  createdAt   DateTime @default(now())
+
+  task        Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  @@index([taskId])
+  @@index([userId])
+  @@index([agentRunId])
 }
 
 // A document is a rich-text knowledge object.
@@ -886,36 +1231,62 @@ model AutomationRun {
 
 // An AI agent definition.
 model AgentDef {
-  id            String   @id @default(cuid())
-  workspaceId   String
-  name          String
-  modelProvider String
-  modelName     String
-  instructions  String
-  toolIds       String   // JSON array of tool IDs
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id              String   @id @default(cuid())
+  workspaceId     String
+  name            String
+  role            String   @default("custom") // ceo | engineering | strategy | research | product | design | growth | sales | support | finance | operations | security | custom
+  modelProvider   String
+  modelName       String
+  instructions    String
+  toolIds         String   @default("[]") // JSON array of tool IDs
+  // ── Autonomous execution fields (Phase 4 — additive) ──
+  capabilities    String   @default("[]") // JSON array (R19: left as String — changing to Json breaks consuming code)
+  permissions     String   @default("[]") // JSON array
+  memoryAccess    String   @default("scoped") // full | scoped | none
+  contextRules    String   @default("[]") // JSON array
+  budgetLimit     Int?     // credits
+  maxConcurrency  Int      @default(1)
+  timeoutSec      Int      @default(300)
+  executionPolicy String   @default("{}") // JSON: retry, backoff
+  verificationPolicy String @default("{}") // JSON: verification rules (R19: left as String — changing to Json breaks consuming code)
+  enabled         Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 
-  workspace     Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
-  runs          AgentRun[]
+  workspace       Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  runs            AgentRun[]
 
   @@index([workspaceId])
+  @@index([role])
 }
 
 model AgentRun {
-  id          String   @id @default(cuid())
-  agentId     String
-  status      String   @default("running") // running | completed | failed | cancelled
-  input       String
-  output      String?
-  tokensUsed  Int      @default(0)
-  startedAt   DateTime @default(now())
-  completedAt DateTime?
+  id              String   @id @default(cuid())
+  agentId         String
+  taskId          String?
+  planId          String?
+  status          String   @default("pending") // pending | running | completed | failed | cancelled | retrying
+  input           String   @default("{}") // JSON
+  output          String?  // JSON (R19: left as String — changing to Json breaks consuming code)
+  toolCalls       String   @default("[]") // JSON array of ToolCall summaries (R19: left as String — changing to Json breaks consuming code)
+  verification    String?  // JSON: verification result
+  result          String?  // JSON: structured result
+  tokensUsed      Int      @default(0)
+  costCredits     Int      @default(0)
+  retryCount      Int      @default(0)
+  idempotencyKey  String?
+  startedAt       DateTime @default(now())
+  completedAt     DateTime?
 
-  agent       AgentDef @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  agent           AgentDef @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  // ── R18: back-relation for ToolCall.agentRunId ──
+  toolCallRecords ToolCall[]
 
   @@index([agentId])
   @@index([status])
+  @@index([taskId])
+  @@index([planId])
+  @@index([idempotencyKey])
 }
 
 // A user-facing notification.
@@ -965,18 +1336,33 @@ model Message {
 
 // A scheduled job (cron or one-shot).
 model ScheduledJob {
-  id          String   @id @default(cuid())
-  workspaceId String
-  type        String
-  payload     String   // JSON
-  scheduledAt DateTime
-  status      String   @default("pending") // pending | running | completed | failed
-  createdAt   DateTime @default(now())
+  id              String   @id @default(cuid())
+  workspaceId     String
+  type            String
+  payload         String   // JSON
+  scheduledAt     DateTime
+  status          String   @default("pending") // pending | running | completed | failed | dead_letter
+  // ── Durable job engine fields (Phase 4 — additive) ──
+  retryCount      Int      @default(0)
+  maxRetries      Int      @default(3)
+  backoffMs       Int      @default(1000)
+  deadLetterAt    DateTime?
+  idempotencyKey  String?
+  ownerId         String?
+  agentRunId      String?
+  startedAt       DateTime?
+  completedAt     DateTime?
+  error           String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 
-  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  workspace       Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
 
   @@index([workspaceId, status])
   @@index([scheduledAt])
+  @@index([status, scheduledAt])
+  @@index([idempotencyKey])
+  @@index([agentRunId])
 }
 
 // A security/business-critical audit record.
@@ -1034,4 +1420,2247 @@ model DataRequest {
 
   @@index([userId])
   @@index([status])
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Phase 4 — Company Model & Core OS Primitives (additive)
+// These extend the OS platform with the foundational primitives needed for
+// the Autonomous Company Operating System. All new tables; no changes to
+// existing models except additive nullable fields on Organization.
+// ─────────────────────────────────────────────────────────────────────────────
+
+// A company goal/objective — linked to Organization (Company).
+model Goal {
+  id              String   @id @default(cuid())
+  organizationId  String
+  workspaceId     String?
+  title           String
+  description     String?
+  type            String   @default("objective") // objective | key_result | initiative | milestone
+  status          String   @default("active") // active | completed | cancelled | paused
+  priority        String   @default("medium") // low | medium | high | urgent
+  progress        Float    @default(0) // 0.0 - 1.0
+  dueDate         DateTime?
+  parentGoalId    String?
+  createdById     String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  workspace       Workspace?   @relation(fields: [workspaceId], references: [id], onDelete: SetNull)
+  parentGoal      Goal?        @relation("GoalHierarchy", fields: [parentGoalId], references: [id], onDelete: SetNull)
+  childGoals      Goal[]       @relation("GoalHierarchy")
+  kpis            Kpi[]
+  plans           Plan[]
+
+  @@index([organizationId])
+  @@index([workspaceId])
+  @@index([status])
+  @@index([parentGoalId])
+}
+
+// A key performance indicator — measures progress toward a goal.
+model Kpi {
+  id              String   @id @default(cuid())
+  organizationId  String
+  workspaceId     String?
+  goalId          String?
+  name            String
+  description     String?
+  target          Float    @default(0)
+  current         Float    @default(0)
+  unit            String   @default("count") // count | percent | currency | duration
+  period          String   @default("monthly") // daily | weekly | monthly | quarterly | yearly
+  direction       String   @default("up") // up (higher is better) | down (lower is better)
+  lastUpdated     DateTime @default(now())
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  workspace       Workspace?   @relation(fields: [workspaceId], references: [id], onDelete: SetNull)
+  goal            Goal?        @relation(fields: [goalId], references: [id], onDelete: SetNull)
+
+  @@index([organizationId])
+  @@index([workspaceId])
+  @@index([goalId])
+}
+
+// A durable plan — output of the Planner, contains objective + tasks.
+model Plan {
+  id              String   @id @default(cuid())
+  workspaceId     String
+  organizationId  String
+  goalId          String?
+  title           String
+  objective       String
+  reasoning       String?  // summary for logs
+  status          String   @default("draft") // draft | active | completed | cancelled | failed
+  priority        String   @default("medium")
+  riskLevel       String   @default("low")
+  estimatedCost   Int      @default(0) // credits
+  createdById     String?
+  agentId         String?
+  approvedById    String?
+  approvedAt      DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  workspace       Workspace   @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  goal            Goal?       @relation(fields: [goalId], references: [id], onDelete: SetNull)
+
+  @@index([workspaceId])
+  @@index([organizationId])
+  @@index([goalId])
+  @@index([status])
+}
+
+// A tool definition in the centralized tool registry.
+model ToolDef {
+  id              String   @id @default(cuid())
+  workspaceId     String?
+  name            String
+  version         String   @default("1.0.0")
+  description     String
+  inputSchema     String   @default("{}") // JSON Schema
+  outputSchema    String   @default("{}") // JSON Schema
+  authRequirements String  @default("{}") // JSON
+  permissions     String   @default("[]") // JSON array
+  riskCategory    String   @default("low") // low | medium | high
+  budgetCategory  String   @default("none") // none | credits | api_cost | compute_cost | ad_spend
+  timeoutSec      Int      @default(30)
+  retryPolicy     String   @default("{}") // JSON: { maxRetries, backoffMs }
+  auditRequired   Boolean  @default(true)
+  allowedAgents   String   @default("[]") // JSON array of agent roles
+  allowedCompanies String  @default("[]") // JSON array of org IDs (empty = all)
+  enabled         Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  workspace       Workspace? @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  toolCalls       ToolCall[]
+
+  @@index([workspaceId])
+  @@index([name])
+}
+
+// A tool invocation record — audit trail for every tool call.
+model ToolCall {
+  id              String   @id @default(cuid())
+  workspaceId     String
+  agentRunId      String?
+  toolDefId       String
+  input           String   @default("{}") // JSON
+  output          String?  // JSON
+  status          String   @default("pending") // pending | running | completed | failed | timeout
+  error           String?
+  costCredits     Int      @default(0)
+  riskScore       Float    @default(0)
+  approved        Boolean  @default(false)
+  approvedBy      String?
+  startedAt       DateTime @default(now())
+  completedAt     DateTime?
+
+  workspace       Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  toolDef         ToolDef   @relation(fields: [toolDefId], references: [id], onDelete: Restrict)
+  // ── R18: relation for scalar agentRunId foreign key ──
+  agentRun        AgentRun? @relation(fields: [agentRunId], references: [id], onDelete: SetNull)
+
+  @@index([workspaceId])
+  @@index([agentRunId])
+  @@index([toolDefId])
+  @@index([status])
+}
+
+// A centralized approval request — for high-risk actions.
+model Approval {
+  id              String   @id @default(cuid())
+  workspaceId     String
+  organizationId  String
+  agentRunId      String?
+  toolCallId      String?
+  taskId          String?
+  action          String
+  description     String
+  riskLevel       String   @default("medium") // low | medium | high
+  estimatedCost   Int      @default(0) // credits
+  affectedResources String  @default("[]") // JSON array
+  status          String   @default("pending") // pending | approved | rejected | expired | cancelled
+  requestedBy     String
+  approverId      String?
+  decision        String?  // approved | rejected | modified
+  note            String?
+  expiresAt       DateTime?
+  decidedAt       DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  workspace       Workspace   @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([workspaceId])
+  @@index([organizationId])
+  @@index([status])
+  @@index([expiresAt])
+}
+
+// A budget — multi-level spending controls.
+model Budget {
+  id              String   @id @default(cuid())
+  workspaceId     String
+  organizationId  String
+  scope           String   // company | workspace | agent | task | integration | campaign | period
+  scopeId         String?  // ID of the scoped entity (agentId, taskId, etc.)
+  period          String   @default("monthly") // daily | weekly | monthly | quarterly | yearly | one_time
+  limitCredits    Int      @default(0)
+  spentCredits    Int      @default(0)
+  limitUsd        Float    @default(0)
+  spentUsd        Float    @default(0)
+  currency        String   @default("USD")
+  status          String   @default("active") // active | exceeded | paused | expired
+  startDate       DateTime @default(now())
+  endDate         DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  workspace       Workspace   @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  entries         BudgetEntry[]
+
+  @@index([workspaceId])
+  @@index([organizationId])
+  @@index([scope, scopeId])
+  @@index([status])
+}
+
+// A budget entry — individual spending record.
+model BudgetEntry {
+  id              String   @id @default(cuid())
+  budgetId        String
+  toolCallId      String?
+  agentRunId      String?
+  amountCredits   Int      @default(0)
+  amountUsd       Float    @default(0)
+  category        String   @default("other") // ai | api | ads | infra | other
+  description     String?
+  createdAt       DateTime @default(now())
+
+  budget          Budget @relation(fields: [budgetId], references: [id], onDelete: Cascade)
+
+  @@index([budgetId])
+  @@index([agentRunId])
+}
+
+// A company memory record — facts, knowledge, decisions, etc.
+model Memory {
+  id              String   @id @default(cuid())
+  workspaceId     String
+  organizationId  String
+  type            String   // fact | knowledge | decision | preference | outcome | lesson | active_context | historical_context
+  content         String
+  source          String   @default("system") // agent | user | system | external
+  sourceId        String?  // agentRunId, userId, etc.
+  confidence      Float    @default(0.5) // 0.0 - 1.0
+  owner           String?
+  accessPolicy    String   @default("workspace") // workspace | private | shared
+  lifecycle       String   @default("medium") // permanent | long | medium | short
+  expiresAt       DateTime?
+  tags            String   @default("[]") // JSON array
+  relatedMemoryIds String  @default("[]") // JSON array
+  verifiedBy      String?
+  verifiedAt      DateTime?
+  createdBy       String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  workspace       Workspace   @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([workspaceId])
+  @@index([organizationId])
+  @@index([type])
+  @@index([tags])
+}
+
+// A shared event — drives automations, notifications, analytics, audit.
+model Event {
+  id              String   @id @default(cuid())
+  workspaceId     String?
+  organizationId  String?
+  type            String   // task.created, agent.run.completed, approval.requested, ...
+  actor           String?  // userId or agentId
+  actorType       String   @default("user") // user | agent | system
+  resourceType    String?
+  resourceId      String?
+  metadata        String   @default("{}") // JSON
+  correlationId   String?
+  source          String   @default("system")
+  createdAt       DateTime @default(now())
+
+  workspace       Workspace?   @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  organization    Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([workspaceId])
+  @@index([organizationId])
+  @@index([type])
+  @@index([correlationId])
+  @@index([createdAt])
+}
+
+// A detected opportunity — proactive opportunity identification.
+model DetectedOpportunity {
+  id              String   @id @default(cuid())
+  workspaceId     String
+  organizationId  String
+  type            String   // declining_metrics | abandoned_tasks | customer_complaints | emerging_leads | product_opportunities | security_risks | broken_workflows | expensive_processes | growth_opportunities
+  title           String
+  description     String
+  evidence        String   @default("[]") // JSON array
+  confidence      Float    @default(0.5)
+  recommendedAction String?
+  expectedImpact  String?
+  urgency         String   @default("medium") // low | medium | high | critical
+  risk            String   @default("low")
+  status          String   @default("open") // open | acknowledged | acted_on | dismissed
+  dismissedBy     String?
+  dismissedAt     DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  workspace       Workspace   @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([workspaceId])
+  @@index([status])
+  @@index([urgency])
+}
+
+// An AI recommendation — next-action suggestions.
+model Recommendation {
+  id              String   @id @default(cuid())
+  workspaceId     String
+  organizationId  String
+  type            String
+  title           String
+  what            String
+  why             String
+  evidence        String   @default("[]") // JSON array
+  expectedBenefit String?
+  risk            String   @default("low")
+  cost            Int      @default(0) // credits
+  nextAction      String?
+  status          String   @default("pending") // pending | accepted | rejected | implemented
+  acceptedById    String?
+  acceptedAt      DateTime?
+  rejectedById    String?
+  rejectedAt      DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  workspace       Workspace   @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([workspaceId])
+  @@index([status])
+}
+
+// ── Phase 5: Company Business Domain Models ──
+
+// A product or service offered by the company.
+model Product {
+  id              String   @id @default(cuid())
+  organizationId  String
+  workspaceId     String?
+  name            String
+  description     String?
+  type            String   @default("product") // product | service | subscription | digital
+  status          String   @default("active") // active | inactive | discontinued | beta
+  price           Float    @default(0)
+  currency        String   @default("USD")
+  unit            String?  // per_month | per_year | per_unit | one_time
+  sku             String?
+  category        String?
+  tags            String   @default("[]") // JSON array
+  metadata        String   @default("{}") // JSON
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  workspace       Workspace?   @relation(fields: [workspaceId], references: [id], onDelete: SetNull)
+  deals           Deal[]
+
+  @@index([organizationId])
+  @@index([workspaceId])
+  @@index([status])
+}
+
+// A customer or lead in the CRM.
+model Customer {
+  id              String   @id @default(cuid())
+  organizationId  String
+  workspaceId     String?
+  name            String
+  email           String?
+  phone           String?
+  company         String?  // their company name
+  type            String   @default("lead") // lead | prospect | customer | churned | partner
+  status          String   @default("new") // new | contacted | qualified | proposal | negotiation | won | lost
+  source          String?  // website | referral | ads | outbound | event | other
+  value           Float    @default(0) // estimated lifetime value
+  currency        String   @default("USD")
+  tags            String   @default("[]") // JSON array
+  notes           String?
+  metadata        String   @default("{}") // JSON
+  ownerId         String?  // assigned sales rep
+  lastContactedAt DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  workspace       Workspace?   @relation(fields: [workspaceId], references: [id], onDelete: SetNull)
+  deals           Deal[]
+
+  @@index([organizationId])
+  @@index([workspaceId])
+  @@index([status])
+  @@index([type])
+  @@index([ownerId])
+}
+
+// An initiative is a cross-functional effort that may span multiple goals and plans.
+model Initiative {
+  id              String   @id @default(cuid())
+  organizationId  String
+  workspaceId     String?
+  name            String
+  description     String?
+  status          String   @default("active") // active | paused | completed | cancelled
+  priority        String   @default("medium") // low | medium | high | urgent
+  startDate       DateTime?
+  endDate         DateTime?
+  budget          Float    @default(0)
+  currency        String   @default("USD")
+  ownerId         String?
+  goalIds         String   @default("[]") // JSON array of Goal IDs
+  metadata        String   @default("{}") // JSON
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  workspace       Workspace?   @relation(fields: [workspaceId], references: [id], onDelete: SetNull)
+
+  @@index([organizationId])
+  @@index([workspaceId])
+  @@index([status])
+}
+
+// A deal in the sales pipeline.
+model Deal {
+  id              String   @id @default(cuid())
+  organizationId  String
+  workspaceId     String?
+  customerId      String
+  productId       String?
+  title           String
+  description     String?
+  stage           String   @default("lead") // lead | qualified | proposal | negotiation | won | lost
+  value           Float    @default(0)
+  currency        String   @default("USD")
+  probability     Int      @default(0) // 0-100
+  expectedCloseDate DateTime?
+  actualCloseDate DateTime?
+  ownerId         String?  // assigned sales rep
+  source          String?
+  tags            String   @default("[]") // JSON array
+  metadata        String   @default("{}") // JSON
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  workspace       Workspace?   @relation(fields: [workspaceId], references: [id], onDelete: SetNull)
+  customer        Customer     @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  product         Product?     @relation(fields: [productId], references: [id], onDelete: SetNull)
+
+  @@index([organizationId])
+  @@index([workspaceId])
+  @@index([customerId])
+  @@index([stage])
+  @@index([ownerId])
+}
+
+// A financial transaction (income, expense, or transfer).
+model Transaction {
+  id              String   @id @default(cuid())
+  organizationId  String
+  workspaceId     String?
+  type            String   // income | expense | transfer
+  category        String   // revenue | cost_of_goods | marketing | salaries | infrastructure | tools | other
+  amount          Float
+  currency        String   @default("USD")
+  description     String?
+  date            DateTime @default(now())
+  status          String   @default("confirmed") // pending | confirmed | disputed | reversed
+  source          String?  // manual | stripe | dodo | bank | agent
+  reference       String?  // invoice number, receipt ID, etc.
+  tags            String   @default("[]") // JSON array
+  metadata        String   @default("{}") // JSON
+  createdBy       String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  workspace       Workspace?   @relation(fields: [workspaceId], references: [id], onDelete: SetNull)
+
+  @@index([organizationId])
+  @@index([workspaceId])
+  @@index([type])
+  @@index([category])
+  @@index([date])
+}
+
+// ── Phase 7: Research & Knowledge System ──
+
+// A knowledge base is a structured collection of articles, notes, and
+// research findings that can be searched and used as agent context.
+model KnowledgeBase {
+  id              String   @id @default(cuid())
+  organizationId  String
+  workspaceId     String?
+  name            String
+  description     String?
+  visibility      String   @default("workspace") // workspace | private | shared
+  ownerId         String?
+  tags            String   @default("[]") // JSON array
+  metadata        String   @default("{}") // JSON
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  workspace       Workspace?   @relation(fields: [workspaceId], references: [id], onDelete: SetNull)
+  articles        KnowledgeArticle[]
+
+  @@index([organizationId])
+  @@index([workspaceId])
+}
+
+// An article within a knowledge base.
+model KnowledgeArticle {
+  id              String   @id @default(cuid())
+  knowledgeBaseId String
+  title           String
+  content         String   // markdown
+  summary         String?
+  source          String   @default("manual") // manual | research | agent | import
+  sourceUrl       String?
+  tags            String   @default("[]") // JSON array
+  status          String   @default("draft") // draft | published | archived
+  version         Int      @default(1)
+  wordCount       Int      @default(0)
+  createdBy       String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  knowledgeBase   KnowledgeBase @relation(fields: [knowledgeBaseId], references: [id], onDelete: Cascade)
+  citations       Citation[]
+
+  @@index([knowledgeBaseId])
+  @@index([status])
+}
+
+// A research session tracks a web-research workflow with citations.
+model ResearchSession {
+  id              String   @id @default(cuid())
+  organizationId  String
+  workspaceId     String?
+  query           String   // the research question
+  status          String   @default("pending") // pending | running | completed | failed | cancelled
+  findings        String   @default("{}") // JSON: structured findings
+  summary         String?  // AI-generated summary
+  agentRunId      String?
+  ownerId         String?
+  startedAt       DateTime?
+  completedAt     DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  workspace       Workspace?   @relation(fields: [workspaceId], references: [id], onDelete: SetNull)
+  citations       Citation[]
+
+  @@index([organizationId])
+  @@index([workspaceId])
+  @@index([status])
+}
+
+// A citation from a research session, linked to a source URL.
+model Citation {
+  id              String   @id @default(cuid())
+  researchSessionId String?
+  knowledgeArticleId String?
+  url             String
+  title           String?
+  snippet         String?  // relevant excerpt
+  publishedAt     DateTime?
+  accessedAt      DateTime @default(now())
+  credibility     String   @default("medium") // low | medium | high
+  metadata        String   @default("{}") // JSON
+
+  researchSession ResearchSession? @relation(fields: [researchSessionId], references: [id], onDelete: Cascade)
+  knowledgeArticle KnowledgeArticle? @relation(fields: [knowledgeArticleId], references: [id], onDelete: Cascade)
+
+  @@index([researchSessionId])
+  @@index([knowledgeArticleId])
+}
+
+// ── Phase 7: Security Hardening ──
+
+// A security event for monitoring, alerting, and audit.
+model SecurityEvent {
+  id              String   @id @default(cuid())
+  organizationId  String
+  workspaceId     String?
+  type            String   // token.exposed | failed_auth_spike | permission_denied | suspicious_activity | token_expired | key_rotated
+  severity        String   @default("medium") // low | medium | high | critical
+  description     String
+  actorId         String?
+  resourceType    String?
+  resourceId      String?
+  ipAddress       String?
+  metadata        String   @default("{}") // JSON
+  resolved        Boolean  @default(false)
+  resolvedBy      String?
+  resolvedAt      DateTime?
+  createdAt       DateTime @default(now())
+
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  workspace       Workspace?   @relation(fields: [workspaceId], references: [id], onDelete: SetNull)
+
+  @@index([organizationId])
+  @@index([workspaceId])
+  @@index([type])
+  @@index([severity])
+  @@index([createdAt])
+}
+
+// ── Phase 7: Analytics & Observability ──
+
+// A time-series metric for analytics and observability.
+model Metric {
+  id              String   @id @default(cuid())
+  organizationId  String
+  workspaceId     String?
+  name            String   // e.g., "agent.runs.completed", "task.cycle_time"
+  value           Float
+  unit            String?  // count | ms | credits | percent | currency
+  dimensions      String   @default("{}") // JSON: { agentId, status, platform, ... }
+  timestamp       DateTime @default(now())
+  createdAt       DateTime @default(now())
+
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  workspace       Workspace?   @relation(fields: [workspaceId], references: [id], onDelete: SetNull)
+
+  @@index([organizationId])
+  @@index([workspaceId])
+  @@index([name])
+  @@index([timestamp])
+}
+
+// ── Phase 8: Sandbox Execution ──
+
+// A sandbox code execution run — tracks isolated code execution by agents.
+model SandboxRun {
+  id              String   @id @default(cuid())
+  workspaceId     String
+  agentRunId      String?
+  taskId          String?
+  language        String   // javascript | typescript | python | shell
+  code            String   // the code to execute
+  status          String   @default("pending") // pending | running | completed | failed | timeout | cancelled
+  stdout          String   @default("")
+  stderr          String   @default("")
+  exitCode        Int?
+  durationMs      Int?
+  memoryMb        Int?
+  timeoutSec      Int      @default(30)
+  error           String?
+  createdAt       DateTime @default(now())
+  completedAt     DateTime?
+
+  workspace       Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@index([workspaceId])
+  @@index([agentRunId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+// ── Phase 8: Sales & Support ──
+
+// A support ticket from a customer or internal user.
+model Ticket {
+  id              String   @id @default(cuid())
+  organizationId  String
+  workspaceId     String?
+  customerId      String?  // link to Customer if applicable
+  subject         String
+  description     String
+  status          String   @default("open") // open | in_progress | waiting_on_customer | resolved | closed | escalated
+  priority        String   @default("medium") // low | medium | high | urgent
+  category        String   @default("general") // general | billing | technical | bug | feature_request | account | other
+  channel         String   @default("internal") // internal | email | chat | web | api
+  assigneeId      String?  // assigned agent or user
+  reporterId      String?  // who reported the ticket
+  slaDueAt        DateTime?  // SLA deadline
+  resolvedAt      DateTime?
+  closedAt        DateTime?
+  firstResponseAt DateTime?
+  tags            String   @default("[]") // JSON array
+  metadata        String   @default("{}") // JSON
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  workspace       Workspace?   @relation(fields: [workspaceId], references: [id], onDelete: SetNull)
+  comments        TicketComment[]
+
+  @@index([organizationId])
+  @@index([workspaceId])
+  @@index([status])
+  @@index([priority])
+  @@index([assigneeId])
+  @@index([customerId])
+  @@index([slaDueAt])
+}
+
+// A comment on a support ticket.
+model TicketComment {
+  id              String   @id @default(cuid())
+  ticketId        String
+  authorId        String?
+  authorType      String   @default("user") // user | agent | system
+  body            String
+  isInternal      Boolean  @default(false) // internal notes vs customer-visible
+  createdAt       DateTime @default(now())
+
+  ticket          Ticket    @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+
+  @@index([ticketId])
+  @@index([createdAt])
+}
+
+// ── Phase 8: Multi-Tenancy Hardening ──
+
+// Per-workspace resource quotas and limits.
+model WorkspaceQuota {
+  id              String   @id @default(cuid())
+  organizationId  String
+  workspaceId     String
+  maxAgents       Int      @default(10)
+  maxTasks        Int      @default(1000)
+  maxDocuments    Int      @default(500)
+  maxAutomations  Int      @default(50)
+  maxTickets      Int      @default(500)
+  maxStorageMb    Int      @default(5000)
+  maxAgentRunsPerDay Int   @default(100)
+  maxSandboxRunsPerDay Int @default(50)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  workspace       Workspace    @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@unique([workspaceId])
+  @@index([organizationId])
+}
+
+// ── Phase 9: Deployment Pipeline ──
+
+// A deployment record — tracks deployments triggered by the coding loop or manually.
+model Deployment {
+  id              String   @id @default(cuid())
+  workspaceId     String
+  organizationId  String
+  environment     String   @default("production") // production | staging | preview
+  status          String   @default("pending") // pending | building | deploying | live | failed | rolled_back | cancelled
+  trigger         String   @default("manual") // manual | coding_loop | pr_merge | scheduled
+  prNumber        Int?
+  commitSha       String?
+  branch          String?
+  buildLog        String   @default("")
+  deployLog       String   @default("")
+  healthCheckUrl  String?
+  healthStatus    String?  // healthy | unhealthy | degraded | unknown
+  rollbackFromId  String?  // ID of the deployment being rolled back to
+  triggeredBy     String?
+  approvedBy      String?
+  startedAt       DateTime?
+  completedAt     DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  workspace       Workspace    @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([workspaceId])
+  @@index([organizationId])
+  @@index([status])
+  @@index([environment])
+  @@index([createdAt])
+}
+
+// ── Phase 9: Governance & Compliance ──
+
+// A governance policy — rules that govern company operations.
+model Policy {
+  id              String   @id @default(cuid())
+  organizationId  String
+  workspaceId     String?
+  title           String
+  description     String?
+  type            String   @default("operational") // operational | financial | security | privacy | data_retention | approval | spending
+  status          String   @default("active") // active | draft | archived | superseded
+  version         Int      @default(1)
+  rules           String   @default("[]") // JSON array of rule objects
+  effectiveFrom   DateTime @default(now())
+  effectiveUntil  DateTime?
+  createdBy       String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  workspace       Workspace?   @relation(fields: [workspaceId], references: [id], onDelete: SetNull)
+
+  @@index([organizationId])
+  @@index([workspaceId])
+  @@index([type])
+  @@index([status])
+}
+
+// A compliance check — verifies that a specific rule or policy is being followed.
+model ComplianceCheck {
+  id              String   @id @default(cuid())
+  organizationId  String
+  workspaceId     String?
+  policyId        String?
+  checkName       String
+  description     String?
+  status          String   @default("pending") // pending | passed | failed | warning | not_applicable
+  severity        String   @default("medium") // low | medium | high | critical
+  details         String   @default("{}") // JSON
+  remediation     String?
+  checkedAt       DateTime @default(now())
+  createdAt       DateTime @default(now())
+
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  workspace       Workspace?   @relation(fields: [workspaceId], references: [id], onDelete: SetNull)
+
+  @@index([organizationId])
+  @@index([workspaceId])
+  @@index([status])
+  @@index([checkedAt])
+}
+
+// A data retention rule — defines how long data is kept before deletion.
+model RetentionRule {
+  id              String   @id @default(cuid())
+  organizationId  String
+  dataType        String   // events | memories | audit_events | agent_runs | tool_calls | tickets | sandbox_runs
+  retentionDays   Int      @default(365)
+  action          String   @default("archive") // archive | delete | anonymize
+  enabled         Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@index([dataType])
+}
+
+// ── Phase 10: Observability v2 ──
+
+// Time-series telemetry data point — durable storage for metrics over time.
+model TelemetryPoint {
+  id              String   @id @default(cuid())
+  organizationId  String
+  workspaceId     String?
+  metricName      String   // e.g. "api.response_time", "db.query_duration", "agent.run_duration"
+  metricType      String   @default("gauge") // gauge | counter | histogram | summary
+  value           Float
+  unit            String   @default("ms") // ms | bytes | count | percent | ratio
+  labels          String   @default("{}") // JSON map of labels/tags
+  traceId         String?  // optional distributed trace correlation
+  spanId          String?  // optional span within a trace
+  timestamp       DateTime @default(now())
+  createdAt       DateTime @default(now())
+
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@index([metricName])
+  @@index([timestamp])
+  @@index([traceId])
+  @@index([organizationId, metricName, timestamp])
+}
+
+// Alert definition and state.
+model Alert {
+  id              String   @id @default(cuid())
+  organizationId  String
+  workspaceId     String?
+  name            String
+  description     String   @default("")
+  severity        String   @default("warning") // info | warning | error | critical
+  status          String   @default("active") // active | resolved | suppressed | pending
+  source          String   @default("system") // system | metric | trace | log | manual
+  metricName      String?  // the metric this alert is based on
+  condition       String   @default("{}") // JSON: { operator, threshold, window }
+  currentValue    Float?
+  threshold       Float?
+  triggerCount    Int      @default(0)
+  lastTriggeredAt DateTime?
+  resolvedAt      DateTime?
+  acknowledgedBy  String?
+  metadata        String   @default("{}") // JSON
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@index([status])
+  @@index([severity])
+  @@index([metricName])
+  @@index([createdAt])
+}
+
+// Service Level Objective — defines targets for service quality.
+model SLO {
+  id              String   @id @default(cuid())
+  organizationId  String
+  name            String
+  description     String   @default("")
+  metricName      String   // the metric being tracked (e.g. "api.response_time")
+  target          Float    // target value (e.g. 200 for 200ms p99)
+  targetPercentile Float   @default(99.0) // percentile (p50, p90, p99)
+  windowDays      Int      @default(30) // rolling window
+  status          String   @default("active") // active | paused | breached | met
+  errorBudget     Float    @default(1.0) // 0-1, fraction of allowed misses
+  errorBudgetUsed Float    @default(0.0) // 0-1, fraction consumed
+  lastEvaluatedAt DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@index([status])
+  @@index([metricName])
+}
+
+// Distributed trace — groups spans for request tracing.
+model Trace {
+  id              String   @id @default(cuid())
+  organizationId  String
+  traceId         String   @unique
+  rootSpanName    String
+  status          String   @default("ok") // ok | error | timeout
+  durationMs      Float
+  spanCount       Int      @default(0)
+  serviceCount    Int      @default(0)
+  labels          String   @default("{}")
+  startedAt       DateTime @default(now())
+  endedAt         DateTime?
+  createdAt       DateTime @default(now())
+
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@index([traceId])
+  @@index([status])
+  @@index([startedAt])
+}
+
+// Individual span within a trace.
+model Span {
+  id              String   @id @default(cuid())
+  organizationId  String
+  traceId         String
+  spanId          String   @unique
+  parentSpanId    String?
+  name            String
+  service         String
+  operation       String
+  status          String   @default("ok") // ok | error | timeout
+  durationMs      Float
+  startTime       DateTime @default(now())
+  endTime         DateTime?
+  attributes      String   @default("{}") // JSON
+  events          String   @default("[]") // JSON array of span events
+  createdAt       DateTime @default(now())
+
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@index([traceId])
+  @@index([spanId])
+  @@index([service])
+  @@index([startTime])
+}
+
+// Retention policy for telemetry and log data.
+model RetentionPolicy {
+  id              String   @id @default(cuid())
+  organizationId  String
+  name            String
+  dataType        String   // telemetry | traces | spans | metrics | logs | audit_events
+  retentionDays   Int      @default(30)
+  action          String   @default("delete") // delete | archive | aggregate
+  enabled         Boolean  @default(true)
+  lastRunAt       DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@index([dataType])
+  @@index([enabled])
+}
+
+// ── Phase 11: Finance & Billing v2 ──
+
+model Invoice {
+  id              String   @id @default(cuid())
+  organizationId  String
+  workspaceId     String?
+  customerId      String?
+  number          String   @unique
+  status          String   @default("draft") // draft | sent | paid | overdue | cancelled | void
+  type            String   @default("sales") // sales | purchase | credit | debit
+  issueDate       DateTime @default(now())
+  dueDate         DateTime
+  subtotal        Float    @default(0)
+  taxRate         Float    @default(0)
+  taxAmount       Float    @default(0)
+  discountRate    Float    @default(0)
+  discountAmount  Float    @default(0)
+  total           Float    @default(0)
+  currency        String   @default("USD")
+  notes           String   @default("")
+  terms           String   @default("")
+  paidAmount      Float    @default(0)
+  paidAt          DateTime?
+  sentAt          DateTime?
+  createdBy       String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  lineItems       InvoiceLineItem[]
+
+  @@index([organizationId])
+  @@index([status])
+  @@index([customerId])
+  @@index([dueDate])
+  @@index([number])
+}
+
+model InvoiceLineItem {
+  id          String   @id @default(cuid())
+  invoiceId   String
+  description String
+  quantity    Float    @default(1)
+  unitPrice   Float    @default(0)
+  taxRate     Float    @default(0)
+  discountRate Float   @default(0)
+  total       Float    @default(0)
+  category    String?  // revenue category
+  createdAt   DateTime @default(now())
+
+  invoice     Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+
+  @@index([invoiceId])
+}
+
+model Expense {
+  id              String   @id @default(cuid())
+  organizationId  String
+  workspaceId     String?
+  vendor          String
+  description     String   @default("")
+  category        String   @default("general") // general | software | hardware | marketing | travel | payroll | office | other
+  amount          Float
+  currency        String   @default("USD")
+  status          String   @default("pending") // pending | approved | rejected | reimbursed
+  expenseDate     DateTime @default(now())
+  receiptUrl      String?
+  approvedBy      String?
+  approvedAt      DateTime?
+  submittedBy     String?
+  tags            String   @default("[]")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@index([status])
+  @@index([category])
+  @@index([expenseDate])
+}
+
+model RevenueRecognition {
+  id              String   @id @default(cuid())
+  organizationId  String
+  invoiceId       String?
+  amount          Float
+  recognizedDate  DateTime @default(now())
+  period          String   // YYYY-MM
+  type            String   @default("sales") // sales | service | subscription | other
+  status          String   @default("recognized") // recognized | deferred | adjusted
+  notes           String   @default("")
+  createdAt       DateTime @default(now())
+
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@index([period])
+  @@index([invoiceId])
+  @@index([status])
+}
+
+model PayrollRecord {
+  id              String   @id @default(cuid())
+  organizationId  String
+  workspaceId     String?
+  employeeName    String
+  employeeId      String?
+  period          String   // YYYY-MM
+  grossAmount     Float
+  taxWithheld     Float    @default(0)
+  netAmount       Float    @default(0)
+  benefits        Float    @default(0)
+  status          String   @default("draft") // draft | approved | paid | pending | processed | failed
+  payDate         DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  // ── Phase 13: HR & People Ops (additive) ──
+  hrEmployeeId    String?  // references Employee.id
+  payPeriodStart  DateTime?
+  payPeriodEnd    DateTime?
+  deductions      Float    @default(0)
+  currency        String   @default("USD")
+  payType         String   @default("salary") // salary | hourly | bonus | commission
+  hoursWorked     Float?
+  overtimeHours   Float?
+  metadata        String   @default("{}") // JSON
+
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  hrEmployee      Employee?   @relation(fields: [hrEmployeeId], references: [id], onDelete: SetNull)
+
+  @@index([organizationId])
+  @@index([period])
+  @@index([status])
+  @@index([employeeId])
+  @@index([hrEmployeeId])
+  @@index([payDate])
+}
+
+model TaxRecord {
+  id              String   @id @default(cuid())
+  organizationId  String
+  period          String   // YYYY-MM or YYYY-Q1 etc
+  type            String   @default("sales_tax") // sales_tax | income_tax | payroll_tax | vat | gst
+  jurisdiction    String   @default("") // country/state/country code
+  taxableAmount   Float    @default(0)
+  taxRate         Float    @default(0)
+  taxAmount       Float    @default(0)
+  status          String   @default("calculated") // calculated | filed | paid
+  filedAt         DateTime?
+  paidAt          DateTime?
+  notes           String   @default("")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@index([period])
+  @@index([type])
+  @@index([status])
+}
+
+// ── Phase 12: API Platform ──
+// NOTE: Named PlatformApiKey to avoid collision with the existing user-scoped
+// ApiKey model (used by the v1 public API). This org-scoped key backs the
+// Developer Portal API platform (rate limiting, usage logging, etc.).
+
+model PlatformApiKey {
+  id              String   @id @default(cuid())
+  organizationId  String
+  workspaceId     String?
+  name            String
+  description     String   @default("")
+  keyPrefix       String   // first 12 chars for identification
+  keyHash         String   @unique // hashed full key
+  scopes          String   @default("[]") // JSON array of scopes
+  rateLimitPerMin Int      @default(60)
+  rateLimitPerDay Int      @default(10000)
+  lastUsedAt      DateTime?
+  lastUsedIp      String?
+  expiresAt       DateTime?
+  revokedAt       DateTime?
+  revokedBy       String?
+  createdBy       String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@index([keyHash])
+  @@index([revokedAt])
+}
+
+model ApiUsageLog {
+  id              String   @id @default(cuid())
+  organizationId  String
+  apiKeyId        String?
+  endpoint        String
+  method          String
+  statusCode      Int
+  responseTimeMs  Int
+  requestBodySize Int?
+  responseBodySize Int?
+  ipAddress       String?
+  userAgent       String?
+  rateLimited     Boolean  @default(false)
+  timestamp       DateTime @default(now())
+
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@index([apiKeyId])
+  @@index([endpoint])
+  @@index([timestamp])
+  @@index([rateLimited])
+}
+
+model WebhookSubscription {
+  id              String   @id @default(cuid())
+  organizationId  String
+  workspaceId     String?
+  name            String
+  url             String
+  secret          String   // for HMAC signing
+  events          String   @default("[]") // JSON array of event types
+  status          String   @default("active") // active | paused | disabled
+  lastDeliveryAt  DateTime?
+  lastDeliveryStatus String?
+  lastDeliveryCode Int?
+  successCount    Int      @default(0)
+  failureCount    Int      @default(0)
+  createdBy       String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@index([status])
+  @@index([events])
+}
+
+model SdkConfig {
+  id              String   @id @default(cuid())
+  organizationId  String
+  language        String   // javascript | python | go | curl | rust
+  packageName     String   @default("@lazynext/sdk")
+  version         String   @default("1.0.0")
+  baseUrl         String   @default("https://api.lazynext.com")
+  config          String   @default("{}") // JSON
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@index([language])
+}
+
+// ── Phase 12: Knowledge Management v2 ──
+
+model KnowledgeDocument {
+  id              String   @id @default(cuid())
+  organizationId  String
+  workspaceId     String?
+  parentId        String?  // for wiki hierarchy
+  slug            String   // unique within org for wiki URLs
+  title           String
+  content         String   @default("") // markdown content
+  excerpt         String   @default("")
+  tags            String   @default("[]") // JSON array
+  links           String   @default("[]") // JSON array of {targetId, label}
+  status          String   @default("draft") // draft | published | archived
+  version         Int      @default(1)
+  currentVersionId String? // points to latest KnowledgeVersion
+  authorId        String
+  lastEditorId    String?
+  publishedAt     DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  parent          KnowledgeDocument? @relation("KnowledgeHierarchy", fields: [parentId], references: [id])
+  children        KnowledgeDocument[] @relation("KnowledgeHierarchy")
+  versions        KnowledgeVersion[]
+
+  @@index([organizationId])
+  @@index([workspaceId])
+  @@index([parentId])
+  @@index([slug])
+  @@index([status])
+}
+
+model KnowledgeVersion {
+  id              String   @id @default(cuid())
+  documentId      String
+  version         Int
+  content         String
+  excerpt         String
+  editorId        String
+  changeSummary   String   @default("")
+  createdAt       DateTime @default(now())
+
+  document        KnowledgeDocument @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  @@index([documentId])
+  @@index([version])
+}
+
+model KnowledgeLink {
+  id              String   @id @default(cuid())
+  organizationId  String
+  sourceId        String
+  targetId        String
+  label           String   @default("")
+  linkType        String   @default("reference") // reference | related | prerequisite | extension
+  createdBy       String
+  createdAt       DateTime @default(now())
+
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([sourceId])
+  @@index([targetId])
+  @@index([organizationId])
+}
+
+model KnowledgeSearchIndex {
+  id              String   @id @default(cuid())
+  organizationId  String
+  documentId      String?
+  memoryId        String?
+  researchId      String?
+  entityType      String   // document | memory | research
+  title           String
+  content         String
+  tags            String   @default("[]")
+  keywords        String   @default("[]")
+  relevanceScore  Float    @default(0)
+  updatedAt       DateTime @updatedAt
+
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@index([documentId])
+  @@index([entityType])
+}
+
+// ── Phase 13: Calendar & Scheduling ──
+
+model CalendarEvent {
+  id              String   @id @default(cuid())
+  organizationId  String
+  workspaceId     String?
+  title           String
+  description     String   @default("")
+  type            String   @default("meeting") // meeting | deadline | reminder | milestone | block | time_off
+  status          String   @default("scheduled") // scheduled | in_progress | completed | cancelled
+  startDate       DateTime
+  endDate         DateTime
+  allDay          Boolean  @default(false)
+  timezone        String   @default("UTC")
+  location        String   @default("")
+  meetingUrl      String?
+  organizerId     String
+  attendees       String   @default("[]") // JSON array of { userId, status, responseAt }
+  resources       String   @default("[]") // JSON array of { resourceId, name, type }
+  recurrence      String?  // RFC 5545 RRULE string
+  recurrenceParentId String? // for instances of recurring events
+  color           String   @default("")
+  tags            String   @default("[]")
+  reminders       String   @default("[]") // JSON array of { minutes, type }
+  linkedTaskId    String?
+  linkedGoalId    String?
+  linkedProjectId String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@index([workspaceId])
+  @@index([startDate])
+  @@index([endDate])
+  @@index([organizerId])
+  @@index([linkedTaskId])
+  @@index([linkedGoalId])
+  @@index([linkedProjectId])
+}
+
+model CalendarResource {
+  id              String   @id @default(cuid())
+  organizationId  String
+  workspaceId     String?
+  name            String
+  type            String   @default("room") // room | equipment | person
+  capacity        Int      @default(1)
+  location        String   @default("")
+  description     String   @default("")
+  availability    String   @default("[]") // JSON array of availability windows
+  bookingPolicy   String   @default("{}") // JSON config
+  active          Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@index([workspaceId])
+  @@index([type])
+  @@index([active])
+}
+
+model CalendarSync {
+  id              String   @id @default(cuid())
+  organizationId  String
+  userId          String
+  provider        String   // google | outlook | ical | caldav
+  externalCalendarId String
+  syncToken       String?
+  lastSyncAt      DateTime?
+  syncDirection   String   @default("two_way") // one_way_import | one_way_export | two_way
+  active          Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@index([userId])
+  @@index([provider])
+}
+
+// ── Phase 13: HR & People Ops ──
+
+model Employee {
+  id              String   @id @default(cuid())
+  organizationId  String
+  workspaceId     String?
+  userId          String?
+  employeeId      String?  // external employee ID
+  firstName       String
+  lastName        String
+  email           String
+  phone           String?
+  avatar          String?
+  position        String   @default("")
+  department      String   @default("")
+  managerId       String?  // references Employee.id
+  employmentType  String   @default("full_time") // full_time | part_time | contractor | intern
+  status          String   @default("active") // active | on_leave | terminated | suspended
+  hireDate        DateTime?
+  terminationDate DateTime?
+  salary          Float?
+  salaryCurrency  String   @default("USD")
+  payFrequency    String   @default("monthly") // monthly | biweekly | weekly
+  location        String   @default("")
+  timezone        String   @default("UTC")
+  address         String   @default("")
+  emergencyContact String  @default("{}") // JSON
+  documents       String   @default("[]") // JSON array of { name, url, type }
+  skills          String   @default("[]") // JSON array
+  notes           String   @default("")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  manager         Employee?   @relation("EmployeeManager", fields: [managerId], references: [id])
+  directReports   Employee[]  @relation("EmployeeManager")
+  payrollRecords  PayrollRecord[]
+
+  @@index([organizationId])
+  @@index([workspaceId])
+  @@index([userId])
+  @@index([managerId])
+  @@index([status])
+  @@index([department])
+}
+
+model TimeOffRequest {
+  id              String   @id @default(cuid())
+  organizationId  String
+  employeeId      String
+  type            String   @default("vacation") // vacation | sick | personal | bereavement | parental | unpaid
+  startDate       DateTime
+  endDate         DateTime
+  days            Float
+  status          String   @default("pending") // pending | approved | denied | cancelled
+  reason          String   @default("")
+  approverId      String?
+  approvedAt      DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@index([employeeId])
+  @@index([status])
+  @@index([startDate])
+}
+
+model PerformanceReview {
+  id              String   @id @default(cuid())
+  organizationId  String
+  employeeId      String
+  reviewerId      String
+  reviewPeriod    String   @default("") // e.g. "2024 Q1" or "2024 Annual"
+  type            String   @default("annual") // annual | quarterly | monthly | probationary
+  status          String   @default("draft") // draft | in_progress | submitted | completed
+  goals           String   @default("[]") // JSON array of { title, achievement, score }
+  competencies    String   @default("[]") // JSON array of { name, rating, comment }
+  overallRating   Float?
+  strengths       String   @default("")
+  improvements    String   @default("")
+  comments        String   @default("")
+  reviewerComments String  @default("")
+  submittedAt     DateTime?
+  completedAt     DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@index([employeeId])
+  @@index([reviewerId])
+  @@index([status])
+  @@index([reviewPeriod])
+}
+
+// ── Phase 14: Product Management ──
+
+model FeatureIdea {
+  id              String   @id @default(cuid())
+  organizationId  String
+  workspaceId     String?
+  title           String
+  description     String   @default("")
+  category        String   @default("feature") // feature | improvement | bug | research
+  status          String   @default("idea") // idea | backlog | planned | in_progress | shipped | rejected
+  priority        String   @default("medium") // low | medium | high | critical
+  impact          Int      @default(3) // 1-5
+  effort          Int      @default(3) // 1-5
+  votes           Int      @default(0)
+  voters          String   @default("[]") // JSON array of userIds
+  tags            String   @default("[]")
+  assignedToId    String?
+  releaseId       String?
+  submittedById   String
+  estimatedValue  Float?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@index([status])
+  @@index([priority])
+  @@index([category])
+  @@index([releaseId])
+}
+
+model Release {
+  id              String   @id @default(cuid())
+  organizationId  String
+  name            String
+  version         String   @default("")
+  description     String   @default("")
+  status          String   @default("planned") // planned | in_progress | released | cancelled
+  releaseDate     DateTime?
+  features        String   @default("[]") // JSON array of feature IDs
+  changelog       String   @default("")
+  releaseNotes    String   @default("")
+  createdBy       String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@index([status])
+  @@index([releaseDate])
+}
+
+model RoadmapItem {
+  id              String   @id @default(cuid())
+  organizationId  String
+  featureId       String?
+  title           String
+  description     String   @default("")
+  quarter         String   @default("") // e.g. "2024 Q1"
+  status          String   @default("planned") // planned | at_risk | on_track | delayed | done
+  startDate       DateTime?
+  endDate         DateTime?
+  dependencies    String   @default("[]") // JSON array of roadmap item IDs
+  color           String   @default("")
+  position        Int      @default(0)
+  createdBy       String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@index([quarter])
+  @@index([status])
+}
+
+// ── Phase 14: IT Asset Management ──
+
+model ITAsset {
+  id              String   @id @default(cuid())
+  organizationId  String
+  workspaceId     String?
+  assetTag        String   @default("")
+  name            String
+  type            String   @default("hardware") // hardware | software | license | service | virtual
+  category        String   @default("") // laptop | server | monitor | subscription | saas | etc
+  status          String   @default("active") // active | assigned | in_storage | retired | expired
+  serialNumber    String   @default("")
+  manufacturer    String   @default("")
+  model           String   @default("")
+  purchaseDate    DateTime?
+  purchaseCost    Float?
+  currentValue    Float?
+  currency        String   @default("USD")
+  assignedToId    String?
+  assignedToType  String   @default("employee") // employee | user | workspace
+  location        String   @default("")
+  notes           String   @default("")
+  metadata        String   @default("{}") // JSON
+  warrantyExpiry  DateTime?
+  licenseExpiry   DateTime?
+  licenseKey      String?
+  licenseSeats    Int?
+  licenseUsed     Int      @default(0)
+  vendorId        String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@index([type])
+  @@index([status])
+  @@index([assignedToId])
+  @@index([category])
+}
+
+model ITProcurement {
+  id              String   @id @default(cuid())
+  organizationId  String
+  requestName     String
+  description     String   @default("")
+  type            String   @default("purchase") // purchase | renewal | upgrade
+  status          String   @default("pending") // pending | approved | ordered | received | rejected
+  items           String   @default("[]") // JSON array of { name, quantity, unitPrice, category }
+  totalCost       Float    @default(0)
+  currency        String   @default("USD")
+  vendorId        String?
+  requestedBy     String
+  approvedBy      String?
+  orderedAt       DateTime?
+  receivedAt      DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@index([status])
+  @@index([type])
+}
+
+model ITContract {
+  id              String   @id @default(cuid())
+  organizationId  String
+  vendorName      String
+  contractType    String   @default("service") // service | license | maintenance | support
+  title           String
+  description     String   @default("")
+  startDate       DateTime
+  endDate         DateTime
+  value           Float    @default(0)
+  currency        String   @default("USD")
+  status          String   @default("active") // active | expired | terminated | pending_renewal
+  renewalDate     DateTime?
+  terms           String   @default("")
+  metadata        String   @default("{}")
+  createdBy       String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@index([status])
+  @@index([endDate])
+  @@index([renewalDate])
+}
+
+// ── Phase 15: Meeting Intelligence ──
+
+model Meeting {
+  id              String   @id @default(cuid())
+  organizationId  String
+  workspaceId     String?
+  title           String
+  description     String   @default("")
+  type            String   @default("general") // general | standup | review | planning | one_on_one | client
+  status          String   @default("scheduled") // scheduled | in_progress | completed | cancelled
+  scheduledAt     DateTime
+  duration        Int      @default(60) // minutes
+  location        String   @default("") // physical location or video link
+  organizerId     String
+  attendeeIds     String   @default("[]") // JSON array of user IDs
+  agenda          String   @default("[]") // JSON array of agenda items
+  notes           String   @default("")
+  transcript      String   @default("")
+  aiSummary       String   @default("")
+  actionItems     String   @default("[]") // JSON array
+  decisions       String   @default("[]") // JSON array
+  followUps       String   @default("[]") // JSON array
+  tags            String   @default("[]")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  @@index([organizationId])
+  @@index([status])
+  @@index([scheduledAt])
+}
+
+// ── Phase 15: Strategy & OKRs ──
+
+model StrategicInitiative {
+  id              String   @id @default(cuid())
+  organizationId  String
+  workspaceId     String?
+  name            String
+  description     String   @default("")
+  status          String   @default("planning") // planning | active | on_hold | completed | cancelled
+  priority        String   @default("medium") // low | medium | high | critical
+  startDate       DateTime
+  endDate         DateTime?
+  owner           String?
+  budget          Float    @default(0)
+  progress        Int      @default(0) // 0-100
+  tags            String   @default("[]")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  @@index([organizationId])
+  @@index([status])
+}
+
+model Milestone {
+  id              String   @id @default(cuid())
+  organizationId  String
+  initiativeId    String?
+  name            String
+  description     String   @default("")
+  targetDate      DateTime
+  achievedDate    DateTime?
+  status          String   @default("planned") // planned | in_progress | achieved | missed | cancelled
+  progress        Int      @default(0)
+  owner           String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  @@index([organizationId])
+  @@index([initiativeId])
+  @@index([status])
+}
+
+// ── Time & Expense Management ──
+
+model Timesheet {
+  id              String   @id @default(cuid())
+  organizationId  String
+  workspaceId     String?
+  userId          String
+  periodStart     DateTime
+  periodEnd       DateTime
+  status          String   @default("draft") // draft | submitted | approved | rejected
+  totalHours      Float    @default(0)
+  billableHours   Float    @default(0)
+  submittedAt     DateTime?
+  approvedBy      String?
+  approvedAt      DateTime?
+  rejectedReason  String?
+  notes           String   @default("")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  @@index([organizationId])
+  @@index([userId])
+  @@index([status])
+}
+
+// ── Recruitment & ATS ──
+
+model JobPosting {
+  id              String   @id @default(cuid())
+  organizationId  String
+  workspaceId     String?
+  title           String
+  department      String   @default("")
+  description     String   @default("")
+  requirements    String   @default("[]") // JSON array
+  responsibilities String  @default("[]") // JSON array
+  location        String   @default("")
+  type            String   @default("full_time") // full_time | part_time | contract | internship | remote
+  status          String   @default("draft") // draft | published | paused | closed
+  salaryMin       Float?
+  salaryMax       Float?
+  currency        String   @default("USD")
+  postedAt        DateTime?
+  closedAt        DateTime?
+  hiringManagerId String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  @@index([organizationId])
+  @@index([status])
+}
+
+model Candidate {
+  id              String   @id @default(cuid())
+  organizationId  String
+  workspaceId     String?
+  jobPostingId    String?
+  name            String
+  email           String
+  phone           String?
+  resumeUrl       String?
+  resumeText      String   @default("")
+  linkedinUrl     String?
+  portfolioUrl    String?
+  source          String   @default("direct") // direct | referral | linkedin | job_board | agency
+  status          String   @default("new") // new | screening | interview | offer | hired | rejected | withdrawn
+  rating          Int      @default(0) // 0-5
+  tags            String   @default("[]")
+  notes           String   @default("")
+  appliedAt       DateTime @default(now())
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  @@index([organizationId])
+  @@index([jobPostingId])
+  @@index([status])
+}
+
+model Interview {
+  id              String   @id @default(cuid())
+  organizationId  String
+  candidateId     String
+  jobPostingId    String?
+  type            String   @default("phone") // phone | video | onsite | technical | cultural | final
+  status          String   @default("scheduled") // scheduled | completed | cancelled | no_show
+  scheduledAt     DateTime
+  duration        Int      @default(60) // minutes
+  location        String   @default("")
+  interviewerIds  String   @default("[]") // JSON array
+  feedback        String   @default("")
+  rating          Int      @default(0) // 0-5
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  @@index([organizationId])
+  @@index([candidateId])
+  @@index([status])
+}
+
+model JobOffer {
+  id              String   @id @default(cuid())
+  organizationId  String
+  candidateId     String
+  jobPostingId    String?
+  status          String   @default("draft") // draft | sent | accepted | rejected | expired | withdrawn
+  salary          Float
+  currency        String   @default("USD")
+  startDate       DateTime?
+  benefits        String   @default("{}") // JSON
+  terms           String   @default("")
+  sentAt          DateTime?
+  respondedAt     DateTime?
+  expiresAt       DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  @@index([organizationId])
+  @@index([candidateId])
+  @@index([status])
+}
+
+// ── Help Desk / ITSM models ──
+
+model ITSMIncident {
+  id              String   @id @default(cuid())
+  organizationId  String
+  workspaceId     String?
+  title           String
+  description     String   @default("")
+  type            String   @default("incident") // incident | problem | change | request
+  priority        String   @default("medium") // low | medium | high | urgent
+  status          String   @default("open") // open | investigating | in_progress | resolved | closed | cancelled
+  severity        String   @default("minor") // trivial | minor | major | critical | blocker
+  category        String   @default("general") // hardware | software | network | access | security | other
+  assignedToId    String?
+  reportedById    String?
+  affectedService String?
+  resolution      String   @default("")
+  resolvedAt      DateTime?
+  closedAt        DateTime?
+  slaDueAt        DateTime?
+  tags            String   @default("[]")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  @@index([organizationId])
+  @@index([status])
+  @@index([priority])
+}
+
+model ChangeRequest {
+  id              String   @id @default(cuid())
+  organizationId  String
+  workspaceId     String?
+  title           String
+  description     String   @default("")
+  type            String   @default("standard") // standard | normal | emergency
+  status          String   @default("requested") // requested | approved | in_progress | implemented | rejected | cancelled
+  priority        String   @default("medium")
+  riskLevel       String   @default("low") // low | medium | high | critical
+  requestedById   String
+  approvedById    String?
+  approvedAt      DateTime?
+  implementedAt   DateTime?
+  rollbackPlan    String   @default("")
+  impactAnalysis  String   @default("")
+  affectedSystems String   @default("[]") // JSON array
+  scheduledAt     DateTime?
+  completedAt     DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  @@index([organizationId])
+  @@index([status])
+}
+
+model ITSMArticle {
+  id              String   @id @default(cuid())
+  organizationId  String
+  workspaceId     String?
+  title           String
+  content         String   @default("")
+  category        String   @default("general") // troubleshooting | how_to | faq | policy | reference
+  type            String   @default("article") // article | faq | runbook | policy
+  status          String   @default("draft") // draft | published | archived
+  tags            String   @default("[]")
+  authorId        String
+  views           Int      @default(0)
+  helpfulVotes    Int      @default(0)
+  unhelpfulVotes  Int      @default(0)
+  publishedAt     DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  @@index([organizationId])
+  @@index([status])
+  @@index([category])
+}
+
+// ── Capacity Planning model ──
+
+model ResourceAllocation {
+  id              String   @id @default(cuid())
+  organizationId  String
+  workspaceId     String?
+  userId          String
+  projectId       String?
+  role            String   @default("member")
+  allocatedHours  Float    @default(0) // hours per week
+  maxHours        Float    @default(40) // max capacity hours per week
+  startDate       DateTime
+  endDate         DateTime?
+  status          String   @default("active") // active | paused | completed
+  notes           String   @default("")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  @@index([organizationId])
+  @@index([userId])
+  @@index([projectId])
+}
+
+// ── Asset Lifecycle Management models ──
+
+model AssetMaintenance {
+  id              String   @id @default(cuid())
+  organizationId  String
+  itAssetId       String
+  type            String   @default("preventive") // preventive | corrective | inspection | upgrade
+  status          String   @default("scheduled") // scheduled | in_progress | completed | cancelled | overdue
+  title           String
+  description     String   @default("")
+  scheduledDate   DateTime
+  completedDate   DateTime?
+  cost            Float    @default(0)
+  performedBy     String?
+  vendorName      String?
+  notes           String   @default("")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  @@index([organizationId])
+  @@index([itAssetId])
+  @@index([status])
+}
+
+model AssetWarranty {
+  id              String   @id @default(cuid())
+  organizationId  String
+  itAssetId       String
+  type            String   @default("standard") // standard | extended | manufacturer
+  provider        String
+  startDate       DateTime
+  endDate         DateTime
+  coverage        String   @default("")
+  terms           String   @default("")
+  status          String   @default("active") // active | expired | void
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  @@index([organizationId])
+  @@index([itAssetId])
+  @@index([status])
+}
+
+// ── Employee Development models ──
+
+model OnboardingTask {
+  id              String   @id @default(cuid())
+  organizationId  String
+  employeeId      String
+  title           String
+  description     String   @default("")
+  category        String   @default("general") // paperwork | it_setup | training | introduction | compliance
+  status          String   @default("pending") // pending | in_progress | completed | skipped
+  dueDate         DateTime?
+  completedAt     DateTime?
+  assignedTo      String?
+  order           Int      @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  @@index([organizationId])
+  @@index([employeeId])
+  @@index([status])
+}
+
+model TrainingPlan {
+  id              String   @id @default(cuid())
+  organizationId  String
+  employeeId      String
+  title           String
+  description     String   @default("")
+  status          String   @default("active") // active | completed | paused | cancelled
+  startDate       DateTime
+  endDate         DateTime?
+  progress        Int      @default(0) // 0-100
+  trainer         String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  @@index([organizationId])
+  @@index([employeeId])
+  @@index([status])
+}
+
+model Certification {
+  id              String   @id @default(cuid())
+  organizationId  String
+  employeeId      String
+  name            String
+  issuer          String
+  issueDate       DateTime
+  expiryDate      DateTime?
+  credentialId    String?
+  credentialUrl   String?
+  status          String   @default("active") // active | expired | revoked | in_progress
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  @@index([organizationId])
+  @@index([employeeId])
+  @@index([status])
+}
+
+// ── Accounting / General Ledger ──
+
+model GLAccount {
+  id              String   @id @default(cuid())
+  organizationId  String
+  code            String   // e.g. "1000", "2000"
+  name            String
+  type            String   // asset | liability | equity | revenue | expense
+  subtype         String   @default("") // current_asset, fixed_asset, etc.
+  parentAccountId String?
+  isActive        Boolean  @default(true)
+  openingBalance  Float    @default(0)
+  currency        String   @default("USD")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  parentAccount   GLAccount?   @relation("GLAccountHierarchy", fields: [parentAccountId], references: [id], onDelete: SetNull)
+  childAccounts   GLAccount[]  @relation("GLAccountHierarchy")
+  journalLines    JournalLine[]
+
+  @@unique([organizationId, code])
+  @@index([organizationId])
+  @@index([type])
+}
+
+model JournalEntry {
+  id              String   @id @default(cuid())
+  organizationId  String
+  workspaceId     String?
+  entryNumber     String   // e.g. "JE-0001"
+  date            DateTime @default(now())
+  description     String   @default("")
+  reference       String   @default("") // invoice number, PO number, etc.
+  status          String   @default("draft") // draft | posted | reversed
+  period          String   // YYYY-MM
+  isReversed      Boolean  @default(false)
+  reversedBy      String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  lines           JournalLine[]
+
+  @@index([organizationId])
+  @@index([period])
+  @@index([status])
+}
+
+model JournalLine {
+  id              String   @id @default(cuid())
+  journalEntryId  String
+  accountId       String
+  debit           Float    @default(0)
+  credit          Float    @default(0)
+  description     String   @default("")
+  createdAt       DateTime @default(now())
+
+  journalEntry    JournalEntry @relation(fields: [journalEntryId], references: [id], onDelete: Cascade)
+  account         GLAccount    @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+  @@index([journalEntryId])
+  @@index([accountId])
+}
+
+// ── Inventory & Warehouse Management ──
+
+model Warehouse {
+  id              String   @id @default(cuid())
+  organizationId  String
+  name            String
+  code            String
+  location        String   @default("")
+  address         String   @default("")
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  inventoryItems  InventoryItem[]
+  stockMovements  StockMovement[]
+
+  @@unique([organizationId, code])
+  @@index([organizationId])
+}
+
+model InventoryItem {
+  id              String   @id @default(cuid())
+  organizationId  String
+  warehouseId     String
+  sku             String
+  name            String
+  description     String   @default("")
+  category        String   @default("general")
+  quantity        Int      @default(0)
+  reorderPoint    Int      @default(0)
+  reorderQty      Int      @default(0)
+  unitCost        Float    @default(0)
+  unitPrice       Float    @default(0)
+  barcode         String   @default("")
+  location        String   @default("")
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  warehouse       Warehouse     @relation(fields: [warehouseId], references: [id], onDelete: Cascade)
+  movements       StockMovement[]
+
+  @@unique([organizationId, sku])
+  @@index([organizationId])
+  @@index([warehouseId])
+  @@index([sku])
+}
+
+model StockMovement {
+  id              String   @id @default(cuid())
+  organizationId  String
+  warehouseId     String
+  inventoryItemId String
+  type            String
+  quantity        Int
+  reference       String   @default("")
+  notes           String   @default("")
+  createdAt       DateTime @default(now())
+
+  organization    Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  warehouse       Warehouse       @relation(fields: [warehouseId], references: [id], onDelete: Cascade)
+  inventoryItem   InventoryItem   @relation(fields: [inventoryItemId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@index([warehouseId])
+  @@index([inventoryItemId])
+  @@index([type])
 }
