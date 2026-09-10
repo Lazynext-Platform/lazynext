@@ -14,8 +14,8 @@ const nextConfig = {
     '@img/sharp-libvips-darwin-arm64',
     '@img/sharp-wasm32',
     '@img/colour',
-    // Prisma CLI/dev transitive deps — not needed at runtime
-    'effect',
+    // Note: 'effect' is in Next.js transpilePackages, so it can't be in
+    // serverExternalPackages. It's handled via OpenNext edgeExternals + trimming.
     'elkjs',
     '@electric-sql/pglite',
     '@electric-sql/pglite-socket',
