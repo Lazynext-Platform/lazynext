@@ -141,6 +141,30 @@ if (existsSync(dotPrismaDir)) {
   }
 }
 
+// --- Remove handler.mjs.meta.json (18 MB OpenNext metadata, not needed at runtime) ---
+const metaJsonPath = join(projectRoot, '.open-next', 'server-functions', 'default', 'handler.mjs.meta.json');
+if (existsSync(metaJsonPath)) {
+  const stat = statSync(metaJsonPath);
+  rmSync(metaJsonPath, { force: true });
+  console.log(`\nremoved: handler.mjs.meta.json (${(stat.size / 1024 / 1024).toFixed(1)} MB) — not needed at runtime`);
+}
+
+// --- Remove .prisma/client/index.d.ts if it still exists (14.5 MB TypeScript declarations) ---
+const prismaIndexDts = join(dotPrismaDir, 'index.d.ts');
+if (existsSync(prismaIndexDts)) {
+  const stat = statSync(prismaIndexDts);
+  rmSync(prismaIndexDts, { force: true });
+  console.log(`removed: .prisma/client/index.d.ts (${(stat.size / 1024 / 1024).toFixed(1)} MB) — TypeScript declarations not needed at runtime`);
+}
+
+// --- Remove .prisma/client/query_compiler_fast_bg.wasm-base64.js (duplicate of @prisma/client/runtime/) ---
+const dotPrismaBase64 = join(dotPrismaDir, 'query_compiler_fast_bg.wasm-base64.js');
+if (existsSync(dotPrismaBase64)) {
+  const stat = statSync(dotPrismaBase64);
+  rmSync(dotPrismaBase64, { force: true });
+  console.log(`removed: .prisma/client/query_compiler_fast_bg.wasm-base64.js (${(stat.size / 1024 / 1024).toFixed(1)} MB) — duplicate of @prisma/client/runtime/`);
+}
+
 console.log(`\nExternalization complete: ${removedCount} files moved/freed, ${(removedBytes / 1024 / 1024).toFixed(1)} MB`);
 
 // Prisma 7: the "fast" and "small" WASM engines have DIFFERENT JS glue code
