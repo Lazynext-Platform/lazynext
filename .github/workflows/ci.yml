@@ -48,7 +48,7 @@ jobs:
         run: npm run build
         env:
           BUILD_TARGET: local
-          NODE_OPTIONS: --max-old-space-size=8192
+          NODE_OPTIONS: --max-old-space-size=12288
           NEXTAUTH_URL: http://localhost:3100
           AUTH_URL: http://localhost:3100
           NEXTAUTH_SECRET: ci-test-secret-not-for-production
