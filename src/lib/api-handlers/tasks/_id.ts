@@ -1,0 +1,116 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { auth } from '@/../auth';
+import { WorkspaceService } from '@/lib/services/workspace';
+import { TaskService } from '@/lib/services/task';
+import { prisma } from '@/lib/prisma';
+import { createNotification } from '@/lib/notifications';
+
+/**
+ * Internal task CRUD API (session-auth).
+ * GET /api/tasks/[id] — get task detail with dependencies, subtasks, time entries.
+ * PATCH /api/tasks/[id] — update a task (status, priority, title, etc).
+ * DELETE /api/tasks/[id] — soft-delete a task.
+ */
+export async function GET(_req: NextRequest, { params }: { params: { id: string } }) {
+  const { id } = params;
+  const session = await auth().catch(() => null);
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+  }
+
+  try {
+    const task = await TaskService.get(id);
+    if (!task) {
+      return NextResponse.json({ error: 'not_found' }, { status: 404 });
+    }
+    return NextResponse.json({ task });
+  } catch (e) {
+    console.error('[tasks] get error:', e);
+    return NextResponse.json({ error: 'failed_to_get_task' }, { status: 500 });
+  }
+}
+
+export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
+  const { id } = params;
+  const session = await auth().catch(() => null);
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+  }
+
+  const workspaces = await WorkspaceService.listForUser(session.user.id);
+  const wsIds = workspaces.map((w) => w.id);
+
+  const existing = await prisma.task.findFirst({
+    where: { id, project: { workspaceId: { in: wsIds } }, deletedAt: null },
+  });
+  if (!existing) {
+    return NextResponse.json({ error: 'not_found' }, { status: 404 });
+  }
+
+  let body: {
+    title?: string;
+    description?: string;
+    status?: string;
+    priority?: string;
+    dueDate?: string | null;
+  };
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: 'invalid_json' }, { status: 400 });
+  }
+
+  const data: Record<string, unknown> = {};
+  if (body.title?.trim()) data.title = body.title.trim().slice(0, 200);
+  if (body.description !== undefined) data.description = body.description?.trim().slice(0, 2000) || null;
+  if (body.status && ['todo', 'in_progress', 'done'].includes(body.status)) data.status = body.status;
+  if (body.priority && ['low', 'medium', 'high', 'urgent'].includes(body.priority)) data.priority = body.priority;
+  if (body.dueDate !== undefined) data.dueDate = body.dueDate ? new Date(body.dueDate) : null;
+
+  const task = await prisma.task.update({ where: { id }, data });
+
+  // If task was marked as done and has an assignee who isn't the current user, notify the creator
+  if (body.status === 'done' && existing.assigneeId && existing.assigneeId !== session.user.id) {
+    // Notify the task creator that their task was completed
+    const project = await prisma.project.findUnique({
+      where: { id: existing.projectId },
+      select: { createdById: true, workspaceId: true },
+    });
+    if (project?.createdById && project.createdById !== session.user.id) {
+      await createNotification({
+        userId: project.createdById,
+        workspaceId: project.workspaceId,
+        type: 'task_completed',
+        title: `Task completed: ${existing.title}`,
+        body: `The task "${existing.title}" has been marked as done.`,
+      }).catch(() => {});
+    }
+  }
+
+  return NextResponse.json({ task });
+}
+
+export async function DELETE(_req: NextRequest, { params }: { params: { id: string } }) {
+  const { id } = params;
+  const session = await auth().catch(() => null);
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+  }
+
+  const workspaces = await WorkspaceService.listForUser(session.user.id);
+  const wsIds = workspaces.map((w) => w.id);
+
+  const existing = await prisma.task.findFirst({
+    where: { id, project: { workspaceId: { in: wsIds } }, deletedAt: null },
+  });
+  if (!existing) {
+    return NextResponse.json({ error: 'not_found' }, { status: 404 });
+  }
+
+  await prisma.task.update({
+    where: { id },
+    data: { deletedAt: new Date() },
+  });
+
+  return NextResponse.json({ ok: true });
+}
