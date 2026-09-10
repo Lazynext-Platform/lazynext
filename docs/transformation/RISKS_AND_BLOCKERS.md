@@ -39,15 +39,15 @@
 
 | # | Blocker | Type | Resolution |
 |---|---|---|---|
-| B1 | No Cloudflare API token | Credential | OPEN — needs user to provide actual token. Cannot run cf:build/cf:deploy locally — CI handles this |
+| B1 | No Cloudflare API token | Credential | RESOLVED — durable token created and stored as GitHub secret (2026-09-10). CI/CD deploys successfully |
 | B2 | No Atlas Cloud API key | Credential | OPEN — needs user to provide actual key. Mock server used for local dev — production needs real key |
-| B3 | No live production access | Access | OPEN — needs user to deploy. Live reconciliation deferred — requires browser access to lazynext.com |
+| B3 | No live production access | Access | RESOLVED — production deployed and verified at lazynext.com (2026-09-10). Health checks pass |
 | B4 | No D1 production database access | Credential | OPEN — needs user to configure. Cannot verify production data state — migrations tested locally only |
 
 ## Risk Assessment Summary
 
-- **All 26 risks (R1-R26) are now RESOLVED.** No open risks remain.
-- **Remaining blockers (B1-B4) require external credentials/access** that only the user can provide.
+- **24 of 26 risks (R1-R26) are RESOLVED.** R12 (email verification) and R14 (dep versions) remain open — low priority.
+- **2 of 4 blockers (B1, B3) are RESOLVED.** B2 and B4 require external credentials that only the user can provide.
 
 ### Resolved in prior batches
 - R1 (tsc heap) — Documented (use NODE_OPTIONS=--max-old-space-size=8192)
@@ -80,7 +80,7 @@
 - R26 (seed credentials) — Resolved (ALLOW_PROD_SEED guard added)
 
 ### Open Blockers (require external credentials)
-- B1: Cloudflare API token (needs user to provide)
+- B1: Cloudflare API token — RESOLVED (durable token created and stored as GitHub secret, 2026-09-10)
 - B2: Atlas Cloud API key (needs user to provide)
-- B3: Production access (needs user to deploy)
+- B3: Production access — RESOLVED (deployed and verified, 2026-09-10)
 - B4: D1 database access (needs user to configure)
