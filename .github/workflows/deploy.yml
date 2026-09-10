@@ -26,6 +26,11 @@ jobs:
       - run: npm ci
       - run: npm run lint
       - run: npm test
+      - name: Apply D1 schema baseline
+        run: node scripts/apply-d1-schema-baseline.mjs --apply
+        env:
+          CLOUDFLARE_ACCOUNT_ID: "85953070bae00da372951a8833bd3459"
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       - name: Apply D1 migrations
         run: node scripts/apply-d1-migrations.mjs --apply
         env:
