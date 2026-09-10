@@ -1,20 +1,20 @@
 # Lazynext — Product Strategy
 
-**Date:** 2026-09-03
+**Date:** 2026-09-03 (revised 2026-09-10: aligned to the shipped **Autonomous Company Operating System** — see `docs/transformation/CURRENT_STATE.md`; the platform has since evolved from a work-OS-with-modules into an autonomous company OS with a 12-role AI agent workforce, durable autonomy loop, approvals, budgets, memory, CRM, support, finance, operations, research, and product modules. Historical sections below updated to match.)
 **Status:** Active
-**Depends on:** `DISCOVERY-REPORT-PHASE0.md`, `ARCHITECTURE-PHASE1.md`
+**Depends on:** `DISCOVERY-REPORT-PHASE0.md`, `ARCHITECTURE-PHASE1.md`, `docs/transformation/`
 
 ---
 
 ## 1. Product Vision
 
-> **Lazynext is a unified operating system for people, teams, organizations, workflows, information, tools, applications, automation, AI, integrations, data, and digital work.**
+> **Lazynext is the Autonomous Company Operating System — the user defines the direction; Lazynext plans, executes, measures, learns, and continues the work.**
 
-Lazynext is not a "dashboard with links." It is a coherent platform where a global shell provides navigation, workspace switching, search, command palette, notifications, account, theme, locale, and session controls. **Modules** are the actual work surfaces (Creative Studio, Projects, Documents, Automations, AI Agents, Integrations, Admin, Developer Platform). A single domain model and service layer underpin all modules, the public API, and the MCP server — there is one business-logic layer, not three.
+Lazynext is not a "dashboard with links" and no longer merely a "work OS with modules." The core entity is the **Company** — mission, vision, strategy, goals, KPIs, plans, products, customers. Around it runs a durable **autonomy loop** (observe → understand → prioritize → plan → select agent → select tools → check policies → approve → execute → verify → measure → record → update memory → replan). A **12-role AI agent workforce** (CEO, Strategy, Research, Product, Engineering, Design, Growth, Sales, Support, Finance, Operations, Security) executes real business work inside an 8-layer permission system, multi-level budgets, and a centralized approval center, in one of four autonomy modes (Manual, Assisted, Autonomous, Timed Continuous). A single domain model and a 250+ module service layer underpin all modules, the public API, and the MCP server — there is one business-logic layer, not three.
 
 ### Vision statement
 
-Lazynext replaces tool sprawl with a single operating system for digital work. Where teams today stitch together 5–15 SaaS tools (project management, docs, files, creative tools, automation, AI, analytics, developer APIs), Lazynext provides all of these as first-class modules within one coherent platform — with a unified identity layer, permission system, workspace context, search, and design system.
+Lazynext replaces both tool sprawl and manual company operations with a single autonomous operating system. Where teams today stitch together 5–15 SaaS tools *and then still do the work themselves*, Lazynext provides the tools (work, docs, growth, CRM, support, finance, operations, research, analytics) **and** an AI workforce that operates them — under full human control via approvals, budgets, and audit.
 
 ---
 
@@ -136,7 +136,7 @@ Lazynext replaces tool sprawl with a single operating system for digital work. W
 
 ### 6.1 Positioning statement
 
-> **For teams and professionals who use 5–15 SaaS tools to manage digital work, Lazynext is the operating system that unifies project management, knowledge, creative production, AI agents, automations, integrations, and a developer platform into one coherent workspace. Unlike standalone tools that require stitching and integration tax, Lazynext provides a single identity layer, permission system, search, and design system — with native AI and an MCP server for extensibility.**
+> **For founders, teams, and organizations who want an entire company operated from one system, Lazynext is the autonomous company operating system: you set mission, strategy, goals and KPIs, and a 12-role AI agent workforce plans, executes, verifies, and learns inside durable autonomy loops — under human approvals, budgets, and an 8-layer permission model. Unlike AI chat assistants that advise and stop, Lazynext executes; unlike stitched SaaS stacks, it is one entity, one permission system, one memory, one audit trail.**
 
 ### 6.2 Defensibility vectors
 
@@ -152,10 +152,11 @@ Lazynext replaces tool sprawl with a single operating system for digital work. W
 
 ### 6.3 Anti-positioning (what Lazynext is NOT)
 
-- NOT a standalone project management tool (it's an OS with PM as a module)
-- NOT a standalone creative/ad tool (Creative Studio is one module of many)
+- NOT a standalone project management tool (it's a company OS with PM as one surface)
+- NOT a standalone creative/ad tool (Creative Studio is the Growth domain of many)
 - NOT a no-code app builder (modules are first-class applications, not user-built)
-- NOT an AI chatbot (AI agents are a platform capability, not the whole product)
+- NOT an AI chatbot or copilot (agents execute end-to-end under governance — not just advise)
+- NOT an unmanaged "auto-GPT" toy (autonomy runs inside budgets, permissions, approvals, and audit)
 - NOT a Zapier replacement (automations are native to the OS, not an external connector)
 
 ---

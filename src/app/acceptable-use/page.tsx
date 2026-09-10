@@ -15,7 +15,7 @@ export default function AcceptableUsePage() {
       sections={[
         {
           title: '1. Permitted Use',
-          body: 'Lazynext is a unified operating system for digital work. You may use the platform to create workspaces, projects, tasks, documents, files, automations, AI agents, integrations, and creative content for lawful business and personal purposes.',
+          body: 'Lazynext is the Autonomous Company Operating System — a governed platform where AI agents plan and operate business functions on your behalf. You may use the platform to create companies, workspaces, projects, tasks, documents, files, automations, AI agents, integrations, and creative content for lawful business and personal purposes.',
         },
         {
           title: '2. Prohibited Content',

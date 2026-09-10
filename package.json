@@ -2,7 +2,7 @@
   "name": "lazynext",
   "version": "0.1.0",
   "private": true,
-  "description": "Lazynext Operating System — a unified platform for identity, workspaces, projects, tasks, documents, files, automations, AI agents, integrations, analytics, search, a developer API, and an MCP server, with a Creative Studio module for AI ad generation powered by Atlas Cloud.",
+  "description": "Lazynext — The Autonomous Company Operating System. Create a Company and set its direction; a 12-role AI agent workforce plans, executes, verifies, and operates business functions autonomously under budgets, approvals, and permissions. Includes identity, organizations, workspaces, projects, tasks, documents, files, automations, CRM, support, finance, operations, research, product planning, analytics, search, a public REST API, an MCP server, and a Creative Studio module for AI ad generation powered by Atlas Cloud.",
   "scripts": {
     "dev": "BUILD_TARGET=local npm run platform:prepare && BUILD_TARGET=local next dev -p 3100",
     "mock-atlas": "node scripts/mock-atlas.mjs",

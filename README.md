@@ -1,48 +1,55 @@
-# Lazynext Operating System
+# Lazynext — The Autonomous Company Operating System
 
-**Lazynext** is a unified operating system for individuals, professionals, teams, and organizations — providing identity, workspaces, projects, tasks, documents, files, automations, AI agents, integrations, analytics, search, a developer API, an MCP server, and a Creative Studio module for AI ad generation powered by [Atlas Cloud](https://www.atlascloud.ai).
+**Lazynext** is the Autonomous Company Operating System for individuals, professionals, teams, startups, and organizations. You create a Company and set its direction — mission, strategy, goals, KPIs. Lazynext plans, executes, measures, learns, and continues the work autonomously, within your budget, permission, and approval policies. The platform provides identity, organizations, workspaces, projects, tasks, documents, files, automations, a 12-role AI agent workforce with a durable autonomy loop, an approval center, multi-level budgets, company memory, CRM, customer support, finance, research, product planning, opportunity detection, integrations, analytics, search, a developer API, an MCP server, and a Creative Studio module for AI ad generation powered by [Atlas Cloud](https://www.atlascloud.ai).
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](#license)
 [![Next.js](https://img.shields.io/badge/Next.js-16-black)](https://nextjs.org/)
 [![Cloudflare Workers](https://img.shields.io/badge/Cloudflare-Workers-f38020)](https://workers.cloudflare.com/)
 [![Powered by Atlas Cloud](https://www.atlascloud.ai/oss-program/powered-by-atlas-cloud.svg)](https://www.atlascloud.ai/?ref=LAZYNEXT)
 
-> One environment for your entire workflow. Identity is unified, data is unified, permissions are unified, and every module shares the same platform core.
+> One environment for your entire company. You set the direction — Lazynext runs the work. Identity is unified, data is unified, permissions are unified, and every module shares the same platform core.
 
 ## What Lazynext is
 
-Lazynext is a platform OS with a global shell and a set of modules that run inside it. Each module is a first-class application with its own navigation, data, and actions, but all modules share the OS shell, identity layer, permission system, workspace context, search, command palette, and design system.
+Lazynext is the Autonomous Company Operating System. The core entity is the **Company**: mission, vision, strategy, goals, KPIs, plans, products, customers, and memory. Around it runs a durable **autonomy loop** (observe → understand → prioritize → plan → select agent → select tools → check policies → approve → execute → verify → measure → record → update memory → replan) with four autonomy modes — Manual, Assisted, Autonomous, and Timed Continuous — and a **12-role AI agent workforce** (CEO, Strategy, Research, Product, Engineering, Design, Growth, Sales, Support, Finance, Operations, Security) whose actions pass an 8-layer permission evaluator, budget controls, and an approval center.
+
+The shell wraps everything in one coherent platform UI: each module is a first-class application with its own navigation, data, and actions, but all modules share the OS shell, identity layer, permission system, workspace context, search, audit, memory, command palette, and design system.
 
 ### Platform modules
 
 | Module | Purpose |
 |---|---|
-| **Dashboard** | Workspace overview: activity, recent objects, pinned items, system status |
+| **Dashboard** | Company control center: unified overview, live AI work feed, activity, system status |
+| **Company** | Mission, vision, strategy, goals (`/goals`), plans, KPIs — flagship |
+| **Agents** | 12-role AI workforce, agent roles, durable runs, tool calling |
+| **Autonomy Dashboard** | Autonomy loop control: modes, pause/stop, live AI work feed |
+| **Approvals** | Centralized approval center for agent and business actions |
+| **Customers / Deals** | CRM: leads, contacts, accounts, deals, pipelines |
+| **Support** | Tickets, triage, resolution |
+| **Finance** | Invoices, subscriptions, expenses, budgets (multi-level) |
+| **Growth** | Marketing, campaigns, content, acquisition |
 | **Creative Studio** | AI ad generation: UGC ads, reference remakes, drama ads, ad skits, 150+ creative tools |
-| **Projects** | Project management with tasks, documents, files, and conversations |
-| **Tasks** | Task management within projects and standalone; kanban/list views |
-| **Documents** | Rich-text documents and knowledge base |
-| **Files** | File/asset management with R2 storage, sharing, and versioning |
-| **Automations** | Workflow builder with triggers, conditions, and scheduled jobs |
-| **AI Agents** | Agent definitions, tool calling, runs, and memory |
-| **Integrations** | OAuth connections, API credentials, webhook endpoints, integration catalog |
-| **Calendar** | Unified calendar across projects, scheduled posts, and automations |
-| **People** | Contacts, team members, organization members, and presence |
-| **Conversations** | Threaded discussions across modules |
-| **Analytics** | Cross-module analytics dashboards, usage, performance, and audit |
-| **Search** | Global search across all objects (authorization-filtered) |
-| **Settings** | User preferences, workspace settings, org settings, billing, security, privacy |
-| **Admin** | User/org/workspace administration, roles, permissions, audit logs, system health |
-| **Developer Platform** | API keys, REST API v1, MCP endpoint, webhooks, usage metrics |
+| **Research** | Web discovery, fact extraction, cited evidence |
+| **Products** | Ideas, requirements, roadmaps |
+| **Projects / Tasks / My Work** | Kanban/list work management, human or agent owned |
+| **Documents / Files / Knowledge** | Rich-text docs, R2 storage with versioning, company memory |
+| **Automations** | Workflow builder, triggers, conditions, scheduled jobs, automation center |
+| **Conversations / People / Workspaces** | Threaded discussion, members, tenancy |
+| **Analytics** | Performance dashboards, usage, cross-module analytics, audit |
+| **Coding Loop / Sandbox** | Secure code + browser execution boundaries for agents |
+| **Governance / Security** | Security dashboard, permission evaluator, quotas, observability |
+| **Integrations** | OAuth connections, API credentials, webhooks, ad platforms (Meta/Google) |
+| **Settings / Admin** | Preferences, org administration, roles, audit logs, system health |
+| **Developer Platform** | API keys, REST API v1, MCP server, webhooks, usage metrics |
 | **Legal** | Terms, privacy, cookie policy, AUP, AI policy, DPA, subprocessors, data rights |
 
 ### Platform primitives
 
-All modules build on shared domain concepts: User, Identity, Session, Organization, Workspace, Team, Membership, Role, Permission, Project, Task, Document, File, Asset, Conversation, Integration, Automation, Agent, Tool, ApiCredential, WebhookEndpoint, Event, Notification, AuditEvent, Subscription, Invoice, UsageRecord, and ScheduledJob.
+All modules build on shared domain concepts — 143 Prisma models in total: User, Identity, Session, Organization, Company, Goal, Kpi, Plan, Workspace, Team, Membership, Role, Permission, Project, Task, Document, File, Asset, Conversation, Integration, Automation, Agent, ToolDef, ToolCall, Approval, Budget, BudgetEntry, Memory, Event, DetectedOpportunity, Recommendation, ApiCredential, WebhookEndpoint, Notification, AuditEvent, Subscription, Invoice, UsageRecord, and ScheduledJob, among the full business-domain model set.
 
 ### Creative Studio
 
-The Creative Studio module preserves the original ad-creative product value within the OS framework. It includes:
+The Creative Studio module (the Growth domain of the Company OS) preserves the original ad-creative product value within the OS framework. It includes:
 
 - **UGC Product Ad** — Product + presenter photos → lip-synced UGC ad
 - **Reference to Ad** — Upload a viral ad → remake it with your product
@@ -54,8 +61,9 @@ All workflows auto-detect input language and support 13 locales.
 
 ## Who it is for
 
-- Professionals and teams who want a unified workspace instead of fragmented tools
-- Organizations that need shared identity, permissions, and data across modules
+- Founders and solopreneurs who want an AI workforce to operate substantial parts of their company
+- Startups and teams who want a unified autonomous workspace instead of fragmented tools
+- Organizations that need shared identity, permissions, budgets, approvals, and data across modules
 - E-commerce teams and agencies that need AI ad creative production within a broader platform
 - Developers who want a public API and MCP server for programmatic access
 - Businesses that need audit trails, compliance, and enterprise-grade security
@@ -186,7 +194,7 @@ Top-up packs live in `src/config/pricing.ts`.
 ## Testing
 
 ```bash
-npm test           # 6817+ unit tests
+npm test           # 7,750+ unit tests
 npm run test:e2e   # 1000+ E2E tests (Playwright)
 npm run lint       # ESLint (0 errors)
 npm run build      # Production build
@@ -197,20 +205,21 @@ npm run build      # Production build
 ```
 lazynext/
 ├── src/
-│   ├── app/                    # Next.js 16 App Router
-│   │   ├── (OS modules)/       # dashboard, projects, tasks, documents, files, etc.
-│   │   ├── creative/           # Creative Studio module
+│   ├── app/                    # Next.js 16 App Router (435+ page directories, 3,290+ API routes)
+│   │   ├── (Company OS)/       # company, goals, plans, agents, autonomy, approvals, crm, finance…
+│   │   ├── creative/           # Creative Studio module (Growth domain)
 │   │   ├── api/v1/             # Public REST API
 │   │   ├── api/mcp/            # MCP server (2026-07-28)
 │   │   └── api/                # Internal API routes
 │   ├── components/             # Reusable UI components
 │   ├── config/                 # Navigation, pricing, app catalog
 │   ├── i18n/                   # 13 locales with dynamic loading
-│   └── lib/                    # Domain services, security, providers
-├── prisma/schema.prisma        # 37 models, D1/SQLite
+│   └── lib/                    # 250+ domain service modules, agent runtime, security, providers
+├── prisma/schema.prisma        # 143 models, D1/SQLite
 ├── e2e/                        # Playwright E2E tests
 ├── test/                       # Unit tests
-├── docs/adr/                   # 218 Architecture Decision Records
+├── docs/adr/                   # 222 Architecture Decision Records
+├── docs/transformation/        # Autonomous Company OS transformation docs & acceptance
 ├── research/                   Discovery + architecture reports
 ├── auth.ts                     NextAuth v5 config
 ├── open-next.config.ts         OpenNext build target
@@ -224,7 +233,8 @@ lazynext/
 | Framework | Next.js 16 (App Router, webpack) |
 | UI | React 19 + Tailwind CSS 4 |
 | Language | TypeScript 6 |
-| Auth | NextAuth v5 (JWT, Google + Credentials) |
+| Auth | NextAuth v5 (JWT, Google + Credentials, MFA/TOTP) |
+| Autonomy | Durable autonomy loop + planner, 32 tool executors, 8-layer permission evaluator, budget + approval gating |
 | ORM | Prisma 7 (D1 driver adapter) |
 | Database | Cloudflare D1 (prod) / better-sqlite3 (local) |
 | Storage | Cloudflare R2 (prod) / filesystem (local) |
