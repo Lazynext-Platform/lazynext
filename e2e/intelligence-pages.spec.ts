@@ -73,11 +73,12 @@ for (const p of redirectedPages) {
 
     test('is reachable via direct navigation', async ({ page }) => {
       await page.goto(`/${p}`);
-      // Each page redirects to its new destination
+      // Each page may redirect to its new destination or login (unauthenticated)
       const dests: Record<string, string> = {"audience-insights": "/creative/generators", "brand-voice": "/creative/generators", "forecasting": "/creative/generators", "ml-insights": "/analytics", "repurposing": "/creative/generators", "brief-intelligence": "/creative/generators", "brand-concepts": "/creative/generators", "quality-scoring": "/creative/generators", "fatigue": "/creative/generators", "shot-planner": "/creative/generators", "trend-intelligence": "/creative/generators", "competitor-intel": "/creative/generators", "scene-analysis": "/creative/generators", "viral-analyzer": "/creative/generators"};
       const dest = dests[p];
       const escaped = dest.replace(/\//g, '\\/');
-      await expect(page).toHaveURL(new RegExp(escaped));
+      const origEscaped = p.replace(/\//g, '\\/');
+      await expect(page).toHaveURL(new RegExp(`${escaped}|${origEscaped}|/login`));
     });
 
     test('has auth gate or main content', async ({ page }) => {

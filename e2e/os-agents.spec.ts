@@ -40,12 +40,13 @@ test.describe('OS Agents management', () => {
   test('can navigate from agent list to a detail view', async ({ page }) => {
     await page.goto('/agents');
     await expect(page.locator('body')).toBeVisible();
-    // Look for the first link that points to an agent detail route
-    const detailLink = page.locator('a[href*="/agents/"]').first();
+    // Look for agent detail links (exclude /agents/new)
+    const detailLink = page.locator('a[href*="/agents/"]').filter({ hasNotText: /new|create/i }).first();
     const count = await detailLink.count();
     if (count > 0) {
       await detailLink.click();
-      await expect(page).toHaveURL(/\/agents\/[^new][^/]/);
+      // Should navigate to an agent detail page (not /agents/new)
+      await expect(page).toHaveURL(/\/agents\/(?!new)[^/]+/);
       await expect(page.locator('body')).toBeVisible();
     } else {
       // No agents yet — list still renders the empty state without error
