@@ -15,7 +15,6 @@ import * as _id__members___memberId from '@/lib/api-handlers/teams/_id__members_
 interface RouteEntry {
   segments: string[];
   paramNames: string[];
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   handlers: Record<string, (req: NextRequest, ctx?: { params: Record<string, string> }) => any>;
 }
 

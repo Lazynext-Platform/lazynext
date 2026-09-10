@@ -10,7 +10,6 @@ import * as _role from '@/lib/api-handlers/agent-roles/_role';
 interface RouteEntry {
   segments: string[];
   paramNames: string[];
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   handlers: Record<string, (req: NextRequest, ctx?: { params: Record<string, string> }) => any>;
 }
 

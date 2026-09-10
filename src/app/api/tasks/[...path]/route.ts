@@ -15,7 +15,6 @@ import * as _id__time___entryId from '@/lib/api-handlers/tasks/_id__time___entry
 interface RouteEntry {
   segments: string[];
   paramNames: string[];
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   handlers: Record<string, (req: NextRequest, ctx?: { params: Record<string, string> }) => any>;
 }
 

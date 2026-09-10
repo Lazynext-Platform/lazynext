@@ -36,7 +36,6 @@ import * as units___id from '@/lib/api-handlers/franchise-development/units___id
 interface RouteEntry {
   segments: string[];
   paramNames: string[];
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   handlers: Record<string, (req: NextRequest, ctx?: { params: Record<string, string> }) => any>;
 }
 

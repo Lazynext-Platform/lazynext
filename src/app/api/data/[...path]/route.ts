@@ -21,7 +21,7 @@ import * as lineage__graph from '@/lib/api-handlers/data/lineage__graph';
 import * as lineage__stats from '@/lib/api-handlers/data/lineage__stats';
 import * as migration__templates from '@/lib/api-handlers/data/migration__templates';
 import * as backup from '@/lib/api-handlers/data/backup';
-import * as export from '@/lib/api-handlers/data/export';
+import * as _export from '@/lib/api-handlers/data/export';
 import * as lineage from '@/lib/api-handlers/data/lineage';
 import * as migration from '@/lib/api-handlers/data/migration';
 import * as backup___id__restore from '@/lib/api-handlers/data/backup___id__restore';
@@ -36,7 +36,6 @@ import * as migration___id from '@/lib/api-handlers/data/migration___id';
 interface RouteEntry {
   segments: string[];
   paramNames: string[];
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   handlers: Record<string, (req: NextRequest, ctx?: { params: Record<string, string> }) => any>;
 }
 
@@ -50,7 +49,7 @@ const routes: RouteEntry[] = [
   { segments: ["gdpr","anonymize"], paramNames: [], handlers: { POST: gdpr__anonymize.POST } },
   { segments: ["gdpr","consent"], paramNames: [], handlers: { GET: gdpr__consent.GET, PATCH: gdpr__consent.PATCH } },
   { segments: ["gdpr","delete"], paramNames: [], handlers: { POST: gdpr__delete.POST } },
-  { segments: ["gdpr","export"], paramNames: [], handlers: { POST: gdpr__export.POST } },
+  { segments: ["gdpr","export"], paramNames: [], handlers: { POST: gdpr___export.POST } },
   { segments: ["gdpr","inventory"], paramNames: [], handlers: { GET: gdpr__inventory.GET } },
   { segments: ["gdpr","requests"], paramNames: [], handlers: { GET: gdpr__requests.GET, POST: gdpr__requests.POST } },
   { segments: ["gdpr","stats"], paramNames: [], handlers: { GET: gdpr__stats.GET } },
@@ -58,7 +57,7 @@ const routes: RouteEntry[] = [
   { segments: ["lineage","stats"], paramNames: [], handlers: { GET: lineage__stats.GET } },
   { segments: ["migration","templates"], paramNames: [], handlers: { GET: migration__templates.GET } },
   { segments: ["backup"], paramNames: [], handlers: { GET: backup.GET, POST: backup.POST } },
-  { segments: ["export"], paramNames: [], handlers: { GET: export.GET, POST: export.POST } },
+  { segments: ["export"], paramNames: [], handlers: { GET: _export.GET, POST: _export.POST } },
   { segments: ["lineage"], paramNames: [], handlers: { GET: lineage.GET, POST: lineage.POST } },
   { segments: ["migration"], paramNames: [], handlers: { GET: migration.GET, POST: migration.POST } },
   { segments: ["backup","[id]","restore"], paramNames: ["id"], handlers: { POST: backup___id__restore.POST } },

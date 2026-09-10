@@ -11,7 +11,6 @@ import * as runs___id from '@/lib/api-handlers/sandbox/runs___id';
 interface RouteEntry {
   segments: string[];
   paramNames: string[];
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   handlers: Record<string, (req: NextRequest, ctx?: { params: Record<string, string> }) => any>;
 }
 

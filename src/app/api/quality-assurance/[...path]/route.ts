@@ -31,7 +31,6 @@ import * as inspections___id from '@/lib/api-handlers/quality-assurance/inspecti
 interface RouteEntry {
   segments: string[];
   paramNames: string[];
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   handlers: Record<string, (req: NextRequest, ctx?: { params: Record<string, string> }) => any>;
 }
 

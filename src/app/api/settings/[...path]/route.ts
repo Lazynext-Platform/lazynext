@@ -5,7 +5,7 @@
  */
 import { NextRequest, NextResponse } from 'next/server';
 import * as account from '@/lib/api-handlers/settings/account';
-import * as export from '@/lib/api-handlers/settings/export';
+import * as _export from '@/lib/api-handlers/settings/export';
 import * as notifications from '@/lib/api-handlers/settings/notifications';
 import * as password from '@/lib/api-handlers/settings/password';
 import * as profile from '@/lib/api-handlers/settings/profile';
@@ -13,13 +13,12 @@ import * as profile from '@/lib/api-handlers/settings/profile';
 interface RouteEntry {
   segments: string[];
   paramNames: string[];
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   handlers: Record<string, (req: NextRequest, ctx?: { params: Record<string, string> }) => any>;
 }
 
 const routes: RouteEntry[] = [
   { segments: ["account"], paramNames: [], handlers: { DELETE: account.DELETE } },
-  { segments: ["export"], paramNames: [], handlers: { GET: export.GET } },
+  { segments: ["export"], paramNames: [], handlers: { GET: _export.GET } },
   { segments: ["notifications"], paramNames: [], handlers: { GET: notifications.GET, POST: notifications.POST } },
   { segments: ["password"], paramNames: [], handlers: { POST: password.POST } },
   { segments: ["profile"], paramNames: [], handlers: { PATCH: profile.PATCH } },

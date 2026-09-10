@@ -6,11 +6,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import * as security_keys__auth__verify from '@/lib/api-handlers/security/security_keys__auth__verify';
 import * as security_keys__register__verify from '@/lib/api-handlers/security/security_keys__register__verify';
-import * as 2fa__backup_codes from '@/lib/api-handlers/security/2fa__backup_codes';
-import * as 2fa__disable from '@/lib/api-handlers/security/2fa__disable';
-import * as 2fa__setup from '@/lib/api-handlers/security/2fa__setup';
-import * as 2fa__status from '@/lib/api-handlers/security/2fa__status';
-import * as 2fa__verify from '@/lib/api-handlers/security/2fa__verify';
+import * as _2fa__backup_codes from '@/lib/api-handlers/security/2fa__backup_codes';
+import * as _2fa__disable from '@/lib/api-handlers/security/2fa__disable';
+import * as _2fa__setup from '@/lib/api-handlers/security/2fa__setup';
+import * as _2fa__status from '@/lib/api-handlers/security/2fa__status';
+import * as _2fa__verify from '@/lib/api-handlers/security/2fa__verify';
 import * as password__history from '@/lib/api-handlers/security/password__history';
 import * as password__policy from '@/lib/api-handlers/security/password__policy';
 import * as password__validate from '@/lib/api-handlers/security/password__validate';
@@ -36,18 +36,17 @@ import * as sessions___id from '@/lib/api-handlers/security/sessions___id';
 interface RouteEntry {
   segments: string[];
   paramNames: string[];
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   handlers: Record<string, (req: NextRequest, ctx?: { params: Record<string, string> }) => any>;
 }
 
 const routes: RouteEntry[] = [
   { segments: ["security-keys","auth","verify"], paramNames: [], handlers: { POST: security_keys__auth__verify.POST } },
   { segments: ["security-keys","register","verify"], paramNames: [], handlers: { POST: security_keys__register__verify.POST } },
-  { segments: ["2fa","backup-codes"], paramNames: [], handlers: { GET: 2fa__backup_codes.GET, POST: 2fa__backup_codes.POST } },
-  { segments: ["2fa","disable"], paramNames: [], handlers: { POST: 2fa__disable.POST } },
-  { segments: ["2fa","setup"], paramNames: [], handlers: { POST: 2fa__setup.POST } },
-  { segments: ["2fa","status"], paramNames: [], handlers: { GET: 2fa__status.GET } },
-  { segments: ["2fa","verify"], paramNames: [], handlers: { POST: 2fa__verify.POST } },
+  { segments: ["2fa","backup-codes"], paramNames: [], handlers: { GET: _2fa__backup_codes.GET, POST: _2fa__backup_codes.POST } },
+  { segments: ["2fa","disable"], paramNames: [], handlers: { POST: _2fa__disable.POST } },
+  { segments: ["2fa","setup"], paramNames: [], handlers: { POST: _2fa__setup.POST } },
+  { segments: ["2fa","status"], paramNames: [], handlers: { GET: _2fa__status.GET } },
+  { segments: ["2fa","verify"], paramNames: [], handlers: { POST: _2fa__verify.POST } },
   { segments: ["password","history"], paramNames: [], handlers: { POST: password__history.POST } },
   { segments: ["password","policy"], paramNames: [], handlers: { GET: password__policy.GET, PATCH: password__policy.PATCH } },
   { segments: ["password","validate"], paramNames: [], handlers: { POST: password__validate.POST } },
