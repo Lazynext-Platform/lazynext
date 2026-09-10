@@ -151,6 +151,53 @@ const distWrangler = projectWrangler
 writeFileSync(join(distDir, 'wrangler.jsonc'), distWrangler);
 console.log('Created wrangler.jsonc in .open-next/dist/');
 
+// --- Analyze wrangler metafile (from --metafile flag) ---
+// This shows the actual module-level breakdown of what wrangler bundled.
+const wranglerMetafile = join(distDir, 'metafile.json');
+if (existsSync(wranglerMetafile)) {
+  try {
+    const meta = JSON.parse(readFileSync(wranglerMetafile, 'utf8'));
+    const inputs = Object.entries(meta.inputs || {})
+      .map(([path, info]) => ({ path, bytes: info.bytes }))
+      .sort((a, b) => b.bytes - a.bytes);
+    console.log('\n=== Wrangler metafile: Top 50 largest bundled modules ===');
+    for (const { path, bytes } of inputs.slice(0, 50)) {
+      console.log(`  ${(bytes / 1024).toFixed(0)} KiB  ${path.replace(projectRoot + '/', '')}`);
+    }
+    const totalBytes = Object.values(meta.inputs || {}).reduce((sum, i) => sum + i.bytes, 0);
+    console.log(`  Total bundled: ${(totalBytes / 1024 / 1024).toFixed(1)} MB`);
+
+    // Group by top-level package/directory
+    const groups = {};
+    for (const { path, bytes } of inputs) {
+      const relPath = path.replace(projectRoot + '/', '');
+      let group;
+      if (relPath.includes('node_modules/')) {
+        const match = relPath.match(/node_modules\/(@[^/]+\/[^/]+|[^/]+)\//);
+        group = match ? `node_modules/${match[1]}` : 'node_modules/other';
+      } else if (relPath.startsWith('.open-next/server-functions/default/.next/server/app/api/')) {
+        group = '.next/server/app/api/*';
+      } else if (relPath.startsWith('.open-next/server-functions/default/.next/server/app/')) {
+        group = '.next/server/app/* (pages)';
+      } else if (relPath.startsWith('src/')) {
+        const match = relPath.match(/src\/([^/]+)/);
+        group = match ? `src/${match[1]}` : 'src/other';
+      } else {
+        group = 'other';
+      }
+      groups[group] = (groups[group] || 0) + bytes;
+    }
+    console.log('\n=== Bundled size by group ===');
+    for (const [group, bytes] of Object.entries(groups).sort((a, b) => b[1] - a[1])) {
+      console.log(`  ${(bytes / 1024 / 1024).toFixed(1)} MB  ${group}`);
+    }
+  } catch (e) {
+    console.log(`[warn] wrangler metafile analysis failed: ${e instanceof Error ? e.message : String(e)}`);
+  }
+} else {
+  console.log('[info] No wrangler metafile found (use --metafile flag to enable)');
+}
+
 // --- Remove Prisma WASM from the dist directory ---
 // The dry-run step copies the WASM to .open-next/dist/. Remove it so it's
 // not included in the Worker bundle (it's served from Cloudflare Assets instead).
