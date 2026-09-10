@@ -13,7 +13,7 @@ import * as assistance___id__respond from '@/lib/api-handlers/agent-messages/ass
 interface RouteEntry {
   segments: string[];
   paramNames: string[];
-  handlers: Record<string, (req: NextRequest, ctx?: { params: Record<string, string> }) => any>;
+  handlers: Record<string, any>;
 }
 
 const routes: RouteEntry[] = [

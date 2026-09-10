@@ -15,7 +15,7 @@ import * as _id__time___entryId from '@/lib/api-handlers/tasks/_id__time___entry
 interface RouteEntry {
   segments: string[];
   paramNames: string[];
-  handlers: Record<string, (req: NextRequest, ctx?: { params: Record<string, string> }) => any>;
+  handlers: Record<string, any>;
 }
 
 const routes: RouteEntry[] = [

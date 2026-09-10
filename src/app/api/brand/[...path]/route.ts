@@ -10,7 +10,7 @@ import * as product_extract from '@/lib/api-handlers/brand/product_extract';
 interface RouteEntry {
   segments: string[];
   paramNames: string[];
-  handlers: Record<string, (req: NextRequest, ctx?: { params: Record<string, string> }) => any>;
+  handlers: Record<string, any>;
 }
 
 const routes: RouteEntry[] = [

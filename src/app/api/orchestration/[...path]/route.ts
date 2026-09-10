@@ -18,7 +18,7 @@ import * as workload___agentId from '@/lib/api-handlers/orchestration/workload__
 interface RouteEntry {
   segments: string[];
   paramNames: string[];
-  handlers: Record<string, (req: NextRequest, ctx?: { params: Record<string, string> }) => any>;
+  handlers: Record<string, any>;
 }
 
 const routes: RouteEntry[] = [

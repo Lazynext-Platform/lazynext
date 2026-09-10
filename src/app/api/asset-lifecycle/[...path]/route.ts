@@ -24,7 +24,7 @@ import * as warranties___id from '@/lib/api-handlers/asset-lifecycle/warranties_
 interface RouteEntry {
   segments: string[];
   paramNames: string[];
-  handlers: Record<string, (req: NextRequest, ctx?: { params: Record<string, string> }) => any>;
+  handlers: Record<string, any>;
 }
 
 const routes: RouteEntry[] = [

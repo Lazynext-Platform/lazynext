@@ -26,7 +26,7 @@ import * as learning_paths___id from '@/lib/api-handlers/training/learning_paths
 interface RouteEntry {
   segments: string[];
   paramNames: string[];
-  handlers: Record<string, (req: NextRequest, ctx?: { params: Record<string, string> }) => any>;
+  handlers: Record<string, any>;
 }
 
 const routes: RouteEntry[] = [

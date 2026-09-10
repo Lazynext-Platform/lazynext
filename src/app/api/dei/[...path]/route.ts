@@ -21,7 +21,7 @@ import * as trainings___id from '@/lib/api-handlers/dei/trainings___id';
 interface RouteEntry {
   segments: string[];
   paramNames: string[];
-  handlers: Record<string, (req: NextRequest, ctx?: { params: Record<string, string> }) => any>;
+  handlers: Record<string, any>;
 }
 
 const routes: RouteEntry[] = [

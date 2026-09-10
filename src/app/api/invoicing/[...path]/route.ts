@@ -30,7 +30,7 @@ import * as invoices___id__line_items___lineItemId from '@/lib/api-handlers/invo
 interface RouteEntry {
   segments: string[];
   paramNames: string[];
-  handlers: Record<string, (req: NextRequest, ctx?: { params: Record<string, string> }) => any>;
+  handlers: Record<string, any>;
 }
 
 const routes: RouteEntry[] = [

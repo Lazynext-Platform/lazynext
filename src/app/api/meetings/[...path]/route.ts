@@ -20,7 +20,7 @@ import * as _id__follow_ups___followUpId from '@/lib/api-handlers/meetings/_id__
 interface RouteEntry {
   segments: string[];
   paramNames: string[];
-  handlers: Record<string, (req: NextRequest, ctx?: { params: Record<string, string> }) => any>;
+  handlers: Record<string, any>;
 }
 
 const routes: RouteEntry[] = [

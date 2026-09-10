@@ -33,7 +33,7 @@ import * as vehicles___id from '@/lib/api-handlers/transportation-management/veh
 interface RouteEntry {
   segments: string[];
   paramNames: string[];
-  handlers: Record<string, (req: NextRequest, ctx?: { params: Record<string, string> }) => any>;
+  handlers: Record<string, any>;
 }
 
 const routes: RouteEntry[] = [

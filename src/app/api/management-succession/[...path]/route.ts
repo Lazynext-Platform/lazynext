@@ -35,7 +35,7 @@ import * as tracks___id from '@/lib/api-handlers/management-succession/tracks___
 interface RouteEntry {
   segments: string[];
   paramNames: string[];
-  handlers: Record<string, (req: NextRequest, ctx?: { params: Record<string, string> }) => any>;
+  handlers: Record<string, any>;
 }
 
 const routes: RouteEntry[] = [

@@ -35,7 +35,7 @@ import * as testimonials___id from '@/lib/api-handlers/feedback/testimonials___i
 interface RouteEntry {
   segments: string[];
   paramNames: string[];
-  handlers: Record<string, (req: NextRequest, ctx?: { params: Record<string, string> }) => any>;
+  handlers: Record<string, any>;
 }
 
 const routes: RouteEntry[] = [

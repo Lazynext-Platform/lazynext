@@ -31,7 +31,7 @@ import * as inspections___id from '@/lib/api-handlers/quality-assurance/inspecti
 interface RouteEntry {
   segments: string[];
   paramNames: string[];
-  handlers: Record<string, (req: NextRequest, ctx?: { params: Record<string, string> }) => any>;
+  handlers: Record<string, any>;
 }
 
 const routes: RouteEntry[] = [

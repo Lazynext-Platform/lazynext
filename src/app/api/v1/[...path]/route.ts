@@ -17,7 +17,7 @@ import * as workspaces___id from '@/lib/api-handlers/v1/workspaces___id';
 interface RouteEntry {
   segments: string[];
   paramNames: string[];
-  handlers: Record<string, (req: NextRequest, ctx?: { params: Record<string, string> }) => any>;
+  handlers: Record<string, any>;
 }
 
 const routes: RouteEntry[] = [

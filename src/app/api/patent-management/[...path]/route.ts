@@ -32,7 +32,7 @@ import * as maintenance___id from '@/lib/api-handlers/patent-management/maintena
 interface RouteEntry {
   segments: string[];
   paramNames: string[];
-  handlers: Record<string, (req: NextRequest, ctx?: { params: Record<string, string> }) => any>;
+  handlers: Record<string, any>;
 }
 
 const routes: RouteEntry[] = [
