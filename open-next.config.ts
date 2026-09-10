@@ -38,6 +38,11 @@ const config = defineCloudflareConfig({});
   '@aws-sdk/core',
   '@aws-sdk/credential-providers',
   '@smithy',
+  // Prisma WASM base64 files — NOT used by the workerd runtime path.
+  // The workerd path uses wasm-worker-loader.mjs which imports the .wasm file
+  // directly. These base64 .js files are only used by the default/node condition.
+  // Externalizing them prevents esbuild from bundling ~4.3 MB of unused base64.
+  '@prisma/client/runtime/query_compiler_fast_bg.sqlite.wasm-base64.js',
 ];
 
 export default config;

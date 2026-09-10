@@ -214,6 +214,22 @@ if (existsSync(prismaRuntimeDir)) {
       } catch {}
     }
   }
+  // Also remove .js variants of wasm-base64 — these are NOT used by the workerd
+  // runtime path. The workerd path uses wasm-worker-loader.mjs which imports
+  // the .wasm file directly. The base64 .js files are only used by the
+  // default/node condition which is not active on Cloudflare Workers.
+  for (const entry of runtimeEntries) {
+    if (entry.endsWith('wasm-base64.js')) {
+      const fullPath = join(prismaRuntimeDir, entry);
+      try {
+        const stat = statSync(fullPath);
+        rmSync(fullPath, { force: true });
+        removedCount++;
+        removedBytes += stat.size;
+        console.log(`  removed js: ${entry} (${(stat.size / 1024 / 1024).toFixed(1)} MB) — not used in workerd runtime`);
+      } catch {}
+    }
+  }
 }
 
 // --- Patch __require to add MODULE_NOT_FOUND error code ---
