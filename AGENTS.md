@@ -78,6 +78,16 @@ npm run cf:deploy # Deploy to Cloudflare Workers
 - Cloudflare R2 (prod) / file-based (local) media storage
 - Atlas Cloud AI generation API (prod) / mock server (local)
 - Dodo Payments for billing
+- **Route architecture (consolidated for Cloudflare bundle size):**
+  - Creative API: 144 standard routes consolidated into `/api/creative/[feature]` catch-all
+    dispatcher using `src/lib/creative/registry.ts`. Nonstandard routes (director, pipeline,
+    share, etc.) remain as individual routes.
+  - Creative pages: 143 feature pages consolidated into `/[feature]` dynamic route
+    (`force-dynamic`) using `src/components/creative-pages/` components.
+  - Business domain API: 2,673 routes across 134 domains consolidated into per-domain
+    catch-all routes at `/api/{domain}/[...path]`. Each catch-all uses a registry mapping
+    resource → service methods (list, create, get, update, delete, actions).
+  - Worker bundle: 49.5 MB (under 64 MiB Cloudflare limit)
 - Ad platform providers (Meta + Google Ads) with dry-run mode — see ADR-004
 - Autonomous Creative Director agent loop — see ADR-005
 - Performance learning loop (CreativePerformance model) — see ADR-006
