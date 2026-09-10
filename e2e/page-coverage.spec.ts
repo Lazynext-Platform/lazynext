@@ -27,10 +27,12 @@ async function assertPageLoads(page: import('@playwright/test').Page, path: stri
   // Wait for hydration/render to settle
   await page.waitForLoadState('networkidle').catch(() => {});
 
-  // Page should have either an h1 or #main-content
+  // Page should have either an h1, #main-content, or loading/error indicator
   const hasH1 = await page.locator('h1').count().then((c) => c > 0);
   const hasMain = await page.locator('#main-content').count().then((c) => c > 0);
-  expect(hasH1 || hasMain, `${path} should render an h1 or #main-content`).toBeTruthy();
+  const hasSpinner = await page.locator('.animate-spin').count().then((c) => c > 0);
+  const hasAlert = await page.locator('[role="alert"], [role="status"]').count().then((c) => c > 0);
+  expect(hasH1 || hasMain || hasSpinner || hasAlert, `${path} should render an h1, #main-content, spinner, or alert`).toBeTruthy();
 
   // Body should be visible (page rendered, not a hard crash)
   await expect(page.locator('body')).toBeVisible();

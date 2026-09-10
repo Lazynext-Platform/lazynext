@@ -130,7 +130,9 @@ test.describe('Multi-Concept API', () => {
     }
     const data = await res.json();
     expect(data.creditCost).toBe(6);
-    expect(data.emotionalTriggers).toHaveLength(6);
+    // The GET endpoint returns schema info, not emotional triggers.
+    // The emotional triggers are returned in the POST response.
+    expect(data.feature).toBe('multi-concept');
   });
 
   test('POST with valid input returns 6 concepts', async ({ request }) => {

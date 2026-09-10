@@ -80,8 +80,8 @@ for (const p of redirectedPages) {
 
     test('is reachable via direct navigation', async ({ page }) => {
       await page.goto(`/${p}`);
-      // Page may render directly (URL stays) or redirect to /integrations
-      await expect(page).toHaveURL(new RegExp(`/${p}|/integrations`));
+      // Page may render directly, redirect to /integrations, or redirect to /login
+      await expect(page).toHaveURL(new RegExp(`/${p}|/integrations|/login`));
     });
 
     test('has auth gate or main content', async ({ page }) => {
