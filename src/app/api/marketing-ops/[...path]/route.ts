@@ -37,7 +37,7 @@ interface RouteEntry {
   handlers: Record<string, any>;
 }
 
-const routes: RouteEntry[] = [
+const routeTable: RouteEntry[] = [
   { segments: ["attribution","by-campaign"], paramNames: [], handlers: { GET: attribution__by_campaign.GET } },
   { segments: ["attribution","by-source"], paramNames: [], handlers: { GET: attribution__by_source.GET } },
   { segments: ["attribution","conversion"], paramNames: [], handlers: { GET: attribution__conversion.GET } },
@@ -67,7 +67,7 @@ const routes: RouteEntry[] = [
 ];
 
 function matchRoute(pathSegments: string[]): { route: RouteEntry; params: Record<string, string> } | null {
-  for (const route of routes) {
+  for (const route of routeTable) {
     if (route.segments.length !== pathSegments.length) continue;
     const params: Record<string, string> = {};
     let matched = true;
@@ -92,7 +92,7 @@ function extractParams(pattern: string, actual: string): string {
   return actual;
 }
 
-async function dispatch(
+async function dispatchRequest(
   req: NextRequest,
   method: string,
   { params }: { params: Promise<{ path: string[] }> },
@@ -111,29 +111,29 @@ async function dispatch(
 }
 
 export async function GET(req: NextRequest, ctx: { params: Promise<{ path: string[] }> }) {
-  return dispatch(req, 'GET', ctx);
+  return dispatchRequest(req, 'GET', ctx);
 }
 
 export async function POST(req: NextRequest, ctx: { params: Promise<{ path: string[] }> }) {
-  return dispatch(req, 'POST', ctx);
+  return dispatchRequest(req, 'POST', ctx);
 }
 
 export async function PUT(req: NextRequest, ctx: { params: Promise<{ path: string[] }> }) {
-  return dispatch(req, 'PUT', ctx);
+  return dispatchRequest(req, 'PUT', ctx);
 }
 
 export async function PATCH(req: NextRequest, ctx: { params: Promise<{ path: string[] }> }) {
-  return dispatch(req, 'PATCH', ctx);
+  return dispatchRequest(req, 'PATCH', ctx);
 }
 
 export async function DELETE(req: NextRequest, ctx: { params: Promise<{ path: string[] }> }) {
-  return dispatch(req, 'DELETE', ctx);
+  return dispatchRequest(req, 'DELETE', ctx);
 }
 
 export async function HEAD(req: NextRequest, ctx: { params: Promise<{ path: string[] }> }) {
-  return dispatch(req, 'HEAD', ctx);
+  return dispatchRequest(req, 'HEAD', ctx);
 }
 
 export async function OPTIONS(req: NextRequest, ctx: { params: Promise<{ path: string[] }> }) {
-  return dispatch(req, 'OPTIONS', ctx);
+  return dispatchRequest(req, 'OPTIONS', ctx);
 }

@@ -27,7 +27,7 @@ interface RouteEntry {
   handlers: Record<string, any>;
 }
 
-const routes: RouteEntry[] = [
+const routeTable: RouteEntry[] = [
   { segments: ["assets"], paramNames: [], handlers: { GET: assets.GET, POST: assets.POST } },
   { segments: ["audits"], paramNames: [], handlers: { GET: audits.GET, POST: audits.POST } },
   { segments: ["consistencies"], paramNames: [], handlers: { GET: consistencies.GET, POST: consistencies.POST } },
@@ -47,7 +47,7 @@ const routes: RouteEntry[] = [
 ];
 
 function matchRoute(pathSegments: string[]): { route: RouteEntry; params: Record<string, string> } | null {
-  for (const route of routes) {
+  for (const route of routeTable) {
     if (route.segments.length !== pathSegments.length) continue;
     const params: Record<string, string> = {};
     let matched = true;
@@ -72,7 +72,7 @@ function extractParams(pattern: string, actual: string): string {
   return actual;
 }
 
-async function dispatch(
+async function dispatchRequest(
   req: NextRequest,
   method: string,
   { params }: { params: Promise<{ path: string[] }> },
@@ -91,29 +91,29 @@ async function dispatch(
 }
 
 export async function GET(req: NextRequest, ctx: { params: Promise<{ path: string[] }> }) {
-  return dispatch(req, 'GET', ctx);
+  return dispatchRequest(req, 'GET', ctx);
 }
 
 export async function POST(req: NextRequest, ctx: { params: Promise<{ path: string[] }> }) {
-  return dispatch(req, 'POST', ctx);
+  return dispatchRequest(req, 'POST', ctx);
 }
 
 export async function PUT(req: NextRequest, ctx: { params: Promise<{ path: string[] }> }) {
-  return dispatch(req, 'PUT', ctx);
+  return dispatchRequest(req, 'PUT', ctx);
 }
 
 export async function PATCH(req: NextRequest, ctx: { params: Promise<{ path: string[] }> }) {
-  return dispatch(req, 'PATCH', ctx);
+  return dispatchRequest(req, 'PATCH', ctx);
 }
 
 export async function DELETE(req: NextRequest, ctx: { params: Promise<{ path: string[] }> }) {
-  return dispatch(req, 'DELETE', ctx);
+  return dispatchRequest(req, 'DELETE', ctx);
 }
 
 export async function HEAD(req: NextRequest, ctx: { params: Promise<{ path: string[] }> }) {
-  return dispatch(req, 'HEAD', ctx);
+  return dispatchRequest(req, 'HEAD', ctx);
 }
 
 export async function OPTIONS(req: NextRequest, ctx: { params: Promise<{ path: string[] }> }) {
-  return dispatch(req, 'OPTIONS', ctx);
+  return dispatchRequest(req, 'OPTIONS', ctx);
 }
