@@ -149,11 +149,11 @@ const PAGE_LOADERS: Record<string, () => Promise<{ default: ComponentType }>> = 
   'variant-matrix-generator': () => import('@/components/creative-pages/variant-matrix-generator'),
 };
 
-export function generateStaticParams() {
-  return Object.keys(PAGE_LOADERS).map((feature) => ({ feature }));
-}
+const COMPONENTS: Record<string, ComponentType> = Object.fromEntries(
+  Object.entries(PAGE_LOADERS).map(([feature, loader]) => [feature, dynamic(loader) as ComponentType]),
+);
 
-export const dynamicParams = false;
+export const dynamic = 'force-dynamic';
 
 export default async function CreativeFeaturePage({
   params,
@@ -162,8 +162,7 @@ export default async function CreativeFeaturePage({
 }) {
   const { feature } = await params;
   if (!getCreativeFeature(feature)) notFound();
-  const loader = PAGE_LOADERS[feature];
-  if (!loader) notFound();
-  const Component = dynamic(loader);
+  const Component = COMPONENTS[feature];
+  if (!Component) notFound();
   return <Component />;
 }
