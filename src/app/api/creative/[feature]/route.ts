@@ -16,7 +16,14 @@ export async function GET(_req: Request, { params }: { params: Promise<{ feature
   const { feature } = await params;
   const handler = getCreativeFeature(feature);
   if (!handler) return NextResponse.json({ error: 'not_found' }, { status: 404 });
-  return NextResponse.json({ feature, creditCost: handler.creditCost });
+  return NextResponse.json({
+    feature,
+    creditCost: handler.creditCost,
+    schema: {
+      input: 'See POST body for this feature',
+      output: 'See POST response for this feature',
+    },
+  });
 }
 
 async function __byokPOST(req: Request, { params }: { params: Promise<{ feature: string }> }) {
