@@ -117,6 +117,7 @@ jobs:
           ATLASCLOUD_LLM_BASE: http://localhost:3099/v1
           ATLASCLOUD_API_KEY: mock-key-for-dev
           BUILD_TARGET: local
+          ADMIN_EMAILS: test@lazynext.local
           NODE_OPTIONS: --max-old-space-size=3072
 
       - name: Upload test results
@@ -182,6 +183,7 @@ jobs:
           ATLASCLOUD_LLM_BASE: http://localhost:3099/v1
           ATLASCLOUD_API_KEY: mock-key-for-dev
           BUILD_TARGET: local
+          ADMIN_EMAILS: test@lazynext.local
           NODE_OPTIONS: --max-old-space-size=3072
 
       - name: Upload auth test results

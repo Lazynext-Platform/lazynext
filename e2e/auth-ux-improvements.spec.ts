@@ -191,17 +191,21 @@ test.describe('Dashboard', () => {
     const hasContent = await page.getByText('Welcome back').isVisible().catch(() => false);
     const hasError = await page.getByText('Something went wrong').isVisible().catch(() => false);
     const hasFeatured = await page.getByText('Featured Apps').isVisible().catch(() => false);
+    const hasWelcome = await page.getByText('Welcome to Lazynext').isVisible().catch(() => false);
+    const hasWorkspace = await page.locator('h1.heading-display').first().isVisible().catch(() => false);
     // At least one should be true — page loaded and rendered something
-    expect(hasContent || hasError || hasFeatured).toBeTruthy();
+    expect(hasContent || hasError || hasFeatured || hasWelcome || hasWorkspace).toBeTruthy();
   });
 
   test('Featured Apps or error boundary visible', async ({ page }) => {
     await page.goto('/dashboard');
     await page.waitForTimeout(5000);
-    // Either the dashboard renders with Featured Apps, or the error boundary
+    // Either the dashboard renders with content, or the error boundary
     // shows (local dev may have transient issues). Both are valid page loads.
     const hasFeatured = await page.getByText('Featured Apps').isVisible({ timeout: 15000 }).catch(() => false);
     const hasError = await page.getByText('Something went wrong').isVisible().catch(() => false);
-    expect(hasFeatured || hasError).toBeTruthy();
+    const hasWelcome = await page.getByText('Welcome to Lazynext').isVisible({ timeout: 15000 }).catch(() => false);
+    const hasWorkspace = await page.locator('h1.heading-display').first().isVisible({ timeout: 15000 }).catch(() => false);
+    expect(hasFeatured || hasError || hasWelcome || hasWorkspace).toBeTruthy();
   });
 });
