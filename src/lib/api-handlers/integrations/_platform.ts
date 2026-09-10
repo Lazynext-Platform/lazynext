@@ -15,7 +15,7 @@ import { slackClient } from '@/lib/integrations/slack';
  * DELETE /api/integrations/[platform] — disconnect an integration.
  */
 
-type Ctx = { params: Promise<{ platform: string }> };
+type Ctx = { params: { platform: string } };
 
 export async function GET(_req: NextRequest, { params }: Ctx) {
   const session = await auth().catch(() => null);

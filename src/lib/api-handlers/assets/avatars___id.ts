@@ -5,7 +5,7 @@ import { isUrlSafe } from '@/lib/security';
 
 export const dynamic = 'force-dynamic';
 
-type Params = { params: Promise<{ id: string }> };
+type Params = { params: { id: string } };
 
 export async function PATCH(req: Request, { params }: Params) {
   const session = await auth();
