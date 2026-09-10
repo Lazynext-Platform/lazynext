@@ -12,6 +12,7 @@ function LoginForm() {
   const params = useSearchParams();
   const callbackUrl = params.get('callbackUrl') || '/dashboard';
   const errorParam = params.get('error');
+  const codeParam = params.get('code');
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -19,15 +20,15 @@ function LoginForm() {
   const [mfaRequired, setMfaRequired] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(
-    errorParam === 'EmailNotVerified'
+    codeParam === 'EmailNotVerified'
       ? 'Please verify your email before signing in. Check your inbox for a verification link.'
-      : errorParam === 'MfaRequired'
+      : codeParam === 'MfaRequired'
       ? 'Please enter your MFA code.'
-      : errorParam === 'MfaInvalid'
+      : codeParam === 'MfaInvalid'
       ? 'Invalid MFA code. Please try again.'
       : errorParam ? 'Authentication failed. Please try again.' : null,
   );
-  const [showResend, setShowResend] = useState(errorParam === 'EmailNotVerified');
+  const [showResend, setShowResend] = useState(codeParam === 'EmailNotVerified');
   const [resendSent, setResendSent] = useState(false);
   const [resending, setResending] = useState(false);
 
