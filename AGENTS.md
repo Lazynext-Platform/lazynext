@@ -1338,3 +1338,50 @@ Completed across 15+ sessions:
 12. **OAuth metadata**: Verify `/.well-known/oauth-protected-resource` returns valid JSON
 13. **API key creation**: Create a test API key via `/developers` and verify API v1 access
 14. **MCP protocol**: Verify `server/discover` returns correct protocol version (2026-07-28)
+
+#### CI/CD Deployment (GitHub Actions → Cloudflare Workers)
+
+Production deploys run through GitHub Actions, not local `wrangler deploy`. The workflow lives at
+`.github/workflows/deploy.yml` and triggers on every push to `main`.
+
+**Required GitHub secrets** (repo: `devinedesk/lazynext`):
+- `CLOUDFLARE_API_TOKEN` — long-lived Cloudflare API token (rolled from the
+  `Lazynext_Cloudflare_Custom_Token` user token, 174 permissions, no expiry).
+  Created via Cloudflare dashboard → My Profile → API Tokens → Actions → Roll.
+  Stored as a GitHub Actions secret; never commit it to the repo.
+- `CLOUDFLARE_ACCOUNT_ID` — the Cloudflare account ID that owns the Worker.
+- `ATLASCLOUD_API_KEY` — Atlas Cloud API key for AI generation.
+
+**Workflow steps**:
+1. `actions/checkout@v4` + `actions/setup-node@v4`
+2. Add swap space (build is memory-heavy)
+3. `NODE_OPTIONS=--max-old-space-size=14336 npm ci`
+4. `npm run lint`
+5. `npm test`
+6. `npm run cf:build` (OpenNext → Cloudflare Worker)
+7. Verify WASM externalization (Prisma WASM → Cloudflare Assets, ~3.2 MB)
+8. `npx wrangler deploy` (uses `CLOUDFLARE_API_TOKEN` + `CLOUDFLARE_ACCOUNT_ID`)
+
+**Bundle-size remediation** (Cloudflare Worker uncompressed limit: 64 MiB ≈ 67 MB):
+- 132 creative routes consolidated into a single dynamic `src/app/api/creative/[tool]/route.ts`
+  dispatching via `src/lib/creative/tool-registry.ts`.
+- 3,029 API routes across 204 route families consolidated into family-level
+  `src/app/api/*/[...path]/route.ts` catch-all dispatchers backed by extracted
+  handler modules under `src/lib/api-handlers/`.
+- Final Worker size: ~59.0 MB (under the 64 MiB limit).
+- Helper scripts: `scripts/consolidate-creative-routes.mjs`,
+  `scripts/consolidate-all-routes.mjs`, `scripts/patch-worker.mjs`.
+
+**Production endpoints**:
+- Site: `https://lazynext.com`
+- Worker URL: `https://lazynext.dry-hall-6a50.workers.dev`
+- Health: `https://lazynext.com/api/health` → `{ "status": "healthy", checks: { atlas, r2, d1 } }`
+- R2 asset bucket binding: `lazynext-assets`
+
+**Known non-blocking warnings**:
+- `Node.js 20 is deprecated` — GitHub Actions forces Node 24 for actions targeting Node 20.
+  Does not block the deploy. Bumping `actions/checkout`/`actions/setup-node` to a Node 24
+  baseline is optional cleanup.
+- React hook dependency warnings in `WorkflowBuilder.tsx`,
+  `PatentManagementDashboard.tsx`, `ManagementSuccessionDashboard.tsx`,
+  `LeaseManagementDashboard.tsx`, `EmployeeSurveysDashboard.tsx`. Lint does not fail on these.
