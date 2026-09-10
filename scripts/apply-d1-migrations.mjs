@@ -51,23 +51,24 @@ if (migrations.length === 0) {
   process.exit(0);
 }
 
-// Ensure the _prisma_migrations tracking table exists and get already-applied migrations
+// Ensure the _prisma_migrations tracking table exists
 const MIGRATION_TABLE_SQL = `CREATE TABLE IF NOT EXISTS _prisma_migrations (
   id TEXT PRIMARY KEY,
   applied_at TEXT NOT NULL DEFAULT (datetime('now'))
 );`;
 
-function getAppliedMigrations() {
-  const tmpPath = join(projectRoot, '.d1-check-migrations.sql');
-  const outputPath = join(projectRoot, '.d1-migrations-applied.json');
-  writeFileSync(tmpPath, MIGRATION_TABLE_SQL + '\nSELECT id FROM _prisma_migrations;');
+function runWranglerD1(sql, captureJson = false) {
+  const tmpPath = join(projectRoot, '.d1-migration-tmp.sql');
+  writeFileSync(tmpPath, sql);
 
-  const result = spawnSync('npx', [
+  const args = [
     'wrangler', 'd1', 'execute', 'lazynext-db',
     '--remote',
     '--file', tmpPath,
-    '--json',
-  ], {
+  ];
+  if (captureJson) args.push('--json');
+
+  const result = spawnSync('npx', args, {
     cwd: projectRoot,
     stdio: ['pipe', 'pipe', 'pipe'],
     encoding: 'utf8',
@@ -75,17 +76,37 @@ function getAppliedMigrations() {
 
   try { unlinkSync(tmpPath); } catch {}
 
-  if (result.error || result.status !== 0) {
+  return result;
+}
+
+function getAppliedMigrations() {
+  // First, ensure the tracking table exists
+  const createResult = runWranglerD1(MIGRATION_TABLE_SQL);
+  if (createResult.error || createResult.status !== 0) {
+    console.warn('Warning: could not create _prisma_migrations table — will apply all migrations');
+    return new Set();
+  }
+
+  // Query applied migrations
+  const queryResult = runWranglerD1('SELECT id FROM _prisma_migrations;', true);
+  if (queryResult.error || queryResult.status !== 0) {
     console.warn('Warning: could not query _prisma_migrations table — will apply all migrations');
     return new Set();
   }
 
-  // Parse wrangler JSON output to find applied migration IDs
   const applied = new Set();
   try {
-    const output = result.stdout;
-    // wrangler d1 execute --json outputs an array of results
-    const parsed = JSON.parse(output);
+    const output = queryResult.stdout.trim();
+    // wrangler --json outputs a JSON array. Sometimes there are log lines
+    // before the JSON, so find the first '[' and parse from there.
+    const jsonStart = output.indexOf('[');
+    if (jsonStart === -1) {
+      // No JSON array found — maybe wrangler version outputs differently
+      console.warn('Warning: no JSON array in wrangler output — will apply all migrations');
+      return new Set();
+    }
+    const jsonStr = output.slice(jsonStart);
+    const parsed = JSON.parse(jsonStr);
     if (Array.isArray(parsed)) {
       for (const batch of parsed) {
         if (batch.results && Array.isArray(batch.results)) {
@@ -95,8 +116,9 @@ function getAppliedMigrations() {
         }
       }
     }
-  } catch {
-    // If JSON parsing fails, assume no migrations applied yet
+  } catch (e) {
+    console.warn('Warning: failed to parse wrangler JSON output — will apply all migrations:', e.message);
+    return new Set();
   }
   return applied;
 }
@@ -116,42 +138,50 @@ if (pendingMigrations.length === 0) {
   process.exit(0);
 }
 
-// Build SQL for pending migrations + tracking inserts
-let allSql = '';
-for (const m of pendingMigrations) {
-  allSql += `-- Migration: ${m.name}\n${m.sql}\n\n`;
-  allSql += `INSERT INTO _prisma_migrations (id) VALUES ('${m.name}');\n\n`;
-}
-
 if (!shouldApply) {
   console.log('\n--- SQL to apply (dry-run) ---\n');
-  console.log(allSql);
+  for (const m of pendingMigrations) {
+    console.log(`-- Migration: ${m.name}\n${m.sql}\n`);
+  }
   console.log('\nTo apply, run: node scripts/apply-d1-migrations.mjs --apply');
   process.exit(0);
 }
 
-// Write to a temp file and execute via wrangler
-const tmpPath = join(projectRoot, '.d1-migration-tmp.sql');
-writeFileSync(tmpPath, MIGRATION_TABLE_SQL + '\n' + allSql);
+// Apply migrations one by one so a failure on one doesn't block others
+// that might already be partially applied.
+let applied = 0;
+let skipped = 0;
+for (const m of pendingMigrations) {
+  // Use INSERT OR IGNORE so duplicate tracking entries don't fail
+  const sql = `${m.sql}\n\nINSERT OR IGNORE INTO _prisma_migrations (id) VALUES ('${m.name}');`;
+  console.log(`\nApplying: ${m.name}...`);
 
-console.log(`\nApplying ${pendingMigrations.length} pending migration(s) to D1 database "lazynext-db"...`);
+  const result = runWranglerD1(sql);
 
-const result = spawnSync('npx', [
-  'wrangler', 'd1', 'execute', 'lazynext-db',
-  '--remote',
-  '--file', tmpPath,
-], {
-  cwd: projectRoot,
-  stdio: 'inherit',
-  encoding: 'utf8',
-});
+  if (result.error || result.status !== 0) {
+    // Check if it's a "table already exists" error — if so, the migration
+    // was already applied, just not tracked. Insert the tracking record.
+    const stderr = (result.stderr || '').toLowerCase();
+    const stdout = (result.stdout || '').toLowerCase();
+    const alreadyExists = stderr.includes('already exists') || stdout.includes('already exists');
 
-try { unlinkSync(tmpPath); } catch {}
-
-if (result.error) throw result.error;
-if (result.status !== 0) {
-  console.error('wrangler d1 execute failed');
-  process.exit(1);
+    if (alreadyExists) {
+      console.log(`  → Tables already exist, recording as applied`);
+      const trackResult = runWranglerD1(`INSERT OR IGNORE INTO _prisma_migrations (id) VALUES ('${m.name}');`);
+      if (trackResult.status === 0) {
+        skipped++;
+      } else {
+        console.error(`  → Failed to record tracking entry for ${m.name}`);
+        console.error(`  → ${(result.stderr || result.stdout || '').trim()}`);
+      }
+    } else {
+      console.error(`  → FAILED: ${(result.stderr || result.stdout || '').trim()}`);
+      // Don't exit — continue with other migrations
+    }
+  } else {
+    console.log(`  → OK`);
+    applied++;
+  }
 }
 
-console.log(`Done. Applied ${pendingMigrations.length} migration(s).`);
+console.log(`\nDone. Applied ${applied} migration(s), skipped ${skipped} (already existed).`);
