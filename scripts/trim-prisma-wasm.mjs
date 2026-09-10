@@ -386,3 +386,52 @@ for (const pattern of removePatterns) {
 if (artifactCount > 0) {
   console.log(`  removed ${artifactCount} artifacts, saved ${(artifactBytes / 1024).toFixed(0)} KiB uncompressed`);
 }
+
+// --- Remove local-only and native packages from the server function bundle ---
+// These packages are not used in the Cloudflare Worker (production uses D1, not SQLite)
+// and native modules like sharp are not compatible with workerd. Removing them
+// from the OpenNext bundle reduces the Worker size significantly.
+const removePackages = [
+  { dir: 'better-sqlite3', label: 'better-sqlite3 (local-only)' },
+  { dir: '@prisma/adapter-better-sqlite3', label: '@prisma/adapter-better-sqlite3 (local-only)' },
+  { dir: 'sharp', label: 'sharp (native, not workerd-compatible)' },
+  { dir: '@img', label: '@img/sharp native binaries' },
+  { dir: 'effect', label: 'effect (prisma CLI transitive dep)' },
+  { dir: 'elkjs', label: 'elkjs (prisma studio transitive dep)' },
+  { dir: '@electric-sql', label: '@electric-sql (prisma dev transitive dep)' },
+  { dir: '@aws-sdk', label: '@aws-sdk (not used by CF adapter)' },
+  { dir: '@smithy', label: '@smithy (aws-sdk transitive dep)' },
+];
+
+console.log('\nRemoving local-only and native packages from server function bundle...');
+let pkgRemovedBytes = 0;
+for (const { dir, label } of removePackages) {
+  // Remove from server-functions/default/node_modules/
+  const pkgPath = join(serverFuncDir, 'node_modules', dir);
+  if (existsSync(pkgPath)) {
+    const stat = statSync(pkgPath);
+    rmSync(pkgPath, { recursive: true, force: true });
+    pkgRemovedBytes += stat.size;
+    console.log(`  removed: ${label} (${(stat.size / 1024 / 1024).toFixed(1)} MB)`);
+  }
+  // Also check nested node_modules (hoisting edge cases)
+  const nmDir = join(serverFuncDir, 'node_modules');
+  if (existsSync(nmDir)) {
+    for (const entry of readdirSync(nmDir, { withFileTypes: true })) {
+      if (entry.isDirectory()) {
+        const nestedNm = join(nmDir, entry.name, 'node_modules', dir);
+        if (existsSync(nestedNm)) {
+          const stat = statSync(nestedNm);
+          rmSync(nestedNm, { recursive: true, force: true });
+          pkgRemovedBytes += stat.size;
+          console.log(`  removed nested: ${label} from ${entry.name} (${(stat.size / 1024 / 1024).toFixed(1)} MB)`);
+        }
+      }
+    }
+  }
+}
+if (pkgRemovedBytes > 0) {
+  console.log(`  Package removal saved ${(pkgRemovedBytes / 1024 / 1024).toFixed(1)} MB uncompressed`);
+} else {
+  console.log('  no local-only packages found in bundle (already externalized)');
+}

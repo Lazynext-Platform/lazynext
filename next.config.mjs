@@ -2,7 +2,29 @@
 const nextConfig = {
   reactStrictMode: true,
   output: 'standalone',
-  serverExternalPackages: ['@prisma/client', '.prisma/client'],
+  serverExternalPackages: [
+    '@prisma/client',
+    '.prisma/client',
+    // Local-only — not used in the Cloudflare Worker (production uses D1)
+    'better-sqlite3',
+    '@prisma/adapter-better-sqlite3',
+    // Native modules — not compatible with workerd
+    'sharp',
+    '@img/sharp-darwin-arm64',
+    '@img/sharp-libvips-darwin-arm64',
+    '@img/sharp-wasm32',
+    '@img/colour',
+    // Prisma CLI/dev transitive deps — not needed at runtime
+    'effect',
+    'elkjs',
+    '@electric-sql/pglite',
+    '@electric-sql/pglite-socket',
+    '@electric-sql/pglite-tools',
+    // AWS SDK — not used by the Cloudflare adapter (R2 via bindings)
+    '@aws-sdk/client-s3',
+    '@aws-sdk/core',
+    '@aws-sdk/credential-providers',
+  ],
   // Optimize barrel imports for large icon/dependency libraries to avoid
   // pulling the entire package into client bundles.
   experimental: {

@@ -14,6 +14,30 @@ const config = defineCloudflareConfig({});
   // Client-side only packages — don't bundle into the server worker
   '@ffmpeg/ffmpeg',
   '@ffmpeg/util',
+  // Local-only packages — not used in the Cloudflare Worker (production uses D1)
+  'better-sqlite3',
+  '@prisma/adapter-better-sqlite3',
+  // Native image processing — not compatible with workerd, externalize to avoid bundling
+  'sharp',
+  '@img/sharp-darwin-arm64',
+  '@img/sharp-libvips-darwin-arm64',
+  '@img/sharp-wasm32',
+  '@img/sharp-linux-x64',
+  '@img/sharp-linux-arm64',
+  '@img/sharp-linux-arm',
+  '@img/colour',
+  // Prisma CLI-only transitive deps — never needed at runtime in the worker
+  'effect',
+  'elkjs',
+  '@electric-sql/pglite',
+  '@electric-sql/pglite-socket',
+  '@electric-sql/pglite-tools',
+  // AWS SDK — transitive dep of @opennextjs/aws, not used by the Cloudflare adapter
+  // (Cloudflare R2 is accessed via bindings, not the AWS SDK)
+  '@aws-sdk/client-s3',
+  '@aws-sdk/core',
+  '@aws-sdk/credential-providers',
+  '@smithy',
 ];
 
 export default config;

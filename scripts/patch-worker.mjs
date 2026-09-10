@@ -135,3 +135,24 @@ if (wasmRemoved > 0) {
 } else {
   console.log('  no WASM files found in dist directory');
 }
+
+// --- Remove local-only and native packages from the dist directory ---
+// These may be copied by the wrangler dry-run. Remove them so they're not
+// included in the final Worker upload.
+const removePkgs = ['better-sqlite3', '@prisma/adapter-better-sqlite3', 'sharp', '@img', 'effect', 'elkjs', '@electric-sql', '@aws-sdk', '@smithy'];
+console.log('\nRemoving local-only/native packages from dist directory...');
+let pkgBytes = 0;
+for (const pkg of removePkgs) {
+  const pkgPath = join(distDir, 'node_modules', pkg);
+  if (existsSync(pkgPath)) {
+    const stat = statSync(pkgPath);
+    rmSync(pkgPath, { recursive: true, force: true });
+    pkgBytes += stat.size;
+    console.log(`  removed: ${pkg} (${(stat.size / 1024 / 1024).toFixed(1)} MB)`);
+  }
+}
+if (pkgBytes > 0) {
+  console.log(`  Package removal saved ${(pkgBytes / 1024 / 1024).toFixed(1)} MB`);
+} else {
+  console.log('  no local-only packages found in dist');
+}
