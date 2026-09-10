@@ -30,6 +30,7 @@ import {
   Moon,
   Monitor,
   Globe,
+  Keyboard,
 } from 'lucide-react';
 import { useSession, signOut } from 'next-auth/react';
 import { useTheme } from '@/lib/theme';
@@ -73,6 +74,7 @@ export function OsShell({ children }: { children: React.ReactNode }) {
   const [localeMenuOpen, setLocaleMenuOpen] = useState(false);
   const [themeMenuOpen, setThemeMenuOpen] = useState(false);
   const [wsMenuOpen, setWsMenuOpen] = useState(false);
+  const [shortcutsOpen, setShortcutsOpen] = useState(false);
 
   // Mark as mounted after hydration to avoid hydration mismatches.
   // Session/workspace state may differ between server render and client
@@ -119,6 +121,19 @@ export function OsShell({ children }: { children: React.ReactNode }) {
       }
       if (e.key === 'Escape') {
         setSearchOpen(false);
+        setShortcutsOpen(false);
+      }
+      // ? opens shortcuts help
+      const target = e.target as HTMLElement;
+      if (
+        (e.key === '?' || (e.key === '/' && e.shiftKey)) &&
+        target.tagName !== 'INPUT' &&
+        target.tagName !== 'TEXTAREA' &&
+        !target.isContentEditable &&
+        !e.metaKey && !e.ctrlKey && !e.altKey
+      ) {
+        e.preventDefault();
+        setShortcutsOpen((prev) => !prev);
       }
     };
     document.addEventListener('keydown', handler);
@@ -295,6 +310,17 @@ export function OsShell({ children }: { children: React.ReactNode }) {
             <Search className="h-4 w-4" />
             <span className="hidden sm:inline">Search...</span>
             <kbd className="kbd ml-auto hidden sm:inline-flex">⌘K</kbd>
+          </button>
+
+          {/* Keyboard shortcuts */}
+          <button
+            className="p-2 border-2 rounded-[var(--radius-sm)] bg-surface hover:bg-hover transition-colors"
+            style={{ borderColor: 'var(--c-ink)' }}
+            onClick={() => setShortcutsOpen(true)}
+            aria-label="Keyboard shortcuts"
+            title="Keyboard shortcuts (?)"
+          >
+            <Keyboard className="h-4 w-4" />
           </button>
 
           {/* Theme switcher */}
@@ -531,6 +557,62 @@ export function OsShell({ children }: { children: React.ReactNode }) {
       <main id="main-content" className="flex-1">
         {children}
       </main>
+
+      {/* Keyboard shortcuts overlay */}
+      {shortcutsOpen && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm"
+          onClick={() => setShortcutsOpen(false)}
+          role="dialog"
+          aria-label="Keyboard shortcuts"
+        >
+          <div
+            className="mx-4 w-full max-w-md rounded-2xl border border-line bg-popover p-6 shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="text-base font-semibold text-fg">Keyboard Shortcuts</h2>
+              <button
+                onClick={() => setShortcutsOpen(false)}
+                className="rounded-lg p-1 text-fg-faint hover:bg-hover"
+                aria-label="Close"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+            <div className="space-y-2 text-sm">
+              <div className="flex items-center justify-between">
+                <span className="text-fg-secondary">Search features</span>
+                <kbd className="rounded bg-elevated px-2 py-0.5 text-xs font-mono text-fg-muted">Cmd+K</kbd>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-fg-secondary">Dashboard</span>
+                <kbd className="rounded bg-elevated px-2 py-0.5 text-xs font-mono text-fg-muted">g d</kbd>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-fg-secondary">Pricing</span>
+                <kbd className="rounded bg-elevated px-2 py-0.5 text-xs font-mono text-fg-muted">g p</kbd>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-fg-secondary">Assets</span>
+                <kbd className="rounded bg-elevated px-2 py-0.5 text-xs font-mono text-fg-muted">g a</kbd>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-fg-secondary">My Work</span>
+                <kbd className="rounded bg-elevated px-2 py-0.5 text-xs font-mono text-fg-muted">g w</kbd>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-fg-secondary">Settings</span>
+                <kbd className="rounded bg-elevated px-2 py-0.5 text-xs font-mono text-fg-muted">g s</kbd>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-fg-secondary">Close overlay</span>
+                <kbd className="rounded bg-elevated px-2 py-0.5 text-xs font-mono text-fg-muted">Esc</kbd>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }
