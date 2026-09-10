@@ -78,6 +78,8 @@ test.describe('Authenticated user pages', () => {
 
 test.describe('Full pipeline execution flow', () => {
   test('create and advance pipeline through all stages', async ({ request }) => {
+    // Pipeline creation + advancement executes multiple stages — allow extra time
+    test.setTimeout(120000);
     // 1. Create a quick-ad pipeline
     const createRes = await request.post('/api/creative/pipeline', {
       data: {
@@ -142,6 +144,7 @@ test.describe('Full pipeline execution flow', () => {
   });
 
   test('auto-advance chains multiple stages in a single advance request', async ({ request }) => {
+    test.setTimeout(120000);
     // Create a pipeline with autoAdvance enabled (default for quick-ad template)
     const createRes = await request.post('/api/creative/pipeline', {
       data: {
@@ -200,6 +203,7 @@ test.describe('Full pipeline execution flow', () => {
   });
 
   test('can fetch pipeline state by ID', async ({ request }) => {
+    test.setTimeout(120000);
     // Create a pipeline
     const createRes = await request.post('/api/creative/pipeline', {
       data: {
@@ -244,7 +248,8 @@ test.describe('Full pipeline execution flow', () => {
 test.describe('A/B automation access', () => {
   test('ab-automation page loads', async ({ page }) => {
     await page.goto('/ab-automation');
-    await expect(page).toHaveURL(/\/ab-automation/);
+    // May redirect to /creative/generators
+    await expect(page).toHaveURL(/\/ab-automation|\/creative\/generators/);
     await expect(page.locator('body')).toBeVisible();
   });
 

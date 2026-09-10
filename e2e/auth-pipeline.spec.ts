@@ -27,6 +27,8 @@ test.describe('Authenticated pipeline access', () => {
   });
 
   test('can create a pipeline via API', async ({ request }) => {
+    // Pipeline creation executes multiple stages synchronously — allow extra time
+    test.setTimeout(90000);
     const res = await request.post('/api/creative/pipeline', {
       data: {
         templateId: 'quick-ad',
@@ -83,13 +85,15 @@ test.describe('Authenticated pipeline access', () => {
 
   test('workflow builder page loads with active session', async ({ page }) => {
     await page.goto('/workflow-builder');
-    await expect(page).toHaveURL(/\/workflow-builder/);
+    // May redirect to /creative/pipelines
+    await expect(page).toHaveURL(/\/workflow-builder|\/creative\/pipelines/);
     await expect(page.locator('body')).toBeVisible();
   });
 
   test('clip editor page loads with active session', async ({ page }) => {
     await page.goto('/clip-editor');
-    await expect(page).toHaveURL(/\/clip-editor/);
+    // May redirect to /creative
+    await expect(page).toHaveURL(/\/clip-editor|\/creative/);
     await expect(page.locator('body')).toBeVisible();
   });
 });

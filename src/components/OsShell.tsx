@@ -38,6 +38,7 @@ import { useI18n } from '@/i18n/provider';
 import { useWorkspace } from '@/lib/workspace-provider';
 import { LOCALES, LOCALE_NAMES, type Locale } from '@/i18n/messages';
 import { NotificationsBell } from '@/components/NotificationsBell';
+import { trackAppVisit, appTitle } from '@/lib/recent-apps';
 
 // OS module navigation — the primary nav items
 // Labels use i18n keys from home.mod* (same as homepage module grid)
@@ -98,6 +99,11 @@ export function OsShell({ children }: { children: React.ReactNode }) {
     setLocaleMenuOpen(false);
     setThemeMenuOpen(false);
     setWsMenuOpen(false);
+    // Track app visits (skip non-app routes)
+    const slug = p.replace(/^\//, '').split('/')[0];
+    if (slug && !['api', '_next', 'dashboard', 'pricing', 'assets', 'settings', 'my-work', 'admin', 'auth', 'projects', 'tasks', 'documents', 'files', 'creative', 'automations', 'agents', 'integrations', 'calendar', 'analytics', 'search', 'workspaces', 'developers', 'people', 'conversations', 'mcp-server', 'onboarding', 'observability'].includes(slug)) {
+      trackAppVisit(slug, appTitle(slug, 'en'));
+    }
   }, [p]);
 
   // Close menus on outside click
