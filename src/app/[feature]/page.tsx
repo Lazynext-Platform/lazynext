@@ -1,4 +1,4 @@
-import dynamic from 'next/dynamic';
+import nextDynamic from 'next/dynamic';
 import { notFound } from 'next/navigation';
 import { getCreativeFeature } from '@/lib/creative/registry';
 import type { ComponentType } from 'react';
@@ -150,7 +150,7 @@ const PAGE_LOADERS: Record<string, () => Promise<{ default: ComponentType }>> = 
 };
 
 const COMPONENTS: Record<string, ComponentType> = Object.fromEntries(
-  Object.entries(PAGE_LOADERS).map(([feature, loader]) => [feature, dynamic(loader) as ComponentType]),
+  Object.entries(PAGE_LOADERS).map(([feature, loader]) => [feature, nextDynamic(loader) as ComponentType]),
 );
 
 export const dynamic = 'force-dynamic';
