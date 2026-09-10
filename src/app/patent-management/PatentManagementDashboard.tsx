@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import {
   FileText, FileCheck, Award, DollarSign, BarChart3,
   Search,
@@ -36,7 +36,7 @@ export function PatentManagementDashboard({
   const [tab, setTab] = useState<TabId>('overview');
   const [search, setSearch] = useState('');
 
-  const applicationTitle = (id: string) => applications.find((a) => a.id === id)?.title || id;
+  const applicationTitle = useCallback((id: string) => applications.find((a) => a.id === id)?.title || id, [applications]);
 
   const filteredApplications = useMemo(() => {
     if (!search) return applications;
@@ -52,7 +52,7 @@ export function PatentManagementDashboard({
     return documents.filter(
       (d) => d.title.toLowerCase().includes(q) || d.type.toLowerCase().includes(q) || applicationTitle(d.applicationId).toLowerCase().includes(q),
     );
-  }, [documents, search, applications]);
+  }, [documents, search, applicationTitle]);
 
   const filteredLicenses = useMemo(() => {
     if (!search) return licenses;
@@ -68,7 +68,7 @@ export function PatentManagementDashboard({
     return maintenance.filter(
       (m) => m.type.toLowerCase().includes(q) || m.status.toLowerCase().includes(q) || applicationTitle(m.applicationId).toLowerCase().includes(q),
     );
-  }, [maintenance, search, applications]);
+  }, [maintenance, search, applicationTitle]);
 
   const tabs: { id: TabId; label: string; icon: typeof FileText }[] = [
     { id: 'overview', label: 'Overview', icon: BarChart3 },

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import {
   ClipboardList, FileText, HelpCircle, Megaphone, BarChart3,
   Search,
@@ -36,7 +36,7 @@ export function EmployeeSurveysDashboard({
   const [tab, setTab] = useState<TabId>('overview');
   const [search, setSearch] = useState('');
 
-  const surveyTitle = (id: string) => surveys.find((s) => s.id === id)?.title || id;
+  const surveyTitle = useCallback((id: string) => surveys.find((s) => s.id === id)?.title || id, [surveys]);
 
   const filteredSurveys = useMemo(() => {
     if (!search) return surveys;
@@ -52,7 +52,7 @@ export function EmployeeSurveysDashboard({
     return responses.filter(
       (r) => r.respondentName.toLowerCase().includes(q) || r.status.toLowerCase().includes(q) || surveyTitle(r.surveyId).toLowerCase().includes(q),
     );
-  }, [responses, search, surveys]);
+  }, [responses, search, surveyTitle]);
 
   const filteredQuestions = useMemo(() => {
     if (!search) return questions;
@@ -60,7 +60,7 @@ export function EmployeeSurveysDashboard({
     return questions.filter(
       (qu) => qu.text.toLowerCase().includes(q) || qu.type.toLowerCase().includes(q) || surveyTitle(qu.surveyId).toLowerCase().includes(q),
     );
-  }, [questions, search, surveys]);
+  }, [questions, search, surveyTitle]);
 
   const filteredCampaigns = useMemo(() => {
     if (!search) return campaigns;
