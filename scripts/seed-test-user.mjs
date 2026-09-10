@@ -1,6 +1,6 @@
 /**
  * Seed the test account for E2E tests.
- * Creates test@lazynext.local with password Test1234! and 150 credits.
+ * Creates test@lazynext.local with password Test1234! and 1000 credits.
  * Idempotent — safe to run multiple times.
  *
  * SAFETY: This script refuses to run in production or against a non-SQLite
@@ -39,14 +39,14 @@ async function main() {
     update: {
       password: hashedPassword,
       emailVerified: new Date(),
-      credits: 150,
+      credits: 1000,
     },
     create: {
       email,
       name,
       password: hashedPassword,
       emailVerified: new Date(),
-      credits: 150,
+      credits: 1000,
     },
   });
 

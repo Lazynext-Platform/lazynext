@@ -59,7 +59,7 @@ npm run cf:deploy # Deploy to Cloudflare Workers
 ## Test Account
 - Email: `test@lazynext.local`
 - Password: `Test1234!`
-- Credits: starts at 150
+- Credits: starts at 1000
 - Included in `ADMIN_EMAILS` for admin access
 
 ## Responsive Design
