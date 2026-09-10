@@ -89,7 +89,7 @@ try {
   const minifiedPath = join(distDir, `${workerName}.min`);
   execSync(
     `npx esbuild "${workerPath}" --minify --format=esm --target=es2022 ` +
-    `--drop:console,debugger ` +
+    `--drop:console --drop:debugger ` +
     `--pure:console.log --pure:console.info --pure:console.warn --pure:console.error --pure:console.debug --pure:console.trace ` +
     `--legal-comments=none --charset=ascii --tree-shaking=true ` +
     `--define:process.env.NODE_ENV='"production"' ` +
