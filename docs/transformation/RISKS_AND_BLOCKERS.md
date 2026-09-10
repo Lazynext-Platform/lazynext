@@ -42,12 +42,12 @@
 | B1 | No Cloudflare API token | Credential | RESOLVED — durable token created and stored as GitHub secret (2026-09-10). CI/CD deploys successfully |
 | B2 | No Atlas Cloud API key | Credential | OPEN — needs user to provide actual key. Mock server used for local dev — production needs real key |
 | B3 | No live production access | Access | RESOLVED — production deployed and verified at lazynext.com (2026-09-10). Health checks pass |
-| B4 | No D1 production database access | Credential | OPEN — needs user to configure. Cannot verify production data state — migrations tested locally only |
+| B4 | No D1 production database access | Credential | RESOLVED — D1 schema baseline + migrations applied via CI using Cloudflare API token. 145 tables created, 22 migrations applied. |
 
 ## Risk Assessment Summary
 
 - **25 of 26 risks (R1-R26) are RESOLVED.** R14 (dep versions) remains open — low priority, monitoring only.
-- **2 of 4 blockers (B1, B3) are RESOLVED.** B2 and B4 require external credentials that only the user can provide.
+- **3 of 4 blockers (B1, B3, B4) are RESOLVED.** B2 (Atlas Cloud API key) requires an external credential that only the user can provide.
 
 ### Resolved in prior batches
 - R1 (tsc heap) — Documented (use NODE_OPTIONS=--max-old-space-size=8192)
@@ -83,4 +83,4 @@
 - B1: Cloudflare API token — RESOLVED (durable token created and stored as GitHub secret, 2026-09-10)
 - B2: Atlas Cloud API key (needs user to provide)
 - B3: Production access — RESOLVED (deployed and verified, 2026-09-10)
-- B4: D1 database access (needs user to configure)
+- B4: D1 database access — RESOLVED (schema baseline + migrations applied via CI)

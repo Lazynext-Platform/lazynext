@@ -1353,14 +1353,32 @@ Production deploys run through GitHub Actions, not local `wrangler deploy`. The 
 - `ATLASCLOUD_API_KEY` — Atlas Cloud API key for AI generation.
 
 **Workflow steps**:
-1. `actions/checkout@v4` + `actions/setup-node@v4`
+1. `actions/checkout@v5` + `actions/setup-node@v5`
 2. Add swap space (build is memory-heavy)
 3. `NODE_OPTIONS=--max-old-space-size=14336 npm ci`
 4. `npm run lint`
 5. `npm test`
-6. `npm run cf:build` (OpenNext → Cloudflare Worker)
-7. Verify WASM externalization (Prisma WASM → Cloudflare Assets, ~3.2 MB)
-8. `npx wrangler deploy` (uses `CLOUDFLARE_API_TOKEN` + `CLOUDFLARE_ACCOUNT_ID`)
+6. Apply D1 schema baseline (`scripts/apply-d1-schema-baseline.mjs --apply`)
+   — generates full schema SQL via `prisma migrate diff --from-empty --to-schema`
+   — converts to `CREATE TABLE IF NOT EXISTS` (idempotent)
+   — creates all 145 model tables
+7. Apply D1 migrations (`scripts/apply-d1-migrations.mjs --apply`)
+   — applies incremental migrations one-by-one (idempotent)
+   — tracks applied migrations in `_prisma_migrations` table
+8. `npm run cf:build` (OpenNext → Cloudflare Worker)
+9. Verify WASM externalization (Prisma WASM → Cloudflare Assets, ~3.2 MB)
+10. `npx wrangler deploy` (uses `CLOUDFLARE_API_TOKEN` + `CLOUDFLARE_ACCOUNT_ID`)
+
+**Auth error handling** (NextAuth v5):
+- The `authorize` callback throws `CredentialsSignin` subclasses
+  (`EmailNotVerifiedError`, `MfaRequiredError`, `MfaInvalidError`) with
+  custom `code` values. Regular `Error` objects are mapped to
+  "Configuration" by NextAuth — only client-safe AuthError types are
+  exposed to the client.
+- Login page reads `?error=CredentialsSignin&code=EmailNotVerified`
+  (or `MfaRequired` / `MfaInvalid` / `credentials`).
+- Resend verification endpoint: `POST /api/auth/resend-verification`
+  (rate-limited, generates fresh 24h token).
 
 **Bundle-size remediation** (Cloudflare Worker uncompressed limit: 64 MiB ≈ 67 MB):
 - 132 creative routes consolidated into a single dynamic `src/app/api/creative/[tool]/route.ts`
