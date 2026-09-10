@@ -606,6 +606,10 @@ export function OsShell({ children }: { children: React.ReactNode }) {
                 <kbd className="rounded bg-elevated px-2 py-0.5 text-xs font-mono text-fg-muted">g s</kbd>
               </div>
               <div className="flex items-center justify-between">
+                <span className="text-fg-secondary">Creative Director</span>
+                <kbd className="rounded bg-elevated px-2 py-0.5 text-xs font-mono text-fg-muted">g c</kbd>
+              </div>
+              <div className="flex items-center justify-between">
                 <span className="text-fg-secondary">Close overlay</span>
                 <kbd className="rounded bg-elevated px-2 py-0.5 text-xs font-mono text-fg-muted">Esc</kbd>
               </div>
