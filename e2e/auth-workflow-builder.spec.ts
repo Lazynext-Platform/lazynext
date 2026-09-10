@@ -126,7 +126,7 @@ test.describe('Workflow Builder parallel waves', () => {
     await page.goto('/workflow-builder');
     await expect(page).toHaveTitle(/Lazynext/i);
     // The page should load with the workflow builder UI visible
-    await expect(page.locator('h1')).toBeVisible();
+    await expect(page.locator('h1').first()).toBeVisible();
     // Should not show an auth modal (we're authenticated)
     const authModal = page.locator('[role="dialog"][aria-modal="true"]');
     // The auth modal might briefly appear but should not be the main content

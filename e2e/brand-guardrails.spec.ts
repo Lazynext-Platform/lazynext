@@ -30,7 +30,7 @@ test.describe('Brand Guardrails Page', () => {
   test('shows auth modal when unauthenticated', async ({ page }) => {
     await page.goto('/brand-guardrails');
     // The page should show the h1 and an auth prompt
-    await expect(page.locator('h1')).toBeVisible();
+    await expect(page.locator('h1').first()).toBeVisible();
   });
 
   test('no horizontal overflow at 375px', async ({ page }) => {
