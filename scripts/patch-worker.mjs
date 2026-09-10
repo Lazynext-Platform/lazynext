@@ -80,18 +80,53 @@ if (mapCommentRegex.test(content)) {
 }
 
 // Minify the worker with esbuild to reduce the Cloudflare Worker bundle size.
-// The wrangler dry-run outputs an unminified bundle (~55 MB). Esbuild minification
-// reduces it to ~46 MB raw / ~8.5 MB gzipped, well under Cloudflare's 10 MiB limit.
+// Use aggressive options: drop console/debugger, target es2022, remove legal
+// comments, and mark common logging functions as pure for tree-shaking.
+// The wrangler dry-run outputs an unminified bundle (~133 MB). Esbuild
+// minification reduces it to ~98 MB with basic --minify. With aggressive
+// options we aim for further reduction to fit under Cloudflare's 64 MiB limit.
 try {
   const minifiedPath = join(distDir, `${workerName}.min`);
-  execSync(`npx esbuild "${workerPath}" --minify --format=esm --outfile="${minifiedPath}"`, {
-    stdio: 'pipe',
-    timeout: 60_000,
-  });
+  execSync(
+    `npx esbuild "${workerPath}" --minify --format=esm --target=es2022 ` +
+    `--drop=console,debugger ` +
+    `--pure=console.log,console.info,console.warn,console.error,console.debug,console.trace ` +
+    `--legal-comments=none --charset=ascii --tree-shaking=true ` +
+    `--define:process.env.NODE_ENV='"production"' ` +
+    `--metafile="${join(distDir, 'metafile.json')}" ` +
+    `--outfile="${minifiedPath}"`,
+    {
+      stdio: 'pipe',
+      timeout: 120_000,
+      maxBuffer: 200 * 1024 * 1024,
+    },
+  );
   if (existsSync(minifiedPath)) {
+    const rawSize = statSync(workerPath).size;
+    const minSize = statSync(minifiedPath).size;
     rmSync(workerPath, { force: true });
     renameSync(minifiedPath, workerPath);
-    console.log(`Minified ${workerName} with esbuild`);
+    console.log(`Minified ${workerName} with esbuild (${(rawSize / 1024 / 1024).toFixed(1)} MB → ${(minSize / 1024 / 1024).toFixed(1)} MB)`);
+
+    // Analyze metafile to find largest contributors
+    const metafilePath = join(distDir, 'metafile.json');
+    if (existsSync(metafilePath)) {
+      try {
+        const meta = JSON.parse(readFileSync(metafilePath, 'utf8'));
+        const inputs = Object.entries(meta.inputs || {})
+          .map(([path, info]) => ({ path, bytes: info.bytes }))
+          .sort((a, b) => b.bytes - a.bytes)
+          .slice(0, 30);
+        console.log('\n=== Top 30 largest bundle inputs ===');
+        for (const { path, bytes } of inputs) {
+          console.log(`  ${(bytes / 1024).toFixed(0)} KiB  ${path.replace(projectRoot + '/', '')}`);
+        }
+        const totalBytes = Object.values(meta.inputs || {}).reduce((sum, i) => sum + i.bytes, 0);
+        console.log(`  Total inputs: ${(totalBytes / 1024 / 1024).toFixed(1)} MB`);
+      } catch (e) {
+        console.log(`[warn] metafile analysis skipped: ${e instanceof Error ? e.message : String(e)}`);
+      }
+    }
   }
 } catch (e) {
   console.log(`[warn] esbuild minification skipped: ${e instanceof Error ? e.message : String(e)}`);
