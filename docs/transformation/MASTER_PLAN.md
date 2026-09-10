@@ -1,7 +1,7 @@
 # Lazynext — Master Plan
 
-**Date:** 2026-09-09
-**Status:** Active — All locally-actionable phases complete
+**Date:** 2026-09-10
+**Status:** Active — All phases complete; production deployed and verified
 
 ---
 
@@ -56,7 +56,7 @@ Transform Lazynext from an AI ad-creative studio with an emerging OS shell into 
 | 29 | UX Redesign | Company Control Center, live AI work feed | COMPLETE |
 | 30 | Performance/Reliability | N+1, bundles, polling, job throughput | COMPLETE |
 | 31 | CI/CD | Full pipeline validation | COMPLETE |
-| 32 | Production Rollout | Progressive deployment | PARTIALLY COMPLETE |
+| 32 | Production Rollout | Progressive deployment | COMPLETE |
 | 33 | Final Audit | Independent production review | COMPLETE |
 
 ## Phase Gate Format
@@ -122,7 +122,7 @@ At the end of each phase, record:
 - Verification step (CI runs tests before deploy)
 - Rollback support via DeploymentService.rollback
 
-### Phase 32 — Production Rollout (PARTIALLY COMPLETE)
+### Phase 32 — Production Rollout (COMPLETE)
 **Objective:** Progressive deployment.
 
 **Completed:**
@@ -130,12 +130,11 @@ At the end of each phase, record:
 - Rollback mechanism implemented (DeploymentService.rollback)
 - Health check endpoint available
 - wrangler.jsonc configured with R2 bindings (R5) and rate limiter binding (R13)
-
-**Remaining work:**
-- Actual production deployment (requires B1: Cloudflare API token)
-- Production health check verification
-- Critical user flow testing in production
-- Observability activation in production
+- Actual production deployment via GitHub Actions CI/CD (2026-09-10)
+- Long-lived Cloudflare API token configured as GitHub secret
+- Production health check verified: HTTP 200, Atlas/R2/D1 healthy
+- Critical user flow smoke tests: consolidated route families dispatch correctly
+- Observability active via Cloudflare Workers observability binding
 
 ### Phase 33 — Final Audit (COMPLETE)
 **Objective:** Independent production review.
