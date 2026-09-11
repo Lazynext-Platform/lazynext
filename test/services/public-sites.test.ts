@@ -24,7 +24,7 @@ test('resolveOrgSlugFromHost returns null when wildcard disabled', () => {
   function resolveOrgSlugFromHost(hostname: string): string | null {
     if (process.env.SITES_WILDCARD_ENABLED !== 'true') return null;
     const baseDomain = process.env.SITES_BASE_DOMAIN || 'lazynext.com';
-    const pattern = new RegExp(`^(.+)\\.${baseDomain.replace(/\./g, '\\.')}$`);
+    const pattern = new RegExp(`^(.+)\\.${baseDomain.replace(/\\/g, '\\\\').replace(/\./g, '\\.')}$`);
     const match = hostname.match(pattern);
     if (!match) return null;
     const slug = match[1];
@@ -40,7 +40,7 @@ test('resolveOrgSlugFromHost extracts slug when wildcard enabled', () => {
   function resolveOrgSlugFromHost(hostname: string): string | null {
     if (process.env.SITES_WILDCARD_ENABLED !== 'true') return null;
     const baseDomain = process.env.SITES_BASE_DOMAIN || 'lazynext.com';
-    const pattern = new RegExp(`^(.+)\\.${baseDomain.replace(/\./g, '\\.')}$`);
+    const pattern = new RegExp(`^(.+)\\.${baseDomain.replace(/\\/g, '\\\\').replace(/\./g, '\\.')}$`);
     const match = hostname.match(pattern);
     if (!match) return null;
     const slug = match[1];
@@ -62,7 +62,7 @@ test('resolveOrgSlugFromHost handles custom base domain', () => {
   function resolveOrgSlugFromHost(hostname: string): string | null {
     if (process.env.SITES_WILDCARD_ENABLED !== 'true') return null;
     const baseDomain = process.env.SITES_BASE_DOMAIN || 'lazynext.com';
-    const pattern = new RegExp(`^(.+)\\.${baseDomain.replace(/\./g, '\\.')}$`);
+    const pattern = new RegExp(`^(.+)\\.${baseDomain.replace(/\\/g, '\\\\').replace(/\./g, '\\.')}$`);
     const match = hostname.match(pattern);
     if (!match) return null;
     const slug = match[1];

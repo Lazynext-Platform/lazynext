@@ -210,7 +210,8 @@ export const PublicSitesService = {
     if (process.env.SITES_WILDCARD_ENABLED !== 'true') return null;
 
     const baseDomain = process.env.SITES_BASE_DOMAIN || 'lazynext.com';
-    const pattern = new RegExp(`^(.+)\\.${baseDomain.replace(/\./g, '\\.')}$`);
+    const escapedDomain = baseDomain.replace(/\\/g, '\\\\').replace(/\./g, '\\.');
+    const pattern = new RegExp(`^(.+)\\.${escapedDomain}$`);
     const match = hostname.match(pattern);
     if (!match) return null;
     const slug = match[1];

@@ -194,7 +194,17 @@ export const CompanyEmailService = {
     const svixSecret = process.env.SVIX_SECRET;
 
     // 1. Verify Svix signature (if configured)
-    if (svixSecret && input.svixSignature && input.svixMsgId && input.rawBody) {
+    // If SVIX_SECRET is set, the Svix headers MUST be present and valid.
+    // An attacker cannot bypass verification by omitting headers.
+    if (svixSecret) {
+      if (!input.svixSignature || !input.svixMsgId || !input.rawBody) {
+        return {
+          success: false,
+          injectionDetected: false,
+          injectionPatterns: [],
+          error: 'missing_svix_headers',
+        };
+      }
       const valid = verifySvixSignature(
         input.rawBody,
         input.svixMsgId,
@@ -213,7 +223,8 @@ export const CompanyEmailService = {
 
     // 2. Extract organization slug from the to address
     const mailDomain = process.env.MAIL_DOMAIN || 'mail.lazynext.com';
-    const toMatch = input.email.to.match(`^(.+)@${mailDomain.replace(/\./g, '\\.')}$`);
+    const escapedDomain = mailDomain.replace(/\\/g, '\\\\').replace(/\./g, '\\.');
+    const toMatch = input.email.to.match(`^(.+)@${escapedDomain}$`);
     if (!toMatch) {
       return {
         success: false,
