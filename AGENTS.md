@@ -1362,6 +1362,9 @@ Production deploys run through GitHub Actions, not local `wrangler deploy`. The 
    — generates full schema SQL via `prisma migrate diff --from-empty --to-schema`
    — converts to `CREATE TABLE IF NOT EXISTS` (idempotent)
    — creates all 145 model tables
+   — also queries existing D1 schema and generates ALTER TABLE statements for
+     pre-existing tables that are missing columns (fixes schema drift from
+     incremental migrations applied before the baseline script existed)
 7. Apply D1 migrations (`scripts/apply-d1-migrations.mjs --apply`)
    — applies incremental migrations one-by-one (idempotent)
    — tracks applied migrations in `_prisma_migrations` table

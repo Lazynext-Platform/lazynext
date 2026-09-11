@@ -40,14 +40,14 @@
 | # | Blocker | Type | Resolution |
 |---|---|---|---|
 | B1 | No Cloudflare API token | Credential | RESOLVED — durable token created and stored as GitHub secret (2026-09-10). CI/CD deploys successfully |
-| B2 | No Atlas Cloud API key | Credential | OPEN — needs user to provide actual key. Mock server used for local dev — production needs real key |
+| B2 | No Atlas Cloud API key | Credential | RESOLVED — Atlas Cloud API key uploaded as Cloudflare Worker secret (2026-09-11). Key authenticates successfully (402 insufficient balance = account needs credits, not 401 unauthorized). Health endpoint reports Atlas OK. |
 | B3 | No live production access | Access | RESOLVED — production deployed and verified at lazynext.com (2026-09-10). Health checks pass |
 | B4 | No D1 production database access | Credential | RESOLVED — D1 schema baseline + migrations applied via CI using Cloudflare API token. 145 tables created, 22 migrations applied. |
 
 ## Risk Assessment Summary
 
 - **25 of 26 risks (R1-R26) are RESOLVED.** R14 (dep versions) remains open — low priority, monitoring only.
-- **3 of 4 blockers (B1, B3, B4) are RESOLVED.** B2 (Atlas Cloud API key) requires an external credential that only the user can provide.
+- **All 4 blockers (B1, B2, B3, B4) are RESOLVED.** B2 (Atlas Cloud API key) was uploaded as a Cloudflare Worker secret on 2026-09-11. The key authenticates successfully; the Atlas account needs credits for AI operations to execute.
 
 ### Resolved in prior batches
 - R1 (tsc heap) — Documented (use NODE_OPTIONS=--max-old-space-size=8192)
@@ -81,6 +81,12 @@
 
 ### Open Blockers (require external credentials)
 - B1: Cloudflare API token — RESOLVED (durable token created and stored as GitHub secret, 2026-09-10)
-- B2: Atlas Cloud API key (needs user to provide)
+- B2: Atlas Cloud API key — RESOLVED (uploaded as Cloudflare Worker secret, 2026-09-11. Key authenticates; account needs credits for AI operations.)
 - B3: Production access — RESOLVED (deployed and verified, 2026-09-10)
 - B4: D1 database access — RESOLVED (schema baseline + migrations applied via CI)
+
+### Resolved in Production Verification (2026-09-11)
+- D1 schema drift: 44 missing columns across Task, AgentDef, AgentRun, ScheduledJob tables added via ALTER TABLE. Root cause: baseline script used CREATE TABLE IF NOT EXISTS which skipped pre-existing tables. Baseline script updated to also generate ALTER TABLE statements for missing columns.
+- Production login: Credentials authorize() callback was failing silently. Fixed by redeploying with proper error handling. Login, session, dashboard, and all authenticated pages now work.
+- Task creation: failed_to_create_task error resolved by adding 14 missing columns to D1 Task table.
+- Agent runs: API paths verified correct. Agent run fails only due to Atlas 402 (insufficient balance), not code issues.
