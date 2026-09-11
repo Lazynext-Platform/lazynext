@@ -161,6 +161,24 @@ if (rateBuckets.size > 500) {
 async function handleRequest(req: NextRequest): Promise<NextResponse> {
   const pathname = req.nextUrl.pathname;
 
+  // Wildcard subdomain routing: {slug}.lazynext.com → /sites/{slug}/{path}
+  // Only active when SITES_WILDCARD_ENABLED=true and the host is a subdomain
+  // of SITES_BASE_DOMAIN (not the base domain itself or a reserved subdomain).
+  if (process.env.SITES_WILDCARD_ENABLED === 'true') {
+    const host = req.headers.get('host') || '';
+    const baseDomain = process.env.SITES_BASE_DOMAIN || 'lazynext.com';
+    const escapedDomain = baseDomain.replace(/\\/g, '\\\\').replace(/\./g, '\\.');
+    const subdomainMatch = host.match(new RegExp(`^(.+)\\.${escapedDomain}$`));
+    if (subdomainMatch) {
+      const slug = subdomainMatch[1];
+      if (!['www', 'api', 'mail', 'admin', 'app'].includes(slug)) {
+        const siteUrl = new URL(req.url);
+        siteUrl.pathname = `/sites/${slug}${pathname === '/' ? '' : pathname}`;
+        return NextResponse.rewrite(siteUrl);
+      }
+    }
+  }
+
   // Redirect old ad-studio creative tool pages to /creative/generators
   // These page routes have been removed; the API routes remain.
   if (
