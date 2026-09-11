@@ -83,10 +83,23 @@ if (mapCommentRegex.test(content)) {
 // The wrangler --dry-run --minify flag should already minify the bundle.
 // We only run esbuild if the file is still too large (> 64 MiB) after wrangler's minification.
 // We use aggressive options: drop console/debugger, target es2022, pure console functions.
+// IMPORTANT: The size check must account for the Prisma WASM module that will be
+// attached to the worker at deploy time. The WASM is ~3.2 MB, so we minify if
+// (worker JS + WASM) would exceed the 64 MiB limit.
 const CLOUDFLARE_LIMIT_BYTES = 64 * 1024 * 1024; // 64 MiB
 const currentSize = existsSync(workerPath) ? statSync(workerPath).size : 0;
-if (currentSize > CLOUDFLARE_LIMIT_BYTES) {
-  console.log(`Worker is ${(currentSize / 1024 / 1024).toFixed(1)} MB (> 64 MiB), running esbuild minification...`);
+// Calculate WASM size from the dist directory
+let wasmSize = 0;
+if (existsSync(distDir)) {
+  for (const entry of readdirSync(distDir)) {
+    if (entry.endsWith('.wasm') && entry.includes('query_compiler')) {
+      wasmSize += statSync(join(distDir, entry)).size;
+    }
+  }
+}
+const totalSize = currentSize + wasmSize;
+if (totalSize > CLOUDFLARE_LIMIT_BYTES) {
+  console.log(`Worker is ${(currentSize / 1024 / 1024).toFixed(1)} MB + WASM ${(wasmSize / 1024 / 1024).toFixed(1)} MB = ${(totalSize / 1024 / 1024).toFixed(1)} MB (> 64 MiB), running esbuild minification...`);
   try {
     const minifiedPath = join(distDir, `${workerName}.min`);
     execSync(
@@ -134,7 +147,7 @@ if (currentSize > CLOUDFLARE_LIMIT_BYTES) {
     console.log(`[warn] esbuild minification skipped: ${e instanceof Error ? e.message : String(e)}`);
   }
 } else {
-  console.log(`Worker is already ${(currentSize / 1024 / 1024).toFixed(1)} MB (≤ 64 MiB), skipping esbuild minification`);
+  console.log(`Worker is ${(currentSize / 1024 / 1024).toFixed(1)} MB + WASM ${(wasmSize / 1024 / 1024).toFixed(1)} MB = ${(totalSize / 1024 / 1024).toFixed(1)} MB (≤ 64 MiB), skipping esbuild minification`);
 }
 
 // Create wrangler.jsonc in the dist directory
