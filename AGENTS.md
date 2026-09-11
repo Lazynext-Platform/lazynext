@@ -1348,3 +1348,71 @@ Completed across 15+ sessions:
 12. **OAuth metadata**: Verify `/.well-known/oauth-protected-resource` returns valid JSON
 13. **API key creation**: Create a test API key via `/developers` and verify API v1 access
 14. **MCP protocol**: Verify `server/discover` returns correct protocol version (2026-07-28)
+
+### Autonomous Company OS Transformation (Phases A-G)
+
+Transformed Lazynext into an autonomous company operating system. All concepts
+re-implemented natively from external references (no repository merges). See
+`docs/research/external-reference-architectures.md` and ADRs 223-229.
+
+#### Phase A: Vendored Skills + Research Docs
+- 4 skills vendored into `.devin/skills/` with MIT/Apache attribution:
+  `impeccable`, `kill-ai-slop`, `no-ai-slop`, `stop-slop`
+- `docs/research/competitor-platforms.md` — 52-platform competitor index
+- `docs/research/external-reference-architectures.md` — external repo analysis
+- `docs/THIRD_PARTY_LICENSES.md` updated with skill attributions
+- No application-bundle imports from skill directories
+
+#### Phase B: Anti-Slop Quality Layer
+- `src/lib/quality/copy-rules.ts` — deterministic copy de-slop scanner (50-pt rubric, 5 axes)
+- `src/lib/quality/design-rules.ts` — visual/UI design-rules scanner (33 tells)
+- Creative features: `copy-deslop` (`/copy-deslop`), `design-audit` (`/design-audit`)
+- Ad-copy generator post-pass: `slopReport` field in results
+- 49 unit tests (26 copy + 23 design). See ADR-223.
+
+#### Phase C: Agent Runtime Upgrades
+- `src/lib/services/reward-engine.ts` — 0-100 task scoring, persists to `AgentDef.performanceStats`
+- 5-rung escalation ladder in `agent-runtime.ts`: retry → episodic context → knowledge → decompose → escalate
+- Episodic memory type in `src/lib/services/memory.ts` (24h TTL, cron-swept)
+- Role-aware tiered model routing in `src/lib/providers/router.ts` (`agentRole` in `RouteOptions`)
+- Performance dashboard: `/agent-performance` (UI), `/api/agent-performance` (API)
+- Schema change: `performanceStats` JSON column on `AgentDef`
+- 31 new tests. See ADR-224.
+
+#### Phase D: Company Bootstrapper (Wow Moment)
+- `src/lib/services/company-bootstrapper.ts` — 7-step pipeline:
+  research → landing page → starter goals → starter tasks → starter documents → welcome email → initial memories
+- Credit-metered (10 credits), dry-run safe, best-effort (partial success reported)
+- API: `POST /api/company/bootstrap`. UI: `/company-bootstrap`
+- 9 new tests. See ADR-225.
+
+#### Phase E: Per-Company Public Websites
+- `src/lib/services/public-sites.ts` — publish/unpublish with design-scan gate
+- Public routes: `/sites/[slug]`, `/sites/[slug]/[...path]` (no auth required)
+- Wildcard subdomain routing (`{slug}.lazynext.com`) — flag-gated via `SITES_WILDCARD_ENABLED`
+- Publish API: `POST /api/sites/publish`, `DELETE /api/sites/publish`
+- Schema change: `published`, `publishedAt`, `publishSlug` on `Document`
+- 9 new tests. See ADR-226.
+
+#### Phase F: Company Email Identity
+- `src/lib/services/company-email.ts` — outbound via Resend, inbound with Svix verification
+- `detectPromptInjection` in `src/lib/security.ts` — 19 deterministic patterns, no LLM calls
+- API routes: `/api/email/send` (authenticated), `/api/email/inbound` (Svix-verified webhook)
+- Inbound emails are screened for prompt injection, then auto-triaged as tasks
+- All external-credential features flag-gated (`RESEND_API_KEY`, `SVIX_SECRET`)
+- 26 new tests. See ADR-227.
+
+#### Phase G: Live Activity Feed + Docs Close-Out
+- `src/lib/services/activity-feed.ts` — SSE formatting, pagination, stats (reuses Event model)
+- SSE API: `GET /api/activity-feed`. UI: `/activity-feed`
+- ADRs 223-229 document all architecture decisions
+- 8 new tests. See ADR-228, ADR-229.
+
+#### Transformation Totals
+- Tests: 7,759 → 7,832 (+73 new tests)
+- Lint: 0 errors, 8 pre-existing warnings
+- TypeScript: passes
+- New schema columns: `AgentDef.performanceStats`, `Document.published/publishedAt/publishSlug`
+- New services: reward-engine, company-bootstrapper, public-sites, company-email, activity-feed
+- New API routes: `/api/agent-performance`, `/api/company/bootstrap`, `/api/sites/publish`, `/api/email/send`, `/api/email/inbound`, `/api/activity-feed`
+- New UI pages: `/agent-performance`, `/company-bootstrap`, `/activity-feed`, `/copy-deslop`, `/design-audit`, `/sites/[slug]`

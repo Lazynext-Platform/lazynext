@@ -389,6 +389,48 @@ export const AgentRuntime = {
       }).catch(() => {});
     }
 
+    // 9a. Record episodic memory (24h TTL) — short-term event record for context
+    try {
+      await MemoryService.createEpisodic({
+        workspaceId: input.workspaceId,
+        organizationId: input.organizationId,
+        agentRunId: runId,
+        agentRole: agent.role,
+        content: `${agent.name} (${agent.role}) ${verification.passed ? 'completed' : 'failed'}: ${input.objective.slice(0, 300)}`,
+        tags: [verification.passed ? 'success' : 'failure'],
+        createdBy: agent.id,
+      });
+    } catch {
+      // Episodic memory is best-effort; don't fail the run
+    }
+
+    // 9b. Reward engine — score the task and write reward/correction memory
+    try {
+      const { scoreTask } = await import('@/lib/services/reward-engine');
+      // Get the run's startedAt to compute elapsed time
+      const runRecord = await safePrisma(() => prisma.agentRun.findUnique({ where: { id: runId }, select: { startedAt: true } }), null);
+      const elapsedMs = runRecord?.startedAt ? Date.now() - runRecord.startedAt.getTime() : 0;
+      await scoreTask({
+        workspaceId: input.workspaceId,
+        organizationId: input.organizationId,
+        agentRunId: runId,
+        taskId: input.taskId,
+        agentId: agent.id,
+        verificationPassed: verification.passed,
+        verificationCriteriaPassed: verification.criteria.filter(c => c).length,
+        verificationCriteriaTotal: verification.criteria.length,
+        elapsedMs,
+        expectedMs: agent.timeoutSec * 1000,
+        hasRegression: false, // No regression detection in this phase
+        qualityScore: 0, // Quality score integration in Phase B post-pass
+        attemptCount: 1, // First attempt
+        agentRole: agent.role,
+        createdBy: agent.id,
+      });
+    } catch {
+      // Reward engine is best-effort; don't fail the run
+    }
+
     // 10. Emit completion event
     await EventService.emit({
       workspaceId: input.workspaceId,
@@ -807,6 +849,13 @@ Please complete this objective. If you need to use tools, request them using the
 
   /**
    * Resume a failed/retrying agent run.
+   *
+   * Implements the 5-rung escalation ladder (inspired by AACOS):
+   *  - Attempt 1: standard run (already done — this is the resume)
+   *  - Attempt 2: + episodic memory context (include last 24h events)
+   *  - Attempt 3: + knowledge/research query (fetch relevant knowledge)
+   *  - Attempt 4: decompose (ask planner to break down the task)
+   *  - Attempt 5: escalate (mark as escalated, notify, stop retrying)
    */
   async resumeRun(runId: string): Promise<AgentRunResult | null> {
     const run = await this.getRun(runId);
@@ -818,15 +867,78 @@ Please complete this objective. If you need to use tools, request them using the
     const input = JSON.parse(run.input) as AgentRunInput;
     const retryCount = run.retryCount + 1;
 
+    // Escalation ladder: at attempt 5, escalate instead of retrying
+    if (retryCount >= 5) {
+      await prisma.agentRun.update({
+        where: { id: runId },
+        data: { status: 'failed', retryCount, completedAt: new Date() },
+      }).catch(() => {});
+
+      await EventService.emit({
+        workspaceId: input.workspaceId,
+        organizationId: input.organizationId,
+        type: 'agent.escalation',
+        actor: agent.id,
+        actorType: 'agent',
+        resourceType: 'agent_run',
+        resourceId: runId,
+        metadata: { retryCount, reason: 'max_retries_exceeded', objective: input.objective.slice(0, 200) },
+        source: 'agent-runtime',
+      }).catch(() => {});
+
+      return {
+        id: runId,
+        status: 'failed',
+        output: null,
+        toolCalls: [],
+        tokensUsed: 0,
+        costCredits: 0,
+        error: 'escalated: max retries exceeded',
+      };
+    }
+
     await prisma.agentRun.update({
       where: { id: runId },
       data: { status: 'retrying', retryCount },
     }).catch(() => {});
 
+    // Escalation ladder: augment context based on attempt number
+    const augmentedInput: AgentRunInput = { ...input };
+
+    if (retryCount >= 2) {
+      // Attempt 2+: include episodic memory context
+      const episodic = await MemoryService.listEpisodic(input.workspaceId, { agentRole: agent.role }, 10).catch(() => []);
+      augmentedInput.context = {
+        ...augmentedInput.context,
+        episodicMemory: episodic.map((m: { content: string }) => m.content).slice(0, 5),
+        escalationLevel: retryCount,
+      };
+    }
+
+    if (retryCount >= 3) {
+      // Attempt 3+: include knowledge memories
+      const knowledge = await MemoryService.list(input.workspaceId, { type: 'knowledge' }, 10).catch(() => []);
+      augmentedInput.context = {
+        ...augmentedInput.context,
+        knowledgeContext: knowledge.map((m: { content: string }) => m.content).slice(0, 5),
+        escalationLevel: retryCount,
+      };
+    }
+
+    if (retryCount >= 4) {
+      // Attempt 4: request decomposition
+      augmentedInput.objective = `[RETRY ${retryCount}: previous attempts failed. Decompose into smaller steps] ${input.objective}`;
+      augmentedInput.context = {
+        ...augmentedInput.context,
+        requestDecomposition: true,
+        escalationLevel: retryCount,
+      };
+    }
+
     return this.executeRun({
       runId,
       agent,
-      input: { ...input, idempotencyKey: `resume-${runId}-${retryCount}` },
+      input: { ...augmentedInput, idempotencyKey: `resume-${runId}-${retryCount}` },
       correlationId: `agent-resume-${runId}-${retryCount}`,
     });
   },

@@ -75,6 +75,8 @@ import { AD_STORY_GENERATOR_CREDIT_COST, validateAdStoryGeneratorInput, generate
 import { AD_THUMBNAIL_GENERATOR_CREDIT_COST, validateAdThumbnailGeneratorInput, generateThumbnails } from '@/lib/creative/ad-thumbnail-generator';
 import { AD_TIMING_OPTIMIZER_CREDIT_COST, validateAdTimingOptimizerInput, optimizeTiming } from '@/lib/creative/ad-timing-optimizer';
 import { AD_VOICEOVER_SCRIPT_GENERATOR_CREDIT_COST, validateAdVoiceoverScriptGeneratorInput, generateVoiceoverScript } from '@/lib/creative/ad-voiceover-script-generator';
+import { COPY_DESLOP_CREDIT_COST, validateCopyDeslopInput, generateCopyDeslop } from '@/lib/quality';
+import { DESIGN_AUDIT_CREDIT_COST, validateDesignAuditInput, generateDesignAudit } from '@/lib/quality';
 import { ANGLE_FINDER_CREDIT_COST, validateAngleFinderInput, findAngles } from '@/lib/creative/angle-finder';
 import { AUDIENCE_PERSONA_GENERATOR_CREDIT_COST, validateAudiencePersonaGeneratorInput, generatePersonas } from '@/lib/creative/audience-persona-generator';
 import { BRAND_GUARDRAILS_CREDIT_COST, validateBrandGuardrailsInput, checkBrandGuardrails } from '@/lib/creative/brand-guardrails';
@@ -296,6 +298,8 @@ export const CREATIVE_REGISTRY: Record<string, CreativeFeatureHandler> = {
   'reference-remix': { creditCost: REFERENCE_REMIX_CREDIT_COST, validate: validateReferenceRemixInput, generate: generateReferenceRemix },
   'trend-spotter': { creditCost: TREND_SPOTTER_CREDIT_COST, validate: validateTrendSpotterInput, generate: spotTrends },
   'variant-matrix-generator': { creditCost: VARIANT_MATRIX_GENERATOR_CREDIT_COST, validate: validateVariantMatrixGeneratorInput, generate: generateVariantMatrix },
+  'copy-deslop': { creditCost: COPY_DESLOP_CREDIT_COST, validate: validateCopyDeslopInput, generate: generateCopyDeslop },
+  'design-audit': { creditCost: DESIGN_AUDIT_CREDIT_COST, validate: validateDesignAuditInput, generate: generateDesignAudit },
 };
 
 export function getCreativeFeature(feature: string): CreativeFeatureHandler | undefined {

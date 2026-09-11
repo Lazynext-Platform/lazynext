@@ -133,6 +133,32 @@ https://github.com/AtlasCloudAI/atlas-marketing-studio
 - [ ] Attribution is visible in the application (About page or similar)
 - [ ] License inventory is reviewed on dependency updates
 
+## Vendored Agent Skills
+
+The following agent skills are vendored under `.agents/skills/` with full
+LICENSE files and attribution. Devin wrappers are in `.devin/skills/`. These
+skills are development-time tools for coding agents working on the Lazynext
+codebase; they are NOT imported by the application runtime and do not affect
+the worker bundle.
+
+| Skill | License | Source | Author | Vendored |
+|-------|---------|--------|--------|----------|
+| `stop-slop` | MIT | https://github.com/hardikpandya/stop-slop | Hardik Pandya | 2026-09-11 |
+| `no-ai-slop` | MIT | https://github.com/petergyang/no-ai-slop | Peter Yang | 2026-09-11 |
+| `kill-ai-slop` | Apache-2.0 | https://github.com/yetone/kill-ai-slop | yetone | 2026-09-11 |
+| `impeccable` | Apache-2.0 | https://github.com/pbakaus/impeccable | Paul Bakaus | 2026-09-11 |
+
+### Attribution
+
+- MIT licenses: copyright notice + permission notice retained in each
+  `.agents/skills/<name>/LICENSE` file.
+- Apache-2.0 licenses: full Apache 2.0 license retained in each
+  `.agents/skills/<name>/LICENSE` file. No NOTICE file was present in the
+  upstream repos at time of vendoring.
+- The `kill-ai-slop` scanner (`scripts/scan.mjs`) is dependency-free and
+  never edits files. The `impeccable` engine binary is downloaded on first
+  run by its launcher script; the vendored copy includes the launcher only.
+
 ## Updating This Inventory
 
 When adding or updating a dependency:
