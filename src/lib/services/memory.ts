@@ -11,7 +11,8 @@ export type MemoryType =
   | 'outcome'
   | 'lesson'
   | 'active_context'
-  | 'historical_context';
+  | 'historical_context'
+  | 'episodic';
 
 export type MemoryLifecycle = 'permanent' | 'long' | 'medium' | 'short' | 'archived' | 'needs_review';
 
@@ -351,6 +352,81 @@ export const MemoryService = {
       },
       data: { confidence: 0.3 }, // Lower confidence for expired memories
     });
+    return result.count;
+  },
+
+  /**
+   * Create an episodic memory — short-term event record for an agent run.
+   * Episodic memories have a 24h TTL and are swept by the cron job.
+   *
+   * @see src/lib/services/reward-engine.ts (writes episodic memories)
+   * @see /api/cron/durable-exec (sweeps expired episodic memories)
+   */
+  async createEpisodic(input: {
+    workspaceId: string;
+    organizationId: string;
+    agentRunId: string;
+    agentRole?: string;
+    content: string;
+    tags?: string[];
+    createdBy: string;
+  }) {
+    const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24h TTL
+    return prisma.memory.create({
+      data: {
+        workspaceId: input.workspaceId,
+        organizationId: input.organizationId,
+        type: 'episodic',
+        content: input.content.slice(0, 10000),
+        source: 'agent',
+        sourceId: input.agentRunId,
+        confidence: 0.6,
+        lifecycle: 'short',
+        expiresAt,
+        tags: JSON.stringify(['episodic', input.agentRole || 'agent', ...(input.tags || [])]),
+        createdBy: input.createdBy,
+      },
+    });
+  },
+
+  /**
+   * List episodic memories for a workspace, optionally filtered by agent run.
+   * Used by the context assembler to include recent episodic events.
+   */
+  async listEpisodic(workspaceId: string, filters?: { agentRunId?: string; agentRole?: string }, take: number = 50) {
+    const tags = filters?.agentRole ? [filters.agentRole] : [];
+    return safePrisma(() =>
+      prisma.memory.findMany({
+        where: {
+          workspaceId,
+          type: 'episodic',
+          ...(filters?.agentRunId && { sourceId: filters.agentRunId }),
+          ...(tags.length > 0 && { tags: { contains: tags[0] } }),
+        },
+        orderBy: { createdAt: 'desc' },
+        take: Math.min(take, 200),
+      }),
+    []);
+  },
+
+  /**
+   * Sweep expired episodic memories — delete or archive.
+   * Called by the cron job. Returns the count of swept memories.
+   */
+  async sweepExpiredEpisodic(): Promise<number> {
+    const now = new Date();
+    // Archive expired episodic memories (lower confidence, mark as archived)
+    const result = await prisma.memory.updateMany({
+      where: {
+        type: 'episodic',
+        expiresAt: { lt: now },
+        lifecycle: 'short',
+      },
+      data: {
+        lifecycle: 'archived',
+        confidence: 0.2,
+      },
+    }).catch(() => ({ count: 0 }));
     return result.count;
   },
 

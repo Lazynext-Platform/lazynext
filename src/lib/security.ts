@@ -206,3 +206,46 @@ export function safeAtlasError(
   }
   return { error: errorCode, status: 500 };
 }
+
+/**
+ * Detect prompt-injection patterns in untrusted text (e.g. inbound emails).
+ * Returns the list of matched pattern names. Empty array = clean.
+ *
+ * This is a deterministic, rule-based scanner — it does NOT call an LLM.
+ * Patterns are case-insensitive and matched as substrings.
+ */
+export function detectPromptInjection(text: string): { patterns: string[] } {
+  if (!text) return { patterns: [] };
+  const lower = text.toLowerCase();
+  const patterns: string[] = [];
+
+  const RULES: Array<{ name: string; regex: RegExp }> = [
+    { name: 'ignore_previous', regex: /ignore (all )?(previous|prior) (instructions?|prompts?|rules)/ },
+    { name: 'disregard_instructions', regex: /disregard (all |any )?(previous|prior|the above) (instructions?|prompts?|rules)/ },
+    { name: 'you_are_now', regex: /you are now (a |an )?[a-z ]{0,40}(assistant|agent|admin|developer|root|system)/ },
+    { name: 'new_instructions', regex: /new instructions?:?/ },
+    { name: 'system_prompt', regex: /system prompt:?/ },
+    { name: 'reveal_instructions', regex: /reveal (your |the )?(instructions?|prompts?|rules|system prompt)/ },
+    { name: 'print_instructions', regex: /print (your |the )?(instructions?|prompts?|rules|system prompt)/ },
+    { name: 'show_your_prompt', regex: /show (me )?(your |the )?(prompt|instructions?|rules)/ },
+    { name: 'act_as', regex: /act as (a |an )?[a-z ]{0,40}(assistant|agent|admin|developer|root|system|jailbreak)/ },
+    { name: 'pretend_you_are', regex: /pretend (you are|you'?re) (a |an )?[a-z ]{0,40}/ },
+    { name: 'jailbreak', regex: /jailbreak/ },
+    { name: 'dan_mode', regex: /dan mode|do anything now/ },
+    { name: 'override_safety', regex: /override (your |the |all )?safety/ },
+    { name: 'bypass_restrictions', regex: /bypass (your |the |all )?(restrictions?|filters?|safety)/ },
+    { name: 'forget_your_rules', regex: /forget (your |all |the )?(rules|instructions?|prompts?)/ },
+    { name: 'execute_command', regex: /execute (the )?following (command|code|script)/ },
+    { name: 'run_command', regex: /run (the )?following (command|code|script)/ },
+    { name: 'eval_code', regex: /eval\s*\(/ },
+    { name: 'base64_payload', regex: /[a-z0-9+/]{100,}={0,2}/ },
+  ];
+
+  for (const rule of RULES) {
+    if (rule.regex.test(lower)) {
+      patterns.push(rule.name);
+    }
+  }
+
+  return { patterns };
+}

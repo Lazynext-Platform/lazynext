@@ -53,6 +53,13 @@ export interface AdCopyResult {
   cta: string;
   hashtags: string[];
   description: string;
+  /** Deterministic copy de-slop report (post-pass). */
+  slopReport?: {
+    totalHits: number;
+    score: number;
+    verdict: 'pass' | 'revise';
+    topCategories: string[];
+  };
 }
 
 // ── System prompt ──
@@ -248,7 +255,26 @@ export async function generateAdCopy(
       CREATIVE_TIMEOUT_MS,
     );
     const j = extractJson(raw);
-    return parseAdCopyJson(j, input.platform);
+    const result = parseAdCopyJson(j, input.platform);
+    // Deterministic copy de-slop post-pass
+    const combinedText = `${result.headline}\n${result.bodyCopy}\n${result.cta}\n${result.description}`;
+    try {
+      const { scanCopy } = await import('@/lib/quality/copy-rules');
+      const slop = scanCopy(combinedText);
+      const topCategories = Object.entries(slop.categories)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 3)
+        .map(([cat]) => cat);
+      result.slopReport = {
+        totalHits: slop.totalHits,
+        score: slop.score.total,
+        verdict: slop.verdict,
+        topCategories,
+      };
+    } catch {
+      // Quality scan is best-effort; don't fail the generation
+    }
+    return result;
   } catch {
     return dryRunOutput(input);
   }

@@ -75,6 +75,8 @@ mock.module('@/lib/services/memory', {
     MemoryService: {
       assembleContext: async () => ({ memories: [], summary: '0 memories' }),
       create: async () => ({ id: 'mem-1' }),
+      createEpisodic: async () => ({ id: 'epi-1' }),
+      listEpisodic: async () => [],
     },
   },
 });

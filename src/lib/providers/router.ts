@@ -21,6 +21,42 @@ export interface RouteOptions {
   resolution?: string;
   /** Preferred aspect ratio. */
   ratio?: string;
+  /** Agent role — enables tiered model routing by role importance. */
+  agentRole?: string;
+}
+
+/**
+ * Tiered model routing by agent role importance.
+ *
+ * Inspired by AACOS: high-leverage roles (engineering, strategy, ceo) get
+ * quality-first models; cost-sensitive roles (support, operations, comms)
+ * get cheaper/faster models.
+ *
+ * @see docs/research/external-reference-architectures.md
+ */
+const ROLE_TIER_MAP: Record<string, 'quality' | 'balanced' | 'cost'> = {
+  ceo: 'quality',
+  engineering: 'quality',
+  strategy: 'quality',
+  product: 'quality',
+  design: 'quality',
+  research: 'balanced',
+  growth: 'balanced',
+  sales: 'balanced',
+  support: 'cost',
+  operations: 'cost',
+  finance: 'cost',
+  security: 'quality',
+  custom: 'balanced',
+};
+
+/**
+ * Resolve agent role to a routing tier.
+ * Returns 'balanced' for unknown roles.
+ */
+export function getRoleTier(role?: string): 'quality' | 'balanced' | 'cost' {
+  if (!role) return 'balanced';
+  return ROLE_TIER_MAP[role] || 'balanced';
 }
 
 /**
@@ -53,13 +89,18 @@ export function routeModel(capability: Capability, opts: RouteOptions = {}): str
   }
 
   // Sort by preference
-  if (opts.preferCheap) {
+  // Agent role tier routing: quality → preferCheap=false, cost → preferCheap=true
+  const roleTier = getRoleTier(opts.agentRole);
+  const effectivePreferCheap = opts.preferCheap ?? (roleTier === 'cost');
+  const effectivePreferFast = opts.preferFast ?? (roleTier === 'cost');
+
+  if (effectivePreferCheap) {
     candidates = [...candidates].sort((a, b) => {
       const aCost = Math.min(...Object.values(a.costPerSecondUsd || { d: 999 }));
       const bCost = Math.min(...Object.values(b.costPerSecondUsd || { d: 999 }));
       return aCost - bCost;
     });
-  } else if (opts.preferFast) {
+  } else if (effectivePreferFast) {
     // Prefer models with lower max duration (faster generation)
     candidates = [...candidates].sort((a, b) => (a.maxDurationSec || 15) - (b.maxDurationSec || 15));
   } else {

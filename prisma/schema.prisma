@@ -1168,6 +1168,10 @@ model Document {
   title       String
   content     String   // markdown / rich text
   version     Int      @default(1)
+  // ── Phase E: public website publishing ──
+  published   Boolean  @default(false)
+  publishedAt DateTime?
+  publishSlug  String?  // URL slug for public access (e.g. "landing-page")
   createdById String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -1249,6 +1253,8 @@ model AgentDef {
   timeoutSec      Int      @default(300)
   executionPolicy String   @default("{}") // JSON: retry, backoff
   verificationPolicy String @default("{}") // JSON: verification rules (R19: left as String — changing to Json breaks consuming code)
+  // ── Reward engine (Phase C — additive) ──
+  performanceStats String? // JSON: rolling score averages, reward/correction/failure counts
   enabled         Boolean  @default(true)
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
@@ -1656,7 +1662,7 @@ model Memory {
   id              String   @id @default(cuid())
   workspaceId     String
   organizationId  String
-  type            String   // fact | knowledge | decision | preference | outcome | lesson | active_context | historical_context
+  type            String   // fact | knowledge | decision | preference | outcome | lesson | active_context | historical_context | episodic
   content         String
   source          String   @default("system") // agent | user | system | external
   sourceId        String?  // agentRunId, userId, etc.

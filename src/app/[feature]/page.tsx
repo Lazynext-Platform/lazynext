@@ -147,6 +147,8 @@ const PAGE_LOADERS: Record<string, () => Promise<{ default: ComponentType }>> = 
   'reference-remix': () => import('@/components/creative-pages/reference-remix'),
   'trend-spotter': () => import('@/components/creative-pages/trend-spotter'),
   'variant-matrix-generator': () => import('@/components/creative-pages/variant-matrix-generator'),
+  'copy-deslop': () => import('@/components/creative-pages/copy-deslop'),
+  'design-audit': () => import('@/components/creative-pages/design-audit'),
 };
 
 const COMPONENTS: Record<string, ComponentType> = Object.fromEntries(
