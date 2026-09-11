@@ -63,8 +63,7 @@
     "MAIL_DOMAIN": "mail.lazynext.com"
   },
   "routes": [
-    { "pattern": "lazynext.com", "custom_domain": true },
-    { "pattern": "*.lazynext.com", "custom_domain": true }
+    { "pattern": "lazynext.com", "custom_domain": true }
   ],
   "triggers": {
     "crons": [

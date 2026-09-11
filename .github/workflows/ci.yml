@@ -255,6 +255,19 @@ jobs:
           CLOUDFLARE_EMAIL: ${{ secrets.CLOUDFLARE_EMAIL }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 
+      - name: Attach wildcard custom domain
+        run: |
+          curl -s -X PUT "https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT_ID}/workers/domains" \
+            -H "X-Auth-Email: ${CLOUDFLARE_EMAIL}" \
+            -H "X-Auth-Key: ${CLOUDFLARE_API_KEY}" \
+            -H "Content-Type: application/json" \
+            -d "{\"environment\":\"production\",\"hostname\":\"*.lazynext.com\",\"service\":\"lazynext\",\"zone_id\":\"ff0ad1848e936913a9c4b4e85b1f04af\"}" \
+            | python3 -c "import json,sys; d=json.load(sys.stdin); print('OK' if d.get('success') else d.get('errors'))"
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_KEY: ${{ secrets.CLOUDFLARE_API_KEY }}
+          CLOUDFLARE_EMAIL: ${{ secrets.CLOUDFLARE_EMAIL }}
+
   # ── Security jobs ──
 
   secret-scan:

@@ -43,3 +43,19 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_API_KEY: ${{ secrets.CLOUDFLARE_API_KEY }}
           CLOUDFLARE_EMAIL: ${{ secrets.CLOUDFLARE_EMAIL }}
+      - name: Attach wildcard custom domain
+        run: |
+          # Wildcard custom domains can't be declared in wrangler.jsonc routes,
+          # so we attach *.lazynext.com via the Cloudflare API after each deploy.
+          # This is idempotent — if the hostname is already attached, it returns
+          # the existing domain record.
+          curl -s -X PUT "https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT_ID}/workers/domains" \
+            -H "X-Auth-Email: ${CLOUDFLARE_EMAIL}" \
+            -H "X-Auth-Key: ${CLOUDFLARE_API_KEY}" \
+            -H "Content-Type: application/json" \
+            -d "{\"environment\":\"production\",\"hostname\":\"*.lazynext.com\",\"service\":\"lazynext\",\"zone_id\":\"ff0ad1848e936913a9c4b4e85b1f04af\"}" \
+            | python3 -c "import json,sys; d=json.load(sys.stdin); print('OK' if d.get('success') else d.get('errors'))"
+        env:
+          CLOUDFLARE_ACCOUNT_ID: "85953070bae00da372951a8833bd3459"
+          CLOUDFLARE_API_KEY: ${{ secrets.CLOUDFLARE_API_KEY }}
+          CLOUDFLARE_EMAIL: ${{ secrets.CLOUDFLARE_EMAIL }}
