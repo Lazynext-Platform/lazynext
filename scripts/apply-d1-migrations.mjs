@@ -58,22 +58,28 @@ const MIGRATION_TABLE_SQL = `CREATE TABLE IF NOT EXISTS _prisma_migrations (
 );`;
 
 function getAppliedMigrations() {
-  const tmpPath = join(projectRoot, '.d1-check-migrations.sql');
-  const outputPath = join(projectRoot, '.d1-migrations-applied.json');
-  writeFileSync(tmpPath, MIGRATION_TABLE_SQL + '\nSELECT id FROM _prisma_migrations;');
-
-  const result = spawnSync('npx', [
+  // Ensure the tracking table exists (use --command for DDL)
+  spawnSync('npx', [
     'wrangler', 'd1', 'execute', 'lazynext-db',
     '--remote',
-    '--file', tmpPath,
-    '--json',
+    '--command', MIGRATION_TABLE_SQL.replace(/\n/g, ' '),
   ], {
     cwd: projectRoot,
     stdio: ['pipe', 'pipe', 'pipe'],
     encoding: 'utf8',
   });
 
-  try { unlinkSync(tmpPath); } catch {}
+  // Query applied migrations via --command (not --file, which returns metadata not rows)
+  const result = spawnSync('npx', [
+    'wrangler', 'd1', 'execute', 'lazynext-db',
+    '--remote',
+    '--command', 'SELECT id FROM _prisma_migrations;',
+    '--json',
+  ], {
+    cwd: projectRoot,
+    stdio: ['pipe', 'pipe', 'pipe'],
+    encoding: 'utf8',
+  });
 
   if (result.error || result.status !== 0) {
     console.warn('Warning: could not query _prisma_migrations table — will apply all migrations');
