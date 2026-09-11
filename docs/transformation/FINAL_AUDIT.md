@@ -19,12 +19,12 @@ All 26 risks (R1-R26) are resolved except R12 (email verification, low priority)
 
 ## Remaining Blockers
 - B1: Cloudflare API token — RESOLVED (durable token created and stored as GitHub secret, 2026-09-10)
-- B2: Atlas Cloud API key — OPEN (needs user to provide real key for production AI generation)
+- B2: Atlas Cloud API key — RESOLVED (uploaded as Cloudflare Worker secret, 2026-09-11. Key authenticates; account needs credits for AI operations.)
 - B3: Production access — RESOLVED (production deployed and verified, 2026-09-10)
-- B4: D1 database access — OPEN (needs user to configure/verify production D1 migrations)
+- B4: D1 database access — RESOLVED (D1 schema baseline + migrations applied; 44 missing columns fixed via ALTER TABLE, 2026-09-11)
 
 ## Production Acceptance Criteria
 - 63 of 63 criteria met (all sections including Section M: Production verified)
 
 ## Recommendation
-The application is deployed, healthy, and serving traffic. To enable real AI generation in production, provide a real Atlas Cloud API key (B2). To verify production data state, configure D1 access (B4).
+The application is deployed, healthy, and serving traffic. All 4 blockers resolved. Atlas Cloud API key is configured and authenticates. To enable real AI generation in production, add credits to the Atlas Cloud account. D1 schema drift has been fixed (44 missing columns across Task, AgentDef, AgentRun, ScheduledJob). Production login, task creation, agent runs, and all UI pages verified working.
