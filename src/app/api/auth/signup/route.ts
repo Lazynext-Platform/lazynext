@@ -72,6 +72,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ ok: true, userId: user.id, message: 'Verification email sent' });
   } catch (err) {
+    console.error('[signup] Error:', err instanceof Error ? err.message : String(err), err instanceof Error ? err.stack : '');
     return NextResponse.json({ error: 'Signup failed' }, { status: 500 });
   }
 }

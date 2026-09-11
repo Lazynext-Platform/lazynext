@@ -198,29 +198,20 @@ if (existsSync(wranglerMetafile)) {
   console.log('[info] No wrangler metafile found (use --metafile flag to enable)');
 }
 
-// --- Remove Prisma WASM from the dist directory ---
-// The dry-run step copies the WASM to .open-next/dist/. Remove it so it's
-// not included in the Worker bundle (it's served from Cloudflare Assets instead).
-console.log('\nRemoving Prisma WASM from dist directory...');
-let wasmRemoved = 0;
-let wasmBytes = 0;
+// --- Keep Prisma WASM in the dist directory ---
+// The worker code has a static import reference to the WASM module.
+// Removing it causes "No such module" errors at runtime, breaking all
+// Prisma operations (signup, login, etc.). The minified worker (~54 MB)
+// plus the WASM (~3.2 MB) is ~57 MB, well under the 64 MiB limit.
+console.log('\nKeeping Prisma WASM in dist directory (required by worker at runtime)...');
 if (existsSync(distDir)) {
   const entries = readdirSync(distDir);
   for (const entry of entries) {
     if (entry.endsWith('.wasm') && entry.includes('query_compiler')) {
-      const wasmPath = join(distDir, entry);
-      const stat = statSync(wasmPath);
-      rmSync(wasmPath, { force: true });
-      wasmRemoved++;
-      wasmBytes += stat.size;
-      console.log(`  removed: ${entry} (${(stat.size / 1024).toFixed(0)} KiB)`);
+      const stat = statSync(join(distDir, entry));
+      console.log(`  kept: ${entry} (${(stat.size / 1024).toFixed(0)} KiB)`);
     }
   }
-}
-if (wasmRemoved > 0) {
-  console.log(`Removed ${wasmRemoved} WASM file(s), saved ${(wasmBytes / 1024 / 1024).toFixed(1)} MB`);
-} else {
-  console.log('  no WASM files found in dist directory');
 }
 
 // --- Remove local-only and native packages from the dist directory ---
