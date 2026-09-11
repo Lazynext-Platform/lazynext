@@ -58,6 +58,10 @@
     }
   },
   "workers_dev": true,
+  "vars": {
+    "SITES_BASE_DOMAIN": "lazynext.com",
+    "MAIL_DOMAIN": "mail.lazynext.com"
+  },
   "routes": [
     { "pattern": "lazynext.com", "custom_domain": true }
   ],
