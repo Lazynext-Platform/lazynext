@@ -13,6 +13,14 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const projectRoot = resolvePath(__dirname, '..');
 
 export async function resolve(specifier, context, nextResolve) {
+  // Mock next/server for test environment (provides NextRequest/NextResponse stubs)
+  if (specifier === 'next/server') {
+    const mockPath = join(projectRoot, 'test', 'mocks', 'next-server.mjs');
+    if (existsSync(mockPath)) {
+      return nextResolve(pathToFileURL(mockPath).href, context);
+    }
+  }
+
   // Resolve @/ alias to ./src/
   if (specifier.startsWith('@/')) {
     const resolvedPath = join(projectRoot, 'src', specifier.slice(2));
