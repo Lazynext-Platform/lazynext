@@ -349,7 +349,7 @@ export function WorkflowBuilder({ organizationId, workflows: initialWorkflows, s
     };
     setNodes([...nodes, node]);
     setSelectedNode(node);
-  }, [nodes]);
+  }, [nodes, nodeLibrary]);
 
   // Update selected node config
   const updateNodeConfig = (key: string, value: unknown) => {

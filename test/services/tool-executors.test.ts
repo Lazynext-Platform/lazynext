@@ -517,8 +517,8 @@ describe('Placeholder executors', () => {
   beforeEach(() => resetMock());
 
   const placeholderTools = [
-    'web_search', 'browser', 'fetch_url',
-    'github', 'code_exec', 'test_runner', 'file_read', 'file_write',
+    'web_search', 'browser',
+    'code_exec', 'test_runner', 'file_read', 'file_write',
     'atlas_generate', 'brand_check', 'creative_tools', 'asset_manage',
     'ad_platform', 'analytics', 'social_publish',
     'email', 'calendar', 'security_scan',
@@ -537,6 +537,30 @@ describe('Placeholder executors', () => {
       assert.ok(typeof result.timestamp === 'string');
     });
   }
+
+  it('fetch_url returns error for missing URL', async () => {
+    const result = await toolExecutorsMap['fetch_url']({}, baseContext);
+    assert.equal(result.error, 'missing_url');
+  });
+
+  it('fetch_url blocks SSRF URLs', async () => {
+    const result = await toolExecutorsMap['fetch_url']({ url: 'http://127.0.0.1:8080' }, baseContext);
+    assert.equal(result.error, 'blocked_url');
+  });
+
+  it('github returns not_connected when no GitHub account is linked', async () => {
+    const result = await toolExecutorsMap['github']({ action: 'status' }, baseContext);
+    assert.equal(result.dryRun, true);
+    assert.equal(result.tool, 'github');
+    assert.equal(result.status, 'not_connected');
+  });
+
+  it('github returns error for unknown action when connected', async () => {
+    // Without a connected GitHub account, it returns not_connected first
+    const result = await toolExecutorsMap['github']({ action: 'unknown' }, baseContext);
+    assert.equal(result.dryRun, true);
+    assert.equal(result.status, 'not_connected');
+  });
 });
 
 // ─────────────────────────────────────────────────────────────────────────────

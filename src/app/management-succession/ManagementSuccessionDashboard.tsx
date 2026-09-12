@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import {
   Crown, Users, TrendingUp, ClipboardCheck, BarChart3,
   Search,
@@ -43,8 +43,8 @@ export function ManagementSuccessionDashboard({
   const [tab, setTab] = useState<TabId>('overview');
   const [search, setSearch] = useState('');
 
-  const planTitle = (id: string) => plans.find((p) => p.id === id)?.title || id;
-  const candidateName = (id: string) => candidates.find((c) => c.id === id)?.name || id;
+  const planTitle = useCallback((id: string) => plans.find((p) => p.id === id)?.title || id, [plans]);
+  const candidateName = useCallback((id: string) => candidates.find((c) => c.id === id)?.name || id, [candidates]);
 
   const filteredPlans = useMemo(() => {
     if (!search) return plans;
@@ -68,7 +68,7 @@ export function ManagementSuccessionDashboard({
     return tracks.filter(
       (t) => t.type.toLowerCase().includes(q) || t.status.toLowerCase().includes(q) || candidateName(t.candidateId).toLowerCase().includes(q),
     );
-  }, [tracks, search, candidates]);
+  }, [tracks, search, candidateName]);
 
   const filteredReviews = useMemo(() => {
     if (!search) return reviews;
@@ -76,7 +76,7 @@ export function ManagementSuccessionDashboard({
     return reviews.filter(
       (r) => r.type.toLowerCase().includes(q) || r.status.toLowerCase().includes(q) || planTitle(r.planId).toLowerCase().includes(q),
     );
-  }, [reviews, search, plans]);
+  }, [reviews, search, planTitle]);
 
   const tabs: { id: TabId; label: string; icon: typeof Crown }[] = [
     { id: 'overview', label: 'Overview', icon: BarChart3 },

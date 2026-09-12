@@ -32,6 +32,8 @@ import { PermissionService } from '@/lib/services/permission-service';
 import { NotificationService } from '@/lib/services/notification-service';
 import { AlertService } from '@/lib/services/alert-service';
 import { AutomationService } from '@/lib/services/automation';
+import { GitHubService } from '@/lib/services/github';
+import { isUrlSafe } from '@/lib/security';
 
 // ── Helpers ──
 
@@ -304,21 +306,184 @@ const browserExecutor: ToolExecutor = withErrorHandling('browser', async (input,
 });
 
 const fetchUrlExecutor: ToolExecutor = withErrorHandling('fetch_url', async (input, _context) => {
-  return placeholder(
-    'fetch_url',
-    input,
-    'Configure an SSRF-validated HTTP fetcher service to enable URL fetching.',
-  );
+  const url = String(input.url || '');
+  if (!url) return { error: 'missing_url' };
+  if (!isUrlSafe(url)) return { error: 'blocked_url', reason: 'URL failed SSRF validation' };
+
+  const maxBytes = Number(input.maxBytes) || 500_000;
+  const timeoutMs = Number(input.timeoutMs) || 10_000;
+
+  try {
+    const res = await fetch(url, {
+      headers: { 'User-Agent': 'Lazynext/1.0' },
+      signal: AbortSignal.timeout(timeoutMs),
+      redirect: 'follow',
+    });
+
+    const contentType = res.headers.get('content-type') || 'application/octet-stream';
+    const contentLength = Number(res.headers.get('content-length') || 0);
+
+    // Stream-read up to maxBytes to avoid unbounded memory usage
+    const reader = res.body?.getReader();
+    if (!reader) {
+      const text = await res.text();
+      return {
+        ok: res.ok,
+        status: res.status,
+        contentType,
+        url: res.url,
+        content: text.slice(0, maxBytes),
+        truncated: text.length > maxBytes,
+      };
+    }
+
+    const chunks: Uint8Array[] = [];
+    let totalBytes = 0;
+    let truncated = false;
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      if (totalBytes + value.length > maxBytes) {
+        chunks.push(value.slice(0, maxBytes - totalBytes));
+        truncated = true;
+        break;
+      }
+      chunks.push(value);
+      totalBytes += value.length;
+    }
+
+    const decoder = new TextDecoder();
+    const content = chunks.map(c => decoder.decode(c)).join('');
+
+    return {
+      ok: res.ok,
+      status: res.status,
+      contentType,
+      url: res.url,
+      contentLength: contentLength || totalBytes,
+      content,
+      truncated,
+    };
+  } catch (e) {
+    return {
+      error: 'fetch_failed',
+      message: e instanceof Error ? e.message : 'Unknown fetch error',
+    };
+  }
 });
 
-// ── Engineering Tools (placeholders — need sandbox/OAuth configuration) ──
+// ── Engineering Tools (github wired; code_exec/test_runner need sandbox config) ──
 
-const githubExecutor: ToolExecutor = withErrorHandling('github', async (input, _context) => {
-  return placeholder(
-    'github',
-    input,
-    'Configure a GitHub OAuth token and repository access to enable GitHub operations.',
-  );
+const githubExecutor: ToolExecutor = withErrorHandling('github', async (input, context) => {
+  const userId = context.userId;
+  if (!userId) return { error: 'no_user_context', message: 'GitHub operations require an authenticated user' };
+
+  const action = String(input.action || '');
+  const owner = String(input.owner || '');
+  const repo = String(input.repo || '');
+
+  // Check GitHub connection
+  const { connected, username } = await GitHubService.isConnected(userId);
+  if (!connected) {
+    return {
+      dryRun: true,
+      tool: 'github',
+      status: 'not_connected',
+      message: 'Connect a GitHub account via /api/github/connect to enable GitHub operations.',
+    };
+  }
+
+  switch (action) {
+    case 'list_repos': {
+      const repos = await GitHubService.listRepos(userId, Number(input.page) || 1, Number(input.perPage) || 30);
+      return { ok: true, repos, count: repos.length };
+    }
+    case 'list_issues': {
+      if (!owner || !repo) return { error: 'missing_params', message: 'owner and repo are required' };
+      const issues = await GitHubService.listIssues(userId, owner, repo, String(input.state || 'open'));
+      return { ok: true, issues, count: issues.length };
+    }
+    case 'get_issue': {
+      if (!owner || !repo || !input.issueNumber) return { error: 'missing_params', message: 'owner, repo, and issueNumber are required' };
+      const issue = await GitHubService.getIssue(userId, owner, repo, Number(input.issueNumber));
+      return issue ? { ok: true, issue } : { ok: false, error: 'issue_not_found' };
+    }
+    case 'create_issue': {
+      if (!owner || !repo || !input.title) return { error: 'missing_params', message: 'owner, repo, and title are required' };
+      const issue = await GitHubService.createIssue(userId, owner, repo, {
+        title: String(input.title),
+        body: String(input.body || ''),
+        labels: Array.isArray(input.labels) ? input.labels.map(String) : [],
+        assignees: Array.isArray(input.assignees) ? input.assignees.map(String) : [],
+      });
+      return issue ? { ok: true, issue } : { ok: false, error: 'create_failed' };
+    }
+    case 'list_prs': {
+      if (!owner || !repo) return { error: 'missing_params', message: 'owner and repo are required' };
+      const prs = await GitHubService.listPRs(userId, owner, repo, String(input.state || 'open'));
+      return { ok: true, prs, count: prs.length };
+    }
+    case 'get_pr': {
+      if (!owner || !repo || !input.prNumber) return { error: 'missing_params', message: 'owner, repo, and prNumber are required' };
+      const pr = await GitHubService.getPR(userId, owner, repo, Number(input.prNumber));
+      return pr ? { ok: true, pr } : { ok: false, error: 'pr_not_found' };
+    }
+    case 'create_pr': {
+      if (!owner || !repo || !input.title || !input.head || !input.base) return { error: 'missing_params', message: 'owner, repo, title, head, and base are required' };
+      const pr = await GitHubService.createPR(userId, owner, repo, {
+        title: String(input.title),
+        body: String(input.body || ''),
+        head: String(input.head),
+        base: String(input.base),
+        draft: Boolean(input.draft),
+      });
+      return pr ? { ok: true, pr } : { ok: false, error: 'create_failed' };
+    }
+    case 'merge_pr': {
+      if (!owner || !repo || !input.prNumber) return { error: 'missing_params', message: 'owner, repo, and prNumber are required' };
+      const result = await GitHubService.mergePR(userId, owner, repo, Number(input.prNumber), {
+        commitTitle: String(input.commitTitle || ''),
+        commitMessage: String(input.commitMessage || ''),
+        method: String(input.method || 'squash') as 'merge' | 'squash' | 'rebase',
+      });
+      return result;
+    }
+    case 'get_file': {
+      if (!owner || !repo || !input.path) return { error: 'missing_params', message: 'owner, repo, and path are required' };
+      const file = await GitHubService.getFile(userId, owner, repo, String(input.path), String(input.ref || undefined));
+      return file ? { ok: true, content: file.content, sha: file.sha } : { ok: false, error: 'file_not_found' };
+    }
+    case 'create_or_update_file': {
+      if (!owner || !repo || !input.path || !input.content || !input.branch) return { error: 'missing_params', message: 'owner, repo, path, content, and branch are required' };
+      const result = await GitHubService.createOrUpdateFile(userId, owner, repo, {
+        path: String(input.path),
+        message: String(input.message || `Update ${input.path}`),
+        content: String(input.content),
+        branch: String(input.branch),
+        sha: String(input.sha || undefined),
+      });
+      return result;
+    }
+    case 'create_branch': {
+      if (!owner || !repo || !input.branchName) return { error: 'missing_params', message: 'owner, repo, and branchName are required' };
+      const result = await GitHubService.createBranch(userId, owner, repo, String(input.branchName), String(input.fromBranch || 'main'));
+      return result;
+    }
+    case 'list_branches': {
+      if (!owner || !repo) return { error: 'missing_params', message: 'owner and repo are required' };
+      const branches = await GitHubService.listBranches(userId, owner, repo);
+      return { ok: true, branches, count: branches.length };
+    }
+    case 'status': {
+      return { ok: true, connected: true, username };
+    }
+    default:
+      return {
+        error: 'unknown_action',
+        message: `Unknown GitHub action: ${action}`,
+        supportedActions: ['list_repos', 'list_issues', 'get_issue', 'create_issue', 'list_prs', 'get_pr', 'create_pr', 'merge_pr', 'get_file', 'create_or_update_file', 'create_branch', 'list_branches', 'status'],
+      };
+  }
 });
 
 const codeExecExecutor: ToolExecutor = withErrorHandling('code_exec', async (input, _context) => {

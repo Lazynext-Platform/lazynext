@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import {
   Building, FileText, Users, DollarSign, BarChart3,
   Search,
@@ -36,8 +36,8 @@ export function LeaseManagementDashboard({
   const [tab, setTab] = useState<TabId>('overview');
   const [search, setSearch] = useState('');
 
-  const tenantName = (id: string) => tenants.find((t) => t.id === id)?.name || id;
-  const propertyName = (id: string) => properties.find((p) => p.id === id)?.name || id;
+  const tenantName = useCallback((id: string) => tenants.find((t) => t.id === id)?.name || id, [tenants]);
+  const propertyName = useCallback((id: string) => properties.find((p) => p.id === id)?.name || id, [properties]);
 
   const filteredProperties = useMemo(() => {
     if (!search) return properties;
@@ -53,7 +53,7 @@ export function LeaseManagementDashboard({
     return contracts.filter(
       (c) => propertyName(c.propertyId).toLowerCase().includes(q) || tenantName(c.tenantId).toLowerCase().includes(q) || c.type.toLowerCase().includes(q) || c.status.toLowerCase().includes(q),
     );
-  }, [contracts, search, properties, tenants]);
+  }, [contracts, search, propertyName, tenantName]);
 
   const filteredTenants = useMemo(() => {
     if (!search) return tenants;
