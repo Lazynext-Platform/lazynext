@@ -1,5 +1,33 @@
 # Lazynext Changelog
 
+## 2026-09-12 — Agent Tool Executor Wiring (20 of 32 wired)
+
+Wired 20 of 32 agent tool executors to their real backing services, replacing
+placeholder dry-run responses with actual functionality:
+
+- **github** → GitHubService (13 actions: repos, issues, PRs, files, branches)
+- **fetch_url** → SSRF-protected fetch with bounded response size
+- **email** → CompanyEmailService (Resend with dry-run fallback)
+- **calendar** → CalendarService (list, get, create, update, delete, upcoming)
+- **analytics** → AnalyticsService (stats, KPIs, trends, dashboards)
+- **security_scan** → detectPromptInjection + isUrlSafe
+- **atlas_generate** → atlasGenerate (LLM text generation via Atlas Cloud)
+- **brand_check** → checkBrandGuardrails (brand consistency auditing)
+- **creative_tools** → CREATIVE_REGISTRY (list/run creative features)
+- **file_read** → readMedia (R2/filesystem media storage)
+- **file_write** → putMedia (R2/filesystem media storage)
+- **ad_platform** → metaAds/googleAds (campaign CRUD with dry-run)
+- **asset_manage** → AssetTrackingService (6 actions: list, get, create, update, delete, metrics)
+- **web_search** → DuckDuckGo + Wikipedia APIs (free, no key needed)
+- **browser** → lightweight page fetcher with SSRF protection (text/links/metadata extraction)
+- **social_publish** → Slack Web API (post, list_channels with dry-run)
+
+Remaining 2 placeholders (`code_exec`, `test_runner`) need an external sandbox
+that can't run inside Cloudflare Workers.
+
+CI maintenance: upgraded CodeQL v3→v4, e2e.yml actions v4→v5, deploy.yml
+actions v4→v5, fixed React Hook dependency warnings in 5 dashboard files.
+
 ## 2026-09-12 — Autonomous Company OS Transformation (Phase A-G)
 
 ### Phase A — Vendored Skills + Research Docs
