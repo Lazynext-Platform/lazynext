@@ -56,7 +56,7 @@ Transform Lazynext from an AI ad-creative studio with an emerging OS shell into 
 | 29 | UX Redesign | Company Control Center, live AI work feed | COMPLETE |
 | 30 | Performance/Reliability | N+1, bundles, polling, job throughput | COMPLETE |
 | 31 | CI/CD | Full pipeline validation | COMPLETE |
-| 32 | Production Rollout | Progressive deployment | PARTIALLY COMPLETE |
+| 32 | Production Rollout | Progressive deployment | COMPLETE |
 | 33 | Final Audit | Independent production review | COMPLETE |
 
 ## Phase Gate Format
@@ -122,7 +122,7 @@ At the end of each phase, record:
 - Verification step (CI runs tests before deploy)
 - Rollback support via DeploymentService.rollback
 
-### Phase 32 — Production Rollout (PARTIALLY COMPLETE)
+### Phase 32 — Production Rollout (COMPLETE)
 **Objective:** Progressive deployment.
 
 **Completed:**
@@ -130,12 +130,12 @@ At the end of each phase, record:
 - Rollback mechanism implemented (DeploymentService.rollback)
 - Health check endpoint available
 - wrangler.jsonc configured with R2 bindings (R5) and rate limiter binding (R13)
-
-**Remaining work:**
-- Actual production deployment (requires B1: Cloudflare API token)
-- Production health check verification
-- Critical user flow testing in production
-- Observability activation in production
+- Production deployment via `npm run cf:deploy` (wrangler OAuth, account 85953070bae00da372951a8833bd3459)
+- Production health check verified (atlas, r2, d1 all OK)
+- Critical user flow testing in production (Playwright verified dashboard, login, landing page)
+- D1 cold-start retry logic added to onboarding/state and notifications/stream routes
+- All 14 CI checks passing (lint, unit tests, build, CodeQL, secret scan, dep audit, license check, 6 E2E shards, auth E2E, bundle size)
+- Worker deployed to lazynext.com with D1, R2, rate limiter, and assets bindings
 
 ### Phase 33 — Final Audit (COMPLETE)
 **Objective:** Independent production review.
