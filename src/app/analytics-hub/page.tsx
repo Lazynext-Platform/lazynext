@@ -116,7 +116,7 @@ export default function AnalyticsHubPage() {
       const res = await fetch('/api/analytics/hub');
       if (!res.ok) throw new Error('failed');
       const json = await res.json();
-      setData(json);
+      setData(json.hub || json);
       setError(null);
     } catch {
       setError(t('analyticsHub.error'));

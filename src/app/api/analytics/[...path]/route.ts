@@ -42,6 +42,7 @@ const RESOURCES: Record<string, {
     actions: {},
   },
   'hub': {
+    list: 'getHub',
     actions: {},
   },
   'kpis': {
