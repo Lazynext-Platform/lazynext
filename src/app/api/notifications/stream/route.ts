@@ -23,59 +23,70 @@ export async function GET(req: NextRequest) {
   const encoder = new TextEncoder();
   let lastCheck = new Date();
 
-  const stream = new ReadableStream({
-    async start(controller) {
-      // Send initial connection confirmation
-      controller.enqueue(encoder.encode(': connected\n\n'));
+  let stream: ReadableStream;
+  try {
+    stream = new ReadableStream({
+      async start(controller) {
+        // Send initial connection confirmation
+        controller.enqueue(encoder.encode(': connected\n\n'));
 
-      // Poll for new notifications every 10 seconds
-      const interval = setInterval(async () => {
-        const delays = [200, 500];
-        for (let attempt = 0; attempt <= delays.length; attempt++) {
-          try {
-            const newNotifications = await prisma.notification.findMany({
-              where: {
-                userId,
-                createdAt: { gt: lastCheck },
-              },
-              orderBy: { createdAt: 'desc' },
-              take: 10,
-            });
-
-            lastCheck = new Date();
-
-            for (const n of newNotifications) {
-              const data = JSON.stringify({
-                id: n.id,
-                type: n.type,
-                title: n.title,
-                body: n.body,
-                createdAt: n.createdAt.toISOString(),
+        // Poll for new notifications every 10 seconds
+        const interval = setInterval(async () => {
+          const delays = [200, 500];
+          for (let attempt = 0; attempt <= delays.length; attempt++) {
+            try {
+              const newNotifications = await prisma.notification.findMany({
+                where: {
+                  userId,
+                  createdAt: { gt: lastCheck },
+                },
+                orderBy: { createdAt: 'desc' },
+                take: 10,
               });
-              controller.enqueue(encoder.encode(`event: notification\ndata: ${data}\n\n`));
-            }
 
-            // Send heartbeat to keep connection alive
-            controller.enqueue(encoder.encode(': heartbeat\n\n'));
-            break; // Success — exit retry loop
-          } catch (err) {
-            // Don't close the stream on error — retry with backoff, then skip this tick
-            if (attempt < delays.length) {
-              await new Promise((r) => setTimeout(r, delays[attempt]));
-              continue;
+              lastCheck = new Date();
+
+              for (const n of newNotifications) {
+                const data = JSON.stringify({
+                  id: n.id,
+                  type: n.type,
+                  title: n.title,
+                  body: n.body,
+                  createdAt: n.createdAt.toISOString(),
+                });
+                controller.enqueue(encoder.encode(`event: notification\ndata: ${data}\n\n`));
+              }
+
+              // Send heartbeat to keep connection alive
+              controller.enqueue(encoder.encode(': heartbeat\n\n'));
+              break; // Success — exit retry loop
+            } catch (err) {
+              // Don't close the stream on error — retry with backoff, then skip this tick
+              if (attempt < delays.length) {
+                await new Promise((r) => setTimeout(r, delays[attempt]));
+                continue;
+              }
+              // Next tick will try again
             }
-            // Next tick will try again
           }
-        }
-      }, 10_000);
+        }, 10_000);
 
-      // Clean up on abort
-      req.signal.addEventListener('abort', () => {
-        clearInterval(interval);
-        try { controller.close(); } catch {}
-      });
-    },
-  });
+        // Clean up on abort
+        req.signal.addEventListener('abort', () => {
+          clearInterval(interval);
+          try { controller.close(); } catch {}
+        });
+      },
+    });
+  } catch (e) {
+    // Cold start — return a minimal SSE stream so EventSource doesn't error
+    console.error('[notifications/stream] error creating stream:', e);
+    stream = new ReadableStream({
+      start(controller) {
+        controller.enqueue(encoder.encode(': connected\n\n'));
+      },
+    });
+  }
 
   return new Response(stream, {
     headers: {
