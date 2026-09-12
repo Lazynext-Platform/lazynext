@@ -1,7 +1,7 @@
 # Lazynext — Current State
 
-**Date:** 2026-09-08
-**Source:** Direct repository inspection (main branch, HEAD e15e831)
+**Date:** 2026-09-12
+**Source:** Direct repository inspection (main branch, HEAD ee1432f9)
 
 ---
 
@@ -175,6 +175,20 @@ See `DEPLOYMENT_INVENTORY.md` for details.
 - **MCP server** (rebuilt against 2026-07-28 spec, wraps all platform services)
 - **Multi-tenancy hardening** (IDOR testing, cross-tenant isolation)
 
+### Autonomous Company OS Transformation (Phase A-G, completed 2026-09-12)
+- **Anti-slop quality layer** (copy scanner: banned phrases, 5-axis rubric; design scanner: 33 visual tells; integrated into quality-scoring + agent verification hook — `src/lib/quality/`)
+- **Agent runtime upgrades** (reward engine with weighted scoring → reward/correction memory; 5-rung retry/escalation ladder; 24h episodic memory with TTL sweep; tiered model routing by agent role — `src/lib/services/reward-engine.ts`, `src/lib/services/agent-runtime.ts`)
+- **Agent performance dashboard** (`/agent-performance` — success/fail/retry/cost per role)
+- **Company bootstrapper** (durable pipeline: research → brand brief → website → goals/plan/tasks → welcome email; NDJSON progress stream — `src/lib/services/company-bootstrapper.ts`, `/company-bootstrap`)
+- **Per-company public websites** (Document publishing with `published`/`publishedAt`/`publishSlug` fields; public rendering at `/sites/[slug]`; wildcard subdomain routing `*.lazynext.com` via Worker route in `wrangler.jsonc`; middleware host-rewrite in `src/proxy.ts`)
+- **Company email identity** (outbound via Resend `send_company_email` executor; inbound via Svix-signed webhook with fail-closed verification; prompt-injection screening; `InboundEmail` model)
+- **Live activity feed** (SSE endpoint + `/activity-feed` page; redacted operational summaries only)
+- **Competitor knowledge seed** (52 platforms from research spreadsheet seeded as Memory records with `competitor`/`research` tags — `scripts/seed-competitors.mjs`)
+- **4 vendored skills** (impeccable, kill-ai-slop, no-ai-slop, stop-slop — MIT/Apache-2.0 licensed, in `.devin/skills/`)
+- **7 new ADRs** (ADR-223 through ADR-229)
+- **Cloudflare API auth** (Global API Key auth for wrangler in CI/CD; auto-deploy working)
+- **Worker bundle** (57 MB, under 64 MiB limit; Prisma WASM preserved)
+
 ### Missing (genuinely remaining)
 - **Browser/computer execution** (secure browser sandbox) — Phase 12
 - **Code execution sandbox** (secure execution boundary) — Phase 12
@@ -183,6 +197,5 @@ See `DEPLOYMENT_INVENTORY.md` for details.
 - **Multi-tenancy scaling** (cross-tenant isolation at scale, concurrency) — Phase 28
 - **UX redesign** (Company Control Center polish, live AI work feed refinement) — Phase 29
 - **Performance/reliability** (N+1, bundles, polling, job throughput) — Phase 30
-- **CI/CD** (full pipeline validation) — Phase 31
-- **Production rollout** (progressive deployment) — Phase 32
-- **Final audit** (independent production review) — Phase 33
+- **SVIX_SECRET** (placeholder set; real Svix signing secret needed for inbound email — fail-closed until then)
+- **Optional CI maintenance** (upgrade Node.js 20 actions, CodeQL v3→v4, React hook dependency warnings)

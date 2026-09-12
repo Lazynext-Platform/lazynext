@@ -1,5 +1,68 @@
 # Lazynext Changelog
 
+## 2026-09-12 — Autonomous Company OS Transformation (Phase A-G)
+
+### Phase A — Vendored Skills + Research Docs
+- Vendored 4 anti-slop/design skills (impeccable, kill-ai-slop, no-ai-slop, stop-slop) with full LICENSE attribution in `.devin/skills/`
+- Created `docs/research/competitor-platforms.md` (52-platform competitor index from user-provided spreadsheet)
+- Created `docs/research/external-reference-architectures.md` (distilled concept map of AACOS, openpolsia, PolsiaAI)
+
+### Phase B — Anti-Slop Quality Layer
+- `src/lib/quality/copy-rules.ts` — deterministic copy scanner (banned phrases, 5-axis rubric, voice-preservation)
+- `src/lib/quality/design-rules.ts` — markup scanner (33 visual tells, dependency-free regex rules)
+- `src/lib/quality/index.ts` — service facade (`scanCopy`, `scanMarkup`, combined report)
+- Integrated into quality-scoring, ad-copy-generator, brand-voice-consistency-checker
+- Two new feature pages: `/copy-deslop`, `/design-audit`
+- ADR-223
+
+### Phase C — Agent Runtime Upgrades
+- `src/lib/services/reward-engine.ts` — weighted task scoring (verification 30%, time 20%, no-regression 20%, quality 15%, attempts 15%) → reward/correction memory + milestone events
+- 5-rung retry/escalation ladder in agent-runtime (standard → episodic context → knowledge query → planner decomposition → escalated)
+- Episodic memory type with 24h TTL sweep in cron
+- Tiered model routing by agent role (engineering/strategy → quality-first; support/ops → cheap-first)
+- `/agent-performance` dashboard page
+- ADR-224
+
+### Phase D — Company Bootstrapper
+- `src/lib/services/company-bootstrapper.ts` — durable pipeline (research → brand brief → website → goals/plan/tasks → welcome email)
+- NDJSON progress stream (same convention as `/api/creative/director`)
+- `/company-bootstrap` page with live progress
+- ADR-225
+
+### Phase E — Per-Company Public Websites + Wildcard Subdomains
+- Document publishing with `published`/`publishedAt`/`publishSlug` fields + `idx_document_published` index
+- Public rendering at `/sites/[slug]` and `/sites/[slug]/[...path]`
+- Wildcard subdomain routing: `*.lazynext.com` via Worker route in `wrangler.jsonc`
+- Middleware host-rewrite in `src/proxy.ts` (rewrites `{slug}.lazynext.com/{path}` → `/sites/{slug}/{path}`)
+- `website_publish`/`website_unpublish` tool executors
+- ADR-226
+
+### Phase F — Company Email Identity
+- Outbound: `send_company_email` executor via Resend (from `{slug}@mail.lazynext.com`)
+- Inbound: Svix-signed webhook with fail-closed verification + prompt-injection screening
+- `InboundEmail` Prisma model
+- ADR-227
+
+### Phase G — Live Activity Feed, Competitor Seed, Docs Close-Out
+- SSE activity feed endpoint + `/activity-feed` page (redacted operational summaries only)
+- `scripts/seed-competitors.mjs` — 52 competitor platforms seeded as Memory records (type=knowledge, tags=[competitor, research])
+- 7 new ADRs (ADR-223 through ADR-229)
+- Close-out docs updated (CURRENT_STATE, MASTER_PLAN, FEATURE_INVENTORY, RISKS)
+
+### Infrastructure Fixes
+- Fixed Prisma WASM bundling (patch-worker.mjs was deleting the WASM engine, breaking all DB operations in production)
+- Fixed worker bundle-size threshold to account for WASM assets (63.5 MB JS + 3.2 MB WASM)
+- Reactivated Cloudflare API auth (Global API Key for wrangler in CI/CD)
+- Wildcard subdomain routing via Worker route (not custom domain — avoids cert re-provisioning)
+- D1 migration helper fixed (wrangler `--command` instead of `--file` for SELECT queries)
+- 23 migrations tracked, 0 pending
+
+### Verification
+- CI: 15/15 checks green (lint, unit tests, build, CodeQL, secret scan, dep audit, license check, E2E auth, 6 E2E shards, bundle size, deploy)
+- Production: healthy (atlas, r2, d1 all OK)
+- Wildcard subdomain: `test.lazynext.com` → 404 `{"error":"no_published_pages"}` (correct)
+- 52 competitor knowledge records in production D1
+
 ## 2026-09-03 — IV: Comprehensive Security Audit (50 commits)
 
 ### Security Fixes
