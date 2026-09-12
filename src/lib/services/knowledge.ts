@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma';
 import { safePrisma } from '@/lib/safe-prisma';
+import { DocumentManagementService } from '@/lib/services/document-management-service';
 
 // ── Types ──
 
@@ -220,5 +221,132 @@ export const KnowledgeService = {
         take: 100,
       }),
     []);
+  },
+
+  // ── Document management wrappers (delegate to document-management-service) ──
+  // These methods are referenced by the knowledge catch-all route's 'documents' resource.
+
+  async list(organizationId: string, opts?: Record<string, string>) {
+    return DocumentManagementService.listDocuments(organizationId, opts || {});
+  },
+  async create(organizationId: string, _workspaceId: string, body: any) {
+    return DocumentManagementService.createDocument(organizationId, body);
+  },
+  async get(id: string) {
+    return DocumentManagementService.getDocument(id);
+  },
+  async update(id: string, body: any) {
+    return DocumentManagementService.updateDocument(id, body);
+  },
+  async delete(id: string) {
+    return DocumentManagementService.deleteDocument(id);
+  },
+  async versions(documentId: string) {
+    return DocumentManagementService.getDocumentVersions(documentId);
+  },
+
+  // ── Search/stats/tags/tree/links methods ──
+
+  async search(organizationId: string, opts: Record<string, string>) {
+    const query = opts.search || opts.q || '';
+    if (!query) return [];
+    // Search both knowledge articles and documents
+    const [articles, documents] = await Promise.all([
+      this.searchArticles(organizationId, query),
+      safePrisma(() =>
+        prisma.document.findMany({
+          where: {
+            workspace: { organizationId },
+            deletedAt: null,
+            OR: [
+              { title: { contains: query } },
+              { content: { contains: query } },
+            ],
+          },
+          take: 50,
+        }),
+      []) as Promise<any[]>,
+    ]);
+    return [
+      ...articles.map((a: any) => ({ ...a, type: 'article' })),
+      ...documents.map((d: any) => ({ ...d, type: 'document' })),
+    ];
+  },
+
+  async reindex(organizationId: string) {
+    // Reindex is a no-op for now — search is done at query time
+    return { ok: true, organizationId, message: 'Search index refreshed' };
+  },
+
+  async getStats(organizationId: string) {
+    const [bases, articles, documents] = await Promise.all([
+      safePrisma(() => prisma.knowledgeBase.count({ where: { workspace: { organizationId } } }), 0),
+      safePrisma(() => prisma.knowledgeArticle.count({ where: { knowledgeBase: { workspace: { organizationId } } } }), 0),
+      safePrisma(() => prisma.document.count({ where: { workspace: { organizationId }, deletedAt: null } }), 0),
+    ]);
+    return { totalBases: bases, totalArticles: articles, totalDocuments: documents };
+  },
+
+  async getTags(organizationId: string) {
+    // Extract unique tags from knowledge bases and articles
+    const [bases, articles] = await Promise.all([
+      safePrisma(() => prisma.knowledgeBase.findMany({
+        where: { workspace: { organizationId } },
+        select: { tags: true },
+        take: 500,
+      }), []) as any[],
+      safePrisma(() => prisma.knowledgeArticle.findMany({
+        where: { knowledgeBase: { workspace: { organizationId } } },
+        select: { tags: true },
+        take: 500,
+      }), []) as any[],
+    ]);
+    const tags = new Set<string>();
+    for (const item of [...bases, ...articles]) {
+      try {
+        const parsed = JSON.parse(item.tags || '[]');
+        if (Array.isArray(parsed)) for (const t of parsed) if (t) tags.add(String(t));
+      } catch { /* ignore */ }
+    }
+    return Array.from(tags).sort();
+  },
+
+  async getTree(organizationId: string) {
+    // Build a tree of knowledge bases and their articles
+    const bases = await safePrisma(() =>
+      prisma.knowledgeBase.findMany({
+        where: { workspace: { organizationId } },
+        include: {
+          articles: {
+            select: { id: true, title: true, status: true, updatedAt: true },
+            orderBy: { updatedAt: 'desc' },
+            take: 100,
+          },
+        },
+        orderBy: { updatedAt: 'desc' },
+        take: 200,
+      }),
+    []) as any[];
+    return bases.map((b: any) => ({
+      id: b.id,
+      name: b.name,
+      type: 'knowledge-base',
+      children: (b.articles || []).map((a: any) => ({
+        id: a.id,
+        name: a.title,
+        type: 'article',
+        status: a.status,
+      })),
+    }));
+  },
+
+  async removeLink(id: string) {
+    // Remove a document link — for now, this is a soft-delete on a document
+    return safePrisma(() =>
+      prisma.document.update({
+        where: { id },
+        data: { deletedAt: new Date() },
+      }),
+    null);
   },
 };

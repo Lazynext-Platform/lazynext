@@ -18,8 +18,8 @@ const RESOURCES: Record<string, {
     list: 'listKnowledgeBases',
     create: 'createKnowledgeBase',
     get: 'getKnowledgeBase',
-    update: 'getKnowledgeBase',
-    delete: 'getKnowledgeBase',
+    update: 'updateKnowledgeBase',
+    delete: 'deleteKnowledgeBase',
     actions: {
       'articles': 'createArticle',
     },
@@ -28,12 +28,12 @@ const RESOURCES: Record<string, {
     list: 'list',
     create: 'create',
     get: 'get',
-    update: 'get',
-    delete: 'get',
+    update: 'update',
+    delete: 'delete',
     actions: {
       'links': 'get',
-      'move': 'get',
-      'versions': 'get',
+      'move': 'update',
+      'versions': 'versions',
     },
   },
   'links': {
