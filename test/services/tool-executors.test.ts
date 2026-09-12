@@ -583,7 +583,7 @@ describe('Placeholder executors', () => {
     );
     assert.equal(result.ok, true);
     assert.equal(result.flagged, true);
-    assert.ok(result.patterns.length > 0);
+    assert.ok((result.patterns as string[]).length > 0);
   });
 
   it('security_scan validates URL safety', async () => {
