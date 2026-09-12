@@ -400,7 +400,7 @@ const githubExecutor: ToolExecutor = withErrorHandling('github', async (input, c
     }
     case 'list_issues': {
       if (!owner || !repo) return { error: 'missing_params', message: 'owner and repo are required' };
-      const issues = await GitHubService.listIssues(userId, owner, repo, String(input.state || 'open'));
+      const issues = await GitHubService.listIssues(userId, owner, repo, (String(input.state || 'open') as 'open' | 'closed' | 'all'));
       return { ok: true, issues, count: issues.length };
     }
     case 'get_issue': {
@@ -420,7 +420,7 @@ const githubExecutor: ToolExecutor = withErrorHandling('github', async (input, c
     }
     case 'list_prs': {
       if (!owner || !repo) return { error: 'missing_params', message: 'owner and repo are required' };
-      const prs = await GitHubService.listPRs(userId, owner, repo, String(input.state || 'open'));
+      const prs = await GitHubService.listPRs(userId, owner, repo, (String(input.state || 'open') as 'open' | 'closed' | 'all'));
       return { ok: true, prs, count: prs.length };
     }
     case 'get_pr': {
@@ -450,7 +450,7 @@ const githubExecutor: ToolExecutor = withErrorHandling('github', async (input, c
     }
     case 'get_file': {
       if (!owner || !repo || !input.path) return { error: 'missing_params', message: 'owner, repo, and path are required' };
-      const file = await GitHubService.getFile(userId, owner, repo, String(input.path), String(input.ref || undefined));
+      const file = await GitHubService.getFile(userId, owner, repo, String(input.path), input.ref ? String(input.ref) : undefined);
       return file ? { ok: true, content: file.content, sha: file.sha } : { ok: false, error: 'file_not_found' };
     }
     case 'create_or_update_file': {
@@ -460,7 +460,7 @@ const githubExecutor: ToolExecutor = withErrorHandling('github', async (input, c
         message: String(input.message || `Update ${input.path}`),
         content: String(input.content),
         branch: String(input.branch),
-        sha: String(input.sha || undefined),
+        sha: input.sha ? String(input.sha) : undefined,
       });
       return result;
     }
