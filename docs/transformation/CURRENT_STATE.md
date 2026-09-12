@@ -190,15 +190,16 @@ See `DEPLOYMENT_INVENTORY.md` for details.
 - **Worker bundle** (57 MB, under 64 MiB limit; Prisma WASM preserved)
 
 ### Missing (genuinely remaining)
-- **Code execution sandbox** (secure execution boundary for `code_exec` and `test_runner` agent tools) — Phase 12
-- **Full browser automation** (Playwright sandbox for screenshots/clicks; lightweight `fetch` mode is wired) — Phase 12
 - **Characterization tests** (preserve existing behavior) — incremental
 - **Multi-tenancy scaling** (cross-tenant isolation at scale, concurrency) — Phase 28
 - **UX redesign** (Company Control Center polish, live AI work feed refinement) — Phase 29
 - **Performance/reliability** (N+1, bundles, polling, job throughput) — Phase 30
 - **SVIX_SECRET** (placeholder set; real Svix signing secret needed for inbound email — fail-closed until then)
+- **SANDBOX_API_URL** (optional; Piston/Judge0-compatible endpoint for code_exec/test_runner — dry-run until set)
+- **FIRECRAWL_API_KEY** (optional; enables browser screenshots/clicks/JS eval — lightweight fetch mode works without it)
+- **SLACK_BOT_TOKEN** (optional; enables real social publishing — dry-run until set)
 
-### Agent tool executor status (20 of 32 wired to real services)
+### Agent tool executor status (ALL 32 wired to real implementations)
 - **Business**: `read_company`, `read_metrics`, `create_task`, `assign_task`, `create_plan`, `crm`, `notifications`, `automation_trigger`, `read_audit`, `read_policies`, `create_alert`
 - **Knowledge**: `read_documents`, `write_document`, `search`, `read_memory`, `write_memory`
 - **Engineering**: `github` (GitHubService), `fetch_url` (SSRF-protected fetch)
@@ -207,7 +208,7 @@ See `DEPLOYMENT_INVENTORY.md` for details.
 - **Creative**: `atlas_generate` (atlasGenerate), `brand_check` (checkBrandGuardrails), `creative_tools` (CREATIVE_REGISTRY)
 - **Files**: `file_read` (readMedia), `file_write` (putMedia)
 - **Growth**: `ad_platform` (metaAds/googleAds with dry-run)
-- **Research**: `web_search` (DuckDuckGo + Wikipedia APIs), `browser` (lightweight page fetcher with SSRF protection)
+- **Research**: `web_search` (DuckDuckGo + Wikipedia APIs), `browser` (lightweight fetch + Firecrawl for screenshots/clicks/JS eval)
 - **Social**: `social_publish` (Slack Web API with dry-run)
 - **Operations**: `asset_manage` (AssetTrackingService)
-- **Placeholders** (need external sandbox): `code_exec`, `test_runner`
+- **Sandbox**: `code_exec` (Piston/Judge0-compatible API with dry-run), `test_runner` (sandbox API with test framework support + dry-run)

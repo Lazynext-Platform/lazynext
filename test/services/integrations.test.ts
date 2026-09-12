@@ -65,7 +65,7 @@ describe('IntegrationRegistry', () => {
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
-// GitHubClient
+// GitHubClient — real GitHub REST API
 // ─────────────────────────────────────────────────────────────────────────────
 
 describe('GitHubClient', () => {
@@ -82,11 +82,13 @@ describe('GitHubClient', () => {
     assert.match(res.error ?? '', /token/);
   });
 
-  it('testConnection() succeeds with a token (stub)', async () => {
+  it('testConnection() fails with an invalid token (real API call)', async () => {
     const client = new GitHubClient();
-    client.configure(makeConfig({ credentials: { token: 'ghp_test' } }));
+    client.configure(makeConfig({ credentials: { token: 'ghp_invalid_test_token' } }));
     const res = await client.testConnection();
-    assert.equal(res.success, true);
+    assert.equal(res.success, false);
+    // Real GitHub API returns 401 for invalid tokens
+    assert.ok(res.error?.includes('401') || res.error?.includes('failed'), `expected API error, got: ${res.error}`);
   });
 
   it('listRepos() fails when not configured', async () => {
@@ -96,50 +98,41 @@ describe('GitHubClient', () => {
     assert.match(res.error ?? '', /Not configured/);
   });
 
-  it('listRepos() returns an empty repos array (stub)', async () => {
+  it('listRepos() fails with invalid token (real API call)', async () => {
     const client = new GitHubClient();
-    client.configure(makeConfig({ credentials: { token: 'ghp_test' } }));
+    client.configure(makeConfig({ credentials: { token: 'ghp_invalid_test_token' } }));
     const res = await client.listRepos();
-    assert.equal(res.success, true);
-    assert.deepEqual((res.data as { repos: unknown[] }).repos, []);
+    assert.equal(res.success, false);
+    assert.ok(res.error?.includes('401') || res.error?.includes('failed'), `expected API error, got: ${res.error}`);
   });
 
-  it('createIssue() returns stub data with repo/title/body', async () => {
+  it('createIssue() fails with invalid token (real API call)', async () => {
     const client = new GitHubClient();
-    client.configure(makeConfig({ credentials: { token: 'ghp_test' } }));
+    client.configure(makeConfig({ credentials: { token: 'ghp_invalid_test_token' } }));
     const res = await client.createIssue('owner/repo', 'Bug', 'details');
-    assert.equal(res.success, true);
-    const data = res.data as { repo: string; title: string; body: string; number: number };
-    assert.equal(data.repo, 'owner/repo');
-    assert.equal(data.title, 'Bug');
-    assert.equal(data.body, 'details');
-    assert.equal(data.number, 0);
+    assert.equal(res.success, false);
+    assert.ok(res.error?.includes('401') || res.error?.includes('404') || res.error?.includes('failed'), `expected API error, got: ${res.error}`);
   });
 
-  it('createPR() returns stub data with repo/title/head/base', async () => {
+  it('createPR() fails with invalid token (real API call)', async () => {
     const client = new GitHubClient();
-    client.configure(makeConfig({ credentials: { token: 'ghp_test' } }));
+    client.configure(makeConfig({ credentials: { token: 'ghp_invalid_test_token' } }));
     const res = await client.createPR('owner/repo', 'Fix', 'feature', 'main');
-    assert.equal(res.success, true);
-    const data = res.data as { repo: string; title: string; head: string; base: string; number: number };
-    assert.equal(data.repo, 'owner/repo');
-    assert.equal(data.title, 'Fix');
-    assert.equal(data.head, 'feature');
-    assert.equal(data.base, 'main');
-    assert.equal(data.number, 0);
+    assert.equal(res.success, false);
+    assert.ok(res.error?.includes('401') || res.error?.includes('404') || res.error?.includes('failed'), `expected API error, got: ${res.error}`);
   });
 
-  it('getWorkflowRuns() returns an empty runs array (stub)', async () => {
+  it('getWorkflowRuns() fails with invalid token (real API call)', async () => {
     const client = new GitHubClient();
-    client.configure(makeConfig({ credentials: { token: 'ghp_test' } }));
+    client.configure(makeConfig({ credentials: { token: 'ghp_invalid_test_token' } }));
     const res = await client.getWorkflowRuns('owner/repo');
-    assert.equal(res.success, true);
-    assert.deepEqual((res.data as { runs: unknown[] }).runs, []);
+    assert.equal(res.success, false);
+    assert.ok(res.error?.includes('401') || res.error?.includes('404') || res.error?.includes('failed'), `expected API error, got: ${res.error}`);
   });
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
-// WebSearchClient
+// WebSearchClient — real DuckDuckGo + Wikipedia APIs (free, no key)
 // ─────────────────────────────────────────────────────────────────────────────
 
 describe('WebSearchClient', () => {
@@ -148,50 +141,44 @@ describe('WebSearchClient', () => {
     assert.equal(webSearchClient.type, 'search');
   });
 
-  it('testConnection() fails without an apiKey', async () => {
+  it('testConnection() succeeds without an apiKey (free APIs)', async () => {
     const client = new WebSearchClient();
     client.configure(makeConfig({ credentials: {} }));
     const res = await client.testConnection();
-    assert.equal(res.success, false);
-    assert.match(res.error ?? '', /API key/);
-  });
-
-  it('testConnection() succeeds with an apiKey (stub)', async () => {
-    const client = new WebSearchClient();
-    client.configure(makeConfig({ credentials: { apiKey: 'sk_test' } }));
-    const res = await client.testConnection();
     assert.equal(res.success, true);
   });
 
-  it('search() fails when not configured', async () => {
+  it('search() returns real results from DuckDuckGo/Wikipedia', async () => {
     const client = new WebSearchClient();
-    const res = await client.search('query');
-    assert.equal(res.success, false);
-    assert.match(res.error ?? '', /Not configured/);
-  });
-
-  it('search() returns the query and an empty results array (stub)', async () => {
-    const client = new WebSearchClient();
-    client.configure(makeConfig({ credentials: { apiKey: 'sk_test' } }));
-    const res = await client.search('best ad hooks', 5);
+    client.configure(makeConfig({ credentials: {} }));
+    const res = await client.search('JavaScript programming language', 5);
     assert.equal(res.success, true);
-    const data = res.data as { query: string; results: unknown[]; maxResults: number };
-    assert.equal(data.query, 'best ad hooks');
-    assert.deepEqual(data.results, []);
+    const data = res.data as { query: string; results: Array<{ title: string; url: string; snippet: string; source: string }>; count: number; maxResults: number };
+    assert.equal(data.query, 'JavaScript programming language');
     assert.equal(data.maxResults, 5);
+    assert.ok(data.results.length > 0, 'expected at least one result from free APIs');
+    assert.ok(data.count > 0, 'expected count > 0');
+    // Each result should have the required fields
+    for (const r of data.results) {
+      assert.ok(r.title, 'result should have a title');
+      assert.ok(r.url, 'result should have a url');
+      assert.ok(r.snippet, 'result should have a snippet');
+      assert.ok(r.source, 'result should have a source');
+      assert.ok(['duckduckgo', 'wikipedia'].includes(r.source), `source should be duckduckgo or wikipedia, got: ${r.source}`);
+    }
   });
 
   it('search() defaults maxResults to 10', async () => {
     const client = new WebSearchClient();
-    client.configure(makeConfig({ credentials: { apiKey: 'sk_test' } }));
-    const res = await client.search('query');
+    client.configure(makeConfig({ credentials: {} }));
+    const res = await client.search('test query');
     const data = res.data as { maxResults: number };
     assert.equal(data.maxResults, 10);
   });
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
-// CalendarClient
+// CalendarClient — real Google Calendar API
 // ─────────────────────────────────────────────────────────────────────────────
 
 describe('CalendarClient', () => {
@@ -208,11 +195,12 @@ describe('CalendarClient', () => {
     assert.match(res.error ?? '', /token/);
   });
 
-  it('testConnection() succeeds with a token (stub)', async () => {
+  it('testConnection() fails with an invalid token (real API call)', async () => {
     const client = new CalendarClient();
-    client.configure(makeConfig({ credentials: { token: 'cal_test' } }));
+    client.configure(makeConfig({ credentials: { token: 'invalid_cal_token' } }));
     const res = await client.testConnection();
-    assert.equal(res.success, true);
+    assert.equal(res.success, false);
+    assert.ok(res.error?.includes('401') || res.error?.includes('failed'), `expected API error, got: ${res.error}`);
   });
 
   it('listEvents() fails when not configured', async () => {
@@ -222,29 +210,25 @@ describe('CalendarClient', () => {
     assert.match(res.error ?? '', /Not configured/);
   });
 
-  it('listEvents() returns an empty events array (stub)', async () => {
+  it('listEvents() fails with invalid token (real API call)', async () => {
     const client = new CalendarClient();
-    client.configure(makeConfig({ credentials: { token: 'cal_test' } }));
+    client.configure(makeConfig({ credentials: { token: 'invalid_cal_token' } }));
     const res = await client.listEvents();
-    assert.equal(res.success, true);
-    assert.deepEqual((res.data as { events: unknown[] }).events, []);
+    assert.equal(res.success, false);
+    assert.ok(res.error?.includes('401') || res.error?.includes('failed'), `expected API error, got: ${res.error}`);
   });
 
-  it('createEvent() returns stub data with title/start/end', async () => {
+  it('createEvent() fails with invalid token (real API call)', async () => {
     const client = new CalendarClient();
-    client.configure(makeConfig({ credentials: { token: 'cal_test' } }));
-    const res = await client.createEvent('Meeting', '2025-01-01T10:00', '2025-01-01T11:00');
-    assert.equal(res.success, true);
-    const data = res.data as { title: string; start: string; end: string; id: string };
-    assert.equal(data.title, 'Meeting');
-    assert.equal(data.start, '2025-01-01T10:00');
-    assert.equal(data.end, '2025-01-01T11:00');
-    assert.equal(data.id, 'stub-1');
+    client.configure(makeConfig({ credentials: { token: 'invalid_cal_token' } }));
+    const res = await client.createEvent('Meeting', '2025-01-01T10:00:00Z', '2025-01-01T11:00:00Z');
+    assert.equal(res.success, false);
+    assert.ok(res.error?.includes('401') || res.error?.includes('failed'), `expected API error, got: ${res.error}`);
   });
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
-// SlackClient
+// SlackClient — real Slack Web API
 // ─────────────────────────────────────────────────────────────────────────────
 
 describe('SlackClient', () => {
@@ -261,11 +245,13 @@ describe('SlackClient', () => {
     assert.match(res.error ?? '', /token/);
   });
 
-  it('testConnection() succeeds with a token (stub)', async () => {
+  it('testConnection() fails with an invalid token (real API call)', async () => {
     const client = new SlackClient();
-    client.configure(makeConfig({ credentials: { token: 'xoxb_test' } }));
+    client.configure(makeConfig({ credentials: { token: 'xoxb_invalid_test_token' } }));
     const res = await client.testConnection();
-    assert.equal(res.success, true);
+    assert.equal(res.success, false);
+    // Slack API returns ok=false with an error message for invalid tokens
+    assert.ok(res.error?.includes('invalid') || res.error?.includes('failed') || res.error?.includes('not_authed'), `expected API error, got: ${res.error}`);
   });
 
   it('sendMessage() fails when not configured', async () => {
@@ -275,14 +261,11 @@ describe('SlackClient', () => {
     assert.match(res.error ?? '', /Not configured/);
   });
 
-  it('sendMessage() returns stub data with channel/text/ts', async () => {
+  it('sendMessage() fails with invalid token (real API call)', async () => {
     const client = new SlackClient();
-    client.configure(makeConfig({ credentials: { token: 'xoxb_test' } }));
+    client.configure(makeConfig({ credentials: { token: 'xoxb_invalid_test_token' } }));
     const res = await client.sendMessage('#general', 'hello');
-    assert.equal(res.success, true);
-    const data = res.data as { channel: string; text: string; ts: string };
-    assert.equal(data.channel, '#general');
-    assert.equal(data.text, 'hello');
-    assert.equal(data.ts, 'stub-ts');
+    assert.equal(res.success, false);
+    assert.ok(res.error?.includes('invalid') || res.error?.includes('failed') || res.error?.includes('not_authed'), `expected API error, got: ${res.error}`);
   });
 });
