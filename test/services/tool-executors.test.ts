@@ -517,9 +517,7 @@ describe('Placeholder executors', () => {
   beforeEach(() => resetMock());
 
   const placeholderTools = [
-    'web_search', 'browser',
     'code_exec', 'test_runner',
-    'social_publish',
   ];
 
   for (const toolName of placeholderTools) {
@@ -627,6 +625,26 @@ describe('Placeholder executors', () => {
 
   it('asset_manage returns error for missing params on create', async () => {
     const result = await toolExecutorsMap['asset_manage']({ action: 'create' }, baseContext);
+    assert.equal(result.error, 'missing_params');
+  });
+
+  it('web_search returns error for missing query', async () => {
+    const result = await toolExecutorsMap['web_search']({}, baseContext);
+    assert.equal(result.error, 'missing_params');
+  });
+
+  it('browser returns error for missing url', async () => {
+    const result = await toolExecutorsMap['browser']({}, baseContext);
+    assert.equal(result.error, 'missing_params');
+  });
+
+  it('browser blocks unsafe URLs', async () => {
+    const result = await toolExecutorsMap['browser']({ action: 'fetch', url: 'http://127.0.0.1:8080' }, baseContext);
+    assert.equal(result.error, 'blocked_url');
+  });
+
+  it('social_publish returns error for missing params', async () => {
+    const result = await toolExecutorsMap['social_publish']({ action: 'post' }, baseContext);
     assert.equal(result.error, 'missing_params');
   });
 });

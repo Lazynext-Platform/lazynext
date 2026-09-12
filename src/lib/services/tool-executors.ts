@@ -297,22 +297,129 @@ const writeMemoryExecutor: ToolExecutor = withErrorHandling('write_memory', asyn
   return { memory };
 });
 
-// ── Research Tools (placeholders — need external API configuration) ──
+// ── Research Tools (web_search uses free APIs, browser uses fetch_url) ──
 
 const webSearchExecutor: ToolExecutor = withErrorHandling('web_search', async (input, _context) => {
-  return placeholder(
-    'web_search',
-    input,
-    'Configure a web search API provider (e.g. Brave, Serper, or Google Custom Search) to enable live results.',
-  );
+  const query = asStr(input.query);
+  if (!query) return { error: 'missing_params', message: 'query is required' };
+  const maxResults = asNum(input.maxResults) || 5;
+
+  const results: Array<{ title: string; url: string; snippet: string; source: string }> = [];
+
+  // 1. DuckDuckGo Instant Answer API (free, no key needed)
+  try {
+    const ddgUrl = `https://api.duckduckgo.com/?q=${encodeURIComponent(query)}&format=json&no_html=1&skip_disambig=1`;
+    const ddgResp = await fetch(ddgUrl, { signal: AbortSignal.timeout(8000) });
+    if (ddgResp.ok) {
+      const ddg = await ddgResp.json() as {
+        AbstractText?: string;
+        AbstractURL?: string;
+        Heading?: string;
+        RelatedTopics?: Array<{ Text?: string; FirstURL?: string } | { Topics?: Array<{ Text?: string; FirstURL?: string }> }>;
+      };
+      if (ddg.AbstractText && ddg.AbstractURL) {
+        results.push({ title: ddg.Heading || query, url: ddg.AbstractURL, snippet: ddg.AbstractText, source: 'duckduckgo' });
+      }
+      if (ddg.RelatedTopics) {
+        for (const topic of ddg.RelatedTopics) {
+          if (results.length >= maxResults) break;
+          if ('Text' in topic && topic.Text && topic.FirstURL) {
+            results.push({ title: topic.Text.slice(0, 80), url: topic.FirstURL, snippet: topic.Text, source: 'duckduckgo' });
+          } else if ('Topics' in topic && topic.Topics) {
+            for (const sub of topic.Topics) {
+              if (results.length >= maxResults) break;
+              if (sub.Text && sub.FirstURL) {
+                results.push({ title: sub.Text.slice(0, 80), url: sub.FirstURL, snippet: sub.Text, source: 'duckduckgo' });
+              }
+            }
+          }
+        }
+      }
+    }
+  } catch { /* DDG may not return results for all queries */ }
+
+  // 2. Wikipedia search API (free, no key needed) — supplement if DDG didn't fill
+  if (results.length < maxResults) {
+    try {
+      const wikiUrl = `https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(query)}&format=json&srlimit=${maxResults - results.length}`;
+      const wikiResp = await fetch(wikiUrl, { signal: AbortSignal.timeout(8000) });
+      if (wikiResp.ok) {
+        const wiki = await wikiResp.json() as { query?: { search?: Array<{ title: string; snippet: string } > } };
+        if (wiki.query?.search) {
+          for (const item of wiki.query.search) {
+            if (results.length >= maxResults) break;
+            const snippet = item.snippet.replace(/<[^>]+>/g, '');
+            results.push({
+              title: item.title,
+              url: `https://en.wikipedia.org/wiki/${encodeURIComponent(item.title.replace(/ /g, '_'))}`,
+              snippet,
+              source: 'wikipedia',
+            });
+          }
+        }
+      }
+    } catch { /* Wikipedia may be unavailable */ }
+  }
+
+  return { ok: true, query, results, count: results.length } as Record<string, unknown>;
 });
 
 const browserExecutor: ToolExecutor = withErrorHandling('browser', async (input, _context) => {
-  return placeholder(
-    'browser',
-    input,
-    'Configure a sandboxed browser automation provider (e.g. Playwright in a sandbox) to enable browser actions.',
-  );
+  const action = asStr(input.action) || 'fetch';
+  switch (action) {
+    case 'fetch': {
+      const url = asStr(input.url);
+      if (!url) return { error: 'missing_params', message: 'url is required' };
+      if (!isUrlSafe(url)) return { error: 'blocked_url', reason: 'URL failed SSRF validation' };
+      const timeoutMs = asNum(input.timeoutMs) || 10000;
+      const maxBytes = asNum(input.maxBytes) || 500_000;
+      const resp = await fetch(url, {
+        signal: AbortSignal.timeout(timeoutMs),
+        headers: { 'User-Agent': 'LazynextAgent/1.0' },
+        redirect: 'follow',
+      });
+      const contentType = resp.headers.get('content-type') || 'unknown';
+      const content = await resp.text();
+      const truncated = content.length > maxBytes;
+      const body = truncated ? content.slice(0, maxBytes) : content;
+      // Extract text content, title, and links from HTML
+      const titleMatch = body.match(/<title[^>]*>([^<]*)<\/title>/i);
+      const title = titleMatch ? titleMatch[1].trim() : '';
+      const textContent = body
+        .replace(/<script[\s\S]*?<\/script>/gi, '')
+        .replace(/<style[\s\S]*?<\/style>/gi, '')
+        .replace(/<[^>]+>/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim()
+        .slice(0, 10_000);
+      const links: Array<{ href: string; text: string }> = [];
+      const linkRegex = /<a\s+[^>]*href=["']([^"']+)["'][^>]*>([^<]*)<\/a>/gi;
+      let match;
+      while ((match = linkRegex.exec(body)) !== null && links.length < 50) {
+        const href = match[1];
+        const text = match[2].trim();
+        if (href && !href.startsWith('javascript:') && !href.startsWith('#')) {
+          links.push({ href, text });
+        }
+      }
+      return {
+        ok: true,
+        status: resp.status,
+        contentType,
+        title,
+        text: textContent,
+        links,
+        truncated,
+        url: resp.url,
+      } as Record<string, unknown>;
+    }
+    case 'screenshot':
+      return { error: 'not_supported', message: 'Screenshots require a full browser sandbox (Playwright). Use action=fetch for page content extraction.' };
+    case 'click':
+      return { error: 'not_supported', message: 'Click actions require a full browser sandbox (Playwright). Use action=fetch for page content extraction.' };
+    default:
+      return { error: 'unknown_action', message: `Unknown browser action: ${action}`, supportedActions: ['fetch'] };
+  }
 });
 
 const fetchUrlExecutor: ToolExecutor = withErrorHandling('fetch_url', async (input, _context) => {
@@ -751,11 +858,47 @@ const analyticsExecutor: ToolExecutor = withErrorHandling('analytics', async (in
 });
 
 const socialPublishExecutor: ToolExecutor = withErrorHandling('social_publish', async (input, _context) => {
-  return placeholder(
-    'social_publish',
-    input,
-    'Configure social platform OAuth tokens to enable publishing.',
-  );
+  const platform = asStr(input.platform) || 'slack';
+  const action = asStr(input.action) || 'post';
+
+  switch (platform) {
+    case 'slack': {
+      const token = process.env.SLACK_BOT_TOKEN;
+      switch (action) {
+        case 'post': {
+          const channel = asStr(input.channel);
+          const text = asStr(input.text) || asStr(input.message);
+          if (!channel || !text) return { error: 'missing_params', message: 'channel and text (or message) are required' };
+          if (!token) {
+            return { ok: true, dryRun: true, platform: 'slack', channel, text, message: 'SLACK_BOT_TOKEN not configured — dry run' } as Record<string, unknown>;
+          }
+          const resp = await fetch('https://slack.com/api/chat.postMessage', {
+            method: 'POST',
+            headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ channel, text }),
+            signal: AbortSignal.timeout(10000),
+          });
+          const result = await resp.json() as { ok: boolean; error?: string; ts?: string };
+          if (!result.ok) return { error: 'slack_error', message: result.error || 'Unknown Slack error' };
+          return { ok: true, platform: 'slack', channel, ts: result.ts } as Record<string, unknown>;
+        }
+        case 'list_channels': {
+          if (!token) return { error: 'not_configured', message: 'SLACK_BOT_TOKEN not configured' };
+          const resp = await fetch('https://slack.com/api/conversations.list?limit=100', {
+            headers: { 'Authorization': `Bearer ${token}` },
+            signal: AbortSignal.timeout(10000),
+          });
+          const result = await resp.json() as { ok: boolean; error?: string; channels?: Array<{ id: string; name: string }> };
+          if (!result.ok) return { error: 'slack_error', message: result.error || 'Unknown Slack error' };
+          return { ok: true, channels: result.channels?.map(c => ({ id: c.id, name: c.name })) || [] } as Record<string, unknown>;
+        }
+        default:
+          return { error: 'unknown_action', message: `Unknown slack action: ${action}`, supportedActions: ['post', 'list_channels'] };
+      }
+    }
+    default:
+      return { error: 'unknown_platform', message: `Unknown social platform: ${platform}`, supportedPlatforms: ['slack'] };
+  }
 });
 
 // ── Business Tools ──
