@@ -37,6 +37,12 @@ import { isUrlSafe, detectPromptInjection } from '@/lib/security';
 import { CompanyEmailService } from '@/lib/services/company-email';
 import { CalendarService } from '@/lib/services/calendar-service';
 import { AnalyticsService } from '@/lib/services/analytics-service';
+import { atlasGenerate } from '@/lib/creative/toolkit';
+import { checkBrandGuardrails } from '@/lib/creative/brand-guardrails';
+import { CREATIVE_REGISTRY, getCreativeFeature } from '@/lib/creative/registry';
+import { putMedia, readMedia } from '@/lib/media-storage';
+import { metaAds } from '@/lib/ad-platforms/meta';
+import { googleAds } from '@/lib/ad-platforms/google';
 
 // ── Helpers ──
 
@@ -506,45 +512,77 @@ const testRunnerExecutor: ToolExecutor = withErrorHandling('test_runner', async 
 });
 
 const fileReadExecutor: ToolExecutor = withErrorHandling('file_read', async (input, _context) => {
-  return placeholder(
-    'file_read',
-    input,
-    'Configure a workspace file storage backend (e.g. R2 or media storage) to enable file reads.',
-  );
+  const key = asStr(input.key) || asStr(input.url);
+  if (!key) return { error: 'missing_params', message: 'key or url is required' };
+  const media = await readMedia(key);
+  if (!media) return { error: 'not_found', message: 'File not found in media storage' };
+  return { ok: true, contentType: media.contentType, size: media.buffer.byteLength };
 });
 
 const fileWriteExecutor: ToolExecutor = withErrorHandling('file_write', async (input, _context) => {
-  return placeholder(
-    'file_write',
-    input,
-    'Configure a workspace file storage backend (e.g. R2 or media storage) to enable file writes.',
-  );
+  const key = asStr(input.key);
+  if (!key) return { error: 'missing_params', message: 'key is required' };
+  const content = asStr(input.content);
+  const contentType = asStr(input.contentType) || 'application/octet-stream';
+  if (!content) return { error: 'missing_params', message: 'content is required' };
+  const buffer = new TextEncoder().encode(content).buffer as ArrayBuffer;
+  const url = await putMedia(key, buffer, contentType);
+  return { ok: true, url, key };
 });
 
-// ── Creative Tools (placeholders — wrap existing Creative Studio) ──
+// ── Creative Tools (wired to existing Creative Studio) ──
 
 const atlasGenerateExecutor: ToolExecutor = withErrorHandling('atlas_generate', async (input, _context) => {
-  return placeholder(
-    'atlas_generate',
-    input,
-    'Configure an Atlas Cloud API key to enable AI generation (image, video, LLM).',
+  const systemPrompt = asStr(input.systemPrompt);
+  const userPrompt = asStr(input.userPrompt) || asStr(input.prompt);
+  if (!systemPrompt || !userPrompt) return { error: 'missing_params', message: 'systemPrompt and userPrompt (or prompt) are required' };
+  const result = await atlasGenerate(
+    systemPrompt,
+    userPrompt,
+    asStr(input.planTier) as never,
+    asNum(input.maxTokens),
+    asNum(input.timeoutMs),
   );
+  return { ok: true, content: result } as Record<string, unknown>;
 });
 
 const brandCheckExecutor: ToolExecutor = withErrorHandling('brand_check', async (input, _context) => {
-  return placeholder(
-    'brand_check',
-    input,
-    'Configure an Atlas Cloud API key to enable brand consistency checks.',
-  );
+  const brief = asStr(input.brief);
+  if (!brief) return { error: 'missing_params', message: 'brief is required' };
+  const result = await checkBrandGuardrails({
+    brief,
+    script: asStr(input.script),
+    storyboard: asStr(input.storyboard),
+    brandKit: {
+      brandName: asStr(input.brandName),
+      tone: Array.isArray(input.tone) ? input.tone.map(String) : undefined,
+      keywords: Array.isArray(input.keywords) ? input.keywords.map(String) : undefined,
+    },
+    dryRun: Boolean(input.dryRun),
+  } as never, asStr(input.planTier) as never);
+  return result as unknown as Record<string, unknown>;
 });
 
 const creativeToolsExecutor: ToolExecutor = withErrorHandling('creative_tools', async (input, _context) => {
-  return placeholder(
-    'creative_tools',
-    input,
-    'Configure an Atlas Cloud API key to enable access to the creative tool registry.',
-  );
+  const action = asStr(input.action) || 'list';
+  switch (action) {
+    case 'list': {
+      const features = Object.keys(CREATIVE_REGISTRY);
+      return { ok: true, features, count: features.length } as Record<string, unknown>;
+    }
+    case 'run': {
+      const feature = asStr(input.feature);
+      if (!feature) return { error: 'missing_params', message: 'feature is required' };
+      const handler = getCreativeFeature(feature);
+      if (!handler) return { error: 'not_found', message: `Creative feature '${feature}' not found` };
+      const validation = handler.validate(input.input || {});
+      if (!validation.valid) return { error: 'validation_failed', errors: validation.errors };
+      const result = await handler.generate(input.input || {}, asStr(input.planTier) as never);
+      return { ok: true, result } as Record<string, unknown>;
+    }
+    default:
+      return { error: 'unknown_action', message: `Unknown creative_tools action: ${action}`, supportedActions: ['list', 'run'] };
+  }
 });
 
 const assetManageExecutor: ToolExecutor = withErrorHandling('asset_manage', async (input, _context) => {
@@ -555,14 +593,56 @@ const assetManageExecutor: ToolExecutor = withErrorHandling('asset_manage', asyn
   );
 });
 
-// ── Growth Tools (placeholders — need OAuth tokens) ──
+// ── Growth Tools (ad_platform wired with dry-run support) ──
 
 const adPlatformExecutor: ToolExecutor = withErrorHandling('ad_platform', async (input, _context) => {
-  return placeholder(
-    'ad_platform',
-    input,
-    'Configure Meta/Google Ads OAuth tokens and safety layer to enable ad platform operations.',
-  );
+  const action = asStr(input.action) || 'status';
+  const platform = asStr(input.platform) || 'meta';
+  const provider = platform === 'google' ? googleAds : metaAds;
+
+  switch (action) {
+    case 'status': {
+      return { ok: true, platform: provider.id, dryRun: !process.env.META_ACCESS_TOKEN && !process.env.GOOGLE_ADS_ACCESS_TOKEN };
+    }
+    case 'create_campaign': {
+      const name = asStr(input.name);
+      if (!name) return { error: 'missing_params', message: 'name is required' };
+      const creativeIds = Array.isArray(input.creativeIds) ? input.creativeIds.map(String) : [];
+      if (creativeIds.length === 0) return { error: 'missing_params', message: 'creativeIds is required' };
+      const result = await provider.createCampaign(
+        {
+          platform: provider.id as never,
+          name,
+          budgetDaily: asNum(input.budgetDaily),
+          budgetTotal: asNum(input.budgetTotal),
+          currency: asStr(input.currency) || 'USD',
+          creativeIds,
+        } as never,
+        { dryRun: !process.env.META_ACCESS_TOKEN && !process.env.GOOGLE_ADS_ACCESS_TOKEN } as never,
+      );
+      return result as unknown as Record<string, unknown>;
+    }
+    case 'get_campaign': {
+      const campaignId = asStr(input.campaignId);
+      if (!campaignId) return { error: 'missing_params', message: 'campaignId is required' };
+      const result = await provider.getCampaign(campaignId);
+      return result as unknown as Record<string, unknown>;
+    }
+    case 'pause_campaign': {
+      const campaignId = asStr(input.campaignId);
+      if (!campaignId) return { error: 'missing_params', message: 'campaignId is required' };
+      await provider.pauseCampaign(campaignId);
+      return { ok: true };
+    }
+    case 'get_metrics': {
+      const campaignId = asStr(input.campaignId);
+      if (!campaignId) return { error: 'missing_params', message: 'campaignId is required' };
+      const metrics = await provider.getMetrics(campaignId);
+      return metrics as unknown as Record<string, unknown>;
+    }
+    default:
+      return { error: 'unknown_action', message: `Unknown ad_platform action: ${action}`, supportedActions: ['status', 'create_campaign', 'get_campaign', 'pause_campaign', 'get_metrics'] };
+  }
 });
 
 const analyticsExecutor: ToolExecutor = withErrorHandling('analytics', async (input, context) => {

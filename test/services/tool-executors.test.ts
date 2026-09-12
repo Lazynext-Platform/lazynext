@@ -518,9 +518,9 @@ describe('Placeholder executors', () => {
 
   const placeholderTools = [
     'web_search', 'browser',
-    'code_exec', 'test_runner', 'file_read', 'file_write',
-    'atlas_generate', 'brand_check', 'creative_tools', 'asset_manage',
-    'ad_platform', 'social_publish',
+    'code_exec', 'test_runner',
+    'asset_manage',
+    'social_publish',
   ];
 
   for (const toolName of placeholderTools) {
@@ -593,6 +593,37 @@ describe('Placeholder executors', () => {
     );
     assert.equal(result.ok, true);
     assert.equal(result.safe, false);
+  });
+
+  it('file_read returns error for missing key', async () => {
+    const result = await toolExecutorsMap['file_read']({}, baseContext);
+    assert.equal(result.error, 'missing_params');
+  });
+
+  it('file_write returns error for missing key', async () => {
+    const result = await toolExecutorsMap['file_write']({}, baseContext);
+    assert.equal(result.error, 'missing_params');
+  });
+
+  it('atlas_generate returns error for missing prompts', async () => {
+    const result = await toolExecutorsMap['atlas_generate']({}, baseContext);
+    assert.equal(result.error, 'missing_params');
+  });
+
+  it('brand_check returns error for missing brief', async () => {
+    const result = await toolExecutorsMap['brand_check']({}, baseContext);
+    assert.equal(result.error, 'missing_params');
+  });
+
+  it('creative_tools lists available features', async () => {
+    const result = await toolExecutorsMap['creative_tools']({ action: 'list' }, baseContext);
+    assert.equal(result.ok, true);
+    assert.ok((result.features as string[]).length > 0);
+  });
+
+  it('ad_platform returns status', async () => {
+    const result = await toolExecutorsMap['ad_platform']({ action: 'status' }, baseContext);
+    assert.equal(result.ok, true);
   });
 });
 
