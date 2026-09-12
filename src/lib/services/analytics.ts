@@ -507,4 +507,184 @@ export const AnalyticsService = {
       recentMetrics,
     };
   },
+
+  /**
+   * Analytics hub overview — comprehensive snapshot combining ad performance,
+   * creation stats, credit usage, and workflow metrics for the analytics-hub page.
+   */
+  async getHub(organizationId: string): Promise<Record<string, unknown>> {
+    const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+
+    const [
+      perfRecords,
+      creations,
+      creditLines,
+      agentRuns,
+    ] = await Promise.all([
+      safePrisma(() => prisma.creativePerformance.findMany({
+        where: { workspace: { organizationId }, deletedAt: null },
+        take: 5000,
+      }), [] as any[]),
+      safePrisma(() => prisma.creation.findMany({
+        where: { workspace: { organizationId }, deletedAt: null },
+        select: { status: true, templateId: true, cost: true, createdAt: true },
+        take: 5000,
+      }), [] as any[]),
+      safePrisma(() => prisma.creditLedger.findMany({
+        where: { user: { workspaces: { some: { organizationId } } }, createdAt: { gte: thirtyDaysAgo } },
+        select: { delta: true, reason: true, createdAt: true },
+        take: 5000,
+      }), [] as any[]),
+      safePrisma(() => prisma.agentRun.findMany({
+        where: { agent: { workspace: { organizationId } } },
+        select: { status: true, startedAt: true, completedAt: true },
+        take: 5000,
+      }), [] as any[]),
+    ]);
+
+    // ── Overview ──
+    const totalImpressions = perfRecords.reduce((s: number, r: any) => s + (r.impressions || 0), 0);
+    const totalClicks = perfRecords.reduce((s: number, r: any) => s + (r.clicks || 0), 0);
+    const totalConversions = perfRecords.reduce((s: number, r: any) => s + (r.conversions || 0), 0);
+    const totalSpend = perfRecords.reduce((s: number, r: any) => s + (r.spend || 0), 0);
+    const totalRevenue = perfRecords.reduce((s: number, r: any) => s + (r.revenue || 0), 0);
+    const avgCtr = totalImpressions > 0 ? totalClicks / totalImpressions : 0;
+    const avgCvr = totalClicks > 0 ? totalConversions / totalClicks : 0;
+    const avgRoas = totalSpend > 0 ? totalRevenue / totalSpend : 0;
+
+    const totalCreations = creations.length;
+    const completedCreations = creations.filter((c: any) => c.status === 'completed').length;
+    const failedCreations = creations.filter((c: any) => c.status === 'failed').length;
+    const processingCreations = creations.filter((c: any) => c.status === 'processing' || c.status === 'pending').length;
+    const totalCreditsUsed = creations.reduce((s: number, c: any) => s + (c.cost || 0), 0);
+    const currentBalance = creditLines.reduce((s: number, c: any) => s + c.delta, 0);
+
+    // ── Performance by day ──
+    const perfByDayMap = new Map<string, { impressions: number; clicks: number; conversions: number; spend: number; revenue: number }>();
+    for (const r of perfRecords) {
+      const date = (r.recordedAt || new Date()).toISOString().split('T')[0];
+      if (!perfByDayMap.has(date)) perfByDayMap.set(date, { impressions: 0, clicks: 0, conversions: 0, spend: 0, revenue: 0 });
+      const entry = perfByDayMap.get(date)!;
+      entry.impressions += r.impressions || 0;
+      entry.clicks += r.clicks || 0;
+      entry.conversions += r.conversions || 0;
+      entry.spend += r.spend || 0;
+      entry.revenue += r.revenue || 0;
+    }
+    const perfByDay = Array.from(perfByDayMap.entries()).map(([date, v]) => ({ date, ...v })).sort((a, b) => a.date.localeCompare(b.date));
+
+    // ── Creations by day ──
+    const creationsByDayMap = new Map<string, number>();
+    for (const c of creations) {
+      const date = (c.createdAt || new Date()).toISOString().split('T')[0];
+      creationsByDayMap.set(date, (creationsByDayMap.get(date) || 0) + 1);
+    }
+    const creationsByDay = Array.from(creationsByDayMap.entries()).map(([date, count]) => ({ date, count })).sort((a, b) => a.date.localeCompare(b.date));
+
+    // ── By platform ──
+    const platformMap = new Map<string, { impressions: number; clicks: number; conversions: number; spend: number; revenue: number }>();
+    for (const r of perfRecords) {
+      const p = r.platform || 'unknown';
+      if (!platformMap.has(p)) platformMap.set(p, { impressions: 0, clicks: 0, conversions: 0, spend: 0, revenue: 0 });
+      const entry = platformMap.get(p)!;
+      entry.impressions += r.impressions || 0;
+      entry.clicks += r.clicks || 0;
+      entry.conversions += r.conversions || 0;
+      entry.spend += r.spend || 0;
+      entry.revenue += r.revenue || 0;
+    }
+    const byPlatform = Array.from(platformMap.entries()).map(([platform, v]) => ({
+      platform,
+      ...v,
+      ctr: v.impressions > 0 ? v.clicks / v.impressions : 0,
+      roas: v.spend > 0 ? v.revenue / v.spend : 0,
+    }));
+
+    // ── By template ──
+    const templateMap = new Map<string, { count: number; credits: number }>();
+    for (const c of creations) {
+      const t = c.templateId || 'unknown';
+      if (!templateMap.has(t)) templateMap.set(t, { count: 0, credits: 0 });
+      const entry = templateMap.get(t)!;
+      entry.count++;
+      entry.credits += c.cost || 0;
+    }
+    const byTemplate = Array.from(templateMap.entries()).map(([template, v]) => ({ template, ...v }));
+
+    // ── Credit by reason ──
+    const creditByReasonMap = new Map<string, { count: number; totalDelta: number }>();
+    for (const c of creditLines) {
+      const r = c.reason || 'unknown';
+      if (!creditByReasonMap.has(r)) creditByReasonMap.set(r, { count: 0, totalDelta: 0 });
+      const entry = creditByReasonMap.get(r)!;
+      entry.count++;
+      entry.totalDelta += c.delta;
+    }
+    const creditByReason = Array.from(creditByReasonMap.entries()).map(([reason, v]) => ({ reason, ...v }));
+
+    // ── Top creatives ──
+    const topCreatives = perfRecords
+      .map((r: any) => ({
+        creationId: r.creationId,
+        impressions: r.impressions || 0,
+        clicks: r.clicks || 0,
+        conversions: r.conversions || 0,
+        spend: r.spend || 0,
+        revenue: r.revenue || 0,
+        roas: (r.spend || 0) > 0 ? (r.revenue || 0) / r.spend : 0,
+      }))
+      .sort((a: any, b: any) => b.revenue - a.revenue)
+      .slice(0, 10);
+
+    // ── Credit usage ──
+    const spent30d = creditLines.filter((c: any) => c.delta < 0).reduce((s: number, c: any) => s + Math.abs(c.delta), 0);
+    const granted30d = creditLines.filter((c: any) => c.delta > 0).reduce((s: number, c: any) => s + c.delta, 0);
+    const dailyAvgSpend = spent30d / 30;
+
+    // ── Workflows (agent runs) ──
+    const totalRuns = agentRuns.length;
+    const completedRuns = agentRuns.filter((r: any) => r.status === 'completed').length;
+    const failedRuns = agentRuns.filter((r: any) => r.status === 'failed').length;
+    const runningRuns = agentRuns.filter((r: any) => r.status === 'running' || r.status === 'pending').length;
+    const byTypeMap = new Map<string, number>();
+    for (const r of agentRuns) {
+      const t = r.status || 'unknown';
+      byTypeMap.set(t, (byTypeMap.get(t) || 0) + 1);
+    }
+    const byType = Array.from(byTypeMap.entries()).map(([type, count]) => ({ type, count }));
+    const durations = agentRuns
+      .filter((r: any) => r.completedAt && r.startedAt)
+      .map((r: any) => (new Date(r.completedAt).getTime() - new Date(r.startedAt).getTime()) / 1000);
+    const avgDurationSec = durations.length > 0 ? durations.reduce((a: number, b: number) => a + b, 0) / durations.length : 0;
+
+    return {
+      overview: {
+        totalImpressions,
+        totalClicks,
+        totalConversions,
+        totalSpend,
+        totalRevenue,
+        avgCtr,
+        avgCvr,
+        avgRoas,
+        totalCreations,
+        completedCreations,
+        failedCreations,
+        processingCreations,
+        totalCreditsUsed,
+        currentBalance,
+        totalCampaigns: new Set(perfRecords.map((r: any) => r.campaignId).filter(Boolean)).size,
+        activeCampaigns: new Set(perfRecords.filter((r: any) => r.campaignId).map((r: any) => r.campaignId)).size,
+      },
+      perfByDay,
+      creationsByDay,
+      byPlatform,
+      byTemplate,
+      campaignsByPlatform: Object.fromEntries(byPlatform.map((p) => [p.platform, p.impressions > 0 ? 1 : 0])),
+      creditByReason,
+      topCreatives,
+      creditUsage: { spent30d, granted30d, dailyAvgSpend, projectionDays: dailyAvgSpend > 0 ? Math.floor(currentBalance / dailyAvgSpend) : null },
+      workflows: { totalRuns, completedRuns, failedRuns, runningRuns, byType, avgDurationSec, perStage: [] },
+    };
+  },
 };

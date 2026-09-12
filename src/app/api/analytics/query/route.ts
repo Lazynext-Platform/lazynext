@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/../auth';
-import { AnalyticsService, type AnalyticsQuery } from '@/lib/services/analytics';
+import { AnalyticsService, type AnalyticsQuery } from '@/lib/services/analytics-service';
 import { WorkspaceService } from '@/lib/services/workspace';
 
 export const maxDuration = 60;
