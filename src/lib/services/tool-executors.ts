@@ -33,11 +33,10 @@ import { NotificationService } from '@/lib/services/notification-service';
 import { AlertService } from '@/lib/services/alert-service';
 import { AutomationService } from '@/lib/services/automation';
 import { GitHubService } from '@/lib/services/github';
-import { isUrlSafe } from '@/lib/security';
+import { isUrlSafe, detectPromptInjection } from '@/lib/security';
 import { CompanyEmailService } from '@/lib/services/company-email';
 import { CalendarService } from '@/lib/services/calendar-service';
 import { AnalyticsService } from '@/lib/services/analytics-service';
-import { detectPromptInjection } from '@/lib/security';
 
 // ── Helpers ──
 
@@ -818,8 +817,8 @@ const securityScanExecutor: ToolExecutor = withErrorHandling('security_scan', as
     case 'prompt_injection': {
       const text = asStr(input.text);
       if (!text) return { error: 'missing_params', message: 'text is required' };
-      const result: { patterns: string[] } = detectPromptInjection(text);
-      return { ok: true, patterns: result.patterns, flagged: result.patterns.length > 0 };
+      const patterns = (detectPromptInjection(text) as { patterns: string[] }).patterns;
+      return { ok: true, patterns, flagged: patterns.length > 0 };
     }
     case 'url_safety': {
       const url = asStr(input.url);
