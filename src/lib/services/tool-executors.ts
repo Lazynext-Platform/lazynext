@@ -34,6 +34,10 @@ import { AlertService } from '@/lib/services/alert-service';
 import { AutomationService } from '@/lib/services/automation';
 import { GitHubService } from '@/lib/services/github';
 import { isUrlSafe } from '@/lib/security';
+import { CompanyEmailService } from '@/lib/services/company-email';
+import { CalendarService } from '@/lib/services/calendar-service';
+import { AnalyticsService } from '@/lib/services/analytics-service';
+import { detectPromptInjection } from '@/lib/security';
 
 // ── Helpers ──
 
@@ -562,12 +566,40 @@ const adPlatformExecutor: ToolExecutor = withErrorHandling('ad_platform', async 
   );
 });
 
-const analyticsExecutor: ToolExecutor = withErrorHandling('analytics', async (input, _context) => {
-  return placeholder(
-    'analytics',
-    input,
-    'Configure an analytics provider (e.g. GA4) to enable analytics reads.',
-  );
+const analyticsExecutor: ToolExecutor = withErrorHandling('analytics', async (input, context) => {
+  const action = asStr(input.action) || 'stats';
+  switch (action) {
+    case 'stats': {
+      const stats = await AnalyticsService.getDashboardStats(context.organizationId);
+      return { stats };
+    }
+    case 'kpis': {
+      const kpis = await AnalyticsService.getKPIs(context.organizationId);
+      return { kpis };
+    }
+    case 'trend': {
+      const metric = asStr(input.metric);
+      if (!metric) return { error: 'missing_params', message: 'metric is required' };
+      const trend = await AnalyticsService.getTrend(
+        context.organizationId,
+        metric,
+        asStr(input.granularity) || 'day',
+      );
+      return { trend };
+    }
+    case 'list_dashboards': {
+      const dashboards = await AnalyticsService.listDashboards(context.organizationId);
+      return { dashboards, count: dashboards.length };
+    }
+    case 'get_dashboard': {
+      const dashboardId = asStr(input.dashboardId);
+      if (!dashboardId) return { error: 'missing_params', message: 'dashboardId is required' };
+      const dashboard = await AnalyticsService.getDashboard(dashboardId);
+      return dashboard ? { dashboard } : { error: 'not_found' };
+    }
+    default:
+      return { error: 'unknown_action', message: `Unknown analytics action: ${action}`, supportedActions: ['stats', 'kpis', 'trend', 'list_dashboards', 'get_dashboard'] };
+  }
 });
 
 const socialPublishExecutor: ToolExecutor = withErrorHandling('social_publish', async (input, _context) => {
@@ -638,20 +670,87 @@ const crmExecutor: ToolExecutor = withErrorHandling('crm', async (input, context
   }
 });
 
-const emailExecutor: ToolExecutor = withErrorHandling('email', async (input, _context) => {
-  return placeholder(
-    'email',
-    input,
-    'Configure an SMTP or email API provider to enable email sending.',
-  );
+const emailExecutor: ToolExecutor = withErrorHandling('email', async (input, context) => {
+  const action = asStr(input.action) || 'send';
+  switch (action) {
+    case 'send': {
+      const to = asStr(input.to);
+      const subject = asStr(input.subject);
+      if (!to || !subject) return { error: 'missing_params', message: 'to and subject are required' };
+      const result = await CompanyEmailService.send({
+        organizationId: context.organizationId,
+        workspaceId: context.workspaceId,
+        email: {
+          to,
+          subject,
+          body: asStr(input.body) || '',
+          fromName: asStr(input.fromName),
+          replyTo: asStr(input.replyTo),
+        },
+      });
+      return result;
+    }
+    default:
+      return { error: 'unknown_action', message: `Unknown email action: ${action}`, supportedActions: ['send'] };
+  }
 });
 
-const calendarExecutor: ToolExecutor = withErrorHandling('calendar', async (input, _context) => {
-  return placeholder(
-    'calendar',
-    input,
-    'Configure a calendar OAuth token (e.g. Google Calendar) to enable calendar operations.',
-  );
+const calendarExecutor: ToolExecutor = withErrorHandling('calendar', async (input, context) => {
+  const action = asStr(input.action) || 'list';
+  switch (action) {
+    case 'list': {
+      const events = await CalendarService.list(context.organizationId, {
+        limit: asNum(input.limit) || 50,
+      });
+      return { events, count: events.length };
+    }
+    case 'get': {
+      const eventId = asStr(input.eventId);
+      if (!eventId) return { error: 'missing_params', message: 'eventId is required' };
+      const event = await CalendarService.get(eventId);
+      return event ? { event } : { error: 'not_found' };
+    }
+    case 'create': {
+      const title = asStr(input.title);
+      if (!title) return { error: 'missing_params', message: 'title is required' };
+      const event = await CalendarService.create(context.organizationId, {
+        title,
+        description: asStr(input.description),
+        start: asStr(input.start) || new Date().toISOString(),
+        end: asStr(input.end),
+        location: asStr(input.location),
+        type: asStr(input.type) || 'meeting',
+        organizerId: asStr(input.organizerId) || context.userId,
+      });
+      return { event };
+    }
+    case 'update': {
+      const eventId = asStr(input.eventId);
+      if (!eventId) return { error: 'missing_params', message: 'eventId is required' };
+      const event = await CalendarService.update(eventId, {
+        title: asStr(input.title),
+        description: asStr(input.description),
+        start: asStr(input.start),
+        end: asStr(input.end),
+        location: asStr(input.location),
+      });
+      return event ? { event } : { error: 'not_found' };
+    }
+    case 'delete': {
+      const eventId = asStr(input.eventId);
+      if (!eventId) return { error: 'missing_params', message: 'eventId is required' };
+      await CalendarService.delete(eventId);
+      return { ok: true };
+    }
+    case 'upcoming': {
+      const events = await CalendarService.getUpcoming(context.organizationId, {
+        limit: asNum(input.limit) || 10,
+      });
+      return { events, count: events.length };
+    }
+    default:
+      return { error: 'unknown_action', message: `Unknown calendar action: ${action}`, supportedActions: ['list', 'get', 'create', 'update', 'delete', 'upcoming'] };
+  }
 });
 
 const notificationsExecutor: ToolExecutor = withErrorHandling('notifications', async (input, context) => {
@@ -713,11 +812,22 @@ const automationTriggerExecutor: ToolExecutor = withErrorHandling('automation_tr
 // ── Security Tools ──
 
 const securityScanExecutor: ToolExecutor = withErrorHandling('security_scan', async (input, _context) => {
-  return placeholder(
-    'security_scan',
-    input,
-    'Configure a security scanning backend to enable security scans.',
-  );
+  const action = asStr(input.action) || 'prompt_injection';
+  switch (action) {
+    case 'prompt_injection': {
+      const text = asStr(input.text);
+      if (!text) return { error: 'missing_params', message: 'text is required' };
+      const result = detectPromptInjection(text);
+      return { ok: true, patterns: result.patterns, flagged: result.patterns.length > 0 };
+    }
+    case 'url_safety': {
+      const url = asStr(input.url);
+      if (!url) return { error: 'missing_params', message: 'url is required' };
+      return { ok: true, safe: isUrlSafe(url) };
+    }
+    default:
+      return { error: 'unknown_action', message: `Unknown security_scan action: ${action}`, supportedActions: ['prompt_injection', 'url_safety'] };
+  }
 });
 
 const readAuditExecutor: ToolExecutor = withErrorHandling('read_audit', async (input, context) => {
