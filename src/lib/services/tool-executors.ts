@@ -571,31 +571,31 @@ const analyticsExecutor: ToolExecutor = withErrorHandling('analytics', async (in
   switch (action) {
     case 'stats': {
       const stats = await AnalyticsService.getDashboardStats(context.organizationId);
-      return { stats };
+      return { stats } as Record<string, unknown>;
     }
     case 'kpis': {
       const kpis = await AnalyticsService.getKPIs(context.organizationId);
-      return { kpis };
+      return { kpis } as Record<string, unknown>;
     }
     case 'trend': {
-      const metric = asStr(input.metric);
+      const metric = asStr(input.metric) as 'tasks_completed' | 'goals_progress' | 'agent_executions' | 'projects_active' | 'revenue';
       if (!metric) return { error: 'missing_params', message: 'metric is required' };
       const trend = await AnalyticsService.getTrend(
         context.organizationId,
         metric,
-        asStr(input.granularity) || 'day',
+        { granularity: (asStr(input.granularity) || 'day') as 'day' | 'week' | 'month' },
       );
-      return { trend };
+      return { trend } as Record<string, unknown>;
     }
     case 'list_dashboards': {
       const dashboards = await AnalyticsService.listDashboards(context.organizationId);
-      return { dashboards, count: dashboards.length };
+      return { dashboards, count: dashboards.length } as Record<string, unknown>;
     }
     case 'get_dashboard': {
       const dashboardId = asStr(input.dashboardId);
       if (!dashboardId) return { error: 'missing_params', message: 'dashboardId is required' };
       const dashboard = await AnalyticsService.getDashboard(dashboardId);
-      return dashboard ? { dashboard } : { error: 'not_found' };
+      return dashboard ? { dashboard } as Record<string, unknown> : { error: 'not_found' };
     }
     default:
       return { error: 'unknown_action', message: `Unknown analytics action: ${action}`, supportedActions: ['stats', 'kpis', 'trend', 'list_dashboards', 'get_dashboard'] };
@@ -688,7 +688,7 @@ const emailExecutor: ToolExecutor = withErrorHandling('email', async (input, con
           replyTo: asStr(input.replyTo),
         },
       });
-      return result;
+      return result as unknown as Record<string, unknown>;
     }
     default:
       return { error: 'unknown_action', message: `Unknown email action: ${action}`, supportedActions: ['send'] };
@@ -712,28 +712,29 @@ const calendarExecutor: ToolExecutor = withErrorHandling('calendar', async (inpu
     }
     case 'create': {
       const title = asStr(input.title);
-      if (!title) return { error: 'missing_params', message: 'title is required' };
+      const startStr = asStr(input.start);
+      if (!title || !startStr) return { error: 'missing_params', message: 'title and start are required' };
       const event = await CalendarService.create(context.organizationId, {
         title,
         description: asStr(input.description),
-        start: asStr(input.start) || new Date().toISOString(),
-        end: asStr(input.end),
-        location: asStr(input.location),
         type: asStr(input.type) || 'meeting',
-        organizerId: asStr(input.organizerId) || context.userId,
+        startDate: new Date(startStr),
+        endDate: new Date(asStr(input.end) || startStr),
+        location: asStr(input.location),
+        organizerId: asStr(input.organizerId) || context.userId || 'system',
       });
       return { event };
     }
     case 'update': {
       const eventId = asStr(input.eventId);
       if (!eventId) return { error: 'missing_params', message: 'eventId is required' };
-      const event = await CalendarService.update(eventId, {
-        title: asStr(input.title),
-        description: asStr(input.description),
-        start: asStr(input.start),
-        end: asStr(input.end),
-        location: asStr(input.location),
-      });
+      const updateInput: Record<string, unknown> = {};
+      if (asStr(input.title)) updateInput.title = asStr(input.title);
+      if (asStr(input.description)) updateInput.description = asStr(input.description);
+      if (asStr(input.location)) updateInput.location = asStr(input.location);
+      if (asStr(input.start)) updateInput.startDate = new Date(asStr(input.start)!);
+      if (asStr(input.end)) updateInput.endDate = new Date(asStr(input.end)!);
+      const event = await CalendarService.update(eventId, updateInput as never);
       return event ? { event } : { error: 'not_found' };
     }
     case 'delete': {
@@ -818,7 +819,8 @@ const securityScanExecutor: ToolExecutor = withErrorHandling('security_scan', as
       const text = asStr(input.text);
       if (!text) return { error: 'missing_params', message: 'text is required' };
       const result = detectPromptInjection(text);
-      return { ok: true, patterns: result.patterns, flagged: result.patterns.length > 0 };
+      const patterns: string[] = result.patterns;
+      return { ok: true, patterns, flagged: patterns.length > 0 };
     }
     case 'url_safety': {
       const url = asStr(input.url);
