@@ -167,7 +167,7 @@ See `DEPLOYMENT_INVENTORY.md` for details.
 - **Autonomy loop** (12-state state machine with pause/resume/stop, budget and approval gating — `src/lib/services/autonomy-loop.ts`)
 - **Autonomy safety** (risk classification, approval gating, budget enforcement)
 - **Permission evaluator** (8-layer policy stack: company→workspace→role→tool→resource→environment→budget→risk — `src/lib/services/permission-evaluator.ts`)
-- **Tool executors** (32 concrete executors: 15 real + 17 placeholder for external services — `src/lib/services/tool-executors.ts`)
+- **Tool executors** (32 concrete executors: ALL 32 wired to real implementations — `src/lib/services/tool-executors.ts`)
 - **Agent roles** (12 specialized roles with scoped tools, permissions, risk levels, autonomy modes — `src/lib/services/agent-roles.ts`)
 - **Company control center** (unified dashboard)
 - **Live AI work feed** (understandable activity feed)
