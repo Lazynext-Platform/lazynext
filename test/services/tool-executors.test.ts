@@ -519,7 +519,6 @@ describe('Placeholder executors', () => {
   const placeholderTools = [
     'web_search', 'browser',
     'code_exec', 'test_runner',
-    'asset_manage',
     'social_publish',
   ];
 
@@ -624,6 +623,11 @@ describe('Placeholder executors', () => {
   it('ad_platform returns status', async () => {
     const result = await toolExecutorsMap['ad_platform']({ action: 'status' }, baseContext);
     assert.equal(result.ok, true);
+  });
+
+  it('asset_manage returns error for missing params on create', async () => {
+    const result = await toolExecutorsMap['asset_manage']({ action: 'create' }, baseContext);
+    assert.equal(result.error, 'missing_params');
   });
 });
 

@@ -43,6 +43,7 @@ import { CREATIVE_REGISTRY, getCreativeFeature } from '@/lib/creative/registry';
 import { putMedia, readMedia } from '@/lib/media-storage';
 import { metaAds } from '@/lib/ad-platforms/meta';
 import { googleAds } from '@/lib/ad-platforms/google';
+import { AssetTrackingService } from '@/lib/services/asset-tracking-service';
 
 // ── Helpers ──
 
@@ -585,12 +586,80 @@ const creativeToolsExecutor: ToolExecutor = withErrorHandling('creative_tools', 
   }
 });
 
-const assetManageExecutor: ToolExecutor = withErrorHandling('asset_manage', async (input, _context) => {
-  return placeholder(
-    'asset_manage',
-    input,
-    'Configure a digital asset management backend to enable asset management.',
-  );
+const assetManageExecutor: ToolExecutor = withErrorHandling('asset_manage', async (input, context) => {
+  const action = asStr(input.action) || 'list';
+  const userId = context.userId || 'system';
+  switch (action) {
+    case 'list': {
+      const assets = await AssetTrackingService.listAssets(context.organizationId, {
+        category: asStr(input.category) as never,
+        status: asStr(input.status) as never,
+        condition: asStr(input.condition) as never,
+        department: asStr(input.department),
+      });
+      return { assets, count: assets.length } as Record<string, unknown>;
+    }
+    case 'get': {
+      const assetId = asStr(input.assetId);
+      if (!assetId) return { error: 'missing_params', message: 'assetId is required' };
+      const asset = await AssetTrackingService.getAsset(assetId);
+      return asset ? { asset } : { error: 'not_found' };
+    }
+    case 'create': {
+      const name = asStr(input.name);
+      const category = asStr(input.category);
+      if (!name || !category) return { error: 'missing_params', message: 'name and category are required' };
+      const asset = await AssetTrackingService.createAsset(
+        context.organizationId,
+        context.workspaceId,
+        {
+          name,
+          category: category as never,
+          assetTag: asStr(input.assetTag),
+          serialNumber: asStr(input.serialNumber),
+          description: asStr(input.description),
+          status: asStr(input.status) as never,
+          condition: asStr(input.condition) as never,
+          location: asStr(input.location),
+          department: asStr(input.department),
+          purchaseDate: asStr(input.purchaseDate),
+          purchasePrice: asNum(input.purchasePrice),
+          currentValue: asNum(input.currentValue),
+          supplier: asStr(input.supplier),
+          warrantyExpiry: asStr(input.warrantyExpiry),
+          insuranceValue: asNum(input.insuranceValue),
+          notes: asStr(input.notes),
+        } as never,
+        userId,
+      );
+      return { asset } as Record<string, unknown>;
+    }
+    case 'update': {
+      const assetId = asStr(input.assetId);
+      if (!assetId) return { error: 'missing_params', message: 'assetId is required' };
+      const asset = await AssetTrackingService.updateAsset(assetId, {
+        name: asStr(input.name),
+        status: asStr(input.status) as never,
+        condition: asStr(input.condition) as never,
+        location: asStr(input.location),
+        department: asStr(input.department),
+        notes: asStr(input.notes),
+      } as never);
+      return asset ? { asset } : { error: 'not_found' };
+    }
+    case 'delete': {
+      const assetId = asStr(input.assetId);
+      if (!assetId) return { error: 'missing_params', message: 'assetId is required' };
+      const ok = await AssetTrackingService.deleteAsset(assetId);
+      return { ok };
+    }
+    case 'metrics': {
+      const metrics = await AssetTrackingService.getAssetTrackingMetrics(context.organizationId);
+      return { metrics } as Record<string, unknown>;
+    }
+    default:
+      return { error: 'unknown_action', message: `Unknown asset_manage action: ${action}`, supportedActions: ['list', 'get', 'create', 'update', 'delete', 'metrics'] };
+  }
 });
 
 // ── Growth Tools (ad_platform wired with dry-run support) ──
