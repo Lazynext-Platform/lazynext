@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma';
 import { safePrisma } from '@/lib/safe-prisma';
+import { AnalyticsService as BIAnalyticsService } from '@/lib/services/analytics-service';
 
 // ── Types ──
 
@@ -686,5 +687,65 @@ export const AnalyticsService = {
       creditUsage: { spent30d, granted30d, dailyAvgSpend, projectionDays: dailyAvgSpend > 0 ? Math.floor(currentBalance / dailyAvgSpend) : null },
       workflows: { totalRuns, completedRuns, failedRuns, runningRuns, byType, avgDurationSec, perStage: [] },
     };
+  },
+
+  // ── BI Analytics wrappers (delegate to analytics-service.ts) ──
+  // These methods are referenced by the analytics catch-all route but
+  // implemented in analytics-service.ts. Wrapped here so the catch-all
+  // route's single import works for both sets of methods.
+
+  async listDashboards(organizationId: string) {
+    return BIAnalyticsService.listDashboards(organizationId);
+  },
+  async createDashboard(organizationId: string, workspaceId: string, input: any) {
+    return BIAnalyticsService.createDashboard(organizationId, workspaceId, input);
+  },
+  async getDashboard(id: string) {
+    return BIAnalyticsService.getDashboard(id);
+  },
+  async updateDashboard(id: string, input: any) {
+    return BIAnalyticsService.updateDashboard(id, input);
+  },
+  async deleteDashboard(id: string) {
+    return BIAnalyticsService.deleteDashboard(id);
+  },
+  async listReports(organizationId: string) {
+    return BIAnalyticsService.listReports(organizationId);
+  },
+  async createReport(organizationId: string, workspaceId: string, input: any) {
+    return BIAnalyticsService.createReport(organizationId, workspaceId, input);
+  },
+  async getReport(id: string) {
+    return BIAnalyticsService.getReport(id);
+  },
+  async updateReport(id: string, input: any) {
+    return BIAnalyticsService.updateReport(id, input);
+  },
+  async deleteReport(id: string) {
+    return BIAnalyticsService.deleteReport(id);
+  },
+  async runReport(organizationId: string, reportId: string) {
+    return BIAnalyticsService.runReport(organizationId, reportId);
+  },
+  async getQueryResults(organizationId: string, query: any, opts?: any) {
+    return BIAnalyticsService.getQueryResults(organizationId, query, opts);
+  },
+  async getKPIs(organizationId: string, workspaceId?: string) {
+    return BIAnalyticsService.getKPIs(organizationId, workspaceId);
+  },
+  async getTrend(organizationId: string, metric: any, opts?: any) {
+    return BIAnalyticsService.getTrend(organizationId, metric, opts);
+  },
+  async getPredictiveForecast(organizationId: string, metric: any, opts?: any) {
+    return BIAnalyticsService.getPredictiveForecast(organizationId, metric, opts);
+  },
+  async getDashboardStats(organizationId: string) {
+    return BIAnalyticsService.getDashboardStats(organizationId);
+  },
+  async exportDashboard(dashboardId: string, format: any) {
+    return BIAnalyticsService.exportDashboard(dashboardId, format);
+  },
+  async exportReport(reportId: string, format: any) {
+    return BIAnalyticsService.exportReport(reportId, format);
   },
 };

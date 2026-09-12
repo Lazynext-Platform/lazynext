@@ -26,8 +26,8 @@ const RESOURCES: Record<string, {
     list: 'listDashboards',
     create: 'createDashboard',
     get: 'getDashboard',
-    update: 'getDashboard',
-    delete: 'getDashboard',
+    update: 'updateDashboard',
+    delete: 'deleteDashboard',
     actions: {},
   },
   'forecast': {
@@ -62,10 +62,10 @@ const RESOURCES: Record<string, {
     list: 'listReports',
     create: 'createReport',
     get: 'getReport',
-    update: 'getReport',
-    delete: 'getReport',
+    update: 'updateReport',
+    delete: 'deleteReport',
     actions: {
-      'run': 'getReport',
+      'run': 'runReport',
     },
   },
   'stats': {
