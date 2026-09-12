@@ -818,9 +818,8 @@ const securityScanExecutor: ToolExecutor = withErrorHandling('security_scan', as
     case 'prompt_injection': {
       const text = asStr(input.text);
       if (!text) return { error: 'missing_params', message: 'text is required' };
-      const result = detectPromptInjection(text);
-      const patterns: string[] = result.patterns;
-      return { ok: true, patterns, flagged: patterns.length > 0 };
+      const result: { patterns: string[] } = detectPromptInjection(text);
+      return { ok: true, patterns: result.patterns, flagged: result.patterns.length > 0 };
     }
     case 'url_safety': {
       const url = asStr(input.url);
