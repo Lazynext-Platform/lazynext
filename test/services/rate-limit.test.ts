@@ -23,7 +23,8 @@ class MockNextRequest {
   }
 }
 
-function makeReq(ip = '1.2.3.4'): unknown {
+// Cast to the NextRequest type expected by RateLimiter (the mock has the same shape)
+function makeReq(ip = '1.2.3.4'): any {
   return new MockNextRequest('http://localhost/api/test', {
     headers: { 'x-forwarded-for': ip },
   });
