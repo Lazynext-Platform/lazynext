@@ -229,8 +229,8 @@ export const KnowledgeService = {
   async list(organizationId: string, opts?: Record<string, string>) {
     return DocumentManagementService.listDocuments(organizationId, opts || {});
   },
-  async create(organizationId: string, _workspaceId: string, body: any) {
-    return DocumentManagementService.createDocument(organizationId, body);
+  async create(organizationId: string, workspaceId: string, body: any, createdBy: string) {
+    return DocumentManagementService.createDocument(organizationId, workspaceId, body, createdBy);
   },
   async get(id: string) {
     return DocumentManagementService.getDocument(id);
@@ -294,12 +294,12 @@ export const KnowledgeService = {
         where: { workspace: { organizationId } },
         select: { tags: true },
         take: 500,
-      }), []) as any[],
+      }), []) as unknown as any[],
       safePrisma(() => prisma.knowledgeArticle.findMany({
         where: { knowledgeBase: { workspace: { organizationId } } },
         select: { tags: true },
         take: 500,
-      }), []) as any[],
+      }), []) as unknown as any[],
     ]);
     const tags = new Set<string>();
     for (const item of [...bases, ...articles]) {
