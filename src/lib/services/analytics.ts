@@ -697,8 +697,8 @@ export const AnalyticsService = {
   async listDashboards(organizationId: string) {
     return BIAnalyticsService.listDashboards(organizationId);
   },
-  async createDashboard(organizationId: string, workspaceId: string, input: any) {
-    return BIAnalyticsService.createDashboard(organizationId, workspaceId, input);
+  async createDashboard(organizationId: string, _workspaceId: string, input: any) {
+    return BIAnalyticsService.createDashboard(organizationId, input);
   },
   async getDashboard(id: string) {
     return BIAnalyticsService.getDashboard(id);
@@ -712,8 +712,8 @@ export const AnalyticsService = {
   async listReports(organizationId: string) {
     return BIAnalyticsService.listReports(organizationId);
   },
-  async createReport(organizationId: string, workspaceId: string, input: any) {
-    return BIAnalyticsService.createReport(organizationId, workspaceId, input);
+  async createReport(organizationId: string, _workspaceId: string, input: any) {
+    return BIAnalyticsService.createReport(organizationId, input);
   },
   async getReport(id: string) {
     return BIAnalyticsService.getReport(id);
