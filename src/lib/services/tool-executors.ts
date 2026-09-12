@@ -366,6 +366,56 @@ const webSearchExecutor: ToolExecutor = withErrorHandling('web_search', async (i
 
 const browserExecutor: ToolExecutor = withErrorHandling('browser', async (input, _context) => {
   const action = asStr(input.action) || 'fetch';
+  const firecrawlKey = process.env.FIRECRAWL_API_KEY;
+
+  // When Firecrawl API key is configured, use it for full browser automation
+  if (firecrawlKey && (action === 'screenshot' || action === 'click' || action === 'evaluate' || action === 'scrape')) {
+    const url = asStr(input.url);
+    if (!url) return { error: 'missing_params', message: 'url is required' };
+    if (!isUrlSafe(url)) return { error: 'blocked_url', reason: 'URL failed SSRF validation' };
+
+    const actions: Array<Record<string, unknown>> = [];
+    if (action === 'screenshot') {
+      actions.push({ type: 'screenshot', fullPage: input.fullPage === true });
+    } else if (action === 'click') {
+      const selector = asStr(input.selector);
+      if (!selector) return { error: 'missing_params', message: 'selector is required for click action' };
+      actions.push({ type: 'click', selector });
+      if (input.waitFor) actions.push({ type: 'wait', milliseconds: asNum(input.waitFor) || 2000 });
+      if (input.screenshotAfter !== false) actions.push({ type: 'screenshot' });
+    } else if (action === 'evaluate') {
+      const script = asStr(input.script);
+      if (!script) return { error: 'missing_params', message: 'script is required for evaluate action' };
+      actions.push({ type: 'executeJavascript', script });
+    }
+
+    const formats = action === 'screenshot' || (action === 'click' && input.screenshotAfter !== false)
+      ? ['screenshot', 'markdown']
+      : ['markdown', 'links'];
+
+    const fcResp = await fetch('https://api.firecrawl.dev/v1/scrape', {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${firecrawlKey}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ url, formats, actions: actions.length > 0 ? actions : undefined, onlyMainContent: true }),
+      signal: AbortSignal.timeout(asNum(input.timeoutMs) || 30000),
+    });
+    if (!fcResp.ok) {
+      const errText = await fcResp.text().catch(() => 'Unknown error');
+      return { error: 'firecrawl_error', status: fcResp.status, message: errText.slice(0, 500) };
+    }
+    const fcResult = await fcResp.json() as { data?: { screenshot?: string; markdown?: string; links?: string[]; metadata?: Record<string, unknown> }; success?: boolean };
+    return {
+      ok: true,
+      action,
+      url,
+      screenshot: fcResult.data?.screenshot,
+      markdown: fcResult.data?.markdown?.slice(0, 10_000),
+      links: fcResult.data?.links?.slice(0, 50),
+      metadata: fcResult.data?.metadata,
+    } as Record<string, unknown>;
+  }
+
+  // Lightweight fetch mode (no API key needed, or action=fetch)
   switch (action) {
     case 'fetch': {
       const url = asStr(input.url);
@@ -382,7 +432,6 @@ const browserExecutor: ToolExecutor = withErrorHandling('browser', async (input,
       const content = await resp.text();
       const truncated = content.length > maxBytes;
       const body = truncated ? content.slice(0, maxBytes) : content;
-      // Extract text content, title, and links from HTML
       const titleMatch = body.match(/<title[^>]*>([^<]*)<\/title>/i);
       const title = titleMatch ? titleMatch[1].trim() : '';
       const textContent = body
@@ -414,11 +463,15 @@ const browserExecutor: ToolExecutor = withErrorHandling('browser', async (input,
       } as Record<string, unknown>;
     }
     case 'screenshot':
-      return { error: 'not_supported', message: 'Screenshots require a full browser sandbox (Playwright). Use action=fetch for page content extraction.' };
     case 'click':
-      return { error: 'not_supported', message: 'Click actions require a full browser sandbox (Playwright). Use action=fetch for page content extraction.' };
+    case 'evaluate':
+      return {
+        error: 'not_configured',
+        action,
+        message: `Action '${action}' requires FIRECRAWL_API_KEY to be configured for full browser automation. Use action=fetch for lightweight page content extraction, or set FIRECRAWL_API_KEY to enable screenshots, clicks, and JS execution via Firecrawl.`,
+      };
     default:
-      return { error: 'unknown_action', message: `Unknown browser action: ${action}`, supportedActions: ['fetch'] };
+      return { error: 'unknown_action', message: `Unknown browser action: ${action}`, supportedActions: ['fetch', 'screenshot', 'click', 'evaluate'] };
   }
 });
 
@@ -604,19 +657,128 @@ const githubExecutor: ToolExecutor = withErrorHandling('github', async (input, c
 });
 
 const codeExecExecutor: ToolExecutor = withErrorHandling('code_exec', async (input, _context) => {
-  return placeholder(
-    'code_exec',
-    input,
-    'Configure a sandboxed code execution environment to enable code execution.',
-  );
+  const language = asStr(input.language) || 'javascript';
+  const code = asStr(input.code);
+  if (!code) return { error: 'missing_params', message: 'code is required' };
+
+  const sandboxUrl = process.env.SANDBOX_API_URL;
+  if (!sandboxUrl) {
+    return {
+      dryRun: true,
+      tool: 'code_exec',
+      language,
+      codePreview: code.slice(0, 200),
+      message: 'Set SANDBOX_API_URL to a Piston/Judge0-compatible endpoint to enable code execution. The endpoint must accept POST /execute with {language, version, files:[{content}]}.',
+    } as Record<string, unknown>;
+  }
+
+  // Piston/Judge0-compatible API call
+  const resp = await fetch(`${sandboxUrl.replace(/\/$/, '')}/execute`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      language,
+      version: asStr(input.version) || '*',
+      files: [{ name: asStr(input.fileName) || 'main.js', content: code }],
+      stdin: asStr(input.stdin) || '',
+      args: asStrArr(input.args) || [],
+      compile_timeout: asNum(input.compileTimeout) || 10000,
+      run_timeout: asNum(input.timeoutMs) || 15000,
+    }),
+    signal: AbortSignal.timeout(asNum(input.timeoutMs) || 20000),
+  });
+
+  if (!resp.ok) {
+    const errText = await resp.text().catch(() => 'Unknown error');
+    return { error: 'sandbox_error', status: resp.status, message: errText.slice(0, 500) };
+  }
+
+  const result = await resp.json() as {
+    compile?: { stdout: string; stderr: string; code: number };
+    run?: { stdout: string; stderr: string; code: number; signal?: string; time?: string };
+    language?: string;
+    version?: string;
+  };
+
+  return {
+    ok: true,
+    language,
+    version: result.version,
+    compile: result.compile ? { stdout: result.compile.stdout?.slice(0, 5000), stderr: result.compile.stderr?.slice(0, 5000), code: result.compile.code } : undefined,
+    run: result.run ? { stdout: result.run.stdout?.slice(0, 10000), stderr: result.run.stderr?.slice(0, 5000), code: result.run.code, signal: result.run.signal, time: result.run.time } : undefined,
+  } as Record<string, unknown>;
 });
 
 const testRunnerExecutor: ToolExecutor = withErrorHandling('test_runner', async (input, _context) => {
-  return placeholder(
-    'test_runner',
-    input,
-    'Configure a test runner sandbox to enable running tests.',
-  );
+  const language = asStr(input.language) || 'javascript';
+  const testCode = asStr(input.code) || asStr(input.testCode);
+  if (!testCode) return { error: 'missing_params', message: 'code (or testCode) is required' };
+  const framework = asStr(input.framework) || 'node:test';
+
+  const sandboxUrl = process.env.SANDBOX_API_URL;
+  if (!sandboxUrl) {
+    return {
+      dryRun: true,
+      tool: 'test_runner',
+      language,
+      framework,
+      codePreview: testCode.slice(0, 200),
+      message: 'Set SANDBOX_API_URL to a Piston/Judge0-compatible endpoint to enable test execution. The endpoint must accept POST /execute with {language, version, files:[{content}]}.',
+    } as Record<string, unknown>;
+  }
+
+  // Wrap test code with framework runner if needed
+  let wrappedCode = testCode;
+  if (language === 'javascript' && framework === 'jest') {
+    wrappedCode = `// Jest-compatible test runner\n${testCode}`;
+  }
+
+  const resp = await fetch(`${sandboxUrl.replace(/\/$/, '')}/execute`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      language,
+      version: asStr(input.version) || '*',
+      files: [{ name: asStr(input.fileName) || 'test.js', content: wrappedCode }],
+      stdin: '',
+      args: framework === 'jest' ? ['--jest'] : [],
+      compile_timeout: 10000,
+      run_timeout: asNum(input.timeoutMs) || 30000,
+    }),
+    signal: AbortSignal.timeout(asNum(input.timeoutMs) || 35000),
+  });
+
+  if (!resp.ok) {
+    const errText = await resp.text().catch(() => 'Unknown error');
+    return { error: 'sandbox_error', status: resp.status, message: errText.slice(0, 500) };
+  }
+
+  const result = await resp.json() as {
+    run?: { stdout: string; stderr: string; code: number; signal?: string; time?: string };
+    language?: string;
+    version?: string;
+  };
+
+  // Parse test results from output
+  const stdout = result.run?.stdout || '';
+  const stderr = result.run?.stderr || '';
+  const passed = (stdout.match(/✓|\bpass(ed)?\b/gi) || []).length;
+  const failed = (stdout.match(/✗|\bfail(ed)?\b/gi) || []).length;
+  const total = passed + failed;
+
+  return {
+    ok: true,
+    language,
+    framework,
+    version: result.version,
+    exitCode: result.run?.code,
+    signal: result.run?.signal,
+    time: result.run?.time,
+    stdout: stdout.slice(0, 10000),
+    stderr: stderr.slice(0, 5000),
+    summary: { passed, failed, total },
+    success: result.run?.code === 0 && failed === 0,
+  } as Record<string, unknown>;
 });
 
 const fileReadExecutor: ToolExecutor = withErrorHandling('file_read', async (input, _context) => {

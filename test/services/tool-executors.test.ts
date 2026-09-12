@@ -513,26 +513,34 @@ describe('Real executors', () => {
 // Tests — Placeholder executors return dry-run responses
 // ─────────────────────────────────────────────────────────────────────────────
 
-describe('Placeholder executors', () => {
+describe('Sandbox executor dry-run behavior', () => {
   beforeEach(() => resetMock());
 
-  const placeholderTools = [
-    'code_exec', 'test_runner',
-  ];
+  it('code_exec returns dry-run when SANDBOX_API_URL not set', async () => {
+    const result = await toolExecutorsMap['code_exec']({ language: 'javascript', code: 'console.log(1+1)' }, baseContext);
+    assert.equal(result.dryRun, true);
+    assert.equal(result.tool, 'code_exec');
+    assert.ok(typeof result.message === 'string');
+    assert.ok((result.message as string).includes('SANDBOX_API_URL'));
+  });
 
-  for (const toolName of placeholderTools) {
-    it(`${toolName} returns a dry-run response`, async () => {
-      const input = { query: 'test' };
-      const result = await toolExecutorsMap[toolName](input, baseContext);
-      assert.equal(result.dryRun, true);
-      assert.equal(result.tool, toolName);
-      assert.equal(result.status, 'not_configured');
-      assert.ok(typeof result.message === 'string');
-      assert.ok(result.message.includes(toolName));
-      assert.equal(result.input, input);
-      assert.ok(typeof result.timestamp === 'string');
-    });
-  }
+  it('code_exec returns error for missing code', async () => {
+    const result = await toolExecutorsMap['code_exec']({ language: 'javascript' }, baseContext);
+    assert.equal(result.error, 'missing_params');
+  });
+
+  it('test_runner returns dry-run when SANDBOX_API_URL not set', async () => {
+    const result = await toolExecutorsMap['test_runner']({ language: 'javascript', code: 'import test from "node:test"; test("ok", () => { assert.ok(true); });' }, baseContext);
+    assert.equal(result.dryRun, true);
+    assert.equal(result.tool, 'test_runner');
+    assert.ok(typeof result.message === 'string');
+    assert.ok((result.message as string).includes('SANDBOX_API_URL'));
+  });
+
+  it('test_runner returns error for missing code', async () => {
+    const result = await toolExecutorsMap['test_runner']({ language: 'javascript' }, baseContext);
+    assert.equal(result.error, 'missing_params');
+  });
 
   it('fetch_url returns error for missing URL', async () => {
     const result = await toolExecutorsMap['fetch_url']({}, baseContext);
@@ -641,6 +649,42 @@ describe('Placeholder executors', () => {
   it('browser blocks unsafe URLs', async () => {
     const result = await toolExecutorsMap['browser']({ action: 'fetch', url: 'http://127.0.0.1:8080' }, baseContext);
     assert.equal(result.error, 'blocked_url');
+  });
+
+  it('browser screenshot returns not_configured without Firecrawl key', async () => {
+    const savedKey = process.env.FIRECRAWL_API_KEY;
+    delete process.env.FIRECRAWL_API_KEY;
+    try {
+      const result = await toolExecutorsMap['browser']({ action: 'screenshot', url: 'https://example.com' }, baseContext);
+      assert.equal(result.error, 'not_configured');
+      assert.equal(result.action, 'screenshot');
+    } finally {
+      if (savedKey) process.env.FIRECRAWL_API_KEY = savedKey;
+    }
+  });
+
+  it('browser click returns not_configured without Firecrawl key', async () => {
+    const savedKey = process.env.FIRECRAWL_API_KEY;
+    delete process.env.FIRECRAWL_API_KEY;
+    try {
+      const result = await toolExecutorsMap['browser']({ action: 'click', url: 'https://example.com', selector: '#btn' }, baseContext);
+      assert.equal(result.error, 'not_configured');
+      assert.equal(result.action, 'click');
+    } finally {
+      if (savedKey) process.env.FIRECRAWL_API_KEY = savedKey;
+    }
+  });
+
+  it('browser evaluate returns not_configured without Firecrawl key', async () => {
+    const savedKey = process.env.FIRECRAWL_API_KEY;
+    delete process.env.FIRECRAWL_API_KEY;
+    try {
+      const result = await toolExecutorsMap['browser']({ action: 'evaluate', url: 'https://example.com', script: 'document.title' }, baseContext);
+      assert.equal(result.error, 'not_configured');
+      assert.equal(result.action, 'evaluate');
+    } finally {
+      if (savedKey) process.env.FIRECRAWL_API_KEY = savedKey;
+    }
   });
 
   it('social_publish returns error for missing params', async () => {
