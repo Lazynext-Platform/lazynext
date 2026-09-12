@@ -77,9 +77,18 @@ export function SessionDetail({ sessionId, status, summary, findings, citations 
   }
 
   async function handleDeleteCitation(citationId: string) {
-    // Note: citation deletion via session endpoint not implemented; refresh only
-    // Citations are deleted via cascade when session is deleted
-    void citationId;
+    try {
+      const res = await fetch(`/api/research/sessions/${sessionId}/citations?citationId=${citationId}`, {
+        method: 'DELETE',
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error || 'Failed to delete citation');
+      }
+      router.refresh();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Something went wrong');
+    }
   }
 
   const findingsKeys = Object.keys(findings);

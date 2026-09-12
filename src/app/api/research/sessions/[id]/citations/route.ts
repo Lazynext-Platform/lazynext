@@ -67,3 +67,30 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     return NextResponse.json({ error: 'failed_to_add_citation' }, { status: 500 });
   }
 }
+
+/**
+ * DELETE /api/research/sessions/[id]/citations?citationId=xxx — delete a citation.
+ */
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const session = await auth().catch(() => null);
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+  }
+
+  const { id } = await params;
+  const citationId = new URL(req.url).searchParams.get('citationId');
+  if (!citationId) {
+    return NextResponse.json({ error: 'citationId_required' }, { status: 400 });
+  }
+
+  try {
+    const result = await ResearchService.deleteCitation(id, citationId);
+    if (result.count === 0) {
+      return NextResponse.json({ error: 'citation_not_found' }, { status: 404 });
+    }
+    return NextResponse.json({ ok: true, deleted: result.count });
+  } catch (e) {
+    console.error('[research/citations] delete error:', e);
+    return NextResponse.json({ error: 'failed_to_delete_citation' }, { status: 500 });
+  }
+}

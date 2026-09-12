@@ -121,6 +121,15 @@ export const ResearchService = {
   },
 
   /**
+   * Delete a single citation from a research session.
+   */
+  async deleteCitation(sessionId: string, citationId: string) {
+    return prisma.citation.deleteMany({
+      where: { id: citationId, researchSessionId: sessionId },
+    });
+  },
+
+  /**
    * Delete a research session.
    */
   async deleteSession(id: string) {
